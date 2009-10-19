@@ -10,9 +10,6 @@
  * @version   $Id: Registry.php 4235 2009-10-05 12:05:22Z norman.heino $
  */
 
-require_once 'Zend/Session/Namespace.php';
-require_once 'OntoWiki/Application.php';
-
 /**
  * OntoWiki module registry class.
  *
@@ -205,13 +202,11 @@ class OntoWiki_Module_Registry
                     . '.php';
         
         if (!is_readable($moduleFile)) {
-            require_once 'OntoWiki/Module/Exception.php';
             throw new OntoWiki_Module_Exception("Module '$moduleName' could not be loaded from path '$moduleFile'.");
         }
         
         // instantiate module
-        require_once $moduleFile;
-        require_once 'OntoWiki/Module/Manager.php';
+        // require_once $moduleFile;
         $moduleClass = ucfirst($moduleName) 
                      . OntoWiki_Module_Manager::MODULE_CLASS_POSTFIX;
         $module = new $moduleClass($moduleName, $context);

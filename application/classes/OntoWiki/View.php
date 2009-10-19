@@ -10,9 +10,6 @@
  * @version   $Id: View.php 4235 2009-10-05 12:05:22Z norman.heino $
  */
 
-require_once 'Zend/View/Helper/Placeholder/Registry.php';
-require_once 'OntoWiki/Module/Registry.php';
-
 /**
  * OntoWiki view class
  *
@@ -84,7 +81,7 @@ class OntoWiki_View extends Zend_View
         
         $this->_placeholderRegistry = Zend_View_Helper_Placeholder_Registry::getRegistry();
         
-        if ((boolean) $this->_config->cache->modules) {
+        if ((boolean)$this->_config->cache->modules) {
             if (is_writable($this->_config->cache->path)) {
                 // set up module cache
                 $frontendOptions = array(
@@ -113,7 +110,7 @@ class OntoWiki_View extends Zend_View
      */
     public function _($key)
     {
-        return $this->_translate->translate((string) $key);
+        return $this->_translate->translate((string)$key);
     }
     
     /**
@@ -196,7 +193,6 @@ class OntoWiki_View extends Zend_View
      */
     public function module($moduleName, $moduleOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
     {
-        require_once 'OntoWiki/Module/Registry.php';
         $moduleRegistry = OntoWiki_Module_Registry::getInstance();
         
         // no options provided, get them from registry
