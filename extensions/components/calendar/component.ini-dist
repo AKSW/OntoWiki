@@ -1,0 +1,13 @@
+;;
+; Basic component configuration
+;;
+; templates  = "templates"
+; languages  = "languages/"
+; controller = "MapController.php"
+active     = false
+action     = "display"
+name       = "Calendar"
+navigation = 1
+; position   = 20
+
+[private]

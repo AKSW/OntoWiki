@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * OntoWiki application module template
+ *
+ * @version $Id: application.phtml 3468 2009-06-29 05:46:15Z pfrischmuth $
+ */
+
+?>
+
+<form name="search" method="get" action="<?php echo $this->actionUrl ?>">
+	<?php if ($this->showSearch) : ?>
+	<p class="width98">
+		<label class="display-block" for="searchtext-input"><?php echo $this->_('Search for Resources') ?></label>
+		<input class="text width99 inner-label" type="text" id="searchtext-input" name="s" value="<?php echo $this->s ?>" />
+	</p>
+	<?php endif; ?>
+	<p>
+		<!--label class="display-block">
+		    <?php $selected = ($this->modelSelected ? '' : 'checked="checked"') ?>
+			<input class="checkbox" type="checkbox" name="allModels" id="allModels" <?php echo $selected ?>/>
+			<?php echo $this->_('Search all Knowledge Bases') ?>
+		</label-->
+		<?php if ($this->has('logo')): ?>
+		    <img src="<?php echo $this->logo ?>" style="float:right;vertical-align:bottom" alt="<?php echo $this->logo_alt ?>" />
+		<?php endif; ?>
+		<!--a class="button submit"><?php echo $this->_('Submit') ?></a-->
+	</p>
+</form>

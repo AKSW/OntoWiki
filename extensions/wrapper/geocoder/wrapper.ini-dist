@@ -1,0 +1,12 @@
+enabled = true
+
+[private]
+;Google=g, OpenStreetMap/NameFinder=osm, GeoNames=gn. Fallback is Google.
+service = g
+google_maps_api_key = "ABQIAAAAu_dZPb2TuA4YQkD4E7dVaRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSr2MFDk1m5ccsneueDvWbXHiPq4w"
+lat_property  = "http://www.w3.org/2003/01/geo/wgs84_pos#lat"
+long_property = "http://www.w3.org/2003/01/geo/wgs84_pos#long"
+
+;Liste der Propertys, für die Geocoding versucht werden soll (kommasepariert)
+loc_props[] = "http://swrc.ontoware.org/ontology#address"
+loc_props[] = "http://3ba.se/conferences/place"

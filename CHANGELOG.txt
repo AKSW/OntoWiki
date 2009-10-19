@@ -1,0 +1,7 @@
+A detailed Release ChangeLog is available at
+http://ontowiki.net/Projects/OntoWiki/Changelog
+
+An issue based Changelog for the current trunk is available at
+http://code.google.com/p/ontowiki/issues/list?can=1&q=status=Verified&sort=-closed
+
+Version: $Id: CHANGELOG 3866 2009-07-31 16:43:21Z sebastian.dietzold $

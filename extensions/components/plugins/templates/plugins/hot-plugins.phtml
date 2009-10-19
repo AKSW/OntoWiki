@@ -1,0 +1,62 @@
+<?php $results = $this->results;?>
+<?php if (count($this->paginator)):?>
+<?php	
+	if (isset($results)) {
+		foreach ($this->paginator as $result) {
+				$pName = $result['name'];
+				$developer = $result['developer'];
+				$description = $result['description'];
+				echo<<<showResults
+					<div class="messagebox feed">
+	        			<h2><a href="$to_translate">$pName</a></h2>
+	        			<h5>&nbsp;&nbsp;&nbsp;Writen by <a href="">$developer</a></h5>
+	        			<p>$description<p>
+	    			</div>
+showResults;
+					
+		}
+	}?>
+<?= $this->paginationControl($this->paginator, 'Elastic', '/pagelist/categoriepagelist.phtml');?>
+<?php
+/**
+ * The following box will be only displayed, if
+ * there are results found
+ */?>
+
+<?php $to_translate = $this->escape($this->to_translate);?>
+<?php $this->placeholder('sort.box.content')->captureStart() ?>
+<form method="post" action="<?php echo $to_translate;?>">
+	<fieldset>
+	<div class="no-min-width">
+		<span id="select-container-lat-prop-select" class="width99">
+			<select name="sort_kind" class="width99" id="id_sort_kind">
+			    <option value="time">Time</option>
+				<option value="developer">Developer</option>
+				<option value="value">Value</option>
+			</select>
+		</span>
+	</div>
+	<div class="no-min-width">
+		<span id="select-container-lat-prop-select" class="width99">
+			<select name="sort_priority" class="width99" id="id_sort_priority">
+			    <option value="descending">Descending</option>
+				<option value="anodically">Anodically</option>
+			</select>
+		</span>
+	</div>
+	</fieldset>
+	<div><button type="submit" name="submit"><?php echo $this->_('Submit') ?></button></div>
+</form>
+<?php $this->placeholder('sort.box.content')->captureEnd() ?>
+
+<?php $this->placeholder('main.window.innerwindows')->append(
+	$this->partial('partials/window.phtml', array(
+		'headinglevel' => 2, 
+		'title'        => $this->_('Sort in...'), 
+		'content'      => $this->placeholder('sort.box.content'), 
+		'cssClasses'   => '', 
+		'cssId'        => ''
+	))
+);?>
+
+<?php endif; ?>

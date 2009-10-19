@@ -1,0 +1,113 @@
+<?php
+/**
+  * ContainerManager list template
+  *
+  * For listing the content of one container. 
+  *
+  * @author Maria Moritz
+  * @version $Id$
+  */
+
+// get the 
+$cont = key($_SESSION['list']);
+$output = current($_SESSION['list']);
+if(!$output AND !is_array($output)) {
+	$cont = '';
+}
+?>
+<div id="list" class="window">
+	<h1 class="title"><?php echo $cont; ?></h1>    
+	<?php
+	if(!$output AND !is_array($output)) {
+		echo '<p class="message error">' . 'Die Resource existiert nicht.' . '</p>';
+		return;
+	}
+	?>
+	<div class="content">
+       	<div class="innercontent">
+       	<div class="messagebox">
+       	
+       		<?php
+       		// print some messages       		
+       		if(isset($this->message)){
+				echo $this->message;
+				unset($this->message);			
+			}?>
+       	
+    		<div class="statustool" style="float:right">
+        		<ul class="minibutton">
+            	<?php
+            		// output of the pager buttons
+            		if(isset($this->pagerLinks['back']) && isset($this->pagerLinks['first'])) {
+            			echo "<li><li>".$this->pagerLinks['first']."</li></li>";
+    					echo "<li><li>".$this->pagerLinks['back']."</li></li>";
+            		}
+            		
+            		if(isset($this->pagerLinks['pages'])) {	
+    					foreach($this->pagerLinks['pages'] as $key => $value) {
+    						echo "<li><li>".$value."</li></li>";
+    					}
+            		}
+
+    				if(isset($this->pagerLinks['forward'])) {
+    					echo "<li>".$this->pagerLinks['forward']."</li>";
+    					echo "<li>".$this->pagerLinks['last']."</li>";
+    				}
+    				
+    				$max = $this->pagerLinks['max'];
+    				if($output) {
+						// takes the part from all entries, which is set by $pagerLinks['page']
+    					$list = array_slice($output, $max*($this->pagerLinks['page']-1),$max);
+					}
+    				
+    					
+    				
+            	?>	
+        		</ul>
+    		</div>
+    		<?php if ($output) {
+    			echo count($output).' instances (showing '. $max . ' per page).'; 	
+    		}
+    		?>
+    	</div>
+    	
+    	<h2><?php echo $cont; ?></h2>
+    	<div class="width25 float-right">
+		<p>
+			<label class="display-block onlyAural" for="cmRes-input">Add Resource</label>
+			<input class="text width95 inner-label" type="text" id="cmRes-input" name="<?php echo $cont; ?>" value="" />
+			<label class="display-block onlyAural" for="cmTitle-input">Resource Title</label>
+			<input class="text width95 inner-label" type="text" id="cmTitle-input" name="<?php echo $cont; ?>" value="" />
+			<label class="display-block onlyAural" for="cmMod-input">Add Model</label>
+			<input class="text width95 inner-label" type="text" id="cmMod-input" name="<?php echo $cont; ?>" value="" />
+		</p>
+		</div>
+    
+           	<ol class="width75 float-left bullets-none separated-vertical">
+            	
+			<pre><?php
+			//print_r($_SESSION['container']);
+			?></pre><?php
+			// $odd for better view
+			$odd = FALSE;
+			// print all entries
+			if($list) {
+			foreach ($list as $key => $value) {
+				if ($odd) {
+					echo '<li class="odd">';
+					$odd = FALSE;
+				} else {
+					echo '<li>';
+					$odd = TRUE;
+				}
+				// prints only the title of one entry
+				foreach ($value as $k => $v){
+					if($k == 2) echo '<a class="has-contextmenu Resource cmRes" id="'.$key.'" name="'.$cont.'" ><span class="cmResName">'.$v.'</span><span class="button" /></a></li>' . PHP_EOL;
+				}
+			}
+			}
+			?>
+           	</ol>
+        </div>
+	</div>
+</div>

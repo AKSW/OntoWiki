@@ -1,0 +1,13 @@
+enabled     = no
+name        = Audiolink
+description = "A plug-in that renders values of certain properties as audio."
+author      = "Maier Christian, Niederstätter Michael"
+; url         = 
+
+[events]
+1 = onDisplayObjectPropertyValue
+2 = onDisplayLiteralPropertyValue
+
+[private]
+properties[] = "http://3ba.se/conferences/audio"
+

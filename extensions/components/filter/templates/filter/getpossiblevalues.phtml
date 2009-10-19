@@ -1,0 +1,23 @@
+<?php foreach($this->values as $value) : ?>
+    <option
+        value="<?php echo $value['value']; ?>"
+        type="<?php echo $value['type']; ?>"
+        <?php
+            if($value['type']=='uri') {
+                echo ' about="'.$value['value'].'"';
+            } elseif ($value['type']=='typed-literal') {
+                echo ' datatype='.$value['datatype'];
+            }
+
+            if (!empty($value['xml:lang'])) {
+                echo ' language="'.$value['xml:lang'].'"';
+            }
+            echo '>';
+            echo isset($value['title']) ? $value['title'] : $value['value']; ?>
+    </option>
+<?php endforeach ?>
+
+<?php if (empty($this->values)) {
+    echo 'Error: no values found';
+}
+?>

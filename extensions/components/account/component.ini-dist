@@ -1,0 +1,8 @@
+;;
+; Basic component configuration
+;;
+templates  = "templates"
+languages  = "languages"
+active     = yes
+name       = "Account"
+

@@ -1,0 +1,5 @@
+enabled    = true
+title      = "Tagging"
+caching    = no
+priority   = 3
+contexts[] = "main.window.properties"

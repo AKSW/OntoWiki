@@ -1,0 +1,9 @@
+;;
+; Basic component configuration
+;;
+templates  = "templates"
+active     = true
+languages  = "languages/"
+action     = "listquery"
+name       = "Query Building"
+

@@ -1,0 +1,177 @@
+<?php
+
+/**
+ * OntoWiki layout template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $Id: layout.phtml 4308 2009-10-14 15:13:51Z jonas.brekle@gmail.com $
+ */
+
+?>
+<?php echo $this->doctype('XHTML1_STRICT') ?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:update="http://ns.aksw.org/update/">
+<head>
+    <?php echo $this->headTitle() ?>
+    <?php echo $this->headMeta() ?>
+    <?php echo $this->headLink() ?>
+    
+    <?php echo $this->partial('partials/meta.phtml') ?>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->staticUrlBase;?>favicon.png" />
+    
+    <?php if ($this->has('jsonVars')): ?>
+        <script type="text/javascript">
+            <?php echo $this->jsonVars ?>
+        </script>
+    <?php endif; ?>
+    
+    <!-- jQuery -->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
+    
+    <!-- included js libraries -->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.clickmenu.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.simplemodal.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.tablesorter.js"></script>
+
+    <!-- RDFa widgets -->
+    <script type="text/javascript" id="RDFauthorScript" src="<?php echo $this->libraryUrlBase ?>RDFauthor/src/rdfauthor.js"></script>
+    
+    <!-- ontowiki js -->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/jquery.ontowiki.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/main.js"></script>
+    
+    <!-- dynamic js -->
+    <?php echo $this->headScript() ?>
+    
+    <!-- ontowiki stylesheets -->
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
+    
+    <!-- IE conditional stylesheets -->
+    <!--[if lte IE 6]><link rel="stylesheet" media="screen" href="<?php echo $this->themeUrlBase ?>styles/default.ie6.css" /><![endif]-->
+    <!--[if lte IE 6]><link rel="stylesheet" media="screen" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.msie.css" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" media="screen" href="<?php echo $this->themeUrlBase ?>styles/default.ie7.css" /><![endif]-->
+    
+    <!-- dynamic styles -->
+    <?php echo $this->headStyle() ?>
+</head>
+
+<body class="javascript-off">
+    
+    <script type="text/javascript">
+        // get body element
+        var body = document.body;
+        var bodyClass = body.className;
+        // set javascript = on
+        bodyClass = bodyClass.replace(/javascript-off/g, "javascript-on");
+        // set application in processing state
+        bodyClass = bodyClass + " is-processing";
+        // process changes
+        body.setAttribute("class", bodyClass, 0);
+    </script>
+    
+    <?php echo $this->inlineScript() ?>
+    
+    <div class="section-mainwindows">
+        <div class="window<?php echo (OntoWiki_Navigation::isDisabled() ? '' : ' tabbed') ?>">
+            <?php
+                /**
+                 * @trigger onDisplayMainWindowTitle
+                 */
+                require_once 'Erfurt/Event.php';
+                $event = new Erfurt_Event('onDisplayMainWindowTitle');
+                $event->setDefault($this->placeholder('main.window.title'));
+                $title = $event->trigger();
+            ?>
+            <h1 class="title"><?php echo $title ?></h1>
+            <div class="slidehelper">
+                <?php if (isset($this->preTabsContent)): ?>
+                    <div id="pre_tabs_content">
+                        <?php echo $this->preTabsContent; ?>
+                    </div>
+                <?php endif; ?>
+                <?php echo $this->partial('partials/navigation.phtml', array('navigation' => OntoWiki_Navigation::toArray())) ?>
+                
+                <?php if ($this->has('main.window.innerwindows')): ?>
+                    <div class="content has-innerwindows">
+                        <?php if ($this->has('formActionUrl') and $this->has('formMethod')): ?>
+                            <form action="<?php echo $this->formActionUrl ?>" 
+                                  method="<?php echo $this->formMethod ?>" 
+                                  <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?> 
+                                  <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?> 
+                                  <?php if ($this->has('formClass')) echo 'class="' . $this->formClass . '"' ?>>
+                                  <?php if ($this->has('redirectUrl')): ?>
+                                      <input type="hidden" name="redirect" value="<?php echo $this->redirectUrl ?>"/>
+                                  <?php endif; ?>
+                        <?php endif;?>
+                        
+                        <?php if ($this->has('main.window.toolbar')): ?>
+                            <div class="messagebox"><?php echo $this->placeholder('main.window.toolbar') ?></div>
+                        <?php endif; ?>
+                        <div class="innercontent">                                
+                            <?php foreach (OntoWiki_Application::getInstance()->getMessages() as $message): ?>
+                                <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
+                            <?php endforeach; ?>
+                                
+                            <?php echo $this->layout()->content ?>
+                        </div><!-- .innercontent -->
+                        <div class="innerwindows">
+                            <?php echo $this->placeholder('main.window.innerwindows') ?>
+                        </div><!-- .innerwindows -->
+                        
+                        <?php if ($this->has('formActionUrl')): ?>
+                            </form>
+                        <?php endif;?>
+                    </div><!-- .content .has-innerwindows -->
+                <?php else: ?>
+                    <div class="content">
+                        <?php if ($this->has('formActionUrl') and $this->has('formMethod')): ?>
+                            <form action="<?php echo $this->formActionUrl ?>" 
+                                  method="<?php echo $this->formMethod ?>" 
+                                  <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?>
+                                  <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?> 
+                                  <?php if ($this->has('formClass')) echo 'class="' . $this->formClass . '"' ?>>
+                        <?php endif;?>
+                        
+                        <?php if ($this->has('main.window.toolbar')): ?>
+                            <div class="messagebox"><?php echo $this->placeholder('main.window.toolbar') ?></div>
+                        <?php endif; ?>
+                        
+                        <?php foreach (OntoWiki_Application::getInstance()->getMessages() as $message): ?>
+                            <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
+                        <?php endforeach; ?>
+                            
+                        <?php echo $this->layout()->content ?>
+                        
+                        <?php if ($this->has('formActionUrl')): ?>
+                            </form>
+                        <?php endif;?>
+                    </div><!-- .content -->
+                <?php endif; ?>
+                
+                <?php if ($this->has('main.window.menu')): ?>
+                    <ul class="menu">
+                        <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->placeholder('main.window.menu')->getValue())) ?>
+                    </ul>
+                <?php endif; ?>
+                
+                <?php echo $this->partial('partials/statusbar.phtml', array('statusbar' => $this->placeholder('main.window.statusbar'))) ?>
+            </div><!-- .slidehelper -->
+        </div><!-- .window -->
+    </div><!-- .section-mainwindows -->
+
+    <div class="section-sidewindows">
+        <?php echo $this->placeholder('main.sidewindows') ?>
+    </div><!-- .section-sidewindows -->
+    <?php 
+        $queryCount = OntoWiki_Application::getInstance()->erfurt->getStore()->getQueryCount();
+        $time       = (microtime(true) - OntoWiki_Application::getInstance()->start) * 1000;
+    ?>
+    <!-- <?php echo sprintf($this->_('Rendered in %1$d ms using %2$d SPARQL queries.'), $time, $queryCount) ?> -->
+</body>
+</html>

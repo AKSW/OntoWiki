@@ -1,0 +1,9 @@
+<?php $postUrl = $this->_owApp->urlBase . '/querybuilding/listquery'; ?>
+<form name="savequery" accept-charset="utf-8" method="post" action="<?php echo $postUrl; ?>" >
+    <fieldset>
+        <p class="messagebox info"><?php echo $this->_('If you think your query can be useful for others, please share it.') ?></p>
+        <textarea name="qdesc" class="width99" style="min-width: 50%; min-height: 4.5em;"><?php echo $this->_('name of query') ?></textarea>
+    </fieldset>
+    <input id="hidden_savequery" type="hidden" name="json" value=""/> 
+    <a id = 'savequerybutton' class="button submit"><span><?php echo $this->_('Save Query') ?></span></a>
+</form>

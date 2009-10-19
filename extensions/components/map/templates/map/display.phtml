@@ -1,0 +1,116 @@
+<?php
+// vim: sw=4:sts=4:expandtab
+require_once 'OntoWiki/Model/TitleHelper.php'
+?>
+<!-- The main Map div, will be populated by OpenLayers in JavaScript -->
+<div id="mainMap"></div>
+
+<script type="text/javascript">
+//<![CDATA[
+// resize the mainMap according to the windowheight, if it is resized
+$(window).resize(setMapHeight);
+
+// some variables
+var mainMap, detailMap, markers, detailMarkers, vector;
+var componentUrlBase    = '<?php echo $this->componentUrlBase; ?>';
+var defaultLat          = <?php echo $this->defaultLat ?>;
+var defaultLong         = <?php echo $this->defaultLong ?>;
+var extent              = <?php echo json_encode($this->extent) ?>;
+var defaultLayer        = '<?php echo $this->defaultLayer ?>';
+var jsonRequestUrl      = '<?php echo (string) $this->jsonRequestUrl ?>';
+var icon = new OpenLayers.Icon(
+    componentUrlBase + '<?php echo $this->icon->path; ?>',
+    new OpenLayers.Size(<?php echo $this->icon->size; ?>),
+    new OpenLayers.Pixel(<?php echo $this->icon->offset; ?>)
+);
+var icon_selected = new OpenLayers.Icon(
+    componentUrlBase + '<?php echo $this->icon_selected->path; ?>',
+    new OpenLayers.Size(<?php echo $this->icon_selected->size; ?>),
+    new OpenLayers.Pixel(<?php echo $this->icon_selected->offset; ?>)
+);
+var cluster = new OpenLayers.Icon(
+    componentUrlBase + '<?php echo $this->cluster->path; ?>',
+    new OpenLayers.Size(<?php echo $this->cluster->size; ?>),
+    new OpenLayers.Pixel(<?php echo $this->cluster->offset; ?>)
+);
+OpenLayers.ImgPath = '<?php echo $this->themeUrlBase; ?>images/';
+
+//]]>
+</script>
+
+<?php $this->placeholder('map.detailmap')->captureStart() ?>
+    <div id="detailMap">
+    </div>
+<?php $this->placeholder('map.detailmap')->captureEnd() ?>
+
+<?php $this->placeholder('map.markers.content')->captureStart() ?>
+    <!-- will be removed by seebi, when popups are implemented -->
+    <p class="messagebox info" id="marker_messagebox">
+        No marker selected.
+    </p>
+    <ul id="marker_container"></ul>
+<?php $this->placeholder('map.markers.content')->captureEnd() ?>
+
+<?php
+if ($this->indirect != false) {
+	$this->placeholder('map.indirectProperty')->captureStart();
+	echo "
+		<form>
+		<select name=\"selectedIndirect\" id=\"selectedIndirect\">
+		";
+
+	$titleHelper = new OntoWiki_Model_TitleHelper ();
+	$titleHelper->addResources ( $this->indirect );
+
+	for ($i = 0; $i < count ($this->indirect); $i++ ) {
+		if (isset ($this->selectedIndirect) && $i == $this->selectedIndirect) {
+			$selected = "selected=selected";
+		} else {
+			$selected = "";
+		}
+		echo "			<option " . $selected . " value=\"" . $i . "\">" . $titleHelper->getTitle($this->indirect[$i]) . "</option>\n";
+	}
+	echo "
+		</select>
+		</form>
+		";
+	$this->placeholder('map.indirectProperty')->captureEnd();
+}
+?>
+
+<?php $this->placeholder('main.window.innerwindows')->append(
+	$this->partial('partials/window.phtml', array(
+		'headinglevel' => 2, 
+		'title'        => $this->_('detail map'), 
+		'content'      => $this->placeholder('map.detailmap'), 
+		'cssClasses'   => '', 
+		'cssId'        => ''
+	))
+);?>
+
+<?php /* will be removed by seebi, when popups are implemented */ ?>
+<?php $this->placeholder('main.window.innerwindows')->append(
+	$this->partial('partials/window.phtml', array(
+		'headinglevel' => 2, 
+		'title'        => $this->_('marker information'), 
+		'content'      => $this->placeholder('map.markers.content'), 
+		'cssClasses'   => '', 
+		'cssId'        => ''
+	))
+);?>
+
+<?php
+if ($this->indirect != false)
+{
+	$this->placeholder('main.window.innerwindows')->append(
+		$this->partial('partials/window.phtml', array(
+			'headinglevel' => 2, 
+			'title'        => $this->_('indirect property'), 
+			'content'      => $this->placeholder('map.indirectProperty'), 
+			'cssClasses'   => '', 
+			'cssId'        => ''
+		))
+	);
+}
+?>
+

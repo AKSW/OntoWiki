@@ -1,0 +1,20 @@
+    <a class ="video" href="javascript:vis.change('<?php echo $this->divId ?>');">
+	<?php echo $this->uri ?></a>
+
+
+	<div id="<?php echo $this->divId ?>" style="display:none;">
+ <br>
+<a href="http://www.macromedia.com/go/getflashplayer">Get the Flash Player</a> to see this player.
+
+</div>
+
+    <script type="text/javascript">
+		var s1 = new SWFObject("<?php echo $this->playerSrc ?>","mediaplayer","500","400","10");
+		s1.addParam("allowfullscreen","true");
+        s1.addParam("allowscriptaccess","always");
+        s1.addParam("allownetworking","all");
+		s1.addVariable("width","500");
+		s1.addVariable("height","400");
+		s1.addVariable("file","<?php echo $this->uri ?>");
+		s1.write("<?php echo $this->divId ?>");
+	</script>

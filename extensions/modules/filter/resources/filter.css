@@ -1,0 +1,36 @@
+#cancelrestrictionbutton {
+	color: red;
+}
+
+.gqbclassrestrictionvalueselector {
+	width: 60px;
+}
+
+#gqbclassrestrictionsnotexist {
+	font-style: italic;
+	color: grey;
+}
+
+.gqb-button-add	{
+	background: url(images/icon-add-grey.png) 0 0 no-repeat center; 
+}
+
+.gqb-button-add:hover  {
+	background: url(images/icon-add.png) 0 0 no-repeat center; 
+}
+
+span.gqb-button-delete	{
+	background: url(../extensions/components/graphicalquerybuilder/resources/images/icon-delete-grey.png) no-repeat center; 
+}
+
+span.gqb-button-delete:hover  {
+	background: url(../extensions/components/graphicalquerybuilder/resources/images/icon-delete.png)  no-repeat center; 
+}
+
+span.gqb-button-edit	{
+	background: url(images/icon-edit-grey.png) no-repeat center; 
+}
+
+span.gqb-button-edit:hover  {
+	background: url(images/icon-edit.png)  no-repeat center; 
+}

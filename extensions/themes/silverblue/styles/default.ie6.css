@@ -1,0 +1,344 @@
+
+/* Zoom it, baby! (and give layout to elements) */
+
+.window,
+body.javascript-on .has-contextmenus-block a,
+div.window .content,
+.seperated-horizontal li,
+.seperated-vertical li,
+div.window .tabs li a,
+div.contextmenu-enhanced .contextmenu,
+div.contextmenu-enhanced .contextmenu li,
+div.contextmenu-enhanced .contextmenu li a,
+div.window .contextmenu li a {
+    zoom:1;
+}
+
+.window,
+body.javascript-on .has-contextmenus-block a,
+div.window .content {
+    position:relative;
+}
+
+div.window .tabs li a {
+    display:inline-block;
+}
+
+/* fix problems with child selector '>' */
+
+div.cmDiv {
+    position:absolute;
+    width:100%;
+    top:1.5em;
+    zoom:1;
+}
+
+.separated-vertical li {
+    padding:0.1em 0;
+    border-top:dotted 1px #ccc;
+}
+
+.separated-vertical li:first-child {
+    border-top:none;
+}
+
+.separated-horizontal li {
+    display:inline;
+    padding-left:0.5em;
+    padding-right:0.4em;
+    border-left:dotted 1px #ccc;
+}
+
+.separated-horizontal li:first-child {
+    padding-left:0;
+    border-left:none;
+}
+
+div.window .content {
+    border-top:solid 1px #666;
+}
+
+div.window div.innerwindows .content {
+    border-top:solid 1px #999;
+}
+
+div.window .title,
+div.window div.innerwindows .title {
+    border-bottom-style:none;
+}
+
+div.tabbed .title {
+    border-bottom-style:solid;
+}
+
+/* problem with transparent border */
+
+div.window .content {
+    border-left-style:none;
+    border-bottom-style:none;
+    border-right-style:none;
+}
+
+.clickMenu li,
+div.row-input, form.row-input div {
+    border-style:none;
+}
+
+body.javascript-on .has-contextmenus-block a {
+    border-color:#fff;
+}
+
+/* fix auto width */
+
+div.window {
+    width:98%;
+    margin-left:0.9%;
+    margin-right:0.9%;
+}
+
+div.window .content {
+    width:98%;
+    padding-left:0.9%;
+    padding-right:0.9%;
+}
+
+div.window .content div.innerwindows {
+    overflow:hidden;
+}
+
+.messagebox {
+    height:1%;
+}
+
+/* window buttons */
+
+body.javascript-on div.window-buttons .button, div.contextmenu-enhanced .button {
+    font-size:0.1em;
+    height:9em;
+    width:9em;
+    zoom:1;
+    line-height:0.1;
+}
+
+body.javascript-on div.window-buttons .button {
+    position:relative;
+    top:1px;
+    left:-1px;
+    border:none;
+}
+
+body.javascript-on div.window-buttons .button:hover {
+    top:0;
+    left:0;
+    border:solid 1px #fff;
+}
+
+/* remove background images with alpha transparency */
+
+div.window .title,
+div.window .tabs li a,
+div.window .tabs li.active a,
+div.window .content,
+a.formbutton, button,
+div.window .content a.button, /* !!DEPRECATED!! only for back compatibility in 0.8 */
+a.formbutton:hover, button:hover, input.formbutton:hover,
+div.window .content a.button:hover, div.window .content input.button:hover, /* !!DEPRECATED!! only for back compatibility in 0.8 */
+.clickMenu li.hover,
+body,
+input,
+textarea,
+div.contextmenu-enhanced .contextmenu li a,
+div.window .contextmenu li a,
+ul.minibutton li a,
+li.minibutton a,
+a.minibutton {
+    background-image:none !important;
+}
+
+/* fix hover for non-links */
+
+
+/* color changes cause of backgrounds */
+div.window .tabs li.active a {
+    background-color:#fff;
+}
+
+/* Tabs */
+
+/* Workaround for Bug 1797742 - Begin
+   Tabs are overlayed by Menu
+   
+   Problem: IE6 do not support child selector '>' but without it window.has-menu 
+   will affect all window titles including titles in inner windows.
+   
+   This workaround will work as long as inner windows do not have a menu.
+*/
+
+body.javascript-on .has-menu .title {
+    margin-bottom:1.6em !important;
+}
+
+body.javascript-on .has-menu .innerwindows .title {
+    margin-bottom:0 !important;
+}
+
+body.javascript-on .has-menu .tabs {
+    margin-top:2em !important;
+}
+
+/* Workaround for Bug 1797742 - End */
+
+/*
+body.javascript-on div.window .title-has-menu {
+    margin-bottom:1.9em !important;
+    margin-top:0 !important;
+}
+
+body.javascript-on div.window ul.tabs-has-menu {
+    margin-bottom:0 !important;
+    margin-top:2.4em !important;
+}
+
+*/
+
+div.window .tabs {
+    padding-left:0;
+    height:1%;
+}
+
+div.window .tabs li a {
+    margin-top:0.1em;
+}
+
+div.window .tabs li.active a {
+    margin-top:0;
+}
+
+/* Contextmenu */
+
+div.contextmenu-enhanced .contextmenu {
+    width:15em;
+}
+
+.contextmenu {
+    background-color:#efefef !important;
+}
+
+.contextmenu ul a, .contextmenu ol a, .contextmenu ul span, .contextmenu ol span {
+    border-color:#efefef;
+}
+
+.contextmenu ul, .contextmenu ol {
+    margin-left:0;
+}
+
+.contextmenu ul ul, .contextmenu ol ul, .contextmenu ul ol, .contextmenu ol ol {
+    margin-left:1.5em;
+}
+
+/* context enabled elements, problem with span.button in block elements */
+
+body.javascript-on .has-contextmenus-block a span.button {
+    right:0;
+    background-color:transparent;
+    border-left-color:#eee;
+}
+
+body.javascript-on .has-contextmenus-block a.Resource:hover span.button,
+body.javascript-on .has-contextmenus-block a.Resource:focus span.button,
+body.javascript-on .has-contextmenus-block a.Resource:active span.button {
+    background-color:#999;
+}
+
+/* -- 3.2. Input fields ----------------------------------------------------- */
+
+input.text, input.password {
+    width:10em;
+}
+
+input.text,
+input.password,
+input.checkbox,
+input.radio,
+textarea {
+    background-color:#fcfcfc;
+}
+
+textarea {
+    width:30em;
+    height:18.5em;
+}
+
+/* Grouping form elements */
+
+fieldset fieldset fieldset {
+    border-style:solid;
+}
+
+.input-justify-left input.checkbox,
+.input-justify-left input.radio, {
+    display:inline;
+}
+
+div.input-justify-left label,
+form.input-justify-left div label {
+    padding-top:0;
+}
+
+.width50 div.input-justify-left label, .width50 div.input-justify-left select,
+form.input-justify-left div.width50 label, form.input-justify-left div.width50 select {
+    margin-right:2%;
+}
+
+.width50 div.input-justify-left input.checkbox,
+form.input-justify-left div.width50 input.checkbox,
+.width50 div.input-justify-left input.radio,
+form.input-justify-left div.width50 input.radio {
+    margin-left:19%;
+}
+
+.width50 div.input-justify-left label.checkboxradio,
+form.input-justify-left div.width50 label.checkboxradio {
+    width:52%;
+}
+
+.width50 div.actionbuttons {
+    padding-left:19.5% !important;
+}
+
+/* Buttons */
+
+a.formbutton,
+div.window .content a.button, /* !!DEPRECATED!! only for back compatibility in 0.8 */ {
+  padding:0.3em 0.5em 0.3em 0.5em;   /* Links */
+}
+
+button,
+input.formbutton,
+input.button,
+input.submit,
+input.reset {
+  padding:0.2em 0.45em 0.15em 0.45em;   /* IE6 */
+}
+
+a.formbutton, div.window .content a.button {
+    padding-left:1.45em;
+    padding-right:1.45em;
+}
+
+/* -- 1.3. Generic layout helper -------------------------------------------- */
+
+.width25 { width:24%; }
+
+.width33 { width:32.3%; }
+
+.width50 { width:49%; }
+
+.width67 { width:65.6%; }
+
+.width75 { width:74%; }
+
+.float-left { padding-right:0.75%; }
+
+.float-right { padding-left:0.75%; }
+

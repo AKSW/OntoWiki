@@ -1,0 +1,14 @@
+The creation of self signed certificates is not supported.;The creation of self signed certificates is not supported.
+You already have a valid identity that you can use to sign in. Your WebID is: <b>%1$s</b>;Sie besitzen bereits ein gültiges Zertifikat. Nutzen Sie dieses, um sich anzumelden. Ihre WebID lautet: <b>%1$s</b>
+You already have a valid certificate, but the FOAF data behind your WebID <b>%1&s</b> does not contain the right public key infos.<br /> You should add the following infos to your FOAF profile: <br /><br /> Modulus <pre>%2$s</pre><br /> Exponent <pre>%3$s</pre>;Sie besitzen bereits ein gültiges Zertifikat, aber die zugehörigen FOAF-Daten (<b>%1&s</b>) enthalten nicht die richtigen Informationen über den öffentlichen Schlüssel.<br /> Sie sollten die folgenden Informationen zu Ihren FOAF-Daten hinzufügen: <br /><br /> Modulus <pre>%2$s</pre><br /> Exponent <pre>%3$s</pre>
+Create Certificate - Step 1;Zertifikat erstellen - Schritt 1
+Check WebID;WebID prüfen
+Create Certificate - Step 2;Zertifikat erstellen - Schritt 2
+Create Certificate & Register;Zertifikat erstellen & Registrieren
+The name field must not be empty.;Das Eingabefeld für den Namen darf nicht leer sein.
+Reset Form;Formular zurücksetzen
+If not provided a WebID will be generated.;Wenn Sie keine WebID angeben, wird automatisch eine erstellt.
+WebID;WebID
+Name;Ihr Name
+Email;Email
+Please note that you need to return to the start page after certificate creation.;Bitte beachten Sie, dass Sie nach der Erstellung des Zertifikats zur Startseite zurückkehren müssen.

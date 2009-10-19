@@ -1,0 +1,35 @@
+<?php 
+
+	$ph = $this->prefixHandler;
+
+	if (empty($this->tableData)) { ?>
+    <p class="messagebox info"> <?php  echo $this->translate->_('No matches.'); ?> </p>
+<?php } else { ?>
+    <table id="qb-result-table">
+        <thead>
+            <?php foreach ( array_keys($this->tableData[0]) as $var) { ?>
+                <th> <?php echo $var; ?> </th>
+            <?php } ?>
+        </thead>
+        <tbody>
+        <?php foreach ($this->tableData as $row) { ?> 
+            <tr>
+                <?php foreach($row as $data) { ?>
+                <td> <?php 
+				if(strpos($data,'http://')===0){
+					$linkto = str_replace('#','%23',$data);
+					echo "<a href=\"".$this->urlBase."/view/?r=".$linkto."\" >";
+					echo urldecode($ph->applyPrefixToURIString($data)); 
+					echo "</a>";
+					}
+				else{
+					echo $data;
+					}
+				
+				?> </td>
+                <?php } ?>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+<?php } ?>

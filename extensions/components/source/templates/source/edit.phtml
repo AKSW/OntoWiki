@@ -1,0 +1,8 @@
+<?php if ($this->has('redirectUri')): ?>
+    <input type="hidden" name="redirect-uri" value="<?php echo $this->redirectUri ?>"/>
+<?php endif; ?>
+<input type="hidden" name="named-graph-uri" value="<?php echo $this->graphUri ?>"/>
+<textarea style="display:none" name="original-graph"><?php echo $this->source ?></textarea>
+<input type="hidden" name="original-format" value="nt"/>
+<textarea name="modified-graph" cols="80" rows="25" class="width100 code-input" <?php echo $this->readonly ?>><?php echo $this->source ?></textarea>
+<input type="hidden" name="modified-format" value="nt"/>

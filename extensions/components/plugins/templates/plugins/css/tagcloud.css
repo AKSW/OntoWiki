@@ -1,0 +1,96 @@
+.tagcloud_window {
+	float: left;
+	width: 100%;
+}
+.tagcloud_window .tag_style_1 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 11px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+.tagcloud_window .tag_style_2 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 12px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+.tagcloud_window .tag_style_3 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 13px;
+	color: #666666;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+.tagcloud_window .tag_style_4 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 14px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+.tagcloud_window .tag_style_5 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 15px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+.tagcloud_window .tag_style_6 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 16px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+.tagcloud_window .tag_style_7 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 17px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+.tagcloud_window .tag_style_8 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 18px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+.tagcloud_window .tag_style_9 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 19px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}
+
+.tagcloud_window .tag_style_0 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 10px;
+	font-style: italic;
+	color: #666666;
+	padding: 2px;
+	float: left;
+	font-variant: normal;
+}

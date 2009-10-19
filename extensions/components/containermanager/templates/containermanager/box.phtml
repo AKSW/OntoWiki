@@ -1,0 +1,24 @@
+<?php
+/**
+  * ContainerManager box template
+  *
+  * Main window for showing the containers and the count of ressources inside.
+  *
+  * @author Maria Moritz
+  * @version $Id$
+  */
+?>
+		
+<?php if (!empty($_SESSION['container'])): ?>
+    <ol class="bullets-none separated-vertical">
+    	<?php foreach ($_SESSION['container'] as $key => $value): ?>
+    		<li>
+    			<a class="Container <?php echo $key ?>" href="<?php echo $key ?>" about="<?php echo $key ?>">
+    				<?php echo $key.'('.count($value).')' ?>
+    			</a>
+    		</li>
+    	<?php endforeach; ?>
+    </ol>
+<?php else: ?>
+    <p class="messagebox info"><?php echo $this->_('No Container available.') ?></p>
+<?php endif; ?>

@@ -1,0 +1,5 @@
+enabled     = on
+name        = Breadcrumbs
+
+[events]
+1 = onDisplayMainWindowTitle

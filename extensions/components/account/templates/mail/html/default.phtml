@@ -1,0 +1,12 @@
+<?php // Template for mail (HTML) ?>
+<div>
+    <h2>This is an automatic account recovery mail for OntoWiki</h2>
+
+    <p>Please open the following 
+        <a href="<?php echo $this->recoveryUrl; ?>"> link </a>
+        to reset the password for user <?php echo $this->username; ?>
+    </p>
+    <p>
+        Do not reply to this mail.
+    </p>
+</div>

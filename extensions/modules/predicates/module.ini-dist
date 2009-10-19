@@ -1,0 +1,5 @@
+enabled    = true
+title      = "Predicates"
+caching    = yes
+priority   = 10
+contexts[] = "main.window.instances"

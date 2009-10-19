@@ -1,0 +1,13 @@
+HISTORY_ACTIONTYPE_10;Model importiert
+HISTORY_ACTIONTYPE_20;Statement hinzugefügt
+HISTORY_ACTIONTYPE_21;Statement geändert
+HISTORY_ACTIONTYPE_22;Statement gelöscht
+HISTORY_ACTIONTYPE_23;"Änderungen wiederhergestellt"
+HISTORY_ACTIONTYPE_120;Daten zur Wissensbasis hinzugefügt
+HISTORY_ACTIONTYPE_130;Ressource gelöscht
+select;Auswahl
+user;Benutzer
+timestamp;Zeitstempel
+action-type;Aktionstyp
+Rollback changes;"Änderungen wiederherstellen"
+Versions for %1$s;Versionen von %1$s

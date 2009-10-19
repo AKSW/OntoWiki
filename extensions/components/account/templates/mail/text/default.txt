@@ -1,0 +1,6 @@
+<?php // Template for mail (TEXT) ?>
+This is an automatic account recovery mail for OntoWiki
+
+Please open the following link : <?php echo $this->recoveryUrl; ?> to reset the password for user <?php echo $this->username; ?>
+
+Do not reply to this mail.

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+  <!ENTITY dc "http://purl.org/dc/elements/1.1/">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY update "http://ns.aksw.org/update/">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+<rdf:RDF xml:base="&update;"
+         xmlns:dc="&dc;"
+         xmlns:owl="&owl;"
+         xmlns:rdf="&rdf;"
+         xmlns:rdfs="&rdfs;">
+
+<!-- Ontology Information -->
+  <owl:Ontology rdf:about=""
+                dc:creator="Norman Heino"
+                rdfs:label="AKSW Update Vocabulary"
+                owl:versionInfo="$Id: update.rdf 3854 2009-07-30 15:11:09Z sebastian.dietzold $">
+    <rdfs:comment>A vocabulary describing update services and endpoints for RDFa widgets. It reuses some resources from the W3C WSDL-RDF mapping.</rdfs:comment>
+  </owl:Ontology>
+
+<!-- Classes -->
+  <owl:Class rdf:about="Graph"
+             rdfs:label="Graph"/>
+
+  <owl:Class rdf:about="RestEndpoint"
+             rdfs:label="REST Endpoint">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/wsdl-rdf#Endpoint"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="SparqlEndpoint"
+             rdfs:label="SPARQL Endpoint">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/wsdl-rdf#Endpoint"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://www.w3.org/ns/wsdl-rdf#Endpoint"
+             rdfs:label="Endpoint"/>
+  
+  <owl:Class rdf:about="Service" rdfs:label="Service">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/wsdl-rdf#Service"/>
+  </owl:Class>
+
+<!-- Annotation Properties -->
+  <owl:AnnotationProperty rdf:about="&rdfs;comment"/>
+  <owl:AnnotationProperty rdf:about="&rdfs;label"/>
+  <owl:AnnotationProperty rdf:about="&owl;versionInfo"/>
+
+<!-- Datatype Properties -->
+  <owl:DatatypeProperty rdf:about="&dc;creator"/>
+
+<!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="queryEndpoint">
+    <rdfs:domain rdf:resource="Service"/>
+    <rdfs:range rdf:resource="SparqlEndpoint"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="sourceService"
+                      rdfs:label="source service">
+    <rdfs:domain rdf:resource="Graph"/>
+    <rdfs:range rdf:resource="Service"/>
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:about="sourceGraph"
+                      rdfs:label="source graph">
+    <rdfs:range rdf:resource="Graph"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="updateEndpoint">
+    <rdfs:domain rdf:resource="Service"/>
+    <rdfs:range rdf:resource="RestEndpoint"/>
+  </owl:ObjectProperty>
+</rdf:RDF>

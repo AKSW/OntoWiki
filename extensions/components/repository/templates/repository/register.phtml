@@ -1,0 +1,26 @@
+
+<?php
+$action_url = $this->pluginurl;
+echo $action_url;
+?>
+
+<div class="qiufeng">
+  <div class="regist_table">	
+	  <div class="regist_title">Please Regist</div>
+	    <div class="register_border">		
+		  <form name="regist_table" id="regist_table" method="post" action="<?php echo $action_url; ?>">
+		  		<div class="regist_content">
+					<div class="regist_line"> Username: <input name="username" id="username" type="text" class="regist_box" onchange="username_check(this)"/></div>
+					<div class="regist_line"> password: <input name="password" id="password" type="password" class="regist_password"/> </div>
+					<div class="regist_line"> repeat:  <input name="p" id="p" type="password" class="regist_password_again" onchange="password_check(this)"/> </div>
+					<div class="regist_line"> Email Adress:  <input name="email" id="email" type="text" class="regist_email" onchange="email_check(this)"/> </div>
+					<div class="regist_line"> <br/></div>
+					<div class="regist_line"> <br/><hr width="200" align="left" color="#999999" noshade="noshade"/></div>
+					<div class="regist_line"> <br/></div>
+					<div><button type="submit" name="regist" onclick="regist_send()"><?php echo $this->_('Regist') ?></button></div>
+				</div>
+		  
+		  </form>	
+		</div>
+	</div>
+</div>

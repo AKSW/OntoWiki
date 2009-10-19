@@ -1,0 +1,27 @@
+<?php if (isset($this->queryResult)): ?>
+    <fieldset>
+        <?php if (is_array($this->queryResult)): ?>
+            <?php 
+               	echo $this->partial('partials/resultset.phtml', array('data' => $this->queryResult, 'header' => $this->header, 'caption'=>'')); 
+            ?>
+        <?php else: ?>
+            <pre><?php echo $this->escape($this->queryResult) ?></pre>
+        <?php endif; ?>
+    </fieldset>
+<?php endif; ?>
+</fieldset>
+
+<script type="text/javascript">
+// make sure jQuery is included
+if (typeof jQuery != 'undefined') {
+    var queryInput = $('.code-input[name=query]');
+
+    function insertModelUri() {
+        queryInput.val(queryInput.val() + '<<?php echo $this->modelUri ?>>');
+    }
+
+    function insertResourceUri() {
+        queryInput.val(queryInput.val() + '<<?php echo $this->resourceUri ?>>');
+    }
+}
+</script>

@@ -1,0 +1,11 @@
+insert into <http://localhost/OntoWiki/Config/> {
+    <http://localhost/OntoWiki/files/OntoWikiFramework.pdf>
+    <http://localhost/OntoWiki/Config/hasMimeType>
+    "application/pdf".
+    <http://localhost/OntoWiki/files/OntoWikiFramework.pdf>
+    a
+    <http://localhost/OntoWiki/Config/File>.
+    <http://localhost/OntoWiki/files/OntoWikiFramework.pdf>
+    <http://localhost/OntoWiki/Config/toModel>
+    <http://3ba.se/conferences/>.
+}

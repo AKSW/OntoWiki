@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * OntoWiki context menu partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $$
+ */
+
+?>
+<ul>
+    <?php foreach ($this->contextmenu as $menuKey => $menuItem): ?>
+        <?php if ($menuItem === OntoWiki_Menu::SEPARATOR): ?>
+            </ul>
+                <hr />
+            <ul>
+        <?php elseif (is_string($menuItem)): ?>
+            <li><a href="<?php echo $menuItem ?>"><?php echo $this->_($menuKey) ?></a></li>
+        <?php else: ?>
+            <li>
+                <?php if (isset($menuItem['url'])): ?>
+                    <a href="<?php echo $menuItem['url'] ?>"
+                <?php else: ?>
+                    <a
+                <?php endif; ?>
+                
+                   <?php echo (isset($menuItem['class']) ? 'class="' . $menuItem['class'] . '"' : '') ?>
+                   <?php echo (isset($menuItem['id']) ? 'id="' . $menuItem['id'] . '"' : '') ?>>
+                   <?php echo $this->_($menuKey) ?>
+                </a>
+            </li>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</ul>

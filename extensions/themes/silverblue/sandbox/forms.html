@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>OntoWiki sandbox : Form examples</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<!-- ontowiki stylesheets -->
+<link rel="stylesheet" type="text/css" media="screen" href="./../styles/old.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="./../styles/default.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="./../styles/default.dev.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="./../styles/clickmenu.css" />
+
+<!-- IE conditional stylesheets -->
+<!--[if IE 7]>
+    <link rel="stylesheet" media="screen" href="./../styles/default.ie7.css" />
+<![endif]-->
+<!--[if lte IE 6]>
+    <link rel="stylesheet" media="screen" href="./../styles/default.ie6.css" />
+    <link rel="stylesheet" media="screen" href="./../styles/clickmenu.msie.css" />
+<![endif]-->
+
+</head>
+
+<body xmlns:owl="http://www.w3.org/2002/07/owl/" xmlns:SysOnt="http://ns.ontowiki.net/SysOnt/" class="javascript-off">
+
+<div class="section-mainwindows"><!-- Section 1 -->
+
+<div class="window">
+    <h1 class="title">Form Examples</h1>
+    <div class="content">
+    <form action="#" method="post">
+    <fieldset><legend>Registration 1</legend>
+        <div class="row-input input-justify-left">
+            <label for="f1v">Vorname</label> <input disabled type="text" class="text disabled" name="f1v" id="f1v" value="111" /><br class="clearall" />
+        </div>
+        <div class="row-input input-justify-left">
+            <label for="f1n">Nachname</label> <input disabled type="text" class="text disabled" name="f1n" id="f1n" value="222" /><br class="clearall" />
+        </div>
+        <div class="row-input input-justify-left">
+            <label for="f1e">Email-Adresse</label> <input type="text" class="text" name="f1e" id="f1e" /><br class="clearall" />
+        </div>
+        <div class="row-input input-justify-left">
+            <label for="f1p1">Neues Passwort</label> <input type="password" class="password" name="f1p1" id="f1p1" /><br class="clearall" />
+        </div>
+        <div class="row-input input-justify-left">
+            <label for="f1p2">Passwort Wiederholung</label> <input type="password" class="password" name="f1p2" id="f1p2" /><br class="clearall" />
+        </div>
+        <div class="row-input input-justify-left">
+            <input type="checkbox" class="checkbox" name="f1agb" id="f1agb" /><label for="f1agb" class="checkboxradio">Ich stimme den Nutzungsbedingungen zu!</label><br class="clearall" />
+        </div>
+        <div class="row-input input-justify-left">
+            <input type="radio" class="radio" name="f1ttt" id="f1ttt" /><label for="f1ttt" class="checkboxradio">nur ein Test</label><br class="clearall" />
+        </div>
+        <div class="actionbuttons">
+            <button type="submit">Register now!</button>
+        </div>
+    </fieldset>
+    </form>
+
+    <form action="#" method="post" class="row-input input-justify-left">
+    <fieldset><legend>Registration 2</legend>
+        <div class="width50 float-left">
+            <label for="f2v">Vorname</label> <input type="text" class="text" name="f2v" id="f2v" /><br class="clearall" />
+        </div>
+        <div class="width50 float-right">
+            <label for="f2n">Nachname</label> <input type="text" class="text" name="f2n" id="f2n" /><br class="clearall" />
+        </div><br class="clearall" />
+        <div class="width50 float-left">
+            <label for="f2p1">Neues Passwort</label> <input type="password" class="password" name="f2p1" id="f2p1" /><br class="clearall" />
+        </div>
+        <div class="width50 float-right">
+            <label for="f2p2">Passwort Wiederholung</label> <input type="password" class="password" name="f2p2" id="f2p2" /><br class="clearall" />
+        </div><br class="clearall" />
+        <div class="width50 float-left">
+            <label for="f2e">Email-Adresse</label> <input type="text" class="text" name="f2e" id="f2e" /><br class="clearall" />
+        </div>
+        <div class="width50 float-right">
+            <input type="checkbox" class="checkbox" name="f2agb" id="f2agb" /><label for="f2agb" class="checkboxradio">Ich stimme den Nutzungsbedingungen zu!</label><br class="clearall" />
+        </div><br class="clearall" />
+        <div class="width50 clearall"><div class="actionbuttons">
+            <button type="submit">Register now!</button>
+        </div></div>
+    </fieldset>
+    </form>
+
+    <form action="#" method="post" class="row-input input-justify-left">
+    <fieldset><legend>Comment</legend>
+        <div>
+            <label for="f3v">Your Name</label> <input type="text" class="text" name="f3v" id="f3v" /><br class="clearall" />
+        </div>
+        <div>
+            <label for="f3n">Your Email-Address</label> <input type="text" class="text" name="f3n" id="f3n" /><br class="clearall" />
+        </div>
+        <div>
+            <label for="f3e">Your Website</label> <input type="text" class="text" name="f3e" id="f3e" /><br class="clearall" />
+        </div>
+        <div>
+            <input type="radio" class="radio" name="f3d" id="f3d1" /><label for="f3d1" class="checkboxradio">Ich finde dich dufte.</label><br class="clearall" />
+            <input type="radio" class="radio" name="f3d" id="f3d2" /><label for="f3d2" class="checkboxradio">Ich finde dich doof.</label><br class="clearall" />
+        </div>
+        <div>
+            <label for="f3d3">Am duftesten finde ich</label>
+            <select name="f3d3" id="f3d3" size="1">
+                <option>Heino</option>
+                <option>Michael Jackson</option>
+                <option>Tom Waits</option>
+                <option>Nina Hagen</option>
+                <option>Marianne Rosenberg</option>
+                <option>Heino</option>
+                <option>Michael Jackson</option>
+                <option>Tom Waits</option>
+                <option>Nina Hagen</option>
+                <option>Marianne Rosenberg</option>
+            </select>
+            <br class="clearall" />
+        </div>
+        <div>
+            <label for="f3c1">Your Comment</label> <textarea name="f3c1" id="f3c1" cols="40" rows="15"></textarea><br class="clearall" />
+        </div>
+        <div class="actionbuttons">
+            <button type="submit">Send!</button>
+        </div>
+    </fieldset>
+    </form>
+    </div>
+</div>
+
+<div class="window">
+    <h1 class="title">Form Test Stuff</h1>
+    <div class="content">
+        <form action="#" method="post">
+        <fieldset><legend>Uberformtest mit Gruppierungen</legend>
+            <fieldset><legend>Textinput</legend>
+              <label for="t1">Vorname</label> <input id="t1" name="vorname" type="text" class="text"/><br/>
+              <label for="t2">Zuname</label> <input id="t2" name="zuname" type="text" class="text"/><br/>
+              <br />
+              <label>Vorname <input name="vorname" type="text" class="text"/></label><br/>
+              <label>Zuname <input name="zuname" type="text" class="text"/></label><br/>
+              <br />
+              <label for="p1">Vorname</label> <input id="p1" name="vorname" type="password" class="password"/><br/>
+              <label>Passwort <input name="vorname" type="password" class="password" /></label><br/>
+
+                <fieldset><legend><label for="ta">Textarea</label></legend>
+                    <textarea name="user_eingabe" id="ta" cols="40" rows="15"></textarea>
+                </fieldset>
+
+            </fieldset>
+
+            <fieldset><legend><a href="http://de.selfhtml.org/html/formulare/auswahl.htm#checkboxen">Checkbox</a></legend>
+                <input type="checkbox" name="zutat" id="c1" value="salami" class="checkbox" /> <label for="c1">Salami</label><br/>
+                <input type="checkbox" name="zutat" id="c2" value="pilze" class="checkbox" /> <label for="c2">Pilze</label><br/>
+                <input type="checkbox" name="zutat" id="c3" value="sardellen" class="checkbox" /> <label for="c3">Sardellen</label><br/>
+                <br />
+                <label><input type="checkbox" name="zutat" value="salami" class="checkbox" /> Salami</label><br/>
+                <label><input type="checkbox" name="zutat" value="pilze" class="checkbox" /> Pilze</label><br/>
+                <label><input type="checkbox" name="zutat" value="sardellen" class="checkbox" /> Sardellen</label><br/>
+            </fieldset>
+
+            <fieldset><legend><a href="http://de.selfhtml.org/html/formulare/auswahl.htm#radiobuttons">Radio-Button</a></legend>
+                <input type="radio" name="zutat1" id="r1" value="salami" class="radio" /> <label for="r1">Salami</label><br/>
+                <input type="radio" name="zutat1" id="r2" value="pilze" class="radio" /> <label for="r2">Pilze</label><br/>
+                <input type="radio" name="zutat1" id="r3" value="sardellen" class="radio" /> <label for="r3">Sardellen</label><br/>
+                <br />
+                <label><input type="radio" name="zutat2" value="salami" class="radio" /> Salami</label><br/>
+                <label><input type="radio" name="zutat2" value="pilze" class="radio" /> Pilze</label><br/>
+                <label><input type="radio" name="zutat2" value="sardellen" class="radio" /> Sardellen</label><br/>
+            </fieldset>
+
+            <fieldset><legend><a href="http://de.selfhtml.org/html/formulare/auswahl.htm#listen">Selects</a></legend>
+                <label for="s1">Auswahl</label> <select id="s1" name="Namen" size="10" class="bigsize">
+                  <optgroup label="Namen mit A">
+                    <option label="Anna">Anna</option>
+                    <option label="Achim">Achim</option>
+                    <option label="August">August</option>
+                  </optgroup>
+                  <optgroup label="Namen mit B">
+                    <option label="Berta">Berta</option>
+                    <option label="Barbara">Barbara</option>
+                    <option label="Bernhard">Bernhard</option>
+                  </optgroup>
+                  <optgroup label="Namen mit C">
+                    <option label="Caesar">Caesar</option>
+                    <option label="Christiane">Christiane</option>
+                    <option label="Christian">Christian</option>
+                  </optgroup>
+                </select>
+                <br /><br />
+                <label for="s2">Auswahl</label> <select id="s2" name="Namen2" size="1">
+                  <optgroup label="Namen mit A">
+                    <option label="Anna">Anna</option>
+                    <option label="Achim">Achim</option>
+                    <option label="August">August</option>
+                  </optgroup>
+                  <optgroup label="Namen mit B">
+                    <option label="Berta">Berta</option>
+                    <option label="Barbara">Barbara</option>
+                    <option label="Bernhard">Bernhard</option>
+                  </optgroup>
+                  <optgroup label="Namen mit C">
+                    <option label="Caesar">Caesar</option>
+                    <option label="Christiane">Christiane</option>
+                    <option label="Christian">Christian</option>
+                  </optgroup>
+                </select>
+                <br /><br />
+                <select name="top5" size="10" multiple="multiple" class="bigsize multiple">
+                    <option>Heino</option>
+                    <option>Michael Jackson</option>
+                    <option>Tom Waits</option>
+                    <option>Nina Hagen</option>
+                    <option>Marianne Rosenberg</option>
+                    <option>Heino</option>
+                    <option>Michael Jackson</option>
+                    <option>Tom Waits</option>
+                    <option>Nina Hagen</option>
+                    <option>Marianne Rosenberg</option>
+                </select>
+                <br /><br />
+                <select name="top5" size="1">
+                    <option>Heino</option>
+                    <option>Michael Jackson</option>
+                    <option>Tom Waits</option>
+                    <option>Nina Hagen</option>
+                    <option>Marianne Rosenberg</option>
+                    <option>Heino</option>
+                    <option>Michael Jackson</option>
+                    <option>Tom Waits</option>
+                    <option>Nina Hagen</option>
+                    <option>Marianne Rosenberg</option>
+                </select>
+            </fieldset>
+
+            <fieldset><legend>Button-Test</legend>
+                <p>input type=submit | input type=reset | input.formbutton | input.button | button | a.formbutton | a.button</p>
+                <input type="submit" class="submit" value="Button 1" />
+                <input type="reset" class="reset" value="Button 2" />
+                <input class="formbutton" type="submit" value="Button 3" />
+                <input class="button" type="submit" value="Button 4" />
+                <button type="submit"><img src="./../../images/icon-edit.png" alt="" /> Button 5</button>
+                <a href="#" class="formbutton">Button 6</a>
+                <a href="#" class="button"><img src="./../../images/icon-delete.png" alt="" /> Button 7</a>
+            </fieldset>
+        </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="window">
+    <h1 class="title">Form Innerwindow Test Stuff</h1>
+		<div class="content has-innerwindows">
+	    <div class="innercontent">
+				<div class="messagebox info">Dies sind Tests für innerwindow form elemente</div>
+			</div>
+	    <div class="innerwindows">
+				<div class="window">
+					<h2 class="title">Textfield</h2>
+					<div class="content">
+						In diesem form sollten die inhalte möglichst so groß wie das innerwindow sein und umbrechen.
+						Das textarea sollte nur drei zeilen hoch sein.
+						<form>
+							<fieldset>
+								<textarea class="width95 height-3lines">Ein normales textarea</textarea>
+								<input class="button" value="Hit me" />
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
+
+</div><!-- Section 1 -->
+
+<div class="section-sidewindows"><!-- Section 2 -->
+
+    <div class="window">
+        <h1 class="title">Sandboxes</h1>
+        <div class="content">
+            <ol class="bullets-none separated-vertical has-contextmenus-block">
+                <li><a href="forms.html" class="selected">Form Examples</a></li>
+                <li><a href="tables.html">Table Examples</a></li>
+                <li><a href="filter.html">Filter GUI</a></li>
+            </ol>
+        </div>
+    </div>
+
+<div id="contexttest" class="window has-contextmenus-block">
+<h1 class="title">Context Menu Test</h1>
+	<div class="content">
+	<ol class="bullets-none separated-vertical">
+		<li><a href="http://localhost/OntoWiki/model/select/?m=http%3A%2F%2Fns.ontowiki.net%2Fplugins%2Fsocializr%2F" class="Model" about="http://ns.ontowiki.net/plugins/socializr/">Socializr Namespace<span class="button" /></a></li>
+		<li><a href="http://localhost/OntoWiki/model/select/?m=http%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F" class="Model" about="http://xmlns.com/foaf/0.1/">Friend of a Friend (FOAF) vocabulary<span class="button" /></a></li>
+	</ol>
+</div> <!-- window content -->
+</div>
+
+<div id="tagtest" class="window">
+<h1 class="title">Tag Cloud Test</h1>
+	<div class="content">
+<script type="text/javascript">//<!--
+			var tagParams = {
+				tagProperty:   'http://www.holygoat.co.uk/owl/redwood/0.1/tags/taggedWithTag',
+				labelProperty: 'http://www.holygoat.co.uk/owl/redwood/0.1/tags/name'
+			};
+		//--></script>
+<ol class="bullets-none inline">
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Team" style="font-size: 125%; opacity: 1;" title="9">Team<span class="onlyAural">(9)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Spass" style="font-size: 117%; opacity: 0.952767;" title="7">Spaß<span class="onlyAural">(7)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Apfelkuchen" style="font-size: 113%; opacity: 0.926599;" title="6">Apfelkuchen<span class="onlyAural">(6)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Cheesburger" style="font-size: 108%; opacity: 0.898142;" title="5">Cheesburger<span class="onlyAural">(5)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Computer" style="font-size: 108%; opacity: 0.898142;" title="5">Computer<span class="onlyAural">(5)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Hammburger" style="font-size: 108%; opacity: 0.898142;" title="5">Hammburger<span class="onlyAural">(5)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Lisa" style="font-size: 108%; opacity: 0.898142;" title="5">Lisa<span class="onlyAural">(5)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Service" style="font-size: 108%; opacity: 0.898142;" title="5">Service<span class="onlyAural">(5)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Tiger" style="font-size: 108%; opacity: 0.898142;" title="5">Tiger<span class="onlyAural">(5)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Google" style="font-size: 103%; opacity: 0.866667;" title="4">Google<span class="onlyAural">(4)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Sonne" style="font-size: 103%; opacity: 0.866667;" title="4">Sonne<span class="onlyAural">(4)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Stadt" style="font-size: 103%; opacity: 0.866667;" title="4">Stadt<span class="onlyAural">(4)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/laeuft" style="font-size: 103%; opacity: 0.866667;" title="4">läuft<span class="onlyAural">(4)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Baerchen" style="font-size: 97%; opacity: 0.83094;" title="3">Bärchen<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Feuer" style="font-size: 97%; opacity: 0.83094;" title="3">Feuer<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Frage" style="font-size: 97%; opacity: 0.83094;" title="3">Frage<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Fussball" style="font-size: 97%; opacity: 0.83094;" title="3">Fußball<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Internet" style="font-size: 97%; opacity: 0.83094;" title="3">Internet<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Markus" style="font-size: 97%; opacity: 0.83094;" title="3">Markus<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Monitor" style="font-size: 97%; opacity: 0.83094;" title="3">Monitor<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Mord" style="font-size: 97%; opacity: 0.83094;" title="3">Mord<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Papst" style="font-size: 97%; opacity: 0.83094;" title="3">Papst<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Sport" style="font-size: 97%; opacity: 0.83094;" title="3">Sport<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/spielt" style="font-size: 97%; opacity: 0.83094;" title="3">spielt<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/verunglueckt" style="font-size: 97%; opacity: 0.83094;" title="3">verunglückt<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/weil" style="font-size: 97%; opacity: 0.83094;" title="3">weil<span class="onlyAural">(3)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Abends" style="font-size: 90%; opacity: 0.788562;" title="2">Abends<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Bundestag" style="font-size: 90%; opacity: 0.788562;" title="2">Bundestag<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Bundeswehr" style="font-size: 90%; opacity: 0.788562;" title="2">Bundeswehr<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Chat" style="font-size: 90%; opacity: 0.788562;" title="2">Chat<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Fruehling" style="font-size: 90%; opacity: 0.788562;" title="2">Frühling<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Herbst" style="font-size: 90%; opacity: 0.788562;" title="2">Herbst<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Jochen" style="font-size: 90%; opacity: 0.788562;" title="2">Jochen<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Monster" style="font-size: 90%; opacity: 0.788562;" title="2">Monster<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Nicht" style="font-size: 90%; opacity: 0.788562;" title="2">Nicht<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Regen" style="font-size: 90%; opacity: 0.788562;" title="2">Regen<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Sommer" style="font-size: 90%; opacity: 0.788562;" title="2">Sommer<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Tod" style="font-size: 90%; opacity: 0.788562;" title="2">Tod<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Und" style="font-size: 90%; opacity: 0.788562;" title="2">Und<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Winter" style="font-size: 90%; opacity: 0.788562;" title="2">Winter<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Zivildienst" style="font-size: 90%; opacity: 0.788562;" title="2">Zivildienst<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/haben" style="font-size: 90%; opacity: 0.788562;" title="2">haben<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/isst" style="font-size: 90%; opacity: 0.788562;" title="2">isst<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/schnarchen" style="font-size: 90%; opacity: 0.788562;" title="2">schnarchen<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/toedlich" style="font-size: 90%; opacity: 0.788562;" title="2">tödlich<span class="onlyAural">(2)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Bilderbuch" style="font-size: 81%; opacity: 0.733333;" title="1">Bilderbuch<span class="onlyAural">(1)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Darum" style="font-size: 81%; opacity: 0.733333;" title="1">Darum<span class="onlyAural">(1)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Das" style="font-size: 81%; opacity: 0.733333;" title="1">Das<span class="onlyAural">(1)</span></a></li>
+<li><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Der" style="font-size: 81%; opacity: 0.733333;" title="1">Der<span class="onlyAural">(1)</span></a></li>
+<li class="last-child"><a class="tag javascript-on" about="http://testdb.softwiki.de/Tags/Doch" style="font-size: 81%; opacity: 0.733333;" title="1">Doch<span class="onlyAural">(1)</span></a></li>
+</ol>
+	</div> <!-- window content -->
+</div>
+
+</div><!-- Section 2 -->
+
+</body>
+</html>
+

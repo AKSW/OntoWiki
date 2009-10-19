@@ -1,0 +1,39 @@
+.TH owcli 1  "01/2007" "version 0.2" "USER COMMANDS"
+.SH NAME
+owcli \- The OntoWiki Command Line Interface
+.SH SYNOPSIS
+.B owcli
+[options]
+.SH DESCRIPTION
+The OntoWiki Command Line Interface is a scriptable and
+pipe-able PHP application for the unix-shell to help you to
+manage your OntoWiki knowledge bases.
+.PP
+The manual of the OntoWiki Command Line Interface is
+available on the OntoWiki Homepage.
+.SH OPTIONS
+.TP
+\--help
+to display all options with description (this man page is only a dummy with examples)
+.SH EXAMPLES
+.TP
+Set the variable OWMODEL (to change the default model):
+.B export OWMODEL=http://localhost/model1#
+.TP
+Drop a model (delete statements, popularities, etc.):
+.B owcli -m http://localhost/model1# \-\-drop
+.TP
+Create a new Model and add tripels from a file:
+.B owcli -m http://localhost/model1# \-\-create \-\-add \-i model.rdf
+.TP
+Create a new Model and add tripels from a mapping (hint: use the variable OWMODEL so you dont need -m everytime):
+.B export OWMODEL=http://localhost/model1#; owcli \-\-map Mapping.n3 | owcli \-\-create \-\-add
+.TP
+Export the default model, put it to cwm and add the cwm output (e.g. additions from rules etc.):
+.B owcli \-\-export | cwm ...  | owcli \-\-add
+
+
+.SH AUTHOR
+Sebastian Dietzold (sebastian@dietzold.de)
+.SH SEE ALSO
+OntoWiki Homepage

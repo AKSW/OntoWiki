@@ -1,0 +1,43 @@
+.ac_results {
+    background-color:white;
+    border:1px solid #666666;
+    color:#333333;
+    font-size:0.8em;
+    font-weight:500;
+    padding: 0px;
+    overflow: hidden;
+    z-index: 99999;
+}
+
+.ac_results ul {
+    width: 100%;
+    list-style-position: outside;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ac_results li {
+    margin: 0px;
+    padding:0.1em 0;
+    cursor: default;
+    display: block;
+    padding-left: 0.5em;
+}
+
+.ac_loading {
+    background-image: url(./../img/spinner.gif) !important;
+    background-position: right !important;
+    background-repeat: no-repeat !important;
+    cursor: wait !important;
+    min-height: 0;
+}
+
+.ac_odd {
+    background-color: #f6f6f6;
+}
+
+.ac_over {
+    background-color:#DEE8EE !important;
+    border-color:#CDD7DD !important;
+}

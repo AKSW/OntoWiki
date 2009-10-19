@@ -1,0 +1,44 @@
+;;
+; Basic component configuration
+;;
+templates  = "templates"
+active     = true
+languages  = "languages/"
+action     = "categories"
+name       = "Plugin Manager"
+
+;;
+; Component's private configuration
+; Anything set below will be available within the component ($this->_privateConfig['key'])
+;;
+[private]
+
+;repository.r_url = "http://localhost/ontowiki/sparql/"
+;repository.tags_url = "http://localhost/ontowiki/repositoryservices/tags/"
+
+repository.r_url = "http://plugins.ontowiki.net/sparql/"
+repository.tags_url = "http://plugins.ontowiki.net/repositoryservices/tags/"
+client.tags_num = 10
+ftp.username = "feng"
+ftp.password = "feng123"
+ftp.hostname = "exp3.aksw.org"
+client.debug = false
+client.plugin_outlook = 2
+
+mime.property = "http://localhost/OntoWiki/Config/hasMimeType"
+class         = "http://localhost/OntoWiki/Config/File"
+model         = "http://localhost/OntoWiki/Config/toModel"
+
+p_type_base = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+plugin_base = "http://ns.aksw.org/PluginRepository/Plugin"
+p_name_base = "http://rdfs.org/sioc/ns#name"
+p_desc_base = "http://purl.org/dc/elements/1.1/description"
+p_dev_base = "http://usefulinc.com/ns/doap#developer"
+p_release_base = "http://usefulinc.com/ns/doap#release"
+filerelease_base = "http://usefulinc.com/ns/doap#file-release"
+rdf_base_url = "http://plugins.ontowiki.net/"
+p_tag_base = "http://ontowiki.net/tag"
+extension_dir = "http://ns.ontowiki.net/SysOnt/extensionDir"
+extension_file = "http://ns.ontowiki.net/SysOnt/extensionFile"
+p_modified_base = "http://purl.org/dc/terms/modified"
+p_created_base = "http://usefulinc.com/ns/doap#created"

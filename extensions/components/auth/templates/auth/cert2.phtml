@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * OntoWiki user details template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @version $Id: userdetails.phtml 2917 2009-04-21 12:13:33Z norman.heino $
+ */
+
+?>
+
+<?php if (!isset($this->errorFlag)): ?>    
+<fieldset>
+    <input type="hidden" name="createcert" />
+    <?php if (isset($this->webid)): ?>
+    <div>
+        <label for="webid-input"><?php echo $this->_('WebID') ?></label>
+        <input class="text" id="webid-input" type="text" name="webid-input" disabled="disabled" value="<?php echo $this->webid ?>" />
+        <br class="clearall">
+    </div>
+    <?php endif; ?>
+    
+    <?php if (isset($this->depiction)): ?>
+    <div>
+        <label for="depiction-input"></label>
+        <img src="<?php echo $this->depiction ?>" style="width: 100px" />
+    </div>
+    <?php endif; ?>
+
+    <div>
+        <label for="name-input"><?php echo $this->_('Name') ?></label>
+        <input class="text" id="name-input" type="text" name="name-input" value="<?php echo $this->name ?>" />
+        <br class="clearall">
+    </div>
+    
+    <div>
+        <label for="email-input"><?php echo $this->_('Email') ?></label>
+        <input class="text" id="email-input" type="text" name="email-input" value="<?php echo $this->email ?>" />
+        <br class="clearall">
+    </div>
+    
+    <div>
+        <label for="pubkey"></label>
+        <keygen name="pubkey" challenge="wefehfcgvrbtnjrcgbntzervetc4t44657vfergcsdefrfcadsdfretercfercreqfxarvrtc4rx">
+        <br class="clearall">
+    </div>
+    
+    <div class="clearall"></div>
+</fieldset>
+<?php endif; ?>

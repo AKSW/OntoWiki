@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * OntoWiki menu partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $$
+ */
+
+?>
+<?php foreach ($this->menu as $name => $menu): ?>
+    <?php if (is_array($menu)): ?>
+        <li><?php echo $this->_($name) ?>
+            <ul>
+                <?php foreach ($menu as $itemName => $itemContent): ?>
+                    <?php if ($itemContent === OntoWiki_Menu::SEPARATOR): ?>
+                        <!-- TODO: this is invalid XHTML -->
+                        <hr class="menusep"/>
+                    <?php elseif ($itemContent instanceof OntoWiki_Menu): ?>
+                        <?php echo $this->partial('partials/menu.phtml', array('menu' => array($itemName => $itemContent->toArray(false, false)))) ?>
+                    <?php elseif (is_string($itemContent)): ?>
+                        <li><a href="<?php echo $itemContent ?>"><?php echo $this->_($itemName) ?></a></li>
+                    <?php else: ?>
+                        <li>
+                            <?php if (isset($itemContent['url'])): ?>
+                                <a href="<?php echo $itemContent['url'] ?>"
+                            <?php else: ?>
+                                <a
+                            <?php endif; ?>
+                                <?php echo (isset($itemContent['about']) ? 'about="' . $itemContent['about'] . '"' : '') ?>
+                                <?php echo (isset($itemContent['class']) ? 'class="' . $itemContent['class'] . '"' : '') ?>
+                                <?php echo (isset($itemContent['id']) ? 'id="' . $itemContent['id'] . '"' : '') ?>>
+                                <?php echo $this->_($itemName) ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
+        </li>
+    <?php elseif ($menu instanceof OntoWiki_Menu): ?>
+        <?php echo $this->partial('partials/menu.phtml', array('menu' => array($name => $menu->toArray(false, false)))) ?>
+    <?php elseif ($menu): ?>
+        <li><a href="<?php echo $menu ?>"><?php echo $this->_($name) ?></a></li>
+    <?php endif; ?>
+<?php endforeach; ?>

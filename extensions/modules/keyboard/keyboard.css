@@ -1,0 +1,16 @@
+/**
+ * This file is part of the keyboard extension for OntoWiki
+ *
+ * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
+ * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @version    $Id: $
+ *
+ */
+
+div.activeKeyContext {
+    border: 2px solid red !important
+}
+a.activeKeyItem {
+    color: red !important
+}

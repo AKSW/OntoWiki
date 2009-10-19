@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * OntoWiki similarinstances module template
+ *
+ * @version $Id: similarinstances.phtml 3392 2009-06-26 12:41:00Z sebastian.dietzold $
+ */
+
+?>
+<?php if (!empty($this->similars)): ?>
+	<ul class="bullets-none separated-vertical">
+	    <?php foreach ($this->similars as $type => $instances): ?>
+	        <li><?php echo $this->types[$type]['title'] ?>:
+	            <ul class="bullets-none separated-horizontal">
+	                <?php $i = 0; ?>
+	                <?php foreach ($instances as $instance): ?>
+	                    <?php if (++$i == count($instances)): ?>
+	                        <li class="last-child"><a class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
+	                    <?php else: ?>
+	                        <li><a class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
+	                    <?php endif; ?>
+                    <?php endforeach; ?>
+                    <?php if ($this->types[$type]['has_more']): ?>
+    	                <li class="last-child">
+    	                    <a href="<?php echo $this->types[$type]['has_more'] ?>">[<?php echo $this->_('more') ?>]</a>
+    	                </li>
+    	            <?php endif; ?>
+	            </ul>
+	        </li>
+	    <?php endforeach; ?>
+	</ul>
+<?php else: ?>
+	<p class="messagebox info"><?php echo $this->_($this->message) ?></p>
+<?php endif; ?>

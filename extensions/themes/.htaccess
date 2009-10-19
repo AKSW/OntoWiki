@@ -1,0 +1,13 @@
+#
+# OntoWiki requires Apache's rewrite engine to work
+#
+<IfModule mod_rewrite.c>
+	RewriteEngine Off
+	RewriteRule !\.(js|ico|gif|jpg|png|css|php)$ index.php
+#
+# Set RewriteBase only if your OntoWiki folder is not 
+# located in your web server's root dir.
+#
+#	RewriteBase /path/to/ontowiki
+
+</IfModule>

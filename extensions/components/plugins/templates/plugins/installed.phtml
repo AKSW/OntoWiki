@@ -1,0 +1,145 @@
+<?php $plugins_per_page = $this->escape($this->plugins_per_page);?>
+<form method="post" enctype="multipart/form-data" action="<?php echo $this->install_from_file_url;?>">
+<h3 style="color:#FF0000">You can install an extensionpacket from the harddisk:</h3>
+Install From: <input type="file" name="install_from_file"/>
+<br/><br/>
+<div><button type="submit" name="submit"><?php echo $this->_('Install now!') ?></button></div>
+</form>
+
+<?php $this->placeholder('categories.box.content')->captureStart() ?>
+<form method="post" action="<?php echo $this->installedaction_url;?>">
+	<fieldset>
+	<div class="no-min-width">
+		<span id="select-container-lat-prop-select" class="width99">
+			<select name="categorie_select" class="width99" id="id_categorie_select">
+			    <option value="all"><?php echo $this->_('All categories') ?></option>
+				<option value="components">Components</option>
+				<option value="modules">Modules</option>
+				<option value="plugins">Plugins</option>
+				<option value="themes">Themes</option>
+			</select>
+		</span>
+		<span id="select-container-lat-prop-select" class="width99">
+			<select name="plugins_per_page" class="width99" id="id_sort_priority">
+			    <option value="1" <?php if ($plugins_per_page == 1) echo 'selected';?>>1 plugin per page</option>
+			    <option value="2" <?php if ($plugins_per_page == 2) echo 'selected';?>>2 plugins per page</option>
+			    <option value="3" <?php if ($plugins_per_page == 3) echo 'selected';?>>3 plugins per page</option>
+			    <option value="5" <?php if ($plugins_per_page == 5) echo 'selected';?>>5 plugins per page</option>
+			    <option value="10" <?php if ($plugins_per_page == 10) echo 'selected';?>>10 plugins per page</option>
+			    <option value="20" <?php if ($plugins_per_page == 20) echo 'selected';?>>20 plugins per page</option>
+			</select>
+		</span>
+	</div>
+	</fieldset>
+	<div><button type="submit" name="submit"><?php echo $this->_('Submit') ?></button></div>
+</form>
+<?php $this->placeholder('categories.box.content')->captureEnd() ?>
+
+<?php $this->placeholder('main.window.innerwindows')->append(
+	$this->partial('partials/window.phtml', array(
+		'headinglevel' => 2, 
+		'title'        => $this->_('Select a categorie:'), 
+		'content'      => $this->placeholder('categories.box.content'), 
+		'cssClasses'   => '', 
+		'cssId'        => ''
+	))
+);?>
+
+<?php $results = $this->results;?>
+<?php if (count($this->paginator) && $results != null):?>
+<table border="2">
+	<tr bgcolor="Gray">
+		<td>PluginURL</td>
+		<td>Pluginname</td>
+		<td>Plugindescription</td>
+		<td>Plugin Release</td>
+		<td>vision</td>
+		<td>File Release</td>
+		<td>Created at</td>
+		<td>Uninstall</td>
+		<td>Upgrade</td>
+	</tr>
+<?php
+$touninstall_url = $this->touninstall_url;
+$back_url = 'installed';
+if (isset($results)) {
+	//echo "<br/>results:<br/>";
+	//print_r($results);
+	//echo "<br/>END<br/>";
+	foreach ($this->paginator as $a_plugin) {
+		$p_url = $a_plugin['node'];
+		$p_name = $a_plugin['p_name'];
+		$p_desc = $a_plugin['p_desc'];
+		$p_release = $a_plugin['p_release'];
+		$p_revision = $a_plugin['p_revision'];
+		$file_release = $a_plugin['p_f_release'];
+		$p_created = $a_plugin['p_f_release'];
+		$extension_dir = $a_plugin['extension_dir'];
+		$extension_file = $a_plugin['extension_file'];
+		$upgrade = $a_plugin['upgrade'];
+		$extension_dir_serialized = "";
+		$extension_file_serialized = "";
+			
+		
+		for ($i = 0; $i<count($extension_dir); $i++){
+			if ($i == count($extension_dir)-1){
+				$extension_dir_serialized = $extension_dir_serialized.$extension_dir[$i];
+			}
+			else {
+				$extension_dir_serialized = $extension_dir_serialized.$extension_dir[$i]."@trennung@";
+			}	
+		}
+		for ($i = 0; $i<count($extension_file); $i++){
+			if ($i == count($extension_file)-1){
+				$extension_file_serialized = $extension_file_serialized.$extension_file[$i];
+			}
+			else {
+				$extension_file_serialized = $extension_file_serialized.$extension_file[$i]."@trennung@";
+			}
+			
+		}
+		
+		echo <<<showTable
+			<tr>
+				<td>$p_url</td>
+				<td>$p_name</td>
+				<td>$p_desc</td>
+				<td>$p_release</td>
+				<td>$p_revision</td>
+				<td>$file_release</td>
+				<td>$p_created</td>
+				<td>
+					<form method="post" name="uninstall_form" id="$p_name" onsubmit="ask_for_uninstall('$p_name','$touninstall_url','$back_url')">
+					<input type="hidden" name="uninstall_dir" value="$extension_dir_serialized"></input>
+					<input type="hidden" name="uninstall_file" value="$extension_file_serialized"></input>
+					<input type="hidden" name="uninstall_name" value="$p_name"></input>
+					<input type="hidden" name="extension_url" value="$p_url"></input>
+					<input type="hidden" name="install_abort" value="NO" id="id_install_abort"></input>	  
+					<div><button type="submit" name="submit">Uninstall</button></div>
+					</form>
+				</td>
+				<td>
+showTable;
+					if($upgrade!=''){
+							$upgrade = trim($upgrade);
+						  	$upgrade = htmlspecialchars($upgrade,ENT_QUOTES,"ISO-8859-15");
+						  	$upgrade = str_replace(" ","&nbsp;",$upgrade);
+						  	$upgrade = str_replace(".","&pnt;",$upgrade);
+						  	$upgrade = str_replace("-","&slsh;",$upgrade);
+						  	$upgrade = str_replace("/","&slash;",$upgrade);
+						$url_upgrade ='install-choice/from/upgrade/file_url/'.$upgrade.'/name/'.$p_name;
+						echo "<A href='$url_upgrade'><button type='button' name='upgrade'>Upgrade</button></A>";
+					}
+
+					echo <<<showTable_1
+					 	
+				</td>
+			</tr>
+showTable_1;
+	}
+}
+
+?>	
+</table>
+<?= $this->paginationControl($this->paginator, 'Elastic', '/pagelist/categoriepagelist.phtml'); ?>
+<?php endif; ?>

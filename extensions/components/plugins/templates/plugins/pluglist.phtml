@@ -1,0 +1,19 @@
+<?php
+foreach ($this->plugins as $plugin){
+?>
+<div id="modellist" class="window has-contextmenus-block windowbuttonscount-right-1 windowbuttonscount-left-1">
+    <h1 class="title"><?php echo $plugin['name'] ?></h1>
+    <div class="slidehelper">
+        <div class="content">
+            <ol class="bullets-none separated-vertical">
+    	    	<li>
+					<h4>Author: <?php echo $plugin['developer'] ?></h4>
+				</li>
+				<li>
+					<h3>Description: <?php echo $plugin['description'] ?></h3>
+				</li>
+			</ol>
+        </div><!-- .window .content -->  
+    </div><!-- .slidehelper -->
+</div>
+<?php } ?>

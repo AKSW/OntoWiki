@@ -1,0 +1,22 @@
+Geo Coder; Massive Geo Coder
+Accurate coordinates received for resource %1$d. 2 Statements were added.;Accurate coordinates received for resource %1$d. 2 Statements were added.
+Received data of resource %1$s from Google Geocoder contains response: %2$s. No Statements were added.; Received data of resource %1$s from Google Geocoder contains response: %2$s. No Statements were added.
+
+Minimal accuracy level;Minimal accuracy level
+Please Insert your SPARQL Query here:;Please Insert your SPARQL Query here:
+Query is not valid. Received Message:; Query is not valid. Received Message:
+No Data found for this query.;No Data found for this query.
+
+Example Information;To receive and save geodata correctly, please use following order for assigned variable in the SELECT clause. The first variable have to be the target resource uri, which will be used for saving the received geocoordinates. All following variables will be combined to an address string and sendet to the geocoder.
+Example Query;Example Query;
+
+GEOCODER_GOOGLE_STATUS_100;Address ambiguous. More than two placemarks found. 
+GEOCODER_GOOGLE_STATUS_200;No errors occurred. The address was successfully parsed and its geocode was returned. 
+GEOCODER_GOOGLE_STATUS_500;A geocoding or directions request could not be successfully processed, yet the exact reason for the failure is unknown.
+GEOCODER_GOOGLE_STATUS_601;An empty address was specified in the HTTP q parameter.
+GEOCODER_GOOGLE_STATUS_602;No corresponding geographic location could be found for the specified address, possibly because the address is relatively new, or because it may be incorrect.
+GEOCODER_GOOGLE_STATUS_603;The geocode for the given address or the route for the given directions query cannot be returned due to legal or contractual reasons.
+GEOCODER_GOOGLE_STATUS_610;The given key is either invalid or does not match the domain for which it was given.
+GEOCODER_GOOGLE_STATUS_620;The given key has gone over the requests limit in the 24 hour period or has submitted too many requests in too short a period of time. If you're sending multiple requests in parallel or in a tight loop, use a timer or pause in your code to make sure you don't send the requests too quickly. 
+
+HISTORY_ACTIONTYPE_666;GeoCoder used

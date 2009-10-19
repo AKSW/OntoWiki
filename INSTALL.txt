@@ -1,0 +1,32 @@
+Version: $Id: INSTALL 3889 2009-08-02 01:28:32Z sebastian.dietzold $
+
+This installation guide is for MySQL Backend users. If you want to use
+OntoWiki with Apache and Virtuoso or within Virtuoso as a VAD Package
+please have a look at our Virtuoso Setup Guide:
+http://code.google.com/p/ontowiki/wiki/UsingOntoWikiWithVirtuoso
+
+If you want to use OntoWiki with MySQL, here we go ... we assume, you
+have copied the content of the release archive to your webdirectory.
+
+1. create a mysql user for ontowiki (e.g. ontowiki)
+
+2. create a mysql database which is writable for the ontowiki user
+
+3. copy the config.ini-dist to config.ini and change the database config:
+   in most cases, you have to change only these values
+   store.zenddb.dbname, store.zenddb.username, store.zenddb.password
+
+4. OPTIONAL: copy the htaccess-dist to .htaccess (only useful, if your
+   webserver support mod_rewrite)
+
+5. Start your OntoWiki Installation in your browser. All tables are
+   created automatically and hopefully, you will see a starting screen
+   containing a news area and a login window.
+
+Now you have a fresh new OntoWiki Installation. If you are new to OntoWiki,
+maybe it is interesting for you to visit out First Steps documentation:
+http://ontowiki.net/Projects/OntoWiki/FirstSteps
+
+If you need further help or want to communicate with other users and the 
+developers, feel free use the OntoWiki User Mailinglist at GoogleGroups:
+http://groups.google.com/group/ontowiki-user

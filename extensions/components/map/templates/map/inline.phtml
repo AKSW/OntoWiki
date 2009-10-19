@@ -1,0 +1,77 @@
+<?php
+// vim: sw=4:sts=4:expandtab
+require_once 'OntoWiki/Model/TitleHelper.php'
+?>
+<?php if ( isset($this->message) ): ?>
+	<p class="messagebox info"><?php echo $this->_($this->message); ?></p>
+<?php endif; ?>
+<!-- The main Map div, will be populated by OpenLayers in JavaScript -->
+<div id="mapContainer"></div>
+
+<!-- I can't load googlemaps in the body it has to happen in the head -->
+<script type="text/javascript">
+//<![CDATA[
+
+// this function should be in a lib
+function loadScript (scriptUrl) {
+    var script  = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src  = scriptUrl;
+    $('head').append(script);
+}
+
+// this function should be in a lib
+function loadStyle (styleUrl, media) {
+    if(!media) {
+        var media = 'screen';
+    }
+    var link  = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.media = media;
+    link.href  = styleUrl;
+    $('head').append(link);
+}
+
+loadStyle('<?php echo $this->componentUrlBase.'css/OpenLayers.css'; ?>', 'screen');
+loadScript('<?php echo 'http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->apikey->google.'&async=2'; ?>');
+loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenLayers.js'; ?>');
+loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenStreetMap.js'; ?>');
+loadScript('<?php echo $this->componentUrlBase.'classes/NewMapManager.js'; ?>');
+
+// resize the mainMap according to the windowheight, if it is resized
+$('#mapContainer').addClass('width99');
+$('#mapContainer').height( $('#mapContainer').width() );
+
+var manager             = new NewMapManager(
+        $('#mapContainer').get(0),                      // the dom object containing the map
+        <?php echo json_encode($this->extent) ?>,       // the extend on the map, which is shown
+        '<?php echo (string) $this->jsonRequestUrl ?>'  // the request URL, wher to get the markerdata
+        );
+
+// the themePath doesn't seam to work
+manager.themePath       = '<?php echo $this->componentUrlBase ?>resources/lib/theme/default/style.css';
+manager.defaultLayer    = '<?php echo $this->defaultLayer ?>';
+
+// set the image path to the ontowiki theme's image folder
+manager.imgPath         = '<?php echo $this->themeUrlBase; ?>images/';
+
+// this event should be replaces with a "mapsScriptsReady" event, which fires, when Google, OpenLayers and (New)MapManager are loaded
+$(document).ready( function () {
+
+    manager.icon = new OpenLayers.Icon(
+        '<?php echo $this->componentUrlBase . $this->icon->path; ?>',
+        new OpenLayers.Size(<?php echo $this->icon->size; ?>),
+        new OpenLayers.Pixel(<?php echo $this->icon->offset; ?>)
+        );
+    manager.clusterIcon = new OpenLayers.Icon(
+        '<?php echo $this->componentUrlBase . $this->cluster->path; ?>',
+        new OpenLayers.Size(<?php echo $this->cluster->size; ?>),
+        new OpenLayers.Pixel(<?php echo $this->cluster->offset; ?>)
+        );
+    manager.prepare();
+    manager.init();
+});
+
+//]]>
+</script>

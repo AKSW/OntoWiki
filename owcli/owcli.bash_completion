@@ -1,0 +1,33 @@
+
+_owcli()
+{
+	local cur cmdsnopar cmdsinglepar models COMP_WORDBREAKS_OLD COMP_WORDBREAKS
+
+	COMP_WORDBREAKS_OLD=COMP_WORDBREAKS
+	COMP_WORDBREAKS=" "
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	# commands without parameter
+	cmdnopar='-l --list --create --count --drop --export --empty-cache --empty-popularity --empty-ratings --add --geocode --map  -d --debug -q --quiet -h --help'
+
+	# commands with a single parameter
+	cmdsinglepar='-w --wiki -m --model -i --input -o --output --query --geocode -c --config'
+
+	# all models
+	models=`owcli -l`
+
+
+	# iterate all given options
+#	for opt in "${COMP_WORDS[@]}"
+#	do
+#	
+#	done
+
+	COMPREPLY=( $( compgen -W '$models $cmdnopar $cmdsinglepar' -- $cur ) )
+
+
+} &&
+complete -F _owcli owcli
+

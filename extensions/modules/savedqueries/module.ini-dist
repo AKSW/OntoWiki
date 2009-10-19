@@ -1,0 +1,20 @@
+;;
+; Static module configuration
+;;
+enabled    = true
+caching    = yes
+priority   = 30
+contexts[] = "main.sidewindows"
+classes    = "has-contextmenus-block"
+
+[private]
+; Class Hierarchy
+title       = "saved Queries";
+
+queryClass = "http://ns.ontowiki.net/SysOnt/SparqlQuery"
+queryLabel = "http://purl.org/dc/elements/1.1/title"
+queryId    = "http://rdfs.org/sioc/ns#id"
+queryDesc  = "http://purl.org/dc/elements/1.1/description"
+queryCode  = "http://ns.ontowiki.net/SysOnt/sparql_code"
+
+

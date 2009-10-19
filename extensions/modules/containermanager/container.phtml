@@ -1,0 +1,26 @@
+<?php
+
+
+
+?>
+<form name="containermanager" method="get" action="<?php echo $this->actionUrl ?>">
+		<p>
+			<label class="display-block onlyAural" for="add-input">"Add new container"</label>
+			<input class="text width95 inner-label" type="text" id="add" name="name" value="" /></p>
+		
+</form>
+
+		
+		<?php if (!empty($_SESSION['container'])): ?>
+    <ol class="bullets-none separated-vertical">
+    	<?php foreach ($_SESSION['container'] as $key => $value): ?>
+    		<li>
+    			<a class="Container <?php echo $key ?>" href="<?php echo $this->uri.$key ?>" about="<?php echo $key ?>">
+    				<?php echo $key.'('.count($value).')' ?>
+    			</a>
+    		</li>
+    	<?php endforeach; ?>
+    </ol>
+<?php else: ?>
+    <p class="messagebox info"><?php echo $this->_('No Container available.') ?></p>
+<?php endif; ?>

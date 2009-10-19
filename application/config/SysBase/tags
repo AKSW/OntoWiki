@@ -1,0 +1,142 @@
+
+<!-- Processed by Id: cwm.py,v 1.149 2004/05/12 01:27:06 timbl Exp -->
+<!--     using base file:/Users/sir03rn/Desktop/tags.n3-->
+
+
+<rdf:RDF xmlns="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:dct="http://purl.org/dc/terms/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:vs="http://www.w3.org/2003/06/sw-vocab-status/ns#">
+
+    <owl:Ontology rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/">
+        <dc:contributor>Danny Ayers</dc:contributor>
+        <dc:contributor>Seth Russell</dc:contributor>
+        <dc:creator>Richard Newman</dc:creator>
+        <dc:description xml:lang="en">An ontology that describes tags, as used in the popular del.icio.us and Flickr systems, and allows for relationships between tags to be described.</dc:description>
+        <dc:title xml:lang="en">Tag ontology</dc:title>
+        <dct:issued>2005-03-23</dct:issued>
+        <dct:modified>2005-05-19</dct:modified>
+        <dct:modified>2005-11-27</dct:modified>
+        <dct:modified>2005-12-21</dct:modified>
+        <label xml:lang="en">An ontology for tags.</label>
+        <foaf:maker rdf:resource="http://www.holygoat.co.uk/foaf.rdf#RichardNewman"/>
+    </owl:Ontology>
+
+    <owl:Class rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/RestrictedTagging">
+        <comment xml:lang="en">A Tagging which has precisely one associated resource, and one associated tag.</comment>
+        <label xml:lang="en">restricted tagging</label>
+        <subClassOf rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tagging"/>
+        <subClassOf rdf:parseType="Resource">
+            <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+            <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:cardinality>
+            <owl:onProperty rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/taggedResource"/>
+        </subClassOf>
+        <subClassOf rdf:parseType="Resource">
+            <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+            <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:cardinality>
+            <owl:onProperty rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/associatedTag"/>
+        </subClassOf>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag">
+        <label xml:lang="en">Tag</label>
+        <subClassOf rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:definition xml:lang="en">A natural-language concept which is used to annotate another resource.</skos:definition>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tagging">
+        <comment xml:lang="en">A reified class which defines an instance of a tagging by an agent of a resource with one or more tags.</comment>
+        <label xml:lang="en">tagging</label>
+        <vs:term_status>testing</vs:term_status>
+    </owl:Class>
+
+    <owl:ObjectProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/associatedTag">
+        <comment xml:lang="en">The object is a Tag which plays a role in the subject Tagging.</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tagging"/>
+        <label>associated tag</label>
+        <range rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <vs:term_status>testing</vs:term_status>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/equivalentTag">
+        <comment xml:lang="en">The two tags are asserted to be equivalent --- that is, that whenever one is associated with a resource, the other tag can be logically inferred to also be associated. Be very careful with this. I'm not sure if this should be a subproperty of owl:sameAs.</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <label xml:lang="en">equivalent tag</label>
+        <range rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#sameAs"/>
+        <vs:term_status>testing</vs:term_status>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/isTagOf">
+        <comment xml:lang="en">Indicates that the subject tag applies to the object resource. This does not assert by who, when, or why the tagging occurred. For that information, use a reified Tagging resource.</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <label xml:lang="en">is tag of</label>
+        <owl:inverseOf rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/taggedWithTag"/>
+    </owl:ObjectProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/name">
+        <comment xml:lang="en">The name of a tag. Note that we can't relate this to skos:prefLabel because we cannot guarantee that tags have unique labels in a given conceptual scheme. Or can we?</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <label xml:lang="en">tag name</label>
+        <subPropertyOf rdf:resource="http://purl.org/dc/elements/1.1/title"/>
+        <subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+    </owl:DatatypeProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/relatedTag">
+        <comment xml:lang="en">The two tags are asserted as being related. This might be symmetric, but it certainly isn't transitive.</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <label xml:lang="en">related tag</label>
+        <range rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <subPropertyOf rdf:resource="http://www.w3.org/2004/02/skos/core#semanticRelation"/>
+        <vs:term_status>testing</vs:term_status>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/tag">
+        <comment xml:lang="en">The relationship between a resource and a Tagging. Note, of course, that this allows us to tag tags and taggings themselves...</comment>
+        <label xml:lang="en">tag</label>
+        <range rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tagging"/>
+    </owl:ObjectProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/tagName">
+        <comment xml:lang="en">The name of a tag. Note that we can't relate this to skos:prefLabel because we cannot guarantee that tags have unique labels in a given conceptual scheme. Or can we? DEPRECATED 2005-05-19: redundant 'tag'.</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <label xml:lang="en">tag name</label>
+        <subPropertyOf rdf:resource="http://purl.org/dc/elements/1.1/title"/>
+        <subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+    </owl:DatatypeProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/taggedBy">
+        <comment xml:lang="en">The object plays the role of the tagger in the subject Tagging.</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tagging"/>
+        <label xml:lang="en">tagged by</label>
+        <range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+        <vs:term_status>testing</vs:term_status>
+    </owl:ObjectProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/taggedOn">
+        <comment xml:lang="en">The subject Tagging occurred at the subject time and date.</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tagging"/>
+        <label xml:lang="en">tagged on</label>
+        <subPropertyOf rdf:resource="http://purl.org/dc/elements/1.1/date"/>
+        <vs:term_status>testing</vs:term_status>
+    </owl:DatatypeProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/taggedResource">
+        <comment xml:lang="en">The object is a resource which plays a role in the subject Tagging.</comment>
+        <domain rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tagging"/>
+        <label xml:lang="en">tagged resource</label>
+        <vs:term_status>testing</vs:term_status>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.holygoat.co.uk/owl/redwood/0.1/tags/taggedWithTag">
+        <comment xml:lang="en">Indicates that the subject has been tagged with the object tag. This does not assert by who, when, or why the tagging occurred. For that information, use a reified Tagging resource.</comment>
+        <label xml:lang="en">tagged with tag</label>
+        <range rdf:resource="http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag"/>
+        <subPropertyOf rdf:resource="http://www.w3.org/2004/02/skos/core#subject"/>
+    </owl:ObjectProperty>
+</rdf:RDF>

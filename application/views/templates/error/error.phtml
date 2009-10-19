@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * OntoWiki error template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: error.phtml 3331 2009-06-16 19:25:43Z norman.heino $
+ */
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title><?php echo $this->heading ?></title>
+<style type="text/css">
+body {
+    font-family: sans-serif;
+    line-height: 1.5;
+    background-color: #eff9ff;
+}
+
+.info {
+    margin: 0.5% 10%;
+    border: 1px solid #aaa;
+    padding: 1%;
+    background-color: #f9f9f9;
+}
+
+.error {
+    margin: 0.5% 10%;
+    border: 1px solid #f00;
+    padding: 1%;
+    background-color: #fcc;
+}
+</style>
+</head>
+<body>
+<div class="<?php echo $this->errorType ?>">
+<h1><?php echo $this->heading ?></h1>
+<p>
+    <?php echo $this->errorText ?>
+    <?php if (isset($this->code)): ?>(<?php echo $this->code ?>)<?php endif; ?>
+</p>
+</div>
+</body>
+</html>

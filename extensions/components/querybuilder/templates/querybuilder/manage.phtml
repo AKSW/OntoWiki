@@ -1,0 +1,114 @@
+<?php
+
+//echo "<xmp>";
+$patterns = json_decode($this->tPattern,true);
+//print_r($patterns);
+
+// fills the sidewindow space
+if(class_exists("QuerybuildingHelper")){
+$this->placeholder('main.window.innerwindows')->append(
+        $this->partial('partials/window.phtml', array(
+                'headinglevel' => 2,
+                'title'        => $this->_('Save Query'),
+                'content'      => $this->partial('../../querybuilding/templates/querybuilding/savepartial.phtml'),
+                'cssClasses'   => 'querybuilder',
+                'cssId'        => 'savebox'
+        ))
+);
+}
+?>
+<fieldset>
+<fieldset id="debugquery" style="display: none">
+<legend><?php echo $this->_('Debug Code') ?></legend>
+<textarea style="min-height:3em;" class="width99" id='autocompletionquery' disabled></textarea>
+</fieldset>
+
+<fieldset>
+<legend><?php echo $this->_('Graph Pattern') ?></legend>
+
+<table class="separated-vertical">
+    <tr>
+        <th width="20%"><?php echo $this->_('Subject') ?></th>
+        <th width="20%"><?php echo $this->_('Predicate') ?></th>
+        <th width="20%"><?php echo $this->_('Object') ?></th>
+        <th width="20%"><?php echo $this->_('Options') ?></th>
+    </tr>
+    <?php
+    	//echo "<xmp>";
+    	//print_r($patterns);die;
+    	foreach($patterns as $key=>$pattern): 
+    	$in = 'id="'.$key.'"';
+    	?>
+        <tr <?=$in?> class="triplepattern">
+            <td><input type="text" class="text width25 pattern" name="s"  value="<?=$pattern['s']?>" /></td>
+            <td><input type="text" class="text width25 pattern" name="p"  value="<?=$pattern['p']?>" /></td>
+            <td><input type="text" class="text width25 pattern" name="o"  value="<?=$pattern['o']?>" /></td>
+            <td>
+                <img class="qb-addtp" src="<?php echo $this->themeUrlBase ?>/images/icon-add.png" title="<?php echo $this->_('Add triple pattern') ?>" />
+                <img class="qb-deltp" src="<?php echo $this->themeUrlBase ?>/images/icon-delete.png" title="<?php echo $this->_('Remove this triple pattern') ?>" />
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+</fieldset>
+
+<fieldset id="showquery" style="display: none">
+<legend><?php echo $this->_('SPARQL Code') ?></legend>
+<textarea style="min-height:8em;" class="width99" id='showquerytextarea' readonly></textarea>
+</fieldset>
+
+
+<fieldset >
+<legend><?php echo $this->_('Query Results') ?></legend>
+<form style="float:right; margin-right:5em;">Results:&nbsp;<select id="limit" ><option value="10">10</option><option value="50">50</option><option value="100">100</option></select></form>
+</fieldset>
+
+</fieldset>
+
+
+<?php /*
+<div id="main">
+<textarea id='autocompletionquery' cols="100" rows="1"  ></textarea><br>
+
+<div >
+<p>The <i>query builder</i> below allows you to build your own queries. Prefix variables with "?". </p>
+<p class="tph"><span>Subject</span><span>Predicate</span><span>Object</span></p>
+<div id="gp">
+<?foreach($patterns as $pattern) { ?>
+<div name="tp" style="white-space:nowrap;" class = "triplepattern">
+	<input type="text" class="pattern" name="s"  value="<?=$pattern['s']?>" />
+	<input type="text" class="pattern" name="p"  value="<?=$pattern['p']?>" />
+	<input type="text" class="pattern" name="o"  value="<?=$pattern['o']?>" />&nbsp;
+	<a href="#" onclick="addPattern(this.parentNode)" title="Add triple pattern">[+]</a>
+	<input style="display:none" type="checkbox" name="optional" title="Check if triple pattern is optional."  />&nbsp;&nbsp;
+	<a href="#" onclick="removePattern(this.parentNode)" title="Remove this triple pattern">[-]</a>
+</div>
+<?  } ?>
+</div>
+
+<input id='updateresult' type='button' value = 'Update Results' onclick="updateResults()" /> <span id="updating" style="display:none;"> <img src="css/indicator.gif"></span><br>
+<a href="index.php?patterns=<?=$json?>"  title="start over" >restart</a>&nbsp;&nbsp;
+<a href="#" id="showquery" title="title" >show query</a><br>
+<textarea id='showquerytextarea' cols="100" rows="5"  ></textarea>
+
+<p />
+If you think your query can be useful for others, <i>please share</i>:<br />
+<input type="text" value="Label" onfocus="if(this.value=='Label') this.value=''" />
+<input type="button" value="Save query" onclick="updateQueries(this.previousSibling.value,oq)" />
+</div>
+</div>
+
+<div>
+<form style="float:right; margin-right:5em;">Results:&nbsp;<select id="limit" onchange="updateResults()"><option value="10">10</option><option value="50">50</option><option value="100">100</option></select></form>
+<p>Click on a column header to sort results on this page.</p>
+<div id="output">
+
+<table id="resulttable" class="tablesorter" border="0" cellpadding="0" cellspacing="1"> 
+
+</table> 
+
+
+</div>
+</div>
+</div>
+*/

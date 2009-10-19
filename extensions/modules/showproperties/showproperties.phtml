@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * OntoWiki showproperties module template
+ *
+ * @version $Id: showproperties.phtml 4278 2009-10-11 18:37:35Z jonas.brekle@gmail.com $
+ */
+
+?>
+<?php if (!empty($this->properties)): ?>
+	<ul class="bullets-none separated-horizontal">
+	    <?php $i = 0; ?>
+		<?php foreach ($this->properties as $id => $propertyInfo): ?>
+		    <?php if (++$i == count($this->properties)): ?>
+		        <li class="last-child"><a class="show-property Property hasMenu" about="<?php echo $propertyInfo['uri']; ?>" title="<?php echo $propertyInfo['title'] ?>"><?php echo $propertyInfo['title'] ?></a></li>
+		    <?php else: ?>
+		        <li><a class="show-property hasMenu" about="<?php echo $propertyInfo['uri']; ?>" title="<?php echo $propertyInfo['title'] ?>"><?php echo $propertyInfo['title'] ?></a></li>
+		    <?php endif; ?>
+		<?php endforeach; ?>
+	</ul>
+<?php endif ?>
+<?php if (!empty($this->reverseProperties)): ?>
+	<ul class="bullets-none separated-horizontal">
+	    <?php $i = 0; ?>
+		<?php foreach ($this->reverseProperties as $id => $propertyInfo): ?>
+		    <?php if (++$i == count($this->properties)): ?>
+		        <li class="last-child"><a class="show-property InverseProperty hasMenu" about="<?php echo $propertyInfo['uri']; ?>" title="<?php echo $propertyInfo['title'] ?>"><?php echo $propertyInfo['title'] ?></a><sup>-1</sup></li>
+		    <?php else: ?>
+		        <li><a class="show-property InverseProperty hasMenu" about="<?php echo $propertyInfo['uri']; ?>" title="<?php echo $propertyInfo['title'] ?>"><?php echo $propertyInfo['title'] ?></a><sup>-1</sup></li>
+		    <?php endif; ?>
+		<?php endforeach; ?>
+	</ul>
+<?php endif ?>
+<?php if ( ( !empty($this->Properties) ) && ( !empty($this->reverseProperties) ) ): ?>
+	<p class="messagebox info"><?php echo $this->_($this->message) ?></p>
+<?php endif; ?>

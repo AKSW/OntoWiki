@@ -1,0 +1,46 @@
+ul.coocurrences-vertical > li, 
+ol.coocurrences-vertical > li {
+    padding: em 0;
+    border-bottom: dotted 1px #ccc;
+}
+
+a.semantic {
+    color : #F1566E;
+}
+
+a.semantic:hover {
+    color : #F8B4BE;
+    text-decoration: underline;
+}
+
+a.semantic-select {
+	color : #F1566E;
+    background-color : #FDE8EC;
+}
+
+a.semantic-select:hover {
+	color : #F8B4BE;
+    background-color : #FDE8EC;
+    text-decoration: underline;
+}
+
+a.select {
+    background-color : #dee8ee;
+}
+
+a.tagweight0 {
+	font-size: 100%;
+}
+a.tagweight1 {
+	font-size: 115%;
+}
+a.tagweight2 {
+	font-size: 130%;
+}
+a.tagweight3 {
+	font-size: 140%;
+}
+a.tagweight4 {
+	font-size: 150%;
+}
+

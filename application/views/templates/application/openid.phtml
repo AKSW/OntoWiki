@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * OntoWiki openid details template
+ *
+ * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @version $Id: $
+ */
+
+?>
+
+<script type="text/javascript">
+//<![CDATA[
+
+$(document).ready(function() {
+
+    $('a.openidreg-cancel').click(function() {
+        window.location = urlBase + 'application/openidreg';
+    });
+});
+
+//]]>
+</script>
+
+<div class="openid_logo">
+</div>
+
+<fieldset>
+    <input type="hidden" name="step" value="<?php echo $this->step ?>" />
+    <div>
+        <label for="openid_url"><?php echo $this->_('OpenID') ?></label>
+        <input class="text" id="openid_url" type="text" name="openid_url" <?php echo $this->readonly ?> value="<?php echo (string)$this->openid ?>" />
+        <?php if (isset($this->checked)): ?>
+            <span class='success_icon'></span>
+        <?php endif; ?>
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="label-input"><?php echo $this->_('Label') ?></label>
+        <input class="text" id="label-input" type="text" name="label" value="<?php echo $this->label ?>" />
+        <span>You can leave this blank.</span>
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="email-input"><?php echo $this->_('Email Address') ?></label>
+        <input class="text" id="email-input" type="text" name="email" value="<?php echo $this->email ?>" />
+        <span>You can leave this blank.</span>
+        <br class="clearall" />
+    </div>
+    <div class="clearall"></div>
+</fieldset>

@@ -1,0 +1,200 @@
+<?php
+/**
+ * OntoWiki Client Categories Template
+ *
+ * @author Feng Qiu <Qiu_Feng39@hotmail.com>
+ * @version $Id: categories.phtml 3219 2009-06-06 19:17:07Z qiu_feng39@hotmail.com $
+ */
+?>
+
+	
+
+
+<?php $to_translate = $this->escape($this->to_translate);?>
+<?php $plugins_per_page = $this->escape($this->plugins_per_page);?>
+<?php $this->placeholder('categories.box.content')->captureStart() ?>
+<?php 
+	$sort_priority = $this->sort_priority;
+	$sort_kind = $this->sort_kind;
+?>
+<form method="post" action="<?php echo $to_translate;?>">
+	<fieldset>
+	<div class="no-min-width">
+		<p class="width99">
+			<input type="text" value="Keyword to search ..." name="search_keyword" id="tags-input" class="text width98 inner-label"/>
+		</p>
+	</div>
+	<div class="no-min-width">
+		<span id="select-container-lat-prop-select" class="width99">
+			<select name="sort_kind" class="width99" id="id_sort_kind">
+			    <option value="name" <?php if ($sort_kind == 'name') echo 'selected';?>>Name</option>
+				<option value="developer" <?php if ($sort_kind == 'developer') echo 'selected';?>>Developer</option>
+			</select>
+		</span>
+	</div>
+	<div class="no-min-width">
+		<span id="select-container-lat-prop-select" class="width99">
+			<select name="sort_priority" class="width99" id="id_sort_priority">
+				<option value="ASC" <?php if ($sort_priority == 'ASC') echo 'selected';?>>Anodically</option>
+				<option value="DESC" <?php if ($sort_priority == 'DESC') echo 'selected';?>>Descending</option>
+			</select>
+		</span>
+		<span id="select-container-lat-prop-select" class="width99">
+			<select name="plugins_per_page" class="width99" id="id_sort_priority">
+			    <option value="1" <?php if ($plugins_per_page == 1) echo 'selected';?>>1 plugin per page</option>
+			    <option value="2" <?php if ($plugins_per_page == 2) echo 'selected';?>>2 plugins per page</option>
+			    <option value="3" <?php if ($plugins_per_page == 3) echo 'selected';?>>3 plugins per page</option>
+			    <option value="5" <?php if ($plugins_per_page == 5) echo 'selected';?>>5 plugins per page</option>
+			    <option value="10" <?php if ($plugins_per_page == 10) echo 'selected';?>>10 plugins per page</option>
+			    <option value="20" <?php if ($plugins_per_page == 20) echo 'selected';?>>20 plugins per page</option>
+			</select>
+		</span>
+	</div>
+	</fieldset>
+	<div><button type="submit" name="submit"><?php echo $this->_('Submit') ?></button></div>
+</form>
+<?php $this->placeholder('categories.box.content')->captureEnd() ?>
+
+<?php $this->placeholder('main.window.innerwindows')->append(
+	$this->partial('partials/window.phtml', array(
+		'headinglevel' => 2, 
+		'title'        => $this->_('Search box:'), 
+		'content'      => $this->placeholder('categories.box.content'), 
+		'cssClasses'   => '', 
+		'cssId'        => ''
+	))
+);?>
+
+<?php $tag_results = $this->tags;?>
+<?php $this->placeholder('categories.tagcloud.content')->captureStart() ?>
+	<div class="tagcloud_window">
+		<?php
+			for($i=0; $i<count($tag_results);$i++){
+				$tag= $tag_results[$i]['tag'];
+				$weight = $tag_results[$i]['weight'];
+				$tag_url = $tag_results[$i]['url'];
+				echo "<div class=\"tag_style_$weight\"><a href=\"$tag_url\">$tag</a></div>";
+			}
+		?>
+	</div>	
+<?php $this->placeholder('categories.tagcloud.content')->captureEnd() ?>
+
+<?php $this->placeholder('main.window.innerwindows')->append(
+	$this->partial('partials/window.phtml', array(
+		'headinglevel' => 3, 
+		'title'        => $this->_('Tags'), 
+		'content'      => $this->placeholder('categories.tagcloud.content'), 
+		'cssClasses'   => '', 
+		'cssId'        => ''
+	))
+);?>
+
+<?php $results = $this->results;?>
+<?php if (count($this->paginator)):?>
+<?php
+	$pic_url = $this->pluginurl."templates/plugins/pic/";
+	$logo = $pic_url."plugin_logo.gif";
+	$theme = $pic_url."categorie_theme.png";
+	$plugin_outlook = $this->plugin_outlook;
+	$ftp_config = $this->ftp_config;
+	if (isset($results) && count($results)>0) {
+		$i = 1;	// to create id for each plugin
+		foreach ($this->paginator as $result) {
+				$pName = $result['name'];
+				$developer = $result['developer'];
+				$developer = str_replace('http://plugins.ontowiki.net/', '', $developer);
+				$description = $result['description'];
+				$install_url = $result['install_url'];
+				$s_plugin_id = "plugin_".$i."_s";		//selected plugin_id
+				$u_plugin_id = "plugin_".$i;		// unselected plugin_id
+				$i++;
+				if ($plugin_outlook == 1) {
+					echo<<<showResults
+					<div class="qiufeng_template">
+						  <div class="plugin_selected" id="$s_plugin_id" >
+								<div class="left_window">
+									<img src="$theme" alt="categorie" width="50" height="50"/>		
+								</div>
+							<div class="right_window">
+								<div class="title_window">
+									<p class="plugin_title">$pName</p>
+								</div>
+								<div class="logo_window">
+									<img src="$logo" alt="logo_window" width="80" />			
+								</div>
+								<div class="description_window">
+									$description			
+								</div>		
+								<div class="install_window">
+								  <div class="author">$developer</div>
+								  	<form method="post" action="$this->toinstall_url">
+									 	<input type="hidden" name="install_url" value="$install_url"></input>
+										<input type="hidden" name="t_p_categorie" value="components"></input>
+										<input type="hidden" name="t_p_name" value="$pName"></input>
+										<input type="hidden" name="ftp_config" value="$ftp_config"></input>
+								  		<button type="submit" value="Install" class="install">Install</button>
+								  	</form>
+								</div>
+							</div>       
+						  </div>
+						  
+						
+						  <div class="plugin_unselected" id="$u_plugin_id" onclick="select_plugin('$u_plugin_id')">
+								<div class="left_window">
+									<img src="$logo" alt="categorie" width="50" height="38" border="1px" />		</div>
+							<div class="right_window">
+								<div class="title_window">
+									<p class="plugin_title">$pName</p>
+								</div>
+								<div class="description_window">
+									$description		
+								</div>...		
+								
+							</div>      
+						  </div>
+					</div>
+				
+showResults;
+				}
+				
+				elseif ($plugin_outlook == 2) {
+					echo<<<showResults
+					<div class="plugins">
+					  	<div class="plugin_box">
+					  		<div class="titel">
+								$pName
+							</div>
+					  	</div>
+					  
+					  	<div class="plugin_box">
+					  		<div class="author">
+								<span class="black">Author:</span>  $developer
+							</div> 
+					  	</div>
+					  	
+					  	<div class="plugin_box">
+					  		<div class="description">
+								$description
+							</div>
+					 	</div>
+					  
+					  	<div class="plugin_box">
+					  		<form method="post" action="$this->toinstall_url">
+							 	<input type="hidden" name="install_url" value="$install_url"></input>
+								<input type="hidden" name="t_p_categorie" value="components"></input>
+								<input type="hidden" name="t_p_name" value="$pName"></input>
+								<input type="hidden" name="ftp_config" value="$ftp_config"></input>
+								<button type="submit" value="Install" class="install_button">Install</button>
+							</form>
+					  	</div>
+					</div>
+showResults;
+	
+				}
+				
+					
+		}
+	}?>
+	<?= $this->paginationControl($this->paginator, 'Elastic', '/pagelist/categoriepagelist.phtml'); ?>
+<?php endif; ?>
+

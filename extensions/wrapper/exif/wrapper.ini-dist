@@ -1,0 +1,15 @@
+enabled = true
+
+[private]
+
+properties.type = "http://xmlns.com/foaf/0.1/Image"
+
+properties.exif.Make = "http://www.w3.org/2003/12/exif/ns#make"
+properties.exif.Model = "http://www.w3.org/2003/12/exif/ns#model"
+properties.exif.Orientation = "http://www.w3.org/2003/12/exif/ns#orientation"
+properties.exif.XResolution = "http://www.w3.org/2003/12/exif/ns#xResolution"
+properties.exif.YResolution = "http://www.w3.org/2003/12/exif/ns#yResolution"
+properties.exif.ResolutionUnit = "http://www.w3.org/2003/12/exif/ns#resolutionUnit"
+properties.exif.Software = "http://www.w3.org/2003/12/exif/ns#software"
+properties.exif.DateTime = "http://www.w3.org/2003/12/exif/ns#dateTime"
+properties.exif.YCbCrPositioning = "http://www.w3.org/2003/12/exif/ns#yCbCrPositioning"

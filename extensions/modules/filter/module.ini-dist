@@ -1,0 +1,5 @@
+enabled    = true
+title      = "Filter"
+caching    = yes
+priority   = 30
+contexts[] = "main.window.instances"

@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Bookmarklet</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+    var widgetBase = document.location.href.replace('tests/bookmarklet.html', '');
+    var href = '\
+        href="javascript:void((function() {\
+        if (!document.getElementById(\'RDFauthorScript\')) {\
+            window.widgetBase = \'' + widgetBase + '\';\
+            var s = document.createElement(\'script\');\
+            s.type = \'text/javascript\';\
+            s.id = \'RDFauthorScript\';\
+            s.src = widgetBase + \'src/rdfauthor.js\';\
+            document.getElementsByTagName(\'head\')[0].appendChild(s);\
+        }\
+        RDFauthor.startEditing();\
+    })());"';
+
+    document.writeln('<a ' + href.replace(/[\s]/g, '') + '>RDFauthor</a>');
+</script>
+</body>

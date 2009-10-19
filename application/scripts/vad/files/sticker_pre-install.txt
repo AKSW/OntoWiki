@@ -1,0 +1,8 @@
+<sql purpose="pre-install"><![CDATA[
+
+  if (lt (sys_stat ('st_dbms_ver'), '05.11.3038')) {
+	result ('ERROR', 'The Onto Wiki package requires server version 05.11.3038 or greater');
+	signal ('FATAL', 'The Onto Wiki package requires server version 05.11.3038 or greater');
+   }
+
+]]></sql>

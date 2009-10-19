@@ -1,0 +1,57 @@
+;;
+; OntoWiki user config file
+;
+; Settings here will overwrite values
+; from default.ini.
+;
+; @package    application
+; @subpackage config
+; @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+; @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+; @version    $Id: config.ini-dist 4282 2009-10-12 11:20:57Z c.riess.dev $
+;;
+
+[private]
+
+;;
+; Database setup
+; In most cases you only need to change username, password
+; and database name (dbname).
+
+store.backend           = zenddb             ; zenddb, virtuoso
+
+
+store.zenddb.dbname     = ontowiki
+store.zenddb.username   = ow
+store.zenddb.password   = ow
+store.zenddb.dbtype     = mysql             ; mysql
+;store.zenddb.host      = localhost          ; default is localhost
+
+
+;store.virtuoso.dsn         = vos505
+;store.virtuoso.username    = dba
+;store.virtuoso.password    = dba
+
+
+
+;;
+; Frontend language
+;;
+languages.locale = "en"             ; en, de, zh (Chinese)
+
+
+;;
+; Set this identifier to a unique value if you want to run multiple OntoWiki
+; installations on one server
+;;
+;session.identifier = "abc123"
+
+
+;;
+; Email configuration
+; You should set the host and localname for account recovery mails here
+; appropriate values are necessary to guarantee correct function
+;;
+mail.hostname           = "hostname.tld"
+mail.localname.recovery = "ontowiki-account-recovery"
+

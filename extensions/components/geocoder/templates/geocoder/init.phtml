@@ -1,0 +1,42 @@
+<p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
+    <?php $i = 0; ?>
+    <?php foreach ($this->prefixes as $prefix => $namespace): ?>
+        <a href="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
+    <?php endforeach ?>
+</p>
+<?php if ($this->has('error')): ?>
+    <fieldset>
+        <div class="messagebox error"><?php echo $this->error ?></div>
+    </fieldset>
+<?php endif; ?>
+<fieldset>
+    <b><?php echo $this->_('Please Insert your SPARQL Query here:')?></b>
+    <textarea class="width99 code-input" name="query" style="margin-bottom:1em">
+        <?php echo $this->query ?>
+    </textarea>
+
+    <?php echo $this->_('Minimal accuracy level') ?>:&nbsp;
+
+    <select name="minaccuracy" size="1">
+      <option>0</option>
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option selected="selected">8</option>
+    </select>
+
+</fieldset>
+
+<fieldset>
+    <div class="messagebox info">
+        <?php echo $this->_('Example Information') ?>
+        <div style="background-color:white; border:1px dashed #ababab; margin:1em; padding:1em">
+            <b><?php echo$this->_('Example Query')?></b><br><br> 
+            <?php echo str_replace(array("\\n","\\t"),array("<br>","&nbsp;&nbsp;"),$this->example) ?>
+        </div>
+    </div>
+</fieldset>

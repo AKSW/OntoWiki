@@ -1,0 +1,38 @@
+<?php
+/**
+ * OntoWiki lastcomments module template
+ *
+ * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
+ * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @version    $Id: lastcomments.phtml 3575 2009-07-05 15:00:22Z sebastian.dietzold $
+ */
+?>
+<?php if ($this->has('infomessage')): ?>
+    <p class="messagebox info"><?php echo $this->infomessage ?></p>
+<?php endif?>
+
+<?php if ($this->has('comments')): ?>
+<table class="separated-vertical">
+<?php $odd = false; ?>
+<?php foreach($this->comments as $comment): ?>
+    <tr class="comment <?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+        <td>
+            <?php echo $comment['author'] ?> on 
+            <a resource="<?php echo $comment['resource'] ?>" class="Resource hasMenu"
+               about="<?php echo $comment['resource'] ?>"
+               href="<?php echo $this->urlBase ?>community/list/?r=<?php echo urlencode($comment['resource']) ?>">
+                <?php echo $comment['rname'] ?>
+            </a>
+            <span style="color:#aaa;font-size:0.9em">(<?php echo $comment['date'] ?>)</span>:
+            <?php echo $comment['content'] ?>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>
+
+<?php if ($this->has('more')): ?>
+    <p class="messagebox info">There are more comments out there ...</p>
+<?php endif?>
+
+<?php endif?>

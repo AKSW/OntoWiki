@@ -1,0 +1,74 @@
+<?php
+
+/**
+ * OntoWiki query template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: query.phtml 3878 2009-08-01 13:24:35Z jonas.brekle $
+ */
+
+?>
+<?php 
+$this->placeholder('main.window.innerwindows')->append($this->module('sparqloptions'));
+if(class_exists("QuerybuildingHelper")){
+	$this->placeholder('main.window.innerwindows')->append(
+	        $this->partial('partials/window.phtml', array(
+	                'headinglevel' => 2,
+	                'title'        => $this->_('Save Query'),
+	                'content'      => $this->partial('../../../extensions/components/querybuilding/templates/querybuilding/savepartial.phtml'),
+	                'cssClasses'   => 'queryeditor',
+	                'cssId'        => 'savebox'
+	        ))
+	); 
+}
+?>
+
+<p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
+    <?php $i = 0; ?>
+    <?php foreach ($this->prefixes as $prefix => $namespace): ?>
+        <a href="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
+    <?php endforeach ?>
+</p>
+<fieldset>
+    <textarea class="width99 code-input" name="query"><?php echo $this->query ?></textarea>
+    
+<?php if ($this->has('error')): ?>
+    <fieldset>
+        <div class="messagebox error"><?php echo $this->error ?></div>
+    </fieldset>
+<?php endif; ?>
+
+<?php if (isset($this->data)): ?>
+    <p class="messagebox info">
+        <?php echo sprintf($this->_('Query execution took %1$d ms.'), $this->time) ?>
+    </p>
+    <fieldset>
+        <?php if (is_array($this->data)): ?>
+            <?php 
+            if(class_exists("QuerybuildingHelper")){
+            	echo $this->partial('partials/resultset.phtml', array('data' => $this->data, 'header' => $this->header, 'caption'=>'Results')); 
+            } else {
+            	echo $this->partial('partials/table.phtml', array('data' => $this->data, 'header' => $this->header));
+            }
+            ?>
+        <?php else: ?>
+            <pre><?php echo $this->escape($this->data) ?></pre>
+        <?php endif; ?>
+    </fieldset>
+<?php endif; ?>
+</fieldset>
+
+<script type="text/javascript">
+// make sure jQuery is included
+if (typeof jQuery != 'undefined') {
+    var queryInput = $('.code-input[name=query]');
+
+    function insertModelUri() {
+        queryInput.val(queryInput.val() + '<<?php echo $this->modelUri ?>>');
+    }
+
+    function insertResourceUri() {
+        queryInput.val(queryInput.val() + '<<?php echo $this->resourceUri ?>>');
+    }
+}
+</script>

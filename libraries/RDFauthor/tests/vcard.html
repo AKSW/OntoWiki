@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
+    "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ow="http://ns.aksw.org/OntoWiki/">
+
+<head>
+    <title>RDFauthor vCard Test Page</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    
+    <script type="text/javascript" src="../libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="../src/rdfauthor.js"></script>
+    
+    <style type="text/css">
+        /* semantic css :) */
+        .vcard *[rel="foaf:depiction"] {float: left;}
+        .vcard span.block {display: block;}
+        .vcard *[property="foaf:name"] {font-weight: bold;}
+        .vcard p {margin-left: 120px;}
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        RDFauthor.startEditing();
+        // RDFauthor.cancelEditing();
+    </script>
+    
+    <div xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:ldap="http://purl.net/net/ldap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" class="vcard" about="http://bis.ontowiki.net/ThomasRiechert" typeof="foaf:Person">
+        
+        <span rel="foaf:depiction">
+            <img src="http://bis.informatik.uni-leipzig.de/images/jpegPhoto.php?name=sn&amp;value=Riechert" alt="depiction of Thomas Riechert"/>
+        </span>
+        <p>
+            <span class="block" property="foaf:name">Thomas Riechert</span>
+            <span property="ldap:sreet" datatype="xsd:string">Johannisgasse 26</span>, Room
+            <span property="ldap:roomNumber" datatype="xsd:string">5-09</span>
+            <span class="block" property="ldap:postalCode" datatype="xsd:integer">04103</span>
+            <span property="ldap:locality" datatype="xsd:string">Leipzig</span>
+        </p>
+        <p>Day of birth: <span property="foaf:birthDate" datatype="xsd:date">1973-05-09</span></p>
+        <p>
+            Phone: <a rel="foaf:phone" href="tel:+493419732323">+49&thinsp;(341)&thinsp;97-32323</a>
+            <span class="block">
+                <a rel="foaf:mbox" href="mailto:riechert@informatik.uni-leipzig.de">E-mail</a>,
+                <a rel="foaf:homepage" href="http://www.thomas-riechert.de/">Homepage</a>
+            </span>
+        </p>
+    </div>
+</body>
+
+</html>

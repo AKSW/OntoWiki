@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * OntoWiki login module template
+ *
+ * @version $Id: login.phtml 3405 2009-06-27 07:35:34Z sebastian.dietzold $
+ */
+
+?>
+<form method="post" action="<?php echo $this->actionUrl ?>" class="simple-input input-justify-left" name="locallogin">
+    <input type="hidden" name="logintype" value="locallogin" />
+    <fieldset>
+        <input type="hidden" name="redirect-uri" value="<?php echo $this->redirectUri ?>" />
+        <div>
+            <label for="username"><?php echo $this->_('Username') ?></label>
+            <input class="text" type="text" id="username" name="username" value="" />
+            <br class="clearall" />
+        </div>
+        <div>
+            <label for="password"><?php echo $this->_('Password') ?></label>
+            <input class="password" type="password" id="password" name="password" />
+            <br class="clearall" />
+        </div>
+        <div>
+            <label class="checkboxradio">
+                <input class="checkbox" type="checkbox" id="login-save" name="login-save" />
+                <?php echo $this->_('Remember me') ?>
+            </label>
+            <br class="clearall" />
+        </div>
+        <div class="actionbuttons">
+                <a id="locallogin" class="button submit"><?php echo $this->_('Login') ?></a>
+        <?php if ($this->showRegisterButton) : ?>
+                    <a class="button" href="<?php echo $this->registerActionUrl; ?>"><?php echo $this->_('Register') ?></a>
+        <?php endif; ?>
+        </div>
+	</fieldset>
+</form>

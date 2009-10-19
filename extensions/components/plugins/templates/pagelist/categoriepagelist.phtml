@@ -1,0 +1,69 @@
+<?php 
+/*i don't know why, but it solves the problem.......confusing!!!*/
+//$client_url = $this->client_url;
+/*if i use the command, it works, but i got notice from xbugger, without it, it works to*/?>
+<?php if ($this->pageCount): ?>
+<div class="messagebox statusbar">
+
+
+<!-- Previous page link -->
+
+<?php if (isset($this->previous)): ?>
+	<div class="statustool"><ul class="minibutton">
+	<li> <a href="<?php $client_url?>?page=1">&laquo;&nbsp;First</a></li>
+  		<a class="minibutton" href="<?php $client_url?>?page=<?php echo $this->previous; ?>">&lsaquo;&nbsp;Previous</a></li>
+
+<?php else: ?>
+	<div class="statustool"><ul class="minibutton">
+		<li> <a class="disabled" href="<?php $client_url?>?page=1">&laquo;&nbsp;First</a></li>
+		<li><a class="disabled">&lsaquo;&nbsp;Previous</a></li>
+<?php endif; ?>
+
+	
+
+
+<!-- Numbered page links -->
+
+<?php foreach ($this->pagesInRange as $page): ?>
+
+  <?php if ($page != $this->current): ?>
+
+    <li><a href="<?php $client_url?>?page=<?php echo $page; ?>"><?= $page; ?></a> </li>
+
+  <?php else: ?>
+
+    <li><a class="selected"><?= $page; ?></a></li>
+
+  <?php endif; ?>
+
+<?php endforeach; ?>
+
+
+
+<!-- Next page link -->
+
+<?php if (isset($this->next)): ?>
+
+		<a class="minibutton" href="<?php $client_url?>?page=<?php echo $this->next; ?>">Next&nbsp;&rsaquo;</a></li>
+		<a class="minibutton" href="<?php $client_url?>?page=<?php echo $this->pageCount; ?>">Last&nbsp;&raquo;</a></li></div>
+	
+<?php else: ?>
+
+ 		<li><a class="disabled">Next&nbsp;&rsaquo;</a></li>
+		<li><a class="disabled">Last&nbsp;&raquo;</a></li></div>
+<?php endif; ?>
+
+</div>
+
+<?php endif; ?>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.6 in JDK 6. --><xs:schema xmlns:tns="http://server.dllearner.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://server.dllearner.org/">
+
+<xs:element name="ClientNotKnownException" type="tns:ClientNotKnownException"></xs:element>
+
+<xs:element name="ComponentInitException" type="tns:ComponentInitException"></xs:element>
+
+<xs:element name="ConfigOptionTypeException" type="tns:ConfigOptionTypeException"></xs:element>
+
+<xs:element name="LearningProblemUnsupportedException" type="tns:LearningProblemUnsupportedException"></xs:element>
+
+<xs:element name="MalformedURLException" type="tns:MalformedURLException"></xs:element>
+
+<xs:element name="ParseException" type="tns:ParseException"></xs:element>
+
+<xs:element name="SparqlQueryException" type="tns:SparqlQueryException"></xs:element>
+
+<xs:element name="UnknownComponentException" type="tns:UnknownComponentException"></xs:element>
+
+<xs:complexType name="ParseException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ClientNotKnownException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="SparqlQueryException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="UnknownComponentException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ConfigOptionTypeException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ComponentInitException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="LearningProblemUnsupportedException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="MalformedURLException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

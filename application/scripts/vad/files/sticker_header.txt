@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!DOCTYPE sticker SYSTEM "vad_sticker.dtd"[]>
+<sticker version="0.9.0" xml:lang="en-US">
+  <caption>
+    <name package="OntoWiki">
+      <prop name="Title" value="OntoWiki" />
+      <prop name="Developer" value="AKSW, Uni Leipzig" />
+      <prop name="Copyright" value="" />
+      <prop name="Download" value="http://ontowiki.net" />
+      <prop name="Download" value="http://code.google.com/p/ontowiki" />
+    </name>
+    <version package="0.9.0">
+      <prop name="Release Date" value="2009-07-24 13:59" />
+      <prop name="Build" value="Beta test" />
+    </version>
+  </caption>
+  <dependencies />
+  <procedures uninstallation="supported" />
+  <ddls>

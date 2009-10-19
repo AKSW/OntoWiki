@@ -1,0 +1,35 @@
+<table class="separated-vertical" 
+       id="history-details-<?php echo $this->actionID; ?>"
+       style="border: 1px dotted black; font-size:0.8em;">
+<?php 
+    if ($this->isEmpty) {
+        echo $this->translate->_('No matches.');
+    }
+?>
+<?php $odd = true; ?>
+<?php foreach ($this->stAddArray as $entry) : ?>
+    <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> ">
+        <td>&#43;                           </td>
+        <td><?php echo current($entry); ?>  </td>
+        <td><?php echo next($entry); ?>     </td>
+        <td><?php echo next($entry); ?>     </td>
+    </tr>
+<?php endforeach; ?>
+<?php foreach ($this->stDelArray as $entry) : ?>
+    <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> ">
+        <td>&#45;                           </td>
+        <td><?php echo current($entry); ?>  </td>
+        <td><?php echo next($entry); ?>     </td>
+        <td><?php echo next($entry); ?>     </td>
+    </tr>
+<?php endforeach; ?>
+<?php foreach ($this->stOtherArray as $entry) : ?>
+    <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> ">
+        <td>...</td>
+        <td><?php echo current($entry); ?>  </td>
+        <td><?php echo next($entry); ?>     </td>
+        <td><?php echo next($entry); ?>     </td>
+    </tr>
+<?php endforeach; ?>
+</table>
+

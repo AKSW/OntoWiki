@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * OntoWiki user details template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @version $Id: userdetails.phtml 2917 2009-04-21 12:13:33Z norman.heino $
+ */
+
+?>
+<fieldset>
+    <div>
+        <label for="name-input"><?php echo $this->_('Username') ?></label>
+        <input class="text" id="name-input" type="text" name="username" <?php echo $this->readonly ?> value="<?php echo $this->username ?>" />
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="email-input"><?php echo $this->_('Email Address') ?></label>
+        <input class="text" id="email-input" type="text" name="email" value="<?php echo $this->email ?>" />
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="pw1-input"><?php echo $this->_('Password') ?></label>
+        <input class="text" id="pw1-input" type="password" name="password" />
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="pw2-input"><?php echo $this->_('Password (repeat)') ?></label>
+        <input class="text" id="pw2-input" type="password" name="password2" />
+        <br class="clearall" />
+    </div>
+    <div class="clearall"></div>
+</fieldset>

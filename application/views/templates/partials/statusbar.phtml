@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * OntoWiki menu partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $$
+ */
+
+?>
+<?php if ($this->has('statusbar')): ?>
+    <div class="messagebox statusbar">
+        <?php foreach ($this->statusbar as $statusElement): ?>
+            <div class="statustool"><?php echo $statusElement ?></div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * OntoWiki File Manager upload template
+ *
+ * @author Christoph Rieß
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: upload.phtml 2769 2009-04-06 14:57:58Z norman.heino $
+ */
+
+?>
+<fieldset id="upload" class="form">
+    <legend></legend>
+    <div>
+        <label for="file_uri"><?php echo $this->_('Resource URI') ?></label>
+		<input class="text prefix-value" value="<?php echo $this->defaultUri ?>" type="text" name="file_uri" id="file_uri" size="10" />
+    </div>
+    <div>
+        <label for="file-input">
+            <?php echo sprintf($this->_('File (max. %1$sB)'), preg_replace('/([kMG])/', ' $1', ini_get('upload_max_filesize'))) ?>
+        </label>
+        <input type="file" id="file-input" name="upload" />
+        <br class="clearall" />
+    </div>
+</fieldset>

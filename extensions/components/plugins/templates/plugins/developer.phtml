@@ -1,0 +1,16 @@
+<?php
+$img_url = $this->img_url.'in_building.jpg';
+$url = $this->base_url.'repository';
+
+echo <<<show_pic
+	<h1>Page for plugin-repository, comming sooning...</h1>
+	<ul><h3>Have a look</h3>
+		<li><a href="$url/index">Login Page</a></li>
+		<li><a href="$url/register">Registory Page</a></li>
+		<li><a href="$url/upload">File Upload Page</a></li>
+	</ul>
+	<img src="$img_url" align="middle" alt='logo_window'/>
+show_pic
+?>
+
+

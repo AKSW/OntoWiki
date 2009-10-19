@@ -1,0 +1,9 @@
+;;
+; Basic component configuration
+;;
+active = true
+name = "Foaf Editor"
+templates  = "templates"
+
+[private]
+person = "http://xmlns.com/foaf/0.1/Person"

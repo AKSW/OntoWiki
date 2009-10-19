@@ -1,0 +1,459 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:dct="http://purl.org/dc/terms/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:vann="http://purl.org/vocab/vann/"
+  xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#">
+
+  <rdf:Description rdf:about="http://vocab.org/relationship/.rdf">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+    <rdf:type rdf:resource="http://purl.org/dc/dcmitype/Text"/>
+    <foaf:primaryTopic rdf:resource="http://purl.org/vocab/relationship/"/>
+    <dct:hasFormat rdf:resource="http://vocab.org/relationship/.html"/>
+    <dct:hasFormat rdf:resource="http://vocab.org/relationship/.json"/>
+    <dct:hasFormat rdf:resource="http://vocab.org/relationship/.turtle"/>
+    <foaf:topic rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vocab.org/relationship/.html">
+    <rdf:type rdf:resource="http://purl.org/dc/dcmitype/Text"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+    <dc:format>text/html</dc:format>
+    <rdfs:label>HTML</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vocab.org/relationship/.json">
+    <rdf:type rdf:resource="http://purl.org/dc/dcmitype/Text"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+    <dc:format>application/json</dc:format>
+    <rdfs:label>JSON</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vocab.org/relationship/.turtle">
+    <rdf:type rdf:resource="http://purl.org/dc/dcmitype/Text"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+    <dc:format>text/plain</dc:format>
+    <rdfs:label>Turtle</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <dc:creator rdf:resource="http://iandavis.com/id/me"/>
+    <dc:creator rdf:nodeID="arc7ca3b1"/>
+    <dc:title>RELATIONSHIP: A vocabulary for describing relationships between people</dc:title>
+    <dc:description>A vocabulary for describing relationships between people</dc:description>
+    <dc:identifier>http://purl.org/vocab/relationship/rel-vocab-20050810</dc:identifier>
+    <dct:isVersionOf rdf:resource="http://purl.org/vocab/relationship/"/>
+    <dct:replaces rdf:resource="http://purl.org/vocab/relationship/rel-vocab-20040308"/>
+    <vann:preferredNamespaceUri>http://purl.org/vocab/relationship</vann:preferredNamespaceUri>
+    <vann:preferredNamespacePrefix>rel</vann:preferredNamespacePrefix>
+    <vann:example rdf:resource="http://purl.org/vocab/relationship/rel-example-foaf-20040303.html"/>
+    <vann:example rdf:resource="http://purl.org/vocab/relationship/rel-example-html-20040308.html"/>
+    <dct:issued>2004-02-11</dct:issued>
+    <skos:changeNote rdf:nodeID="arc7ca3b2"/>
+    <skos:historyNote rdf:nodeID="arc7ca3b3"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://iandavis.com/id/me">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <foaf:name>Ian Davis</foaf:name>
+  </rdf:Description>
+
+  <rdf:Description rdf:nodeID="arc7ca3b1">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <foaf:name>Eric Vitiello Jr</foaf:name>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/rel-example-foaf-20040303.html">
+    <dc:title>Using With FOAF</dc:title>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/rel-example-html-20040308.html">
+    <dc:title>Using With HTML and XHTML</dc:title>
+  </rdf:Description>
+
+  <rdf:Description rdf:nodeID="arc7ca3b2">
+    <rdf:value>Added isDefinedBy properties and updated documentation</rdf:value>
+    <dc:date>2005-08-10</dc:date>
+    <dc:creator>Ian Davis</dc:creator>
+  </rdf:Description>
+
+  <rdf:Description rdf:nodeID="arc7ca3b3">
+    <rdf:value>Typed vocabulary as owl:Ontology</rdf:value>
+    <dc:date>2009-05-15</dc:date>
+    <dc:creator>Ian Davis</dc:creator>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/friendOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/friendOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">friend of</rdfs:label>
+    <skos:definition xml:lang="en">A person who shares mutual friendship with this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/acquaintanceOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/acquaintanceOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">acquaintance of</rdfs:label>
+    <skos:definition xml:lang="en">A person having more than slight or superficial knowledge of this person but short of friendship.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/parentOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/parentOf"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/childOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">parent of</rdfs:label>
+    <skos:definition xml:lang="en">A person who has given birth to or nurtured and raised this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/siblingOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/siblingOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">sibling of</rdfs:label>
+    <skos:definition xml:lang="en">A person having one or both parents in common with this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/childOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/childOf"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/parentOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">child of</rdfs:label>
+    <skos:definition xml:lang="en">A person who was given birth to or nurtured and raised by this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/grandchildOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/grandchildOf"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/grandparentOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">grandchild of</rdfs:label>
+    <rdfs:label>Grandchild Of</rdfs:label>
+    <skos:definition xml:lang="en">A person who is a child of any of this person's children.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/spouseOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/spouseOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">spouse of</rdfs:label>
+    <skos:definition xml:lang="en">A person who is married to this person</skos:definition>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/enemyOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/enemyOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">enemy of</rdfs:label>
+    <skos:definition xml:lang="en">A person towards whom this person feels hatred, intends injury to, or opposes the interests of.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/antagonistOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/antagonistOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">antagonist of</rdfs:label>
+    <skos:definition xml:lang="en">A person who opposes and contends against this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/ambivalentOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:equivalentClass rdf:resource="http://www.perceive.net/schemas/relationship/ambivalentOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">ambivalent of</rdfs:label>
+    <skos:definition xml:lang="en">A person towards whom this person has mixed feelings or emotions.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/lostContactWith">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">lost contact with</rdfs:label>
+    <skos:definition xml:lang="en">A person who was once known by this person but has subsequently become uncontactable.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/knowsOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">knows of</rdfs:label>
+    <skos:definition xml:lang="en">A person who has come to be known to this person through their actions or position.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/wouldLikeToKnow">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">would like to now</rdfs:label>
+    <skos:definition xml:lang="en">A person whom this person would desire to know more closely.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/knowsInPassing">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">knows in passing</rdfs:label>
+    <skos:definition xml:lang="en">A person whom this person has slight or superficial knowledge of.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/knowsByReputation">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">knows by reputation</rdfs:label>
+    <skos:definition xml:lang="en">A person known by this person primarily for a particular action, position or field of endeavour.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/closeFriendOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">close friend of</rdfs:label>
+    <skos:definition xml:lang="en">A person who shares a close mutual friendship with this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/hasMet">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">has met</rdfs:label>
+    <skos:definition xml:lang="en">A person who has met this person whether in passing or longer.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/worksWith">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">works with</rdfs:label>
+    <skos:definition xml:lang="en">A person who works for the same employer as this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/colleagueOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">colleague of</rdfs:label>
+    <skos:definition xml:lang="en">A person who is a member of the same profession as this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/collaboratesWith">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">collaborates with</rdfs:label>
+    <skos:definition xml:lang="en">A person who works towards a common goal with this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/employerOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/employedBy"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">employer of</rdfs:label>
+    <skos:definition xml:lang="en">A person who engages the services of this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/employedBy">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/employerOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">employed by</rdfs:label>
+    <skos:definition xml:lang="en">A person for whom this person's services have been engaged.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/mentorOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/apprenticeTo"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">mentor of</rdfs:label>
+    <skos:definition xml:lang="en">A person who serves as a trusted counselor or teacher to this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/apprenticeTo">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/mentorOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">apprentice to</rdfs:label>
+    <skos:definition xml:lang="en">A person to whom this person serves as a trusted counselor or teacher.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/livesWith">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">lives with</rdfs:label>
+    <skos:definition xml:lang="en">A person who shares a residence with this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/neighborOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">neighbor of</rdfs:label>
+    <skos:definition xml:lang="en">A person who lives in the same locality as this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/grandparentOf">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/grandchildOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">grandparent of</rdfs:label>
+    <skos:definition xml:lang="en">A person who is the parent of any of this person's parents.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/lifePartnerOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">life partner of</rdfs:label>
+    <skos:definition xml:lang="en">A person who has made a long-term commitment to this person's.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/engagedTo">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">engaged to</rdfs:label>
+    <skos:definition xml:lang="en">A person to whom this person is betrothed.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/ancestorOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/descendantOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">ancestor of</rdfs:label>
+    <skos:definition xml:lang="en">A person who is a descendant of this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/descendantOf">
+    <rdfs:label>Descendant Of</rdfs:label>
+    <rdfs:label xml:lang="en">descendant of</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    <owl:inverseOf rdf:resource="http://purl.org/vocab/relationship/ancestorOf"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <skos:definition xml:lang="en">A person from whom this person is descended.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/Relationship">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:label xml:lang="en">relationship</rdfs:label>
+    <skos:definition xml:lang="en">A particular type of connection existing between people related to or having dealings with each other.</skos:definition>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/participantIn">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">participant in</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://purl.org/vocab/relationship/Relationship"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/participant">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">participant</rdfs:label>
+    <rdfs:domain rdf:resource="http://purl.org/vocab/relationship/Relationship"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://purl.org/vocab/relationship/influencedBy">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:subPropertyOf rdf:resource="http://xmlns.com/foaf/0.1/knows"/>
+    <rdfs:label xml:lang="en">influenced by</rdfs:label>
+    <skos:definition xml:lang="en">a person who has influenced this person.</skos:definition>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:isDefinedBy rdf:resource="http://purl.org/vocab/relationship/"/>
+  </rdf:Description>
+
+</rdf:RDF>

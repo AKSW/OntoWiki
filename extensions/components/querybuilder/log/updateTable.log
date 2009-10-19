@@ -1,0 +1,72 @@
+{\"0\":{\"s\":\"?what\",\"p\":\"?pred\",\"o\":\"\",\"lang\":\"\"},\"1\":{\"s\":\"?what\",\"p\":\"?pred\",\"o\":\"?newObject\",\"otype\":\"\",\"lang\":\"\",\"datatype\":\"\"}}
+
+SELECT ?what ?pred ?newObject WHERE { 
+	?what ?pred ?tmpobjvar0 . 
+	?what ?pred ?newObject . 
+	FILTER 
+((((str(?tmpobjvar0) =  "") || 
+(str(?tmpobjvar0) =  "http://dbpedia.org/resource/")
+))
+) .
+ } LIMIT 10
+
+Array
+(
+    [head] => Array
+        (
+            [link] => Array
+                (
+                )
+
+            [vars] => Array
+                (
+                    [0] => what
+                    [1] => pred
+                    [2] => newObject
+                )
+
+        )
+
+    [results] => Array
+        (
+            [distinct] => 
+            [ordered] => 1
+            [bindings] => Array
+                (
+                )
+
+        )
+
+)
+
+
+<thead> <tr> <th>Empty result set</th> </tr> </thead> <tbody> <tr> <td><xmp>Array
+(
+    [head] => Array
+        (
+            [link] => Array
+                (
+                )
+
+            [vars] => Array
+                (
+                    [0] => what
+                    [1] => pred
+                    [2] => newObject
+                )
+
+        )
+
+    [results] => Array
+        (
+            [distinct] => 
+            [ordered] => 1
+            [bindings] => Array
+                (
+                )
+
+        )
+
+)
+</xmp></td> </tr> </tbody> 
+

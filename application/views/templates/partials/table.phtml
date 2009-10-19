@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * OntoWiki table partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $$
+ */
+
+?>
+<table class="separated-vertical">
+    <?php if ($this->has('caption')): ?>
+        <caption><?php echo $this->caption ?></caption>
+    <?php endif; ?>
+    
+    <?php if ($this->has('header')): ?>
+        <tr>
+            <?php foreach ($this->header as $headerField): ?>
+                <th><?php echo $headerField ?></th>
+            <?php endforeach; ?>
+        </tr>
+    <?php endif; ?>
+    
+    <?php foreach ($this->data as $row): ?>
+        <tr>
+            <?php foreach ($row as $field): ?>
+                <td><?php echo $this->escape($field) ?></td>
+            <?php endforeach; ?>
+        </tr>
+    <?php endforeach; ?>
+</table>

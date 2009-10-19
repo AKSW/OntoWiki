@@ -1,0 +1,156 @@
+/*@import url('./../libraries/default.css');*/
+
+#rdfAuthorContainer {
+/*    z-index: 100 !important; */
+    position: absolute;
+    background-color: #eee;
+    width: 48em;
+}
+
+#rdfAuthorButtons {
+    clear: left;
+    float: right;
+    padding: 0.5em 0.5em;
+    position: relative;
+    margin-top: 1em;
+    bottom: 0;
+    right: 0;
+}
+
+#rdfAuthorButtons * {
+    font-size: 1em;
+}
+
+#rdfAuthorContainer .rdfAuthorPropertyRows {
+    max-height: 30em;
+    overflow: auto;
+}
+
+#rdfAuthorContainer * {min-width: 0 !important; min-height: 0 !important;}
+
+#rdfAuthorContainer fieldset {
+    border: 1px dotted grey;
+    border-left: none;
+    border-right: none;
+    background-color: rgb(246, 246, 246);
+    margin: 0;
+    padding-top: 0.25em !important;
+    padding-bottom: 0.5em !important;
+}
+
+#rdfAuthorContainer .property-row, #rdfAuthorContainer .container, #rdfAuthorContainer .inline-container {
+/*    border: 1px dotted red;*/
+    padding: 0.3em 0.5em;
+}
+
+#rdfAuthorContainer input, #rdfAuthorContainer textarea {
+    font-size: 1.1em;
+}
+
+#rdfAuthorContainer .util {
+    font-size: 0.85em;
+    display: block;
+}
+
+#rdfAuthorContainer .literal-lang select, #rdfAuthorContainer .literal-datatype select {margin-left: 0.5em;}
+
+#rdfAuthorContainer .container, #rdfAuthorContainer .inline-container {
+    float: left;
+/*    border: 1px dotted green;*/
+}
+
+#rdfAuthorContainer .widget {
+    min-height: 42px;
+/*    border: 1px solid green;*/
+}
+
+#rdfAuthorContainer .actions {float: right;}
+#rdfAuthorContainer .container > * {display: block;}
+
+#rdfAuthorContainer legend {
+    margin: 0 0.3em;
+    padding: 0 0.2em;
+    font-weight: bold;
+}
+
+#rdfAuthorContainer .add-button, #rdfAuthorContainer .delete-button {
+    width: 16px;
+    height: 16px;
+/*    margin: 1px 0;*/
+}
+
+#rdfAuthorContainer .add-button {
+    background-image: url('./../img/badge-add.png');
+}
+
+#rdfAuthorContainer .add-button:hover {
+    background-position: -16px;
+}
+
+#rdfAuthorContainer .delete-button {
+    background-image: url('./../img/badge-delete.png');
+}
+
+#rdfAuthorContainer .delete-button:hover {
+    background-position: -16px;
+}
+
+#rdfAuthorContainer .container > * {display: block;}
+
+.disclosure-button-horizontal {
+    height: 2em !important;
+    width: 10px !important;
+    
+    background-image: url('./../img/disclosure-indicator-horizontal.png') !important;
+    background-repeat: no-repeat;
+    background-position: -20px center !important;
+    
+    /* mimic minibutton style */
+    border-style: solid;
+    border-width: 1px;
+    border-right-color: #999;
+    border-bottom-color: #999;
+    border-left-color: #ccc;
+    border-top-color: #ccc;
+}
+
+.disclosure-button-horizontal:hover {
+    background-position: -30px center !important;
+}
+
+.disclosure-button-horizontal.open {
+    background-position: 0px center !important;
+}
+
+.disclosure-button-horizontal.open:hover {
+    background-position: -10px center !important;
+}
+
+.disclosure-button-vertical {
+    width: 2em !important;
+    height: 10px !important;
+    
+    background-image: url('./../img/disclosure-indicator-vertical.png') !important;
+    background-repeat: no-repeat;
+    background-position: center -20px !important;
+    
+    /* mimic minibutton style */
+    border-style: solid;
+    border-width: 1px;
+    border-right-color: #999;
+    border-bottom-color: #999;
+    border-left-color: #ccc;
+    border-top-color: #ccc;
+}
+
+.disclosure-button-vertical:hover {
+    background-position: center -30px !important;
+}
+
+.disclosure-button-vertical.open {
+    background-position: center 0px !important;
+}
+
+.disclosure-button-vertical.open:hover {
+    background-position: center -10px !important;
+}

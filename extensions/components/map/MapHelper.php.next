@@ -1,0 +1,179 @@
+<?php
+// vim: sw=4:sts=4:expandtab
+
+if (!defined("EOL")) {
+    define("EOL","\n");
+}
+
+require_once 'OntoWiki/Component/Helper.php';
+
+/**
+ * Helper class for the FOAF Editor component.
+ * Checks whether the current resource is an instance of foaf:Person
+ * and registers the FOAF Editor component if so.
+ *
+ * @category   OntoWiki
+ * @package    OntoWiki_extensions_components_map
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: FoafeditHelper.php 3053 2009-05-08 12:15:51Z norman.heino $
+ */
+class MapHelper extends OntoWiki_Component_Helper
+{
+
+    public function init()
+    {
+        $onSwitch = false;  // decide, if map should be on
+        if (isset($this->_privateConfig->switch->on) AND $this->_privateConfig->switch->on == 'ever') {
+            $onSwitch = true;
+        }
+
+        if (!$onSwitch) {
+            $onSwitch = $this->shouldShow();
+        }
+
+        if ($onSwitch) {
+            // register new tab
+            require_once 'OntoWiki/Navigation.php';
+            OntoWiki_Navigation::register('map', array(
+                        'controller' => 'map', 
+                        'action'     => 'display', 
+                        'name'       => 'Map', 
+                        'priority'   => 20,
+                        'active'     => false));
+        }
+    }
+
+    public function shouldShow () 
+    {
+		$this->_owApp = OntoWiki_Application::getInstance();
+
+		var_dump($this->_owApp);
+
+		if (!$this->_owApp->instances) {
+			// coppied from FilterController.php
+			$store       = $this->_owApp->erfurt->getStore();
+			$graph       = $this->_owApp->selectedModel;
+			$resource    = $this->_owApp->selectedResource;
+
+			$options = array(
+				'rdf_type' => (string) $resource,
+				'member_predicate' => EF_RDF_TYPE, // TODO make this variable for handling collections...
+				'withChilds' => true,
+				'limit' => 0,
+				'offset' => 0,
+				'shownProperties' => array(),
+				'shownInverseProperties' => array(),
+				'filter' => array()
+			);
+				/*
+				'shownProperties' => is_array($this->_session->shownProperties) ? $this->_session->shownProperties : array(),
+				'shownInverseProperties' => is_array($this->_session->shownInverseProperties) ? $this->_session->shownInverseProperties : array(),
+				'filter' => is_array($this->_session->filter) ? $this->_session->filter : array(),
+				 */
+
+			// instantiate model
+			require_once 'OntoWiki/Model/Instances.php';
+
+			$this->_owApp->instances   = new OntoWiki_Model_Instances($store, $graph, $options);
+		}
+
+		$query1 = clone $this->_owApp->instances->getResourceQuery();
+		$query1->removeAllOptionals()->deleteAllProjectionVars();
+		$query1
+			->setLimit(0)
+			->setOffset(0)
+			->deleteAllProjectionVars()
+			->removeAllOptionals();
+		$query2 = clone $query1;
+
+		$ggp1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+		$ggp2 = new Erfurt_Sparql_Query2_GroupGraphPattern(); 
+
+		$ggp1->addTriple(
+			$this->_owApp->instances->getResourceVar(),
+			'http://www.w3.org/2003/01/geo/wgs84_pos#long',
+			new Erfurt_Sparql_Query2_Var('long'));
+		$ggp1->addTriple(
+			$this->_owApp->instances->getResourceVar(),
+			'http://www.w3.org/2003/01/geo/wgs84_pos#lat',
+			new Erfurt_Sparql_Query2_Var('lat'));
+
+		$node = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
+		$ggp2->addTriple($this->_owApp->instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
+		$ggp2->addTriple($node, 'http://www.w3.org/2003/01/geo/wgs84_pos#long', new Erfurt_Sparql_Query2_Var('long2'));
+		$ggp2->addTriple($node, 'http://www.w3.org/2003/01/geo/wgs84_pos#lat', new Erfurt_Sparql_Query2_Var('lat2'));
+
+		//        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern(); 
+
+		//        $union->addElement($ggp1)->addElement($ggp2); // union doesn't work
+
+		$query1->addElement($ggp1);
+		$query2->addElement($ggp2);
+
+		$query1->setQueryType(Erfurt_Sparql_Query2::typeAsk);
+		$query2->setQueryType(Erfurt_Sparql_Query2::typeAsk);
+		//echo htmlentities($query);
+
+		//for some reason sparqlAsk wants a SimpleQuery
+		$simpleQuery1 = Erfurt_Sparql_SimpleQuery::initWithString($query1);
+		$simpleQuery2 = Erfurt_Sparql_SimpleQuery::initWithString($query2);
+		$ret1 = $this->_owApp->erfurt->getStore()->sparqlAsk($simpleQuery1);
+		$ret2 = $this->_owApp->erfurt->getStore()->sparqlAsk($simpleQuery2);
+
+		echo "query1:" . htmlentities($query1);
+		echo "query2:" . htmlentities($query2);
+
+		var_dump($ret1);
+		var_dump($ret2);
+
+		$ret1 = is_bool($ret1) ? $ret1 : false;
+		$ret2 = is_bool($ret2) ? $ret2 : false;
+		return $ret1 OR $ret2;
+		   /*
+			echo "no _owApp>instances";
+			return false;
+			*/
+
+        /* 
+        $owApp = OntoWiki_Application::getInstance();
+        if($owApp->selectedModel) {
+            require_once 'Erfurt/Sparql/SimpleQuery.php';
+
+            $store    = $owApp->erfurt->getStore();
+            $resource = (string) $owApp->selectedResource;
+
+            // build the query to get all marker resources
+            $query = new Erfurt_Sparql_SimpleQuery( );
+
+            $query->setProloguePart( 'SELECT ?p' );
+
+            $where = "WHERE {"      . EOL;
+            $where.= "	?s ?p ?o."  . EOL;
+            $where.= "	FILTER("    . EOL;
+
+            $latitude	= $this->_privateConfig->property->latitude->toArray();
+            $longitude	= $this->_privateConfig->property->longitude->toArray();
+
+            for ($i = 0; $i < count($latitude); $i++) {
+                $lat = $latitude[$i];
+                $long = $longitude[$i];
+                if( $i != 0 ) {
+                    $where.= " || ";
+                }
+                $where.= "		sameTerm(?p, <" . $lat . ">) ||" . EOL;
+                $where.= "		sameTerm(?p, <" . $long . ">)"   . EOL;
+            }
+
+            $where.= ") }";
+
+            $query->setWherePart($where);
+            $query->setLimit(1);
+            // ask for the properties
+            return $owApp->selectedModel->sparqlQuery($query);
+        } else {
+            return false;
+        }
+        */
+    }
+}
+

@@ -1,0 +1,14 @@
+enabled     = yes
+name        = Videolink
+description = "A plug-in that renders values of certain properties as video."
+author      = "Maier Christian, Niederstätter Michael"
+; url         = 
+
+[events]
+1 = onDisplayObjectPropertyValue
+2 = onDisplayLiteralPropertyValue
+
+[private]
+properties[] = "http://3ba.se/conferences/video"
+
+

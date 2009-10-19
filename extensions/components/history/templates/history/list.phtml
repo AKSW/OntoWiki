@@ -1,0 +1,68 @@
+<?php $translate = $this->_owApp->translate; ?>
+<?php $odd = false; ?>
+<?php if (!empty($this->historyArray)) { ?>
+<table class="separated-vertical" id="history-list">
+    <thead>
+    <!-- history table headers -->
+    <tr class="odd">
+        <th><?php echo $translate->_('select'); ?>          </th>
+        <th><?php echo $translate->_('ID'); ?>              </th>
+        <th><?php echo $translate->_('user'); ?>            </th>
+        <th><?php echo $translate->_('timestamp'); ?>       </th>
+        <th><?php echo $translate->_('action-type'); ?>     </th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- history table contents -->
+    <?php $i = 0; ?>      
+    <?php foreach ($this->historyArray as $abschnitt) :?>
+    <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> ">
+        <td class="selector">
+            <input
+                <?php if (!$this->rollbackAllowed) echo 'disabled'; ?> 
+                type="radio"
+                id="actionid-<?php echo $actionID = current($abschnitt) ?>"
+                name="actionid"
+                <?php 
+                    $chunk = array_chunk($this->idArray,$i++ + 1); 
+                    $idString = htmlentities(serialize($chunk[0]));
+                ?>
+                value="<?php echo $idString; ?>"/>
+        </td>
+        <td class="enumeration">
+            <label for="actionid-<?php echo current($abschnitt) ?>"><?php echo current($abschnitt) ?></label>
+        </td>
+        <td><?php echo $this->userArray[next($abschnitt)]; ?></td>
+        <td>
+            <?php $timestamp = date('c', (int) next($abschnitt)); ?>
+            <?php echo OntoWiki_Utils::dateDifference($timestamp) . ' ('.substr($timestamp,0,strlen($timestamp) - 6).')'; ?>
+        </td>
+        <td class="history-detail"><a><?php echo $translate->_('HISTORY_ACTIONTYPE_' . next($abschnitt)); ?></a>
+            <div style="display:none;" class="is-processing"><?php echo $actionID; ?></div>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+                    
+    </tbody>
+</table>
+<?php } ?>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#history-list .history-detail').livequery('click', function (event) {
+
+            var node = $(this).children('div');
+            if (node.hasClass('is-processing')) {
+                var param = node.text();
+                node.text('');
+                $.get(urlBase + "history/details/id/" + param, function(data){
+                        node.html(data);
+                        node.removeClass('is-processing');
+                    });
+            }
+            node.toggle();
+            event.stopPropagation();
+        });
+    });
+</script>

@@ -1,0 +1,188 @@
+table * {
+	vertical-align: top;
+}
+
+a {
+	cursor: pointer;
+}
+
+table.instanceTable th {
+	text-align: left;
+/*	background-color: #eee;*/
+}
+
+table.instanceTable > tbody > tr > td {
+	padding-top: 0.5em;
+}
+
+table.instanceTable td.property {
+	text-align: right;
+	font-style: italic;
+	padding-right: 5px;
+}
+
+table.instanceTable ul {
+	margin: 0px;
+	padding-left: 20px;
+}
+
+table.instanceTable {
+	width: 100%;
+}
+
+.instance .instance {
+	margin-left: 13px;
+	background-color: #ddd;
+}
+
+.instance .instance td {
+	font-size: 90%;
+}
+
+.instance .instance .instance {
+	background-color: #eee;
+}
+
+.instance .instance .instance .instance {
+	background-color: #fff;
+}
+
+#instanceEdit {
+	border-spacing: 0px;
+	width: 100%;
+}
+
+#instanceEdit input, #instanceEdit textarea {
+/*	width: 250px;*/
+	background-color: #fff;
+	font-size: 95%;
+/*	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;*/
+	padding: 0.1em 0;
+}
+
+#instanceEdit > tbody > tr, #instanceEdit > tr {
+	background-color: #eee;
+	vertical-align: top;
+}
+
+#instanceEdit > tbody > tr > td, #instanceEdit > tr > td {
+	padding: 0.6em;
+	border-bottom: 2px solid #fdfdfd;
+}
+
+#instanceEdit > tbody > tr.Property:hover, #instanceEdit > tr.Property:hover {
+	background-color: #cde;
+}
+
+#instanceView > tbody > tr, #instanceView > tr {
+	font-size: 95%;
+	background-color: #ffffff;
+}
+
+#instanceView > tbody > tr > td, #instanceView > tr > td {
+	padding: 0.3em;
+	border-bottom: 1px dotted #ddd;
+}
+
+table.calendar {
+	margin-top: 1em;
+	width: 100%;
+	height: 700px;
+	table-layout: fixed;
+	font-size: 90%;
+}
+
+.calendar .weekday0 {
+	background-color: #eee;
+	padding: 0.4em;
+}
+
+.calendar .weekday1 {
+	background-color: #f5f5f5;
+	padding: 0.4em;
+}
+
+.calendar .weekend0 {
+	background-color: #ddd;
+	padding: 0.4em;
+}
+
+.calendar .weekend1 {
+	background-color: #eaeaea;
+	padding: 0.4em;
+}
+
+#map {
+	margin-top: 0.5em;
+	width: 100%;
+	height: 750px;
+	font-size: 90%;
+}
+
+#map .instance td {
+	font-size: 80%;
+	padding: 0 3px;
+	border-bottom: 5px solid white;
+}
+
+textarea.query {
+	font-family: monospace;
+}
+
+.code_container {
+	border: 1px solid #bbb;
+	margin: 1em 2em;
+	padding: 0.4em;
+	cursor: pointer;
+/*	color: #02a;*/
+	max-height: 9.5em;
+	overflow: auto;
+}
+
+input.property {
+	width: 14em;
+}
+
+/*
+ * Autosuggest box
+ */
+div.autosuggest {
+/*	font-size: 85%;*/
+	z-index: 1000;
+	position: absolute;
+	background-color: #fff;
+/*	border: 1px solid #bbb;*/
+}
+
+div.autosuggest ul {
+	list-style-type: none;
+	list-style-position: outside;
+	padding-left: 0px;
+	margin-left: 0;
+	border: 1px solid #bbb;
+}
+
+div.autosuggest ul li.selected {
+	background-color: #eff9ff;
+}
+
+div.autosuggest ul li {
+	display: block;
+	padding: 0.2em;
+/*	height: 22px;*/
+	cursor: pointer;
+}
+
+span.formal {
+	display: none;
+}
+
+img.drop {
+	margin: 0.25em 0 0 0.5em;
+	cursor: pointer;
+}
+
+.window .status-bar p {
+	display: inline;
+}
+

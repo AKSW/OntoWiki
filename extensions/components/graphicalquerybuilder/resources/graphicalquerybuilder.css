@@ -1,0 +1,312 @@
+/**
+ *	Cosmetic Page Styles
+ *
+ *	These affects the appearance of the layout of the gqb
+ */
+
+span.gqb-button-add	{
+	background: url(images/icon-add-grey.png) no-repeat center; 
+}
+
+span.gqb-button-add:hover  {
+	background: url(images/icon-add.png)  no-repeat center; 
+}
+
+span.gqb-button-delete	{
+	background: url(../extensions/components/graphicalquerybuilder/resources/images/icon-delete-grey.png) no-repeat center; 
+}
+
+span.gqb-button-deletequery	{
+	background: url(../extensions/components/graphicalquerybuilder/resources/images/icon-delete-grey-small.png) no-repeat center; 
+	height: 10px ;
+	width: 10px ;
+	margin-left: 3px;
+	cursor:default;
+}
+span.gqb-button-deletequery:hover	{
+	background: url(../extensions/components/graphicalquerybuilder/resources/images/icon-delete-small.png) no-repeat center; 
+	height: 10px ;
+	width: 10px ;
+	margin-left: 3px;
+}
+
+span.gqb-button-delete:hover  {
+	background: url(../extensions/components/graphicalquerybuilder/resources/images/icon-delete.png)  no-repeat center; 
+}
+
+span.gqb-button-edit	{
+	background: url(images/icon-edit-grey.png) no-repeat center; 
+}
+
+span.gqb-button-edit:hover  {
+	background: url(images/icon-edit.png)  no-repeat center; 
+}
+
+a.gqb-button-sortasc {
+	width:      16px;
+	height:     16px;
+	z-index:	   2;
+	cursor:     pointer;
+}
+
+a.gqb-button-sortdesc {
+	width:      16px;
+	height:     16px;
+	z-index:	   2;
+	cursor:     pointer;
+}
+
+span.gqb-button {
+	float:		right;
+	width: 		16px;
+	height:		16px;
+	z-index:	2;
+	cursor: 	pointer;
+}
+
+hr.gqbhorizontalruler {
+	margin:		10px;
+	border:none;
+	border-top: 1px dotted #9000E0;
+	background-color: #FFFFFF;
+	height: 1px;
+}
+
+a.gqbresultsperpageselector {
+  font-size: 10pt;
+}
+
+a.gqbcurrentresultsperpageselector {
+	font-size: 11pt;
+	cursor: default;
+	color: black;
+	text-decoration: underline;
+}
+
+a.gqb-button-movecolleft {
+	float: left;
+	width: 5px;
+	height: 35px;
+	padding-right: 3px;
+}
+
+.gqb-button-movecolleft image, .gqb-button-movecolright image {
+	position: absolute;
+}
+
+a.gqb-button-movecolright {
+	float: right;
+	width: 5px;
+	height: 35px;
+	padding-left: 3px;
+}
+
+span.gqbcolumnheader {
+	background-color: #FFFFFF;
+	font-size: 11pt;
+	text-transform: capitalize;
+}
+
+/*
+span.gqbcolumnheader:hover {
+	padding-right: 16px;
+	background: #EFF9FF url(images/icon-edit.png) no-repeat right;
+}
+*/
+
+#gqb-add-button		{ background: url(images/icon-add-grey.png) no-repeat center; }
+#gqb-add-button:hover	{ background: url(images/icon-add.png)  no-repeat center; }
+
+#gqbcanvas {
+	border: 1px grey dashed; 
+	background: #EEEEEE;
+	min-height: 350px;
+	padding: 0px;
+	overflow:auto;
+}
+
+.gqb-selector{
+	width:		25px;
+	size:			1;
+} 
+
+.gqbbutton {
+	padding: 3px;
+	border: 5px;
+}
+
+#gqb-side-panel .content{
+	display: block;
+	max-height: 355px;
+	overflow: auto;
+}
+
+.gqbclassrestrictionvalueselector {
+	width: 60px;
+}
+
+#gqbbuttoncontrolpanel{
+	margin: 3px;
+	border: 1px;
+	padding: 1px;
+	padding-bottom: 5px;
+	height: 30px;
+}
+
+#gqbShowClassButton, #cancelrestrictionbutton {
+	color: red;
+}
+
+#gqbprevresultspagebutton {
+	float: left;
+}
+
+#gqbnextresultspagebutton {
+	float: right;
+}
+
+#gqbclassrestrictionsnotexist {
+	font-style: italic;
+	color: grey;
+}
+
+#gqbwait {
+	 background: url(images/spinner.gif) no-repeat right;
+	 height: 32px;
+	 width: 32px;
+}
+
+#gqbresultwait {
+	 background: url(images/spinner.gif) no-repeat right;
+	 height: 32px;
+	 width: 32px;
+	 margin: 20px auto;
+}
+
+#gqbDialogBg {
+	position: relative;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 10000;
+	background-color:#888888;
+	display: none;
+	opacity: 0.13;
+	filter: alpha(opacity=13);
+}
+
+#gqbDialogLinkSel, #gqbDialogUnionInt {
+	position: fixed;
+	left: 400px;
+	top: 300px;
+	z-index: 15000;
+	color: black;
+	background-color: white;
+	display: none;
+	padding: 5px;
+	border: 2px solid grey;
+}
+
+#gqbDialogLinkSel {
+	width: 300px;
+	height: 80px;
+}
+
+#gqbDialogUnionInt {
+	width: 260px;
+	height: 55px;
+}
+/*
+table.tablesorter {
+	font-family:arial;
+	background-color: #CDCDCD;
+	margin:10px 0pt 15px;
+	font-size: 8pt;
+	width: 100%;
+	text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #e6EEEE;
+	border: 1px solid #FFF;
+	font-size: 8pt;
+	padding: 4px;
+}
+table.tablesorter thead tr .header {
+	background-image: url(images/bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: move;
+}
+table.tablesorter tbody td {
+	color: #3D3D3D;
+	padding: 4px;
+	background-color: #FFF;
+	vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+	background-color: #F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(images/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(images/desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+	background-color: #8dbdd8;
+}
+*/
+div.title {
+	text-align: center;
+}
+
+#gqbinfoheader {
+	text-align: left;
+}
+
+#gqbresultsparqlquery {
+	display: none;
+}
+#gqbresultquerydesc {
+	display: none;
+}
+#gqbPropertySwitcher {
+	color: black;
+	cursor: pointer;
+}
+#gqbshowdebugpanel {
+	margin-top: 15px;
+}
+#gqbprintbutton {
+	margin-bottom: 0px;
+	float: right;
+}
+
+#gqbreloadbutton {
+	margin-bottom: 0px;
+	float: left;
+}
+/*
+#gqbresulttable {
+	margin-top: 10px;
+}
+
+#gqbresulttable th {
+	border: 1px solid black;
+	background: #EFEFEF;
+}
+
+#gqbresulttablehead {
+	padding: 0px;
+}
+
+#gqbresulttable td {
+	border: 1px solid black;
+}
+*/
+#gqbinfo{
+	display: block;
+	max-height: 150px;
+	overflow: auto;
+}

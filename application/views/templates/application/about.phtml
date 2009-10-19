@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * OntoWiki about template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: about.phtml 2769 2009-04-06 14:57:58Z norman.heino $
+ */
+
+?>
+<img class="float-right" src="<?php echo $this->themeUrlBase ?>images/ontowiki-logo.png" alt="ontowiki logo"/>
+<?php foreach ($this->data as $name => $section): ?>
+<h2 class="clearfloat"><?php echo $name ?></h2>
+    <table class="separated-vertical">
+        <?php foreach ($section as $name => $value): ?>
+            <tr>
+                <td width="35%"><?php echo $name ?></td>
+                <td><?php echo $value ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endforeach; ?>
+

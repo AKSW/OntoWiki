@@ -1,0 +1,2 @@
+DB.DBA.VAD_PACK ('vad/ow_vad_sticker.xml'  , ''  ,  'vad/ontowiki_fs.vad'  );
+shutdown;

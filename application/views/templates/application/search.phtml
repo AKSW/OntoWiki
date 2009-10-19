@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * OntoWiki search results template
+ * This template will be replace by the default resource instances template in the future
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: search.phtml 3414 2009-06-27 09:44:05Z sebastian.dietzold $
+ */
+
+?>
+<?php $odd = true; ?>
+<table class="separated-vertical">
+    <?php if ($this->has('caption')): ?>
+        <caption><?php echo $this->caption ?></caption>
+    <?php endif; ?>
+    
+    <?php if ($this->has('header')): ?>
+        <tr>
+            <?php foreach ($this->header as $headerField): ?>
+                <th><?php echo $headerField ?></th>
+            <?php endforeach; ?>
+        </tr>
+    <?php endif; ?>
+    
+    <?php foreach ($this->data as $row): ?>
+        <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+            <td><a href="<?php echo $row['link'] ?>"><?php echo $row['name'] ?></a></td>
+        </tr>
+    <?php endforeach; ?>
+</table>

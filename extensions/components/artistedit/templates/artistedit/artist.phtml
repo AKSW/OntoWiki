@@ -1,0 +1,140 @@
+<?php
+/* This is a template for editing a mo:MusicArtist
+ *   note most the code is lifted from ~/application/views/templates/resource/properties.phtml
+ *   therefore, the artist editor page looks identical to the properties page
+ *   the only difference being when one edits the resource, a set of 'default'
+ *   properties are suggested to the end user.
+ *
+ *   These default properties are set here at the bottom of the page in a hidden
+ *   html table using RDFa
+ *
+ *   @author kurtjx <kurtjx@gmail.com>
+ */ ?>
+<?php $flag = false; ?>
+<?php //set the about URI as in properties.phtml ?>
+<span about="<?php echo $this->resourceUri ?>" style="display: none" class="about_span"></span>
+<?php if ($this->has('predicates')): ?>
+
+
+
+	<?php //configure our namespaces as in properties.phtml ?>
+	<?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
+	<table class="separated-vertical rdfa" about="<?php echo $this->resourceUri ?>"
+	    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+	        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+	    <?php endforeach; ?>>
+
+	<?php foreach ($this->predicates as $graph => $predicatesForGraph): ?>
+        <?php $current++; ?>
+        <?php if (count($this->predicates[$graph]) > 0): /* has resource predicates from graph at all? */ ?>
+            <?php $flag = true; ?>
+        <tbody update:from="<?php echo $graph ?>" id="table-group-<?php echo $current ?>">
+            <?php if (($graphCount > 1) || ($graph != $this->graphUri)): ?>
+                <?php /* show tbody caption only if statements from more than one graph or not from the selected graph */ ?>
+                <tr class="grouptitle">
+                    <th colspan="2">
+                        <a class="toggle"></a>
+                        <?php //echo ($graph != $this->graphUri) ? $this->_('Imported from ') : '' ?>
+                        <?php echo $this->graphs[$graph] ?>
+                    </th>
+                </tr>
+            <?php endif; ?>
+        <?php foreach ($predicatesForGraph as $uri => $predicate): ?>
+            <?php $currentPredicate = $this->predicates[$graph][$uri] ?>
+            <tr>
+                <td width="25%">
+                    <a class="hasMenu"
+                       about="<?php echo $currentPredicate['uri'] ?>"
+                       href="<?php echo $currentPredicate['url'] ?>"><?php echo $currentPredicate['title'] ?></a>
+                </td>
+                <?php if (count($this->values[$graph][$uri]) > 1): ?>
+                <td>
+                    <ul class="bullets-none">
+                        <?php foreach ($this->values[$graph][$uri] as $entry): ?>
+                            <?php if ($entry['url']): ?>
+                                <li>
+                                    <a resource="<?php echo $entry['uri'] ?>"
+                                       rel="<?php echo $currentPredicate['curi'] ?>"
+                                       class="expandable hasMenu" href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
+                                </li>
+                            <?php else: ?>
+                                <li property="<?php echo $currentPredicate['curi'] ?>"
+                                    content="<?php echo $this->escape($entry['content']) ?>"
+                                    <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
+                                        xml:lang="<?php echo $entry['lang'] ?>"
+                                    <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
+                                        datatype="<?php echo $entry['datatype'] ?>"
+                                    <?php endif; ?>
+                                    ><?php
+                                    echo $entry['object']
+                                ?></li>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        <?php if (isset($currentPredicate['has_more']) && $currentPredicate['has_more']): ?>
+                            <a href="<?php echo $currentPredicate['has_more_link'] ?>">[<?php echo $this->_('more') ?>]</a>
+                        <?php endif; ?>
+                    </ul>
+                </td>
+                <?php else: ?>
+                    <?php $entry = current($this->values[$graph][$uri]) ?>
+                <td>
+                    <?php if ($entry['url']): ?>
+                        <?php if ($entry['uri']): ?>
+                            <a rel="<?php echo $currentPredicate['curi'] ?>"
+                               class="expandable hasMenu"
+                               resource="<?php echo $entry['uri'] ?>"
+                               href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
+                        <?php else: ?>
+                            <a rel="<?php echo $currentPredicate['curi'] ?>"
+                               href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <span property="<?php echo $currentPredicate['curi'] ?>"
+                              content="<?php echo $this->escape($entry['content']) ?>"
+                              <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
+                                    xml:lang="<?php echo $entry['lang'] ?>"
+                                <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
+                                  datatype="<?php echo $entry['datatype'] ?>"
+                              <?php endif; ?>
+                        ><?php echo $entry['object'] ?></span>
+                    <?php endif; ?>
+                </td>
+                <?php endif; ?>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+    <?php endif; ?>
+    <?php endforeach; ?>
+	</table>
+<?php endif;?>
+
+<?php /*this non-displayed table serves as a template providing a set of default
+			properties to edit.
+		To add a another template property, just add another row to this table w/ the
+			appropriate RDFa
+		TODO: use Fresnel or some new vocab to store these default props in the triple
+				store instead of hard-coding them here
+		*/ ?>
+<?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
+<table class="separated-vertical rdfa" style="display:none" about="<?php echo $this->resourceUri ?>"
+    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+    <?php endforeach; ?>>
+	<tbody update:from="<?php echo($this->graphUri); ?>" id="table-group-0">
+		<tr>
+		  <td><a about="http://purl.org/dc/terms/description" href="#">description</a></td>
+		  <td><span property="<?php echo($this->namespaces['http://purl.org/dc/terms/']);?>:description"
+                    content=""></span></td>
+		</tr>
+		<tr>
+		  <td><a about="http://xmlns.com/foaf/0.1/depiction" href="#">depiction</a></td>
+		  <td><span property="<?php echo($this->namespaces['http://xmlns.com/foaf/0.1/']);?>:depiction"
+		  		    content=""></span></td>
+		</tr>
+		<tr>
+		  <td><a about="http://xmlns.com/foaf/0.1/based_near" href="#">home town</a></td>
+		  <td><span property="<?php echo($this->namespaces['http://xmlns.com/foaf/0.1/']);?>:based_near"
+		  		    content=""></span></td>
+		</tr>
+	</tbody>
+</table>

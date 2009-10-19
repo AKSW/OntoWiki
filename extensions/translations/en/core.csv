@@ -1,0 +1,103 @@
+#
+# OntoWiki English language translation
+# Encoding:  UTF-8
+# Separator: ;
+# Version:   $Id: core.csv 4282 2009-10-12 11:20:57Z c.riess.dev $
+#
+OntoWiki – Collaborative Knowledge Engineering;OntoWiki – Collaborative Knowledge Engineering
+Bla bla, blub!;Bla bla, blubb!
+I am %1$s years old.;I am %1$s years old.
+
+moments ago;moments ago
+approx. 1 minute ago;one minute ago
+approx. %d minutes ago;%d minutes ago
+approx. 1 hour ago;one hour ago
+approx. %d hours ago;%d hours ago
+approx. %d days ago;%d days ago
+
+# test
+page1;Page 1
+page2;Page 2
+
+Knowledge Bases
+Add Model
+Languages (Tagged Literals)
+none
+Classes
+Show Empty Classes
+Hide Empty Classes
+Show System Classes
+Hide System Classes
+Show Hidden Classes
+Hide Hidden Classes
+Most Popular | Most Active
+Rec. Changes
+Rec. Comments
+No matches.
+Properties
+Instances
+Map
+Calendar
+History
+Discussion
+Edit
+Monday
+Tuesday
+Wednesday
+Thursday
+Friday
+Saturday
+Sunday
+Nr.
+Date
+User
+Model
+Action
+Rollback
+Login
+Incorrect login data!
+User
+Username
+Password
+Register
+Submit
+Logout
+Edit registration
+Actions
+Export
+Inline
+Editing
+Commenting
+Link to this page
+Add Class
+Add Instance
+Show Properties
+Filter
+Combine Filters (Conjunction)
+Add Instance
+Merge
+Visit resource on the web
+Create instances from property value by regexp
+Similar Instances
+Rating
+Average Rating
+Your Rating
+Instances Linking Here
+Usage as Property
+Instances
+Values
+Search | OntoWiki
+Search Text
+Submit
+Search All Knowledge Bases
+Search
+Add Property
+Submit Values
+SPARQL Query Editor
+Result Options
+Table
+SPARQL Query Results XML Format
+Render Ressources as OntoWiki Links
+Create New Knowledge Base
+FOAFSSL;FOAF+SSL
+Forgot your password?

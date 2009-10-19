@@ -1,0 +1,85 @@
+<?php /*if(isset($this->count) && isset($this->limit) && isset($this->itemsOnPage)) { require_once 'OntoWiki/Pager.php'; ?>
+<div class="messagebox statusbar">
+<div class="statustool"><?php echo OntoWiki_Pager::get($this->count, $this->limit, $this->itemsOnPage) ?></div>
+<?php if(isset ($this->numResultsMsg)) : ?><div class="statustool"><?php echo $this->numResultsMsg; ?></div><?php endif; ?>
+<?php if(isset ($this->timeMsg)) : ?><div class="statustool"><?php echo $this->timeMsg; ?></div><?php endif; ?>
+</div>
+<br />
+<?php } */ $odd = true; ?>
+<?php if ($this->has('instanceInfo')): ?>
+    <table class="separated-vertical">
+        <?php if (!empty($this->propertyInfo)): ?>
+            <tr>
+                <th></th><th></th><th></th>
+                <?php foreach ($this->propertyInfo as $property): ?>
+                    <th><a href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a><?php if($property['inverse']){ echo "<sup>-1</sup>";} ?></th>
+                <?php endforeach; ?>
+            </tr>
+        <?php endif; ?>
+        <?php $i = 0 ?>
+        <?php foreach ($this->instanceInfo as $instanceUri => $instance): ?>
+            <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+                <td class="selector">
+                    <input type="checkbox" id="selector-<?php echo ++$i ?>" name="r[]" value="<?php echo $instanceUri ?>"/>
+                </td>
+                <td class="enumeration"><label for="selector-<?php echo $i ?>"><?php echo $this->start++ ?>.</label></td>
+                <td>
+                    <a class="hasMenu expandable" 
+                       about="<?php echo $instanceUri ?>" 
+                       typeof="<?php echo $this->type ?>"
+                       href="<?php echo $instance['url'] ?>">
+                        <?php echo $instance['title'] ?>
+                    </a><br />
+                    <?php if (isset($this->instanceData[$instanceUri])): ?>
+                        <?php if (count($this->instanceData[$instanceUri]['__TYPE']) > 1): ?>
+                            <?php $j = 0; $count = count($this->instanceData[$instanceUri]['__TYPE']) ?>
+                            <?php foreach ($this->instanceData[$instanceUri]['__TYPE'] as $type): ?>
+                                <?php echo $type['value'] . ($count > ++$j ? ', ' : '') ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <?php echo $this->instanceData[$instanceUri]['__TYPE'][0]['value'] ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </td>
+                <?php foreach ($this->propertyInfo as $property): ?>
+                    <td>
+                        <?php if (array_key_exists($instanceUri, $this->instanceData) && 
+                                  array_key_exists($property['varName'], $this->instanceData[$instanceUri]) &&
+                                  !empty($this->instanceData[$instanceUri][$property['varName']])): ?>
+                            <?php if (count($this->instanceData[$instanceUri][$property['varName']]) > 1): ?>
+                                <ul>
+                                <?php $i=0; foreach ($this->instanceData[$instanceUri][$property['varName']] as $property): ?>
+                                    <?php if($i==OW_SHOW_MAX): //ignoring OW_SHOW_MAX is probably bad - but the remaining data is hidden with js
+                                    
+                                    		// this is probably not cool but with appendScript this code would not be delivered at an ajax req 
+                                    	?>
+                                    	<script language="JavaScript">$(document).ready(function(){$("<span class=\"all-ommited-symbol\">[...] <a class=\"all-opener\">show</a></span>").insertBefore($(".all-omitted-data").hide()); $(".all-opener").click(function(){$(this).parent().next().show(); $(this).parent().remove();})});</script>
+										<div class="all-omitted-data">
+										<?php endif; 
+										if ($property['url']): ?>
+                                        	<li><a href="<?php echo $property['url'] ?>"><?php echo $property['value'] ?></a></li>
+	                                    <?php else: ?>
+	                                        <li><?php echo $property['value'] ?></li>
+	                                    <?php endif; ?>
+                                <?php $i++; if($i==101) break; 
+                                	endforeach; 
+                                if($i>=OW_SHOW_MAX):?></div><?php endif; ?>
+                                </ul>
+                            <?php else: ?>
+                                <?php if ($this->instanceData[$instanceUri][$property["varName"]][0]['url']): ?>
+                                    <a href="<?php echo $this->instanceData[$instanceUri][$property["varName"]][0]['url'] ?>">
+                                        <?php echo $this->instanceData[$instanceUri][$property["varName"]][0]['value'] ?>
+                                    </a>
+                                <?php else: ?>
+                                    <?php echo $this->instanceData[$instanceUri][$property["varName"]][0]['value'] ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </td>
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php else: ?>
+    <p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
+<?php endif; ?>

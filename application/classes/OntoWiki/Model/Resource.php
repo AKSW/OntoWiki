@@ -1,0 +1,348 @@
+<?php
+
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @category   OntoWiki
+ * @package    OntoWiki_Model
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @version $Id: Resource.php 4311 2009-10-14 17:14:10Z jonas.brekle@gmail.com $
+ */
+
+require_once 'OntoWiki/Model.php';
+
+/**
+ * OntoWiki resource model class.
+ *
+ * Represents a resources and its properties.
+ *
+ * @category   OntoWiki
+ * @package    OntoWiki_Model
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
+ */
+class OntoWiki_Model_Resource extends OntoWiki_Model
+{
+    /**
+     * The resource URI
+     * @var string
+     */
+    protected $_uri = null;
+    
+    /**
+     * Array with predicate data
+     * @var array
+     */
+    protected $_predicateResults = null;
+    
+    /**
+     * Array with value data
+     * @var array
+     */
+    protected $_valueResults = null;
+    
+    /**
+     * Whether data has been fetched
+     * @var boolean
+     */
+    protected $_queryResults = null;
+    
+    /**
+     * Array of predicates to be ignored
+     * @var array
+     */
+    protected $_ignoredPredicates = array(EF_RDF_TYPE);
+    
+    /**
+     * Constructor
+     */
+    public function __construct(Erfurt_Store $store, $graph, $uri, $options = array())
+    {
+        parent::__construct($store, $graph);
+        $this->_uri = (string)$uri;
+        
+        require_once 'OntoWiki/Model/TitleHelper.php';
+        $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
+    }
+    
+    /**
+     * Returns an array of predicates and predicate infos for the current resource.
+     *
+     * @return array
+     */
+    public function getPredicates()
+    {
+        if (null === $this->_predicateResults) {
+            $this->_predicateResults = array();
+            
+            // get results
+            $results = $this->getQueryResults();
+            
+            // url object to build URLs
+            require_once 'OntoWiki/Url.php';
+            $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+            
+            foreach ($results as $graph => $resultsForGraph) {
+                // set up title helper
+                $this->_titleHelper->addResources($resultsForGraph, 'predicate');
+                $this->_titleHelper->addResources($resultsForGraph, 'object');
+            }
+            
+            foreach ($results as $graph => $resultsForGraph) {                
+                $this->_predicateResults[$graph] = array();
+                
+                foreach ($resultsForGraph as $row) {
+                    $predicateUri = $row['predicate']['value'];
+
+                    if (!array_key_exists($predicateUri, $this->_predicateResults)) {
+                        // title
+                        $predicateTitle = $this->_titleHelper->getTitle($predicateUri, $this->_lang);
+                        // url
+                        $url->setParam('r', $predicateUri, true);
+
+                        require_once 'OntoWiki/Utils.php';
+                        $this->_predicateResults[$graph][$predicateUri] = array(
+                            'uri'      => $predicateUri, 
+                            'curi'     => OntoWiki_Utils::compactUri($predicateUri), 
+                            'url'      => (string)$url, 
+                            'title'    => $predicateTitle, 
+                            'has_more' => false
+                        );
+                    }
+                }
+            }
+        }
+        
+        return $this->_predicateResults;
+    }
+    
+    public function getQueryResults()
+    {
+        // query if necessary
+        if (null === $this->_queryResults) {
+            $this->_queryResults = array();
+            
+            foreach ($this->_buildQueries() as $graph => $query) {
+                $options = array(
+                    'result_format'          => 'extended', 
+                    'use_owl_imports'        => false,
+                    'use_additional_imports' => false
+                );
+                
+                $currentResults = $this->_store->sparqlQuery($query, $options);                
+                
+                if (isset($currentResults['bindings'])) {
+                    $this->_queryResults[$graph] = $currentResults['bindings'];
+                } else {
+                    $this->_queryResults[$graph] = array();
+                }
+            }
+            
+            // remove empty results
+            $this->_queryResults = array_filter($this->_queryResults);
+            // var_dump($this->_queryResults);
+        }
+        
+        return $this->_queryResults;
+    }
+    
+    /**
+     * Returns an array of predicate values for the current resource.
+     * The array is indexed with the predicate's URIs.
+     *
+     * @return array
+     */
+    public function getValues()
+    {
+        if (null === $this->_valueResults) {
+            $this->_valueResults = array();
+            
+            // get results
+            $results = $this->getQueryResults();
+            
+            // load predicates first
+            $this->getPredicates();
+            
+            // URL object to build URLs
+            require_once 'OntoWiki/Url.php';
+            $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+            
+            // keep track of URI objects already used
+            $objects = array();
+            
+            foreach ($results as $graph => $resultsForGraph) {
+                $this->_valueResults[$graph] = array();
+                
+                foreach ($resultsForGraph as $row) {
+                    $predicateUri = $row['predicate']['value'];
+
+                    if (!array_key_exists($predicateUri, $objects)) {
+                        $objects[$predicateUri] = array();
+                    }
+
+                    // create space for value information if not exists
+                    if (!array_key_exists($predicateUri, $this->_valueResults[$graph])) {
+                        $this->_valueResults[$graph][$predicateUri] = array();
+                    }
+
+                    // default values
+                    $value = array(
+                        'content'  => null, 
+                        'object'   => null, 
+                        'datatype' => null, 
+                        'lang'     => null, 
+                        'url'      => null, 
+                        'uri'      => null, 
+                        'curi'     => null
+                    );
+
+                    switch ($row['object']['type']) {
+                        case 'uri':
+                            // every URI objects is only used once for each statement
+                            if (in_array($row['object']['value'], $objects[$predicateUri])) {
+                                continue;
+                            }
+
+                            // URL
+                            $url->setParam('r', $row['object']['value'], true);
+                            $value['url'] = (string)$url;
+
+                            // URI
+                            $value['uri'] = $row['object']['value'];
+
+                            // title
+                            $title = $this->_titleHelper->getTitle($row['object']['value'], $this->_lang);
+
+                            /**
+                             * @trigger onDisplayObjectPropertyValue Triggered if an object value of some 
+                             * property is returned. Plugins can attach to this trigger in order to modify 
+                             * the value that gets displayed.
+                             * Event payload: value, property, title and link
+                             */
+                            // set up event
+                            require_once 'Erfurt/Event.php';
+                            $event = new Erfurt_Event('onDisplayObjectPropertyValue');
+                            $event->value    = $row['object']['value'];
+                            $event->property = $predicateUri;
+                            $event->title    = $title;
+                            $event->link     = (string) $url;
+
+                            // trigger
+                            $value['object'] = $event->trigger();
+
+                            if (!$event->handled()) {
+                                // object (modified by plug-ins)
+                                $value['object'] = $title;
+                            }
+
+                            array_push($objects[$predicateUri], $row['object']['value']);
+
+                            break;
+
+                        case 'typed-literal':
+                            require_once 'OntoWiki/Utils.php';
+                            $value['datatype'] = OntoWiki_Utils::compactUri($row['object']['datatype']);
+                            /* fallthrough */
+
+                        case 'literal':
+                            // original (unmodified) for RDFa
+                            $value['content'] = $row['object']['value'];
+
+                            /**
+                             * @trigger onDisplayLiteralPropertyValue Triggered if a literal value of some 
+                             * property is returned. Plugins can attach to this trigger in order to modify 
+                             * the value that gets displayed.
+                             */
+                            require_once 'Erfurt/Event.php';
+                            $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                            $event->value    = $row['object']['value'];
+                            $event->property = $predicateUri;
+
+                            // trigger
+                            $value['object'] = $event->trigger();
+
+                            // set default if event has not been handled
+                            if (!$event->handled()) {
+                                $value['object'] = $row['object']['value'];
+                            }
+
+                            // set literal language
+                            if (isset($row['object']['xml:lang'])) {
+                                $value['lang'] = $row['object']['xml:lang'];
+                            }
+
+                            break;
+                    }
+
+                    // push it only if it doesn't exceed number of items to display
+                    if (count($this->_valueResults[$graph][$predicateUri]) < OW_SHOW_MAX) {
+                        array_push($this->_valueResults[$graph][$predicateUri], $value);
+                    } else {
+                        $this->_predicateResults[$graph][$predicateUri]['has_more'] = true;
+                        
+                        if (!isset($this->_predicateResults[$graph][$predicateUri]['has_more_link'])) {
+                            require_once 'OntoWiki/Url.php';
+                            $hasMoreUrl = new OntoWiki_Url(array('controller' => 'model', 'action' => 'query'));
+                            $query = <<<EOT
+SELECT ?value 
+FROM <$this->_graph> 
+WHERE {
+<$this->_uri> <$predicateUri> ?value . 
+}
+EOT;
+                            $hasMoreUrl->setParam(
+                                'query', 
+                                $query
+                            )->setParam('immediate', '1');
+                            $this->_predicateResults[$graph][$predicateUri]['has_more_link'] = (string)$hasMoreUrl;
+                        }
+                    }
+                }
+            }
+
+            return $this->_valueResults;
+        }
+    }
+    
+    /**
+     * Builds the SPARQL query
+     */
+    private function _buildQueries()
+    {
+        require_once "Erfurt/Sparql/Query2.php";
+        $query  = new Erfurt_Sparql_Query2();
+        
+        $uri = new Erfurt_Sparql_Query2_IriRef($this->_uri);
+        $pred_var = new Erfurt_Sparql_Query2_Var("predicate");
+        $obj_var = new Erfurt_Sparql_Query2_Var("object");
+        
+        $query->getWhere()
+        	->addElement(new Erfurt_Sparql_Query2_Triple($uri, $pred_var, $obj_var))
+   			->addElement(new Erfurt_Sparql_Query2_Filter(new Erfurt_Sparql_Query2_UnaryExpressionNot(new Erfurt_Sparql_Query2_isBlank($obj_var))));
+
+        if(!empty($this->_ignoredPredicates)){
+            $or = new Erfurt_Sparql_Query2_ConditionalAndExpression();
+            $filter = new Erfurt_Sparql_Query2_Filter($or);
+            foreach($this->_ignoredPredicates as $ignored){
+                    $or->addElement(new Erfurt_Sparql_Query2_UnaryExpressionNot(new Erfurt_Sparql_Query2_sameTerm($pred_var, new Erfurt_Sparql_Query2_IriRef($ignored))));
+            }
+            $query->getWhere()->addElement($filter);
+        }
+        $query->getOrder()->add($pred_var);
+        
+        $query->setDistinct(true)->addProjectionVar($pred_var)->addProjectionVar($obj_var);
+
+        $queries = array();
+        $closure = Erfurt_App::getInstance()->getStore()->getImportsClosure($this->_model->getModelUri(), true);
+        $queryGraphs = array_merge(array($this->_graph), $closure);
+
+        foreach ($queryGraphs as $currentGraph) {
+            $query->setFroms(array($currentGraph));
+            $queries[$currentGraph] = clone $query;
+        }
+        
+        return $queries;
+    }
+}

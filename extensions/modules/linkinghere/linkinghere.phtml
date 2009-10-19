@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * OntoWiki linkinghere module template
+ * TODO: use rev (with curie'd property) and resource instead of only about?
+ *
+ * @version $Id: linkinghere.phtml 3396 2009-06-26 15:01:44Z sebastian.dietzold $
+ */
+
+?>
+<?php if (!empty($this->instances)): ?>
+	<ul class="bullets-none separated-vertical">
+	    <?php foreach ($this->instances as $property => $instances): ?>
+	        <li><?php echo $this->properties[$property] ?><sup>-1</sup>
+	            <ul class="bullets-none separated-horizontal">
+	                <?php $i = 0; ?>
+	                <?php foreach ($instances as $instance): ?>
+	                    <?php if (++$i == count($instances)): ?>
+	                        <li class="last-child"><a class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
+	                    <?php else: ?>
+	                        <li><a  class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
+	                    <?php endif; ?>
+                    <?php endforeach; ?>
+	            </ul>
+	        </li>
+	    <?php endforeach; ?>
+	</ul>
+<?php else: ?>
+	<p class="messagebox info"><?php echo $this->_($this->message) ?></p>
+<?php endif; ?>

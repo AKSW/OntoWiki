@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * OntoWiki window partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $Id: window.phtml 3690 2009-07-16 08:16:06Z pfrischmuth $
+ */
+
+?>
+<div class="window<?php echo ' ' . $this->cssClasses ?>"<?php echo ($this->cssId ? ' id="' . $this->cssId . '"' : '') ?>>
+    
+    <?php if ($this->has('headinglevel')): ?>
+        <h<?php echo $this->headinglevel ?> class="title"><?php echo $this->_($this->title) ?></h<?php echo $this->headinglevel ?>>
+    <?php else: ?>
+        <h1 class="title"><?php echo $this->_($this->title) ?></h1>
+    <?php endif; ?>
+    
+    <div class="slidehelper">
+        <?php if (!$this->has('innerwindows')): ?>
+            <?php if (isset($this->messages)): ?>
+                <?php foreach ($this->messages as $message): ?>
+                    <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+        <?php if ($this->has('navigation')): ?>
+            <?php echo $this->partial('partials/navigation.phtml', array('navigation' => $this->navigation)) ?>
+        <?php endif; ?>
+    
+        <?php if ($this->has('innerwindows')): ?>
+            <div class="content has-innerwindows">
+                <div class="innercontent">
+                    <?php if (isset($this->messages)): ?>
+                        <?php foreach ($this->messages as $message): ?>
+                            <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <?php echo $this->content ?>
+                </div><!-- .innercontent -->
+                <div class="innerwindows">
+                    <?php echo $this->innerwindows ?>
+                </div><!-- .innerwindows -->
+            </div>
+        <?php else: ?>
+            <?php if (is_array($this->content)): ?>
+                <?php foreach ($this->content as $key => $value): ?>
+                    <div class="content" id="<?php echo $key ?>">
+                        <?php echo $value ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="content">
+                    <?php if (isset($this->tools)): ?>
+                        <?php echo $this->partial('partials/toolbar.phtml', $this->tools) ?>
+                    <?php endif; ?>
+                    <?php echo $this->content ?>
+                </div><!-- .window .content -->
+            <?php endif; ?>
+        <?php endif; ?>
+    
+        <?php if ($this->has('menu')): ?>
+            <ul class="menu">
+                <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->menu)) ?>
+            </ul>
+        <?php endif; ?>
+        
+        <?php if ($this->has('contextmenu')): ?>
+            <div class="contextmenu">
+                <?php echo $this->partial('partials/contextmenu.phtml', array('contextmenu' => $this->contextmenu)) ?>
+            </div>
+        <?php endif; ?>
+    
+    </div><!-- .slidehelper -->
+    
+</div><!-- .window -->

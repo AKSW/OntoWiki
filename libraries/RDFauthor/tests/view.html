@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>RDFauthor View Test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="../src/rdfauthor.css" />
+    
+    <script type="text/javascript">
+        var widgetBase = 'http://localhost/RDFauthor/';
+    </script>
+    
+    <script type="text/javascript" src="../libraries/jquery.js"></script>
+    <script type="text/javascript" src="../src/rdfauthor.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        var view = new RDFauthorView({
+            title: 'Norman Heino', 
+            saveButtonTitle: 'Do it!', 
+            cancelButtonTitle: 'I\'ve changed my mind'
+        });
+        view.addRow('http://www.me.com/norman.heino', 'foaf:knows', 'knows', {'value': 'http://www.me.com/pfrischmuth', 'type': 'uri'});
+        //view.addRow('http://www.me.com/norman.heino', 'foaf:knows', 'knows', 'http://sebastian.dietzold.de');
+        view.addRow('http://www.me.com/norman.heino', 'foaf:name', 'name', 'Norman Heino');
+        view.display();
+    </script>
+</body>
+</html>

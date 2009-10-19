@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * OntoWiki lastchanges module template
+ *
+ * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
+ * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @version    $Id:  $
+ */
+
+?>
+<?php if ($this->has('warningmessage')): ?>
+    <p class="messagebox info"><?php echo $this->warningmessage ?></p>
+<?php endif?>
+<?php if ($this->has('infomessage')): ?>
+    <p class="messagebox info"><?php echo $this->infomessage ?></p>
+<?php endif?>
+
+<?php if ($this->has('changes')): ?>
+<ol class="bullets-none separated-vertical">
+<?php $odd = false; ?>
+<?php foreach($this->changes as $change): ?>
+    <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+            <a resource="<?php echo $change['resource'] ?>" class="Resource hasMenu"
+               about="<?php echo $change['resource'] ?>"
+               href="<?php echo $this->urlBase ?>resource/properties/?r=<?php echo urlencode($change['resource']) ?>">
+                <?php echo $change['rname'] ?>
+            </a> by
+            <?php echo $change['author'] ?>
+        </li>
+<?php endforeach; ?>
+</ol>
+<?php endif?>

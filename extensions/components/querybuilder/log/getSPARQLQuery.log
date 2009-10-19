@@ -1,0 +1,9 @@
+SELECT ?what ?pred WHERE { 
+	?what ?pred ?tmpobjvar0 . 
+	FILTER 
+((((str(?tmpobjvar0) =  "te") || 
+(str(?tmpobjvar0) =  "http://dbpedia.org/resource/te")
+))
+) .
+ } LIMIT 10
+

@@ -1,0 +1,11 @@
+;;
+; Basic component configuration
+;;
+templates  = "templates"
+;languages  = "languages"
+active     = yes
+name       = "PingbackServer"
+
+[private]
+; model to write pingbacks
+pingback_model = "http://example.org/GR/"

@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * OntoWiki File Manager template
+ *
+ * @author Christoph Rieß
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: manage.phtml 2769 2009-04-06 14:57:58Z norman.heino $
+ */
+
+?>
+<table class="separated-vertical">
+    <tr>
+        <th></th>
+        <th></th>
+        <th><?php echo $this->_('Resource URI') ?></th>
+        <th><?php echo $this->_('Mime Type') ?></th>
+    </tr>
+    
+    <?php $i = 0 ?>
+    <?php foreach ($this->files as $file): ?>
+        <tr>
+            <td class="selector">
+                <input type="checkbox" id="selector-<?php echo ++$i ?>" name="selectedFiles[]" value="<?php echo rawurlencode($file['uri']) ?>">
+            </td>
+            <td class="enumeration"><label for="selector-<?php echo $i ?>"><?php echo $i ?>.</label></td>
+            <td><a href="<?php echo $file['uri'] ?>"><?php echo $file['uri'] ?></a></td>
+            <td><?php echo $file['mime_type'] ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+

@@ -1,0 +1,184 @@
+#
+# OntoWiki German language translation
+# Encoding:  UTF-8
+# Separator: ;
+# Version:   $Id: core.csv 4282 2009-10-12 11:20:57Z c.riess.dev $
+#
+Back;Zurück
+Submit;Absenden
+Cancel;Abbrechen
+Save Changes;"Änderungen speichern"
+Reset Form;Formular zurücksetzen
+Edit Instances;Instanzen bearbeiten
+Edit Properties;Eigenschaften bearbeiten
+Add Property;Eigenschaft hinzufügen
+Rendered in %1$d microseconds using %2$d SPARQL queries.;Gerendert in %1$d Mikrosekunden mit %2$d SPARQL-Anfragen.
+more;mehr
+
+moments ago;gerade eben
+approx. 1 minute ago;vor einer Minute
+approx. %d minutes ago;vor %d Minuten
+approx. 1 hour ago;vor einer Stunde
+approx. %d hours ago;vor %d Stunden
+approx. %d days ago;vor %d Tagen
+
+# test
+page1;Seite 1
+page2;Seite 2
+
+
+# Module
+Search all Knowledge Bases;Alle Wissensbasen durchsuchen
+Search Text;Suchtext
+Knowledge Bases;Wissensbasen
+Create Knowledge Base;Wissensbasis erstellen
+Show Hidden Knowledge Bases;Versteckte Wissensbasen anzeigen
+Languages (Tagged Literals);Sprachen (ausgezeichnete Labels)
+none;keine
+Classes;Klassen
+Create Class;Klasse erstellen
+Show Empty Classes;Leere Klassen anzeigen
+Hide Empty Classes;Leere Klassen ausblenden
+Show System Classes;Systemklassen anzeigen
+Hide System Classes;Systemklassen ausblenden
+Show Hidden Classes;Versteckte Klassen anzeigen
+Hide Hidden Classes;Versteckte Klassen ausblenden
+Most Popular | Most Active;Populär | Aktiv
+Rec. Changes;"Änderungen"
+Rec. Comments;Kommentare
+Login;Anmeldung
+No matches.;Keine Entsprechungen.
+Predicates;Prädikate
+Similar Instances;"Ähnliche Instanzen"
+Instances Linking Here;Hierher verweisende Instanzen
+Usage as Property;Auftreten als Prädikat
+Not implemented yet.;Noch nicht implementiert.
+Objects;Objekte
+Subjects;Subjekte
+
+# Komponenten
+# TODO: sollten Komponenten ihre Übersetzung selbst verwalten?
+Properties;Eigenschaften
+Instances;Instanzen
+Calendar;Kalender
+History;Versionen
+Map;Karte
+
+# application menu
+User;Benutzer
+Register New User;Neuen Benutzer registrieren
+Preferences;Einstellungen
+Logout;Abmelden
+View;Darstellung
+Extras;Extras
+SPARQL Query Editor;SPARQL-Anfrage-Editor
+File Resource Manager;Dateiressourcen-Manager
+News;Neuigkeiten
+Clear Cache;Cache leeren
+Help;Hilfe
+Documentation;Dokumentation
+Bug Report; Fehler melden
+Version Info;Versionsinfo
+About;"Über"
+
+#Pager
+First;Erste
+Previous;Vorherige
+Next;Nächste
+Last;Letzte
+
+Create New Knowledge Base;Neue Wissensbasis anlegen
+Model URI;Modell-URI
+Create an Empty Knowledge Base; Eine leere Wissensbasis anlegen
+Base URI;Basis-URI
+Type;Typ
+Import From the Web;Aus dem WWW importieren
+Upload a File;Eine Datei hochladen
+File Type;Dateityp
+File (max. %1$sB);Datei (max. %1$sB)
+Paste Source;Quelltext eingeben
+Source Code;Quelltext
+Enter the URL where the model should be downloaded from. If you leave the field empty the model URI will be used.;Geben Sie die URL zur Modelldatei an. Wenn Sie dieses Feld leer lassen, wird stattdessen die Modell-URI benutzt.
+Location;URL zur Datei
+Instances of %1$s;Instanzen von %1$s
+Properties of %1$s;Eigenschaften von %1$s
+
+Register User;Benutzer registrieren
+Username;Benutzername
+Email Address;E-Mail-Adresse
+Password;Kennwort
+Password (repeat);Kennwort (wiederholen)
+Unknown user identifier.;Unbekannte Benutzerkennung.
+Forgot your password?;Passwort vergessen?
+
+Predefined namespaces;Vordefinierte Namesräume
+SPARQL Options;SPARQL-Optionen
+Plain;Einfach
+Submit Query;Anfrage absenden
+result;Ergebnis
+results;Ergebnisse
+Search returned %1$d %2$s.;Die Suche lieferte %1$d %2$s. 
+Query execution took %1$d ms.;Die Bearbeitung der Anfrage dauerte %1$d ms.
+
+# Menüs
+View Resource;Ressource ansehen
+Edit Resource;Ressource bearbeiten
+Delete Resource;Ressource löschen
+
+List Instances;Instanzen auflisten
+Create Instance;Instantiieren
+Create Subclass;Unterklasse erstellen
+
+Select Knowledge Base;Wissensbasis auswählen
+Configure Knowledge Base;Wissensbasis konfigurieren
+Add Data to Knowledge Base;Daten zur Wissensbasis hinzufügen
+Export Knowledge Base as RDF/XML;Wissensbasis als RDF/XML exportieren
+Export Knowledge Base as RDF/JSON;Wissensbasis als RDF/JSON exportieren
+Export Knowledge Base as RDF/N3;Wissensbasis als RDF/N3 exportieren
+Export Knowledge Base as RDF/JSON (Talis);Wissensbasis als RDF/JSON (Talis) exportieren
+Export Knowledge Base as Turtle;Wissensbasis als Turtle exportieren
+Delete Knowledge Base;Wissensbasis löschen
+
+# Wochentage
+Monday
+Tuesday
+Wednesday
+Thursday
+Friday
+Saturday
+Sunday
+
+Add Class;Klasse hinzufügen
+Add Instance;Instanz hinzufügen
+
+Show Properties;Eigenschaften anzeigen
+
+Filter;Filter
+Combine Filters (Conjunction);Filter kombinieren (Konjunktion)
+
+Merge;Zusammenführen
+Visit resource on the web;Ressource im Netz aufsuchen
+
+Create instances from property value by regexp
+Similar Instances
+Rating
+Average Rating
+Your Rating
+Instances Linking Here
+Usage as Property
+Instances
+Values
+Search | OntoWiki
+Search Text
+Submit
+Search All Knowledge Bases
+Search
+Add Property
+Submit Values
+SPARQL Query Editor
+Result Options
+Table
+SPARQL Query Results XML Format
+Render Ressources as OntoWiki Links
+Create New Knowledge Base
+FOAFSSL;FOAF+SSL

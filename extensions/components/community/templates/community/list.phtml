@@ -1,0 +1,14 @@
+<table class="separated-vertical">
+    <tr>
+        <th width="30%"><?php echo $this->_('Author') ?></th>
+        <th width="70%"><?php echo $this->_('Comment') ?></th>
+    </tr>
+    <?php foreach($this->comments as $comment): ?>
+        <tr class="comment">
+            <td><?php echo $comment['author'] ?> <span style="color:#aaa;font-size:0.9em">(<?php echo $comment['date'] ?>)</span></td>
+            <td><?php echo $comment['content'] ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<?php $this->placeholder('main.window.innerwindows')->append($this->module('comment')); ?>

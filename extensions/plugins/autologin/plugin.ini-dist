@@ -1,0 +1,9 @@
+enabled     = false
+name        = AutoLogin
+description = "A plug-in that allows FOAF+SSL based auto login."
+author      = "Philipp Frischmuth"
+
+[events]
+1 = onRouteShutdown
+
+[private]

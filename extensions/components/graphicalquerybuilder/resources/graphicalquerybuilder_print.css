@@ -1,0 +1,120 @@
+ * {
+	font:11pt/120% Arial, serif;
+	font-family:sans-serif;
+	text-align:justify;
+}
+
+body {
+	background-color: white !important;
+	background-image: none !important;
+	color:black;
+	padding: 0 0 30pt 0;
+}
+
+/* Show link target as text after anchor tags
+a:after, a:link:after  { 
+	color: #000000;
+	background-color:transparent; 
+	content: " * Link " attr(href) "* "; }
+}
+
+a:visited:after {
+	color:#000000; 
+	background-color:transparent;
+	content: " * Link " attr(href) "* ";
+}*/
+
+.section-sidewindows,
+.ui-layout-north, 
+.ui-layout-west, 
+.ui-layout-east {
+	display: none !important;
+}
+
+#gqbDialogUnionInt, 
+#gqbDialogLinkSel, 
+#gqbbuttoncontrolpanel,
+#gqbshowdebugpanel,
+#gqbdebugpanel,
+#gqbprevresultspagebutton,
+#gqbnextresultspagebutton,
+#gqbresultpagination,
+#gqbreloadbutton,
+#gqbprintbutton,
+#gqbresultruler,
+.gqb-button-sort,
+.trashicon,
+.gqb-button-movecolleft,
+.gqb-button-movecolright,
+image {
+	display: none;
+}
+
+#gqbcanvas {
+	top: 100px;
+	left: 0px !important;
+	width: 430px;
+	height: 300px;
+	border: 1px black dashed;	
+}
+
+#gqbmain {
+	/*top: 0px !important;*/
+	height: auto !important;
+	overflow: visible !important;
+}
+
+.ui-layout-south {
+	/*bottom: auto !important;*/
+	top: 300px !important;
+	height: auto !important;
+	float: none !important;
+	overflow: visible !important;
+	bottom: auto !important;
+}
+
+.ui-layout-center {
+	top: 0px !important;
+	left: 0px !important;
+}
+
+#gqbresultcontent {
+	float: none !important;
+	overflow: visible !important;
+	height: auto !important;
+}
+#gqbresulttable {
+	padding: 0px;
+	margin: 0px;
+}
+
+#gqbresulttable th {
+	border: 2px solid black;
+}
+
+#gqbresulttable td {
+	border: 1px solid black;
+	margin: 0px;
+}
+
+input {
+border: none;
+font-weight: bold;
+font-size: 120%;
+}
+
+.input #gqbcolumnheader {
+	font-weight: bold;
+}
+
+.title {
+	font-weight: bold;
+	font-size: 16pt;
+}
+
+#gqbresultsparqlquery {
+	display: block;
+}
+#gqbresultquerydesc {
+	display: block;
+}

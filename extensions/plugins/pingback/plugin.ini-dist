@@ -1,0 +1,8 @@
+enabled     = true
+name        = Pingback
+description = ""
+author      = ""
+; url         = 
+
+[events]
+1 = onControllerInit

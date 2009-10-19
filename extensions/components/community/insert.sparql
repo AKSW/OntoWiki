@@ -1,0 +1,7 @@
+insert into graph <http://localhost/OntoWiki/Config/> {
+    <http://localhost/OntoWiki/Config/Comment2> <http://rdfs.org/sioc/ns#about> <http://localhost/OntoWiki/Config/File>.
+    <http://localhost/OntoWiki/Config/Comment2> a <http://rdfs.org/sioc/ns#Comment>.
+    <http://localhost/OntoWiki/Config/Comment2> <http://rdfs.org/sioc/ns#has_creator> <http://localhost/OntoWiki/Config/Anonymous>.
+    <http://localhost/OntoWiki/Config/Comment2> <http://rdfs.org/sioc/ns#content> "Good idea.".
+    <http://localhost/OntoWiki/Config/Comment2> <http://rdfs.org/sioc/ns#created_at> "2008-12-09T02:04:34"^^xsd:dateTime.
+}
