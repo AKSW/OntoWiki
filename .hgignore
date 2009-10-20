@@ -1,0 +1,6 @@
+ontowiki/src/.htaccess
+ontowiki/src/config.ini
+ontowiki/src/nbproject
+ontowiki/src/libraries/Erfurt
+ontowiki/src/libraries/Zend
+ontowiki/src/extensions/components/jsonrpc/component.ini
