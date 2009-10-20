@@ -122,10 +122,8 @@ class OntoWiki_Model_TitleHelper
             $this->_model = $model;
         }
         
-        require_once 'Erfurt/App.php';
         $this->_store = Erfurt_App::getInstance()->getStore();
         
-        require_once 'OntoWiki/Application.php';
         $config = OntoWiki_Application::getInstance()->config;
         
         // naming properties for resources
@@ -254,7 +252,6 @@ class OntoWiki_Model_TitleHelper
     public function getResourceQuery()
     {
         if (null === $this->_resourceQuery) {
-            require_once 'Erfurt/Sparql/SimpleQuery.php';
             $this->_resourceQuery = new Erfurt_Sparql_SimpleQuery();
             $this->_resourceQuery->setProloguePart('SELECT DISTINCT ?' . self::RESOURCE_VARIABLE)
                                  ->setWherePart('WHERE {?' . self::RESOURCE_VARIABLE . ' ' . $this->_resourcePattern . '}')
@@ -325,7 +322,6 @@ class OntoWiki_Model_TitleHelper
         
         // still not found?
         if (null === $title) {
-            require_once 'OntoWiki/Utils.php';
             $title = OntoWiki_Utils::contractNamespace($resourceUri);
         }
         
@@ -355,7 +351,6 @@ class OntoWiki_Model_TitleHelper
             }
             
             if (defined('_OWDEBUG')) {
-                require_once 'OntoWiki/Application.php';
                 $logger = OntoWiki_Application::getInstance()->logger;
                 $logger->info('TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.');
             }
@@ -372,9 +367,7 @@ class OntoWiki_Model_TitleHelper
      * @return Erfurt_Sparql_SimpleQuery
      */
     public function getTitleQueries($numQueries)
-    {
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
-        
+    {        
         $currentQuery = null;
         $queries = array();
         $select = 'SELECT DISTINCT ?'

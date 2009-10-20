@@ -10,17 +10,6 @@
  * @version   $Id: Model.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
-/** 
- * Required Zend classes
- */
-require_once 'Erfurt/Event/Dispatcher.php';
-
-/** 
- * Required OntoWiki API classes
- */
-require_once 'OntoWiki/Application.php';
-require_once 'OntoWiki/Utils.php';
-
 /**
  * OntoWiki model base class.
  *
@@ -101,7 +90,6 @@ class OntoWiki_Model
         $this->_graph = $graph->getModelIri();
         $this->_model = $graph;
         
-        require_once 'OntoWiki/Model/TitleHelper.php';
         $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
         
         // $this->_titleProperties = array_flip($this->_config->properties->title->toArray());

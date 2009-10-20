@@ -10,10 +10,6 @@
  * @version   $Id: Instances.php 4309 2009-10-14 15:36:22Z sebastian.dietzold $
  */
 
-require_once 'OntoWiki/Model.php';
-require_once 'OntoWiki/Url.php';
-require_once 'OntoWiki/Utils.php';
-
 /**
  * OntoWiki resource list model class.
  *
@@ -99,8 +95,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     {
         parent::__construct($store, $graph);
         
-        require_once 'OntoWiki/Application.php';
-        
         $type                   = isset($options['type']) ?                   $options['type'] : OntoWiki_Application::getInstance()->selectedClass;
         $withChilds             = isset($options['withChilds']) ?             $options['withChilds'] : true;
         $member_predicate       = isset($options['memberPredicate']) ?        $options['memberPredicate'] : EF_RDF_TYPE;
@@ -110,7 +104,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $shownInverseProperties = isset($options['shownInverseProperties']) ? $options['shownInverseProperties'] : array();
         $sessionfilter          = isset($options['filter']) ?                 $options['filter'] : array();
 
-        require_once 'Erfurt/Sparql/Query2.php';
         $this->_resourceQuery =  new Erfurt_Sparql_Query2();
         
         if(is_string($member_predicate))
@@ -368,8 +361,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $this->getResults(); 
                                  
             $result = $this->_results['bindings'];
-            //echo 'results:<pre>';  print_r($result);  echo '</pre>';
-            require_once 'OntoWiki/Model/TitleHelper.php';
+            
             $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
             
             foreach ($result as $row) {
@@ -413,7 +405,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
 
                             // set up event
-                            require_once 'Erfurt/Event.php';
                             $event = new Erfurt_Event('onDisplayObjectPropertyValue');
                             
                             //find uri
@@ -436,7 +427,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                             $object = $data['value'];
                             
                             // set up event
-                            require_once 'Erfurt/Event.php';
                             $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
                             $event->property = $propertyUri;
                             $event->value    = $object;
@@ -565,38 +555,37 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     
     protected function convertProperties($properties)
     {
-    	require_once 'OntoWiki/Model/TitleHelper.php';
-            $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-            
-            $uris = array();
-            foreach($properties as $property){
-            	$uris[] = $property['uri'];
+        $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
+    
+        $uris = array();
+        foreach($properties as $property){
+        	$uris[] = $property['uri'];
+        }
+    
+        $titleHelper->addResources($uris);
+    
+        $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+    
+       	$propertyResults = array();
+       	$i = 0;
+        foreach ($properties as $property) {
+            if(in_array($property['uri'], $this->_ignoredShownProperties)){
+            	continue;
             }
-            
-            $titleHelper->addResources($uris);
-            
-            $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-            
-           	$propertyResults = array();
-           	$i = 0;
-            foreach ($properties as $property) {
-                if(in_array($property['uri'], $this->_ignoredShownProperties)){
-                	continue;
-                }
 
-                // set URL
-                $url->setParam('r', $property['uri'], true);
-           
-               $property['url'] = (string) $url;
-                
-               $property['curi'] = OntoWiki_Utils::contractNamespace($property['uri']);
-              
-               $property['title'] = $titleHelper->getTitle($property['uri'], $this->_lang);
-               
-               $propertyResults[] = $property;
-            }
-            
-            return $propertyResults;
+            // set URL
+            $url->setParam('r', $property['uri'], true);
+   
+           $property['url'] = (string) $url;
+        
+           $property['curi'] = OntoWiki_Utils::contractNamespace($property['uri']);
+      
+           $property['title'] = $titleHelper->getTitle($property['uri'], $this->_lang);
+       
+           $propertyResults[] = $property;
+        }
+    
+        return $propertyResults;
     }
     
     /**

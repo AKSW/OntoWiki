@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-
 /**
  * OntoWiki module – modellist
  *
@@ -21,7 +19,6 @@ class ModellistModule extends OntoWiki_Module
     {
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'modellist.js');
 
-        require_once 'OntoWiki/Menu/Registry.php';
         $menuRegistry = OntoWiki_Menu_Registry::getInstance();
         $menuRegistry->getMenu('application')->getSubMenu('View')->setEntry('Hide Knowledge Bases Box', '#');
 
@@ -40,11 +37,11 @@ class ModellistModule extends OntoWiki_Module
     public function shouldShow()
     {
         // show only if there are models (visible or hidden)
-        if ( ($this->allGraphUris) || ($this->_erfurt->getAc()->isActionAllowed('ModelManagement')) ) {
+        if (($this->allGraphUris) || ($this->_erfurt->getAc()->isActionAllowed('ModelManagement')) ) {
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
     
     /**
@@ -81,8 +78,7 @@ class ModellistModule extends OntoWiki_Module
         $selectedModel = $this->_owApp->selectedModel ? $this->_owApp->selectedModel->getModelIri() : null;
         
         $lang = $this->_config->languages->locale;
-                
-        require_once 'OntoWiki/Model/TitleHelper.php';
+        
         $titleHelper = new OntoWiki_Model_TitleHelper();
         $titleHelper->addResources(array_keys($this->graphUris));
         
@@ -114,7 +110,7 @@ class ModellistModule extends OntoWiki_Module
             $showHidden = 'false';
         }
         
-        $id = (string) $this->_owApp->getUser()->getUri()
+        $id = (string)$this->_owApp->getUser()->getUri()
             . $this->_owApp->selectedModel
             . $showHidden;
         

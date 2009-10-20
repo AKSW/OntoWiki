@@ -44,16 +44,16 @@ class OntoWiki_Module_Registry
     const MODULE_STATE_HIDDEN = 3;
     
     /**
-     * OntoWiki Application config
-     * @var Zend_Config
-     */
-    protected $_config = null;
-    
-    /**
      * Array of modules
      * @var array
      */
     protected $_modules = array();
+    
+    /**
+     * Module path
+     * @var string
+     */
+    protected $_moduleDir = '';
     
     /** 
      * Array of module states
@@ -95,6 +95,23 @@ class OntoWiki_Module_Registry
         $this->_modules      = array();
         $this->_moduleStates = array();
         $this->_moduleOrder  = array();
+    }
+    
+    /**
+     * Sets the path where modules are to be found
+     *
+     * @since 0.9.5
+     * @return OntoWiki_Module_Registry
+     */
+    public function setModuleDir($moduleDir)
+    {
+        $moduleDir = (string)$moduleDir;
+        
+        if (is_readable($moduleDir)) {
+            $this->_moduleDir = $moduleDir;
+        }
+        
+        return $this;
     }
     
     /**
@@ -193,9 +210,8 @@ class OntoWiki_Module_Registry
      * @throws OntoWiki_Module_Exception if a module with the has not been registered.
      */
     public function getModule($moduleName, $context = null)
-    {        
-        $moduleFile = _OWROOT 
-                    . $this->_config->extensions->modules
+    {
+        $moduleFile = $this->_moduleDir
                     . $moduleName 
                     . DIRECTORY_SEPARATOR 
                     . $moduleName
@@ -206,7 +222,7 @@ class OntoWiki_Module_Registry
         }
         
         // instantiate module
-        // require_once $moduleFile;
+        require_once $moduleFile;
         $moduleClass = ucfirst($moduleName) 
                      . OntoWiki_Module_Manager::MODULE_CLASS_POSTFIX;
         $module = new $moduleClass($moduleName, $context);
@@ -286,8 +302,5 @@ class OntoWiki_Module_Registry
         if (isset($this->_moduleStates->moduleOrder)) {
             $this->_moduleOrder = $this->_moduleStates->moduleOrder;
         }
-        
-        // config
-        $this->_config = OntoWiki_Application::getInstance()->config;
     }
 }

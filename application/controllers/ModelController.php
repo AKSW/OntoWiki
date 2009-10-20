@@ -795,7 +795,7 @@ class ModelController extends OntoWiki_Controller_Base
         require_once 'OntoWiki/Resource.php';
         $this->_owApp->selectedResource = new OntoWiki_Resource($this->_request->getParam('m'), $this->_owApp->selectedModel);
         $store      = $this->_owApp->erfurt->getStore();
-        $graph      = $this->_owApp->selectedModel;
+        $graph      = $this->_owApp->selectedModel;        
         $resource   = $this->_owApp->selectedResource;
         $navigation = $this->_owApp->navigation;
         $translate  = $this->_owApp->translate;

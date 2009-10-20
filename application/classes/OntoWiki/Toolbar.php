@@ -58,12 +58,6 @@ class OntoWiki_Toolbar
     protected $_buttons = array();
     
     /** 
-     * OntoWiki Application config
-     * @var Zend_Config 
-     */
-    protected $_config = null;
-    
-    /** 
      * Singleton instance
      * @var OntoWiki_Toolbar 
      */
@@ -80,8 +74,6 @@ class OntoWiki_Toolbar
      */
     private function __construct()
     {
-        $this->_config    = OntoWiki_Application::getInstance()->config;
-        $this->_translate = OntoWiki_Application::getInstance()->translate;
     }
     
     /**
@@ -154,6 +146,34 @@ class OntoWiki_Toolbar
     }
     
     /**
+     * Sets the URL base for the current theme
+     *
+     * @since 0.9.5
+     * @param string $themeUrlBase The URL base into the theme dir
+     * @return OntoWiki_Toolbar
+     */
+    public function setThemeUrlBase($themeUrlBase)
+    {
+        $this->_themeUrlBase = (string)$themeUrlBase;
+        
+        return $this;
+    }
+    
+    /**
+     * Sets the translation object for the current UI language
+     *
+     * @since 0.9.5
+     * @param Zend_Translate $translate The translation object
+     * @return OntoWiki_Toolbar
+     */
+    public function setTranslate(Zend_Translate $translate)
+    {
+        $this->_translate = $translate;
+        
+        return $this;
+    }
+    
+    /**
      * Renders the toolbar as an HTML string.
      *
      * @return string
@@ -189,7 +209,11 @@ class OntoWiki_Toolbar
         
         // translate name
         if (array_key_exists('name', $options)) {
-            $label = $this->_translate->translate($options['name']);
+            if ($this->_translate instanceof Zend_Translate) {
+                $label = $this->_translate->translate($options['name']);
+            } else {
+                $label = $options['name'];
+            }
         } else {
             $label = null;
         }
@@ -218,7 +242,7 @@ class OntoWiki_Toolbar
         if (array_key_exists('image_url', $options)) {
             $image = $options['image_url'];
         } else if (array_key_exists('image', $options)) {
-            $image = $this->_config->themeUrlBase . 'images/icon-' . $options['image'] . '.png';
+            $image = $this->_themeUrlBase . 'images/icon-' . $options['image'] . '.png';
         } else {
             $image = null;
         }

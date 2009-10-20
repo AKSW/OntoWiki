@@ -28,14 +28,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         // load default application configuration file
         try {
-            $config = new Zend_Config_Ini(_OWROOT . 'application/config/default.ini', 'default', true);
+            $config = new Zend_Config_Ini(ONTOWIKI_ROOT . 'application/config/default.ini', 'default', true);
         } catch (Zend_Config_Exception $e) {
             exit($e->getMessage());
         }
         
         // load user application configuration files
         try {
-            $privateConfig = new Zend_Config_Ini(_OWROOT . 'config.ini', 'private', true);
+            $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini', 'private', true);
             $config->merge($privateConfig);
         } catch (Zend_Config_Exception $e) {
             exit($e->getMessage());
@@ -60,14 +60,20 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // support absolute path
         $matches = array();
         if (!(preg_match('/^(\w:[\/|\\\\]|\/)/', $config->cache->path, $matches) === 1)) {
-            $config->cache->path = _OWROOT . $config->cache->path;
+            $config->cache->path = ONTOWIKI_ROOT . $config->cache->path;
         }
         
+        // set path variables
+        $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
+        $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
+        $port        = $_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '';
+        $urlBase     = sprintf('%s://%s%s%s', $protocol, $_SERVER['SERVER_NAME'], $port, $rewriteBase);
+        
         // construct URL variables
-        $config->host          = parse_url($this->urlBase, PHP_URL_HOST);
-        $config->urlBase       = rtrim($this->urlBase, '/\\') . '/';
-        $config->staticUrlBase = rtrim($this->staticUrlBase, '/\\') . '/';
-        $config->themeUrlBase  = $this->staticUrlBase 
+        $config->host          = parse_url($urlBase, PHP_URL_HOST);
+        $config->urlBase       = rtrim($urlBase . (ONTOWIKI_REWRITE ? '' : BOOTSTRAP_FILE), '/\\') . '/';
+        $config->staticUrlBase = rtrim($urlBase, '/\\') . '/';
+        $config->themeUrlBase  = $config->staticUrlBase
                                . $config->themes->path 
                                . $config->themes->default;
         
@@ -96,7 +102,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('frontController');
         $frontController = $this->getResource('frontController');
         
-        $dispatcher = new OntoWiki_Dispatcher();
+        // require Config
+        $this->bootstrap('Config');
+        $config = $this->getResource('Config');
+        
+        $dispatcher = new OntoWiki_Dispatcher(array('url_base' => $config->urlBase));
+        $dispatcher->setControllerDirectory(APPLICATION_PATH . 'controllers');
         $frontController->setDispatcher($dispatcher);
         
         return $dispatcher;
@@ -141,7 +152,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      *
      * @since 0.9.5
      */
-    public function _initLog()
+    public function _initLogger()
     {
         // require config
         $this->bootstrap('Config');
@@ -157,17 +168,31 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             $levelFilter = new Zend_Log_Filter_Priority((int)$config->log->level, '<=');
             
             $writer = new Zend_Log_Writer_Stream($config->log->path . 'ontowiki.log');
-            $log = new Zend_Log($writer);
-            $log->addFilter($levelFilter);
+            $logger = new Zend_Log($writer);
+            $logger->addFilter($levelFilter);
             
-            return $log;
+            return $logger;
         }
         
         // fallback to NULL logger
         $writer = new Zend_Log_Writer_Null();
-        $log    = new Zend_Log($writer);
+        $logger = new Zend_Log($writer);
         
-        return $log;
+        return $logger;
+    }
+    
+    public function _initModuleManager()
+    {
+        // require config
+        $this->bootstrap('Config');
+        $config = $this->getResource('Config');
+        
+        // TODO: make session requirement explicit
+        $this->bootstrap('Session');
+           
+        $moduleManager = new OntoWiki_Module_Manager(ONTOWIKI_ROOT . $config->extensions->modules);
+        
+        return $moduleManager;
     }
     
     /**
@@ -216,11 +241,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initRequest()
     {
-        $this->bootstrap('frontController');
-        $frontController = $this->getResource('frontController');
+        $this->bootstrap('FrontController');
+        $frontController = $this->getResource('FrontController');
+        
+        $this->bootstrap('Router');
+        $router = $this->getResource('Router');
         
         $request = new OntoWiki_Request();
         $frontController->setRequest($request);
+        
+        $router->route($request);
         
         return $request;
     }
@@ -245,6 +275,101 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         return $router;
     }
+    
+    /**
+     * Initializes the selected resource from the request or session
+     */
+    // public function _initSelectedModel()
+    // {
+    //     // require Config
+    //     $this->bootstrap('Config');
+    //     $config = $this->getResource('Config');
+    //     
+    //     // require request
+    //     $this->bootstrap('Request');
+    //     $request = $this->getResource('Request');
+    //     
+    //     // require Session
+    //     $this->bootstrap('Session');
+    //     $session = $this->getResource('Session');
+    //     
+    //     // require Erfurt
+    //     $this->bootstrap('Erfurt');
+    //     $erfurt = $this->getResource('Erfurt');
+    //     $store  = $erfurt->getStore();
+    //     
+    //     // instantiate model if parameter passed
+    //     if (isset($request->m)) {
+    //         try {
+    //             $selectedModel = $store->getModel($request->getParam('m', null, false));
+    //             $session->selectedModel = $selectedModel;
+    //             return $selectedModel;
+    //         } catch (Erfurt_Store_Exception $e) {
+    //             // if no user is given (Anoymous) give the requesting party a chance to authenticate
+    //             if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
+    //                 $response = $frontController->getResponse();
+    //                 
+    //                 // request authorization
+    //                 $response->setRawHeader('HTTP/1.1 401 Unauthorized');
+    //                 $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
+    //                 $response->sendResponse();
+    //                 exit;
+    //             }
+    //             
+    //             // post error message
+    //             $owApp->prependMessage(new OntoWiki_Message(
+    //                 '<p>Could not instantiate graph: ' . $e->getMessage() . '</p>' . 
+    //                 '<a href="' . $owApp->config->urlBase . '">Return to index page</a>', 
+    //                 OntoWiki_Message::ERROR, array('escape' => false)));
+    //             // hard redirect since finishing the dispatch cycle will lead to errors
+    //             header('Location:' . $owApp->config->urlBase . 'error/error');
+    //             exit;
+    //         }
+    //     } else if (isset($session->selectedModel)) {
+    //         return $session->selectedModel;
+    //     }
+    // }
+    
+    /**
+     * Initializes the selected resource from the request
+     */
+    // public function _initSelectedResource()
+    // {
+    //     // require Config
+    //     $this->bootstrap('Config');
+    //     $config = $this->getResource('Config');
+    //     
+    //     // require request
+    //     $this->bootstrap('Request');
+    //     $request = $this->getResource('Request');
+    //     
+    //     // require Session
+    //     $this->bootstrap('Session');
+    //     $session = $this->getResource('Session');
+    //     
+    //     // require model
+    //     $this->bootstrap('SelectedModel');
+    //     $selectedModel = $this->getResource('SelectedModel');
+    //     
+    //     if (isset($request->r)) {
+    //         if ($selectedModel instanceof Erfurt_Rdf_Model) {
+    //             $selectedResource = new OntoWiki_Resource($request->getParam('r', null, true), $selectedModel);
+    //             $session->selectedResource = $selectedResource;
+    //             return $selectedResource;
+    //         } else {
+    //             // post error message
+    //             OntoWiki::getInstance()->prependMessage(new OntoWiki_Message(
+    //                 '<p>Could not instantiate resource. No model selected.</p>' . 
+    //                 '<a href="' . $config->urlBase . '">Return to index page</a>', 
+    //                 OntoWiki_Message::ERROR, array('escape' => false)));
+    //             // hard redirect since finishing the dispatch cycle will lead to errors
+    //             header('Location:' . $config->urlBase . 'error/error');
+    //             exit;
+    //         }
+    //     } else if (isset($session->selectedResource)) {
+    //         return $session->selectedResource;
+    //     }
+    // }
     
     /**
      * Initializes the session and loads session variables
@@ -274,8 +399,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initToolbar()
     {
-        // init toolbar
+        $this->bootstrap('Config');
+        $config = $this->getResource('Config');
+        
+        $this->bootstrap('Translate');
+        $translate = $this->getResource('Translate');
+        
+        // configure toolbar
         $toolbar = OntoWiki_Toolbar::getInstance();
+        $toolbar->setThemeUrlBase($config->themeUrlBase)
+                ->setTranslate($translate);
         
         return $toolbar;
     }
@@ -285,7 +418,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      *
      * @since 0.9.5
      */
-    public function _initTranslation()
+    public function _initTranslate()
     {
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
@@ -318,15 +451,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             // don't emit notices
             'disableNotices' => true
         );
-        $translation = new Zend_Translate('csv', _OWROOT . $config->languages->path, null, $options);
+        $translate = new Zend_Translate('csv', _OWROOT . $config->languages->path, null, $options);
         try {
-            $translation->setLocale($config->languages->locale);
+            $translate->setLocale($config->languages->locale);
         } catch (Zend_Translate_Exception $e) {
             $config->languages->locale = 'en';
-            $translation->setLocale('en');
+            $translate->setLocale('en');
         }
         
-        return $translation;
+        return $translate;
     }
     
     /**
@@ -364,6 +497,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
         
+        // require Config
+        $this->bootstrap('Translate');
+        $translate = $this->getResource('Translate');
+        
         // standard template path
         $defaultTemplatePath = _OWROOT 
                              . 'application/views/templates';
@@ -374,8 +511,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                              . $config->themes->default 
                              . 'templates';
         
+        $viewOptions = array(
+            'use_module_cachce' => (bool)$config->cache->modules, 
+            'cache_path'        => $config->cache->path, 
+            'lang'              => $config->languages->locale
+            
+        );
+        
         // init view
-        $view = new OntoWiki_View();
+        $view = new OntoWiki_View($viewOptions, $translate);
         $view->addScriptPath($defaultTemplatePath)  // default templates
              ->addScriptPath($themeTemplatePath)    // theme templates override default ones
              ->setEncoding($config->encoding)

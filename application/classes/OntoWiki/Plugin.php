@@ -59,9 +59,9 @@ class OntoWiki_Plugin extends Erfurt_Plugin
             $this->view->clearVars();
         }
         
-        $systemConfig = OntoWiki_Application::getInstance()->config;
-        $this->_pluginUrlBase = $systemConfig->staticUrlBase
-                              . str_replace(_OWROOT, '', $root);
+        // $systemConfig = OntoWiki_Application::getInstance()->config;
+        // $this->_pluginUrlBase = $systemConfig->staticUrlBase
+        //                       . str_replace(_OWROOT, '', $root);
         
         parent::__construct($root, $config);
     }

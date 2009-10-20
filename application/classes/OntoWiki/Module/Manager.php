@@ -65,8 +65,9 @@ class OntoWiki_Module_Manager
      */
     public function __construct($modulePath)
     {
-        $this->_modulePath     = (string) $modulePath;
+        $this->_modulePath     = (string)$modulePath;
         $this->_moduleRegistry = OntoWiki_Module_Registry::getInstance();
+        $this->_moduleRegistry->setModuleDir($modulePath);
         
         // scan for modules
         $this->_scanModulePath($this->_modulePath);

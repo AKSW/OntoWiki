@@ -88,12 +88,10 @@ class OntoWiki_Message
         $this->_type = $type;
         $this->_text = $text;
         
-        require_once 'OntoWiki/Application.php';
-        $this->_translate = OntoWiki_Application::getInstance()->translate;
+        $this->_translate = OntoWiki::getInstance()->translate;
         
         // init view
         if (null === $this->_view) {
-            require_once 'Zend/Controller/Action/HelperBroker.php';
             $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             if (null === $viewRenderer->view) {
                 $viewRenderer->initView();

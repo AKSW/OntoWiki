@@ -40,6 +40,24 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
     protected $_componentManager = null;
     
     /**
+     * Base for building URLs
+     * @var string
+     */
+    protected $_urlBase = '';
+    
+    public function __construct($params = array())
+    {
+        if (array_key_exists('url_base', $params)) {
+            $urlBase = (string)$params['url_base'];
+            unset($params['url_base']);
+        }
+        
+        parent::__construct($params);
+        
+        $this->urlBase = $urlBase;
+    }
+    
+    /**
      * Sets the component manager
      */
     public function setComponentManager(OntoWiki_Component_Manager $componentManager)
@@ -131,7 +149,7 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
          */
         require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onIsDispatchable');
-        $event->uri     = OntoWiki_Application::getInstance()->config->urlBase . ltrim($request->getPathInfo(), '/');
+        $event->uri     = $this->urlBase . ltrim($request->getPathInfo(), '/');
         $event->request = $request;
         
         // We need to make sure that registered plugins return a boolean value!

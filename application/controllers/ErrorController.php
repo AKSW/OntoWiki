@@ -12,7 +12,7 @@
  * @version    $Id: ErrorController.php 3470 2009-06-29 06:58:02Z pfrischmuth $
  */
 class ErrorController extends Zend_Controller_Action
-{   
+{
     /**
      * Default action that is triggered when an error occures
      * during the dispatch process.
@@ -54,8 +54,7 @@ class ErrorController extends Zend_Controller_Action
             $this->view->heading   = 'OntoWiki Error';
             $this->view->errorType = 'error';
             
-            require_once 'OntoWiki/Application.php';
-            $message = current(OntoWiki_Application::getInstance()->getMessages());
+            $message = current(OntoWiki::getInstance()->drawMessages());
             if ($message instanceof OntoWiki_Message) {
                 $errorString = $message->getText();
             } else {

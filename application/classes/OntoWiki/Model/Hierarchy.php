@@ -10,17 +10,6 @@
  * @version   $Id: Hierarchy.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
-/** 
- * Required Erfurt classes
- */
-require_once 'Erfurt/Sparql/SimpleQuery.php';
-
-/** 
- * Required OntoWiki API classes
- */
-require_once 'OntoWiki/Model.php';
-require_once 'OntoWiki/Utils.php';
-
 /**
  * OntoWiki resource hierarchy model class.
  *
@@ -128,7 +117,6 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         if (!$this->_hierarchyResults) {
             $query = $this->_buildQuery();
             
-            require_once 'OntoWiki/Url.php';
             $this->_url = new OntoWiki_Url(array('route' => 'instances'), array('r'));
             
             if ($result = $this->_model->sparqlQuery($query)) {
@@ -179,7 +167,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         
         $entry = array(
             'uri'          => $resultUri, 
-            'url'          => (string) $this->_url, 
+            'url'          => (string)$this->_url, 
             'classes'      => trim($classes), 
             'title'        => $this->_titleHelper->getTitle($resultUri, $this->_config->languages->locale), 
             'children'     => array(), 

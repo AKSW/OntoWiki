@@ -32,6 +32,7 @@ define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application/');
  */
 define('_OWBOOT', BOOTSTRAP_FILE);
 define('_OWROOT', ONTOWIKI_ROOT);
+define('OW_SHOW_MAX', 5);
 
 
 // PHP environment settings
@@ -65,11 +66,7 @@ if (function_exists('apache_get_modules')) {
 	}
 }
 
-// set path variables
-$rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
-$protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
-$port        = $_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '';
-$urlBase     = sprintf('%s://%s%s%s', $protocol, $_SERVER['SERVER_NAME'], $port, $rewriteBase);
+define('ONTOWIKI_REWRITE', $rewriteEngineOn);
 
 
 /**
