@@ -218,7 +218,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         }
         $used = false;
         foreach($this->_shownProperties as $shownProp){
-        	if($shownProp['name'] == $propertyName) $used = true;
+        	if($shownProp['name'] == $propertyName)$used = true;
         }
         
         if ($used) {
@@ -227,7 +227,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $name = $propertyName . $counter++;
 	            $used = false;
 	            foreach($this->_shownProperties as $shownProp){
-			        if($shownProp['name'] == $name) $used = true;
+			        if($shownProp['name'] == $name)$used = true;
 			    }
 	        }
 
@@ -264,26 +264,26 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     	switch($valuetype){
     		case 'uri':
     			$value1 = new Erfurt_Sparql_Query2_IriRef($value1);
-    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_IriRef($value2);
+    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_IriRef($value2);
     		break;
     		case 'literal':
     		    if(!empty($literaltype)){
                         //with language tags
                         $value1 = new Erfurt_Sparql_Query2_RDFLiteral($value1, $literaltype);
-    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
+    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
                     } else {
                         //no language tags
                         $value1 = new Erfurt_Sparql_Query2_RDFLiteral($value1);
-    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2);
+    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2);
                     }
     		break;
     		case 'typed-literal':
     		    if(in_array($literaltype, Erfurt_Sparql_Query2_RDFLiteral::$knownShortcuts)){
 	    		    $value1 = new Erfurt_Sparql_Query2_RDFLiteral($value1, $literaltype);
-	    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
+	    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
     		    } else {
     		    	$value1 = new Erfurt_Sparql_Query2_RDFLiteral($value1, new Erfurt_Sparql_Query2_IriRef($literaltype));
-	    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, new Erfurt_Sparql_Query2_IriRef($literaltype));
+	    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, new Erfurt_Sparql_Query2_IriRef($literaltype));
     		    }
     		break;
     		default:
@@ -401,7 +401,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                             // object type is uri --> handle object property
                             $objectUri = $data['value'];
                             $url->setParam('r', $objectUri, true);
-                            $link = (string) $url;
+                            $link = (string)$url;
 
 
                             // set up event
@@ -576,7 +576,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             // set URL
             $url->setParam('r', $property['uri'], true);
    
-           $property['url'] = (string) $url;
+           $property['url'] = (string)$url;
         
            $property['curi'] = OntoWiki_Utils::contractNamespace($property['uri']);
       
@@ -627,7 +627,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 
                 // URL
                 $url->setParam('r', $uri, true);
-                $resourceResults[$uri]['url'] = (string) $url;
+                $resourceResults[$uri]['url'] = (string)$url;
                 
                 // title
                 $resourceResults[$uri]['title'] = $this->_titleHelper->getTitle($uri, $this->_lang);

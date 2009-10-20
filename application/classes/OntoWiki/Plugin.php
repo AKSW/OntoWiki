@@ -10,8 +10,6 @@
  * @version   $Id: Plugin.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
-require_once 'Erfurt/Plugin.php';
-
 /**
  * OntoWiki plugin base class.
  *
@@ -50,7 +48,6 @@ class OntoWiki_Plugin extends Erfurt_Plugin
     {
         // init view
         if (null === $this->view) {
-            require_once 'Zend/Controller/Action/HelperBroker.php';
             $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             if (null === $viewRenderer->view) {
                 $viewRenderer->initView();

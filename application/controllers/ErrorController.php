@@ -58,7 +58,7 @@ class ErrorController extends Zend_Controller_Action
             if ($message instanceof OntoWiki_Message) {
                 $errorString = $message->getText();
             } else {
-                // No message... redirect to index page
+                // No message, redirect to index page
                 $this->_redirect($this->config->urlBase, array('code' => 302));
             }
         }

@@ -10,8 +10,6 @@
  * @version   $Id:$
  */
 
-require_once 'Erfurt/Rdfs/Resource.php';
-
 /**
  * OntoWiki resource class
  *

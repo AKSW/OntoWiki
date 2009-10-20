@@ -82,7 +82,7 @@ class OntoWiki_Model
         
         $this->_lang = $this->_config->languages->locale;
         
-        if (isset($this->_config->system->inference) && !(bool) $this->_config->system->inference) {
+        if (isset($this->_config->system->inference) && !(bool)$this->_config->system->inference) {
             $this->_inference = false;
         }
         

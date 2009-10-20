@@ -10,8 +10,6 @@
  * @version   $Id:$
  */
 
-require_once 'Zend/Controller/Request/Http.php';
-
 /**
  * OntoWiki Request class
  *
@@ -42,7 +40,6 @@ class OntoWiki_Request extends Zend_Controller_Request_Http
                 $value = current($value);
             }
             
-            require_once 'OntoWiki/Utils.php';
             $value = OntoWiki_Utils::expandNamespace($value);
         }
         

@@ -198,7 +198,6 @@ class OntoWiki_Toolbar
             $options = array_merge($this->_defaultButtons[$type], $options);
         } else {
             if (empty($options)) {
-                require_once 'OntoWiki/Exception.php';
                 throw new OntoWiki_Exception("Missing options for button '$type'.");
             }
             

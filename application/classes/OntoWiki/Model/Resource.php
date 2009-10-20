@@ -220,7 +220,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             $event->value    = $row['object']['value'];
                             $event->property = $predicateUri;
                             $event->title    = $title;
-                            $event->link     = (string) $url;
+                            $event->link     = (string)$url;
 
                             // trigger
                             $value['object'] = $event->trigger();

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Base.php';
-
 /**
  * OntoWiki module controller.
  * 
@@ -26,7 +24,6 @@ class ModuleController extends OntoWiki_Controller_Base
         
         // mandatory
         if (!isset($this->_request->name)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exeption("Missing parameter 'name'.");
         }
         $name = $this->_request->name;

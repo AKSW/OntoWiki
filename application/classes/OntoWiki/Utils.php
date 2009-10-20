@@ -78,7 +78,6 @@ class OntoWiki_Utils
                         . $localPart;
         } else {
             if ($saveMode) {
-                require_once 'OntoWiki/Utils/Exception.php';
                 throw new OntoWiki_Utils_Exception("Unable to compact URI <$uri>.");
             } else {
                 // return URI unmodified
@@ -224,7 +223,6 @@ class OntoWiki_Utils
                 // TODO: check store, better URI check, use model base URI
                 $owApp = OntoWiki_Application::getInstance();
                 
-                require_once 'Erfurt/App.php';
                 $erfurtConfig = Erfurt_App::getInstance()->getConfig();
                 $uriSchemas   = array_flip($erfurtConfig->uri->schemata->toArray());
                 

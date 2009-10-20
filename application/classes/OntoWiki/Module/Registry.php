@@ -228,7 +228,7 @@ class OntoWiki_Module_Registry
         $module = new $moduleClass($moduleName, $context);
         
         // inject module config
-        foreach ((array) $this->getModuleConfig($moduleName) as $key => $value) {
+        foreach ((array)$this->getModuleConfig($moduleName) as $key => $value) {
             $module->$key = $value;
         }
         
@@ -243,7 +243,7 @@ class OntoWiki_Module_Registry
      */
     public function getModuleConfig($moduleName)
     {
-        $moduleName = (string) $moduleName;
+        $moduleName = (string)$moduleName;
         
         if (array_key_exists($moduleName, $this->_modules)) {
             return $this->_modules[$moduleName];
@@ -265,7 +265,7 @@ class OntoWiki_Module_Registry
             
             foreach ($this->_moduleOrder[$context] as $moduleName) {
                 if (array_key_exists($moduleName, $this->_modules)) {
-                    if ((boolean) $this->_modules[$moduleName]['enabled'] === true) {
+                    if ((boolean)$this->_modules[$moduleName]['enabled'] === true) {
                         $modules[$moduleName] = $this->_modules[$moduleName];
                     }
                 }

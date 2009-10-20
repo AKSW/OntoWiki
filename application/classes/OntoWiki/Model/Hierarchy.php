@@ -123,14 +123,14 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
                 $this->_hierarchyResults = array();
                 
                 // set titles
-                foreach ((array) $result as $row) {
+                foreach ((array)$result as $row) {
                     $this->_titleHelper->addResource($row['classUri']);
                     if (!empty($row['sub'])) {
                         $this->_titleHelper->addResource($row['sub']);
                     }
                 }
                 
-                foreach ((array) $result as $row) {
+                foreach ((array)$result as $row) {
                     $classUri = $row['classUri'];
                     
                     if (!array_key_exists($classUri, $this->_hierarchyResults)) {

@@ -101,7 +101,6 @@ abstract class OntoWiki_Module
     {
         // init view
         if (null === $this->view) {
-            require_once 'Zend/Controller/Action/HelperBroker.php';
             $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             if (null === $viewRenderer->view) {
                 $viewRenderer->initView();
@@ -129,7 +128,6 @@ abstract class OntoWiki_Module
         
         $configFile = $modulesPath . $name . '/module.ini';
         if (is_readable($configFile)) {
-            require_once 'Zend/Config/Ini.php';
             try {
                 $this->_privateConfig = new Zend_Config_Ini($configFile, 'private');
             } catch (Exception $e) {
@@ -163,7 +161,6 @@ abstract class OntoWiki_Module
             return $this->_context;
         }
         
-        require_once 'OntoWiki/Module/Registry.php';
         return OntoWiki_Module_Registry::DEFAULT_CONTEXT;
     }
     
@@ -197,7 +194,7 @@ abstract class OntoWiki_Module
     public function setContext($context)
     {
         $this->_context = $context 
-                        ? (string) $context 
+                        ? (string)$context 
                         : OntoWiki_Module_Registry::DEFAULT_CONTEXT;
     }
     
@@ -222,7 +219,7 @@ abstract class OntoWiki_Module
     public function allowCaching()
     {
         if (isset($this->caching)) {
-            return (boolean) $this->caching;
+            return (boolean)$this->caching;
         }
         
         // return default

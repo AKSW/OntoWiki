@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Zend/Controller/Action.php';
-
 /**
  * OntoWiki index controller.
  * 
@@ -49,7 +47,6 @@ class ServiceController extends Zend_Controller_Action
       
         if ($logout) {
             // logout
-            require_once 'Erfurt/Auth.php';
             Erfurt_Auth::getInstance()->clearIdentity();
             session_destroy();
             $this->_response->setRawHeader('HTTP/1.0 200 OK');
@@ -76,8 +73,8 @@ class ServiceController extends Zend_Controller_Action
      */
     public function entitiesAction()
     {
-        $type  = (string) $this->_request->getParam('type', 's');
-        $match = (string) $this->_request->getParam('match');
+        $type  = (string)$this->_request->getParam('type', 's');
+        $match = (string)$this->_request->getParam('match');
         
         $type = $type[0]; // use only first letter
         
@@ -93,7 +90,6 @@ class ServiceController extends Zend_Controller_Action
             }
             
             $store = $this->_owApp->selectedModel->getStore();
-            require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = Erfurt_Sparql_SimpleQuery::initWithString(
                 'SELECT DISTINCT ?' . $type . '
                 FROM <' . $this->_owApp->selectedModel->getModelIri() . '>
@@ -103,7 +99,7 @@ class ServiceController extends Zend_Controller_Action
                 }'
             );
             
-            // var_dump((string) $query);
+            // var_dump((string)$query);
             // var_dump($store->sparqlQuery($query));
         }
     }
@@ -115,7 +111,6 @@ class ServiceController extends Zend_Controller_Action
             $options['entry'] = $this->_request->entry;
         }
         
-        require_once 'OntoWiki/Model/Hierarchy.php';
         $model = new OntoWiki_Model_Hierarchy(Erfurt_App::getInstance()->getStore(), 
                                               $this->_owApp->selectedModel, 
                                               $options);
@@ -155,7 +150,6 @@ class ServiceController extends Zend_Controller_Action
         $translate = $this->_owApp->translate;
 
         // create empty menu first
-        require_once 'OntoWiki/Menu/Registry.php';
         $menuRegistry = OntoWiki_Menu_Registry::getInstance();
         $menu = $menuRegistry->getMenu(EF_RDFS_RESOURCE);
 
@@ -182,7 +176,7 @@ class ServiceController extends Zend_Controller_Action
                 $url->setParam('r',$resource,true);
                 $menu->prependEntry(
                     'Delete Resource',
-                    (string) $url
+                    (string)$url
                 );
                 
             
@@ -201,7 +195,7 @@ class ServiceController extends Zend_Controller_Action
 
             $menu->prependEntry(
                 'View Resource',
-                (string) $url
+                (string)$url
             );
             
             
@@ -227,13 +221,12 @@ class ServiceController extends Zend_Controller_Action
 
                     $menu->prependEntry(
                         'Delete Knowledge Base',
-                        (string) $url
+                        (string)$url
                     );
                 }
                 
                 
                 // add entries for supported export formats
-                require_once 'Erfurt/Syntax/RdfSerializer.php';
                 foreach (array_reverse(Erfurt_Syntax_RdfSerializer::getSupportedFormats()) as $key => $format) {
 
                     $url = new OntoWiki_Url(
@@ -245,7 +238,7 @@ class ServiceController extends Zend_Controller_Action
 
                     $menu->prependEntry(
                         'Export Knowledge Base as ' . $format,
-                        (string) $url
+                        (string)$url
                     );
                 }
                 
@@ -260,7 +253,7 @@ class ServiceController extends Zend_Controller_Action
                     $url->setParam('m',$resource,false);
                     $menu->prependEntry(
                         'Add Data to Knowledge Base',
-                        (string) $url
+                        (string)$url
                     );
 
                     $url = new OntoWiki_Url(
@@ -270,7 +263,7 @@ class ServiceController extends Zend_Controller_Action
                     $url->setParam('m',$resource,false);
                     $menu->prependEntry(
                         'Configure Knowledge Base',
-                        (string) $url
+                        (string)$url
                     );
                 }
                 
@@ -283,12 +276,12 @@ class ServiceController extends Zend_Controller_Action
                 $url->setParam('m',$resource,false);
                 $menu->prependEntry(
                     'Select Knowledge Base',
-                    (string) $url
+                    (string)$url
                 );
             } else {
                 $query = Erfurt_Sparql_SimpleQuery::initWithString(
                     'SELECT * 
-                     FROM <' . (string) $this->_owApp->selectedModel . '> 
+                     FROM <' . (string)$this->_owApp->selectedModel . '> 
                      WHERE {
                         <' . $resource . '> a ?type  .  
                      }'
@@ -297,7 +290,7 @@ class ServiceController extends Zend_Controller_Action
 
                 $query = Erfurt_Sparql_SimpleQuery::initWithString(
                     'SELECT * 
-                     FROM <' . (string) $this->_owApp->selectedModel . '>
+                     FROM <' . (string)$this->_owApp->selectedModel . '>
                      WHERE {
                         ?inst a <' . $resource . '> .    
                      } LIMIT 2'
@@ -337,7 +330,7 @@ class ServiceController extends Zend_Controller_Action
                     }
                     $menu->prependEntry(
                         'List Instances',
-                        (string) $url
+                        (string)$url
                     );
                      // ->prependEntry('Create Instance', $this->_config->urlBase . 'index/create/?r=')
                      // ->prependEntry('Create Subclass', $this->_config->urlBase . 'index/create/?r=');
@@ -347,7 +340,6 @@ class ServiceController extends Zend_Controller_Action
         }
         
         // Fire a event;
-        require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onCreateMenu');
         $event->menu = $menu;
         $event->resource = $resource;
@@ -375,7 +367,6 @@ class ServiceController extends Zend_Controller_Action
     public function sessionAction()
     {
         if (!isset($this->_request->name)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("Missing parameter 'name'.");
             exit;
         }
@@ -396,7 +387,6 @@ class ServiceController extends Zend_Controller_Action
         if (isset($this->_request->value)) {
             $value = $this->_request->value;
         } else if($method!='unsetArray' && $method!='unsetArrayKey' && !($method=='unset' && !is_array($session->$name))) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Missing parameter "value".');
             exit;
         }
@@ -407,8 +397,7 @@ class ServiceController extends Zend_Controller_Action
         
         if (isset($this->_request->key)) {
             $key = $this->_request->key;
-        } else if($method=='setArrayValue' || $method=='unsetArrayKey'){
-            require_once 'OntoWiki/Exception.php';
+        } else if ($method == 'setArrayValue' || $method == 'unsetArrayKey') {
             throw new OntoWiki_Exception('Missing parameter "key".');
             exit;
         } 
@@ -418,7 +407,7 @@ class ServiceController extends Zend_Controller_Action
                 $session->$name = $value;
                 break;
              case 'setArrayValue':
-                if(!is_array($session->$name)) $session->$name = array();
+                if(!is_array($session->$name))$session->$name = array();
                 $array = $session->$name;
                 $array[$key] = $value;
                 $session->$name = $array; //strange (because the __get and __set interceptors)
@@ -499,19 +488,17 @@ class ServiceController extends Zend_Controller_Action
         $namedGraph   = $this->_request->getParam('named-graph-uri', null);
         
         if (!empty($queryString)) {
-            require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
 
             // overwrite query-specidfied dataset with protocoll-specified dataset
             if (null !== $defaultGraph) {
-                $query->setFrom((array) $defaultGraph);
+                $query->setFrom((array)$defaultGraph);
             }
             if (null !== $namedGraph) {
-                $query->setFromNamed((array) $namedGraph);
+                $query->setFromNamed((array)$namedGraph);
             }
 
             // check graph availability
-            require_once 'Erfurt/App.php';
             $ac = Erfurt_App::getInstance()->getAc();
             foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
                 if (!$ac->isModelAllowed('view', $graphUri)) {
@@ -599,7 +586,6 @@ class ServiceController extends Zend_Controller_Action
             $deleteGraph   = isset($matches[2]) ? $matches[2] : '';
             $deleteTriples = isset($matches[3]) ? $matches[3] : '';
             
-            require_once 'Erfurt/Syntax/RdfParser.php';
             $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('nt');
             $insert = $parser->parse($insertTriples, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
             $parser->reset();
@@ -624,8 +610,8 @@ class ServiceController extends Zend_Controller_Action
         
         if ($model and $model->isEditable()) {
             // TODO: this should be a transaction
-            $model->deleteMultipleStatements((array) $delete);
-            $model->addMultipleStatements((array) $insert);
+            $model->deleteMultipleStatements((array)$delete);
+            $model->addMultipleStatements((array)$insert);
         } else {
             // When no user is given (Anoymous) give the requesting party a chance to authenticate.
             if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
@@ -652,7 +638,6 @@ class ServiceController extends Zend_Controller_Action
         if (isset($this->_request->f)) {
             $folder = $this->_request->getParam('f');
         } else {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Missing parameter f!');
             exit;
         }
@@ -661,13 +646,11 @@ class ServiceController extends Zend_Controller_Action
         if (isset($this->_request->t)) {
             $template = $this->_request->getParam('t');
         } else {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Missing parameter t!');
             exit;
         }
 
         if (!preg_match('/^[a-z_]+$/', $folder) || !preg_match('/^[a-z_]+$/', $template)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Illegal characters in folder or template name!');
             exit;
         }
@@ -677,7 +660,6 @@ class ServiceController extends Zend_Controller_Action
 
         if (!is_readable($path . $file)) {
             // $this->log('Template file not readable: ' . $path .  $file, Zend_Log::ERR);
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Template file not readable. ' . $path .  $file);
             exit;
         }
@@ -714,7 +696,6 @@ class ServiceController extends Zend_Controller_Action
         if (isset($this->_request->sr)) {
             $resource = $this->_request->getParam('sr', null, true);
         } else {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Missing parameter sr (start resource)!');
             exit;
         }
@@ -723,14 +704,12 @@ class ServiceController extends Zend_Controller_Action
         if (isset($this->_request->p)) {
             $property = $this->_request->getParam('p', null, true);
         } else {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Missing parameter p (property)!');
             exit;
         }
 
         // m is automatically used and selected
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('No model pre-selected model and missing parameter m (model)!');
             exit;
         } else {
@@ -753,7 +732,7 @@ class ServiceController extends Zend_Controller_Action
         $store = $model->getStore();
         
         // get the transitive closure
-        $closure = $store->getTransitiveClosure((string) $model, $property, array($resource), $inverse);
+        $closure = $store->getTransitiveClosure((string)$model, $property, array($resource), $inverse);
 
         // send the response
         $response->setHeader('Content-Type', 'application/json');
@@ -781,7 +760,6 @@ class ServiceController extends Zend_Controller_Action
             $model = $store->getModel($this->_request->m);
         }
         if (empty($model)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Missing parameter m (model) and no selected model in session!');
             exit;
         }
@@ -798,7 +776,6 @@ class ServiceController extends Zend_Controller_Action
         if (!empty($properties)) {
 
             // push all URIs to titleHelper
-            require_once 'OntoWiki/Model/TitleHelper.php';
             $titleHelper = new OntoWiki_Model_TitleHelper($model);
             foreach($properties as $property) {
                  $titleHelper->addResource($property['uri']);
@@ -881,7 +858,6 @@ class ServiceController extends Zend_Controller_Action
             $model = $store->getModel($this->_request->m);
         }
         if (empty($model)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Missing parameter m (model) and no selected model in session!');
             exit;
         }
@@ -889,7 +865,6 @@ class ServiceController extends Zend_Controller_Action
         if ( (isset($this->_request->uri)) && (Zend_Uri::check($this->_request->uri)) ) {
             $parameter = $this->_request->uri;
         } else {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Missing or invalid parameter uri (clone uri) !');
             exit;
         }
@@ -925,7 +900,6 @@ class ServiceController extends Zend_Controller_Action
         if (!empty($properties)) {
 
             // push all URIs to titleHelper
-            require_once 'OntoWiki/Model/TitleHelper.php';
             $titleHelper = new OntoWiki_Model_TitleHelper($model);
             foreach($properties as $property) {
                  $titleHelper->addResource( $property['uri'] );

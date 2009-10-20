@@ -9,16 +9,6 @@
  * @version   $Id: Dispatcher.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
-/** 
- * Required Zend classes
- */
-require_once 'Zend/Controller/Dispatcher/Standard.php';
-
-/** 
- * Required Erfurt classes
- */
-require_once 'Erfurt/Sparql/SimpleQuery.php';
-
 /**
  * OntoWiki dispatcher
  *
@@ -147,7 +137,6 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
          * mechanisms that do not allow a controller/action mapping from URL
          * parts.
          */
-        require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onIsDispatchable');
         $event->uri     = $this->urlBase . ltrim($request->getPathInfo(), '/');
         $event->request = $request;

@@ -10,8 +10,6 @@
  * @version    $Id: Component.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
-require_once 'OntoWiki/Controller/Base.php';
-
 /**
  * OntoWiki controller base class for components.
  *

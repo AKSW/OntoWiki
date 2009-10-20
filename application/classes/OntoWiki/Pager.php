@@ -10,9 +10,6 @@
  * @version   $Id: Pager.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
-require_once 'Erfurt/Store.php';
-require_once 'OntoWiki/Url.php';
-
 /**
  * OntoWiki pager class.
  *

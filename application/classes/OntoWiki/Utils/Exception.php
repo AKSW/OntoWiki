@@ -10,8 +10,6 @@
  * @version $Id:$
  */
 
-require_once 'OntoWiki/Exception.php';
-
 /**
  * OntoWiki module exteption class.
  *

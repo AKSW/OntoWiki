@@ -10,17 +10,6 @@
  * @version   $Id: Base.php 4308 2009-10-14 15:13:51Z jonas.brekle@gmail.com $
  */
 
-/** 
- * Required Zend classes
- */
-require_once 'Zend/Controller/Action.php';
-
-/** 
- * Required Erfurt classes
- */
-require_once 'Erfurt/Event/Dispatcher.php';
-
-
 /**
  * OntoWiki controller base class.
  *
@@ -130,7 +119,6 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
          * Triggered always when a controller from class OntoWiki_Controller_Base (or derived)
          * is initialized
          */
-        require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onControllerInit');
         $eventResult = $event->trigger();
 
@@ -168,7 +156,6 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         // catch redirect
         if ($this->_request->has('redirect-uri')) {
             $redirectUri = urldecode($this->_request->getParam('redirect-uri'));
-            require_once 'Zend/Controller/Front.php';
             $front = Zend_Controller_Front::getInstance();
             $options = array(
                 'prependBase' => false === strpos($redirectUri, $front->getBaseUrl())
@@ -193,7 +180,6 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         $value = $this->_request->getParam($name);
         
         if ($expandNamespace) {
-            require_once 'OntoWiki/Utils.php';
             $value = OntoWiki_Utils::expandNamespace($value);
         }
         

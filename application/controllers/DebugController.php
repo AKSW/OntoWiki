@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Base.php';
-
 /**
  * OntoWiki debug controller.
  * 
@@ -33,7 +31,6 @@ class DebugController extends OntoWiki_Controller_Base
      */
     public function cleartranslationcacheAction()
     {
-        require_once 'Zend/Translate.php';
         Zend_Translate::clearCache();
         
         $this->_redirect($this->_config->urlBase);

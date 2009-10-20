@@ -10,8 +10,6 @@
  * @version   $Id: Manager.php 4190 2009-09-25 10:31:02Z c.riess.dev $
  */
 
-require_once 'OntoWiki/Module/Registry.php';
-
 /**
  * OntoWiki Module Manager
  *
@@ -83,11 +81,10 @@ class OntoWiki_Module_Manager
     protected function _addModule($moduleName, $modulePath, $config = null)
     {
         if (array_key_exists('context', $config)) {
-            $contexts = (array) $config['context'];
+            $contexts = (array)$config['context'];
         } else if (array_key_exists('contexts', $config) and is_array($config['contexts'])) {
             $contexts = $config['contexts'];
         } else {
-            require_once 'OntoWiki/Module/Registry.php';
             $contexts = (array) OntoWiki_Module_Registry::DEFAULT_CONTEXT;
         }
         
@@ -120,7 +117,7 @@ class OntoWiki_Module_Manager
                     if (is_readable($moduleConfigFile)) {
                         $config = parse_ini_file($moduleConfigFile, true);
                         
-                        if (!array_key_exists('enabled', $config) || !((boolean) $config['enabled'])) {
+                        if (!array_key_exists('enabled', $config) || !((boolean)$config['enabled'])) {
                             continue;
                         }
                         
