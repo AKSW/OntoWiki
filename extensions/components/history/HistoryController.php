@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Component.php';
-
 /**
  * History component controller.
  * 
@@ -30,7 +28,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $limit       = 20;
 
         // redirecting to home if no model/resource is selected
-        if ( empty($model) || ( empty($this->_owApp->selectedResource) && empty($params['r']) ) ) {
+        if (empty($model) || (empty($this->_owApp->selectedResource) && empty($params['r']))) {
             $this->_abort('No model/resource selected.', OntoWiki_Message::ERROR);
         }
 
@@ -55,10 +53,7 @@ class HistoryController extends OntoWiki_Controller_Component
 
         // setting if class or instances
         if ($this->_owApp->lastRoute === 'instances') {
-
             // loading some more required classes
-            require_once 'Erfurt/Sparql/SimpleQuery.php';
-
             // getting transitive closure for types
             $types   = array_keys(
                 $store->getTransitiveClosure(
@@ -98,8 +93,8 @@ class HistoryController extends OntoWiki_Controller_Component
             
         } else {
             $historyArray = $versioning->getHistoryForResource(
-                (string) $resource,
-                (string) $this->_owApp->selectedModel,
+                (string)$resource,
+                (string)$this->_owApp->selectedModel,
                 $page
             );
         }
@@ -108,7 +103,7 @@ class HistoryController extends OntoWiki_Controller_Component
             $count = $page * $limit + 1;
             unset($historyArray[$limit]);
         } else {
-            $count = ($page - 1)  * $limit + sizeof($historyArray);
+            $count = ($page - 1) * $limit + sizeof($historyArray);
         }
 
         $idArray = array();
@@ -143,7 +138,7 @@ class HistoryController extends OntoWiki_Controller_Component
             );
         }
 
-        if ( $this->_erfurt->getAc()->isActionAllowed('Rollback') ) {
+        if ($this->_erfurt->getAc()->isActionAllowed('Rollback')) {
             $this->view->rollbackAllowed = true;
             // adding submit button for rollback-action
             $toolbar = $this->_owApp->toolbar;
@@ -157,12 +152,12 @@ class HistoryController extends OntoWiki_Controller_Component
         }
 
         // paging
-        require_once 'OntoWiki/Pager.php';
+        
         $statusBar = $this->view->placeholder('main.window.statusbar');
         $statusBar->append(OntoWiki_Pager::get($count,$limit));
 
         // setting view variables
-        require_once 'OntoWiki/Url.php';
+        
         $url = new OntoWiki_Url(array('controller' => 'history', 'action' => 'rollback'));
 
         $this->view->placeholder('main.window.title')->set($windowTitle);
@@ -191,7 +186,6 @@ class HistoryController extends OntoWiki_Controller_Component
         }
         
         // set active tab to history
-        require_once 'OntoWiki/Navigation.php';
         Ontowiki_Navigation::setActive('history');
 
         // setting default title
@@ -200,8 +194,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set($windowTitle);
 
         // setting more view variables
-        require_once 'OntoWiki/Url.php';
-        $url = new OntoWiki_Url(array('controller' => 'view', 'action' => 'index' ), null);
+               $url = new OntoWiki_Url(array('controller' => 'view', 'action' => 'index' ), null);
         $this->view->backUrl = (string) $url;
 
         // abort on insufficient rights
@@ -345,7 +338,6 @@ class HistoryController extends OntoWiki_Controller_Component
         }
 
         return true;
-
     }
 }
 

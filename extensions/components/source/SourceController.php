@@ -1,6 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Component.php';
 /**
  * @category   OntoWiki
  * @package    OntoWiki_extensions_components_source
@@ -23,7 +22,6 @@ class SourceController extends OntoWiki_Controller_Component
         if (array_key_exists('ttl', $store->getSupportedImportFormats())) {
             $allowSaving = true;
         } else {
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(
                 new OntoWiki_Message("Store adapter cannot handle TTL. Saving has been disabled.", OntoWiki_Message::WARNING)
             );
@@ -50,7 +48,6 @@ class SourceController extends OntoWiki_Controller_Component
         $this->view->graphUri      = (string) $this->_owApp->selectedModel;
 
         // construct N3
-        require_once 'Erfurt/Syntax/RdfSerializer.php';
         $exporter = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat('ttl');
         $source = $exporter->serializeResourceToString(
             (string) $this->_owApp->selectedResource,
@@ -59,7 +56,6 @@ class SourceController extends OntoWiki_Controller_Component
 	        
         $this->view->source = $source;
         
-        require_once 'OntoWiki/Url.php';
         $url = new OntoWiki_Url(array('route' => 'properties'), array());
         $url->setParam('r', (string) $resource, true);
         $this->view->redirectUri = urlencode((string) $url);
@@ -80,16 +76,13 @@ class SourceController extends OntoWiki_Controller_Component
             $store->deleteMatchingStatements($modelUri, $resourceUri, null, null);
             
             // save new statements
-            require_once 'Erfurt/Syntax/RdfParser.php';
             $store->importRdf($modelUri, $source, 'turtle', Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
         } else {
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(
                 new OntoWiki_Message("No edit privileges on graph <${modelUri}>.", OntoWiki_Message::ERROR)
             );
         }
         
-        require_once 'OntoWiki/Url.php';
         // $url = new OntoWiki_Url(array('controller' => 'source', 'action' => 'edit'), array());
         $url = new OntoWiki_Url(array('route' => 'properties'), array());
         $url->setParam('r', $resourceUri, true);

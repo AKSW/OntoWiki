@@ -1,8 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Component.php';
-require_once 'OntoWiki/Toolbar.php';
-
 /**
  * Controller for OntoWiki Filter Module
  *
@@ -50,7 +47,6 @@ class FilesController extends OntoWiki_Controller_Component
                 unlink($pathHashed);
             }
             
-            require_once 'OntoWiki/Url.php';
             $url = new OntoWiki_Url(array('controller' => 'files', 'action' => 'manage'), array());
             $this->_redirect((string) $url);
         }
@@ -66,7 +62,6 @@ class FilesController extends OntoWiki_Controller_Component
         $mimeProperty = $this->_privateConfig->mime->property;
         $store        = $this->_owApp->erfurt->getStore();
         
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = new Erfurt_Sparql_SimpleQuery();
         $query->setProloguePart('SELECT DISTINCT ?mime_type')
               ->addFrom((string) $this->_owApp->configModel)
@@ -99,7 +94,6 @@ class FilesController extends OntoWiki_Controller_Component
         $fileModel    = $this->_privateConfig->model;
         $store        = $this->_owApp->erfurt->getStore();
         
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = new Erfurt_Sparql_SimpleQuery();
         $query->setProloguePart('SELECT DISTINCT ?mime_type ?uri')
               ->addFrom((string) $this->_owApp->configModel)
@@ -133,7 +127,6 @@ class FilesController extends OntoWiki_Controller_Component
                   . rtrim($this->_privateConfig->path, '/') 
                   . DIRECTORY_SEPARATOR;
         
-        require_once 'OntoWiki/Url.php';
         $url = new OntoWiki_Url(array('controller' => 'files', 'action' => 'upload'), array());
 
         if (is_writable($filePath)) {
@@ -160,7 +153,6 @@ class FilesController extends OntoWiki_Controller_Component
         }
         
         if (!$this->_owApp->rewriting) {
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(
                 new OntoWiki_Message('Rewrite mode is off. File URIs may not be accessible.', OntoWiki_Message::WARNING)
             );
@@ -191,7 +183,6 @@ class FilesController extends OntoWiki_Controller_Component
         }
             
         
-        require_once 'OntoWiki/Url.php';
         $url = new OntoWiki_Url(array('controller' => 'files', 'action' => 'upload'), array());
         
         // check for POST'ed data
@@ -297,7 +288,6 @@ class FilesController extends OntoWiki_Controller_Component
                     $this->_redirect((string) $url);
                 }
             } else {
-                require 'OntoWiki/Message.php';
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Error during file upload.', OntoWiki_Message::ERROR)
                 );
@@ -325,7 +315,6 @@ class FilesController extends OntoWiki_Controller_Component
 		$this->view->formEncoding  = 'multipart/form-data';
 		
 		if (!is_writable($this->_privateConfig->path)) {
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(
                 new OntoWiki_Message('Uploads folder is not writable.', OntoWiki_Message::WARNING)
             );

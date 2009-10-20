@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Component.php';
-
 /**
  * Google map component controller.
  *

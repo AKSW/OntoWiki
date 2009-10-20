@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-
 /**
  * OntoWiki module – similarinstances
  *
@@ -18,7 +16,6 @@ class SimilarinstancesModule extends OntoWiki_Module
 {    
     public function getContents()
     {
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = new Erfurt_Sparql_SimpleQuery();
         
         $results  = false;
@@ -28,7 +25,6 @@ class SimilarinstancesModule extends OntoWiki_Module
         $url      = new OntoWiki_Url(array('route' => 'properties'), array('r'));
         $listUrl  = new OntoWiki_Url(array('route' => 'instances'), array());
         
-        require_once 'OntoWiki/Model/TitleHelper.php';
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
         $titleHelper->addResources($types);
         
@@ -104,7 +100,6 @@ class SimilarinstancesModule extends OntoWiki_Module
     {
         $typesInferred = array();
         
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = new Erfurt_Sparql_SimpleQuery();
         
         $query->setProloguePart('SELECT DISTINCT ?uri')

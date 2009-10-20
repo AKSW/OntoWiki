@@ -50,10 +50,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         try {
             $result = $store->getGraphsUsingResource($uri, false);
             
-            if ($result) {
-                require_once 'OntoWiki/Utils.php';
-                require_once 'OntoWiki/Url.php';
-                
+            if ($result) {                
                 // get source graph
                 $allowedGraph = null;
                 $ac = Erfurt_App::getInstance()->getAc();

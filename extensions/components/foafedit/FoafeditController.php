@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Component.php';
-
 /**
  * Component controller for the FOAF Editor.
  *
@@ -20,7 +18,6 @@ class FoafeditController extends OntoWiki_Controller_Component
 
         // m is automatically used and selected
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('No model pre-selected model and missing parameter m (model)!');
             exit;
         } else {
@@ -36,18 +33,15 @@ class FoafeditController extends OntoWiki_Controller_Component
         $this->addModuleContext('main.window.properties');
 
         if (!isset($this->_request->r)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("Missing parameter 'r'.");
             exit;
         }
 
-        require_once 'OntoWiki/Model/Resource.php';
         $resource = new OntoWiki_Model_Resource($this->model->getStore(), $this->model, $this->_request->r);
         $this->view->values = $resource->getValues();
         $predicates = $resource->getPredicates();
         $this->view->predicates = $predicates;
-
-        require_once 'OntoWiki/Model/TitleHelper.php';
+        
         $titleHelper = new OntoWiki_Model_TitleHelper($this->model);
 
 		// add graphs

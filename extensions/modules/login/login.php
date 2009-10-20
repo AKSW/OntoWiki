@@ -1,8 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-require_once 'OntoWiki/Message.php';
-
 /**
  * OntoWiki module – login
  *

@@ -1,5 +1,5 @@
 <?php
-require_once 'OntoWiki/Plugin.php';
+
 /**
  * Plugin to reorder properties data on PropertiesAction.
  *
@@ -19,8 +19,6 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
             $data = $event->predicates;
 
             foreach ( $data as $graphUri => $predicates) {
-
-                require_once 'Erfurt/Sparql/SimpleQuery.php';
                 $query = new Erfurt_Sparql_SimpleQuery();
                 $query->setProloguePart('SELECT DISTINCT *')
                       ->addFrom((string) $graphUri)

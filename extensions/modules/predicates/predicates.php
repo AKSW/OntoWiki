@@ -1,10 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-require_once 'OntoWiki/Model.php';
-require_once 'OntoWiki/Url.php';
-require_once 'OntoWiki/Utils.php';
-
 /**
  * OntoWiki module – properties
  *
@@ -22,7 +17,6 @@ class PredicatesModule extends OntoWiki_Module
     public function getContents()
     {
         // build query
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = new Erfurt_Sparql_SimpleQuery();
         $query->setProloguePart('SELECT ?predicate ?object')
               ->setWherePart('WHERE {
@@ -35,7 +29,6 @@ class PredicatesModule extends OntoWiki_Module
         if ($results = $this->_owApp->selectedModel->sparqlQuery($query, array('result_format' => 'extended'))) {
             $results = $results['bindings'];
             
-            require_once 'OntoWiki/Model/TitleHelper.php';
             $titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
             
             foreach ($results as $row) {
