@@ -31,8 +31,9 @@ class ExploretagsModule extends OntoWiki_Module
      * @return string
      */
     public function getMenu() {        
-		// count sub menu
-		$countMenu = new OntoWiki_Menu();
+	// count sub menu
+	require_once ('OntoWiki/Menu.php');
+	$countMenu = new OntoWiki_Menu();
         $countMenu->setEntry('5', 'javascript:count(5)')
                   ->setEntry('10', 'javascript:count(10)')
                   ->setEntry('20', 'javascript:count(20)');
