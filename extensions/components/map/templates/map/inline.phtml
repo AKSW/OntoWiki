@@ -33,6 +33,19 @@ function loadStyle (styleUrl, media) {
     $('head').append(link);
 }
 
+/**
+ * Check if NewMapManager and OpenLayers objects exist,
+ * if so execute goForMap function,
+ * else start this function again after 100 ms
+ */
+function waitForMap () {
+    if (typeof(NewMapManager) == 'undefined' || typeof(OpenLayers) == 'undefined') {
+        setTimeout('waitForMap()', 100);
+    } else {
+        goForMap();
+    }
+}
+
 loadStyle('<?php echo $this->componentUrlBase.'css/OpenLayers.css'; ?>', 'screen');
 loadScript('<?php echo 'http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->apikey->google.'&async=2'; ?>');
 loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenLayers.js'; ?>');
@@ -43,35 +56,35 @@ loadScript('<?php echo $this->componentUrlBase.'classes/NewMapManager.js'; ?>');
 $('#mapContainer').addClass('width99');
 $('#mapContainer').height( $('#mapContainer').width() );
 
-var manager             = new NewMapManager(
+waitForMap();
+
+function goForMap () {
+    var manager             = new NewMapManager(
         $('#mapContainer').get(0),                      // the dom object containing the map
         <?php echo json_encode($this->extent) ?>,       // the extend on the map, which is shown
         '<?php echo (string) $this->jsonRequestUrl ?>'  // the request URL, wher to get the markerdata
-        );
+    );
 
-// the themePath doesn't seam to work
-manager.themePath       = '<?php echo $this->componentUrlBase ?>resources/lib/theme/default/style.css';
-manager.defaultLayer    = '<?php echo $this->defaultLayer ?>';
+    // the themePath doesn't seam to work
+    manager.themePath       = '<?php echo $this->componentUrlBase ?>resources/lib/theme/default/style.css';
+    manager.defaultLayer    = '<?php echo $this->defaultLayer ?>';
 
-// set the image path to the ontowiki theme's image folder
-manager.imgPath         = '<?php echo $this->themeUrlBase; ?>images/';
-
-// this event should be replaces with a "mapsScriptsReady" event, which fires, when Google, OpenLayers and (New)MapManager are loaded
-$(document).ready( function () {
+    // set the image path to the ontowiki theme's image folder
+    manager.imgPath         = '<?php echo $this->themeUrlBase; ?>images/';
 
     manager.icon = new OpenLayers.Icon(
         '<?php echo $this->componentUrlBase . $this->icon->path; ?>',
         new OpenLayers.Size(<?php echo $this->icon->size; ?>),
         new OpenLayers.Pixel(<?php echo $this->icon->offset; ?>)
-        );
+    );
     manager.clusterIcon = new OpenLayers.Icon(
         '<?php echo $this->componentUrlBase . $this->cluster->path; ?>',
         new OpenLayers.Size(<?php echo $this->cluster->size; ?>),
         new OpenLayers.Pixel(<?php echo $this->cluster->offset; ?>)
-        );
+    );
     manager.prepare();
     manager.init();
-});
+}
 
 //]]>
 </script>

@@ -15,6 +15,7 @@ require_once 'OntoWiki/Model/TitleHelper.php';
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @version    $Id: TaggingController.php 4319 2009-10-19 09:11:57Z sirakov $
  */
+
 class TaggingController extends OntoWiki_Controller_Component
 {
 
@@ -1228,7 +1229,7 @@ class TaggingController extends OntoWiki_Controller_Component
             $conf->resOf,
             array('value' => $nC, 'type' => 'uri'));
         }
-
+        
         echo "Successful";
     }
 
