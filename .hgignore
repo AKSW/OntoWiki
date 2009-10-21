@@ -1,11 +1,10 @@
 syntax: glob
 
+.DS_Store
 .htaccess
 config.ini
-ontowiki/src/.htaccess
-ontowiki/src/config.ini
-ontowiki/src/nbproject
-ontowiki/src/libraries/Erfurt
-ontowiki/src/libraries/RDFauthor
-ontowiki/src/libraries/Zend
-ontowiki/src/extensions/components/jsonrpc/component.ini
+nbproject
+Erfurt
+RDFauthor
+Zend
+component.ini
