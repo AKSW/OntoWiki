@@ -1,0 +1,26 @@
+.vcard .fdepiction {
+    height: 125px;
+    width: 100px;
+    background: url('PersonSilhouette.png') no-repeat;
+    float: left;
+}
+
+.vcard .properties {
+    margin-left: 110px;
+}
+
+.vcard .properties span.block {
+    display: block;
+}
+
+.vcard .fnick:before {
+    content:'(';
+}
+
+.vcard .fnick:after {
+    content:')';
+}
+
+h3 {
+    clear: both;
+}

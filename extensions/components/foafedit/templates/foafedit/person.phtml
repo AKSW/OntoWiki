@@ -1,128 +1,64 @@
-<?php //var_dump($this->predicates) ?>
-<?php //var_dump($this->namespaces['http://purl.org/ontology/mo/']) ?>
-<?php $flag = false; ?>
-<?php //set the about URI as in properties.phtml ?>
-<span about="<?php echo $this->resourceUri ?>" style="display: none" class="about_span"></span>
-<?php if ($this->has('predicates')): ?>
+<h3><?php echo $this->resourceName ?>'s vCard</h3>
 
-
-
-	<?php //configure our namespaces as in properties.phtml ?>
-	<?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
-	<table class="separated-vertical rdfa" about="<?php echo $this->resourceUri ?>"
-	    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
-	        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
-	    <?php endforeach; ?>>
-
-	<?php foreach ($this->predicates as $graph => $predicatesForGraph): ?>
-        <?php $current++; ?>
-        <?php if (count($this->predicates[$graph]) > 0): /* has resource predicates from graph at all? */ ?>
-            <?php $flag = true; ?>
-        <tbody update:from="<?php echo $graph ?>" id="table-group-<?php echo $current ?>">
-            <?php if (($graphCount > 1) || ($graph != $this->graphUri)): ?>
-                <?php /* show tbody caption only if statements from more than one graph or not from the selected graph */ ?>
-                <tr class="grouptitle">
-                    <th colspan="2">
-                        <a class="toggle"></a>
-                        <?php //echo ($graph != $this->graphUri) ? $this->_('Imported from ') : '' ?>
-                        <?php echo $this->graphs[$graph] ?>
-                    </th>
-                </tr>
-            <?php endif; ?>
-        <?php foreach ($predicatesForGraph as $uri => $predicate): ?>
-            <?php $currentPredicate = $this->predicates[$graph][$uri] ?>
-            <tr>
-                <td width="25%">
-                    <a class="hasMenu"
-                       about="<?php echo $currentPredicate['uri'] ?>"
-                       href="<?php echo $currentPredicate['url'] ?>"><?php echo $currentPredicate['title'] ?></a>
-                </td>
-                <?php if (count($this->values[$graph][$uri]) > 1): ?>
-                <td>
-                    <ul class="bullets-none">
-                        <?php foreach ($this->values[$graph][$uri] as $entry): ?>
-                            <?php if ($entry['url']): ?>
-                                <li>
-                                    <a resource="<?php echo $entry['uri'] ?>"
-                                       rel="<?php echo $currentPredicate['curi'] ?>"
-                                       class="expandable hasMenu" href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
-                                </li>
-                            <?php else: ?>
-                                <li property="<?php echo $currentPredicate['curi'] ?>"
-                                    content="<?php echo $this->escape($entry['content']) ?>"
-                                    <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
-                                        xml:lang="<?php echo $entry['lang'] ?>"
-                                    <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
-                                        datatype="<?php echo $entry['datatype'] ?>"
-                                    <?php endif; ?>
-                                    ><?php
-                                    echo $entry['object']
-                                ?></li>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                        <?php if (isset($currentPredicate['has_more']) && $currentPredicate['has_more']): ?>
-                            <a href="<?php echo $currentPredicate['has_more_link'] ?>">[<?php echo $this->_('more') ?>]</a>
-                        <?php endif; ?>
-                    </ul>
-                </td>
-                <?php else: ?>
-                    <?php $entry = current($this->values[$graph][$uri]) ?>
-                <td>
-                    <?php if ($entry['url']): ?>
-                        <?php if ($entry['uri']): ?>
-                            <a rel="<?php echo $currentPredicate['curi'] ?>"
-                               class="expandable hasMenu"
-                               resource="<?php echo $entry['uri'] ?>"
-                               href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
-                        <?php else: ?>
-                            <a rel="<?php echo $currentPredicate['curi'] ?>"
-                               href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <span property="<?php echo $currentPredicate['curi'] ?>"
-                              content="<?php echo $this->escape($entry['content']) ?>"
-                              <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
-                                    xml:lang="<?php echo $entry['lang'] ?>"
-                                <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
-                                  datatype="<?php echo $entry['datatype'] ?>"
-                              <?php endif; ?>
-                        ><?php echo $entry['object'] ?></span>
-                    <?php endif; ?>
-                </td>
+<div class="vcard" about="<?php echo $this->resourceUri ?>">
+    <span class="fdepiction">
+        <?php if (isset($this->depiction)): ?>
+            <img class="fdepiction" src="<?php echo $this->depiction[0]['value'] ?>" alt="depiction of <?php echo $this->resourceName ?>">
+        <?php endif; ?>
+    </span>
+    <div class="properties">
+        
+        <?php if (isset($this->title)): ?>
+            <span class="ftitle block" property="<?php echo $this->curie($this->uris['title']) ?>"><?php echo $this->title[0]['value'] ?></span>
+        <?php endif; ?>
+        
+        <span class="block fname">
+            <?php if (isset($this->name)): ?>
+                <span property="<?php echo $this->curie($this->uris['name']) ?>"><?php echo $this->name[0]['value'] ?></span>
+            <?php else: ?>
+                <?php if (isset($this->firstName)): ?>
+                    <span property="<?php echo $this->curie($this->uris['firstName']) ?>"><?php echo $this->firstName[0]['value'] ?></span>
                 <?php endif; ?>
-            </tr>
-        <?php endforeach; ?>
-    </tbody>
-    <?php endif; ?>
-    <?php endforeach; ?>
-	</table>
-<?php endif;?>
+                
+                <?php if (isset($this->surname)): ?>
+                    <span property="<?php echo $this->curie($this->uris['surname']) ?>"><?php echo $this->surname[0]['value'] ?></span>
+                <?php elseif (isset($this->familyName)): ?>
+                    <span property="<?php echo $this->curie($this->uris['familyName']) ?>"><?php echo $this->familyName[0]['value'] ?></span>
+                <?php endif; ?>
+            <?php endif; ?>
+            
+            <?php if (isset($this->nick)): ?>
+                <span class="fnick" property="<?php echo $this->curie($this->uris['nick']) ?>"><?php echo $this->nick[0]['value'] ?></span>
+            <?php elseif (isset($this->givenName)): ?>
+                <span class="fnick" property="<?php echo $this->curie($this->uris['givenName']) ?>"><?php echo $this->givenName[0]['value'] ?></span>
+            <?php endif; ?>
+        </span>
+        
+        <?php if (isset($this->mbox)): ?>
+            <span class="fmbox block" rel="<?php echo $this->curie($this->uris['mbox']) ?>">
+              <a href="<?php echo $this->mbox[0]['value'] ?>"><?php echo str_replace('mailto:', '', $this->mbox[0]['value']) ?></a>
+            </span>
+        <?php endif; ?>
+  </div>
+</div>
 
-<?php /*this non-displayed table serves as a template providing a set of default
-			properties to edit.
-		To add a another template property, just add another row to this table w/ the
-			appropriate RDFa
-		*/ ?>
-<?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
-<table class="separated-vertical rdfa" style="display:none" about="<?php echo $this->resourceUri ?>"
-    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
-        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
-    <?php endforeach; ?>>
-	<tbody update:from="<?php echo($this->graphUri); ?>" id="table-group-0">
-		<tr>
-		  <td><a about="http://purl.org/dc/terms/description" href="#">description</a></td>
-		  <td><span property="<?php echo($this->namespaces['http://purl.org/dc/terms/']);?>:description"
-                    content=""></span></td>
-		</tr>
-		<tr>
-		  <td><a about="http://xmlns.com/foaf/0.1/depiction" href="#">depiction</a></td>
-		  <td><span property="<?php echo($this->namespaces['http://xmlns.com/foaf/0.1/']);?>:depiction"
-		  		    content=""></span></td>
-		</tr>
-		<tr>
-		  <td><a about="http://xmlns.com/foaf/0.1/based_near" href="#">based near</a></td>
-		  <td><span property="<?php echo($this->namespaces['http://xmlns.com/foaf/0.1/']);?>:based_near"
-		  		    content=""></span></td>
-		</tr>
-	</tbody>
-</table>
+<?php if (isset($this->knows)): ?>
+    <h3><?php echo $this->resourceName ?>'s Acquaintances</h3>
+    <ul>
+    <?php foreach ($this->knows as $known): ?>
+        <li><?php echo $known['value'] ?></li>
+    <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+
+<?php if (isset($this->workplaceHomepage) || isset($this->workinfoHomepage) || isset($this->schoolHomepage)|| isset($this->weblog)): ?>
+    <h3><?php echo $this->resourceName ?>'s Resources</h3>
+<?php endif; ?>
+
+<?php if (isset($this->topicInterest)): ?>
+    <h3><?php echo $this->resourceName ?>'s Interests</h3>
+<?php endif; ?>
+
+<?php if (isset($this->basedNear)): ?>
+    <h3><?php echo $this->resourceName ?>'s Location</h3>
+<?php endif; ?>

@@ -1,15 +1,26 @@
 <?php
 
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @version $Id:$
+ */
+
+require_once 'OntoWiki/Component/Helper.php';
 
 /**
  * Helper class for the FOAF Editor component.
  * Checks whether the current resource is an instance of foaf:Person
  * and registers the FOAF Editor component if so.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_components_foafedit
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @category OntoWiki
+ * @package Extensions
+ * @subpackage Foafedit
  * @author Norman Heino <norman.heino@gmail.com>
- * @version $Id: FoafeditHelper.php 4090 2009-08-19 22:10:54Z christian.wuerker $
  */
 class FoafeditHelper extends OntoWiki_Component_Helper
 {
@@ -21,6 +32,7 @@ class FoafeditHelper extends OntoWiki_Component_Helper
             $store    = $owApp->erfurt->getStore();
             $resource = (string) $owApp->selectedResource;
 
+            require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
 
             // build SPARQL query for getting class (rdf:type) of current resource
@@ -38,13 +50,19 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                     EF_RDFS_SUBCLASSOF, 
                     $class, 
                     false);
-
-                // merge direct type
-                $types = array_merge(array($class), array_keys($super));
+                
+                $types = array($class);
+                foreach ($super as $typeInfo) {
+                    $types[] = $typeInfo['parent'];
+                }
+                
+                $types = array_combine($types, $types);
+                // var_dump($types);exit;
 
                 if (in_array($this->_privateConfig->person, $types)) {
                     // we have a foaf:Person
                     // register new tab
+                    require_once 'OntoWiki/Navigation.php';
                     OntoWiki_Navigation::register('foafedit', array(
                         'controller' => 'foafedit', 
                         'action'     => 'person', 

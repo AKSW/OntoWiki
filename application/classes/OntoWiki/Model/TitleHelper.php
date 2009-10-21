@@ -38,6 +38,13 @@ class OntoWiki_Model_TitleHelper
     protected $_alwaysSearchAllProperties = false;
     
     /**
+     * Whether to fallback to local names instead of full
+     * URIs for unknown resources
+     * @var boolean
+     */
+    protected $_alwaysUseLocalNames = false;
+    
+    /**
      * The languages to consider for title properties.
      * @var array
      */
@@ -120,14 +127,16 @@ class OntoWiki_Model_TitleHelper
         }
         
         $this->_store = Erfurt_App::getInstance()->getStore();
-        
-        $config = OntoWiki_Application::getInstance()->config;
+        $config       = OntoWiki::getInstance()->config;
         
         // naming properties for resources
         $this->_titleProperties = array_values($config->titleHelper->properties->toArray());
         
         // fetch mode
         $this->_alwaysSearchAllProperties = (strtolower($config->titleHelper->searchMode) == 'language');
+        
+        // always use local name for unknown resources?
+        $this->_alwaysUseLocalNames = (bool)$config->titleHelper->useLocalNames;
     }
     
     // ------------------------------------------------------------------------
@@ -141,8 +150,13 @@ class OntoWiki_Model_TitleHelper
      * @return OntoWiki_Model_TitleHelper
      */
     public function addResource($resource)
-    {        
+    {
         $resourceUri = (string)$resource;
+        
+        if (!Erfurt_Uri::check($resourceUri)) {
+            require_once 'OntoWiki/Model/Exception.php';
+            throw new OntoWiki_Model_Exception('Supplied resource is not a valid URI.');
+        }
         
         $this->_resources[$resourceUri] = $resourceUri;
         $this->_resourcesAdded = true;
@@ -270,11 +284,15 @@ class OntoWiki_Model_TitleHelper
      */
     public function getTitle($resourceUri, $language = null)
     {
-        // do nothing if we dont have this URI
+        // do nothing if we don't have this URI
         if (!isset($this->_resources[$resourceUri])) {
             $logger = OntoWiki_Application::getInstance()->logger;
-            $logger->info('TitleHelper getTitle without adding the resource ('.$resourceUri.')');
-            return OntoWiki_Utils::contractNamespace($resourceUri);
+            
+            $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
+            $this->addResource($resourceUri);
+            
+            // $logger->info('TitleHelper getTitle without adding the resource ('.$resourceUri.')');
+            // return OntoWiki_Utils::contractNamespace($resourceUri);
         }
 
         if (null === $this->_resourceTitles) {
@@ -320,6 +338,11 @@ class OntoWiki_Model_TitleHelper
         // still not found?
         if (null === $title) {
             $title = OntoWiki_Utils::contractNamespace($resourceUri);
+            
+            // not even namespace found?
+            if ($title == $resourceUri and $this->_alwaysUseLocalNames) {
+                $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
+            }           
         }
         
         return $title;
