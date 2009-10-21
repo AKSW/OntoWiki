@@ -6,7 +6,7 @@
  * @package    OntoWiki_extensions_components_auth
  * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: AuthController.php 4090 2009-08-19 22:10:54Z christian.wuerker $
+ * @version    $Id: AuthController.php 4327 2009-10-21 08:21:36Z christian.wuerker $
  */
 
 require_once 'OntoWiki/Controller/Component.php';
@@ -18,8 +18,6 @@ require_once 'OntoWiki/Controller/Component.php';
  * @package    OntoWiki_extensions_components_auth
  * @copyright  Copyright (c) 2009 {@link http://aksw.org aksw}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @category   ontowiki
- * @package    extension
  * @subpackage component
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */

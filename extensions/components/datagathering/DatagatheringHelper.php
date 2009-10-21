@@ -18,8 +18,6 @@ require_once 'OntoWiki/Component/Helper.php';
  * @package    OntoWiki_extensions_components_datagathering
  * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @category   ontowiki
- * @package    extension
  * @subpackage component
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */

@@ -6,7 +6,7 @@
  * @package    OntoWiki_extensions_components_datagathering
  * @copyright Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: DatagatheringController.php 4117 2009-09-04 08:19:50Z pfrischmuth $
+ * @version $Id: DatagatheringController.php 4327 2009-10-21 08:21:36Z christian.wuerker $
  */
 
 require_once 'Erfurt/Wrapper/Registry.php';
@@ -20,8 +20,6 @@ require_once 'OntoWiki/Controller/Component.php';
  * @package    OntoWiki_extensions_components_datagathering
  * @copyright  Copyright (c) 2009 {@link http://aksw.org aksw}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @category   ontowiki
- * @package    extension
  * @subpackage component
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
