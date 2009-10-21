@@ -3,25 +3,20 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Toolbar.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-require_once 'OntoWiki/Application.php';
 
 /**
  * OntoWiki Toolbar class.
  *
  * Facilitates the programmatical construction of toolbars.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @category Toolbar
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Toolbar
 {
@@ -60,12 +55,6 @@ class OntoWiki_Toolbar
     protected $_buttons = array();
     
     /** 
-     * OntoWiki Application config
-     * @var Zend_Config 
-     */
-    protected $_config = null;
-    
-    /** 
      * Singleton instance
      * @var OntoWiki_Toolbar 
      */
@@ -82,8 +71,6 @@ class OntoWiki_Toolbar
      */
     private function __construct()
     {
-        $this->_config    = OntoWiki_Application::getInstance()->config;
-        $this->_translate = OntoWiki_Application::getInstance()->translate;
     }
     
     /**
@@ -156,6 +143,34 @@ class OntoWiki_Toolbar
     }
     
     /**
+     * Sets the URL base for the current theme
+     *
+     * @since 0.9.5
+     * @param string $themeUrlBase The URL base into the theme dir
+     * @return OntoWiki_Toolbar
+     */
+    public function setThemeUrlBase($themeUrlBase)
+    {
+        $this->_themeUrlBase = (string)$themeUrlBase;
+        
+        return $this;
+    }
+    
+    /**
+     * Sets the translation object for the current UI language
+     *
+     * @since 0.9.5
+     * @param Zend_Translate $translate The translation object
+     * @return OntoWiki_Toolbar
+     */
+    public function setTranslate(Zend_Translate $translate)
+    {
+        $this->_translate = $translate;
+        
+        return $this;
+    }
+    
+    /**
      * Renders the toolbar as an HTML string.
      *
      * @return string
@@ -180,7 +195,6 @@ class OntoWiki_Toolbar
             $options = array_merge($this->_defaultButtons[$type], $options);
         } else {
             if (empty($options)) {
-                require_once 'OntoWiki/Exception.php';
                 throw new OntoWiki_Exception("Missing options for button '$type'.");
             }
             
@@ -191,7 +205,11 @@ class OntoWiki_Toolbar
         
         // translate name
         if (array_key_exists('name', $options)) {
-            $label = $this->_translate->translate($options['name']);
+            if ($this->_translate instanceof Zend_Translate) {
+                $label = $this->_translate->translate($options['name']);
+            } else {
+                $label = $options['name'];
+            }
         } else {
             $label = null;
         }
@@ -220,13 +238,18 @@ class OntoWiki_Toolbar
         if (array_key_exists('image_url', $options)) {
             $image = $options['image_url'];
         } else if (array_key_exists('image', $options)) {
-            $image = $this->_config->themeUrlBase . 'images/icon-' . $options['image'] . '.png';
+            $image = $this->_themeUrlBase . 'images/icon-' . $options['image'] . '.png';
         } else {
             $image = null;
         }
         
         // construct button link
-        $button = sprintf('<a class="button %s" %s %s><img src="%s"/><span>&nbsp;%s</span></a>', $class, $id, $href, $image, $label);
+        $button = sprintf('<a class="button %s" %s %s><img src="%s"/><span>&nbsp;%s</span></a>', 
+                          $class, 
+                          $id, 
+                          $href, 
+                          $image, 
+                          $label);
         
         return $button;
     }

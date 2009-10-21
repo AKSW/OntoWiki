@@ -3,34 +3,20 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Hierarchy.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-/** 
- * Required Erfurt classes
- */
-require_once 'Erfurt/Sparql/SimpleQuery.php';
-
-/** 
- * Required OntoWiki API classes
- */
-require_once 'OntoWiki/Model.php';
-require_once 'OntoWiki/Utils.php';
 
 /**
  * OntoWiki resource hierarchy model class.
  *
  * Represents a hierarchy of resources, e.g. a class tree.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
+ * @category OntoWiki
+ * @package Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Model_Hierarchy extends OntoWiki_Model
 {    
@@ -128,21 +114,20 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         if (!$this->_hierarchyResults) {
             $query = $this->_buildQuery();
             
-            require_once 'OntoWiki/Url.php';
             $this->_url = new OntoWiki_Url(array('route' => 'instances'), array('r'));
             
             if ($result = $this->_model->sparqlQuery($query)) {
                 $this->_hierarchyResults = array();
                 
                 // set titles
-                foreach ((array) $result as $row) {
+                foreach ((array)$result as $row) {
                     $this->_titleHelper->addResource($row['classUri']);
                     if (!empty($row['sub'])) {
                         $this->_titleHelper->addResource($row['sub']);
                     }
                 }
                 
-                foreach ((array) $result as $row) {
+                foreach ((array)$result as $row) {
                     $classUri = $row['classUri'];
                     
                     if (!array_key_exists($classUri, $this->_hierarchyResults)) {
@@ -179,7 +164,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         
         $entry = array(
             'uri'          => $resultUri, 
-            'url'          => (string) $this->_url, 
+            'url'          => (string)$this->_url, 
             'classes'      => trim($classes), 
             'title'        => $this->_titleHelper->getTitle($resultUri, $this->_config->languages->locale), 
             'children'     => array(), 

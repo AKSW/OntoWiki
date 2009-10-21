@@ -1,12 +1,11 @@
 <?php
 // vim: sw=4:sts=4:expandtab
 
+/* Hint: use PHP_EOL which is defined to the 
+   system's line ending character ;) */
 if (!defined("EOL")) {
     define("EOL","\n");
 }
-
-require_once 'Erfurt/Sparql/SimpleQuery.php';
-require_once 'OntoWiki/Controller/Component.php';
 
 /**
  * Map component controller.
@@ -131,10 +130,9 @@ class MapController extends OntoWiki_Controller_Component
     public function markerAction()
     {
         $this->_owApp->logger->debug('MapComponent/markerAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
-
         require_once $this->_componentRoot . 'classes/Marker.php';
         require_once $this->_componentRoot . 'classes/Clusterer.php';
-        require_once 'OntoWiki/Model/TitleHelper.php';
+        require_once $this->_componentRoot . 'classes/GeoCoder.php';
 
         // tells the OntoWiki to not apply the template to this action
         $this->_helper->viewRenderer->setNoRender();

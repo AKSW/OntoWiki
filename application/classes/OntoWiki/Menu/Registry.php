@@ -5,10 +5,7 @@
  *
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Registry.php 4227 2009-10-02 21:24:32Z norman.heino $
  */
-
-require_once 'OntoWiki/Menu.php';
 
 /**
  * OntoWiki menu registry class.
@@ -16,10 +13,10 @@ require_once 'OntoWiki/Menu.php';
  * Serves as a central registry for menus and provides methods for setting
  * and retrieving menu instances.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @category OntoWiki
  * @package Menu
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Menu_Registry
@@ -59,7 +56,6 @@ class OntoWiki_Menu_Registry
     public function getMenu($menuKey)
     {
         if (!is_string($menuKey)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Menu key must be string.');
         }
         
@@ -81,12 +77,10 @@ class OntoWiki_Menu_Registry
     public function setMenu($menuKey, OntoWiki_Menu $menu, $replace = true)
     {
         if (!is_string($menuKey)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Menu key must be string.');
         }
         
         if (!$replace and array_key_exists($menuKey, $this->menus)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("Menu with key '$menuKey' already registered.");
         }
         

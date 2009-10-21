@@ -3,22 +3,17 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id:$
  */
-
-require_once 'Erfurt/Rdfs/Resource.php';
 
 /**
  * OntoWiki resource class
  *
  * Extends Erfurt_Rdf_Resource with a getTitle method OntoWiki uses
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @category Resource
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
@@ -30,6 +25,9 @@ class OntoWiki_Resource extends Erfurt_Rdfs_Resource
      */
     protected $_title = null;
     
+    /**
+     * Constructor
+     */
     public function __construct($uri, $graph)
     {
         parent::__construct($uri, $graph);

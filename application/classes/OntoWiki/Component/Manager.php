@@ -3,15 +3,9 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Component
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Manager.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-require_once 'OntoWiki/Application.php';
-require_once 'OntoWiki/Navigation.php';
 
 /**
  * OntoWiki component manager
@@ -32,11 +26,11 @@ require_once 'OntoWiki/Navigation.php';
  * - Optionally, a component helper derived from OntoWiki_Component_Helper that is named
  *   like the component with the suffix 'Helper'
  *
- * @category   OntoWiki
- * @package    OntoWiki_Component
+ * @category OntoWiki
+ * @package Component
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Component_Manager
 {
@@ -119,7 +113,6 @@ class OntoWiki_Component_Manager
     public function getComponentUrl($componentName)
     {
         if (!$this->isComponentRegistered($componentName)) {
-            require_once 'OntoWiki/Component/Exception.php';
             throw new OntoWiki_Component_Exception("Component with key '$componentName' not registered");
         }
         
@@ -166,7 +159,6 @@ class OntoWiki_Component_Manager
     public function getComponentTemplatePath($componentName)
     {
         if (!$this->isComponentRegistered($componentName)) {
-            require_once 'OntoWiki/Component/Exception.php';
             throw new OntoWiki_Component_Exception("Component with key '$componentName' not registered");
         }
         
@@ -189,7 +181,6 @@ class OntoWiki_Component_Manager
     public function getComponentPrivateConfig($componentName)
     {
         if (!$this->isComponentRegistered($componentName)) {
-            require_once 'OntoWiki/Component/Exception.php';
             throw new OntoWiki_Component_Exception("Component with key '$componentName' not registered");
         }
         
@@ -233,12 +224,11 @@ class OntoWiki_Component_Manager
         $tempArray = parse_ini_file($componentPath . self::COMPONENT_CONFIG_FILE);
         
         // break if component is not enabled
-        if (!array_key_exists('active', $tempArray) or !((boolean) $tempArray['active'])) {
+        if (!array_key_exists('active', $tempArray) or !((boolean)$tempArray['active'])) {
             return;
         }
         
         // load private config as Zend_Config
-        require_once 'Zend/Config/Ini.php';
         try {
             $tempArray[$this->_privateSection] = new Zend_Config_Ini(
                 $componentPath . self::COMPONENT_CONFIG_FILE, 
@@ -286,7 +276,7 @@ class OntoWiki_Component_Manager
             $position = $tempArray['position'];
         }
         
-        if (array_key_exists('navigation', $tempArray) && (boolean) $tempArray['navigation']) {
+        if (array_key_exists('navigation', $tempArray) && (boolean)$tempArray['navigation']) {
             // register with navigation
             OntoWiki_Navigation::register($componentName, array(
                 'controller' => $componentName, 

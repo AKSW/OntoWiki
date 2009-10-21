@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-
 /**
  * OntoWiki module – linkinhere
  *
@@ -21,7 +19,6 @@ class LinkinghereModule extends OntoWiki_Module
      */
     public function init()
     {
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = new Erfurt_Sparql_SimpleQuery();
 
         $query->setProloguePart('SELECT DISTINCT ?uri')
@@ -46,7 +43,6 @@ class LinkinghereModule extends OntoWiki_Module
 
     public function getContents()
     {
-        require_once 'OntoWiki/Model/TitleHelper.php';
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
 
         $query = new Erfurt_Sparql_SimpleQuery();

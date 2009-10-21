@@ -1,15 +1,14 @@
-<?php $translate = $this->_owApp->translate; ?>
 <?php $odd = false; ?>
 <?php if (!empty($this->historyArray)) { ?>
 <table class="separated-vertical" id="history-list">
     <thead>
     <!-- history table headers -->
     <tr class="odd">
-        <th><?php echo $translate->_('select'); ?>          </th>
-        <th><?php echo $translate->_('ID'); ?>              </th>
-        <th><?php echo $translate->_('user'); ?>            </th>
-        <th><?php echo $translate->_('timestamp'); ?>       </th>
-        <th><?php echo $translate->_('action-type'); ?>     </th>
+        <th><?php echo $this->_('select'); ?>          </th>
+        <th><?php echo $this->_('ID'); ?>              </th>
+        <th><?php echo $this->_('user'); ?>            </th>
+        <th><?php echo $this->_('timestamp'); ?>       </th>
+        <th><?php echo $this->_('action-type'); ?>     </th>
     </tr>
     </thead>
     <tbody>
@@ -37,7 +36,7 @@
             <?php $timestamp = date('c', (int) next($abschnitt)); ?>
             <?php echo OntoWiki_Utils::dateDifference($timestamp) . ' ('.substr($timestamp,0,strlen($timestamp) - 6).')'; ?>
         </td>
-        <td class="history-detail"><a><?php echo $translate->_('HISTORY_ACTIONTYPE_' . next($abschnitt)); ?></a>
+        <td class="history-detail"><a><?php echo $this->_('HISTORY_ACTIONTYPE_' . next($abschnitt)); ?></a>
             <div style="display:none;" class="is-processing"><?php echo $actionID; ?></div>
         </td>
     </tr>

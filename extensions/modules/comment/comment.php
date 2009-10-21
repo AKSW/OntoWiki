@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-
 /**
  * OntoWiki module – comment
  *
@@ -24,7 +22,7 @@ class CommentModule extends OntoWiki_Module
     public function getContents()
     {
         $url = new OntoWiki_Url(array('controller' => 'community', 'action' => 'comment'), array());
-        $this->view->actionUrl = (string) $url;
+        $this->view->actionUrl = (string)$url;
         
         $content = $this->render('comment');
 		

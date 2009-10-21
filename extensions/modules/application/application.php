@@ -1,8 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-require_once 'OntoWiki/Menu/Registry.php';
-
 /**
  * OntoWiki module – application
  *
@@ -35,7 +32,6 @@ class ApplicationModule extends OntoWiki_Module
                 $userName = $this->_owApp->user->getLabel();
                 $userName = OntoWiki_Utils::shorten($userName, 25);
             } else {
-                require_once 'OntoWiki/Utils.php';
                 $userName = OntoWiki_Utils::getUriLocalPart($this->_owApp->user->getUri());
                 $userName = OntoWiki_Utils::shorten($userName, 25);
             }
@@ -44,7 +40,6 @@ class ApplicationModule extends OntoWiki_Module
                 $userName = $this->_owApp->user->getUsername();
                 $userName = OntoWiki_Utils::shorten($userName, 25);
             } else {
-                require_once 'OntoWiki/Utils.php';
                 $userName = OntoWiki_Utils::getUriLocalPart($this->_owApp->user->getUri());
                 $userName = OntoWiki_Utils::shorten($userName, 25);
             }

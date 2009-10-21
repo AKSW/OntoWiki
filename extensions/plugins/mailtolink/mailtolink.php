@@ -1,6 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Plugin.php';
 /**
  * @category   OntoWiki
  * @package    OntoWiki_extensions_plugins

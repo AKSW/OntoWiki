@@ -3,14 +3,9 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Controller_Plugin
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: SetupHelper.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-require_once 'Zend/Controller/Plugin/Abstract.php';
 
 /**
  * OntoWiki Setup Helper Zend plug-in.
@@ -18,31 +13,38 @@ require_once 'Zend/Controller/Plugin/Abstract.php';
  * Sets up the component and module managers before any request is handled
  * but after the request object exists.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Controller_Plugin
+ * @category OntoWiki
+ * @package Controller
+ * @subpackage Plugin
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abstract
 {
+    /**
+     * Denotes whether the setup has been performed
+     * @var boolean
+     */
     protected $_isSetup = false;
     
+    /**
+     * RouteShutdown is the earliest event in the dispatch cycle, where a 
+     * fully routed request object is available
+     */
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
+        // only once
         if (!$this->_isSetup) {
-            require_once 'Zend/Controller/Front.php';
             $frontController = Zend_Controller_Front::getInstance();
-            
-            require_once 'OntoWiki/Application.php';
-            $owApp = OntoWiki_Application::getInstance();
-            $store = $owApp->erfurt->getStore();
+            $ontoWiki        = OntoWiki::getInstance();
+            $store           = $ontoWiki->erfurt->getStore();
 
             // instantiate model if parameter passed
             if (isset($request->m)) {
                 try {
                     $model = $store->getModel($request->getParam('m', null, false));
-                    $owApp->selectedModel = $model;
+                    $ontoWiki->selectedModel = $model;
                 } catch (Erfurt_Store_Exception $e) {
                     // When no user is given (Anoymous) give the requesting party a chance to authenticate.
                     if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
@@ -56,50 +58,49 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                     }
                     
                     // post error message
-                    require_once 'OntoWiki/Message.php';
-                    $owApp->prependMessage(new OntoWiki_Message(
+                    $ontoWiki->prependMessage(new OntoWiki_Message(
                         '<p>Could not instantiate graph: ' . $e->getMessage() . '</p>' . 
-                        '<a href="' . $owApp->config->urlBase . '">Return to index page</a>', 
+                        '<a href="' . $ontoWiki->config->urlBase . '">Return to index page</a>', 
                         OntoWiki_Message::ERROR, array('escape' => false)));
                     // hard redirect since finishing the dispatch cycle will lead to errors
-                    header('Location:' . $owApp->config->urlBase . 'error/error');
+                    header('Location:' . $ontoWiki->config->urlBase . 'error/error');
                     exit;
                 }
             }
             
             // instantiate resource if parameter passed
             if (isset($request->r)) {
-                $graph = $owApp->selectedModel;
+                $graph = $ontoWiki->selectedModel;
                 if ($graph instanceof Erfurt_Rdf_Model) {
-                    require_once 'OntoWiki/Resource.php';
                     $resource = new OntoWiki_Resource($request->getParam('r', null, true), $graph);
-                    $owApp->selectedResource = $resource;
+                    $ontoWiki->selectedResource = $resource;
                 } else {
                     // post error message
-                    require_once 'OntoWiki/Message.php';
-                    $owApp->prependMessage(new OntoWiki_Message(
+                    $ontoWiki->prependMessage(new OntoWiki_Message(
                         '<p>Could not instantiate resource. No model selected.</p>' . 
-                        '<a href="' . $owApp->config->urlBase . '">Return to index page</a>', 
+                        '<a href="' . $ontoWiki->config->urlBase . '">Return to index page</a>', 
                         OntoWiki_Message::ERROR, array('escape' => false)));
                     // hard redirect since finishing the dispatch cycle will lead to errors
-                    header('Location:' . $owApp->config->urlBase . 'error/error');
+                    header('Location:' . $ontoWiki->config->urlBase . 'error/error');
                     exit;
                 }
             }
             
             // initialize components
-            require_once 'OntoWiki/Component/Manager.php';
-            $owApp->componentManager = new OntoWiki_Component_Manager(_OWROOT . $owApp->config->extensions->components);
-
-            foreach ($owApp->componentManager->getComponents() as $componentName => $componentConfig) {
+            $componentsPath = ONTOWIKI_ROOT
+                            . $ontoWiki->config->extensions->components;
+            $componentManager = new OntoWiki_Component_Manager($componentsPath);
+            
+            foreach ($componentManager->getComponents() as $componentName => $componentConfig) {
                 $frontController->addControllerDirectory($componentConfig['path'], '_component_' . $componentName);
             }
             
-            require_once 'OntoWiki/Module/Manager.php';
-            $moduleManager = new OntoWiki_Module_Manager(_OWROOT . $owApp->config->extensions->modules);
-
+            // make component manager available to dispatcher
             $dispatcher = $frontController->getDispatcher();
-            $dispatcher->setComponentManager($owApp->componentManager);
+            $dispatcher->setComponentManager($componentManager);
+            
+            // keept component manager in OntoWiki
+            $ontoWiki->componentManager = $componentManager;
             
             // avoid setting up twice
             $this->_isSetup = true;

@@ -10,8 +10,6 @@
  * @version   $Id: usage.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
 
-require_once 'OntoWiki/Module.php';
-require_once 'Erfurt/Sparql/SimpleQuery.php';
 
 /**
  * OntoWiki usage module
@@ -90,7 +88,6 @@ class UsageModule extends OntoWiki_Module
         if (!empty($this->_instances)) {
             $instances = array();
             
-            require_once 'OntoWiki/Model/TitleHelper.php';
             $instancesTitleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
             $instancesTitleHelper->addResources($this->_instances, 'uri');
             
@@ -114,7 +111,6 @@ class UsageModule extends OntoWiki_Module
         if (!empty($this->_objects)) {
             $objects = array();
             
-            require_once 'OntoWiki/Model/TitleHelper.php';
             $objectTitleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
             $objectTitleHelper->addResources($this->_objects, 'uri');
             

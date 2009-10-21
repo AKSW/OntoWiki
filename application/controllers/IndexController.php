@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Zend/Filter/Alnum.php';
-
-require_once 'OntoWiki/Controller/Base.php';
-
 /**
  * OntoWiki index controller.
  * 
@@ -22,8 +18,6 @@ class IndexController extends OntoWiki_Controller_Base
     public function newsshortAction()
     {
         // requires zend Feed module
-        require_once 'Zend/Feed.php';
-		
 		// number of news
 		$feed_count = 3;
         // create empty var for feed
@@ -81,7 +75,6 @@ class IndexController extends OntoWiki_Controller_Base
      */
     public function newsAction()
     {
-        require_once 'Zend/Feed.php';
         $owFeed  = null;
         $version = $this->_config->version;
         
@@ -103,7 +96,6 @@ class IndexController extends OntoWiki_Controller_Base
             $this->view->description = $owFeed->description();
             
         } catch (Exception $e) {
-            require_once 'OntoWiki/Message.php';
             $this->view->messages = array(new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::ERROR));
             $this->view->feed     = array();
             // var_dump($url);

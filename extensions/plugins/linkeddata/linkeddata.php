@@ -1,7 +1,4 @@
 <?php
-require_once 'OntoWiki/Plugin.php';
-require_once 'Zend/Controller/Front.php';
-require_once 'OntoWiki/Application.php';
 
 /**
  * OntoWiki linked data plug-in
@@ -44,7 +41,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      */
     public function onIsDispatchable($event)
     {
-        $store    = OntoWiki_Application::getInstance()->erfurt->getStore();
+        $store    = OntoWiki::getInstance()->erfurt->getStore();
         $request  = Zend_Controller_Front::getInstance()->getRequest();
         $response = Zend_Controller_Front::getInstance()->getResponse();
       
@@ -53,10 +50,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         try {
             $result = $store->getGraphsUsingResource($uri, false);
             
-            if ($result) {
-                require_once 'OntoWiki/Utils.php';
-                require_once 'OntoWiki/Url.php';
-                
+            if ($result) {                
                 // get source graph
                 $allowedGraph = null;
                 $ac = Erfurt_App::getInstance()->getAc();

@@ -3,32 +3,18 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Model.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-/** 
- * Required Zend classes
- */
-require_once 'Erfurt/Event/Dispatcher.php';
-
-/** 
- * Required OntoWiki API classes
- */
-require_once 'OntoWiki/Application.php';
-require_once 'OntoWiki/Utils.php';
 
 /**
  * OntoWiki model base class.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @package Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Model
 {
@@ -93,7 +79,7 @@ class OntoWiki_Model
         
         $this->_lang = $this->_config->languages->locale;
         
-        if (isset($this->_config->system->inference) && !(bool) $this->_config->system->inference) {
+        if (isset($this->_config->system->inference) && !(bool)$this->_config->system->inference) {
             $this->_inference = false;
         }
         
@@ -101,7 +87,6 @@ class OntoWiki_Model
         $this->_graph = $graph->getModelIri();
         $this->_model = $graph;
         
-        require_once 'OntoWiki/Model/TitleHelper.php';
         $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
         
         // $this->_titleProperties = array_flip($this->_config->properties->title->toArray());

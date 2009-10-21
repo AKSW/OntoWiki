@@ -3,7 +3,7 @@
  * @category   OntoWiki
  * @package    OntoWiki_extensions_components_community
  */
-require_once 'OntoWiki/Controller/Component.php';
+
 /**
  * @category   OntoWiki
  * @package    OntoWiki_extensions_components_community
@@ -40,12 +40,10 @@ class CommunityController extends OntoWiki_Controller_Component
             LIMIT 10';
         
         // var_dump($commentSparql);
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
         
         $comments = array();
         if ($result = $this->_owApp->selectedModel->sparqlQuery($query)) {
-            require_once 'OntoWiki/Utils.php';
             foreach ($result as $row) {
                 if (!empty($row['anick'])) {
                     $row['author'] = $row['anick'];
@@ -66,7 +64,6 @@ class CommunityController extends OntoWiki_Controller_Component
     public function commentAction()
     {
         if (!$this->_owApp->selectedModel->isEditable()) {
-            require_once 'Erfurt/Ac/Exception.php';
             throw new Erfurt_Ac_Exception("Access control violation. Model not editable.");
         }
         

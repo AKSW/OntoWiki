@@ -1,6 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Component/Helper.php';
 
 /**
  * Helper class for the FOAF Editor component.
@@ -22,7 +21,6 @@ class FoafeditHelper extends OntoWiki_Component_Helper
             $store    = $owApp->erfurt->getStore();
             $resource = (string) $owApp->selectedResource;
 
-            require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
 
             // build SPARQL query for getting class (rdf:type) of current resource
@@ -47,7 +45,6 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                 if (in_array($this->_privateConfig->person, $types)) {
                     // we have a foaf:Person
                     // register new tab
-                    require_once 'OntoWiki/Navigation.php';
                     OntoWiki_Navigation::register('foafedit', array(
                         'controller' => 'foafedit', 
                         'action'     => 'person', 

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Base.php';
-
 /**
  * OntoWiki resource controller.
  * 
@@ -47,10 +45,8 @@ class ResourceController extends OntoWiki_Controller_Base
         $navigation = $this->_owApp->navigation;
         $translate  = $this->_owApp->translate;
         
-        require_once 'OntoWiki/Menu/Registry.php';
+        // add export formats to resource menu
         $resourceMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('resource');
-        
-        require_once 'Erfurt/Syntax/RdfSerializer.php';
         foreach (array_reverse(Erfurt_Syntax_RdfSerializer::getSupportedFormats()) as $key => $format) {
             $resourceMenu->prependEntry(
                 'Export Resource as ' . $format,
@@ -61,28 +57,25 @@ class ResourceController extends OntoWiki_Controller_Base
         $menu = new OntoWiki_Menu();
         $menu->setEntry('Resource', $resourceMenu);
         
-        require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onCreateMenu');
         $event->menu = $resourceMenu;
         $event->resource = $this->_owApp->selectedResource;
         $event->model = $this->_owApp->selectedModel;
         $event->trigger();
          
-        require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onPropertiesAction');
         $event->uri = (string)$resource;
         $event->graph = $this->_owApp->selectedModel->getModelUri();
         $event->trigger();
         
-        // Give plugins a chance to add entries to the menu...
+        // Give plugins a chance to add entries to the menu
         $this->view->placeholder('main.window.menu')->set($menu->toArray(false, true));
         
-        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace((string) $resource);
+        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace((string)$resource);
         $windowTitle = sprintf($translate->_('Properties of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
         
         $this->_owApp->lastRoute = 'properties';
-        require_once 'OntoWiki/Navigation.php';
         OntoWiki_Navigation::register('index', array(
             'route'    => 'properties', 
             'name'     => 'Properties', 
@@ -91,7 +84,6 @@ class ResourceController extends OntoWiki_Controller_Base
         ), true);
         
         if (!empty($resource)) {
-            require_once 'Erfurt/Event.php';
             $event = new Erfurt_Event('onPreTabsContentAction');
             $event->uri = (string)$resource;
             $result = $event->trigger();
@@ -100,24 +92,21 @@ class ResourceController extends OntoWiki_Controller_Base
                 $this->view->preTabsContent = $result;
             }
             
-            require_once 'Erfurt/Event.php';
             $event = new Erfurt_Event('onPrePropertiesContentAction');
-            $event->uri = (string) $resource;
+            $event->uri = (string)$resource;
             $result = $event->trigger();
             
             if ($result) {
                 $this->view->prePropertiesContent = $result;
             }
             
-            require_once 'OntoWiki/Model/Resource.php';
-            $model = new OntoWiki_Model_Resource($store, $graph, (string) $resource);
+            $model = new OntoWiki_Model_Resource($store, $graph, (string)$resource);
             $values = $model->getValues();
             $predicates = $model->getPredicates();
 
             // new trigger onPropertiesActionData to work with data (reorder with plugin)
-            require_once 'Erfurt/Event.php';
             $event = new Erfurt_Event('onPropertiesActionData');
-            $event->uri         = (string) $resource;
+            $event->uri         = (string)$resource;
             $event->predicates  = $predicates;
             $event->values      = $values;
             $result = $event->trigger();
@@ -127,7 +116,6 @@ class ResourceController extends OntoWiki_Controller_Base
                 $values     = $event->values;
             }
             
-            require_once 'OntoWiki/Model/TitleHelper.php';
             $titleHelper = new OntoWiki_Model_TitleHelper($graph);
             // add graphs
             $graphs = array_keys($predicates);
@@ -141,7 +129,7 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->view->graphs        = $graphInfo;
             $this->view->values        = $values;
             $this->view->predicates    = $predicates;
-            $this->view->resourceUri   = (string) $resource;
+            $this->view->resourceUri   = (string)$resource;
             $this->view->graphUri      = $graph->getModelIri();
             $this->view->graphBaseUri  = $graph->getBaseIri();
             
@@ -177,7 +165,7 @@ class ResourceController extends OntoWiki_Controller_Base
                     // ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Property', 'class' => 'property-add'));
             $params = array(
                 'name' => 'Delete Resource', 
-                'url'  => $this->_config->urlBase . 'resource/delete/?r=' . urlencode((string) $resource)
+                'url'  => $this->_config->urlBase . 'resource/delete/?r=' . urlencode((string)$resource)
             );
             $toolbar->appendButton(OntoWiki_Toolbar::SEPARATOR)
                     ->appendButton(OntoWiki_Toolbar::DELETE, $params);
@@ -189,6 +177,8 @@ class ResourceController extends OntoWiki_Controller_Base
         }
         
         $this->addModuleContext('main.window.properties');
+        
+        
     }
     
     /**
@@ -203,12 +193,12 @@ class ResourceController extends OntoWiki_Controller_Base
         $navigation  = $this->_owApp->navigation;
         $translate   = $this->_owApp->translate;
         
-        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace((string) $resource);
+        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace((string)$resource);
         $windowTitle = sprintf($translate->_('Instances of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
         
         // Hack: reset shown properties
-        if ((string) $resource != $this->_owApp->selectedClass) {
+        if ((string)$resource != $this->_owApp->selectedClass) {
             unset($this->_session->shownProperties);
             unset($this->_session->shownInverseProperties);
             unset($this->_session->filter);
@@ -224,10 +214,9 @@ class ResourceController extends OntoWiki_Controller_Base
             // }
         }
         
-        $this->_owApp->selectedClass = (string) $resource;
+        $this->_owApp->selectedClass = (string)$resource;
         
         $this->_owApp->lastRoute = 'instances';
-        require_once 'OntoWiki/Navigation.php';
         OntoWiki_Navigation::register('index', array(
             'route'    => 'instances', 
             'name'     => 'Instances', 
@@ -270,13 +259,11 @@ class ResourceController extends OntoWiki_Controller_Base
         $start = microtime(true);
             
         // instantiate model
-        require_once 'OntoWiki/Model/Instances.php';
         $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
         $this->_owApp->instances = $instances;
         $this->view->headScript()->appendScript('var classUri = "'.OntoWiki_Utils::contractNamespace($this->_owApp->selectedClass).'";');
             
         if ($instances->hasData()) {
-            
             $this->view->instanceInfo = $instances->getResources();
             $this->view->instanceData = $instances->getValues();
             $itemsOnPage = count($this->view->instanceData);
@@ -285,7 +272,7 @@ class ResourceController extends OntoWiki_Controller_Base
             
             $time = (microtime(true) - $start) * 1000;
             
-            $this->view->type      = (string) $resource;
+            $this->view->type      = (string)$resource;
             $this->view->start     = $offset ? $offset + 1 : 1;
             $this->view->class     = preg_replace('/^.*[#\/]/', '', (string )$resource);
             $translate = $this->_owApp->translate;
@@ -298,7 +285,6 @@ class ResourceController extends OntoWiki_Controller_Base
             
             $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
             
-            require_once 'OntoWiki/Pager.php';
             $statusBar = $this->view->placeholder('main.window.statusbar');
             $this->view->count = $count;
             $this->view->limit = $limit;
@@ -334,21 +320,18 @@ class ResourceController extends OntoWiki_Controller_Base
                 $this->view->placeholder('main.window.toolbar')->set($toolbar);
             }
             
-            
-            require_once 'OntoWiki/Url.php';
             $url = new OntoWiki_Url(array('controller' => 'resource', 'action' => 'delete'), array());
             
-            $this->view->formActionUrl = (string) $url;
+            $this->view->formActionUrl = (string)$url;
             $this->view->formMethod    = 'post';
             $this->view->formName      = 'instancelist';
             $this->view->formEncoding  = 'multipart/form-data';
             
             $url = new OntoWiki_Url();
-            $this->view->redirectUrl = (string) $url;
+            $this->view->redirectUrl = (string)$url;
             
             $this->view->headScript()->appendFile($this->_owApp->staticUrlBase."extensions/themes/silverblue/scripts/serialize-php.js");
             // register modules
-            require_once 'OntoWiki/Module/Registry.php';
             $moduleRegistry = OntoWiki_Module_Registry::getInstance();
             $moduleRegistry->register('properties', 'main.window.innerwindows')
                            ->register('showproperties', 'main.window.innerwindows')
@@ -373,7 +356,6 @@ class ResourceController extends OntoWiki_Controller_Base
         $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
         $itemsOnPage = count($this->_owApp->instances->getValues());
         $limit =  $this->_owApp->instances->getLimit();
-        require_once 'OntoWiki/Pager.php';
             
             $statusBar = OntoWiki_Pager::get($count, $limit, $itemsOnPage);
             
@@ -394,15 +376,13 @@ class ResourceController extends OntoWiki_Controller_Base
      */
     public function deleteAction()
     {
-
-        require_once 'OntoWiki/Message.php';
         $this->view->clearModuleCache();
 
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();
 
         $store     = $this->_erfurt->getStore();
-        $modelIri  = (string) $this->_owApp->selectedModel;
+        $modelIri  = (string)$this->_owApp->selectedModel;
         $redirect  = $this->_request->getParam('redirect', $this->_config->urlBase);
         
         $resources = $this->_request->getParam('r', array());
@@ -465,7 +445,6 @@ class ResourceController extends OntoWiki_Controller_Base
             );
         }
         
-        require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onDeleteResources');
         $event->resourceArray = $resources;
         $event->modelUri = $modelIri;
@@ -490,7 +469,6 @@ class ResourceController extends OntoWiki_Controller_Base
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
             $response->sendResponse();
-            require_once 'OntoWiki/Controller/Exception.php';
             throw new OntoWiki_Controller_Exception("No nodel given.");
             exit;
         }
@@ -504,7 +482,6 @@ class ResourceController extends OntoWiki_Controller_Base
             $format = $this->_request->f;
         }
         
-        require_once 'Erfurt/Syntax/RdfSerializer.php';
         $format = Erfurt_Syntax_RdfSerializer::normalizeFormat($format);
         
         $store = $this->_erfurt->getStore();  
@@ -514,7 +491,6 @@ class ResourceController extends OntoWiki_Controller_Base
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
             $response->sendResponse();
-            require_once 'OntoWiki/Controller/Exception.php';
             throw new OntoWiki_Controller_Exception("Format '$format' not supported.");
             exit;
         }
@@ -524,7 +500,6 @@ class ResourceController extends OntoWiki_Controller_Base
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 404 Not Found');
             $response->sendResponse();
-            require_once 'OntoWiki/Controller/Exception.php';
             throw new OntoWiki_Controller_Exception("Model '$modelUri' not found.");
             exit;
         }
@@ -534,7 +509,6 @@ class ResourceController extends OntoWiki_Controller_Base
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 403 Forbidden');
             $response->sendResponse();
-            require_once 'OntoWiki/Controller/Exception.php';
             throw new OntoWiki_Controller_Exception("Model '$modelUri' not available.");
             exit;
         }

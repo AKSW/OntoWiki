@@ -5,16 +5,15 @@
  *
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: Menu.php 4227 2009-10-02 21:24:32Z norman.heino $
  */
 
 /**
  * OntoWiki menu class.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @category OntoWiki
  * @package Menu
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Menu
@@ -38,17 +37,14 @@ class OntoWiki_Menu
     public function appendEntry($entryKey, $entryContent = null)
     {
         if (!is_string($entryKey)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Entry key must be string.');
         }
         
         if (($entryKey != self::SEPARATOR) and !is_string($entryContent) and !is_array($entryContent) and !($entryContent instanceof OntoWiki_Menu)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Menu content must be an instance of ' . __CLASS__ . ' or string, ' . gettype($entryContent) . ' given.');
         }
         
         if (array_key_exists($entryKey, $this->_entries)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("An entry with key '$entryKey' already exists.");
         }
         
@@ -65,17 +61,14 @@ class OntoWiki_Menu
     public function prependEntry($entryKey, $entryContent = null)
     {
         if (!is_string($entryKey)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Entry key must be string.');
         }
         
         if (($entryKey != self::SEPARATOR) and !is_string($entryContent) and !is_array($entryContent) and !($entryContent instanceof OntoWiki_Menu)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Menu content must be an instance of ' . __CLASS__ . ' or string, ' . gettype($entryContent) . ' given.');
         }
         
         if (array_key_exists($entryKey, $this->_entries)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("An entry with key '$key' already exists.");
         }
         
@@ -105,17 +98,14 @@ class OntoWiki_Menu
     public function setEntry($entryKey, $entryContent = null, $replace = true)
     {
         if (!is_string($entryKey)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Entry key must be string.');
         }
         
         if (($entryKey != self::SEPARATOR) and !is_string($entryContent) and !is_array($entryContent) and !($entryContent instanceof OntoWiki_Menu)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('Menu content must be an instance of ' . __CLASS__ . ' or string, ' . gettype($entryContent) . ' given.');
         }
         
         if (!$replace and array_key_exists($entryKey, $this->_entries)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("An entry with key '$key' already exists.");
         }
         
@@ -145,7 +135,6 @@ class OntoWiki_Menu
         }
         
         if (!$this->_entries[$subMenuKey] instanceof OntoWiki_Menu) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("Entry '$subMenuKey' is not a menu.");
         }
         
@@ -174,7 +163,6 @@ class OntoWiki_Menu
     public function toArray($translate = false, $recursive = true)
     {
         if ($translate) {
-            require_once 'OntoWiki/Application.php';
             $translation = OntoWiki_Application::getInstance()->translate;
         }
         

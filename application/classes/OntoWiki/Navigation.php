@@ -1,16 +1,11 @@
 <?php
-// vim: sw=4:sts=4:expandtab
+/* vim: sw=4:sts=4:expandtab */
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Navigation.php 4241 2009-10-05 22:33:25Z arndtn $
  */
-
-require_once 'OntoWiki/Url.php';
 
 /**
  * OntoWiki navigation registry.
@@ -18,11 +13,11 @@ require_once 'OntoWiki/Url.php';
  * Initializes external libraries and components. 
  * Serves as a central registry for storing Data needed througout the application.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @category Navigation
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Navigation
 {
@@ -121,7 +116,6 @@ class OntoWiki_Navigation
     public static function register($key, array $options, $replace = false)
     {
         if (array_key_exists($key, self::$_navigation) && !$replace) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("Navigation component with key '$key' already registered.");
         }
         
@@ -143,8 +137,8 @@ class OntoWiki_Navigation
         // store order request
         if (!$replace) {
             if (array_key_exists('priority', $options) && is_numeric($options['priority'])) {
-                $position = (int) $options['priority'];
-                while (array_key_exists((string) $position, self::$_ordered)) {
+                $position = (int)$options['priority'];
+                while (array_key_exists((string)$position, self::$_ordered)) {
                     $position++;
                 }
                 self::$_ordered[$position] = $key;
@@ -197,7 +191,6 @@ class OntoWiki_Navigation
     public static function setActive($key)
     {
         if (!array_key_exists($key, self::$_navigation)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception("Navigation component with key '$key' not registered.");
         }
         

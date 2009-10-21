@@ -3,24 +3,17 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Instances.php 4309 2009-10-14 15:36:22Z sebastian.dietzold $
  */
-
-require_once 'OntoWiki/Model.php';
-require_once 'OntoWiki/Url.php';
-require_once 'OntoWiki/Utils.php';
 
 /**
  * OntoWiki resource list model class.
  *
  * Represents a list of resources (of a certain rdf:type) and their properties.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
+ * @category OntoWiki
+ * @package Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
@@ -99,8 +92,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     {
         parent::__construct($store, $graph);
         
-        require_once 'OntoWiki/Application.php';
-        
         $type                   = isset($options['type']) ?                   $options['type'] : OntoWiki_Application::getInstance()->selectedClass;
         $withChilds             = isset($options['withChilds']) ?             $options['withChilds'] : true;
         $member_predicate       = isset($options['memberPredicate']) ?        $options['memberPredicate'] : EF_RDF_TYPE;
@@ -110,7 +101,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $shownInverseProperties = isset($options['shownInverseProperties']) ? $options['shownInverseProperties'] : array();
         $sessionfilter          = isset($options['filter']) ?                 $options['filter'] : array();
 
-        require_once 'Erfurt/Sparql/Query2.php';
         $this->_resourceQuery =  new Erfurt_Sparql_Query2();
         
         if(is_string($member_predicate))
@@ -225,7 +215,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         }
         $used = false;
         foreach($this->_shownProperties as $shownProp){
-        	if($shownProp['name'] == $propertyName) $used = true;
+        	if($shownProp['name'] == $propertyName)$used = true;
         }
         
         if ($used) {
@@ -234,7 +224,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $name = $propertyName . $counter++;
 	            $used = false;
 	            foreach($this->_shownProperties as $shownProp){
-			        if($shownProp['name'] == $name) $used = true;
+			        if($shownProp['name'] == $name)$used = true;
 			    }
 	        }
 
@@ -271,26 +261,26 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     	switch($valuetype){
     		case 'uri':
     			$value1 = new Erfurt_Sparql_Query2_IriRef($value1);
-    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_IriRef($value2);
+    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_IriRef($value2);
     		break;
     		case 'literal':
     		    if(!empty($literaltype)){
                         //with language tags
                         $value1 = new Erfurt_Sparql_Query2_RDFLiteral($value1, $literaltype);
-    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
+    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
                     } else {
                         //no language tags
                         $value1 = new Erfurt_Sparql_Query2_RDFLiteral($value1);
-    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2);
+    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2);
                     }
     		break;
     		case 'typed-literal':
     		    if(in_array($literaltype, Erfurt_Sparql_Query2_RDFLiteral::$knownShortcuts)){
 	    		    $value1 = new Erfurt_Sparql_Query2_RDFLiteral($value1, $literaltype);
-	    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
+	    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
     		    } else {
     		    	$value1 = new Erfurt_Sparql_Query2_RDFLiteral($value1, new Erfurt_Sparql_Query2_IriRef($literaltype));
-	    			if(!empty($value2)) $value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, new Erfurt_Sparql_Query2_IriRef($literaltype));
+	    			if(!empty($value2))$value2 = new Erfurt_Sparql_Query2_RDFLiteral($value2, new Erfurt_Sparql_Query2_IriRef($literaltype));
     		    }
     		break;
     		default:
@@ -368,8 +358,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $this->getResults(); 
                                  
             $result = $this->_results['bindings'];
-            //echo 'results:<pre>';  print_r($result);  echo '</pre>';
-            require_once 'OntoWiki/Model/TitleHelper.php';
+            
             $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
             
             foreach ($result as $row) {
@@ -409,11 +398,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                             // object type is uri --> handle object property
                             $objectUri = $data['value'];
                             $url->setParam('r', $objectUri, true);
-                            $link = (string) $url;
+                            $link = (string)$url;
 
 
                             // set up event
-                            require_once 'Erfurt/Event.php';
                             $event = new Erfurt_Event('onDisplayObjectPropertyValue');
                             
                             //find uri
@@ -436,7 +424,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                             $object = $data['value'];
                             
                             // set up event
-                            require_once 'Erfurt/Event.php';
                             $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
                             $event->property = $propertyUri;
                             $event->value    = $object;
@@ -565,23 +552,22 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     
     protected function convertProperties($properties)
     {
-    	require_once 'OntoWiki/Model/TitleHelper.php';
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-
+        
         $uris = array();
         foreach($properties as $property){
-            $uris[] = $property['uri'];
+        	$uris[] = $property['uri'];
         }
-
+        
         $titleHelper->addResources($uris);
-
+        
         $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-
-        $propertyResults = array();
-        $i = 0;
+    
+       	$propertyResults = array();
+       	$i = 0;
         foreach ($properties as $property) {
             if(in_array($property['uri'], $this->_ignoredShownProperties)){
-                    continue;
+            	continue;
             }
 
             // set URL
@@ -595,7 +581,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $propertyResults[] = $property;
         }
-
+        
         return $propertyResults;
     }
     
@@ -625,7 +611,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     
     public function convertResources($resources){
     	$url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-            
+    	
         // add titles
         $this->_titleHelper->addResources($resources);
         $resourceResults = array();

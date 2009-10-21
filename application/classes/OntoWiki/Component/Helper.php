@@ -3,14 +3,9 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Component
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Helper.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-require_once 'OntoWiki/Application.php';
 
 /**
  * Component helper base class.
@@ -20,11 +15,11 @@ require_once 'OntoWiki/Application.php';
  * to be executed on every request (even those the component doesn't handle). 
  * Example usages are registering a menu entry or a navigation tab.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Component
- * @license  http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version  $Id: Helper.php 4095 2009-08-19 23:00:19Z christian.wuerker $
- * @author   Norman Heino <norman.heino@gmail.com>
+ * @category OntoWiki
+ * @package Component
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Component_Helper
 {

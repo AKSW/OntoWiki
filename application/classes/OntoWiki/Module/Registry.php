@@ -3,26 +3,20 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Module
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Registry.php 4235 2009-10-05 12:05:22Z norman.heino $
  */
-
-require_once 'Zend/Session/Namespace.php';
-require_once 'OntoWiki/Application.php';
 
 /**
  * OntoWiki module registry class.
  *
  * Serves as a central registry for modules.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Module
+ * @category OntoWiki
+ * @package Module
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Module_Registry
 {
@@ -47,16 +41,16 @@ class OntoWiki_Module_Registry
     const MODULE_STATE_HIDDEN = 3;
     
     /**
-     * OntoWiki Application config
-     * @var Zend_Config
-     */
-    protected $_config = null;
-    
-    /**
      * Array of modules
      * @var array
      */
     protected $_modules = array();
+    
+    /**
+     * Module path
+     * @var string
+     */
+    protected $_moduleDir = '';
     
     /** 
      * Array of module states
@@ -98,6 +92,23 @@ class OntoWiki_Module_Registry
         $this->_modules      = array();
         $this->_moduleStates = array();
         $this->_moduleOrder  = array();
+    }
+    
+    /**
+     * Sets the path where modules are to be found
+     *
+     * @since 0.9.5
+     * @return OntoWiki_Module_Registry
+     */
+    public function setModuleDir($moduleDir)
+    {
+        $moduleDir = (string)$moduleDir;
+        
+        if (is_readable($moduleDir)) {
+            $this->_moduleDir = $moduleDir;
+        }
+        
+        return $this;
     }
     
     /**
@@ -196,28 +207,25 @@ class OntoWiki_Module_Registry
      * @throws OntoWiki_Module_Exception if a module with the has not been registered.
      */
     public function getModule($moduleName, $context = null)
-    {        
-        $moduleFile = _OWROOT 
-                    . $this->_config->extensions->modules
+    {
+        $moduleFile = $this->_moduleDir
                     . $moduleName 
                     . DIRECTORY_SEPARATOR 
                     . $moduleName
                     . '.php';
         
         if (!is_readable($moduleFile)) {
-            require_once 'OntoWiki/Module/Exception.php';
             throw new OntoWiki_Module_Exception("Module '$moduleName' could not be loaded from path '$moduleFile'.");
         }
         
         // instantiate module
         require_once $moduleFile;
-        require_once 'OntoWiki/Module/Manager.php';
         $moduleClass = ucfirst($moduleName) 
                      . OntoWiki_Module_Manager::MODULE_CLASS_POSTFIX;
         $module = new $moduleClass($moduleName, $context);
         
         // inject module config
-        foreach ((array) $this->getModuleConfig($moduleName) as $key => $value) {
+        foreach ((array)$this->getModuleConfig($moduleName) as $key => $value) {
             $module->$key = $value;
         }
         
@@ -232,7 +240,7 @@ class OntoWiki_Module_Registry
      */
     public function getModuleConfig($moduleName)
     {
-        $moduleName = (string) $moduleName;
+        $moduleName = (string)$moduleName;
         
         if (array_key_exists($moduleName, $this->_modules)) {
             return $this->_modules[$moduleName];
@@ -254,7 +262,7 @@ class OntoWiki_Module_Registry
             
             foreach ($this->_moduleOrder[$context] as $moduleName) {
                 if (array_key_exists($moduleName, $this->_modules)) {
-                    if ((boolean) $this->_modules[$moduleName]['enabled'] === true) {
+                    if ((boolean)$this->_modules[$moduleName]['enabled'] === true) {
                         $modules[$moduleName] = $this->_modules[$moduleName];
                     }
                 }
@@ -291,8 +299,5 @@ class OntoWiki_Module_Registry
         if (isset($this->_moduleStates->moduleOrder)) {
             $this->_moduleOrder = $this->_moduleStates->moduleOrder;
         }
-        
-        // config
-        $this->_config = OntoWiki_Application::getInstance()->config;
     }
 }

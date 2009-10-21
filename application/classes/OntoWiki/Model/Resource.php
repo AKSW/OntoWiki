@@ -3,22 +3,17 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: Resource.php 4311 2009-10-14 17:14:10Z jonas.brekle@gmail.com $
  */
-
-require_once 'OntoWiki/Model.php';
 
 /**
  * OntoWiki resource model class.
  *
  * Represents a resources and its properties.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
+ * @category OntoWiki
+ * @package Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
@@ -63,7 +58,6 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
         parent::__construct($store, $graph);
         $this->_uri = (string)$uri;
         
-        require_once 'OntoWiki/Model/TitleHelper.php';
         $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
     }
     
@@ -81,7 +75,6 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
             $results = $this->getQueryResults();
             
             // url object to build URLs
-            require_once 'OntoWiki/Url.php';
             $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
             
             foreach ($results as $graph => $resultsForGraph) {
@@ -101,8 +94,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                         $predicateTitle = $this->_titleHelper->getTitle($predicateUri, $this->_lang);
                         // url
                         $url->setParam('r', $predicateUri, true);
-
-                        require_once 'OntoWiki/Utils.php';
+                        
                         $this->_predicateResults[$graph][$predicateUri] = array(
                             'uri'      => $predicateUri, 
                             'curi'     => OntoWiki_Utils::compactUri($predicateUri), 
@@ -131,7 +123,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                     'use_additional_imports' => false
                 );
                 
-                $currentResults = $this->_store->sparqlQuery($query, $options);                
+                $currentResults = $this->_store->sparqlQuery($query, $options);
                 
                 if (isset($currentResults['bindings'])) {
                     $this->_queryResults[$graph] = $currentResults['bindings'];
@@ -166,7 +158,6 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
             $this->getPredicates();
             
             // URL object to build URLs
-            require_once 'OntoWiki/Url.php';
             $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
             
             // keep track of URI objects already used
@@ -222,12 +213,11 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                              * Event payload: value, property, title and link
                              */
                             // set up event
-                            require_once 'Erfurt/Event.php';
                             $event = new Erfurt_Event('onDisplayObjectPropertyValue');
                             $event->value    = $row['object']['value'];
                             $event->property = $predicateUri;
                             $event->title    = $title;
-                            $event->link     = (string) $url;
+                            $event->link     = (string)$url;
 
                             // trigger
                             $value['object'] = $event->trigger();
@@ -242,7 +232,6 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             break;
 
                         case 'typed-literal':
-                            require_once 'OntoWiki/Utils.php';
                             $value['datatype'] = OntoWiki_Utils::compactUri($row['object']['datatype']);
                             /* fallthrough */
 
@@ -255,7 +244,6 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                              * property is returned. Plugins can attach to this trigger in order to modify 
                              * the value that gets displayed.
                              */
-                            require_once 'Erfurt/Event.php';
                             $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
                             $event->value    = $row['object']['value'];
                             $event->property = $predicateUri;
@@ -283,7 +271,6 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                         $this->_predicateResults[$graph][$predicateUri]['has_more'] = true;
                         
                         if (!isset($this->_predicateResults[$graph][$predicateUri]['has_more_link'])) {
-                            require_once 'OntoWiki/Url.php';
                             $hasMoreUrl = new OntoWiki_Url(array('controller' => 'model', 'action' => 'query'));
                             $query = <<<EOT
 SELECT ?value 
@@ -311,7 +298,6 @@ EOT;
      */
     private function _buildQueries()
     {
-        require_once "Erfurt/Sparql/Query2.php";
         $query  = new Erfurt_Sparql_Query2();
         
         $uri = new Erfurt_Sparql_Query2_IriRef($this->_uri);

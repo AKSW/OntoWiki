@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-
 /**
  * OntoWiki module – tagcloud
  *

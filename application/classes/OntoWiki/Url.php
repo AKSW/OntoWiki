@@ -3,22 +3,9 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Url.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-/** 
- * Required Zend classes
- */
-require_once 'Zend/Controller/Front.php';
-
-/** 
- * Required OntoWiki API classes
- */
-require_once 'OntoWiki/Utils.php';
 
 /**
  * OntoWiki URL class.
@@ -26,11 +13,11 @@ require_once 'OntoWiki/Utils.php';
  * Represents an internal OntoWiki URL and provides methods for
  * adding, removing and replacing parameters.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @category Url
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Url
 {
@@ -284,7 +271,7 @@ class OntoWiki_Url
                 $query   = '';
                 $lastKey = '';
                 foreach ($this->_params as $key => $value) {
-                    if ( is_string($value) ) {
+                    if (is_string($value)) {
                         $value   = urlencode($value);
                         $query  .= "$key/$value/";
                         $lastKey = $key;

@@ -1,7 +1,5 @@
 <?php
-require_once 'OntoWiki/Plugin.php';
-require_once 'OntoWiki/Utils.php';
-require_once 'Zend/Uri.php';
+
 /**
  * @category   OntoWiki
  * @package    OntoWiki_extensions_plugins

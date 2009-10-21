@@ -3,25 +3,21 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Controller_Plugin
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: HttpAuth.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-require_once 'Zend/Controller/Plugin/Abstract.php';
 
 /**
  * HTTP Authentication plug-in
  *
  * Provides authentication via HTTP simple method.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Controller_Plugin
+ * @category OntoWiki
+ * @package Controller
+ * @subpackage Plugin
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstract
 {
@@ -36,7 +32,6 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
         if ($credentials = $this->_getAuthHeaderCredentials($request)) {
             switch ($credentials['type']) {
                 case 'basic':
-                    require_once 'OntoWiki/Application.php';
                     $erfurt = OntoWiki_Application::getInstance()->erfurt;
                     $logger = OntoWiki_Application::getInstance()->logger;
                     // authenticate
@@ -48,7 +43,6 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                     }
                     break;
                 case 'foaf+ssl':
-                    require_once 'Erfurt/Auth/Adapter/FoafSsl.php';
                     $adapter = new Erfurt_Auth_Adapter_FoafSsl();
                     
                     $authResult = $adapter->authenticateWithCredentials($credentials['creds']);
@@ -62,7 +56,6 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
             }
         } else {
             // Allow plugins to handle authentication...
-            require_once 'Erfurt/Event.php';
             $event = new Erfurt_Event('onRouteShutdown');
             $event->request = $request;
             $event->trigger();

@@ -2,22 +2,9 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Dispatcher.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
-
-/** 
- * Required Zend classes
- */
-require_once 'Zend/Controller/Dispatcher/Standard.php';
-
-/** 
- * Required Erfurt classes
- */
-require_once 'Erfurt/Sparql/SimpleQuery.php';
 
 /**
  * OntoWiki dispatcher
@@ -25,11 +12,11 @@ require_once 'Erfurt/Sparql/SimpleQuery.php';
  * Overwrites Zend_Controller_Dispatcher_Standard in order to allow for
  * multiple (component) controller directories.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @package Dispatcher
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
 {
@@ -38,6 +25,24 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
      * @var OntoWiki_Component_Manager 
      */
     protected $_componentManager = null;
+    
+    /**
+     * Base for building URLs
+     * @var string
+     */
+    protected $_urlBase = '';
+    
+    public function __construct($params = array())
+    {
+        if (array_key_exists('url_base', $params)) {
+            $urlBase = (string)$params['url_base'];
+            unset($params['url_base']);
+        }
+        
+        parent::__construct($params);
+        
+        $this->urlBase = $urlBase;
+    }
     
     /**
      * Sets the component manager
@@ -129,9 +134,8 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
          * mechanisms that do not allow a controller/action mapping from URL
          * parts.
          */
-        require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onIsDispatchable');
-        $event->uri     = OntoWiki_Application::getInstance()->config->urlBase . ltrim($request->getPathInfo(), '/');
+        $event->uri     = $this->urlBase . ltrim($request->getPathInfo(), '/');
         $event->request = $request;
         
         // We need to make sure that registered plugins return a boolean value!

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Module.php';
-
 /**
  * OntoWiki module – showproperties
  *
@@ -22,23 +20,34 @@ class ShowpropertiesModule extends OntoWiki_Module
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'showproperties.js');
         
         $session = $this->_owApp->session;
-        $shownProperties = (is_array($session->shownProperties) ? json_encode($session->shownProperties) : 'new Array()');
-        $shownInverseProperties = (is_array($session->shownInverseProperties) ? json_encode($session->shownInverseProperties) : 'new Array()');
-        $this->view->headScript()->appendScript('var shownProperties = ' . $shownProperties.'; var shownInverseProperties = ' . $shownInverseProperties.';');
+        
+        $shownProperties = (is_array($session->shownProperties) 
+                         ? json_encode($session->shownProperties) 
+                         : '[]');
+        
+        $shownInverseProperties = (is_array($session->shownInverseProperties) 
+                                ? json_encode($session->shownInverseProperties) 
+                                : '[]');
+        
+        $this->view->headScript()->appendScript('
+            var shownProperties = ' . $shownProperties.';
+            var shownInverseProperties = ' . $shownInverseProperties . ';');
     }
     
     public function getContents()
     {
-        if(isset($this->_owApp->instances)) {
+        if (isset($this->_owApp->instances)) {
             $this->view->properties = $this->_owApp->instances->getAllProperties();
             $this->view->reverseProperties = $this->_owApp->instances->getAllReverseProperties();
+            
             return $this->render('showproperties');
-        } else {
-            return "no instances object";
         }
+        
+        return 'No instances object';
     }
     
-    public function getStateId() {
+    public function getStateId()
+    {
         $id = $this->_owApp->selectedModel
             . $this->_owApp->selectedResource;
         

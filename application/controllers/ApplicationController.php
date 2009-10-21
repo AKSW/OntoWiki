@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Base.php';
-
 /**
  * OntoWiki application controller.
  * 
@@ -20,7 +18,6 @@ class ApplicationController extends OntoWiki_Controller_Base
      */
     public function aboutAction()
     {
-        require_once 'OntoWiki/Navigation.php';
         OntoWiki_Navigation::disableNavigation();
         $this->view->placeholder('main.window.title')->set('About OntoWiki');
         
@@ -56,12 +53,12 @@ class ApplicationController extends OntoWiki_Controller_Base
             ), 
             'Cache' => array(
                 'Path'                => rtrim($this->_config->cache->path, '/') . $cacheWritable, 
-                'Module Caching'      => ((bool) $this->_config->cache->modules == true) ? 'enabled' : 'disabled', 
-                'Translation Caching' => ((bool) $this->_config->cache->translation == true) ? 'enabled' : 'disabled'
+                'Module Caching'      => ((bool)$this->_config->cache->modules == true) ? 'enabled' : 'disabled', 
+                'Translation Caching' => ((bool)$this->_config->cache->translation == true) ? 'enabled' : 'disabled'
             ), 
             'Logging' => array(
                 'Path' => _OWROOT . rtrim($this->_config->log->path, '/') . $logWritable, 
-                'Level'  => (bool) $this->_config->loglevel ? $this->_config->loglevel : 'disabled'
+                'Level'  => (bool)$this->_config->loglevel ? $this->_config->loglevel : 'disabled'
             )
         );
         
@@ -147,7 +144,6 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function logoutAction()
     {
         // destroy auth
-        require_once 'Erfurt/Auth.php';
         Erfurt_Auth::getInstance()->clearIdentity();
         // destroy any selections user has made
         Zend_Session::destroy(true);
@@ -180,7 +176,6 @@ class ApplicationController extends OntoWiki_Controller_Base
         
         $post = $this->_request->getPost();
         
-        require_once 'OntoWiki/Message.php';
         $this->_owApp->appendMessage(new OntoWiki_Message(
             'Already own an <span class="openid">OpenID?</span> <a href="' . $this->_config->urlBase . 'application/openidreg">Register here</a>', 
             OntoWiki_Message::INFO, 
@@ -206,8 +201,6 @@ class ApplicationController extends OntoWiki_Controller_Base
             $password  = $post['password'];
             $password2 = $post['password2'];
             
-            require_once 'OntoWiki/Message.php';
-            require_once 'Zend/Validate/EmailAddress.php';
             $emailValidator = new Zend_Validate_EmailAddress();
             
             if (!$this->_erfurt->isActionAllowed('RegisterNewUser') or 
@@ -296,8 +289,6 @@ class ApplicationController extends OntoWiki_Controller_Base
                 $label  = $post['label'];
                 $email  = $post['email'];
                 
-                require_once 'OntoWiki/Message.php';
-                require_once 'Zend/Validate/EmailAddress.php';
                 $emailValidator = new Zend_Validate_EmailAddress();
                 
                 // Is register action allowed for current user?
@@ -339,18 +330,15 @@ class ApplicationController extends OntoWiki_Controller_Base
                         $verifyUrl .= '?email=' . urlencode($email);
                     } 
                     
-                    require_once 'Zend/OpenId/Extension/Sreg.php';
                     $sReg = new Zend_OpenId_Extension_Sreg(array(
                         'nickname' => false,
                         'email'    => false), null, 1.1);
                     
-                    require_once 'Erfurt/Auth/Adapter/OpenId.php';
                     $adapter = new Erfurt_Auth_Adapter_OpenId($openId, $verifyUrl, null, null, $sReg);
                     // We use the adapter directly, for we do not store the identity in session.
                     $result = $adapter->authenticate();
                     
                     // If we reach this point, something went wrong
-                    require_once 'OntoWiki/Message.php';
                     $message = 'OpenID check failed.';
                     $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
                 }
@@ -400,20 +388,17 @@ class ApplicationController extends OntoWiki_Controller_Base
         		$this->view->placeholder('main.window.toolbar')->set($toolbar);
             }   
         } else if (!empty($get)) {
-            // This is the verify request... 
-            require_once 'Zend/OpenId/Extension/Sreg.php';
+            // This is the verify request
             $sReg = new Zend_OpenId_Extension_Sreg(array(
                 'nickname' => false,
                 'email'    => false), null, 1.1);
             
-            require_once 'Erfurt/Auth/Adapter/OpenId.php';
             $adapter = new Erfurt_Auth_Adapter_OpenId(null, null, null, $get, $sReg);
             // We use the adapter directly, for we do not store the identity in session.
             $result = $adapter->authenticate();
             
             if (!$result->isValid()) {
-                // Something went wrong... Show a message
-                require_once 'OntoWiki/Message.php';
+                // Something went wrong, show a message
                 $message = 'OpenID verification failed.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
             }
@@ -484,17 +469,15 @@ class ApplicationController extends OntoWiki_Controller_Base
         if (empty($post) && empty($get)) {
             $redirectUrl = $this->_config->urlBase . 'application/webidreg';
             
-            require_once 'Erfurt/Auth/Adapter/FoafSsl.php';
             $adapter = new Erfurt_Auth_Adapter_FoafSsl(null, $redirectUrl);
             $webId   = $adapter->fetchWebId();
             
             // We should not reach this point;
             return;
         } else if (!empty($get)) {
-            // Step 2: Check the web id and fetch foaf data...
+            // Step 2: Check the web id and fetch foaf data
             $get['url'] = $this->_request->getRequestUri();
             
-            require_once 'Erfurt/Auth/Adapter/FoafSsl.php';
             $adapter = new Erfurt_Auth_Adapter_FoafSsl();
             
             try {
@@ -559,8 +542,6 @@ class ApplicationController extends OntoWiki_Controller_Base
             $label  = $post['label'];
             $email  = $post['email'];
             
-            require_once 'OntoWiki/Message.php';
-            require_once 'Zend/Validate/EmailAddress.php';
             $emailValidator = new Zend_Validate_EmailAddress();
             
             // Is register action allowed for current user?
@@ -687,7 +668,6 @@ class ApplicationController extends OntoWiki_Controller_Base
         try {
             $this->_erfurt->getAuth()->setEmail($newEmail);
         } catch (Erfurt_Auth_Identity_Exception $e) {
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(new OntoWiki_Message($e->getMessage(), OntoWiki_Message::ERROR));
             return false;
         }
@@ -700,7 +680,6 @@ class ApplicationController extends OntoWiki_Controller_Base
         try {
             $this->_erfurt->getAuth()->setUsername($newUsername);
         } catch (Erfurt_Auth_Identity_Exception $e) {
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(new OntoWiki_Message($e->getMessage(), OntoWiki_Message::ERROR));
             return false;
         }
@@ -712,7 +691,6 @@ class ApplicationController extends OntoWiki_Controller_Base
     {
         if ($password1 !== $password2) {
             $message = 'Passwords do not match.';
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
             return false;
         }
@@ -720,7 +698,6 @@ class ApplicationController extends OntoWiki_Controller_Base
         try {
             $this->_erfurt->getAuth()->getIdentity()->setPassword($password1);
         } catch (Erfurt_Auth_Identity_Exception $e) {
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(new OntoWiki_Message($e->getMessage(), OntoWiki_Message::ERROR));
             return false;
         }
@@ -790,15 +767,13 @@ class ApplicationController extends OntoWiki_Controller_Base
         } else {
 
             if ($results = $store->findResourcesWithPropertyValue($searchText,$modelUri)) {
-            
-                require_once 'OntoWiki/Url.php';
                 $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
                 foreach ($results as $result) {
                     $url->setParam('r', $result, true);
 
                     $resources[] = array(
-                        'link' => (string) $url,
+                        'link' => (string)$url,
                         'name' => $result
                     );
                 }
@@ -811,7 +786,6 @@ class ApplicationController extends OntoWiki_Controller_Base
             $title = sprintf($this->_owApp->translate->_('Resources having literal property values that match \'%1$s\''), $searchText);
             $this->view->placeholder('main.window.title')->set($title);
 
-            require_once 'OntoWiki/Message.php';
             $message = 'Some store backends may not be able to do sub-string matching. '
                      . 'Try a prefix if you didn\'t get search results you expected.';
             $this->_owApp->appendMessage(new OntoWiki_Message($this->_owApp->translate->_($message), OntoWiki_Message::INFO));
@@ -846,13 +820,12 @@ class ApplicationController extends OntoWiki_Controller_Base
         $this->_helper->viewRenderer->setNoRender();
         $this->view->placeholder('main.window.title')->set('Test');
         
-        require_once 'OntoWiki/ModelTestResource.php';
         $testModel = new OntoWiki_ModelTestResource($this->_owApp->erfurt->getStore(), $this->_owApp->selectedModel);
         
-        // var_dump((string) $testModel->getQuery());
+        // var_dump((string)$testModel->getQuery());
         if ($result = $testModel->getQueryResult()) {
             $had = array();
-            foreach ((array) $result['bindings'] as $resultRow) {
+            foreach ((array)$result['bindings'] as $resultRow) {
                 if (!array_key_exists($resultRow['class']['value'], $had)) {
                     $had[$resultRow['class']['value']] = $resultRow['class']['value'];
                     var_dump($resultRow['class']['value'], $testModel->getTitle($resultRow['class']['value'], 'en'));

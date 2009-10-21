@@ -1,5 +1,5 @@
 <?php if (isset($this->prePropertiesContent)): ?>
-<div><?php echo $this->prePropertiesContent; ?></div>    
+    <div><?php echo $this->prePropertiesContent; ?></div>    
 <?php endif; ?>
 <?php $flag = false; ?>
 <span about="<?php echo $this->resourceUri ?>" style="display: none" class="about_span"></span>
@@ -96,5 +96,3 @@
 <?php if (!$flag): ?>
     <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
 <?php endif; ?>
-
-

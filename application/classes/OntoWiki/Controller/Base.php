@@ -3,32 +3,18 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Controller
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Base.php 4308 2009-10-14 15:13:51Z jonas.brekle@gmail.com $
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-
-/** 
- * Required Zend classes
- */
-require_once 'Zend/Controller/Action.php';
-
-/** 
- * Required Erfurt classes
- */
-require_once 'Erfurt/Event/Dispatcher.php';
-
 
 /**
  * OntoWiki controller base class.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Controller
+ * @category OntoWiki
+ * @package Controller
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Controller_Base extends Zend_Controller_Action
 {    
@@ -130,7 +116,6 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
          * Triggered always when a controller from class OntoWiki_Controller_Base (or derived)
          * is initialized
          */
-        require_once 'Erfurt/Event.php';
         $event = new Erfurt_Event('onControllerInit');
         $eventResult = $event->trigger();
 
@@ -157,7 +142,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      * Executed after dispatching has taken place.
      */
     public function postDispatch()
-    {        
+    {
         $this->_owApp->logger->info(sprintf(
             'Dispatching %s/%s: %d ms', 
             $this->_request->getControllerName(), 
@@ -168,7 +153,6 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         // catch redirect
         if ($this->_request->has('redirect-uri')) {
             $redirectUri = urldecode($this->_request->getParam('redirect-uri'));
-            require_once 'Zend/Controller/Front.php';
             $front = Zend_Controller_Front::getInstance();
             $options = array(
                 'prependBase' => false === strpos($redirectUri, $front->getBaseUrl())
@@ -193,7 +177,6 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         $value = $this->_request->getParam($name);
         
         if ($expandNamespace) {
-            require_once 'OntoWiki/Utils.php';
             $value = OntoWiki_Utils::expandNamespace($value);
         }
         

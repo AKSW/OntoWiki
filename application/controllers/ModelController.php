@@ -1,7 +1,5 @@
 <?php
 
-require_once 'OntoWiki/Controller/Base.php';
-
 /**
  * OntoWiki model controller.
  * 
@@ -33,7 +31,7 @@ class ModelController extends OntoWiki_Controller_Base
         $this->view->referer          = isset($_SERVER['HTTP_REFERER']) ? urlencode($_SERVER['HTTP_REFERER']) : '';
         $this->view->supportedFormats = $this->_erfurt->getStore()->getSupportedImportFormats();
         
-        $this->view->modelUri   = (string) $this->_owApp->selectedModel;
+        $this->view->modelUri   = (string)$this->_owApp->selectedModel;
         $this->view->baseUri    = '';
         $this->view->title      = $this->view->_('Add Statements to Knowledge Base');
         
@@ -61,7 +59,6 @@ class ModelController extends OntoWiki_Controller_Base
         }
         
         // evaluate post data
-        require_once 'OntoWiki/Message.php';
         $messages = array();
         $post = $this->_request->getPost();
         $errorFlag = false;
@@ -108,7 +105,6 @@ class ModelController extends OntoWiki_Controller_Base
             try {
                 $this->_handleImport($post, false);
             } catch (Exception $e) {
-                require_once 'OntoWiki/Message.php';
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Error importing statements: ' . $e->getMessage(), OntoWiki_Message::ERROR)
                 );
@@ -136,13 +132,9 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function configAction()
     {
-		require_once 'Erfurt/Exception.php';
-        require_once 'OntoWiki/Message.php';
-
         OntoWiki_Navigation::disableNavigation();
         
         if (!$this->_request->getParam('m')) {
-            require_once 'OntoWiki/Controller/Exception.php';
             throw new OntoWiki_Controller_Exception("Missing parameter 'm'.");
             exit;
         }
@@ -228,21 +220,18 @@ class ModelController extends OntoWiki_Controller_Base
                 // Check whether SysBase is already available... If not import it.
                 if (!$store->isModelAvailable($this->_config->sysbase->model, false)) {
                     $m = $store->getNewModel($this->_config->sysbase->model, '', 'owl', false);
-                    require_once 'Erfurt/Syntax/RdfParser.php';
                     try {
                         if (is_readable($this->_config->sysbase->path)) {
                             // load SysOnt from file
                             $store->importRdf($this->_config->sysbase->model, _OWROOT . $this->_config->sysbase->path, 'rdfxml',
                                               Erfurt_Syntax_RdfParser::LOCATOR_FILE, false);
                         } else {
-                            require_once 'Erfurt/Exception.php';
                             throw new Erfurt_Exception();
                         } 
                     } catch (Erfurt_Exception $e) {
                         // Delete the model, for the import failed.
                         $store->deleteModel($this->_config->sysbase->model, false);
                         
-                        require_once 'Erfurt/Store/Exception.php';
                         throw new Erfurt_Store_Exception("Import of '{$this->_config->sysbase->model}' failed: {$e->getMessage()}");
                     }
                     
@@ -375,7 +364,6 @@ class ModelController extends OntoWiki_Controller_Base
 		        $this->view->useSysBase = '';
 		        
 		        // show a warning message
-		        require_once 'OntoWiki/Message.php';
 		        $translate = $this->_owApp->translate;
 		        $messageText = 'This knowledge base does not import the OntoWiki System Base model. This means you probably don\'t '
 		                     . 'have human-readable representations for the most commonly used vocabularies. If you want to use the '
@@ -445,7 +433,6 @@ class ModelController extends OntoWiki_Controller_Base
             return;
         }
         
-        // require_once 'OntoWiki/Message.php';
         // $this->view->messages = array(new OntoWiki_Message('Model already exists.', OntoWiki_Message::ERROR));
         
         $toolbar = $this->_owApp->toolbar;
@@ -464,7 +451,6 @@ class ModelController extends OntoWiki_Controller_Base
             return;
         }
         
-        require_once 'OntoWiki/Message.php';
         $post = $this->_request->getPost();
         $errorFlag = false;
         $newModelUri = isset($post['modelUri']) ? trim($post['modelUri']) : "";
@@ -526,7 +512,6 @@ class ModelController extends OntoWiki_Controller_Base
                 $this->_handleImport($post, true);
 
             } catch (Exception $e) {
-                require_once 'OntoWiki/Message.php';
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Error importing knowledge base: ' . $e->getMessage(), OntoWiki_Message::ERROR)
                 );
@@ -536,7 +521,6 @@ class ModelController extends OntoWiki_Controller_Base
             $model = $this->_erfurt->getStore()->getModel($newModelUri);
             
             if (null === $model) {
-                require_once 'OntoWiki/Message.php';
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Failed to get the model from store.', OntoWiki_Message::ERROR)
                 );
@@ -564,7 +548,6 @@ class ModelController extends OntoWiki_Controller_Base
                     false
                 );
             } catch (Erfurt_Exception $e) {
-                require_once 'OntoWiki/Message.php';
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Error setting model permissions: '. $e->getMessage(), OntoWiki_Message::ERROR)
                 );
@@ -583,9 +566,7 @@ class ModelController extends OntoWiki_Controller_Base
     }
     
     private function _handleImport($postData, $createGraph = false)
-    {
-        require_once 'Erfurt/Syntax/RdfParser.php';
-        
+    {        
         $newModelUri = trim($postData['modelUri']);
         $newBaseUri  = trim($postData['baseUri']);
         
@@ -655,7 +636,6 @@ class ModelController extends OntoWiki_Controller_Base
                 $this->_erfurt->getStore()->deleteModel($newModelUri);
             }
             // re-throw
-            require_once 'OntoWiki/Controller/Exception.php';
             throw new OntoWiki_Controller_Exception("Graph '<$postData[modelUri]>' could not be imported: " . $e->getMessage());
         }
     }
@@ -664,7 +644,6 @@ class ModelController extends OntoWiki_Controller_Base
     {
         $model = $this->_request->m;
         if ($this->_erfurt->isActionAllowed('ModelManagement')) {
-            require_once 'Erfurt/Event.php';
             $event = new Erfurt_Event('onPreDeleteModel');
             $event->modelUri = $model;
             $event->trigger();
@@ -678,13 +657,11 @@ class ModelController extends OntoWiki_Controller_Base
                     unset($this->_owApp->selectedModel);
                 }
             } catch (Exception $e) {
-                require_once 'OntoWiki/Message.php';
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Error deleting model: ' . $e->getMessage(), OntoWiki_Message::ERROR)
                 );
             }
         } else {
-            require_once 'OntoWiki/Message.php';
             $this->_owApp->appendMessage(
                 new OntoWiki_Message('Error deleting model: Not allowed.', OntoWiki_Message::ERROR)
             );
@@ -706,8 +683,6 @@ class ModelController extends OntoWiki_Controller_Base
         } else {
             $format = $this->_request->f;
         }
-        
-        require_once 'Erfurt/Syntax/RdfSerializer.php';
         $format = Erfurt_Syntax_RdfSerializer::normalizeFormat($format);
         
         $store = $this->_erfurt->getStore();  
@@ -717,7 +692,6 @@ class ModelController extends OntoWiki_Controller_Base
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
             $response->sendResponse();
-            require_once 'OntoWiki/Controller/Exception.php';
             throw new OntoWiki_Controller_Exception("Format '$format' not supported.");
             exit;
         }
@@ -731,7 +705,6 @@ class ModelController extends OntoWiki_Controller_Base
                 $response = $this->getResponse();
                 $response->setRawHeader('HTTP/1.0 404 Not Found');
                 $response->sendResponse();
-                require_once 'OntoWiki/Controller/Exception.php';
                 throw new OntoWiki_Controller_Exception("Model '$modelUri' not found.");
                 exit;
             }
@@ -741,7 +714,6 @@ class ModelController extends OntoWiki_Controller_Base
                 $response = $this->getResponse();
                 $response->setRawHeader('HTTP/1.0 403 Forbidden');
                 $response->sendResponse();
-                require_once 'OntoWiki/Controller/Exception.php';
                 throw new OntoWiki_Controller_Exception("Model '$modelUri' not available.");
                 exit;
             }
@@ -783,7 +755,6 @@ class ModelController extends OntoWiki_Controller_Base
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
             $response->sendResponse();
-            require_once 'OntoWiki/Controller/Exception.php';
             throw new OntoWiki_Controller_Exception("No Graph URI given.");
             exit;
         }
@@ -792,17 +763,15 @@ class ModelController extends OntoWiki_Controller_Base
     public function infoAction()
     {
         OntoWiki_Navigation::disableNavigation();
-        require_once 'OntoWiki/Resource.php';
         $this->_owApp->selectedResource = new OntoWiki_Resource($this->_request->getParam('m'), $this->_owApp->selectedModel);
         $store      = $this->_owApp->erfurt->getStore();
-        $graph      = $this->_owApp->selectedModel;
+        $graph      = $this->_owApp->selectedModel;        
         $resource   = $this->_owApp->selectedResource;
         $navigation = $this->_owApp->navigation;
         $translate  = $this->_owApp->translate;
-
-        require_once 'Erfurt/Event.php';
+        
         $event = new Erfurt_Event('onPropertiesAction');
-        $event->uri = (string) $resource;
+        $event->uri = (string)$resource;
         $event->trigger();
 
         $windowTitle = $translate->_('Model info');
@@ -812,7 +781,6 @@ class ModelController extends OntoWiki_Controller_Base
         $this->view->modelTitle = $title ? $title : OntoWiki_Utils::contractNamespace((string)$resource);
 
         if (!empty($resource)) {
-            require_once 'OntoWiki/Model/Resource.php';
             $model = new OntoWiki_Model_Resource($store, $graph, (string)$resource);
             
             $values = $model->getValues();
@@ -821,7 +789,7 @@ class ModelController extends OntoWiki_Controller_Base
                 // TODO: show imported infos as well?
                 $this->view->values             = $values[(string)$graph];
                 $this->view->predicates         = $predicates[(string)$graph];
-                $this->view->resourceIri        = (string) $resource;
+                $this->view->resourceIri        = (string)$resource;
                 $this->view->graphIri           = $graph->getModelIri();
                 $this->view->graphBaseIri       = $graph->getBaseIri();
                 $this->view->namespacePrefixes  = $graph->getNamespacePrefixes();
@@ -962,9 +930,9 @@ class ModelController extends OntoWiki_Controller_Base
 					$start = microtime(true);
 					$queryObj = Erfurt_Sparql_SimpleQuery :: initWithString($query);
 					if ($this->_owApp->selectedModel) {
-						$queryObj->addFrom((string) $this->_owApp->selectedModel);
+						$queryObj->addFrom((string)$this->_owApp->selectedModel);
 					}
-					// var_dump((string) $queryObj);
+					// var_dump((string)$queryObj);
 					$result = $store->sparqlQuery($queryObj, array (
 						'result_format' => $format
 					));
@@ -978,7 +946,7 @@ class ModelController extends OntoWiki_Controller_Base
 							$result = $result ? 'yes' : 'no';
 						} else
 							if (is_int($result)) {
-								$result = (string) $result;
+								$result = (string)$result;
 							} else
 								if (is_string($result)) {
 									// json
@@ -1033,7 +1001,6 @@ class ModelController extends OntoWiki_Controller_Base
         // Parsing may go wrong, when user types in corrupt data... So we catch all exceptions here...
         try {
             $flag = false;
-                require_once 'Erfurt/Syntax/RdfParser.php';
                 // check original graph
                 if ($this->_request->has('original-graph')) {
                     $flag               = true;
@@ -1066,7 +1033,6 @@ class ModelController extends OntoWiki_Controller_Base
                 // This means, we do not redirect, so we can mark this request as bad request.
                 $response = $this->getResponse();
                 $response->setRawHeader('HTTP/1.0 400 Bad Request');
-                require_once 'OntoWiki/Controller/Exception.php';
                 throw new OntoWiki_Controller_Exception(implode(PHP_EOL, $errors));
                 exit;
             } else {

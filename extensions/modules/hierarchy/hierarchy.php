@@ -1,10 +1,4 @@
 <?php
-require_once 'Erfurt/Sparql/SimpleQuery.php';
-
-require_once 'OntoWiki/Module.php';
-require_once 'OntoWiki/Model/Hierarchy.php';
-require_once 'OntoWiki/Url.php';
-require_once 'OntoWiki/Utils.php';
 
 /**
  * OntoWiki module – hierarchy
@@ -23,25 +17,6 @@ class HierarchyModule extends OntoWiki_Module
 {
 	const SERVICE_URL = 'hierarchy';
 	
-    // public function init()
-    // {
-    //     $this->_model = $this->_owApp->selectedModel;
-    // }
-	
-/*	public function getContextMenu()
-	{
-	    $contextMenu = new OntoWiki_Menu();
-	    $contextMenu->setEntry('Create Class', '#')
-                    ->setEntry(OntoWiki_Menu::SEPARATOR)
-	                ->setEntry('Show Hidden Classes', '#')
-	                ->setEntry('Show Empty Classes', '#')
-	                ->setEntry('Show System Classes', '#')
-	                ->setEntry(OntoWiki_Menu::SEPARATOR)
-	                ->setEntry('Help', '#');
-	    
-	    return $contextMenu;
-	}
-*/
 	public function getTitle()
 	{
 	    return 'Classes';

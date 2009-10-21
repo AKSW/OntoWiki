@@ -3,8 +3,6 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @version   $Id: Message.php 4095 2009-08-19 23:00:19Z christian.wuerker $
@@ -15,11 +13,11 @@
  *
  * Encapsulates a message that needs to be saved for the user.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @package Message
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Message
 {
@@ -67,8 +65,16 @@ class OntoWiki_Message
      */
     protected $_text = null;
     
+    /**
+     * The current view object
+     * @var OntoWiki_View
+     */
     protected $_view = null;
     
+    /**
+     * The translation object
+     * @var Zend_Translate
+     */
     protected $_translate = null;
     
     /**
@@ -88,12 +94,11 @@ class OntoWiki_Message
         $this->_type = $type;
         $this->_text = $text;
         
-        require_once 'OntoWiki/Application.php';
-        $this->_translate = OntoWiki_Application::getInstance()->translate;
+        // get translation for current language
+        $this->_translate = OntoWiki::getInstance()->translate;
         
-        // init view
+        // Clone view
         if (null === $this->_view) {
-            require_once 'Zend/Controller/Action/HelperBroker.php';
             $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             if (null === $viewRenderer->view) {
                 $viewRenderer->initView();

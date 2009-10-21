@@ -3,23 +3,18 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id:$
  */
-
-require_once 'Zend/Controller/Request/Http.php';
 
 /**
  * OntoWiki Request class
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @category Request
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Request extends Zend_Controller_Request_Http
 {    
@@ -34,6 +29,7 @@ class OntoWiki_Request extends Zend_Controller_Request_Http
      */
     public function getParam($key, $default = null, $expandNamespace = false)
     {
+        // get parameter value from Zend_Request
         $value = parent::getParam($key, $default);
         
         if ($expandNamespace) {
@@ -42,10 +38,11 @@ class OntoWiki_Request extends Zend_Controller_Request_Http
                 $value = current($value);
             }
             
-            require_once 'OntoWiki/Utils.php';
+            // expand namespace
             $value = OntoWiki_Utils::expandNamespace($value);
         }
         
+        // strip slash quotes if necessary
         if (get_magic_quotes_gpc() and is_string($value)) {
             $value = stripslashes($value);
         }

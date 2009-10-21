@@ -3,15 +3,9 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: View.php 4235 2009-10-05 12:05:22Z norman.heino $
  */
-
-require_once 'Zend/View/Helper/Placeholder/Registry.php';
-require_once 'OntoWiki/Module/Registry.php';
 
 /**
  * OntoWiki view class
@@ -19,11 +13,11 @@ require_once 'OntoWiki/Module/Registry.php';
  * Subclasses Zend_View in order to cache modules and
  * provide a faster interface to important helpers.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @package View
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_View extends Zend_View
 {    
@@ -32,6 +26,12 @@ class OntoWiki_View extends Zend_View
      * @var Zend_Config 
      */
     protected $_config = null;
+    
+    /**
+     * The user interface language currently set
+     * @var string
+     */
+    protected $_lang = null;
     
     /** 
      * Module cache
@@ -58,12 +58,6 @@ class OntoWiki_View extends Zend_View
     protected $_placeholderRegistry = null;
     
     /** 
-     * OntoWiki Application
-     * @var OntoWiki_Application 
-     */
-    protected $_owApp = null;
-    
-    /** 
      * Subview for rendering modules
      * @var OntoWiki_View 
      */
@@ -72,35 +66,31 @@ class OntoWiki_View extends Zend_View
     /**
      * Constructor
      */
-    public function __construct($config = array())
+    public function __construct($config = array(), $translate)
     {
         parent::__construct($config);
         
-        $this->_owApp     = OntoWiki_Application::getInstance();
-        $this->_config    = $this->_owApp->config;
-        $this->_translate = $this->_owApp->translate;
-        
-        $this->_moduleRegistry = OntoWiki_Module_Registry::getInstance();
-        
+        $this->_translate           = $translate;
+        $this->_moduleRegistry      = OntoWiki_Module_Registry::getInstance();
         $this->_placeholderRegistry = Zend_View_Helper_Placeholder_Registry::getRegistry();
         
-        if ((boolean) $this->_config->cache->modules) {
-            if (is_writable($this->_config->cache->path)) {
+        if (array_key_exists('use_module_cache', $config) && (boolean)$config['use_module_cache']) {
+            $cachePath = array_key_exists('cache_path', $config) 
+                       ? (string)$config['cache_path'] 
+                       : ONTOWIKI_ROOT . 'cache';
+            
+            if (is_writable($cachePath)) {
                 // set up module cache
                 $frontendOptions = array(
                     'cache_id_prefix' => '_module_'
                 );
                 $backendOptions = array(
-                    'cache_dir' => $this->_config->cache->path
+                    'cache_dir' => $cachePath
                 );
                 $this->_moduleCache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
-            } else {
-                // folder not writable
-                $this->_owApp->logger->info("Could not initialize module cache. Cache folder not writable.");
             }
         } else {
             // caching disabled
-            $this->_owApp->logger->info("Module cache disabled.");
         }
     }
     
@@ -113,7 +103,7 @@ class OntoWiki_View extends Zend_View
      */
     public function _($key)
     {
-        return $this->_translate->translate((string) $key);
+        return $this->_translate->translate((string)$key);
     }
     
     /**
@@ -196,7 +186,6 @@ class OntoWiki_View extends Zend_View
      */
     public function module($moduleName, $moduleOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
     {
-        require_once 'OntoWiki/Module/Registry.php';
         $moduleRegistry = OntoWiki_Module_Registry::getInstance();
         
         // no options provided, get them from registry
@@ -254,19 +243,19 @@ class OntoWiki_View extends Zend_View
                     $pre = microtime(true);
                     $moduleContent = $module->getContents();
                     $post = ((microtime(true) - $pre) * 1000);
-                    $this->_owApp->logger->info("Rendering module '$moduleName': $post ms (cache miss)");
+                    // $this->_owApp->logger->info("Rendering module '$moduleName': $post ms (cache miss)");
                     
                     // save to cache
                     $this->_moduleCache->save($moduleContent, $cacheId, array('module', $moduleName), $module->getCacheLivetime());
                 } else {
-                    $this->_owApp->logger->info("Loading module '$moduleName' from cache.");
+                    // $this->_owApp->logger->info("Loading module '$moduleName' from cache.");
                 }
             } else {
                 // caching disabled
                 $pre = microtime(true);
                 $moduleContent = $module->getContents();
                 $post = ((microtime(true) - $pre) * 1000);
-                $this->_owApp->logger->info("Rendering module '$moduleName': $post ms (caching disabled)");
+                // $this->_owApp->logger->info("Rendering module '$moduleName': $post ms (caching disabled)");
             }
             
             // implement tabs
