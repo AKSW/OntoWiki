@@ -23,7 +23,6 @@ class JsonrpcController extends OntoWiki_Controller_Component
     public function init()
     {
         parent::init();
-        
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
         $this->server = new Zend_Json_Server();
@@ -32,15 +31,16 @@ class JsonrpcController extends OntoWiki_Controller_Component
     public function __call($method, $args)
     {
         $classname = str_replace  ( 'Action', '', $method) . 'JsonrpcWrapper';
-        try {
-            require_once $classname.'.php';
+        @include_once $classname.'.php';
+        if (class_exists($classname)) {
             $this->server->setClass($classname);
             $this->server->handle();
-        } catch (Exception $e) {
-            echo "...";
             return;
+        } else {
+            $this->_response->setRawHeader('HTTP/1.0 404 Not Found');
+            echo '400 Not Found - The given JSONRPC Server has corresponding wrapper class.';
+            exit;
         }
-        return;
     }
 }
 

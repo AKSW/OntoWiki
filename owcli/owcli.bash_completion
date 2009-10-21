@@ -10,10 +10,10 @@ _owcli()
 	cur=${COMP_WORDS[COMP_CWORD]}
 
 	# commands without parameter
-	cmdnopar='-l --list --create --count --drop --export --empty-cache --empty-popularity --empty-ratings --add --geocode --map  -d --debug -q --quiet -h --help'
+	cmdnopar='-d --debug -q --quiet -h --help -r --raw'
 
 	# commands with a single parameter
-	cmdsinglepar='-w --wiki -m --model -i --input -o --output --query --geocode -c --config'
+	cmdsinglepar='-w --wiki -m --model -i --input -o --output -c --config'
 
 	# all models
 	models=`owcli -l`

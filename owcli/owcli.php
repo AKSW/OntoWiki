@@ -12,13 +12,12 @@
 class OntowikiCommandLineInterface {
     
     const NAME = 'The OntoWiki CLI';
-    const VERSION = '0.3pre $Revision: 1502 $';
+    const VERSION = '0.3 tip';
 
     /* Required PEAR Packages */
     protected $pearPackages = array(
         'Console/Getargs.php',
-        'Console/Table.php',
-        'Config.php'
+        'Console/Table.php'
     );
 
     /* Command Line Parameter Config */
@@ -37,11 +36,15 @@ class OntowikiCommandLineInterface {
         $this->initCommandLineArguments();
         // check and initialize config file
         $this->initConfig();
+        // check and initialize addionally tools
+        $this->initTools();
 
         $this->echoDebug('Everything ok, start to execute commands:');
         foreach ((array) $this->args->getValue('execute') as $command) {
             $result = $this->executeJsonRpc($command);
-            $this->renderResult ($result);
+            if ($result) {
+                $this->renderResult ($result);
+            }
         }
     }
 
@@ -66,7 +69,7 @@ class OntowikiCommandLineInterface {
                 if ($decodedResult['error']) {
                     // if we have an rpc error, output is easy too
                     $error = $decodedResult['error'];
-                    $this->echoError('Error '.$error['code'].': '.$error['message']);
+                    $this->echoError('JSONRPC Error '.$error['code'].': '.$error['message']);
                 } elseif (isset($decodedResult['result'])) {
                     #var_dump($decodedResult['result']); die();
                     // different rendering for different results
@@ -146,7 +149,7 @@ class OntowikiCommandLineInterface {
         preg_match($pattern, $command, $matches);
         if (count($matches) == 0 ) {
             $this->echoError('The command "'.$command.'" is not valid by regular expression.');
-            return;
+            return false;
         } else {
             $zendAction = $matches[1];
             $rpcMethod = $matches[2];
@@ -160,12 +163,11 @@ class OntowikiCommandLineInterface {
         // define the post data
         #$postdata = '{"method": "getAvailableModels", "params": {"uri": "yourmodeluri"}, "id": 33}';
         $postdata['method'] = $rpcMethod;
-
+        $postdata['params']['modelIri'] = $this->args->getValue('model');
         if ($rpcParameter) {
             $postdata['params']['p1'] = $rpcParameter;
-        } else {
-            $postdata['params']['modelIri'] = $this->args->getValue('model');
         }
+
         $postdata['id'] = 1;
         $postdata = json_encode($postdata);
         $this->echoDebug('postdata: ' . $postdata);
@@ -175,7 +177,7 @@ class OntowikiCommandLineInterface {
         // add authentification header if there are auth credentials configured
         if ( $this->wikiConfig['user'] && $this->wikiConfig['password'] ) {
             $headers = array(
-                "Authorization: Basic " . 
+                "Authorization: Basic " .
                     base64_encode($this->wikiConfig['user'].':'.$this->wikiConfig['password'])
             );
             curl_setopt ($rpc, CURLOPT_HTTPHEADER, $headers);
@@ -184,8 +186,30 @@ class OntowikiCommandLineInterface {
 
         // catch URL and work on response
         $response = curl_exec($rpc);
-        curl_close($rpc);
-        return $response;
+
+        // Check if any error occured in curl
+        if(curl_errno($rpc)) {
+            $this->echoError('Error: '.curl_error($rpc));
+            die();
+        } else {
+            $info = curl_getinfo($rpc);
+            $this->echoDebug('Took ' . $info['total_time'] . ' seconds to send a request to ' . $info['url']);
+            curl_close($rpc);
+            $decodedResponse = json_decode($response, true);
+
+            if (!$response) {
+                $this->echoError("Error: no response on serveruri $serveruri");
+                die();
+            } elseif (!is_array($decodedResponse)) {
+                $this->echoError('The server response was no valid json:');
+                $response = preg_replace('/\<style.+style\>/s', '', $response);
+                $response = preg_replace('/\<head.+head\>/s', '', $response);
+                $this->echoError(trim(strip_tags($response)));
+                die();
+            } else {
+                return $response;
+            }
+        }
     }
 
     /**
@@ -214,6 +238,14 @@ class OntowikiCommandLineInterface {
                 die();
             }
         }
+    }
+
+    /*
+     * Check for addionally tools
+     */
+    protected function initTools() {
+        $rapper = `which rapper`;
+        #echo $rapper;
     }
 
     /*
