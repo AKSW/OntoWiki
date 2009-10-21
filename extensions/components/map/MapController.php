@@ -307,17 +307,17 @@ class MapController extends OntoWiki_Controller_Component
         $union->addElement($directQuery)->addElement($indirectQuery);
 
         $query->addElement($union);
-
+        //$query->getOrder()->add($instances->getResourceVar());
         $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
-        //echo htmlentities($query);
+        //echo $query;
         $this->_owApp->logger->debug('MapComponent/_getMarkerResult sent "' . $query . '" to get markers.');
 
         /* get result of the query */
         //for some reason sparqlAsk wants a SimpleQuery
-        $simpleQuery = Erfurt_Sparql_SimpleQuery::initWithString($query);
-        $result = $this->_owApp->erfurt->getStore()->sparqlQuery($simpleQuery);
+        
+        $result = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
 
-        return array($result, str_replace('?','',(string)$instances->getResourceVar()));
+        return array($result, $instances->getResourceVar()->getName());
     }
 
     /**

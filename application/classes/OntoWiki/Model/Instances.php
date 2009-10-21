@@ -516,10 +516,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
     public function getObjects($property, $distinct = true){
     	if(is_string($property)){
-    		$property = new Erfurt_Sparql_Query2_IriRef($property);
+            $property = new Erfurt_Sparql_Query2_IriRef($property);
     	}
     	if(!($property instanceof Erfurt_Sparql_Query2_IriRef)){
-    		throw new RuntimeException('Argument 1 passed to OntoWiki_Model_Instances::getObjects must be instance of string or Erfurt_Sparql_Query2_IriRef, '.typeHelper($property).' given');
+            throw new RuntimeException('Argument 1 passed to OntoWiki_Model_Instances::getObjects must be instance of string or Erfurt_Sparql_Query2_IriRef, '.typeHelper($property).' given');
     	}
 
         $query = clone $this->_resourceQuery;
@@ -533,17 +533,17 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
     	$properties = array();
     	foreach($results['bindings'] as $row){
-    		$properties[] = $row['obj'];
+            $properties[] = $row['obj'];
     	}
 
     	return $properties;
     }
     public function getSubjects($property, $distinct = true){
     	if(is_string($property)){
-    		$property = new Erfurt_Sparql_Query2_IriRef($property);
+            $property = new Erfurt_Sparql_Query2_IriRef($property);
     	}
     	if(!($property instanceof Erfurt_Sparql_Query2_IriRef)){
-    		throw new RuntimeException('Argument 1 passed to OntoWiki_Model_Instances::getSubjects must be of string or Erfurt_Sparql_Query2_IriRef');
+            throw new RuntimeException('Argument 1 passed to OntoWiki_Model_Instances::getSubjects must be of string or Erfurt_Sparql_Query2_IriRef');
     	}
 
         $query = clone $this->_resourceQuery;
@@ -557,7 +557,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     	//echo '"subj query"<pre>'; echo htmlentities($query); echo '</pre>';
     	$properties = array();
     	foreach($results['bindings'] as $row){
-    		$properties[] = $row['subj'];
+            $properties[] = $row['subj'];
     	}
 
     	return $properties;
@@ -566,37 +566,37 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected function convertProperties($properties)
     {
     	require_once 'OntoWiki/Model/TitleHelper.php';
-            $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-            
-            $uris = array();
-            foreach($properties as $property){
-            	$uris[] = $property['uri'];
-            }
-            
-            $titleHelper->addResources($uris);
-            
-            $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-            
-           	$propertyResults = array();
-           	$i = 0;
-            foreach ($properties as $property) {
-                if(in_array($property['uri'], $this->_ignoredShownProperties)){
-                	continue;
-                }
+        $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
 
-                // set URL
-                $url->setParam('r', $property['uri'], true);
-           
-               $property['url'] = (string) $url;
-                
-               $property['curi'] = OntoWiki_Utils::contractNamespace($property['uri']);
-              
-               $property['title'] = $titleHelper->getTitle($property['uri'], $this->_lang);
-               
-               $propertyResults[] = $property;
+        $uris = array();
+        foreach($properties as $property){
+            $uris[] = $property['uri'];
+        }
+
+        $titleHelper->addResources($uris);
+
+        $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+
+        $propertyResults = array();
+        $i = 0;
+        foreach ($properties as $property) {
+            if(in_array($property['uri'], $this->_ignoredShownProperties)){
+                    continue;
             }
-            
-            return $propertyResults;
+
+            // set URL
+            $url->setParam('r', $property['uri'], true);
+
+            $property['url'] = (string) $url;
+
+            $property['curi'] = OntoWiki_Utils::contractNamespace($property['uri']);
+
+            $property['title'] = $titleHelper->getTitle($property['uri'], $this->_lang);
+
+            $propertyResults[] = $property;
+        }
+
+        return $propertyResults;
     }
     
     /**
@@ -626,38 +626,40 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     public function convertResources($resources){
     	$url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
             
-            // add titles
-            $this->_titleHelper->addResources($resources);
-            $resourceResults = array();
-            
-            foreach ($resources as $uri) {
-                
-                if (!array_key_exists($uri, $resourceResults)) {
-                    $resourceResults[$uri] = array();
-                }
-                
-                // URL
-                $url->setParam('r', $uri, true);
-                $resourceResults[$uri]['url'] = (string) $url;
-                
-                // title
-                $resourceResults[$uri]['title'] = $this->_titleHelper->getTitle($uri, $this->_lang);
+        // add titles
+        $this->_titleHelper->addResources($resources);
+        $resourceResults = array();
+
+        foreach ($resources as $uri) {
+
+            if (!array_key_exists($uri, $resourceResults)) {
+                $resourceResults[$uri] = array();
             }
+
+            // URL
+            $url->setParam('r', $uri, true);
+            $resourceResults[$uri]['url'] = (string) $url;
+
+            // title
+            $resourceResults[$uri]['title'] = $this->_titleHelper->getTitle($uri, $this->_lang);
+        }
         return $resourceResults;
     }
     
     public function getShownResources(){
         if(!$this->_resourcesUptodate){
-    		//echo '$this->_resourceQuery :'.htmlentities($this->_resourceQuery);
-    		$result = $this->_model->sparqlQuery($this->_resourceQuery, array('result_format' => 'extended'));
-			$this->_resources = array();
-    		foreach ($result['bindings'] as $row) {
+            //echo '$this->_resourceQuery :'.htmlentities($this->_resourceQuery);
+            $result = $this->_model->sparqlQuery($this->_resourceQuery, array('result_format' => 'extended'));
+            //print_r($result);
+            $this->_resources = array();
+            foreach ($result['bindings'] as $row) {
                 $uri = $row['resourceUri']['value'];
                 $this->_resources[] = $uri;
-    		}
-    		$this->_resourcesUptodate = true;
-    	} 
-		return $this->_resources;
+            }
+            $this->_resourcesUptodate = true;
+    	}
+
+        return $this->_resources;
     }
     
     /**
