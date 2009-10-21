@@ -11,6 +11,10 @@
  * OntoWiki main class.
  *
  * Serves as a central registry for storing objects needed througout the application.
+ * Prior to 0.9.5, this class was called OntoWiki_Application and was also partly
+ * responsible for application bootstrapping. As of 0.9.5, bootstrapping is handled
+ * by the Bootstrap class. OntoWiki_Application is aliased to OntoWiki, whereby it is 
+ * still usable, but deprecated and will certainly disappea in the next release.
  *
  * @category OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
@@ -40,11 +44,6 @@ class OntoWiki
      * @var array
      */
     protected $_sessionVars = array();
-    
-    /**
-     * Whether the session variables have been loaded
-     */
-    protected $_sessionVarsLoaded = false;
     
     /** 
      * Singleton instance
@@ -178,6 +177,8 @@ class OntoWiki
     
     /**
      * Returns the application bootstrap object
+     *
+     * @since 0.9.5
      */
     public function getBootstrap()
     {
@@ -192,6 +193,7 @@ class OntoWiki
     /**
      * Returns the system config object
      *
+     * @since 0.9.5
      * @return Zend_Config
      */
     public function getConfig()
@@ -243,6 +245,7 @@ class OntoWiki
      * In case mod_rewrite is enabled, urlBase and staticUrlBase
      * are identical.
      *
+     * @since 0.9.5
      * @return string
      */
     public function getStaticUrlBase()
@@ -257,6 +260,7 @@ class OntoWiki
      * In case mod_rewrite is enabled, urlBase and staticUrlBase
      * are identical.
      *
+     * @since 0.9.5
      * @return string
      */
     public function getUrlBase()
@@ -292,6 +296,7 @@ class OntoWiki
      * Sets an array of variables that are to be synchronized
      * with the session.
      *
+     * @since 0.9.5
      * @param array $sessionVars
      */
     public function setSessionVars(array $sessionVars)
@@ -300,7 +305,6 @@ class OntoWiki
         $this->_sessionVars = $sessionVars;
         
         // reload session vars
-        $this->_loadSessionVars();
     }
     
     /**
@@ -319,23 +323,6 @@ class OntoWiki
         $session->messageStack = $messageStack;
         
         return $this;
-    }
-    
-    // ------------------------------------------------------------------------
-    // --- Protected Methods
-    // ------------------------------------------------------------------------
-    
-    /**
-     * Loads variables stored in the session.
-     */ 
-    private function _loadSessionVars()
-    {
-        foreach ($this->_sessionVars as $varName) {            
-            if (isset($this->session->$varName)) {
-                $this->$varName = $this->session->$varName;
-                var_dump('Session var retrieved: ' . $varName);
-            }
-        }
     }
 }
 
