@@ -5,6 +5,8 @@ config.ini
 ontowiki/src/.htaccess
 ontowiki/src/config.ini
 ontowiki/src/nbproject
+owcli/nbproject
+ontowiki/src/libraries/RDFauthor
 ontowiki/src/libraries/Erfurt
 ontowiki/src/libraries/RDFauthor
 ontowiki/src/libraries/Zend
