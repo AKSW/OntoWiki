@@ -2,4 +2,5 @@ syntax: glob
 
 .htaccess
 config.ini
-
+ontowiki/src/libraries/Erfurt
+ontowiki/src/libraries/RDFauthor

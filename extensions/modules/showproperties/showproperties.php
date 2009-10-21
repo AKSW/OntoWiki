@@ -29,8 +29,8 @@ class ShowpropertiesModule extends OntoWiki_Module
                                 ? json_encode($session->shownInverseProperties) 
                                 : '[]');
         
-        $this->view->headScript()->appendScript('\
-            var shownProperties = ' . $shownProperties.';\
+        $this->view->headScript()->appendScript('
+            var shownProperties = ' . $shownProperties.';
             var shownInverseProperties = ' . $shownInverseProperties . ';');
     }
     

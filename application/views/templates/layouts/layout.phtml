@@ -114,7 +114,7 @@
                             <div class="messagebox"><?php echo $this->placeholder('main.window.toolbar') ?></div>
                         <?php endif; ?>
                         <div class="innercontent">                                
-                            <?php foreach (OntoWiki_Application::getInstance()->getMessages() as $message): ?>
+                            <?php foreach (OntoWiki::getInstance()->drawMessages() as $message): ?>
                                 <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
                             <?php endforeach; ?>
                                 
@@ -142,7 +142,7 @@
                             <div class="messagebox"><?php echo $this->placeholder('main.window.toolbar') ?></div>
                         <?php endif; ?>
                         
-                        <?php foreach (OntoWiki_Application::getInstance()->getMessages() as $message): ?>
+                        <?php foreach (OntoWiki::getInstance()->drawMessages() as $message): ?>
                             <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
                         <?php endforeach; ?>
                             
@@ -169,8 +169,8 @@
         <?php echo $this->placeholder('main.sidewindows') ?>
     </div><!-- .section-sidewindows -->
     <?php 
-        $queryCount = OntoWiki_Application::getInstance()->erfurt->getStore()->getQueryCount();
-        $time       = (microtime(true) - OntoWiki_Application::getInstance()->start) * 1000;
+        $queryCount = OntoWiki::getInstance()->erfurt->getStore()->getQueryCount();
+        $time       = (microtime(true) - REQUEST_START) * 1000;
     ?>
     <!-- <?php echo sprintf($this->_('Rendered in %1$d ms using %2$d SPARQL queries.'), $time, $queryCount) ?> -->
 </body>

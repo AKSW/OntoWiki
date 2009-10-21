@@ -205,6 +205,20 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initNavigation()
     {
+        $this->bootstrap('Session');
+        $session = $this->getResource('Session');
+        
+        // inititalize navigation
+        if (!isset($session->lastRoute)) {
+            $session->lastRoute = 'properties';
+        }
+        // and add default component
+        OntoWiki_Navigation::register('index', array(
+            'route'    => $session->lastRoute, 
+            'name'     => ucfirst($session->lastRoute), 
+            'priority' => 0, 
+            'active'   => false
+        ));
     }
     
     /**
@@ -294,101 +308,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
     
     /**
-     * Initializes the selected resource from the request or session
-     */
-    // public function _initSelectedModel()
-    // {
-    //     // require Config
-    //     $this->bootstrap('Config');
-    //     $config = $this->getResource('Config');
-    //     
-    //     // require request
-    //     $this->bootstrap('Request');
-    //     $request = $this->getResource('Request');
-    //     
-    //     // require Session
-    //     $this->bootstrap('Session');
-    //     $session = $this->getResource('Session');
-    //     
-    //     // require Erfurt
-    //     $this->bootstrap('Erfurt');
-    //     $erfurt = $this->getResource('Erfurt');
-    //     $store  = $erfurt->getStore();
-    //     
-    //     // instantiate model if parameter passed
-    //     if (isset($request->m)) {
-    //         try {
-    //             $selectedModel = $store->getModel($request->getParam('m', null, false));
-    //             $session->selectedModel = $selectedModel;
-    //             return $selectedModel;
-    //         } catch (Erfurt_Store_Exception $e) {
-    //             // if no user is given (Anoymous) give the requesting party a chance to authenticate
-    //             if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
-    //                 $response = $frontController->getResponse();
-    //                 
-    //                 // request authorization
-    //                 $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-    //                 $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
-    //                 $response->sendResponse();
-    //                 exit;
-    //             }
-    //             
-    //             // post error message
-    //             $owApp->prependMessage(new OntoWiki_Message(
-    //                 '<p>Could not instantiate graph: ' . $e->getMessage() . '</p>' . 
-    //                 '<a href="' . $owApp->config->urlBase . '">Return to index page</a>', 
-    //                 OntoWiki_Message::ERROR, array('escape' => false)));
-    //             // hard redirect since finishing the dispatch cycle will lead to errors
-    //             header('Location:' . $owApp->config->urlBase . 'error/error');
-    //             exit;
-    //         }
-    //     } else if (isset($session->selectedModel)) {
-    //         return $session->selectedModel;
-    //     }
-    // }
-    
-    /**
-     * Initializes the selected resource from the request
-     */
-    // public function _initSelectedResource()
-    // {
-    //     // require Config
-    //     $this->bootstrap('Config');
-    //     $config = $this->getResource('Config');
-    //     
-    //     // require request
-    //     $this->bootstrap('Request');
-    //     $request = $this->getResource('Request');
-    //     
-    //     // require Session
-    //     $this->bootstrap('Session');
-    //     $session = $this->getResource('Session');
-    //     
-    //     // require model
-    //     $this->bootstrap('SelectedModel');
-    //     $selectedModel = $this->getResource('SelectedModel');
-    //     
-    //     if (isset($request->r)) {
-    //         if ($selectedModel instanceof Erfurt_Rdf_Model) {
-    //             $selectedResource = new OntoWiki_Resource($request->getParam('r', null, true), $selectedModel);
-    //             $session->selectedResource = $selectedResource;
-    //             return $selectedResource;
-    //         } else {
-    //             // post error message
-    //             OntoWiki::getInstance()->prependMessage(new OntoWiki_Message(
-    //                 '<p>Could not instantiate resource. No model selected.</p>' . 
-    //                 '<a href="' . $config->urlBase . '">Return to index page</a>', 
-    //                 OntoWiki_Message::ERROR, array('escape' => false)));
-    //             // hard redirect since finishing the dispatch cycle will lead to errors
-    //             header('Location:' . $config->urlBase . 'error/error');
-    //             exit;
-    //         }
-    //     } else if (isset($session->selectedResource)) {
-    //         return $session->selectedResource;
-    //     }
-    // }
-    
-    /**
      * Initializes the session and loads session variables
      *
      * @since 0.9.5
@@ -410,16 +329,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // define the session key as a constant for global reference
         define('_OWSESSION', $sessionKey);
         
-        // TODO: load session vars
+        // inject session vars into OntoWiki
         if (array_key_exists('sessionVars', $this->_options['bootstrap'])) {
-            // set OntoWiki's session vars
             $ontoWiki->setSessionVars((array)$this->_options['bootstrap']['sessionVars']);
-            
-            // foreach ((array)$this->_options['bootstrap']['sessionVars'] as $name) {
-            //     if (isset($session->$name)) {
-            //         $ontoWiki->setSessionVar($name, $session->$name);
-            //     }
-            // }
         }
         
         return $session;

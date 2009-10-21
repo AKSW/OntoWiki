@@ -1,5 +1,8 @@
 <?php
 
+/* Profiling */
+define('REQUEST_START', microtime(true));
+
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -15,8 +18,6 @@
  * @category OntoWiki
  * @author Norman Heino <norman.heino@gmail.com>
  */
-
-$start = microtime(true);
 
 /**
  * Boostrap constants

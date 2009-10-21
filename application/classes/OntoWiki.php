@@ -267,6 +267,16 @@ class OntoWiki
     }
     
     /**
+     * Returns the currently logged-in user
+     *
+     * @return Erfurt_Auth_Identity
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    /**
      * Returns whether OntoWiki currently has messages for the user
      *
      * @return boolean
@@ -326,11 +336,6 @@ class OntoWiki
                 var_dump('Session var retrieved: ' . $varName);
             }
         }
-        
-        // init empty message stack
-        // if (!isset($this->session->messageStack)) {
-        //     $this->session->messageStack = array();
-        // }
     }
 }
 
