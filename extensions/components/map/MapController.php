@@ -74,7 +74,7 @@ class MapController extends OntoWiki_Controller_Component
         /* add ontowiki-style layer switcher */
         $this->view->defaultLayer   = $this->_privateConfig->default->layer;
 
-        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array('r'));
+        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());//array('r'));
         $jsonRequestUrl->setParam('datatype', "json", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
@@ -104,7 +104,7 @@ class MapController extends OntoWiki_Controller_Component
         $this->_owApp->logger->info('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
 
         // default values from configuration
-        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array('r'));
+        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());//array('r'));
         $jsonRequestUrl->setParam('clustering', "off", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
@@ -159,17 +159,19 @@ class MapController extends OntoWiki_Controller_Component
         $markers = array();
 
         $result = $this->_getMarkerResult( $viewArea );
+        $instanceVar = $result[1];
+        $result = $result[0];
 
         if($result) {
             $titleHelper = new OntoWiki_Model_TitleHelper($this->model);
             foreach ($result as $row) {
-                $uri = isset($row['instance']) ? $row['instance'] : $this->resource;
+                $uri = isset($row[$instanceVar]) ? $row[$instanceVar] : $this->resource;
                 $titleHelper->addResource($uri);
             }
             foreach ($result as $row) {
 
-                $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-                $uri = isset($row['instance']) ? $row['instance'] : $this->resource;
+                $url = new OntoWiki_Url(array('route' => 'properties'), array());//array('r'));
+                $uri = isset($row[$instanceVar]) ? $row[$instanceVar] : $this->resource;
                 $url->setParam('r', $uri, true);
 
                 if (empty ($row['lat']) || empty ($row['long'])) {
@@ -277,6 +279,7 @@ class MapController extends OntoWiki_Controller_Component
 
         $query->removeAllOptionals()->removeAllProjectionVars();
 
+        $query->addProjectionVar($instances->getResourceVar());
         $query->addProjectionVar($latVar);
         $query->addProjectionVar($longVar);
         $query->addProjectionVar($lat2Var);
@@ -314,7 +317,7 @@ class MapController extends OntoWiki_Controller_Component
         $simpleQuery = Erfurt_Sparql_SimpleQuery::initWithString($query);
         $result = $this->_owApp->erfurt->getStore()->sparqlQuery($simpleQuery);
 
-        return $result;
+        return array($result, str_replace('?','',(string)$instances->getResourceVar()));
     }
 
     /**
