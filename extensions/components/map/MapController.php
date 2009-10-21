@@ -85,7 +85,7 @@ class MapController extends OntoWiki_Controller_Component
 
         $this->view->extent         = $this->_getMaxExtent();
 
-        $this->_owApp->logger->info('MapComponent/displayAction: maximal map extention: ' . var_export($this->view->extent, true));
+        $this->_owApp->logger->debug('MapComponent/displayAction: maximal map extention: ' . var_export($this->view->extent, true));
     }
 
 
@@ -101,14 +101,14 @@ class MapController extends OntoWiki_Controller_Component
 
         $this->view->componentUrlBase = $this->_componentUrlBase;
         
-        $this->_owApp->logger->info('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
+        $this->_owApp->logger->debug('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
 
         // default values from configuration
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());//array('r'));
         $jsonRequestUrl->setParam('clustering', "off", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
-        $this->_owApp->logger->info('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
+        $this->_owApp->logger->debug('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
 
         $this->view->jsonRequestUrl     = $jsonRequestUrl;
         $this->view->apikey             = $this->_privateConfig->apikey;
@@ -121,8 +121,8 @@ class MapController extends OntoWiki_Controller_Component
         $this->view->defaultLayer       = $this->_privateConfig->default->layer;
         $this->view->extent             = $this->_getMaxExtent();
 
-        $this->_owApp->logger->info('MapComponent/inlineAction: maximal map extention: ' . var_export($this->view->extent, true));
-        $this->_owApp->logger->info('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
+        $this->_owApp->logger->debug('MapComponent/inlineAction: maximal map extention: ' . var_export($this->view->extent, true));
+        $this->_owApp->logger->debug('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
     }
 
     /**
@@ -130,7 +130,7 @@ class MapController extends OntoWiki_Controller_Component
      */
     public function markerAction()
     {
-        $this->_owApp->logger->info('MapComponent/markerAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
+        $this->_owApp->logger->debug('MapComponent/markerAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
 
         require_once $this->_componentRoot . 'classes/Marker.php';
         require_once $this->_componentRoot . 'classes/Clusterer.php';
@@ -211,7 +211,7 @@ class MapController extends OntoWiki_Controller_Component
             }
         }
 
-        $this->_owApp->logger->info('MapComponent/markerAction responds with ' . count($markers) . ' Markers in the viewArea: ' . var_export($viewArea, true));
+        $this->_owApp->logger->debug('MapComponent/markerAction responds with ' . count($markers) . ' Markers in the viewArea: ' . var_export($viewArea, true));
 
         // $this->_response->setHeader('Content-Type', 'application/json', true);
         $this->_response->setBody(json_encode($markers));
@@ -266,10 +266,10 @@ class MapController extends OntoWiki_Controller_Component
                 'filter' => is_array($this->_session->filter) ? $this->_session->filter : array(),
                 );
 
-        $this->_owApp->logger->info('MapComponent/_getMarkerResult session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
-        $this->_owApp->logger->info('MapComponent/_getMarkerResult session: limit => ' . $this->_owApp->session->instancelimit);
-        $this->_owApp->logger->info('MapComponent/_getMarkerResult session: offset => ' . $this->_owApp->session->instanceoffset);
-        $this->_owApp->logger->info('MapComponent/_getMarkerResult session: filter => ' . var_export($this->_session->filter, true));
+        $this->_owApp->logger->debug('MapComponent/_getMarkerResult session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
+        $this->_owApp->logger->debug('MapComponent/_getMarkerResult session: limit => ' . $this->_owApp->session->instancelimit);
+        $this->_owApp->logger->debug('MapComponent/_getMarkerResult session: offset => ' . $this->_owApp->session->instanceoffset);
+        $this->_owApp->logger->debug('MapComponent/_getMarkerResult session: filter => ' . var_export($this->_session->filter, true));
 
         /* this is science fiction, it will become true in the future */
         //$query = clone $this->_owApp->instances->getResourceQuery();
@@ -310,7 +310,7 @@ class MapController extends OntoWiki_Controller_Component
 
         $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
         //echo htmlentities($query);
-        $this->_owApp->logger->info('MapComponent/_getMarkerResult sent "' . $query . '" to get markers.');
+        $this->_owApp->logger->debug('MapComponent/_getMarkerResult sent "' . $query . '" to get markers.');
 
         /* get result of the query */
         //for some reason sparqlAsk wants a SimpleQuery
