@@ -14,7 +14,7 @@
  * out of a given full URI.
  *
  * @category OntoWiki
- * @package View
+ * @package View_Helper
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
