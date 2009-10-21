@@ -16,44 +16,19 @@ class MinimapModule extends OntoWiki_Module
 {
     public function init()
     {
-        // load js
-        #$this->view->headScript()->appendFile('http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->_privateConfig->apikey->google);
-        //$this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/lib/OpenStreetMap.js');
-        #$this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/lib/OpenLayers.js');
-        #$this->view->headScript()->appendFile($this->view->moduleUrl . 'minimap.js');
     }
 
     public function getContents()
     {
         if(isset($this->_owApp->instances)) {
-
-            /*
-               $query = clone $this->_owApp->instances->getResourceQuery();
-               $query->removeAllOptionals()->removeAllProjectionVars();
-
-               $ggp1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-
-               $ggp1->addTriple($this->_owApp->instances->getResourceVar(), 'http://www.w3.org/2003/01/geo/wgs84_pos#long', new Erfurt_Sparql_Query2_Var('long'));
-               $ggp1->addTriple($this->_owApp->instances->getResourceVar(), 'http://www.w3.org/2003/01/geo/wgs84_pos#lat', new Erfurt_Sparql_Query2_Var('lat'));
-               $ggp1->addTriple($this->_owApp->instances->getResourceVar(), 'http://www.w3.org/2000/01/rdf-schema#label', new Erfurt_Sparql_Query2_Var('label'));
-
-               $query->addElement($ggp1);
-
-               $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
-               $simpleQuery = Erfurt_Sparql_SimpleQuery::initWithString($query);
-               $ret = $this->_owApp->erfurt->getStore()->sparqlAsk($simpleQuery);
-
-            //var_dump($ret);
-            $this->view->markers = $ret;
-            $this->view->icon = $this->_privateConfig->icon;
-             */
-//            $mapConfig = $this->_owApp->componentManager->getComponentPrivateConfig('map');
-//            $this->view->headScript()->appendFile('http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $mapConfig->apikey->google);
+            $this->_owApp->logger->info('minimap/getContent session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
             return $this->render('minimap');
         } 
     }
 
-    public function shouldShow() {
+    public function shouldShow()
+    {
+        $this->_owApp->logger->info('minimap/shouldShow session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
         //        require_once 'extensions/components/MapHelper.php';
         if(class_exists('MapHelper')) {
             $helper = new MapHelper($this->_owApp->componentManager);
@@ -64,7 +39,8 @@ class MinimapModule extends OntoWiki_Module
     }
 
 
-    public function getStateId() {
+    public function getStateId()
+    {
         $id = $this->_owApp->selectedModel
             . $this->_owApp->selectedResource;
         

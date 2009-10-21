@@ -362,6 +362,7 @@ class OntoWiki_Application
             $this->logger = new Zend_Log($writer);
         }
         $this->logger->info('Request start: ' . microtime(true));
+        $this->logger->info('Request with REQUEST_URI: "' . $_SERVER['REQUEST_URI'] . '"');
         
         
         // normalize path names
