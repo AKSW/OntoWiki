@@ -1,10 +1,9 @@
-; All directories have to end with a slash!
-RAPAPIDIR = /.../api/
-R2D2DIR = /.../R2D2/
-
 [default]
-host = localhost
-user = root
-database = ontowiki
-password = ""
+baseuri = "http://localhost/OntoWiki/"
+user = Admin
+password = "pass"
 
+[demo]
+baseuri = "http://demo.ontowiki.net"
+;user = ""
+;password = ""

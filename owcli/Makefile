@@ -1,5 +1,5 @@
 INSTALLDIR="/usr/local"
-VERSION="0.2"
+VERSION="0.3"
 
 default:
 	@echo "This is a PHP project no need to compile something."
@@ -9,8 +9,6 @@ default:
 install:
 	mkdir -p $(INSTALLDIR)/share/owcli
 	cp owcli.php $(INSTALLDIR)/share/owcli/
-	cp Subscription.php $(INSTALLDIR)/share/owcli/
-	cp -R rdfapi-php $(INSTALLDIR)/share/owcli/
 	cp dot.owcli $(INSTALLDIR)/share/owcli/
 	mkdir -p $(INSTALLDIR)/man/man1/
 	cp owcli.1 $(INSTALLDIR)/man/man1/owcli

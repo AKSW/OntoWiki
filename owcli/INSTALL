@@ -2,7 +2,6 @@
 1. You need some pear packages. Try to install
     * Console_Getargs
     * Console_Table
-    * Config
 
    On my Ubuntu Machine this should be done with:
    'sudo pear install Console_Getargs Console_Table Config'

@@ -1,4 +1,6 @@
-$Id: ChangeLog 2326 2008-05-26 15:37:49Z norman.heino $
+0.3
+- complete remake as a jsonrpc client (all actions are jsonrpc calls)
+- no update-subscription and geocoding feature anymore
 
 0.2
 - new query command to query models with sparql (RAP 0.9.5 or trunk needed)

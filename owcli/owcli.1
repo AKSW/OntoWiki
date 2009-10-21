@@ -1,4 +1,4 @@
-.TH owcli 1  "01/2007" "version 0.2" "USER COMMANDS"
+.TH owcli 1  "11/2009" "version 0.3" "USER COMMANDS"
 .SH NAME
 owcli \- The OntoWiki Command Line Interface
 .SH SYNOPSIS
@@ -21,17 +21,13 @@ Set the variable OWMODEL (to change the default model):
 .B export OWMODEL=http://localhost/model1#
 .TP
 Drop a model (delete statements, popularities, etc.):
-.B owcli -m http://localhost/model1# \-\-drop
+.B owcli -m http://localhost/model1# \-e store:drop
 .TP
 Create a new Model and add tripels from a file:
-.B owcli -m http://localhost/model1# \-\-create \-\-add \-i model.rdf
-.TP
-Create a new Model and add tripels from a mapping (hint: use the variable OWMODEL so you dont need -m everytime):
-.B export OWMODEL=http://localhost/model1#; owcli \-\-map Mapping.n3 | owcli \-\-create \-\-add
+.B owcli -m http://localhost/model1# \-e store:create
 .TP
 Export the default model, put it to cwm and add the cwm output (e.g. additions from rules etc.):
-.B owcli \-\-export | cwm ...  | owcli \-\-add
-
+.B owcli \-model:export | cwm ...  | owcli \-e model:add
 
 .SH AUTHOR
 Sebastian Dietzold (sebastian@dietzold.de)
