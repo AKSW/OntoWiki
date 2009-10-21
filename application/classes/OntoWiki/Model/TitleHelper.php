@@ -3,19 +3,16 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id:$
  */
 
 /**
  * Fetches title properties for a set of resources at once.
  * The resources can be defined explicitly or via a SPARQL graph pattern.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
+ * @category OntoWiki
+ * @package Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

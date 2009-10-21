@@ -3,11 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: Resource.php 4311 2009-10-14 17:14:10Z jonas.brekle@gmail.com $
  */
 
 /**
@@ -15,8 +12,8 @@
  *
  * Represents a resources and its properties.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
+ * @category OntoWiki
+ * @package Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
@@ -126,7 +123,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                     'use_additional_imports' => false
                 );
                 
-                $currentResults = $this->_store->sparqlQuery($query, $options);                
+                $currentResults = $this->_store->sparqlQuery($query, $options);
                 
                 if (isset($currentResults['bindings'])) {
                     $this->_queryResults[$graph] = $currentResults['bindings'];

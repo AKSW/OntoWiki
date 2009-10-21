@@ -3,11 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Module.php 4235 2009-10-05 12:05:22Z norman.heino $
  */
 
 /**
@@ -15,11 +12,11 @@
  *
  * Serves as a base class for all OntoWiki modules.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @category Module
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 abstract class OntoWiki_Module
 {
@@ -111,7 +108,7 @@ abstract class OntoWiki_Module
         
         $this->_templateSuffix = '.' . ltrim($this->_templateSuffix, '.');
         
-        $this->_owApp   = OntoWiki_Application::getInstance();
+        $this->_owApp   = OntoWiki::getInstance();
         $this->_erfurt  = $this->_owApp->erfurt;
         $this->_store   = $this->_erfurt->getStore();
         $this->_config  = $this->_owApp->config;
@@ -121,12 +118,15 @@ abstract class OntoWiki_Module
         $this->_name = $name;
         
         // set script path if necessary
-        $modulesPath = _OWROOT . $this->_config->extensions->modules;
+        $modulesPath = ONTOWIKI_ROOT . $this->_config->extensions->modules;
         if (!in_array($modulesPath, $this->view->getScriptPaths())) {
             $this->view->addScriptPath($modulesPath);
         }
         
-        $configFile = $modulesPath . $name . '/module.ini';
+        $configFile = $modulesPath 
+                    . $name 
+                    . '/module.ini';
+        
         if (is_readable($configFile)) {
             try {
                 $this->_privateConfig = new Zend_Config_Ini($configFile, 'private');

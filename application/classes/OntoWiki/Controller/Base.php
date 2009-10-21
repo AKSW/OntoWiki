@@ -3,21 +3,18 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Controller
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Base.php 4308 2009-10-14 15:13:51Z jonas.brekle@gmail.com $
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki controller base class.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Controller
+ * @category OntoWiki
+ * @package Controller
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Controller_Base extends Zend_Controller_Action
 {    
@@ -145,7 +142,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      * Executed after dispatching has taken place.
      */
     public function postDispatch()
-    {        
+    {
         $this->_owApp->logger->info(sprintf(
             'Dispatching %s/%s: %d ms', 
             $this->_request->getControllerName(), 

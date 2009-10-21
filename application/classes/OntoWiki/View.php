@@ -3,11 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: View.php 4235 2009-10-05 12:05:22Z norman.heino $
  */
 
 /**
@@ -16,11 +13,11 @@
  * Subclasses Zend_View in order to cache modules and
  * provide a faster interface to important helpers.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @package View
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_View extends Zend_View
 {    

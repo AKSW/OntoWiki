@@ -3,11 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Instances.php 4309 2009-10-14 15:36:22Z sebastian.dietzold $
  */
 
 /**
@@ -15,8 +12,8 @@
  *
  * Represents a list of resources (of a certain rdf:type) and their properties.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Model
+ * @category OntoWiki
+ * @package Model
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

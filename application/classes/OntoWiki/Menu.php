@@ -5,16 +5,15 @@
  *
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: Menu.php 4227 2009-10-02 21:24:32Z norman.heino $
  */
 
 /**
  * OntoWiki menu class.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @category OntoWiki
  * @package Menu
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Menu

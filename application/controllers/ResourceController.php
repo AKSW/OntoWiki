@@ -45,8 +45,8 @@ class ResourceController extends OntoWiki_Controller_Base
         $navigation = $this->_owApp->navigation;
         $translate  = $this->_owApp->translate;
         
+        // add export formats to resource menu
         $resourceMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('resource');
-        
         foreach (array_reverse(Erfurt_Syntax_RdfSerializer::getSupportedFormats()) as $key => $format) {
             $resourceMenu->prependEntry(
                 'Export Resource as ' . $format,
@@ -68,7 +68,7 @@ class ResourceController extends OntoWiki_Controller_Base
         $event->graph = $this->_owApp->selectedModel->getModelUri();
         $event->trigger();
         
-        // Give plugins a chance to add entries to the menu...
+        // Give plugins a chance to add entries to the menu
         $this->view->placeholder('main.window.menu')->set($menu->toArray(false, true));
         
         $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace((string)$resource);
@@ -177,6 +177,8 @@ class ResourceController extends OntoWiki_Controller_Base
         }
         
         $this->addModuleContext('main.window.properties');
+        
+        
     }
     
     /**
@@ -262,7 +264,6 @@ class ResourceController extends OntoWiki_Controller_Base
         $this->view->headScript()->appendScript('var classUri = "'.OntoWiki_Utils::contractNamespace($this->_owApp->selectedClass).'";');
             
         if ($instances->hasData()) {
-            
             $this->view->instanceInfo = $instances->getResources();
             $this->view->instanceData = $instances->getValues();
             $itemsOnPage = count($this->view->instanceData);

@@ -3,11 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Component
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Manager.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
 /**
@@ -29,11 +26,11 @@
  * - Optionally, a component helper derived from OntoWiki_Component_Helper that is named
  *   like the component with the suffix 'Helper'
  *
- * @category   OntoWiki
- * @package    OntoWiki_Component
+ * @category OntoWiki
+ * @package Component
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Component_Manager
 {

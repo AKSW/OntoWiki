@@ -19,6 +19,10 @@
  */
 class OntoWiki
 {
+    // ------------------------------------------------------------------------
+    // --- Properties
+    // ------------------------------------------------------------------------
+    
     /**
      * The bootstrap object used during bootstrap.
      * @var Zend_Application_Bootstrap_Bootstrap
@@ -31,26 +35,22 @@ class OntoWiki
      */
     protected $_properties = array();
     
+    /**
+     * Variables to be autoloaded from the session
+     * @var array
+     */
+    protected $_sessionVars = array();
+    
+    /**
+     * Whether the session variables have been loaded
+     */
+    protected $_sessionVarsLoaded = false;
+    
     /** 
      * Singleton instance
      * @var OntoWiki_Application 
      */
     private static $_instance = null;
-    
-    /**
-     * State variables that are automatically saved in the session 
-     * (will survive requests).
-     *
-     * @var array 
-     */
-    private $_sessionVars = array(
-        'selectedModel', 
-        'selectedResource', 
-        'selectedClass', 
-        'authResult', 
-        'lastRoute', 
-        'errorState'
-    );
     
     // ------------------------------------------------------------------------
     // --- Magic Methods
@@ -79,15 +79,18 @@ class OntoWiki
      */
     public function __get($propertyName)
     {
+        // retrieve from session
         if (in_array($propertyName, $this->_sessionVars)) {
             $this->_properties[$propertyName] = $this->session->$propertyName;
         }
         
+        // retrieve bootstrap resource
         $bootstrap = $this->getBootstrap();
         if ($bootstrap and $bootstrap->hasResource($propertyName)) {
             return $bootstrap->getResource($propertyName);
         }
         
+        // retrieve locally
         if (isset($this->$propertyName)) {
             return $this->_properties[$propertyName];
         }
@@ -101,11 +104,13 @@ class OntoWiki
      * @since 0.9.5
      */
     public function __set($propertyName, $propertyValue)
-    {        
+    {
+        // set in session
         if (in_array($propertyName, $this->_sessionVars)) {
             $this->session->$propertyName = $propertyValue;
         }
         
+        // set locally
         $this->_properties[$propertyName] = $propertyValue;
     }
     
@@ -129,16 +134,36 @@ class OntoWiki
      */
     public function __unset($propertyName)
     {
+        // unset from session
         if (in_array($propertyName, $this->_sessionVars)) {
             unset($this->session->$propertyName);
         }
         
+        // unset locally
         unset($this->_properties[$propertyName]);
     }
     
     // ------------------------------------------------------------------------
     // --- Public Methods
-    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------ 
+    
+    /**
+     * Appends a message to the message stack
+     *
+     * @param OntoWiki_Message $message The message to be added.
+     * @return OntoWiki_Application
+     */
+    public function appendMessage(OntoWiki_Message $message)
+    {
+        $session = $this->getBootstrap()->getResource('Session');
+        
+        $messageStack = (array)$session->messageStack;
+        array_push($messageStack, $message);
+        
+        $session->messageStack = $messageStack;
+        
+        return $this;
+    }
     
     /**
      * Returns the current message stack and empties it.
@@ -152,15 +177,43 @@ class OntoWiki
     }
     
     /**
-     * Returns whether OntoWiki currently has messages for the user
-     *
-     * @return boolean
+     * Returns the application bootstrap object
      */
-    public function hasMessages()
+    public function getBootstrap()
     {
-        $messages = $this->getMessages();
+        if (null === $this->_bootstrap) {
+            $frontController  = Zend_Controller_Front::getInstance();
+            $this->_bootstrap = $frontController->getParam('bootstrap');
+        }
         
-        return (!empty($messages));
+        return $this->_bootstrap;
+    }
+    
+    /**
+     * Returns the system config object
+     *
+     * @return Zend_Config
+     */
+    public function getConfig()
+    {
+        $bootstrap = $this->getBootstrap();
+        if ($bootstrap and $bootstrap->hasResource('Config')) {
+            return $this->getBootstrap()->getResource('Config');
+        }
+    }
+    
+    /**
+     * Singleton instance
+     *
+     * @return OntoWiki
+     */
+    public static function getInstance()
+    {
+        if (null === self::$_instance) {
+            self::$_instance = new self();
+        }
+        
+        return self::$_instance;
     }
     
     /**
@@ -186,21 +239,58 @@ class OntoWiki
     }
     
     /**
-     * Appends a message to the message stack
+     * Returns the base URL for static files.
+     * In case mod_rewrite is enabled, urlBase and staticUrlBase
+     * are identical.
      *
-     * @param OntoWiki_Message $message The message to be added.
-     * @return OntoWiki_Application
+     * @return string
      */
-    public function appendMessage(OntoWiki_Message $message)
+    public function getStaticUrlBase()
     {
-        $session = $this->getBootstrap()->getResource('Session');
+        if ($config = $this->getConfig()) {
+            return $config->staticUrlBase;
+        }
+    }
+    
+    /**
+     * Returns the base URL for static files.
+     * In case mod_rewrite is enabled, urlBase and staticUrlBase
+     * are identical.
+     *
+     * @return string
+     */
+    public function getUrlBase()
+    {
+        if ($config = $this->getConfig()) {
+            return $config->urlBase;
+        }
+    }
+    
+    /**
+     * Returns whether OntoWiki currently has messages for the user
+     *
+     * @return boolean
+     */
+    public function hasMessages()
+    {
+        $messages = $this->getMessages();
         
-        $messageStack = (array)$session->messageStack;
-        array_push($messageStack, $message);
+        return (!empty($messages));
+    }
+    
+    /**
+     * Sets an array of variables that are to be synchronized
+     * with the session.
+     *
+     * @param array $sessionVars
+     */
+    public function setSessionVars(array $sessionVars)
+    {
+        // add to session vars
+        $this->_sessionVars = $sessionVars;
         
-        $session->messageStack = $messageStack;
-        
-        return $this;
+        // reload session vars
+        $this->_loadSessionVars();
     }
     
     /**
@@ -221,48 +311,26 @@ class OntoWiki
         return $this;
     }
     
-    /**
-     * Returns the application bootstrap object
-     */
-    public function getBootstrap()
-    {
-        if (null === $this->_bootstrap) {
-            $frontController  = Zend_Controller_Front::getInstance();
-            $this->_bootstrap = $frontController->getParam('bootstrap');
-        }
-        
-        return $this->_bootstrap;
-    }
-    
-    /**
-     * Singleton instance
-     *
-     * @return OntoWiki
-     */
-    public static function getInstance()
-    {
-        if (null === self::$_instance) {
-            self::$_instance = new self();
-        }
-        
-        return self::$_instance;
-    }
+    // ------------------------------------------------------------------------
+    // --- Protected Methods
+    // ------------------------------------------------------------------------
     
     /**
      * Loads variables stored in the session.
      */ 
     private function _loadSessionVars()
     {
-        foreach ($this->_sessionVars as $varName) {
+        foreach ($this->_sessionVars as $varName) {            
             if (isset($this->session->$varName)) {
                 $this->$varName = $this->session->$varName;
+                var_dump('Session var retrieved: ' . $varName);
             }
         }
         
         // init empty message stack
-        if (!isset($this->session->messageStack)) {
-            $this->session->messageStack = array();
-        }
+        // if (!isset($this->session->messageStack)) {
+        //     $this->session->messageStack = array();
+        // }
     }
 }
 

@@ -1,13 +1,10 @@
 <?php
-// vim: sw=4:sts=4:expandtab
+/* vim: sw=4:sts=4:expandtab */
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Navigation.php 4241 2009-10-05 22:33:25Z arndtn $
  */
 
 /**
@@ -16,11 +13,11 @@
  * Initializes external libraries and components. 
  * Serves as a central registry for storing Data needed througout the application.
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @category Navigation
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Navigation
 {

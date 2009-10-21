@@ -28,7 +28,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     {
         // load default application configuration file
         try {
-            $config = new Zend_Config_Ini(ONTOWIKI_ROOT . 'application/config/default.ini', 'default', true);
+            $config = new Zend_Config_Ini(APPLICATION_PATH . 'config/default.ini', 'default', true);
         } catch (Zend_Config_Exception $e) {
             exit($e->getMessage());
         }
@@ -120,18 +120,21 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initErfurt()
     {
+        $erfurt = null;
+        
         // require Config
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
         
         try {
             $erfurt = Erfurt_App::getInstance(false)->start($config);
-            return $erfurt;
         } catch (Erfurt_Exception $ee) {
             exit('Error loading Erfurt framework: ' . $ee->getMessage());
         } catch (Exception $e) {
             exit('Unexpected error: ' . $e->getMessage());
         }
+        
+        return $erfurt;
     }
     
     /**
@@ -160,7 +163,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // support absolute path
         if (!(preg_match('/^(\w:[\/|\\\\]|\/)/', $config->log->path) === 1)) {
-            $config->cache->path = _OWROOT . $config->cache->path;
+            $config->cache->path = ONTOWIKI_ROOT . $config->cache->path;
         }
         
         // initialize logger
@@ -205,6 +208,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
     
     /**
+     * Initializes the OntoWiki main class
+     *
+     * @since 0.9.5
+     */
+    public function _initOntoWiki()
+    {
+        $ontoWiki = OntoWiki::getInstance();
+        
+        return $ontoWiki;
+    }
+    
+    /**
      * Initializes the plug-in manager
      *
      * @since 0.9.5
@@ -221,7 +236,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // instantiate plug-in manager and load plug-ins
         $pluginManager = $erfurt->getPluginManager(false);
-        $pluginManager->addPluginPath(_OWROOT . $config->extensions->plugins);
+        $pluginManager->addPluginPath(ONTOWIKI_ROOT . $config->extensions->plugins);
+        
+        return $pluginManager;
     }
     
     public function _initPlugins()
@@ -382,12 +399,28 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
         
+        // require Config
+        $this->bootstrap('OntoWiki');
+        $ontoWiki = $this->getResource('OntoWiki');
+        
         // init session
         $sessionKey = 'ONTOWIKI' . (isset($config->session->identifier) ? $config->session->identifier : '');        
         $session    = new Zend_Session_Namespace($sessionKey);
         
         // define the session key as a constant for global reference
         define('_OWSESSION', $sessionKey);
+        
+        // TODO: load session vars
+        if (array_key_exists('sessionVars', $this->_options['bootstrap'])) {
+            // set OntoWiki's session vars
+            $ontoWiki->setSessionVars((array)$this->_options['bootstrap']['sessionVars']);
+            
+            // foreach ((array)$this->_options['bootstrap']['sessionVars'] as $name) {
+            //     if (isset($session->$name)) {
+            //         $ontoWiki->setSessionVar($name, $session->$name);
+            //     }
+            // }
+        }
         
         return $session;
     }
@@ -425,7 +458,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // setup translation cache
         if ((boolean)$config->cache->translation and is_writable($config->cache->path)) {            
-            $translationFile = _OWROOT 
+            $translationFile = ONTOWIKI_ROOT 
                              . $config->languages->path 
                              . $config->languages->locale 
                              . DIRECTORY_SEPARATOR 
@@ -451,7 +484,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             // don't emit notices
             'disableNotices' => true
         );
-        $translate = new Zend_Translate('csv', _OWROOT . $config->languages->path, null, $options);
+        $translate = new Zend_Translate('csv', ONTOWIKI_ROOT . $config->languages->path, null, $options);
         try {
             $translate->setLocale($config->languages->locale);
         } catch (Zend_Translate_Exception $e) {
@@ -469,6 +502,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initUser()
     {
+        $user = null;
+        
         // require Erfurt
         $this->bootstrap('Erfurt');
         $erfurt = $this->getResource('Erfurt');
@@ -476,14 +511,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // get logged in user
         $auth = $erfurt->getAuth();
         if ($auth->hasIdentity()) {
-            $this->user = $auth->getIdentity();
+            $user = $auth->getIdentity();
         }
     
-        if (null === $this->user) {
+        if (null === $user) {
             // authenticate anonymous user
             $erfurt->authenticate('Anonymous', '');
-            $this->user = $auth->getIdentity();
+            $user = $auth->getIdentity();
         }
+        
+        return $user;
     }
     
     /**
@@ -502,11 +539,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $translate = $this->getResource('Translate');
         
         // standard template path
-        $defaultTemplatePath = _OWROOT 
+        $defaultTemplatePath = ONTOWIKI_ROOT 
                              . 'application/views/templates';
         
         // path for theme template
-        $themeTemplatePath   = _OWROOT 
+        $themeTemplatePath   = ONTOWIKI_ROOT 
                              . $config->themes->path 
                              . $config->themes->default 
                              . 'templates';
@@ -523,7 +560,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $view->addScriptPath($defaultTemplatePath)  // default templates
              ->addScriptPath($themeTemplatePath)    // theme templates override default ones
              ->setEncoding($config->encoding)
-             ->setHelperPath(_OWROOT . 'application/classes/OntoWiki/View/Helper', 'OntoWiki_View_Helper');
+             ->setHelperPath(ONTOWIKI_ROOT . 'application/classes/OntoWiki/View/Helper', 'OntoWiki_View_Helper');
         
         // set Zend_View to emit notices in debug mode
         $view->strictVars(defined('_OWDEBUG'));
@@ -558,7 +595,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // initialize wrapper manager and load wrapper
         $wrapperManager = $erfurt->getWrapperManager(false);
-        $wrapperManager->addWrapperPath(_OWROOT . $config->extensions->wrapper);
+        $wrapperManager->addWrapperPath(ONTOWIKI_ROOT . $config->extensions->wrapper);
         
         return $wrapperManager;
     }

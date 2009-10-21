@@ -5,7 +5,6 @@
  *
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Registry.php 4227 2009-10-02 21:24:32Z norman.heino $
  */
 
 /**
@@ -14,10 +13,10 @@
  * Serves as a central registry for menus and provides methods for setting
  * and retrieving menu instances.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @category OntoWiki
  * @package Menu
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Menu_Registry

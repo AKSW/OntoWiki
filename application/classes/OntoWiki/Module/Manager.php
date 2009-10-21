@@ -3,11 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Module
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Manager.php 4190 2009-09-25 10:31:02Z c.riess.dev $
  */
 
 /**
@@ -21,11 +18,11 @@
  * must be named like the file with the first letter in upper case and
  * the suffix 'Module'.
  *
- * @category   OntoWiki
- * @package    OntoWiki_Module
+ * @category OntoWiki
+ * @package Module
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Module_Manager
 {

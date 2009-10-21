@@ -3,11 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Plugin.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
 /**
@@ -21,11 +18,11 @@
  *   first letter in upper case and the suffix 'Plugin'
  * - the folder as well contains a 'plugin.ini' config file
  *
- * @category   OntoWiki
- * @package    OntoWiki
+ * @category OntoWiki
+ * @package Plugin
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author    Norman Heino <norman.heino@gmail.com>
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Plugin extends Erfurt_Plugin
 {
@@ -56,9 +53,8 @@ class OntoWiki_Plugin extends Erfurt_Plugin
             $this->view->clearVars();
         }
         
-        // $systemConfig = OntoWiki_Application::getInstance()->config;
-        // $this->_pluginUrlBase = $systemConfig->staticUrlBase
-        //                       . str_replace(_OWROOT, '', $root);
+        $this->_pluginUrlBase = OntoWiki::getInstance()->getStaticUrlBase()
+                              . str_replace(ONTOWIKI_ROOT, '', $root);
         
         parent::__construct($root, $config);
     }
