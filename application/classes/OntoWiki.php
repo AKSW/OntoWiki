@@ -242,8 +242,8 @@ class OntoWiki
     
     /**
      * Returns the base URL for static files.
-     * In case mod_rewrite is enabled, urlBase and staticUrlBase
-     * are identical.
+     * In case mod_rewrite is enabled, getUrlBase and getStaticUrlBase
+     * return identical results.
      *
      * @since 0.9.5
      * @return string
@@ -256,9 +256,9 @@ class OntoWiki
     }
     
     /**
-     * Returns the base URL for static files.
-     * In case mod_rewrite is enabled, urlBase and staticUrlBase
-     * are identical.
+     * Returns the base URL for dynamic requests.
+     * In case mod_rewrite is enabled, getUrlBase and getStaticUrlBase
+     * return identical results.
      *
      * @since 0.9.5
      * @return string
@@ -271,7 +271,7 @@ class OntoWiki
     }
     
     /**
-     * Returns the currently logged-in user
+     * Returns the currently logged-in user.
      *
      * @return Erfurt_Auth_Identity
      */
@@ -281,7 +281,7 @@ class OntoWiki
     }
     
     /**
-     * Returns whether OntoWiki currently has messages for the user
+     * Returns whether OntoWiki currently has messages for the user.
      *
      * @return boolean
      */
@@ -303,8 +303,6 @@ class OntoWiki
     {
         // add to session vars
         $this->_sessionVars = $sessionVars;
-        
-        // reload session vars
     }
     
     /**
@@ -318,7 +316,7 @@ class OntoWiki
         $session = $this->getBootstrap()->getResource('Session');
         
         $messageStack = (array)$session->messageStack;
-        array_unshift($session->messageStack, $message);
+        array_unshift($messageStack, $message);
         
         $session->messageStack = $messageStack;
         

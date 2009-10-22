@@ -46,13 +46,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->themes->default  = rtrim($config->themes->default, '/\\') . '/';
         $config->extensions->base = rtrim($config->extensions->base, '/\\') . '/';
         
-        define('_EXTROOT', $config->extensions->base);
-        $config->extensions->components = _EXTROOT . rtrim($config->extensions->components, '/\\') . '/';
-        $config->extensions->modules    = _EXTROOT . rtrim($config->extensions->modules, '/\\') . '/';
-        $config->extensions->plugins    = _EXTROOT . rtrim($config->extensions->plugins, '/\\') . '/';
-        $config->extensions->wrapper    = _EXTROOT . rtrim($config->extensions->wrapper, '/\\') . '/';
-        $config->extensions->legacy     = _EXTROOT . rtrim($config->extensions->legacy, '/\\') . '/';
-        $config->languages->path        = _EXTROOT . rtrim($config->languages->path, '/\\') . '/';
+        define('EXTENSION_PATH', $config->extensions->base);
+        $config->extensions->components = EXTENSION_PATH . rtrim($config->extensions->components, '/\\') . '/';
+        $config->extensions->modules    = EXTENSION_PATH . rtrim($config->extensions->modules, '/\\') . '/';
+        $config->extensions->plugins    = EXTENSION_PATH . rtrim($config->extensions->plugins, '/\\') . '/';
+        $config->extensions->wrapper    = EXTENSION_PATH . rtrim($config->extensions->wrapper, '/\\') . '/';
+        $config->extensions->legacy     = EXTENSION_PATH . rtrim($config->extensions->legacy, '/\\') . '/';
+        $config->languages->path        = EXTENSION_PATH . rtrim($config->languages->path, '/\\') . '/';
         
         $config->libraries->path = rtrim($config->libraries->path, '/\\') . '/';
         $config->cache->path     = rtrim($config->cache->path, '/\\') . '/';

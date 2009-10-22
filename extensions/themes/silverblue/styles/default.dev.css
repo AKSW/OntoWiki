@@ -302,3 +302,32 @@ a.closed:hover {
     display: block;
 }
 
+a.Tag {
+    border: 1px solid #ccc;
+    background-color: #eee;
+    
+    padding: .1em 1.1em .1em .4em;
+    
+    -moz-border-radius-topleft: 1em;
+    -webkit-border-top-left-radius: 1em;
+    
+    -moz-border-radius-topright: 1em;
+    -webkit-border-top-right-radius: 1em;
+    
+    -moz-border-radius-bottomleft: 1em;
+    -webkit-border-bottom-left-radius: 1em;
+    
+    -moz-border-radius-bottomright: 1em;
+    -webkit-border-bottom-right-radius: 1em;
+}
+
+a.Tag:hover {
+    background: url(./../images/icon-clear.png) 98% 50% no-repeat #eee;
+}
+
+ul.horizontal > li,
+ol.horizontal > li {
+    display: inline;
+    padding: 0;
+    margin: 0em;
+}
