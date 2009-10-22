@@ -6,3 +6,12 @@ author      = ""
 
 [events]
 1 = onControllerInit
+2 = onAddStatement
+3 = onAddMultipleStatements
+4 = onDisplayObjectPropertyValue 
+;onDisplayObjectPropertyValue
+
+[private]
+;properties[] = "http://purl.org/ontology/mo/image"
+predicates[] = "http://rdfs.org/sioc/ns#has_reply"
+predicates[] = "http://rdfs.org/sioc/ns#reply_of"
