@@ -39,6 +39,13 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                     if ($authResult->isValid()) {
                         $logger = OntoWiki_Application::getInstance()->logger;
                         $logger->info("User '$credentials[username]' authenticated via HTTP.");
+                    } else {
+                        // if authentication attempt fails, send appropriate headers
+                        $front    = Zend_Controller_Front::getInstance();
+                        $response = $front->getResponse();
+                        $response->setRawHeader('HTTP/1.1 401 Unauthorized');
+                        $response->sendResponse();
+                        exit;
                     }
                     break;
                 case 'foaf+ssl':
@@ -54,7 +61,7 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                     break;
             }
         } else {
-            // Allow plugins to handle authentication...
+            // Allow plugins to handle authentication
             $event = new Erfurt_Event('onRouteShutdown');
             $event->request = $request;
             $event->trigger();
