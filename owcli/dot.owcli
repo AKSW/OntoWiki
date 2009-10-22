@@ -1,9 +1,0 @@
-[default]
-baseuri = "http://localhost/OntoWiki/"
-user = Admin
-password = "pass"
-
-[demo]
-baseuri = "http://demo.ontowiki.net"
-;user = ""
-;password = ""
