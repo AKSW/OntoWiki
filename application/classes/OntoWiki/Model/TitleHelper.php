@@ -155,7 +155,7 @@ class OntoWiki_Model_TitleHelper
         
         if (!Erfurt_Uri::check($resourceUri)) {
             require_once 'OntoWiki/Model/Exception.php';
-            throw new OntoWiki_Model_Exception('Supplied resource is not a valid URI.');
+            throw new OntoWiki_Model_Exception("Supplied resource <$resource> is not a valid URI.");
         }
         
         $this->_resources[$resourceUri] = $resourceUri;
@@ -293,6 +293,13 @@ class OntoWiki_Model_TitleHelper
             
             // $logger->info('TitleHelper getTitle without adding the resource ('.$resourceUri.')');
             // return OntoWiki_Utils::contractNamespace($resourceUri);
+        }
+        
+        // HACK: fix a probable Virtuoso bug with querying
+        // for only one resource
+        if (count((array)$this->_resources) < 2) {
+            // add a dummy resource ;)
+            $this->addResource('http://example.com/dummy');
         }
 
         if (null === $this->_resourceTitles) {
