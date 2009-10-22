@@ -48,8 +48,6 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      */
     protected $_eventDispatcher = null;
     
-    protected static $_num = 0;
-    
     /**
      * Time before the conroller is launched
      * @var float
@@ -61,8 +59,16 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      */
     public function init()
     {
+        /**
+         * @trigger onControllerInit 
+         * Triggered before a controller of class OntoWiki_Controller_Base (or derived)
+         * is initialized.
+         */
+        $event = new Erfurt_Event('onBeforeInitController');
+        $eventResult = $event->trigger();
+        
         // init controller variables
-        $this->_owApp            = OntoWiki_Application::getInstance();
+        $this->_owApp            = OntoWiki::getInstance();
         $this->_config           = $this->_owApp->config;
         $this->_session          = $this->_owApp->session;
         $this->_erfurt           = $this->_owApp->erfurt;
@@ -95,7 +101,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         $this->view->headMeta()->setHttpEquiv('Content-Type', 'text/html; charset=' . $this->_config->encoding);
         $this->view->headMeta()->setName('generator', 'OntoWiki — Collaborative Knowledge Engineering');
         
-        // inject menus into view
+        // inject JSON variables into view
         $this->view->jsonVars = 
             'var urlBase = "' . $this->_config->urlBase . '";' . PHP_EOL . 
             'var themeUrlBase = "' . $this->_config->themeUrlBase . '";' . PHP_EOL . 
@@ -113,12 +119,11 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
 
         /**
          * @trigger onControllerInit 
-         * Triggered always when a controller from class OntoWiki_Controller_Base (or derived)
-         * is initialized
+         * Triggered after a controller from class OntoWiki_Controller_Base (or derived)
+         * has been initialized.
          */
-        $event = new Erfurt_Event('onControllerInit');
+        $event = new Erfurt_Event('onAfterInitController');
         $eventResult = $event->trigger();
-
     }
     
     /**
@@ -128,6 +133,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      */
     public function preDispatch()
     {
+        // log time before dispatch
         $this->_preController = microtime(true);
         
         // render main modules
@@ -143,6 +149,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      */
     public function postDispatch()
     {
+        // log dispatch time
         $this->_owApp->logger->info(sprintf(
             'Dispatching %s/%s: %d ms', 
             $this->_request->getControllerName(), 
@@ -155,7 +162,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             $redirectUri = urldecode($this->_request->getParam('redirect-uri'));
             $front = Zend_Controller_Front::getInstance();
             $options = array(
-                'prependBase' => false === strpos($redirectUri, $front->getBaseUrl())
+                'prependBase' => (false === strpos($redirectUri, $front->getBaseUrl()))
             );
             
             $this->_redirect($redirectUri, $options);
@@ -169,6 +176,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      *
      * @param string $name the name of the parameter
      * @param boolean $expandNamespace Whether to expand the namespace or not
+     * @deprecated 0.9.5, use OntoWiki_Request::getParam() instead
      *
      * @return mixed the parameter or null if not found
      */
@@ -194,7 +202,10 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      */
     public function addModuleContext($moduleContext)
     {
-        $this->view->placeholder('main.window.innerwindows')->append($this->view->modules($moduleContext));
+        if (!$this->_request->isXmlHttpRequest()) {
+            $moduleContent = $this->view->modules($moduleContext);
+            $this->view->placeholder('main.window.innerwindows')->append($moduleContent);
+        }
     }
     
     /**
