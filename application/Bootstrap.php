@@ -56,6 +56,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         $config->libraries->path = rtrim($config->libraries->path, '/\\') . '/';
         $config->cache->path     = rtrim($config->cache->path, '/\\') . '/';
+        $config->log->path       = rtrim($config->log->path, '/\\') . '/';
         
         // support absolute path
         $matches = array();
@@ -163,7 +164,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // support absolute path
         if (!(preg_match('/^(\w:[\/|\\\\]|\/)/', $config->log->path) === 1)) {
-            $config->cache->path = ONTOWIKI_ROOT . $config->cache->path;
+            // prepend OntoWiki root for relative paths
+            $config->log->path = ONTOWIKI_ROOT . $config->log->path;
         }
         
         // initialize logger
