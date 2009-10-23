@@ -98,6 +98,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         
         // initialize view helpers
         $this->view->headTitle($this->_config->title->prefix, 'SET');
+        $this->view->headTitle()->setSeparator($this->_config->title->separator);
         $this->view->headMeta()->setHttpEquiv('Content-Type', 'text/html; charset=' . $this->_config->encoding);
         $this->view->headMeta()->setName('generator', 'OntoWiki — Collaborative Knowledge Engineering');
         
