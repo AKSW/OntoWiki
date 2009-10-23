@@ -97,7 +97,7 @@ LiteralEdit.prototype.initDisplay = function () {
 };
 
 LiteralEdit.prototype.isLarge = function () {
-    return ((this.object.length >= 50) || this.object.match(/\n/));
+    return ((this.object.length >= 50) || 0 <= this.object.search(/\n/));
 }
 
 LiteralEdit.prototype.makeOptionString = function(options, selected, replaceNS) {
@@ -178,12 +178,17 @@ LiteralEdit.prototype.onSubmit = function() {
             } else {
                 newObject = '"' + newObjectValue + '"';
             }
-
-            var newTriple = $.rdf.triple(
-                $.rdf.resource('<' + this.subject + '>'), 
-                $.rdf.resource('<' + this.predicate + '>'), 
-                $.rdf.literal(newObject, newObjectOptions)
-            );
+            
+            try {
+                var newTriple = $.rdf.triple(
+                    $.rdf.resource('<' + this.subject + '>'), 
+                    $.rdf.resource('<' + this.predicate + '>'), 
+                    $.rdf.literal(newObject, newObjectOptions)
+                );
+            } catch (error) {
+                alert('LiteralEdit: ' + error.message);
+                return false;
+            }
 
             dataBank.add(newTriple);
         }
