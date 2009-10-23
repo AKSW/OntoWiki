@@ -97,7 +97,11 @@ LiteralEdit.prototype.initDisplay = function () {
 };
 
 LiteralEdit.prototype.isLarge = function () {
-    return ((this.object.length >= 50) || 0 <= this.object.search(/\n/));
+    if (this.object.search) {
+        return ((this.object.length >= 50) || 0 <= this.object.search(/\n/));
+    }
+    
+    return false;
 }
 
 LiteralEdit.prototype.makeOptionString = function(options, selected, replaceNS) {

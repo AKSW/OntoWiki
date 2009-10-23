@@ -33,6 +33,8 @@ RDFauthor = {
     
     // instance has been initialized
     initialized: false,
+    
+    errors: 0, 
      
     // the view object
     view: null, 
@@ -634,17 +636,18 @@ RDFauthor = {
                     $.rdf.resource('<' + triple.predicate.uri + '>'), 
                     tripleObject
                 );
+                
+                // add triple info (graph)
+                this.tripleInfo[triple] = graph;
+
+                // add triple to databanks
+                var databank = this.getDatabank(graph);
+                databank.add(rdfTriple);
+                
             } catch (error) {
                 // TODO: handle
-                alert('An error occured while parsing the page. All saint triples have been extracted.');
+                this.errors++;
             }
-            
-            // add triple info (graph)
-            this.tripleInfo[triple] = graph;
-            
-            // add triple to databanks
-            var databank = this.getDatabank(graph);
-            databank.add(rdfTriple);
         }
     }, 
     
@@ -705,6 +708,10 @@ RDFauthor = {
             RDFA.CALLBACK_DONE_PARSING = function () {
                 // fetch predicate infos
                 instance.fetchPredicateInfo();
+                
+                if (instance.errors > 0) {
+                    alert('There where ' + instance.errors + ' errors while parsing the page. All valid triples have been extracted.');
+                }
                 
                 var view = instance.createPropertyView();
                 view.display(instance.options.animated);
