@@ -129,7 +129,7 @@ ResourceEdit.search = function(terms, callbackFunction, propertiesOnly)
 	// Currently RDFauthor has no generic SPARQL service, so we use the OW service if used with OW.
 	// Otherwise we currently only support the sindice search.
 	var isOW = false;
-	if ($('title').html() === 'OntoWiki') {
+	if ($('title').html().match('OntoWiki')) {
 		isOW = true;
 	}
 	

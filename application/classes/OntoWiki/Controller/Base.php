@@ -97,8 +97,8 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         }
         
         // initialize view helpers
-        $this->view->headTitle($this->_config->title->prefix, 'SET');
-        $this->view->headMeta()->setHttpEquiv('Content-Type', 'text/html; charset=' . $this->_config->encoding);
+		$this->view->headTitle($this->_config->title->prefix, 'SET');
+		$this->view->headMeta()->setHttpEquiv('Content-Type', 'text/html; charset=' . $this->_config->encoding);
         $this->view->headMeta()->setName('generator', 'OntoWiki — Collaborative Knowledge Engineering');
         
         // inject JSON variables into view
@@ -167,6 +167,11 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             
             $this->_redirect($redirectUri, $options);
         }
+		
+		if( strlen( $this->view->placeholder('main.window.title')->toString() ) > 0 ){
+			$this->view->headTitle( $this->view->placeholder('main.window.title')->toString() );
+		}
+        
     }
     
     /**
