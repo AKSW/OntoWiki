@@ -61,7 +61,7 @@ class ArtisteditController extends OntoWiki_Controller_Component
         $this->view->graphs = $graphInfo;
 
         // prepare namespaces
-        $namespaces = $this->model->getNamespaces();
+        $namespaces = $this->model->getNamespacePrefixes();
         $graphBase  = $this->model->getBaseUri();
         if (!array_key_exists($graphBase, $namespaces)) {
             $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));

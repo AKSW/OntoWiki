@@ -79,7 +79,7 @@ class ServiceController extends Zend_Controller_Action
         $type = $type[0]; // use only first letter
         
         if ($this->_owApp->selectedModel && strlen($match) > 2) {
-            $namespaces = $this->_owApp->selectedModel->getNamespaces();
+            $namespaces = $this->_owApp->selectedModel->getNamespacePrefixes();
             
             $namespacesFlipped = array_flip($namespaces);
             $nsFilter = array();
