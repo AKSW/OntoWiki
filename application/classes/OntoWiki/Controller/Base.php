@@ -168,6 +168,11 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             
             $this->_redirect($redirectUri, $options);
         }
+		
+		if( strlen( $this->view->placeholder('main.window.title')->toString() ) > 0 ){
+			$this->view->headTitle( $this->view->placeholder('main.window.title')->toString() );
+		}
+        
     }
     
     /**
