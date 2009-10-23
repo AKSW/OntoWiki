@@ -60,7 +60,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
     public function init()
     {
         /**
-         * @trigger onControllerInit 
+         * @trigger onBeforeInitController 
          * Triggered before a controller of class OntoWiki_Controller_Base (or derived)
          * is initialized.
          */
@@ -119,7 +119,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         }
 
         /**
-         * @trigger onControllerInit 
+         * @trigger onAfterInitController 
          * Triggered after a controller from class OntoWiki_Controller_Base (or derived)
          * has been initialized.
          */
