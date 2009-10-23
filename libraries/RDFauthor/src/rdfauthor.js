@@ -24,11 +24,11 @@ RDFauthor = {
     databanks: {}, 
     defaultGraph: null, 
     graphInfo: {}, 
-    predicateInfo: {}, 
     tripleInfo: {}, 
     originalDatabanks: {}, 
     protectedTriples: {}, 
     
+    // initialization for ids
     idSeed: 123, 
     
     // instance has been initialized
@@ -58,13 +58,22 @@ RDFauthor = {
         bulkMode: true
     }, 
     
+    // loaded scripts to be stored
     loadedScripts: {}, 
+    
+    // loaded stylesheets to be stored
     loadedStylesheets: {}, 
     
+    
+    rdfNs: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 
+    rdfsNs: 'http://www.w3.org/2000/01/rdf-schema#', 
+    owlNs: 'http://www.w3.org/2002/07/owl#', 
     updateNs: 'http://ns.aksw.org/update/', 
     
+    // namespaces to be ignored
     ignoreNs: ['http://www.w3.org/1999/xhtml/vocab#'], 
     
+    // predicates used internally
     internalPredicates: {
         defaultGraph:   'http://ns.aksw.org/update/defaultGraph', 
         sourceGraph:    'http://ns.aksw.org/update/sourceGraph', 
@@ -72,18 +81,20 @@ RDFauthor = {
         updateEndpoint: 'http://ns.aksw.org/update/updateEndpoint'
     }, 
     
-    updateEndpoint: null, 
-    
     // optional widget methods
     optionalMethods: ['onRemove'], 
     
     pageParsed: false, 
     
+    // JSON structure with predicate metadata
+    // title, ranges, types
+    predicateInfo: {}, 
+    predicateInfoExtended: false, 
+    
     // mandatory widget methods
     requiredMethods: ['getHtml', 'init', 'onCancel', 'onSubmit'], 
     
     selectionCache: {}, 
-    
     selectionCacheLoaded: false, 
     
     isInitialized: function () {
@@ -98,6 +109,8 @@ RDFauthor = {
         });
     }, 
     
+    // clones the databank for each graph before calling 
+    // for the widgets to write their data
     cloneDatabanks: function () {
         var done = false;
         
@@ -169,6 +182,79 @@ RDFauthor = {
         return view;
     }, 
     
+    fetchPredicateInfo: function () {
+        // query for ranges and extend predicate info
+        if (!this.predicateInfoExtended) {
+            // TODO: extend predicate info for all predicates in each graph
+            var filters = [];
+            for (p in this.predicateInfo) {
+                filters.push('sameTerm(?predicate, <' + p + '>)')
+            }
+            
+            // build query
+            var query = '\
+                SELECT DISTINCT ?predicate ?type ?range ?label\
+                WHERE {\
+                    {?predicate <' + this.rdfNs + 'type> ?type.}\
+                    UNION\
+                    {?predicate <' + this.rdfsNs + 'range> ?range.}\
+                    UNION\
+                    {?predicate <' + this.rdfsNs + 'label> ?label.}\
+                    FILTER(' + filters.join(' || ') + ')\
+                }';
+            query = query.replace(/\s+/g, ' ');
+            
+            // query graph
+            var instance = this;
+            this.query(this.getDefaultGraph(), query, function(json) {
+                // TODO: correct application/sparql-results+json format
+                for (i in json['bindings']) {
+                    // load predicate
+                    var predicate = json['bindings'][i]['predicate']['value'];
+                    // create space if necessary
+                    if (!predicate in instance.predicateInfo) {
+                        instance.predicateInfo[property] = {};
+                    }
+                    // ref to current info object
+                    var info = instance.predicateInfo[predicate];
+                    
+                    var type = json['bindings'][i]['type'] ? json['bindings'][i]['type']['value'] : null;
+                    if (type) {
+                        // add or set new type
+                        if ('types' in info) {
+                            if (0 <= $.inArray(type, info['types'])) {
+                                info['types'].push(type);
+                            }
+                        } else {
+                            info['types'] = [type];
+                        }
+                    }
+                    
+                    var range = json['bindings'][i]['range'] ? json['bindings'][i]['range']['value'] : null;
+                    if (range) {
+                        // add or set new range
+                        if ('ranges' in info) {
+                            if (0 <= $.inArray(range, info['ranges'])) {
+                                info['ranges'].push(range);
+                            }
+                        } else {
+                            info['ranges'] = [range];
+                        }
+                    }
+                    
+                    var label = json['bindings'][i]['label'] ? json['bindings'][i]['label']['value'] : null;
+                    if (label) {
+                        // set new title
+                        info.title = info.title ? info.title : label;
+                    }
+                }
+                
+                instance.predicateInfoExtended = true;
+            });
+        }
+    },
+    
+    // returns the default graph that receives newly added statements
     getDefaultGraph: function () {
         if (null === this.defaultGraph) {
             // get default graph + info
@@ -188,6 +274,7 @@ RDFauthor = {
         return this.defaultGraph;
     }, 
     
+    // returns the default resource that is the subject of newly added statements
     getDefaultResource: function () {
         if (this.options.defaultResource) {
             return this.options.defaultResource;
@@ -322,21 +409,32 @@ RDFauthor = {
             widgetConstructor = this.widgetRegistry.datatype[object.datatype];
         }
         
-        // query the selection cache
-        if ((null === widgetConstructor) && (predicate in this.selectionCache)) {
-            var cachedInfo = this.selectionCache[predicate];
+        // query predicate info/selection cache
+        if ((null === widgetConstructor) && (predicate in this.predicateInfo)) {
+            var info = this.predicateInfo[predicate];
             
-            // use cached info
-            if ('types' in cachedInfo) {
-                var types = $.isArray(cachedInfo.types) ? cachedInfo.types : [cachedInfo.types];
+            // use rdf:type of property
+            if ('types' in info) {
+                var types = $.isArray(info.types) ? info.types : [info.types];
                 
-                if (($.inArray('http://www.w3.org/2002/07/owl#DatatypeProperty', types) != -1)
-                    || $.inArray('http://www.w3.org/2002/07/owl#AnnotationProperty', types) != -1) {
+                if (0 <= ($.inArray(this.owlNs + 'DatatypeProperty', types))
+                    || 0 <= $.inArray(this.owlNs + 'AnnotationProperty', types)) {
                     widgetConstructor = this.widgetRegistry.__literal[''];
-                } else if ($.inArray('http://www.w3.org/2002/07/owl#ObjectProperty', types) != -1) {
+                } else if (0 <= $.inArray(this.owlNs + 'ObjectProperty', types)) {
                     widgetConstructor = this.widgetRegistry.__object[''];
                 }
             }
+            
+            // use rdfs:range of property
+            if ('ranges' in info) {
+                var ranges = $.isArray(info.ranges) ? info.ranges : [info.ranges];
+                
+                if (0 <= $.inArray(this.rdfNs + 'Literal', ranges)) {
+                    widgetConstructor = this.widgetRegistry.__literal[''];
+                }
+            }
+            
+            // TODO: use more ranges
         }
         
         // fallback to default widgets
@@ -526,15 +624,20 @@ RDFauthor = {
                 object = '"' + triple.object.value + '"';
             }
             
-            var tripleObject = triple.object.uri 
-                             ? $.rdf.resource('<' + triple.object.uri + '>') 
-                             : $.rdf.literal(object, objectOptions);
-            
-            var rdfTriple = $.rdf.triple(
-                $.rdf.resource('<' + triple.subject.uri + '>'), 
-                $.rdf.resource('<' + triple.predicate.uri + '>'), 
-                tripleObject
-            );
+            try {
+                var tripleObject = triple.object.uri 
+                                 ? $.rdf.resource('<' + triple.object.uri + '>') 
+                                 : $.rdf.literal(object, objectOptions);
+
+                var rdfTriple = $.rdf.triple(
+                    $.rdf.resource('<' + triple.subject.uri + '>'), 
+                    $.rdf.resource('<' + triple.predicate.uri + '>'), 
+                    tripleObject
+                );
+            } catch (error) {
+                // TODO: handle
+                alert('An error occured while parsing the page. All saint triples have been extracted.');
+            }
             
             // add triple info (graph)
             this.tripleInfo[triple] = graph;
@@ -586,19 +689,23 @@ RDFauthor = {
         var instance = this;
         
         // load selection cache
-        if (!this.selectionCacheLoaded) {
-            $.getJSON(widgetBase + 'src/selectionCache.json', function(data) {
-                this.selectionCacheLoaded = true;
-                if (typeof data == 'object') {
-                    RDFauthor.selectionCache = data;
-                }
-            });
-        }
+        // if (!this.selectionCacheLoaded) {
+        //     $.getJSON(widgetBase + 'src/selectionCache.json', function(data) {
+        //         this.selectionCacheLoaded = true;
+        //         if (typeof data == 'object') {
+        //             RDFauthor.selectionCache = data;
+        //         }
+        //     });
+        // }
         
         if (!RDFauthor.pageParsed) {
             RDFA.parse();
             
+            var instance = this;
             RDFA.CALLBACK_DONE_PARSING = function () {
+                // fetch predicate infos
+                instance.fetchPredicateInfo();
+                
                 var view = instance.createPropertyView();
                 view.display(instance.options.animated);
                 RDFauthor.pageParsed = true;
@@ -607,6 +714,15 @@ RDFauthor = {
             var view = this.createPropertyView();
             view.display(instance.options.animated);
         }
+    }, 
+    
+    // starts the editing process based on a DOM element
+    startElement: function(element) {
+        if (!element instanceof jQuery) {
+            element = $(element);
+        }
+        
+        // TODO: 
     }, 
     
     // start editing a resource based on a template
@@ -747,6 +863,10 @@ var scripts = [
     widgetBase + 'src/resourceedit.js', 
     widgetBase + 'src/metaedit.js'
 ];
+
+// if (jQuery.modal == 'undefined') {
+//     scripts.push(widgetBase + 'src/jquery.simplemodal.js');
+// }
 
 // load libraries
 for (var i = 0; i < scripts.length; i++) {

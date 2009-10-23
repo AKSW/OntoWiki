@@ -330,7 +330,8 @@ class ResourceController extends OntoWiki_Controller_Base
             $url = new OntoWiki_Url();
             $this->view->redirectUrl = (string)$url;
             
-            $this->view->headScript()->appendFile($this->_owApp->staticUrlBase."extensions/themes/silverblue/scripts/serialize-php.js");
+            $this->view->headScript()->appendFile(
+                $this->_owApp->getStaticUrlBase() . 'extensions/themes/silverblue/scripts/serialize-php.js');
             // register modules
             $moduleRegistry = OntoWiki_Module_Registry::getInstance();
             $moduleRegistry->register('properties', 'main.window.innerwindows')

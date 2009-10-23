@@ -160,9 +160,23 @@ RDFauthorView.prototype.display = function (animated) {
     }
     
     // force max height for container
-    var htmlHeight  = $('html').height();
-    var modalHeight = this.container.height();
-    this.container.height(Math.max(htmlHeight, modalHeight) + 'px');
+    var getDimensions = function() {
+        var el = $(window);
+
+		// fix a jQuery/Opera bug with determining the window height
+		var h = $.browser.opera && $.browser.version > '9.5' && $.fn.jquery <= '1.2.6' ? document.documentElement['clientHeight'] :
+			$.browser.opera && $.browser.version < '9.5' && $.fn.jquery > '1.2.6' ? window.innerHeight :
+			el.height();
+
+		return [h, el.width()];
+    }        
+    // var htmlHeight  = $('html').height();
+    // var modalHeight = this.container.height();
+    // this.container.height(Math.max(htmlHeight, modalHeight) + 'px');
+    
+    var d = getDimensions();
+    this.container.height(d[0]);
+    this.container.width(d[1]);
     
     this.container.show();
     this.reposition();
