@@ -5,7 +5,7 @@ name        = Defaultmodel
 ; url         = 
 
 [events]
-1 = onControllerInit
+1 = onAfterInitController
 
 [private]
 

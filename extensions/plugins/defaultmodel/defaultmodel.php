@@ -8,11 +8,11 @@ require_once 'OntoWiki/Plugin.php';
  */
 class DefaultmodelPlugin extends OntoWiki_Plugin
 {   
-    public function onControllerInit($event)
+    public function onAfterInitController($event)
     {
         require_once 'OntoWiki/Module/Registry.php';
 
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
         $efApp = Erfurt_App::getInstance();
         $efStore = $efApp->getStore();
         $config = $this->_privateConfig->toArray();
