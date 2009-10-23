@@ -1,6 +1,10 @@
 // find installation path
 var base_url = document.location.href;
-base_url  = base_url.substr(0, base_url.search("index.php"));
+if(base_url.search("index.php") != -1){
+	base_url  = base_url.substr(0, base_url.search("index.php"));
+}else{
+	base_url  = base_url.substr(0, base_url.search("/dashboard"));
+}
 
 // load plugins 
 $.get(base_url+"/index.php/plugins/pluglist", function(data){
