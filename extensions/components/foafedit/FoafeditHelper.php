@@ -58,25 +58,28 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                     // we have a foaf:Person
                     // register new tab
                     OntoWiki_Navigation::register('foafedit', array(
-                        'controller' => 'foafedit', 
-                        'action'     => 'person', 
-                        'route'      => 'properties', 
+                        'controller' => 'foafedit',     // foafedit controller
+                        'action'     => 'person',       // person action
+                        'route'      => 'properties',   // Hijack OntoWiki's default route
                         'name'       => 'FOAF Editor', 
                         'priority'   => -1));
                     
+                    // get the router
                     $front  = Zend_Controller_Front::getInstance();
                     $router = $front->getRouter();
                     
-                    // create replace router
+                    // our new route that will replace the default
+                    // see http://framework.zend.com/manual/en/zend.controller.router.html#zend.controller.router.routes
+                    // OntoWiki's standard routes are configured in application/config/default.ini
                     $route = new Zend_Controller_Router_Route(
-                        'view/*',
+                        'view/*',                       // hijack 'view' shortcut
                         array(
-                            'controller' => 'foafedit',
-                            'action'     => 'person'
+                            'controller' => 'foafedit', // map to 'foafedit' controller and
+                            'action'     => 'person'    // 'person' action
                         )
                     );
                     
-                    // add it, replacing the old
+                    // add the new route
                     $router->addRoute('properties', $route);
                 }
             }
