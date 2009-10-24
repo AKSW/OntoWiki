@@ -5,7 +5,6 @@
  *
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id:$
  */
 
 require_once 'OntoWiki/Component/Helper.php';
@@ -18,8 +17,6 @@ require_once 'OntoWiki/Component/Helper.php';
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @category OntoWiki
- * @package Extensions
- * @subpackage Foafedit
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class FoafeditHelper extends OntoWiki_Component_Helper
@@ -63,9 +60,24 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                     OntoWiki_Navigation::register('foafedit', array(
                         'controller' => 'foafedit', 
                         'action'     => 'person', 
+                        'route'      => 'properties', 
                         'name'       => 'FOAF Editor', 
-                        'priority'   => -1, 
-                        'active'     => true));
+                        'priority'   => -1));
+                    
+                    $front  = Zend_Controller_Front::getInstance();
+                    $router = $front->getRouter();
+                    
+                    // create replace router
+                    $route = new Zend_Controller_Router_Route(
+                        'view/*',
+                        array(
+                            'controller' => 'foafedit',
+                            'action'     => 'person'
+                        )
+                    );
+                    
+                    // add it, replacing the old
+                    $router->addRoute('properties', $route);
                 }
             }
         }

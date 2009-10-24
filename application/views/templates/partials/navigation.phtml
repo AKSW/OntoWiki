@@ -13,7 +13,7 @@
 <?php if ($this->has('navigation')): ?>
     <ol class="tabs">
         <?php foreach ($this->navigation as $key => $config): ?>
-            <li id="<?php echo $key ?>" class="<?php echo $config['active'] ?>">
+            <li id="<?php echo $key ?>" class="<?php echo isset($config['active']) ? $config['active'] : 'inactive' ?>">
                 <a href="<?php echo $config['url'] ?>"><?php echo $this->_($config['name']) ?></a>
             </li>
         <?php endforeach; ?>

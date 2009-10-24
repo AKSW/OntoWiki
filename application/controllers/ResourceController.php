@@ -77,10 +77,12 @@ class ResourceController extends OntoWiki_Controller_Base
         
         $this->_owApp->lastRoute = 'properties';
         OntoWiki_Navigation::register('index', array(
-            'route'    => 'properties', 
-            'name'     => 'Properties', 
-            'position' => 0, 
-            'active'   => false
+            'route'      => 'properties', 
+            'controller' => 'resource', 
+            'action'     => 'properties',
+            'name'       => 'Properties', 
+            'position'   => 0, 
+            'active'     => false
         ), true);
         
         if (!empty($resource)) {
@@ -218,10 +220,12 @@ class ResourceController extends OntoWiki_Controller_Base
         
         $this->_owApp->lastRoute = 'instances';
         OntoWiki_Navigation::register('index', array(
-            'route'    => 'instances', 
-            'name'     => 'Instances', 
-            'position' => 0, 
-            'active'   => false
+            'route'      => 'instances', 
+            'controller' => 'resource', 
+            'action'     => 'instances',
+            'name'       => 'Instances', 
+            'position'   => 0, 
+            'active'     => false
         ), true);
 
         //determine limit & offset

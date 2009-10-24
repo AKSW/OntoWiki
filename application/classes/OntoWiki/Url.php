@@ -65,6 +65,7 @@ class OntoWiki_Url
         $this->_request    = Zend_Controller_Front::getInstance()->getRequest();
         $defaultAction     = Zend_Controller_Front::getInstance()->getDefaultAction();
         $defaultController = Zend_Controller_Front::getInstance()->getDefaultControllerName();
+        $router            = Zend_Controller_Front::getInstance()->getRouter();
         
         // keep parameters
         if (!$this->_request) {
@@ -77,9 +78,9 @@ class OntoWiki_Url
         
         // set route
         $flag = false;
-        if (array_key_exists('route', $options)) {
+        if (array_key_exists('route', $options) && $router->hasRoute($options['route'])) {
             $flag = true;
-            $this->_route = Zend_Controller_Front::getInstance()->getRouter()->getRoute($options['route']);
+            $this->_route = $router->getRoute($options['route']);
         } else {
             // set controller
             if (array_key_exists('controller', $options) && $options['controller']) {
@@ -100,12 +101,12 @@ class OntoWiki_Url
         
         if (!$flag) {
             try {
-                $routeName = Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName();
+                $routeName = $router->getCurrentRouteName();
             } catch (Exception $e) {
                 $routeName = 'default';
             }
             
-            $this->_route = Zend_Controller_Front::getInstance()->getRouter()->getRoute($routeName);
+            $this->_route = $router->getRoute($routeName);
         }
         
         // check default controller/action and leave those empty

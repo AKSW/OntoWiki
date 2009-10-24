@@ -58,6 +58,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('View');
         $view = $this->getResource('View');
         
+        // make sure router is bootstrapped
+        $this->bootstrap('Router');
+        
         // set view
         $ontoWiki->view = $view;
         
@@ -292,10 +295,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
         // and add default component
         OntoWiki_Navigation::register('index', array(
-            'route'    => $session->lastRoute, 
-            'name'     => ucfirst($session->lastRoute), 
-            'priority' => 0, 
-            'active'   => false
+            'route'      => $session->lastRoute, 
+            'controller' => 'resource', 
+            'action'     => 'properties', 
+            'name'       => ucfirst($session->lastRoute), 
+            'priority'   => 0, 
+            'active'     => false
         ));
     }
     
@@ -370,7 +375,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      * @since 0.9.5
      */
     public function _initRouter()
-    {
+    {        
         // require front controller
         $this->bootstrap('frontController');
         $frontController = $this->getResource('frontController');

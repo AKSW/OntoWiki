@@ -105,7 +105,6 @@ class OntoWiki_Navigation
      *        controller – Controller name for the URL
      *        action –     Action name for the URL
      *        priority –   Priority of the tab
-     *        active –     Whether the tab is currently active or not
      * @param boolean $replace Whether to replace previously registered tabs
      *        with the same name
      * @todo  Implement functionality to maintain a preferred order
@@ -225,7 +224,7 @@ class OntoWiki_Navigation
      * @return array
      */
     public static function toArray()
-    {        
+    {
         if (!self::$_isDisabled) {
             $return = array();
             
@@ -243,6 +242,7 @@ class OntoWiki_Navigation
             ksort(self::$_ordered);
             // first the order requests
             foreach (self::$_ordered as $orderKey => $elementKey) {
+                
                 if (array_key_exists($elementKey, self::$_navigation)) {
                     self::$_navigation[$elementKey]['url'] = self::_getUrl($elementKey, $currentController, $currentAction);
                     
@@ -280,14 +280,28 @@ class OntoWiki_Navigation
      */ 
     protected static function _getUrl($elementKey, $currentController, $currentAction)
     {
-        if (self::$_navigation[$elementKey]['route']) {
-            $url = new OntoWiki_Url(array('route' => self::$_navigation[$elementKey]['route']), self::$_keepParams);
-            
-            $router = Zend_Controller_Front::getInstance()->getRouter();
-            $route  = $router->getRoute(self::$_navigation[$elementKey]['route']);
-            
-            self::$_navigation[$elementKey]['controller'] = $route->getDefault('controller');
-            self::$_navigation[$elementKey]['action']     = $route->getDefault('action');
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $router  = Zend_Controller_Front::getInstance()->getRouter();
+        
+        $current  = self::$_navigation[$elementKey];
+        $hasRoute = false;
+        
+        $currentController = $request->getControllerName();
+        $currentAction     = $request->getActionName();
+        
+        if (isset($current['route'])) {
+            if ($router->hasRoute($current['route'])) {
+                $route    = $router->getRoute($current['route']);
+                $defaults = $route->getDefaults();
+                
+                if ($defaults['controller'] == $current['controller'] && $defaults['action'] == $current['action']) {
+                    $hasRoute = true;
+                }
+            }
+        }
+        
+        if ($hasRoute) {
+            $url = new OntoWiki_Url(array('route' => $current['route']), self::$_keepParams);
         } else {
             $controller = self::$_navigation[$elementKey]['controller'];
             $action     = self::$_navigation[$elementKey]['action'] ? self::$_navigation[$elementKey]['action'] : null;
