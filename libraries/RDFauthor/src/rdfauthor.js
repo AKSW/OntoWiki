@@ -702,7 +702,11 @@ RDFauthor = {
         // }
         
         if (!RDFauthor.pageParsed) {
-            RDFA.parse();
+            try {
+                RDFA.parse();
+            } catch (e) {
+                alert(e);
+            }
             
             var instance = this;
             RDFA.CALLBACK_DONE_PARSING = function () {
@@ -854,28 +858,30 @@ RDFA.CALLBACK_NEW_TRIPLE_WITH_LITERAL_OBJECT = function (element, triple, graph)
 __RDFA_BASE = widgetBase + 'libraries/';
 
 // scripts to be loaded
-var scripts = [
+var scripts = {
     // RDFauthor modules
-    widgetBase + 'src/propertyrow.js', 
-    widgetBase + 'src/view.js', 
-    widgetBase + 'src/propertyselector.js', 
+    RDFauthorPropertyRow:       widgetBase + 'src/propertyrow.js', 
+    RDFauthorView:              widgetBase + 'src/view.js', 
+    RDFauthorPopertySelector:   widgetBase + 'src/propertyselector.js', 
     // rdfquery libs
-    widgetBase + 'libraries/jquery.rdfquery.core.js', 
+    rdfQueryCore:               widgetBase + 'libraries/jquery.rdfquery.core.js', 
     // RDFa parser
-    widgetBase + 'libraries/rdfa.js', 
+    RDFa:                       widgetBase + 'libraries/rdfa.js', 
     // widgets
-    widgetBase + 'src/literaledit.js', 
-    widgetBase + 'src/xmlliteral.js', 
-    widgetBase + 'src/dateedit.js',
-    widgetBase + 'src/resourceedit.js', 
-    widgetBase + 'src/metaedit.js'
-];
+    LiteralEdit:                widgetBase + 'src/literaledit.js', 
+    XMLLiteralEdit:             widgetBase + 'src/xmlliteral.js', 
+    DateEdit:                   widgetBase + 'src/dateedit.js',
+    ResourceEdit:               widgetBase + 'src/resourceedit.js', 
+    MetaEdit:                   widgetBase + 'src/metaedit.js'
+};
 
 // if (jQuery.modal == 'undefined') {
 //     scripts.push(widgetBase + 'src/jquery.simplemodal.js');
 // }
 
 // load libraries
-for (var i = 0; i < scripts.length; i++) {
-    RDFauthor.loadScript(scripts[i]);
+for (key in scripts) {
+    if ($('script#' + key).length === 0) {
+        RDFauthor.loadScript(scripts[key]);
+    }
 }
