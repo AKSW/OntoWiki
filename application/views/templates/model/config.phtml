@@ -8,15 +8,15 @@
  */
 
 ?>
-
 <fieldset>
+    <legend><?php echo $this->_('Model Properties') ?></legend>
     <input type="hidden" name="m" value="<?php echo $this->modeluri ?>" />
-    <div class="row-input">
+    <div>
         <label for="modeluri"><?php echo $this->_('Model URI') ?></label>
         <input class="text" id="modeluri" type="text" name="modeluri" <?php echo $this->readonly ?> value="<?php echo $this->modeluri ?>" />
         <br class="clearall" />
     </div>
-    <div class="row-input">
+    <div>
         <label for="baseuri"><?php echo $this->_('Base URI') ?></label>
         <input class="text" id="baseuri" type="text" name="baseuri" <?php echo $this->readonly ?> value="<?php echo $this->baseuri ?>" />
         <br class="clearall" />
@@ -25,20 +25,21 @@
 </fieldset>
 
 <fieldset>
-    <div class="row-input">
+    <div>
         <label for="ishidden"><?php echo $this->_('Hide Knowledge Base') ?></label>
         <input id="is-hidden-input" class="checkbox" type="checkbox" <?php echo $this->isHidden ?> value="ishidden" name="ishidden"/>
     </div>
-    <div class="row-input">
+    <div>
         <label for="usesysbase"><?php echo $this->_('Use SysBase model') ?></label>
         <input id="use-sysbase-input" class="checkbox" type="checkbox" <?php echo $this->useSysBase ?> <?php echo $this->useSysBaseDisabled ?> value="usesysbase" name="usesysbase"/>
     </div>
     <div class="clearall"></div>
 </fieldset>
 
+
 <fieldset>
-	<div class="row-input">
-		<label for="editprefix"><?php echo $this->_('Edit prefixes and namespaces') ?></label>
+    <legend><?php echo $this->_('Namespaces and Prefixes') ?></legend>
+	<div>
 		<div name="editprefix">
 <table class="separated-vertical">
 		<tr>

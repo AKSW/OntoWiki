@@ -150,7 +150,7 @@ class ModelController extends OntoWiki_Controller_Base
             );
         } else {
             $toolbar = $this->_owApp->toolbar;
-    		$toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save'))
+    		$toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save Model Configuration'))
     		        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
     		$this->view->placeholder('main.window.toolbar')->set($toolbar);
         }
@@ -367,7 +367,7 @@ class ModelController extends OntoWiki_Controller_Base
 		        $translate = $this->_owApp->translate;
 		        $messageText = 'This knowledge base does not import the OntoWiki System Base model. This means you probably don\'t '
 		                     . 'have human-readable representations for the most commonly used vocabularies. If you want to use the '
-		                     . 'OntoWiki System Base just check the according box and click \'Save\'.';
+		                     . 'OntoWiki System Base just check the according box and click \'Save Model Configuration\'.';
 		        $this->_owApp->appendMessage(new OntoWiki_Message($translate->_($messageText), OntoWiki_Message::WARNING));
 		    }
     		

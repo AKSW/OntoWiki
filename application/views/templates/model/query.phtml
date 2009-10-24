@@ -26,7 +26,8 @@ if(class_exists("QuerybuildingHelper")){
 <p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
     <?php $i = 0; ?>
     <?php foreach ($this->prefixes as $prefix => $namespace): ?>
-        <a href="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
+        <a href="<?php echo $namespace ?>" 
+           title="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
     <?php endforeach ?>
 </p>
 <fieldset>
