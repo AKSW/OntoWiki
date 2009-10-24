@@ -4,7 +4,7 @@ syntax: glob
 .htaccess
 config.ini
 nbproject
-Erfurt
-RDFauthor
+ontowiki/src/libraries/Erfurt
+ontowiki/src/libraries/RDFauthor
 Zend
 component.ini
