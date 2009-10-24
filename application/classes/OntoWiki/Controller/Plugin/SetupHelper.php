@@ -85,22 +85,6 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                 }
             }
             
-            // initialize components
-            $componentsPath = ONTOWIKI_ROOT
-                            . $ontoWiki->config->extensions->components;
-            $componentManager = new OntoWiki_Component_Manager($componentsPath);
-            
-            foreach ($componentManager->getComponents() as $componentName => $componentConfig) {
-                $frontController->addControllerDirectory($componentConfig['path'], '_component_' . $componentName);
-            }
-            
-            // make component manager available to dispatcher
-            $dispatcher = $frontController->getDispatcher();
-            $dispatcher->setComponentManager($componentManager);
-            
-            // keept component manager in OntoWiki
-            $ontoWiki->componentManager = $componentManager;
-            
             // avoid setting up twice
             $this->_isSetup = true;
         }

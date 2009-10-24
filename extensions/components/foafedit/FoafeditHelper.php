@@ -31,8 +31,7 @@ class FoafeditHelper extends OntoWiki_Component_Helper
         if ($owApp->selectedModel) {
             $store    = $owApp->erfurt->getStore();
             $resource = (string) $owApp->selectedResource;
-
-            require_once 'Erfurt/Sparql/SimpleQuery.php';
+            
             $query = new Erfurt_Sparql_SimpleQuery();
 
             // build SPARQL query for getting class (rdf:type) of current resource
@@ -57,18 +56,16 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                 }
                 
                 $types = array_combine($types, $types);
-                // var_dump($types);exit;
-
-                if (in_array($this->_privateConfig->person, $types)) {
+                
+                if (array_key_exists($this->_privateConfig->person, $types)) {
                     // we have a foaf:Person
                     // register new tab
-                    require_once 'OntoWiki/Navigation.php';
                     OntoWiki_Navigation::register('foafedit', array(
                         'controller' => 'foafedit', 
                         'action'     => 'person', 
                         'name'       => 'FOAF Editor', 
                         'priority'   => -1, 
-                        'active'     => false));
+                        'active'     => true));
                 }
             }
         }

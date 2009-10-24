@@ -80,7 +80,9 @@ class OntoWiki
     {
         // retrieve from session
         if (in_array($propertyName, $this->_sessionVars)) {
-            $this->_properties[$propertyName] = $this->session->$propertyName;
+            if (isset($this->session->$propertyName)) {
+                $this->_properties[$propertyName] = $this->session->$propertyName;
+            }
         }
         
         // retrieve bootstrap resource

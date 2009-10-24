@@ -56,6 +56,18 @@ class OntoWiki_Component_Manager
      */
     protected $_componentPath = null;
     
+    /**
+     * The translation object.
+     * @var Zend_Translate
+     */
+    protected $_translate = null;
+    
+    /**
+     * Base URL for hyperlinks.
+     * @var string
+     */
+    protected $_componentUrlBase = '';
+    
     /** 
      * Prefix to distinguish component controller directories
      * from other controller directories.
@@ -90,6 +102,10 @@ class OntoWiki_Component_Manager
         $this->_scanComponentPath();
     }
     
+    // ------------------------------------------------------------------------
+    // --- Public Methods -----------------------------------------------------
+    // ------------------------------------------------------------------------
+    
     /**
      * Returns registered components.
      *
@@ -116,9 +132,7 @@ class OntoWiki_Component_Manager
             throw new OntoWiki_Component_Exception("Component with key '$componentName' not registered");
         }
         
-        $config = OntoWiki_Application::getInstance()->config;
-        
-        return $config->staticUrlBase . $config->extensions->components . $componentName . '/';    
+        return $this->_componentUrlBase . $componentName . '/';    
     }
     
     /**
@@ -194,6 +208,36 @@ class OntoWiki_Component_Manager
     }
     
     /**
+     * Sets the base URL for hyperlinks.
+     *
+     * @param string $urlBase
+     */
+    public function setComponentUrlBase($componentUrlBase)
+    {
+        $componentUrlBase = (string)$componentUrlBase;
+        
+        $this->_componentUrlBase = trim($componentUrlBase, '/\\') . '/';
+        
+        return $this;
+    }
+    
+    /**
+     * Sets the translation object to be used for string translation.
+     *
+     * @param Zend_Translate $translate
+     */
+    public function setTranslate(Zend_Translate $translate)
+    {
+        $this->_translate = $translate;
+        
+        return $this;
+    }
+    
+    // ------------------------------------------------------------------------
+    // --- Private Methods ----------------------------------------------------
+    // ------------------------------------------------------------------------
+    
+    /**
      * Scans the component path for conforming components and 
      * announces their paths to appropriate components.
      */
@@ -222,9 +266,19 @@ class OntoWiki_Component_Manager
     private function _addComponent($componentName, $componentPath)
     {
         $tempArray = parse_ini_file($componentPath . self::COMPONENT_CONFIG_FILE);
+        $enabled   = false;
         
-        // break if component is not enabled
-        if (!array_key_exists('active', $tempArray) or !((boolean)$tempArray['active'])) {
+        // oldschool key
+        if (array_key_exists('active', $tempArray) && (boolean)$tempArray['active']) {
+            $enabled = true;
+        }
+        
+        // new activation key
+        if (array_key_exists('enabled', $tempArray) && (boolean)$tempArray['enabled']) {
+            $enabled = true;
+        }
+        
+        if (!$enabled) {
             return;
         }
         
@@ -287,17 +341,21 @@ class OntoWiki_Component_Manager
             ));
         }
         
-        $translate = OntoWiki_Application::getInstance()->translate;
         
-        if (array_key_exists('languages', $tempArray) && is_readable($componentPath . $tempArray['languages'])) {
-            $translate->addTranslation(
-                $componentPath . $tempArray['languages'], 
-                null, 
-                array('scan' => Zend_Translate::LOCALE_FILENAME));
+        if (is_object($this->_translate)) {
+            if (array_key_exists('languages', $tempArray) && is_readable($componentPath . $tempArray['languages'])) {
+                // keep current locale
+                $locale = $this->_translate->getAdapter()->getLocale();
+                
+                $this->_translate->addTranslation(
+                    $componentPath . $tempArray['languages'], 
+                    null, 
+                    array('scan' => Zend_Translate::LOCALE_FILENAME));
+                
+                // reset current locale
+                $this->_translate->setLocale($locale);
+            }
         }
-        
-        // reset locale
-        $translate->setLocale(OntoWiki_Application::getInstance()->config->languages->locale);
     }
 }
 

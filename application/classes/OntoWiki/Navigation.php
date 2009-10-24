@@ -10,9 +10,6 @@
 /**
  * OntoWiki navigation registry.
  *
- * Initializes external libraries and components. 
- * Serves as a central registry for storing Data needed througout the application.
- *
  * @category OntoWiki
  * @category Navigation
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
@@ -148,9 +145,9 @@ class OntoWiki_Navigation
         }
         
         // set activation state
-        if((array_key_exists('active', $options) && $options['active'])){
-        	self::setActive($key);
-        }
+        // if ((array_key_exists('active', $options) && $options['active'])) {
+        //     self::setActive($key);
+        // }
     }
     
     /**
@@ -194,32 +191,32 @@ class OntoWiki_Navigation
             throw new OntoWiki_Exception("Navigation component with key '$key' not registered.");
         }
         
-        //set the current active to unactive
-        if ( self::$_activeKey != null) {
-            self::$_navigation[self::$_activeKey]['active'] = "unactive";
+        // set the current active to unactive
+        if (self::$_activeKey != null) {
+            self::$_navigation[self::$_activeKey]['active'] = 'inactive';
         }
         
-        //set new active
-        self::$_navigation[$key]['active'] = "active";
+        // set new active
+        self::$_navigation[$key]['active'] = 'active';
         
-        //remember new
+        // remember new
         self::$_activeKey = $key;
         
         
     }
 
     /**
-     * checks if a navigation components with the given key is alread registered
+     * Checks if a navigation components with the given key has been.
      *
      * @return boolean
      */
     public static function isRegistered($key)
     {
-        if (array_key_exists($key, self::$_navigation) ) {
+        if (array_key_exists($key, self::$_navigation)) {
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
 
     /**
@@ -300,5 +297,4 @@ class OntoWiki_Navigation
         
         return $url;
     }
-
 }

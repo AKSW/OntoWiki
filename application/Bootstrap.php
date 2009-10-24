@@ -18,7 +18,73 @@
   * @author Norman Heino <norman.heino@gmail.com>
   */
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
-{    
+{
+    /**
+     * Initializes the the component manager which in turn scans
+     * for components and registers them.
+     *
+     * @since 0.9.5
+     */
+    public function _initComponentManager()
+    {
+        // require Front controller
+        $this->bootstrap('frontController');
+        $frontController = $this->getResource('frontController');
+        
+        // require Config
+        $this->bootstrap('Config');
+        $config = $this->getResource('Config');
+        
+        // require Session
+        $this->bootstrap('Session');
+        
+        // require Erfurt
+        $this->bootstrap('Erfurt');
+        // $erfurt = $this->getResource('Erfurt');
+        
+        // require Dispatcher
+        $this->bootstrap('Dispatcher');
+        $dispatcher = $this->getResource('Dispatcher');
+        
+        // require OntoWiki
+        $this->bootstrap('OntoWiki');
+        $ontoWiki = $this->getResource('OntoWiki');
+        
+        // require Translate
+        $this->bootstrap('Translate');
+        $translate = $this->getResource('Translate');
+        
+        // require View
+        $this->bootstrap('View');
+        $view = $this->getResource('View');
+        
+        // set view
+        $ontoWiki->view = $view;
+        
+        // initialize components
+        $componentsPath = ONTOWIKI_ROOT
+                        . $config->extensions->components;
+                        
+        $componentsBase = $config->staticUrlBase
+                        . $config->extensions->components;
+        
+        $componentManager = new OntoWiki_Component_Manager($componentsPath);
+        $componentManager->setTranslate($translate)
+                         ->setComponentUrlBase($componentsBase);
+        
+        // register component controller directories
+        foreach ($componentManager->getComponents() as $componentName => $componentConfig) {
+            $frontController->addControllerDirectory($componentConfig['path'], '_component_' . $componentName);
+        }
+        
+        // make component manager available to dispatcher
+        $dispatcher = $frontController->getDispatcher();
+        $dispatcher->setComponentManager($componentManager);
+        
+        // keep component manager in OntoWiki
+        $ontoWiki->componentManager = $componentManager;
+    }
+    
     /**
      * Loads the application config file
      *
@@ -100,6 +166,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initDispatcher()
     {
+        // require Front controller
         $this->bootstrap('frontController');
         $frontController = $this->getResource('frontController');
         
@@ -127,6 +194,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
         
+        // require OntoWiki
+        $this->bootstrap('OntoWiki');
+        $ontoWiki = $this->getResource('OntoWiki');
+        
         try {
             $erfurt = Erfurt_App::getInstance(false)->start($config);
         } catch (Erfurt_Exception $ee) {
@@ -134,6 +205,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         } catch (Exception $e) {
             exit('Unexpected error: ' . $e->getMessage());
         }
+        
+        
+        // make available
+        $ontoWiki->erfurt = $erfurt;
         
         return $erfurt;
     }
@@ -207,6 +282,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initNavigation()
     {
+        // require Session
         $this->bootstrap('Session');
         $session = $this->getResource('Session');
         
@@ -229,7 +305,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      * @since 0.9.5
      */
     public function _initOntoWiki()
-    {
+    {   
         $ontoWiki = OntoWiki::getInstance();
         
         return $ontoWiki;
@@ -335,6 +411,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         if (array_key_exists('sessionVars', $this->_options['bootstrap'])) {
             $ontoWiki->setSessionVars((array)$this->_options['bootstrap']['sessionVars']);
         }
+        
+        // make available
+        $ontoWiki->session = $session;
         
         return $session;
     }
