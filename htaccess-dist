@@ -1,17 +1,28 @@
 #
 # OntoWiki .htaccess file
-# $Id: htaccess-dist 3852 2009-07-30 15:10:02Z norman.heino $
 #
 
 #
 # OntoWiki does not requires Apache's rewrite engine to work.
-# However, if you would like to have nice search engine-friendly
-# URLs you must enable URL rewriting by renaming this file
+# However, if you would like to have nice Linked Data URIs
+# you must enable URL rewriting by renaming this file
 # to .htaccess and enabling mod_rewrite.
 #
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule !(extensions|application|libraries).*\.(js|ico|gif|jpg|png|css|php|swf|json)$ index.php
+    
+    # New rule -- does work!
+    RewriteRule !((extensions|libraries).*|\.(js|ico|gif|jpg|png|css|php|swf|json))$ index.php
+    
+    # Zend-recommended rule --  doesn't work :\
+#   RewriteCond %{REQUEST_FILENAME} -s [OR]
+#   RewriteCond %{REQUEST_FILENAME} -l [OR]
+#   RewriteCond %{REQUEST_FILENAME} -d
+#   RewriteRule ^.*$ - [NC,L]
+#   RewriteRule ^.*$ index.php [NC,L]
+    
+    # Old rule -- doesn't work either
+#   RewriteRule !(extensions|application|libraries).*\.(js|ico|gif|jpg|png|css|php|swf|json)$ index.php
 #
 # Set RewriteBase only if your OntoWiki folder is not 
 # located in your web server's root dir.
