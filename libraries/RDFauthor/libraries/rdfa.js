@@ -882,6 +882,7 @@ function RDFMakeTerm(formula,val) {
         throw 'Internal: No redirection index for formula: '+ formula+', term: '+val;
     }
     OY_VAL = val;
+    
     var y = formula.redirection[val.hashString()];
     if (typeof y == 'undefined') return val;
 //    tabulator.log.debug(" redirecting "+val+" to "+y)
@@ -890,6 +891,12 @@ function RDFMakeTerm(formula,val) {
 
 // add a triple to the store
 RDFIndexedFormula.prototype.add = function(subj, pred, obj, why) {
+    
+    if (!pred) {
+        // ignore illegal triple
+        return;
+    }
+    
     var action, st, hashS, hashP, hashO;
 
     if (typeof obj == 'undefined') {
