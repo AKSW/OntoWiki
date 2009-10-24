@@ -425,7 +425,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         require_once 'Erfurt/Syntax/RdfParser.php';
         $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat($type);
         $result = $parser->parse($data, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING, $baseUri);
-        $ns     = $parser->getNamespacePrefixes();
+        $ns     = $parser->getNamespaces();
         
         return array(
             'data' => $result,

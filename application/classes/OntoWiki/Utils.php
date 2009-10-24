@@ -309,7 +309,7 @@ class OntoWiki_Utils
     {
         $model = OntoWiki_Application::getInstance()->selectedModel;
         if ($model instanceof Erfurt_Rdfs_Model) {
-            self::$_namespaces = $model->getNamespacePrefixes();
+            self::$_namespaces = $model->getNamespaces();
         } else {
             self::$_namespaces = array();
         }

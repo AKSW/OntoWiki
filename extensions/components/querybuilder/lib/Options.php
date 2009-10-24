@@ -42,7 +42,7 @@ class Options {
 			else{
 				//TODO
 				 $owApp = OntoWiki_Application::getInstance();
-				 return array_flip($owApp->selectedModel->getNamespacePrefixes());
+				 return array_flip($owApp->selectedModel->getNamespaces());
 				}
 		}
 		

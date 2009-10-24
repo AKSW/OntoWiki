@@ -134,7 +134,7 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->view->graphBaseUri  = $graph->getBaseIri();
             
             // prepare namespaces
-            $namespaces = $graph->getNamespacePrefixes();
+            $namespaces = $graph->getNamespaces();
             $graphBase  = $graph->getBaseUri();
             if (!array_key_exists($graphBase, $namespaces)) {
                 $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
