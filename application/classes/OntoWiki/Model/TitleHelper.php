@@ -284,15 +284,17 @@ class OntoWiki_Model_TitleHelper
      */
     public function getTitle($resourceUri, $language = null)
     {
+        // * means any language
+        if (trim($language) == '*') {
+            $language = null;
+        }
+        
         // do nothing if we don't have this URI
         if (!isset($this->_resources[$resourceUri])) {
-            $logger = OntoWiki_Application::getInstance()->logger;
+            $logger = OntoWiki::getInstance()->logger;
             
             $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
             $this->addResource($resourceUri);
-            
-            // $logger->info('TitleHelper getTitle without adding the resource ('.$resourceUri.')');
-            // return OntoWiki_Utils::contractNamespace($resourceUri);
         }
         
         // HACK: fix a probable Virtuoso bug with querying
@@ -301,10 +303,10 @@ class OntoWiki_Model_TitleHelper
             // add a dummy resource ;)
             $this->addResource('http://example.com/dummy');
         }
-
+        
+        // if this is the first getTitle request, fetch titles
         if (null === $this->_resourceTitles) {
             $this->_fetchResourceTitlesFromQueryResult(self::RESOURCE_VARIABLE);
-            // var_dump($this->_resourceTitles);
         }
         
         // prepend the language that is asked for to the array
@@ -378,7 +380,7 @@ class OntoWiki_Model_TitleHelper
             }
             
             if (defined('_OWDEBUG')) {
-                $logger = OntoWiki_Application::getInstance()->logger;
+                $logger = OntoWiki::getInstance()->logger;
                 $logger->info('TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.');
             }
         }
@@ -457,7 +459,7 @@ class OntoWiki_Model_TitleHelper
                 return;
             }
 
-            $logger = OntoWiki_Application::getInstance()->logger;
+            $logger = OntoWiki::getInstance()->logger;
             $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
 
 
