@@ -73,11 +73,15 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                     $router = $front->getRouter();
                     
                     // is the current route the one we want to hijack?
-                    if ($router->getCurrentRouteName() == 'properties') {
-                        // redirect request to foafedit/person
-                        $request = $front->getRequest();
-                        $request->setControllerName('foafedit')
-                                ->setActionName('person');
+                    try {
+                        if ($router->getCurrentRouteName() == 'properties') {
+                            // redirect request to foafedit/person
+                            $request = $front->getRequest();
+                            $request->setControllerName('foafedit')
+                                    ->setActionName('person');
+                        }
+                    } catch (Zend_Controller_Router_Exception $e) {
+                        // do nothing if route fails
                     }
                     
                     // we must set a new route so that the navigation class knows, 
