@@ -23,18 +23,19 @@ class FoafeditHelper extends OntoWiki_Component_Helper
 {
     public function init()
     {
-        $owApp = OntoWiki_Application::getInstance();
+        // get the main application
+        $owApp = OntoWiki::getInstance();
         
+        // we need a graph to work with
         if ($owApp->selectedModel) {
             $store    = $owApp->erfurt->getStore();
-            $resource = (string) $owApp->selectedResource;
+            $query    = new Erfurt_Sparql_SimpleQuery();
+            $resource = (string)$owApp->selectedResource;
             
-            $query = new Erfurt_Sparql_SimpleQuery();
-
             // build SPARQL query for getting class (rdf:type) of current resource
             $query->setProloguePart('SELECT DISTINCT ?t')
                   ->setWherePart('WHERE {<' . $resource . '> a ?t.}');
-
+            
             // query the store
             if ($result = $owApp->selectedModel->sparqlQuery($query)) {
                 $row = current($result);
@@ -64,13 +65,23 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                         'name'       => 'FOAF Editor', 
                         'priority'   => -1));
                     
-                    // get the router
+                    // OntoWiki's standard routes are configured in application/config/default.ini
+                    // see http://framework.zend.com/manual/en/zend.controller.router.html#zend.controller.router.routes
+                    
+                    // get current route info
                     $front  = Zend_Controller_Front::getInstance();
                     $router = $front->getRouter();
                     
-                    // our new route that will replace the default
-                    // see http://framework.zend.com/manual/en/zend.controller.router.html#zend.controller.router.routes
-                    // OntoWiki's standard routes are configured in application/config/default.ini
+                    // is the current route the one we want to hijack?
+                    if ($router->getCurrentRouteName() == 'properties') {
+                        // redirect request to foafedit/person
+                        $request = $front->getRequest();
+                        $request->setControllerName('foafedit')
+                                ->setActionName('person');
+                    }
+                    
+                    // we must set a new route so that the navigation class knows, 
+                    // we are hijacking the default route
                     $route = new Zend_Controller_Router_Route(
                         'view/*',                       // hijack 'view' shortcut
                         array(
@@ -78,7 +89,7 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                             'action'     => 'person'    // 'person' action
                         )
                     );
-                    
+
                     // add the new route
                     $router->addRoute('properties', $route);
                 }

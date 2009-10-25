@@ -49,7 +49,7 @@ class OntoWiki_Component_Helper
     public function __construct($componentManager)
     {
         $componentName           = strtolower(str_replace('Helper', '', get_class($this)));
-        $this->_owApp            = OntoWiki_Application::getInstance();
+        $this->_owApp            = OntoWiki::getInstance();
         $this->_config           = $this->_owApp->config;
         $this->_componentManager = $componentManager;
         $this->_privateConfig    = $this->_componentManager->getComponentPrivateConfig($componentName);

@@ -68,6 +68,12 @@ class OntoWiki_Component_Manager
      */
     protected $_componentUrlBase = '';
     
+    /**
+     * Cmponent helpers to be initialized
+     * @var array
+     */ 
+    protected $_helpers = array();
+    
     /** 
      * Prefix to distinguish component controller directories
      * from other controller directories.
@@ -100,6 +106,10 @@ class OntoWiki_Component_Manager
         
         // scan for components
         $this->_scanComponentPath();
+        
+        // register for event
+        $dispatcher = Erfurt_Event_Dispatcher::getInstance();
+        $dispatcher->register('onRequestRouted', $this);
     }
     
     // ------------------------------------------------------------------------
@@ -234,6 +244,19 @@ class OntoWiki_Component_Manager
     }
     
     // ------------------------------------------------------------------------
+    // --- Event Handlers -----------------------------------------------------
+    // ------------------------------------------------------------------------
+    
+    public function onRequestRouted(Erfurt_Event $event)
+    {
+        // init component helpers
+        foreach ($this->_helpers as $helper) {
+            require_once $helper['path'];
+            $helper = new $helper['class']($this);
+        }
+    }
+    
+    // ------------------------------------------------------------------------
     // --- Private Methods ----------------------------------------------------
     // ------------------------------------------------------------------------
     
@@ -312,12 +335,11 @@ class OntoWiki_Component_Manager
         $helperPathName  = $componentPath . $helperClassName . '.php';
         
         if (is_readable($helperPathName)) {
-            // execute component helper
-            include_once $helperPathName;
-            
-            if (class_exists($helperClassName)) {
-                $hlp = new $helperClassName($this);
-            }
+            // keep for later
+            $this->_helpers[] = array(
+                'path'  => $helperPathName, 
+                'class' => $helperClassName
+            );
         }
         
         $action = null;
