@@ -69,7 +69,7 @@ class OntoWiki_Component_Manager
     protected $_componentUrlBase = '';
     
     /**
-     * Cmponent helpers to be initialized
+     * Component helpers to be initialized
      * @var array
      */ 
     protected $_helpers = array();
