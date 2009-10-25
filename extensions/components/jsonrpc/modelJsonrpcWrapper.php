@@ -22,6 +22,7 @@ class modelJsonrpcWrapper
     /**
      * exportRdf
      *
+     * @param string modelIri
      * @return string
      */
     public function export($modelIri)
@@ -61,6 +62,47 @@ class modelJsonrpcWrapper
     {
         return $this->store->countWhereMatches($modelIri, $whereSpec, $countSpec);
     }
+
+
+    /**
+     * add
+     *
+     * @param string $modelIri
+     * @param string $inputModel
+     * @return bool
+     */
+    public function add($modelIri, $inputModel)
+    {
+        $model = $this->store->getModel($modelIri);
+        $model->addMultipleStatements($inputModel);
+
+        return true;
+    }
+
+    /**
+     * create a new knowledge base
+     *
+     * @param string $modelIri
+     * @return bool
+     */
+    public function create($modelIri)
+    {
+        $this->store->getNewModel($modelIri);
+        return true;
+    }
+
+    /**
+     * drop an existing knowledge base
+     *
+     * @param string $modelIri
+     * @return bool
+     */
+    public function drop($modelIri)
+    {
+        $this->store->deleteModel($modelIri);
+        return true;
+    }
+
 
 }
 
