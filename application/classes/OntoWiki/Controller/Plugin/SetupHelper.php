@@ -28,6 +28,18 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
     protected $_isSetup = false;
     
     /**
+     * RouteStartup is triggered before any routing happens.
+     */
+    public function routeStartup(Zend_Controller_Request_Abstract $request)
+    {
+        /**
+         * @trigger onRouteStartup
+         */
+        $event = new Erfurt_Event('onRouteStartup');
+        $event->trigger();
+    }
+    
+    /**
      * RouteShutdown is the earliest event in the dispatch cycle, where a 
      * fully routed request object is available
      */
@@ -85,8 +97,10 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                 }
             }
             
-            // trigger request ready event
-            $event = new Erfurt_Event('onRequestRouted');
+            /**
+             * @trigger onRouteShutdown
+             */
+            $event = new Erfurt_Event('onRouteShutdown');
             $event->trigger();
             
             // avoid setting up twice

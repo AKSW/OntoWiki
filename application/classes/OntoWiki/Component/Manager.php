@@ -109,7 +109,7 @@ class OntoWiki_Component_Manager
         
         // register for event
         $dispatcher = Erfurt_Event_Dispatcher::getInstance();
-        $dispatcher->register('onRequestRouted', $this);
+        $dispatcher->register('onRouteShutdown', $this);
     }
     
     // ------------------------------------------------------------------------
@@ -247,7 +247,7 @@ class OntoWiki_Component_Manager
     // --- Event Handlers -----------------------------------------------------
     // ------------------------------------------------------------------------
     
-    public function onRequestRouted(Erfurt_Event $event)
+    public function onRouteShutdown(Erfurt_Event $event)
     {
         // init component helpers
         foreach ($this->_helpers as $helper) {
