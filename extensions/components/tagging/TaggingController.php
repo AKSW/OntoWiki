@@ -224,14 +224,14 @@ class TaggingController extends OntoWiki_Controller_Component
                         sameTerm(?p, <'.$conf->tagproperty.'>) && 
                         sameTerm(?o, <'.$tagresource.'>)
                     ) . }';
-                    $count = $store->countWhereMatches($modelURI, $where, "");
+                    $count = $store->countWhereMatches($modelURI, $where, "?s ?p ?o");
 
                     // if the resource is not tagged with this tagresource
                     if ($count == 0) {
                         $this->taggingResTagres($singleResource, $tagresource);
                     } else {
                         $this->messagetype = 'info';
-                        $this->newmessage = 'The resource already tagged';
+                        $this->newmessage = 'The resource is already tagged with this tag';
                     }
                 } else {
                     /*
@@ -1695,7 +1695,7 @@ class TaggingController extends OntoWiki_Controller_Component
         }';
 
         // The number of founded triples
-        $count = $store->countWhereMatches($modelURI, $where, "");
+        $count = $store->countWhereMatches($modelURI, $where, "?tagresource");
         if ($modelURI != null) {
             if ($count == 0) {
                 // Add statements
@@ -1794,7 +1794,7 @@ class TaggingController extends OntoWiki_Controller_Component
                     )
                 }";
 
-        $count = $store->countWhereMatches($modelURI, $where, "");
+        $count = $store->countWhereMatches($modelURI, $where, "?s ?p ?o");
         if ($count == 0) {
             $actionSpec['type']         = 132; // ressource getaggt
             $versioning->startAction($actionSpec);

@@ -1,0 +1,7 @@
+active = true
+action = "sitemap.xml"
+templates = "templates/"
+languages = "languages/"
+
+[private]
+;auth.agentId  = "https://localhost/ow_da/auth/agent"
