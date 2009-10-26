@@ -289,19 +289,36 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Session');
         $session = $this->getResource('Session');
         
-        // inititalize navigation
-        if (!isset($session->lastRoute)) {
-            $session->lastRoute = 'properties';
-        }
-        // and add default component
-        OntoWiki_Navigation::register('index', array(
-            'route'      => $session->lastRoute, 
-            'controller' => 'resource', 
-            'action'     => 'properties', 
-            'name'       => ucfirst($session->lastRoute), 
-            'priority'   => 0, 
-            'active'     => false
-        ));
+        $this->bootstrap('Request');
+        $request = $this->getResource('Request');
+        
+        $this->bootstrap('OntoWiki');
+        $ontoWiki = $this->getResource('OntoWiki');
+        
+        // var_dump($ontoWiki->getDefaultRoute());
+        
+        // // get current action name
+        // $currentAction = $request->getActionName();
+        // 
+        // // is current action a default action?
+        // if ($currentAction == 'properties' or $currentAction == 'instances') {
+        //     // $session->lastRoute = $currentAction;
+        // }
+        // 
+        // // defaults to properties route
+        // if (!isset($session->lastRoute)) {
+        //     $session->lastRoute = $currentAction;
+        //     // $session->lastRoute = 'properties';
+        // }
+        // 
+        // // and add last routed component
+        // OntoWiki_Navigation::register('index', array(
+        //     'route'      => $session->lastRoute, 
+        //     'controller' => 'resource', 
+        //     'action'     => 'properties', 
+        //     'name'       => ucfirst($session->lastRoute), 
+        //     'priority'   => 0
+        // ));
     }
     
     /**

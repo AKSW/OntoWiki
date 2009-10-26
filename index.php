@@ -53,17 +53,17 @@ $rewriteEngineOn = false;
 
 if (function_exists('apache_get_modules')) {
 	if (in_array('mod_rewrite', apache_get_modules())) {
-	    // get .htaccess contents
-	    $htaccess = @file_get_contents(ONTOWIKI_ROOT . '.htaccess');
-	    
-	    // check if RewriteEndine is enabled
-	    $rewriteEngineOn = preg_match('/.*[^#][\t ]+RewriteEngine[\t ]+On/i', $htaccess);
-	    
-	    // explicitly request /index.php for non-rewritten requests
-	    if (!$rewriteEngineOn and !strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
-            header('Location: ' . rtrim($_SERVER['REQUEST_URI'], '/\\') . '/' . BOOTSTRAP_FILE, true, 302);
-            exit;
-        }
+		// get .htaccess contents
+		$htaccess = @file_get_contents(ONTOWIKI_ROOT . '.htaccess');
+		
+		// check if RewriteEndine is enabled
+		$rewriteEngineOn = preg_match('/.*[^#][\t ]+RewriteEngine[\t ]+On/i', $htaccess);
+		
+		// explicitly request /index.php for non-rewritten requests
+		if (!$rewriteEngineOn and !strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
+			header('Location: ' . rtrim($_SERVER['REQUEST_URI'], '/\\') . '/' . BOOTSTRAP_FILE, true, 302);
+			exit;
+		}
 	}
 }
 
@@ -74,9 +74,9 @@ define('ONTOWIKI_REWRITE', $rewriteEngineOn);
  * Ensure compatibility for PHP <= 5.3
  */
 if (!function_exists('class_alias')) {
-    function class_alias($original, $alias) {
-        eval('abstract class ' . $alias . ' extends ' . $original . ' {}');
-    }
+	function class_alias($original, $alias) {
+		eval('abstract class ' . $alias . ' extends ' . $original . ' {}');
+	}
 }
 
 /** Zend_Application */
@@ -84,8 +84,8 @@ require_once 'Zend/Application.php';
 
 // create application
 $application = new Zend_Application(
-    'default', 
-    ONTOWIKI_ROOT . 'application/config/application.ini'
+	'default', 
+	ONTOWIKI_ROOT . 'application/config/application.ini'
 );
 
 /** OntoWiki */
@@ -96,4 +96,4 @@ class_alias('OntoWiki', 'OntoWiki_Application');
 
 // bootstrap and run
 $application->bootstrap()
-            ->run();
+			->run();
