@@ -20,7 +20,7 @@ class modelJsonrpcWrapper
     }
 
     /**
-     * exportRdf
+     * export
      *
      * @param string modelIri
      * @return string
