@@ -75,17 +75,6 @@ class ResourceController extends OntoWiki_Controller_Base
         $windowTitle = sprintf($translate->_('Properties of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
         
-        $this->_owApp->setDefaultRoute('properties');
-        // $this->_owApp->lastRoute = 'properties';
-        // OntoWiki_Navigation::register('index', array(
-        //     'route'      => 'properties', 
-        //     'controller' => 'resource', 
-        //     'action'     => 'properties',
-        //     'name'       => 'Properties', 
-        //     'position'   => 0, 
-        //     'active'     => false
-        // ), true);
-        
         if (!empty($resource)) {
             $event = new Erfurt_Event('onPreTabsContentAction');
             $event->uri = (string)$resource;
@@ -218,17 +207,6 @@ class ResourceController extends OntoWiki_Controller_Base
         }
         
         $this->_owApp->selectedClass = (string)$resource;
-        $this->_owApp->setDefaultRoute('instances');
-        
-        // $this->_owApp->lastRoute = 'instances';
-        // OntoWiki_Navigation::register('index', array(
-        //     'route'      => 'instances', 
-        //     'controller' => 'resource', 
-        //     'action'     => 'instances',
-        //     'name'       => 'Instances', 
-        //     'position'   => 0, 
-        //     'active'     => false
-        // ), true);
 
         //determine limit & offset
         //request params go first

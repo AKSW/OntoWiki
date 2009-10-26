@@ -60,11 +60,6 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                     }
                     break;
             }
-        } else {
-            // Allow plugins to handle authentication
-            $event = new Erfurt_Event('onRouteShutdown');
-            $event->request = $request;
-            $event->trigger();
         }
     }
     

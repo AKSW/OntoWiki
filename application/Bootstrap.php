@@ -292,33 +292,36 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Request');
         $request = $this->getResource('Request');
         
-        $this->bootstrap('OntoWiki');
-        $ontoWiki = $this->getResource('OntoWiki');
+        $this->bootstrap('Config');
+        $config = $this->getResource('Config');
         
-        // var_dump($ontoWiki->getDefaultRoute());
+        // get current action name
+        $currentAction = $request->getActionName();
         
-        // // get current action name
-        // $currentAction = $request->getActionName();
-        // 
-        // // is current action a default action?
-        // if ($currentAction == 'properties' or $currentAction == 'instances') {
-        //     // $session->lastRoute = $currentAction;
-        // }
-        // 
-        // // defaults to properties route
-        // if (!isset($session->lastRoute)) {
-        //     $session->lastRoute = $currentAction;
-        //     // $session->lastRoute = 'properties';
-        // }
-        // 
-        // // and add last routed component
-        // OntoWiki_Navigation::register('index', array(
-        //     'route'      => $session->lastRoute, 
-        //     'controller' => 'resource', 
-        //     'action'     => 'properties', 
-        //     'name'       => ucfirst($session->lastRoute), 
-        //     'priority'   => 0
-        // ));
+        // is current action a default action?
+        if ($currentAction == 'properties' or $currentAction == 'instances') {
+            // save it to session
+            $session->lastRoute = $currentAction;
+        }
+        
+        // get last route or default
+        $route = isset($session->lastRoute) 
+               ? $session->lastRoute 
+               : $config->route->default->name;
+        
+        // register with navigation
+        if (isset($config->routes->{$route})) {
+            extract($config->routes->{$route}->defaults->toArray());
+            
+            // and add last routed component
+            OntoWiki_Navigation::register('index', array(
+                'route'      => $route, 
+                'controller' => $controller, 
+                'action'     => $action, 
+                'name'       => ucfirst($route), 
+                'priority'   => 0
+            ));
+        }
     }
     
     /**

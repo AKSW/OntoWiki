@@ -74,6 +74,12 @@ class OntoWiki_Component_Manager
      */ 
     protected $_helpers = array();
     
+    /**
+     * Denotes whether component helpers have been called.
+     * @var boolean
+     */
+    protected $_helpersCalled = false;
+    
     /** 
      * Prefix to distinguish component controller directories
      * from other controller directories.
@@ -250,9 +256,13 @@ class OntoWiki_Component_Manager
     public function onRouteShutdown(Erfurt_Event $event)
     {
         // init component helpers
-        foreach ($this->_helpers as $helper) {
-            require_once $helper['path'];
-            $helper = new $helper['class']($this);
+        if (!$this->_helpersCalled) {
+            foreach ($this->_helpers as $helper) {
+                require_once $helper['path'];
+                $helper = new $helper['class']($this);
+            }
+            
+            $this->_helpersCalled = true;
         }
     }
     

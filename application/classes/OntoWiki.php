@@ -207,27 +207,6 @@ class OntoWiki
     }
     
     /**
-     * Returns the name of the default route to be used for OntoWiki's
-     * default tab (instances or properties).
-     *
-     * @param string
-     */
-    public function getDefaultRoute()
-    {
-        $session = $this->getBootstrap()->getResource('Session');
-        
-        if (isset($session->defaultRoute)) {
-            return $session->defaultRoute;
-        }
-        
-        // get configured default
-        $confgig = $this->getConfig();
-        $defaultRoute = $config->route->default->name;
-        
-        return $defaultRoute;
-    }
-    
-    /**
      * Singleton instance
      *
      * @return OntoWiki
@@ -326,18 +305,6 @@ class OntoWiki
     {
         // add to session vars
         $this->_sessionVars = $sessionVars;
-    }
-    
-    /**
-     * Sets the name of the current default route to be used for OntoWiki's
-     * default tab (instances or properties).
-     *
-     * @param string
-     */
-    public function setDefaultRoute($routeName)
-    {
-        $session = $this->getBootstrap()->getResource('Session');
-        $session->defaultRoute = (string)$routeName;
     }
     
     /**

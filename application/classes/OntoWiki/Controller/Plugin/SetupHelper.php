@@ -101,6 +101,7 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
              * @trigger onRouteShutdown
              */
             $event = new Erfurt_Event('onRouteShutdown');
+            $event->request = $request;
             $event->trigger();
             
             // avoid setting up twice
