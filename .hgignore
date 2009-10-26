@@ -8,4 +8,4 @@ nbproject
 ontowiki/src/libraries/Erfurt
 ontowiki/src/libraries/RDFauthor
 Zend
-component.ini
+ontowiki/src/extensions/modules/minimap/module.ini
