@@ -1208,8 +1208,6 @@ class TaggingController extends OntoWiki_Controller_Component
         # echo htmlentities($query);die;
 
         $getRes = $model->sparqlQuery($query);
-        //        var_dump($getRes);
-        //        echo '<br/><hr/><br/>';
         $resources=array();
         foreach ($getRes as $row) {
             $newTr = $this->generateURI();
@@ -1228,6 +1226,10 @@ class TaggingController extends OntoWiki_Controller_Component
             $this->model->addStatement($value['newTr'],
             $conf->resOf,
             array('value' => $nC, 'type' => 'uri'));
+
+            $this->model->deleteMatchingStatements(null,
+            $oP,
+            array('value' => $value['label'], 'type' => 'literal'));
         }
         
         echo "Successful";
@@ -1416,7 +1418,7 @@ class TaggingController extends OntoWiki_Controller_Component
      * Generate URI
      * @return string $uri generated URI
      */
-    function generateURI() {
+    private function generateURI() {
         // get model URI
         $modelURI    = $this->model->getModelIri();
         // get username
