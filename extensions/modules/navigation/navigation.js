@@ -13,7 +13,7 @@
 $(document).ready(function() {
     /* some used variables */
     navigationContainer = $('#navigation-content');
-    navigationInput = $("#tagging-input");
+    navigationInput = $("#navigation-input");
     navigationWindow = $("#navigation");
     navigationUrl = urlBase + 'navigation/explore';
 

@@ -19,7 +19,8 @@ $odd = false;
         <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
             <a class="navigation"
                about="<?php echo $uri ?>"
-               ><?php echo $entry['title'] ?></a></li>
+               ><?php echo $entry['title'] ?></a>
+        </li>
     <?php endforeach; ?>
     </ol>
 <?php endif; ?>
