@@ -316,10 +316,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // We need the model here, for prefix definitions are model specific.
         if (null === $modelUri) {
             return $result;
-        }
+        }        
         
-        $store = Erfurt_App::getInstance()->getStore();
-        $namespaces = $store->getNamespacePrefixes($modelUri);
+        $erfurtNamespaces = Erfurt_App::getInstance()->getNamespaces();
+        $namespaces = $erfurtNamespaces->getNamespacePrefixes($modelUri);
         
         $translate = $this->_owApp->translate;
         foreach ($termsArray as $t) {
@@ -721,10 +721,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         // If we added some statements, we check for additional namespaces and add them.
                         if (in_array(Erfurt_Wrapper::RESULT_HAS_NS, $wrapperStatus)) {
                             $namespaces = $wrapperResult['ns'];
+                            
+                            $erfurtNamespaces = Erfurt_App::getInstance()->getNamespaces();
 
                             foreach ($namespaces as $ns => $prefix) {
                                 try {
-                                    $store->addNamespacePrefix(
+                                    $erfurtNamespaces->addNamespacePrefix(
                                         $this->_graphUri,
                                         $prefix,
                                         $ns,
@@ -1465,17 +1467,19 @@ class DatagatheringController extends OntoWiki_Controller_Component
             'resourceuri' => $uri
         );
         
+        $erfurtNamespaces = Erfurt_App::getInstance()->getNamespaces();
+        
         // Try to add new namespaces
         if (is_array($namespaces)) {
             foreach ($namespaces as $ns => $prefix) {
                 try {
-                    $store->addNamespacePrefix(
+                    $erfurtNamespaces->addNamespacePrefix(
                         $modelUri,
                         $prefix,
                         $ns, 
                         false
                     );
-                } catch (Erfurt_Store_Exception $e) {
+                } catch (Erfurt_Namespaces_Exception $e) {
                     // Ignore...
                 }
             }
