@@ -8,21 +8,39 @@ classes    = "has-contextmenus-block"
 [private]
 default = classes
 
-; Class Hierarchy
-config.classes.name = "Classes"
-config.classes.ignoredNS[]   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-config.classes.ignoredNS[]   = "http://www.w3.org/2000/01/rdf-schema#"
-config.classes.ignoredNS[]   = "http://www.w3.org/2002/07/owl#"
-config.classes.hierarchyTypes[] = "http://www.w3.org/2000/01/rdf-schema#Class"
-config.classes.hierarchyTypes[] = "http://www.w3.org/2002/07/owl#Class"
-config.classes.hierarchyRelations.in[] = "http://www.w3.org/2000/01/rdf-schema#subClassOff"
-config.classes.instanceRelation.out[]  = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-config.classes.entry         = null
-
-; SKOS Hierarchy
+;;;;;;;;;;;;;;;;; SKOS Hierarchy
 config.skos.name = "SKOS"
 config.skos.hierarchyTypes[] = "http://www.w3.org/2004/02/skos/core#Concept"
 config.skos.hierarchyTypes[] = "http://www.w3.org/2004/02/skos/core#Collection"
 config.skos.hierarchyRelations.in[]   = "http://www.w3.org/2004/02/skos/core#broader"
 config.skos.hierarchyRelations.out[]   = "http://www.w3.org/2004/02/skos/core#narrower"
 
+
+;;;;;;;;;;;;;;;;; RDFS/OWL Class Hierarchy (commented)
+;;; the name is used for the gui (not as an id, id is the array name)
+config.classes.name = "Classes"
+;
+;;; these are the resources which are presented in the navigation lists
+config.classes.hierarchyTypes[] = "http://www.w3.org/2000/01/rdf-schema#Class"
+config.classes.hierarchyTypes[] = "http://www.w3.org/2002/07/owl#Class"
+;
+;;; hierarchy relations are used to ask for resources which have a certain parent
+;;; in addition to that, the absent of any parent is used to identify toplevel resources
+;;; there are two types of hierarchy relations: incoming and outgoing
+;;; outgoing means, the parent navigation resource is subject (like skos:narrower)
+;;; incoming means, the child navigation resources are subjects (like rdfs:subClassOf)
+config.classes.hierarchyRelations.in[] = "http://www.w3.org/2000/01/rdf-schema#subClassOff"
+
+;;; instance relations are used create the list of resources based on the navigation entry
+;;; again, there are two types of instance relations: incoming and outgoing
+;;; outgoing means, the navigation resource is subject (like rdf:type)
+;;; incoming means, the instance resources are subjects (like sioc:member_of)
+config.classes.instanceRelation.out[]  = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+
+;;; resources in this namespace are not visible by default but can be activated
+config.classes.hiddenNS[]   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+config.classes.hiddenNS[]   = "http://www.w3.org/2000/01/rdf-schema#"
+config.classes.hiddenNS[]   = "http://www.w3.org/2002/07/owl#"
+
+; same as ignored namespaces but by relation
+config.classes.hiddenRelation[]   = "http://ns.ontowiki.net/SysOnt/hidden"
