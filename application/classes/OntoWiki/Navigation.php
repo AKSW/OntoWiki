@@ -11,7 +11,7 @@
  * OntoWiki navigation registry.
  *
  * @category OntoWiki
- * @category Navigation
+ * @package Navigation
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
