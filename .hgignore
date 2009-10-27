@@ -9,3 +9,5 @@ ontowiki/src/libraries/Erfurt
 ontowiki/src/libraries/RDFauthor
 Zend
 ontowiki/src/extensions/modules/minimap/module.ini
+ontowiki/src/extensions/components/navigation/component.ini
+ontowiki/src/extensions/modules/navigation/module.ini

@@ -1,0 +1,26 @@
+enabled    = true
+title      = "Navigation"
+caching    = no
+priority   = 30
+contexts[] = "main.sidewindows"
+classes    = "has-contextmenus-block"
+
+[private]
+; Class Hierarchy
+config.classes.name = "Classes"
+config.classes.ignoredNS[]   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+config.classes.ignoredNS[]   = "http://www.w3.org/2000/01/rdf-schema#"
+config.classes.ignoredNS[]   = "http://www.w3.org/2002/07/owl#"
+config.classes.hierarchyTypes[] = "http://www.w3.org/2000/01/rdf-schema#Class"
+config.classes.hierarchyTypes[] = "http://www.w3.org/2002/07/owl#Class"
+config.classes.hierarchyRelations.in[] = "http://www.w3.org/2000/01/rdf-schema#subClassOff"
+config.classes.instanceRelation.out[]  = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+config.classes.entry         = null
+
+; SKOS Hierarchy
+config.skos.name = "SKOS"
+config.skos.hierarchyTypes[] = "http://www.w3.org/2004/02/skos/core#Concept"
+config.skos.hierarchyTypes[] = "http://www.w3.org/2004/02/skos/core#Collection"
+config.skos.hierarchyRelations.in[]   = "http://www.w3.org/2004/02/skos/core#broader"
+config.skos.hierarchyRelations.out[]   = "http://www.w3.org/2004/02/skos/core#narrower"
+

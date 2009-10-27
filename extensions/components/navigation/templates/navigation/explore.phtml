@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * OntoWiki navigation entry list template
+ */
+$odd = false;
+?>
+<?php if (!empty($this->message)): ?>
+    <?php if (!empty($this->messagetype)): ?>
+        <span class="messagebox <?php echo $this->messagetype ?>"><?php echo ($this->message) ?></span>
+    <?php else: ?>
+        <span class="messagebox info"><?php echo ($this->message) ?></span>
+    <?php endif ?>
+<?php endif ?>
+
+<?php if ($this->entries) :?>
+    <ol class="bullets-none separated-vertical">
+    <?php foreach ($this->entries as $uri => $entry): ?>
+        <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+            <a class="navigation"
+               about="<?php echo $uri ?>"
+               ><?php echo $entry['title'] ?></a>
+        </li>
+    <?php endforeach; ?>
+    </ol>
+<?php endif; ?>
