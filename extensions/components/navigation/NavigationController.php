@@ -16,13 +16,15 @@ class NavigationController extends OntoWiki_Controller_Component
     private $session;
     private $ac;
     private $model;
+    /* the setup consists of state and config */
+    private $setup = null;
 
     public function init()
     {
         parent::init();
         $this->store = $this->_owApp->erfurt->getStore();
         $this->translate = $this->_owApp->translate;
-        $this->session = $this->_owApp->session;
+        $this->session = $this->_owApp->session->navigation;
         $this->ac = $this->_erfurt->getAc();
 
         $this->model = $this->_owApp->selectedModel;
@@ -51,8 +53,14 @@ class NavigationController extends OntoWiki_Controller_Component
             throw new OntoWiki_Exception('Missing parameter setup !');
             exit;
         }
+        $this->setup = json_decode($this->_request->getParam('setup'));
+        if ($this->setup == false) {
+            throw new OntoWiki_Exception('Invalid parameter setup (json_decode failed): ' . $this->_request->setup);
+            exit;
+        }
 
-        $this->view->entries = $this->queryNavigationEntries($this->_request->setup);
+        $this->view->entries = $this->queryNavigationEntries($this->setup);
+        $this->view->setup = $this->setup;
         return;
     }
 
@@ -60,6 +68,7 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function queryNavigationEntries($setup) {
+        // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
         $query = 'SELECT DISTINCT ?navEntry WHERE {

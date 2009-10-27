@@ -6,6 +6,8 @@ contexts[] = "main.sidewindows"
 classes    = "has-contextmenus-block"
 
 [private]
+default = classes
+
 ; Class Hierarchy
 config.classes.name = "Classes"
 config.classes.ignoredNS[]   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"

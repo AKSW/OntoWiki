@@ -13,9 +13,10 @@
  */
 class NavigationModule extends OntoWiki_Module
 {
+    protected $session = null;
+
     public function init() {
-        $this->view->headScript()->appendFile($this->view->moduleUrl . 'navigation.js');
-        $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'navigation.css');
+        $this->session = $this->_owApp->session;
     }
 
     /**
@@ -27,24 +28,24 @@ class NavigationModule extends OntoWiki_Module
         // navigation type submenu
 	$typeMenu = new OntoWiki_Menu();
         foreach ($this->_privateConfig->config as $key => $config) {
-            $typeMenu->setEntry($config->name, "javascript:navigationSetParam('type', '$key')");
+            $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
         }
 
         // count sub menu
 	$countMenu = new OntoWiki_Menu();
-        $countMenu->setEntry('10', "javascript:navigationSetParam('count', 10)")
-            ->setEntry('20', "javascript:navigationSetParam('count', 20)")
-            ->setEntry('30', "javascript:navigationSetParam('count', 30)")
-            ->setEntry('all', "javascript:navigationSetParam('count', 'all')");
+        $countMenu->setEntry('10', "javascript:navigationEvent('setCount', 10)")
+            ->setEntry('20', "javascript:navigationEvent('setCount', 20)")
+            ->setEntry('30', "javascript:navigationEvent('setCount', 30)")
+            ->setEntry('all', "javascript:navigationEvent('setCount', 'all')");
 
         // sort sub menu
         $sortTagcloud = new OntoWiki_Menu();
-        $sortTagcloud->setEntry('by name', "javascript:navigationSetParam('sort', 'name')")
-            ->setEntry('by frequency', "javascript:navigationSetParam('sort', 'frequency')");
+        $sortTagcloud->setEntry('by name', "javascript:navigationEvent('setSort', 'name')")
+            ->setEntry('by frequency', "javascript:navigationEvent('setSort', 'frequency')");
 
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
-        $viewMenu->setEntry('Reset Navigation', 'javascript:navigationReset()')
+        $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')")
              ->setEntry('Number of entries', $countMenu)
              ->setEntry('Sort', $sortTagcloud);
 
@@ -60,7 +61,27 @@ class NavigationModule extends OntoWiki_Module
      * Returns the content
      */
     public function getContents() {
-        $data['config'] = $this->_privateConfig->config;
+        // scripts and css only if module is visible
+        $this->view->headScript()->appendFile($this->view->moduleUrl . 'navigation.js');
+        $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'navigation.css');
+
+        // this gives the complete config array as json to the javascript parts
+        $this->view->inlineScript()->prependScript(
+            '/* from modules/navigation/ */'.PHP_EOL.
+            'var navigationConfigString = \''.
+            json_encode($this->_privateConfig->toArray()) . '\'' .PHP_EOL.
+            'var navigationConfig = $.evalJSON(navigationConfigString);' .PHP_EOL
+        );
+        // this gives the navigation session config to the javascript parts
+        if ($this->session->navigation) {
+            $this->view->inlineScript()->prependScript(
+                '/* from modules/navigation/ */'.PHP_EOL.
+                'var navigationConfig = $.evalJSON(\''.
+                json_encode($this->_privateConfig->toArray()) . '\');' .PHP_EOL
+            );
+        }
+
+        $data['session'] = $this->session->navigation;
         $content = $this->render('navigation', $data, 'data');
         return $content;
     }
