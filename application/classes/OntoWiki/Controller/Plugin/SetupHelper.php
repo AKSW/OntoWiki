@@ -70,7 +70,7 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                     
                     // post error message
                     $ontoWiki->prependMessage(new OntoWiki_Message(
-                        '<p>Could not instantiate graph: ' . $e->getMessage() . '</p>' . 
+                        '<p>Could not instantiate model: ' . $e->getMessage() . '</p>' . 
                         '<a href="' . $ontoWiki->config->urlBase . '">Return to index page</a>', 
                         OntoWiki_Message::ERROR, array('escape' => false)));
                     // hard redirect since finishing the dispatch cycle will lead to errors
