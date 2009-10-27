@@ -1,0 +1,72 @@
+<p class="messagebox info">
+Under Construction
+</p>
+<?php if ($this->has('error')): ?>
+    <fieldset>
+        <div class="messagebox error"><?php echo $this->error ?></div>
+    </fieldset>
+<?php endif; ?>
+<fieldset style = "border:1px solid black;padding:10px;">
+<form action=" <?php echo $this->forms['showTriple']['action']  ?> "
+      method="post" 
+      name="showTriple"                                   
+      class="">
+
+            <label for="limit">Limit</label>
+            <input class="" id="limit" type="text" name="limit"  value="<?php if(isset($this->forms['showTriple']['limit'])) echo $this->forms['showTriple']['limit']  ?>" />
+
+            <label for="occurence" style="margin-left:3em">minimal Occurence</label>
+            <input id="occurence" type="text" name="occurence"  value="<?php if(isset($this->forms['showTriple']['occurence'])) echo $this->forms['showTriple']['occurence']  ?>" />
+
+            <input id="actionType" type="hidden" name="actionType"  value="viewTriple" />
+	    <input type="submit" value=" View Triple " style =" width: 10em">
+
+    
+</form>
+   <hr style ="margin-top:1em;margin-bottom:1em">
+
+<form action=" <?php echo $this->forms['createViews']['action']  ?> "
+      method="post"
+      name="createViews"
+      class="">
+
+            <label for="limit">Limit</label>
+            <input class="" id="limit" type="text" name="limit"  value="<?php if(isset($this->forms['showTriple']['limit'])) echo $this->forms['showTriple']['limit']  ?>" />
+
+            <label for="occurence" style="margin-left:3em">minimal Occurence</label>
+            <input id="occurence" type="text" name="occurence"  value="<?php if(isset($this->forms['showTriple']['occurence'])) echo $this->forms['showTriple']['occurence']  ?>" />
+
+            <input id="actionType" type="hidden" name="actionType"  value="createViews" />
+	    <input type="submit" value=" Create Views " style =" width: 10em">
+
+</form>
+
+
+
+<?php if (isset($this->tripleList)): ?>
+    <fieldset>
+        <?php if (is_array($this->tripleList)): ?>
+            <?php 
+               	echo $this->partial('partials/table.phtml', array('data' => $this->tripleList, 'header' => '', 'caption'=>'List of used TriplePattern orderd by tripleCount'));
+            ?>
+        <?php else: ?>
+            <pre><?php echo $this->escape($this->tripleList) ?></pre>
+        <?php endif; ?>
+    </fieldset>
+<?php endif; ?>
+<?php if (isset($this->viewsList)): ?>
+    <fieldset>
+        <?php if (is_array($this->viewsList)): ?>
+            <?php
+               	echo $this->partial('partials/table.phtml', array('data' => $this->viewsList, 'header' => '', 'caption'=>'List of materialized Views'));
+            ?>
+        <?php else: ?>
+            <pre><?php echo $this->escape($this->viewsList) ?></pre>
+        <?php endif; ?>
+    </fieldset>
+
+
+<?php endif; ?>
+
+</fieldset>
+
