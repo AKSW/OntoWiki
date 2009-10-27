@@ -34,13 +34,17 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // require Config
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
-        
-        // require Session
-        $this->bootstrap('Session');
-        
+
+        //NOTICE: i swtiched loading of erfurt and session
+        //because serialized erfurt objects in the session need constants defined in erfurt
+        //is this ok?
+
         // require Erfurt
         $this->bootstrap('Erfurt');
         // $erfurt = $this->getResource('Erfurt');
+        
+        // require Session
+        $this->bootstrap('Session');
         
         // require Dispatcher
         $this->bootstrap('Dispatcher');

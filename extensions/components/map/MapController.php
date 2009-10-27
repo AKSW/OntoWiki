@@ -232,12 +232,6 @@ class MapController extends OntoWiki_Controller_Component
     private function _getMarkerResult( $viewArea = false, $limit = false, $order = false ) {
 
         /**
-         * get required Classes
-         */
-        require_once 'OntoWiki/Model/Instances.php';
-        require_once 'Erfurt/Sparql/Query2.php';
-
-        /**
          * read configuration
          */
         $latProperties  = $this->_privateConfig->property->latitude->toArray();
@@ -250,31 +244,10 @@ class MapController extends OntoWiki_Controller_Component
         $lat2Var        = new Erfurt_Sparql_Query2_Var('lat2');
         $long2Var       = new Erfurt_Sparql_Query2_Var('long2');
 
-        /**
-         * build an own OntoWiki_Model_Instances Object, because it isn't in the session, will come in the future
-         */
-        $options = array(
-                'rdf_type' => $this->_owApp->selectedClass,
-                'member_predicate' => EF_RDF_TYPE, 
-                'withChilds' => true,
-                'limit' => $this->_owApp->session->instancelimit,
-                'offset' => $this->_owApp->session->instanceoffset,
-                'shownProperties' => array(),
-                'shownInverseProperties' => array(),
-                'filter' => is_array($this->_session->filter) ? $this->_session->filter : array(),
-                );
-
-        $this->_owApp->logger->debug('MapComponent/_getMarkerResult session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
-        $this->_owApp->logger->debug('MapComponent/_getMarkerResult session: limit => ' . $this->_owApp->session->instancelimit);
-        $this->_owApp->logger->debug('MapComponent/_getMarkerResult session: offset => ' . $this->_owApp->session->instanceoffset);
-        $this->_owApp->logger->debug('MapComponent/_getMarkerResult session: filter => ' . var_export($this->_session->filter, true));
-
-        /* this is science fiction, it will become true in the future */
-        //$query = clone $this->_owApp->instances->getResourceQuery();
-
-        $instances  = new OntoWiki_Model_Instances($this->store, $this->model, $options);
-        $query      = $instances->getResourceQuery();
-
+        //the future is now!
+        $instances      = $this->_session->instances;
+        $query = $instances->getResourceQuery();
+        
         $query->removeAllOptionals()->removeAllProjectionVars();
 
         $query->addProjectionVar($instances->getResourceVar());
