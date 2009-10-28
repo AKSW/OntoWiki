@@ -256,28 +256,16 @@ class MapController extends OntoWiki_Controller_Component
         $query->addProjectionVar($lat2Var);
         $query->addProjectionVar($long2Var);
 
-        $directQuery     = new Erfurt_Sparql_Query2_GroupGraphPattern();
-        $indirectQuery   = new Erfurt_Sparql_Query2_GroupGraphPattern(); 
-
-        $directQuery->addTriple(
-                $instances->getResourceVar(),
-                $latProperty,
-                $latVar);
-        $directQuery->addTriple(
-                $instances->getResourceVar(),
-                $longProperty,
-                $longVar);
+        $queryOptional     = new Erfurt_Sparql_Query2_OptionalGraphPattern();
 
         $node = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
-        $indirectQuery->addTriple($instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
-        $indirectQuery->addTriple($node, $latProperty, $lat2Var);
-        $indirectQuery->addTriple($node, $longProperty, $long2Var);
+        $queryOptional->addTriple($instances->getResourceVar(), $latProperty, $latVar);
+        $queryOptional->addTriple($instances->getResourceVar(), $longProperty, $longVar);
+        $queryOptional->addTriple($instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
+        $queryOptional->addTriple($node, $latProperty, $lat2Var);
+        $queryOptional->addTriple($node, $longProperty, $long2Var);
 
-        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern(); 
-
-        $union->addElement($directQuery)->addElement($indirectQuery);
-
-        $query->addElement($union);
+        $query->addElement($queryOptional);
         //$query->getOrder()->add($instances->getResourceVar());
         $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
         //echo $query;
