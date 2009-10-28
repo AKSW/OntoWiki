@@ -622,9 +622,14 @@ RDFauthor = {
                 objectOptions.lang = triple.object.lang;
             } else if (triple.object.datatype) {
                 objectOptions.datatype = triple.object.datatype.uri;
-            } else {
-                object = '"' + triple.object.value + '"';
             }
+            
+            // replace quotes
+            if (String(object).match(/["]/)) {
+                object = object.replace(/["]/g, '\\\"');
+            }
+            
+            object = '"' + object + '"';
             
             try {
                 var tripleObject = triple.object.uri 

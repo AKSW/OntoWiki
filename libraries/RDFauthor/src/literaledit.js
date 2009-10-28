@@ -159,13 +159,13 @@ LiteralEdit.prototype.onSubmit = function() {
                 objectOptions.lang = this.language;
             }
             
-            if (this.object.match(/["\n]/)) {
-                // long literal
-                object = '"""' + this.object + '"""';
-            } else {
-                // short literal
-                object = '"' + this.object + '"';
+            // replace quotes
+            if (String(object).match(/["]/)) {
+                object = String(object).replace(/["]/g, '\\\"');
             }
+            
+            // add literal quotes
+            object = '"' + object + '"';
             
             var oldTriple = $.rdf.triple(
                 $.rdf.resource('<' + this.subject + '>'), 
@@ -188,8 +188,8 @@ LiteralEdit.prototype.onSubmit = function() {
             }
             
             // replace quotes
-            if (newObjectValue.match(/["]/)) {
-                newObjectValue = newObjectValue.replace(/["]/g, '\\\"');
+            if (String(newObjectValue).match(/["]/)) {
+                newObjectValue = String(newObjectValue).replace(/["]/g, '\\\"');
             }
             
             // add literal quotes
@@ -205,7 +205,7 @@ LiteralEdit.prototype.onSubmit = function() {
                 alert('LiteralEdit: ' + error);
                 return false;
             }
-
+            
             dataBank.add(newTriple);
         }
     }
