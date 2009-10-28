@@ -23,11 +23,6 @@ var icon = new OpenLayers.Icon(
     new OpenLayers.Size(<?php echo $this->icon->size; ?>),
     new OpenLayers.Pixel(<?php echo $this->icon->offset; ?>)
 );
-var icon_selected = new OpenLayers.Icon(
-    componentUrlBase + '<?php echo $this->icon_selected->path; ?>',
-    new OpenLayers.Size(<?php echo $this->icon_selected->size; ?>),
-    new OpenLayers.Pixel(<?php echo $this->icon_selected->offset; ?>)
-);
 var cluster = new OpenLayers.Icon(
     componentUrlBase + '<?php echo $this->cluster->path; ?>',
     new OpenLayers.Size(<?php echo $this->cluster->size; ?>),
