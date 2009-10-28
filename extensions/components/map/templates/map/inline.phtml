@@ -12,6 +12,11 @@ require_once 'OntoWiki/Model/TitleHelper.php'
 <script type="text/javascript">
 //<![CDATA[
 
+// resize the mainMap according to the windowheight, if it is resized
+$('#mapContainer').addClass('width99');
+$('#mapContainer').height( $('#mapContainer').width() );
+$('#mapContainer').addClass('is-processing');
+
 // this function should be in a lib
 function loadScript (scriptUrl) {
     var script  = document.createElement('script');
@@ -52,13 +57,10 @@ loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenLayers.js'; ?>
 loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenStreetMap.js'; ?>');
 loadScript('<?php echo $this->componentUrlBase.'classes/NewMapManager.js'; ?>');
 
-// resize the mainMap according to the windowheight, if it is resized
-$('#mapContainer').addClass('width99');
-$('#mapContainer').height( $('#mapContainer').width() );
-
 waitForMap();
 
 function goForMap () {
+    $('#mapContainer').removeClass('is-processing');
     var manager             = new NewMapManager(
         $('#mapContainer').get(0),                      // the dom object containing the map
         <?php echo json_encode($this->extent) ?>,       // the extend on the map, which is shown

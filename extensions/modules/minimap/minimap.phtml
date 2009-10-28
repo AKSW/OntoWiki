@@ -11,11 +11,15 @@
 	<p class="messagebox info"><?php echo $this->_($this->message); ?></p>
 <?php endif; ?>
 <div id="miniMap" >
-    <img src="<?php echo $this->themeUrlBase; ?>images/spinner.gif"/>
 </div>
 <script type="text/javascript">
+    $('#miniMap').addClass('is-processing');
+    $('#miniMap').addClass('width99');
+    $('#miniMap').height( $('#mapContainer').width() );
+        
     <?php $htmlPartialUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'inline')); ?>
     $.get('<?php echo $htmlPartialUrl; ?>', function (data) {
+        $('#miniMap').removeClass('is-processing');
         $('#miniMap').html(data);
     });
 </script>
