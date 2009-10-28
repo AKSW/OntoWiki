@@ -30,8 +30,8 @@ function prepareMap() {
 
 // initiate the map
 function initMap ( ) {
-    this.map	    = new OpenLayers.Map( this.mapContainer );
-    this.map.theme  = this.themePath;
+    this.map	    = new OpenLayers.Map( this.mapContainer, { theme: this.themePath });
+//    this.map.theme  = this.themePath;
 
     //alert("extent: l:"+extent.left+" b:"+extent.bottom+" r:"+extent.right+" t:"+extent.top );
 
