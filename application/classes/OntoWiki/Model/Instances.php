@@ -66,6 +66,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_resourcesUptodate = false;
     protected $_resourcesConverted;
     protected $_resourcesConvertedUptodate = false;
+    /**
+     * 
+     * @var Erfurt_Sparql_Query2_Var
+     */
     protected $_resourceVar = null;
     
     /**
@@ -76,7 +80,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_resultsUptodate = false;
     
     /**
-     * @var Erfurt_Sparql_Query2_Abstraction
+     * @var Erfurt_Sparql_Query2
      */
     protected $_resourceQuery;
     /**
@@ -101,7 +105,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $shownInverseProperties = isset($options['shownInverseProperties']) ? $options['shownInverseProperties'] : array();
         $sessionfilter          = isset($options['filter']) ?                 $options['filter'] : array();
 
-        $this->_resourceQuery =  new Erfurt_Sparql_Query2();
+        $this->_resourceQuery   =  new Erfurt_Sparql_Query2();
         
         if(is_string($member_predicate))
             $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
@@ -117,20 +121,18 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if($withChilds){
 	    $this->subClasses = array_keys($store->getTransitiveClosure($graph->getModelIri(), EF_RDFS_SUBCLASSOF, array($this->type->getIri()), true));
  	}
- 		
+ 	
         if(count($this->subClasses)>1){ //the class itself is somehow included in the subclasses...
             $typeVar = new Erfurt_Sparql_Query2_Var($this->type);
-            $typePart= new Erfurt_Sparql_Query2_Triple($this->_resourceVar, $member_predicate, $typeVar);
-            $this->_resourceQuery->getWhere()->addElement($typePart);
-            $or = new Erfurt_Sparql_Query2_ConditionalOrExpression(); 
+            $this->_resourceQuery->addTriple($this->_resourceVar, $member_predicate, $typeVar);
+
+            $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
             foreach($this->subClasses as $subclass){
                 $or->addElement(new Erfurt_Sparql_Query2_sameTerm($typeVar, new Erfurt_Sparql_Query2_IriRef($subclass)));
             }
-            $filter = new Erfurt_Sparql_Query2_Filter($or);
-            $this->_resourceQuery->getWhere()->addElement($filter);
+            $this->_resourceQuery->addFilter($or);
         } else {
-            $typePart= new Erfurt_Sparql_Query2_Triple($this->_resourceVar, $member_predicate, $this->type);
-            $this->_resourceQuery->getWhere()->addElement($typePart);
+            $this->_resourceQuery->addTriple($this->_resourceVar, $member_predicate, $this->type);
         }
         
         //show resource uri

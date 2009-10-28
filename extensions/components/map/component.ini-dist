@@ -38,15 +38,9 @@ clusterer.maxMarkers = 4
 ; configure the marker icons
 ; the values are documented in the OpenLayer API-doc
 ; http://dev.openlayers.org/releases/OpenLayers-2.7/doc/apidocs/files/OpenLayers/Icon-js.html
-icon.path		= "./resources/markers/single.png"
+icon.path		= "../../themes/silverblue/images/marker.png"
 icon.size		= "10,10"
 icon.offset		= "-5,-5"
-icon_selected.path	= "./resources/markers/single-selected.png"
-icon_selected.size	= "25,25"
-icon_selected.offset	= "-12,-12"
-cluster.path		= "./resources/markers/cluster.png"
-cluster.size		= "20,20"
-cluster.offset		= "-10,-10"
-cluster_selected.path	= "./resources/markers/cluster-selected.png"
-cluster_selected.size	= "25,25"
-cluster_selected.offset	= "-12,-12"
+cluster.path	= "../../themes/silverblue/images/cluster-marker.png"
+cluster.size	= "20,20"
+cluster.offset	= "-10,-10"

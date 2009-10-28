@@ -16,24 +16,7 @@ class FilterController extends OntoWiki_Controller_Component
 {
        
     public function getpossiblevaluesAction(){
-    	$store       = $this->_owApp->erfurt->getStore();
-        $graph       = $this->_owApp->selectedModel;
-        $resource    = $this->_owApp->selectedClass;
-        $options = array(
-            'rdf_type' => (string) $resource,
-            'member_predicate' => EF_RDF_TYPE, // TODO make this variable for handling collections...
-            'withChilds' => true,
-            'limit' => 0,
-            'offset' => 0,
-            'shownProperties' => is_array($this->_session->shownProperties) ? $this->_session->shownProperties : array(),
-            'shownInverseProperties' => is_array($this->_session->shownInverseProperties) ? $this->_session->shownInverseProperties : array(),
-            'filter' => is_array($this->_session->filter) ? $this->_session->filter : array(),
-	);
-		
-        // instantiate model
-        require_once 'OntoWiki/Model/Instances.php';
-        
-        $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
+        $instances   = $this->_session->instances;
     	
     	$predicate = $this->_request->getParam('predicate', '');
         $inverse = $this->_request->getParam('inverse', '');
@@ -54,6 +37,8 @@ class FilterController extends OntoWiki_Controller_Component
         foreach($this->view->value as $key => $value){
             if($value['type'] == 'uri'){
                 $this->view->value[$key]['title'] = $titleHelper->getTitle($value['value']);
+            } else {
+                $this->view->value[$key]['title'] = $value['value'];
             }
         }
     }

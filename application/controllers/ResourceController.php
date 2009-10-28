@@ -244,7 +244,11 @@ class ResourceController extends OntoWiki_Controller_Base
             
         // instantiate model
         $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
+        $this->_session->instances = $instances;
+
+        //needed?
         $this->_owApp->instances = $instances;
+        
         $this->view->headScript()->appendScript('var classUri = "'.OntoWiki_Utils::contractNamespace($this->_owApp->selectedClass).'";');
             
         if ($instances->hasData()) {
@@ -263,8 +267,8 @@ class ResourceController extends OntoWiki_Controller_Base
 			
             $query = clone $instances->getResourceQuery();
             
-            $query->setLimit(0)->setOffset(0);
-			
+            $query->removeAllOptionals();
+
             $where = 'WHERE '.$query->getWhere();
             
             $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
