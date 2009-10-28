@@ -157,16 +157,22 @@ LiteralEdit.prototype.onSubmit = function() {
                 objectOptions.datatype = this.datatype;
             } else if (this.language !== '') {
                 objectOptions.lang = this.language;
+            }
+            
+            if (this.object.match(/["\n]/)) {
+                // long literal
+                object = '"""' + this.object + '"""';
             } else {
+                // short literal
                 object = '"' + this.object + '"';
             }
-
+            
             var oldTriple = $.rdf.triple(
                 $.rdf.resource('<' + this.subject + '>'), 
                 $.rdf.resource('<' + this.predicate + '>'), 
                 $.rdf.literal(object, objectOptions)
             );
-
+            
             dataBank.remove(oldTriple);
         }
         
@@ -179,9 +185,15 @@ LiteralEdit.prototype.onSubmit = function() {
                 newObjectOptions.lang = newObjectLang;
             } else if (newObjectDatatype !== '') {
                 newObjectOptions.datatype = newObjectDatatype;
-            } else {
-                newObject = '"' + newObjectValue + '"';
             }
+            
+            // replace quotes
+            if (newObjectValue.match(/["]/)) {
+                newObjectValue = newObjectValue.replace(/["]/g, '\\\"');
+            }
+            
+            // add literal quotes
+            newObject = '"' + newObjectValue + '"';
             
             try {
                 var newTriple = $.rdf.triple(
@@ -190,7 +202,7 @@ LiteralEdit.prototype.onSubmit = function() {
                     $.rdf.literal(newObject, newObjectOptions)
                 );
             } catch (error) {
-                alert('LiteralEdit: ' + error.message);
+                alert('LiteralEdit: ' + error);
                 return false;
             }
 
