@@ -19,6 +19,9 @@ class MapController extends OntoWiki_Controller_Component
     private $resource;
     private $store;
 
+    private $resources = null;
+    private $resourceVar = 'resource';
+
     private $config;
 
     public function init()
@@ -150,38 +153,38 @@ class MapController extends OntoWiki_Controller_Component
                     "left"   => -180 );
         }
 
+        if($this->resources === null) {
+            $this->_getResources( $viewArea );
+        }
+        
         $markers = array();
 
-        $result = $this->_getMarkerResult( $viewArea );
-        $instanceVar = $result[1];
-        $result = $result[0];
-
-        if($result) {
+        if($this->resources) {
             $titleHelper = new OntoWiki_Model_TitleHelper($this->model);
 
-            foreach ($result as $row) {
-                $uri = isset($row[$instanceVar]) ? $row[$instanceVar] : $this->resource;
-                $titleHelper->addResource($uri);
+            foreach ($this->resources as $r) {
+                $uri = isset($r[$this->resourceVar]) ? $r[$this->resourceVar] : $this->resource;
+                $titleHelper->addResource($uri); // do I realy need titles here?
             }
 
-            foreach ($result as $row) {
+            foreach ($this->resources as $r) {
                 $url = new OntoWiki_Url(array('route' => 'properties'));
-                $uri = isset($row[$instanceVar]) ? $row[$instanceVar] : $this->resource;
+                $uri = isset($r[$this->resourceVar]) ? $r[$this->resourceVar] : $this->resource;
                 $url->setParam('r', $uri, true);
 
-                if (empty ($row['lat']) || empty ($row['long'])) {
-                    if(!empty($row['indirectLat']) && !empty($row['indirectLong'])) {
-                        $lat = $row['indirectLat'];
-                        $long = $row['indirectLong'];
+                if (empty ($r['lat']) || empty ($r['long'])) {
+                    if(!empty($r['indirectLat']) && !empty($r['indirectLong'])) {
+                        $lat = $r['indirectLat'];
+                        $long = $r['indirectLong'];
                     }
                 } else {
-                    $lat = $row['lat'];
-                    $long = $row['long'];
+                    $lat = $r['lat'];
+                    $long = $r['long'];
                 }
 
                 if (!empty($lat) && !empty($long)) {
                     $marker = new Marker($uri);
-                    $marker->setLabel($titleHelper->getTitle($uri));
+                    $marker->setLabel($titleHelper->getTitle($uri)); // do I realy need titles here?
                     $marker->setLat($lat);
                     $marker->setLon($long);
                     $marker->setUrl((string) $url);
@@ -193,13 +196,15 @@ class MapController extends OntoWiki_Controller_Component
                 unset($long);
             }
 
+            /**
+             * cluster the markers
+             */
             if ($this->_request->clustering != 'off') {
                 $clustererGridCount = $this->_privateConfig->clusterer->gridCount;
                 $clustererMaxMarkers = $this->_privateConfig->clusterer->maxMarkers;
 
                 $clusterer = new Clusterer( $clustererGridCount, $clustererMaxMarkers );
                 $clusterer->setViewArea( $viewArea );
-                //$clusterer->setMarkers( $markersVisible );//$this->markers );
                 $clusterer->setMarkers( $markers );
                 $clusterer->ignite( );
                 $markers = $clusterer->getMarkers( );
@@ -228,9 +233,9 @@ class MapController extends OntoWiki_Controller_Component
 
     /**
      * Get the markers in the specified area
+     * TODO implement using the viewArea
      */
-    private function _getMarkerResult( $viewArea = false, $limit = false, $order = false ) {
-
+    private function _getResources( $viewArea = false ) {
         /**
          * read configuration
          */
@@ -266,17 +271,12 @@ class MapController extends OntoWiki_Controller_Component
         $queryOptional->addTriple($node, $longProperty, $long2Var);
 
         $query->addElement($queryOptional);
-        //$query->getOrder()->add($instances->getResourceVar());
         $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
-        //echo $query;
         $this->_owApp->logger->debug('MapComponent/_getMarkerResult sent "' . $query . '" to get markers.');
 
         /* get result of the query */
-        //for some reason sparqlAsk wants a SimpleQuery
-        
-        $result = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
-
-        return array($result, $instances->getResourceVar()->getName());
+        $this->resources    = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
+        $this->resourceVar  = $instances->getResourceVar()->getName();
     }
 
     /**
@@ -286,102 +286,35 @@ class MapController extends OntoWiki_Controller_Component
      */
     private function _getMaxExtent () {
 
-        // build the querys to get the maximal markers
-        // TODO change this to a QueryObject
-        $query    = new Erfurt_Sparql_SimpleQuery( );
-        $query->setProloguePart( 'SELECT ?instance ?lat ?long' );
-
-        $where         = "WHERE {" . EOL;
-        $indWhere         = "WHERE {" . EOL;
-
-        // get the transitive closure of subclasses of the selected resource
-        $types		= array_keys($this->store->getTransitiveClosure($this->model->getModelIri(), EF_RDFS_SUBCLASSOF, array($this->resource), true));
-        $typesWhere	= " UNION { ?instance a <" . implode( ">. } UNION { ?instance a <", $types ) . ">. } ";
-
-        $latitude	= $this->_privateConfig->property->latitude->toArray();
-        $longitude	= $this->_privateConfig->property->longitude->toArray();
-
-        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: latitude: ' . var_export($latitude, true));
-        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: longitude: ' . var_export($longitude, true));
-
-        $skelWhere = "		{"																	 . EOL;
-        $skelWhere.= "			{ ?instance a ?b. FILTER (sameTerm (?instance, <%s>))} %s" 		 . EOL;
-        $skelWhere.= "			?instance <%s> ?lat;"									 . EOL;
-        $skelWhere.= "			          <%s> ?long."									 . EOL;
-        $skelWhere.= "		 }"																	 . EOL;
-
-        $skelIndWhere = "		{"																	 . EOL;
-        $skelIndWhere.= "			{ ?instance a ?b. FILTER (sameTerm (?instance, <%s>))} %s" 		 . EOL;
-        $skelIndWhere.= "			?instance ?p ?node;"									 . EOL;
-        $skelIndWhere.= "			?node <%s> ?lat;"									 . EOL;
-        $skelIndWhere.= "			          <%s> ?long."									 . EOL;
-        $skelIndWhere.= "		 }"																	 . EOL;
-
-        for ($i = 0; $i < count($latitude); $i++) {
-            $lat = $latitude[$i];
-            $long = $longitude[$i];
-            if ($i != 0) $where.= " UNION ";
-            $where .= sprintf($skelWhere, $this->resource, $typesWhere, $lat, $long);
-        }
-        
-        for ($i = 0; $i < count($latitude); $i++) {
-            $lat = $latitude[$i];
-            $long = $longitude[$i];
-            if ($i != 0) $indWhere.= " UNION ";
-            $indWhere .= sprintf($skelWhere, $this->resource, $typesWhere, $lat, $long);
+        if($this->resources === null) {
+            $this->_getResources( );
         }
 
-        $where        .= "}";
-        $indWhere        .= "}";
+//        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: resources: ' . var_export($this->resources, true));
 
-        $indQuery = clone $query;
+        $lat = array();
+        $long = array();
+        foreach($this->resources as $r) {
+            if(!empty($r['lat'])) {
+                $lat[] = $r['lat'];
+            }
+            if(!empty($r['lat2'])) {
+                $lat[] = $r['lat2'];
+            }
+            if(!empty($r['long'])) {
+                $long[] = $r['long'];
+            }
+            if(!empty($r['long2'])) {
+                $long[] = $r['long2'];
+            }
+        }
 
-        $query->setWherePart( $where );
-        $indQuery->setWherePart( $indWhere );
-
-        $query->setLimit( 1 );
-        
-        $topQuery    = clone $query;
-        $rightQuery  = clone $query;
-        $bottomQuery = clone $query;
-        $leftQuery   = clone $query;
-        
-        $topIndQuery    = clone $indQuery;
-        $rightIndQuery  = clone $indQuery;
-        $bottomIndQuery = clone $indQuery;
-        $leftIndQuery   = clone $indQuery;
-
-        $topQuery->setOrderClause("DESC(?lat)");
-        $rightQuery->setOrderClause("DESC(?long)");
-        $bottomQuery->setOrderClause("ASC(?lat)");
-        $leftQuery->setOrderClause("ASC(?long)");
-
-        $topIndQuery->setOrderClause("DESC(?lat)");
-        $rightIndQuery->setOrderClause("DESC(?long)");
-        $bottomIndQuery->setOrderClause("ASC(?lat)");
-        $leftIndQuery->setOrderClause("ASC(?long)");
-        
-        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: topQuery: ' . var_export((string)$topQuery, true));
-        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: rightQuery: ' . var_export((string)$rightQuery, true));
-        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: bottomQuery: ' . var_export((string)$bottomQuery, true));
-        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: leftQuery: ' . var_export((string)$leftQuery, true));
-
-        $top    = $this->model->sparqlQuery($topQuery);
-        $right  = $this->model->sparqlQuery($rightQuery);
-        $bottom = $this->model->sparqlQuery($bottomQuery);
-        $left   = $this->model->sparqlQuery($leftQuery);
-        
-        $indTop    = $this->model->sparqlQuery($topIndQuery);
-        $indRight  = $this->model->sparqlQuery($rightIndQuery);
-        $indBottom = $this->model->sparqlQuery($bottomIndQuery);
-        $indLeft   = $this->model->sparqlQuery($leftIndQuery);
-
-        if(isset($top[0]) AND isset($right[0]) AND isset($bottom[0]) AND $left[0]) {
+        if(count($lat) > 0 AND count($long) > 0) {
             $return = array(
-                    "top"    => max($top[0]['lat'], $indTop[0]['lat']),
-                    "right"  => max($right[0]['long'], $indRight[0]['long']),
-                    "bottom" => min($bottom[0]['lat'], $indBottom[0]['lat']),
-                    "left"   => min($left[0]['long'], $indLeft[0]['long'])
+                    "top"    => max($lat),
+                    "right"  => max($long),
+                    "bottom" => min($lat),
+                    "left"   => min($long)
                 );
         } else {
             /**
@@ -391,7 +324,8 @@ class MapController extends OntoWiki_Controller_Component
                     "top"    => $this->_privateConfig->default->latitude,
                     "right"  => $this->_privateConfig->default->longitude,
                     "bottom" => $this->_privateConfig->default->latitude,
-                    "left"   => $this->_privateConfig->default->longitude);
+                    "left"   => $this->_privateConfig->default->longitude
+                );
         }
 
         $this->_owApp->logger->debug('MapComponent/_getMaxExtent: extent: ' . var_export($return, true));
