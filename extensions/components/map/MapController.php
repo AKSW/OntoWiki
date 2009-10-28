@@ -245,7 +245,7 @@ class MapController extends OntoWiki_Controller_Component
 
         //the future is now!
         $instances      = $this->_session->instances;
-        $query = $instances->getResourceQuery();
+        $query          = $instances->getResourceQuery();
         
         $query->removeAllOptionals()->removeAllProjectionVars();
 
@@ -298,14 +298,8 @@ class MapController extends OntoWiki_Controller_Component
     private function _getMaxExtent () {
 
         // build the querys to get the maximal markers
-        $topQuery    = new Erfurt_Sparql_SimpleQuery( );
-        $rightQuery  = new Erfurt_Sparql_SimpleQuery( );
-        $bottomQuery = new Erfurt_Sparql_SimpleQuery( );
-        $leftQuery   = new Erfurt_Sparql_SimpleQuery( );
-        $topQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
-        $rightQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
-        $bottomQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
-        $leftQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
+        $query    = new Erfurt_Sparql_SimpleQuery( );
+        $query->setProloguePart( 'SELECT ?instance ?lat ?long' );
 
         $where         = "WHERE {" . EOL;
 
@@ -334,30 +328,29 @@ class MapController extends OntoWiki_Controller_Component
 
         $where        .= "}";
 
-        $topQuery->setWherePart( $where );
-        $rightQuery->setWherePart( $where );
-        $bottomQuery->setWherePart( $where );
-        $leftQuery->setWherePart( $where );
+        $query->setWherePart( $where );
+
+        $query->setLimit( 1 );
+        
+        $topQuery    = clone $query;
+        $rightQuery  = clone $query;
+        $bottomQuery = clone $query;
+        $leftQuery   = clone $query;
 
         $topQuery->setOrderClause("DESC(?lat)");
         $rightQuery->setOrderClause("DESC(?long)");
         $bottomQuery->setOrderClause("ASC(?lat)");
         $leftQuery->setOrderClause("ASC(?long)");
-
-        $topQuery->setLimit( 1 );
-        $rightQuery->setLimit( 1 );
-        $bottomQuery->setLimit( 1 );
-        $leftQuery->setLimit( 1 );
         
         $this->_owApp->logger->debug('MapComponent/_getMaxExtent: topQuery: ' . var_export((string)$topQuery, true));
         $this->_owApp->logger->debug('MapComponent/_getMaxExtent: rightQuery: ' . var_export((string)$rightQuery, true));
         $this->_owApp->logger->debug('MapComponent/_getMaxExtent: bottomQuery: ' . var_export((string)$bottomQuery, true));
         $this->_owApp->logger->debug('MapComponent/_getMaxExtent: leftQuery: ' . var_export((string)$leftQuery, true));
 
-        $top = $this->model->sparqlQuery($topQuery);
-        $right = $this->model->sparqlQuery($rightQuery);
+        $top    = $this->model->sparqlQuery($topQuery);
+        $right  = $this->model->sparqlQuery($rightQuery);
         $bottom = $this->model->sparqlQuery($bottomQuery);
-        $left = $this->model->sparqlQuery($leftQuery);
+        $left   = $this->model->sparqlQuery($leftQuery);
 
         if(isset($top[0]) AND isset($right[0]) AND isset($bottom[0]) AND $left[0]) {
             $return = array(
