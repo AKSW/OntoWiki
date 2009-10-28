@@ -14,7 +14,7 @@
     <img src="<?php echo $this->themeUrlBase; ?>images/spinner.gif"/>
 </div>
 <script type="text/javascript">
-    <?php $htmlPartialUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'inline'), array());//, array('r')); ?>
+    <?php $htmlPartialUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'inline'), array()); ?>
     $.get('<?php echo $htmlPartialUrl; ?>', function (data) {
         $('#miniMap').html(data);
     });

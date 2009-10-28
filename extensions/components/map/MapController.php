@@ -18,7 +18,8 @@ class MapController extends OntoWiki_Controller_Component
     private $model;
     private $resource;
     private $store;
-    private $indirectProperties = null;
+
+    private $config;
 
     public function init()
     {
@@ -26,6 +27,16 @@ class MapController extends OntoWiki_Controller_Component
         $this->resource = $this->_owApp->selectedResource->getIri();
         $this->model    = $this->_owApp->selectedModel;
         $this->store    = $this->_erfurt->getStore();
+
+        $this->config   = array(
+            'icon'          => $this->_privateConfig->icon,
+            'clusterIcon'   => $this->_privateConfig->cluster,
+            'apikeys'       => array(
+                'google'        => $this->_privateConfig->apikey->google,
+            ),
+            'lat'           => $this->_privateConfig->default->latitude,
+            'long'          => $this->_privateConfig->default->longitude
+        );
     }
 
     /**
@@ -48,38 +59,23 @@ class MapController extends OntoWiki_Controller_Component
         $this->view->headScript()->appendFile($this->_componentUrlBase.'resources/classes/MapManager.js');
 
         $this->view->headScript()->appendScript('
-                $(document).ready(function() {setMapHeight();initMap();});
-                ');
+            $(document).ready(function() {setMapHeight();initMap();});
+        ');
 
         // default values from configuration
         $this->view->defaultLat             = $this->_privateConfig->default->latitude;
         $this->view->defaultLong            = $this->_privateConfig->default->longitude;
         $this->view->icon                   = $this->_privateConfig->icon;
         $this->view->cluster                = $this->_privateConfig->cluster;
-        $this->view->icon_selected          = $this->_privateConfig->icon_selected;
-        $this->view->cluster_selected       = $this->_privateConfig->cluster_selected;
-
-        if (count($this->_getIndirectProperties()) > 1) {
-            $this->view->indirect           = $this->_getIndirectProperties();
-        } else {
-            $this->view->indirect           = false;
-        }
-
-        if (isset($this->_request->selectedIndirect)) {
-            $this->view->selectedIndirect   = $this->_request->selectedIndirect;
-        }
 
         /* doesn't work at the moment, because the menu can't be accessed from javascript at runtime */
         /* add ontowiki-style layer switcher */
-        $this->view->defaultLayer   = $this->_privateConfig->default->layer;
+        $this->view->defaultLayer           = $this->_privateConfig->default->layer;
 
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());//array('r'));
         $jsonRequestUrl->setParam('datatype', "json", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
-        if (count ($this->_getIndirectProperties()) > 1) {
-            $jsonRequestUrl->setParam('selectedIndirect', "__indirect__", true);
-        }
         $this->view->jsonRequestUrl = $jsonRequestUrl;
 
         $this->view->extent         = $this->_getMaxExtent();
@@ -215,6 +211,9 @@ class MapController extends OntoWiki_Controller_Component
         $this->_response->setBody(json_encode($markers));
     }
 
+    /**
+     * TODO implement this function
+     */
     public function configAction()
     {
         // this function gets and sends some persistent configuration values
@@ -292,59 +291,6 @@ class MapController extends OntoWiki_Controller_Component
     }
 
     /**
-     * Determines the possible indirect properties.
-     * Maybe this function is dispensable, if we just use every indirect property.
-     * @return array of strings containing the property uris
-     */
-    private function _getIndirectProperties ()
-    {
-        if ($this->indirectProperties === null) {
-            $latitude	= $this->_privateConfig->property->latitude->toArray();
-            $longitude	= $this->_privateConfig->property->longitude->toArray();
-
-            $query = new Erfurt_Sparql_SimpleQuery();
-
-            $query->setProloguePart('SELECT DISTINCT ?p');
-
-            $where = "WHERE" . EOL;
-            $where.= "{" . EOL;
-
-            $skelWhere = "{" . EOL;
-            $skelWhere.= "	?s ?p ?o." . EOL;
-            $skelWhere.= "	?o <%s> ?lat;" . EOL;
-            $skelWhere.= "		<%s> ?long." . EOL;
-            $skelWhere.= "}" . EOL;
-
-            for ($i = 0; $i < count($latitude); $i++) {
-                $lat = $latitude[$i];
-                $long = $longitude[$i];
-                if( $i != 0 ) $where.= " UNION ";
-                $where.= sprintf($skelWhere, $lat, $long);
-            }
-
-            $where.= "}" . EOL;
-
-            $query->setWherePart($where);
-
-            $result = $this->model->sparqlQuery($query);
-
-            $return = array();
-
-            foreach ($result as $arr) {
-                $return[] = $arr["p"];
-            }
-
-            if( $this->_request->datatype != "json" && $this->_request->var_dump == "true") {
-                var_dump($return);
-            }
-            $this->indirectProperties = $return;
-        } else {
-            $return = $this->indirectProperties;
-        }
-        return $return;
-    }
-
-    /**
      * Calculates the maximum distance of the markers, to get the optimal viewArea/extent for initial map view.
      * This function has many code duplicats, needs a rework.
      * @return array {"top" (max. lat.), "right"  (max. long.), "bottom" (min. lat.), "left" (min. long.)}
@@ -361,27 +307,7 @@ class MapController extends OntoWiki_Controller_Component
         $bottomQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
         $leftQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
 
-        $indirect = $this->_getIndirectProperties();
-
-        // if indirect properties are found:
-        if (count($indirect) > 0) {
-            if (isset($this->_request->selectedIndirect)) {
-                $selectedIndirect = $indirect[$this->_request->selectedIndirect];
-            } else {
-                $selectedIndirect = $indirect[0];
-            }
-            $indirectTopQuery    = new Erfurt_Sparql_SimpleQuery( );
-            $indirectRightQuery  = new Erfurt_Sparql_SimpleQuery( );
-            $indirectBottomQuery = new Erfurt_Sparql_SimpleQuery( );
-            $indirectLeftQuery   = new Erfurt_Sparql_SimpleQuery( );
-            $indirectTopQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
-            $indirectRightQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
-            $indirectBottomQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
-            $indirectLeftQuery->setProloguePart( 'SELECT ?instance ?lat ?long' );
-        }
-
         $where         = "WHERE {" . EOL;
-        $indirectWhere = "WHERE {" . EOL;
 
         // get the transitive closure of subclasses of the selected resource
         $types		= array_keys($this->store->getTransitiveClosure($this->model->getModelIri(), EF_RDFS_SUBCLASSOF, array($this->resource), true));
@@ -390,10 +316,8 @@ class MapController extends OntoWiki_Controller_Component
         $latitude	= $this->_privateConfig->property->latitude->toArray();
         $longitude	= $this->_privateConfig->property->longitude->toArray();
 
-        if( $this->_request->datatype != "json" && $this->_request->var_dump == "true" ) {
-            var_dump( $latitude );
-            var_dump( $longitude );
-        }
+        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: latitude: ' . var_export($latitude, true));
+        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: longitude: ' . var_export($longitude, true));
 
         $skelWhere = "		{"																	 . EOL;
         $skelWhere.= "			{ ?instance a ?b. FILTER (sameTerm (?instance, <%s>))} %s" 		 . EOL;
@@ -401,23 +325,11 @@ class MapController extends OntoWiki_Controller_Component
         $skelWhere.= "			          <%s> ?long."									 . EOL;
         $skelWhere.= "		 }"																	 . EOL;
 
-        if (isset($selectedIndirect)) {
-            $indirectSkelWhere = "		{"																 . EOL;
-            $indirectSkelWhere.= "			{ ?instance a ?b. FILTER (sameTerm (?instance, <%s>))} %s" 	 . EOL;
-            $indirectSkelWhere.= "				?instance <" . $selectedIndirect . "> ?place."			 . EOL;
-            $indirectSkelWhere.= "				?place <%s> ?lat;"										 . EOL;
-            $indirectSkelWhere.= "				       <%s> ?long."										 . EOL;
-            $indirectSkelWhere.= "		}"																 . EOL;
-        }
-
         for ($i = 0; $i < count($latitude); $i++) {
             $lat = $latitude[$i];
             $long = $longitude[$i];
             if ($i != 0) $where.= " UNION ";
             $where .= sprintf($skelWhere, $this->resource, $typesWhere, $lat, $long);
-            if (isset($selectedIndirect)) {
-                $indirectWhere.= sprintf($indirectSkelWhere, $this->resource, $typesWhere, $lat, $long);
-            }
         }
 
         $where        .= "}";
@@ -436,6 +348,11 @@ class MapController extends OntoWiki_Controller_Component
         $rightQuery->setLimit( 1 );
         $bottomQuery->setLimit( 1 );
         $leftQuery->setLimit( 1 );
+        
+        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: topQuery: ' . var_export((string)$topQuery, true));
+        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: rightQuery: ' . var_export((string)$rightQuery, true));
+        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: bottomQuery: ' . var_export((string)$bottomQuery, true));
+        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: leftQuery: ' . var_export((string)$leftQuery, true));
 
         $top = $this->model->sparqlQuery($topQuery);
         $right = $this->model->sparqlQuery($rightQuery);
@@ -450,45 +367,6 @@ class MapController extends OntoWiki_Controller_Component
                     "left"   => $left[0]['long']);
         }
 
-        if(isset($selectedIndirect)) {
-            $indirectWhere.= "}";
-
-            $indirectTopQuery->setWherePart(  $indirectWhere );
-            $indirectRightQuery->setWherePart( $indirectWhere );
-            $indirectBottomQuery->setWherePart(  $indirectWhere );
-            $indirectLeftQuery->setWherePart( $indirectWhere );
-
-            $indirectTopQuery->setOrderClause("DESC(?lat)"); 
-            $indirectRightQuery->setOrderClause("DESC(?long)");
-            $indirectBottomQuery->setOrderClause("ASC(?lat)"); 
-            $indirectLeftQuery->setOrderClause("ASC(?long)");
-
-            $indirectTopQuery->setLimit( 1 );
-            $indirectRightQuery->setLimit( 1 );
-            $indirectBottomQuery->setLimit( 1 );
-            $indirectLeftQuery->setLimit( 1 );
-
-            $top = $this->model->sparqlQuery($indirectTopQuery);
-            $right = $this->model->sparqlQuery($indirectRightQuery);
-            $bottom = $this->model->sparqlQuery($indirectBottomQuery);
-            $left = $this->model->sparqlQuery($indirectLeftQuery);
-
-            if(isset($return['top']) AND isset($return['right']) AND isset($return['bottom']) AND $return['left']) {
-                if(isset($top[0]) AND isset($right[0]) AND isset($bottom[0]) AND $left[0]) {
-                    if($top[0]['lat'] > $return['top']) $return['top'] = $top[0]['lat'];
-                    if($right[0]['long'] > $return['right']) $return['right'] = $right[0]['long'];
-                    if($bottom[0]['lat'] < $return['bottom']) $return['bottom'] = $bottom[0]['lat'];
-                    if($left[0]['long'] < $return['left']) $return['left'] = $left[0]['long'];
-                }
-            } else if(isset($top[0]) AND isset($right[0]) AND isset($bottom[0]) AND $left[0]) {
-                $return = array(
-                        "top"    => $top[0]['lat'],
-                        "right"  => $right[0]['long'],
-                        "bottom" => $bottom[0]['lat'],
-                        "left"   => $left[0]['long']);
-            }
-        }
-
         if (!isset($return)) {
             /**
              * set default possition, if no resource is selected
@@ -500,10 +378,7 @@ class MapController extends OntoWiki_Controller_Component
                     "left"   => $this->_privateConfig->default->longitude);
         }
 
-        if ($this->_request->datatype != "json" && $this->_request->var_dump == "true") {
-            echo "extent array" . EOL;
-            var_dump($return);
-        }
+        $this->_owApp->logger->debug('MapComponent/_getMaxExtent: extent: ' . var_export($return, true));
 
         return $return;
 
