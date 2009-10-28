@@ -16,7 +16,7 @@ require_once 'OntoWiki/Module.php';
  */
 class FilterModule extends OntoWiki_Module
 {
-	
+    
     public function init()
     {
         $this->store = $this->_owApp->erfurt->getStore();
@@ -32,8 +32,8 @@ class FilterModule extends OntoWiki_Module
 
         $this->view->filter = $session->filter;        
     }
-	
-	
+    
+    
     public function getTitle()
     {
         return 'Filter';
@@ -41,8 +41,8 @@ class FilterModule extends OntoWiki_Module
     
     public function getContents()
     {
-        if(is_array( $this->view->filter)){
-            foreach( $this->view->filter as $key => $filter){
+        if (is_array( $this->view->filter)) {
+            foreach ( $this->view->filter as $key => $filter) {
                 if ($this->view->filter[$key]['property']) {
                     $this->view->filter[$key]['property'] = trim($filter['property']);
                     $this->titleHelper->addResource($filter['property']);

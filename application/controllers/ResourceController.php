@@ -264,7 +264,7 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->view->start     = $offset ? $offset + 1 : 1;
             $this->view->class     = preg_replace('/^.*[#\/]/', '', (string )$resource);
             $translate = $this->_owApp->translate;
-			
+            
             $query = clone $instances->getResourceQuery();
             
             $query->removeAllOptionals();
@@ -330,14 +330,14 @@ class ResourceController extends OntoWiki_Controller_Base
         $this->addModuleContext('main.window.instances');
     }
     
-    public function statusbarpagerAction(){
-    	$store       = $this->_owApp->erfurt->getStore();
+    public function statusbarpagerAction() {
+        $store       = $this->_owApp->erfurt->getStore();
         $graph       = $this->_owApp->selectedModel;
-    	if(!isset($this->_owApp->instances))
-    		$this->instancesAction();
-    	
-    	$translate = $this->_owApp->translate;
-    	$query = clone $this->_owApp->instances->getQuery();
+        if (!isset($this->_owApp->instances))
+            $this->instancesAction();
+        
+        $translate = $this->_owApp->translate;
+        $query = clone $this->_owApp->instances->getQuery();
         $query->getStartNode()->clearShownProperties();
         $newquery = $query->getRealQuery()->setDistinct(true);
 

@@ -304,24 +304,44 @@ EOT;
         $pred_var = new Erfurt_Sparql_Query2_Var("predicate");
         $obj_var = new Erfurt_Sparql_Query2_Var("object");
         
-        $query->getWhere()
-        	->addElement(new Erfurt_Sparql_Query2_Triple($uri, $pred_var, $obj_var))
-   			->addElement(new Erfurt_Sparql_Query2_Filter(new Erfurt_Sparql_Query2_UnaryExpressionNot(new Erfurt_Sparql_Query2_isBlank($obj_var))));
+        $query
+            ->addTriple($uri, $pred_var, $obj_var);
+        $query->addFilter(
+            new Erfurt_Sparql_Query2_UnaryExpressionNot(
+               new Erfurt_Sparql_Query2_isBlank(
+                   $obj_var
+               )
+           )
+        );
 
         if(!empty($this->_ignoredPredicates)){
             $or = new Erfurt_Sparql_Query2_ConditionalAndExpression();
             $filter = new Erfurt_Sparql_Query2_Filter($or);
             foreach($this->_ignoredPredicates as $ignored){
-                    $or->addElement(new Erfurt_Sparql_Query2_UnaryExpressionNot(new Erfurt_Sparql_Query2_sameTerm($pred_var, new Erfurt_Sparql_Query2_IriRef($ignored))));
+                    $or->addElement(
+                        new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                            new Erfurt_Sparql_Query2_sameTerm(
+                                $pred_var,
+                                new Erfurt_Sparql_Query2_IriRef($ignored)
+                            )
+                        )
+                    );
             }
             $query->getWhere()->addElement($filter);
         }
-        $query->getOrder()->add($pred_var);
         
-        $query->setDistinct(true)->addProjectionVar($pred_var)->addProjectionVar($obj_var);
+        $query
+            ->setDistinct(true)
+            ->addProjectionVar($pred_var)
+            ->addProjectionVar($obj_var)
+            ->getOrder()
+                ->add($pred_var);
 
         $queries = array();
-        $closure = Erfurt_App::getInstance()->getStore()->getImportsClosure($this->_model->getModelUri(), true);
+        $closure = Erfurt_App::getInstance()->getStore()->getImportsClosure(
+            $this->_model->getModelUri(),
+            true
+        );
         $queryGraphs = array_merge(array($this->_graph), $closure);
 
         foreach ($queryGraphs as $currentGraph) {
