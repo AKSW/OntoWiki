@@ -20,6 +20,17 @@ config.skos.hierarchyRelations.out[]   = "http://www.w3.org/2004/02/skos/core#na
 ;;; the name is used for the gui (not as an id, id is the array name)
 config.classes.name = "Classes"
 ;
+;;; This option is used to configure, how much effort is used to prepare the
+;;; titles of the hierarchy entries. The following config values are recognized:
+;;; - titleHelper (default) (this is the fancy but slow titleHelper)
+;;; - baseName              (just use the name after the last slash or hash)
+;config.classes.titleMode = titleHelper
+;
+;;; If present, this Relation ist used for ordering the hierarchy elements.
+;;; In addition to that, ordering can be done in DESC or ASC direction
+;config.classes.ordering.relation = "http://ns.ontowiki.net/SysOnt/order"
+;config.classes.ordering.modifier = DESC
+;
 ;;; these are the resources which are presented in the navigation lists
 config.classes.hierarchyTypes[] = "http://www.w3.org/2000/01/rdf-schema#Class"
 config.classes.hierarchyTypes[] = "http://www.w3.org/2002/07/owl#Class"
@@ -29,7 +40,7 @@ config.classes.hierarchyTypes[] = "http://www.w3.org/2002/07/owl#Class"
 ;;; there are two types of hierarchy relations: incoming and outgoing
 ;;; outgoing means, the parent navigation resource is subject (like skos:narrower)
 ;;; incoming means, the child navigation resources are subjects (like rdfs:subClassOf)
-config.classes.hierarchyRelations.in[] = "http://www.w3.org/2000/01/rdf-schema#subClassOff"
+config.classes.hierarchyRelations.in[] = "http://www.w3.org/2000/01/rdf-schema#subClassOf"
 
 ;;; instance relations are used create the list of resources based on the navigation entry
 ;;; again, there are two types of instance relations: incoming and outgoing
