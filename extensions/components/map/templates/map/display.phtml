@@ -7,28 +7,82 @@ require_once 'OntoWiki/Model/TitleHelper.php'
 
 <script type="text/javascript">
 //<![CDATA[
-// resize the mainMap according to the windowheight, if it is resized
-$(window).resize(setMapHeight);
 
-// some variables
-var mainMap, detailMap, markers, detailMarkers, vector;
-var componentUrlBase    = '<?php echo $this->componentUrlBase; ?>';
-var defaultLat          = <?php echo $this->defaultLat ?>;
-var defaultLong         = <?php echo $this->defaultLong ?>;
-var extent              = <?php echo json_encode($this->extent) ?>;
-var defaultLayer        = '<?php echo $this->defaultLayer ?>';
-var jsonRequestUrl      = '<?php echo (string) $this->jsonRequestUrl ?>';
-var icon = new OpenLayers.Icon(
-    componentUrlBase + '<?php echo $this->icon->path; ?>',
-    new OpenLayers.Size(<?php echo $this->icon->size; ?>),
-    new OpenLayers.Pixel(<?php echo $this->icon->offset; ?>)
-);
-var cluster = new OpenLayers.Icon(
-    componentUrlBase + '<?php echo $this->cluster->path; ?>',
-    new OpenLayers.Size(<?php echo $this->cluster->size; ?>),
-    new OpenLayers.Pixel(<?php echo $this->cluster->offset; ?>)
-);
-OpenLayers.ImgPath = '<?php echo $this->themeUrlBase; ?>images/';
+// resize the mainMap according to the windowheight, if it is resized
+$('#mainMap').addClass('width99');
+$('#mainMap').addClass('is-processing');
+
+// this function should be in a lib
+function loadScript (scriptUrl) {
+    var script  = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src  = scriptUrl;
+    $('head').append(script);
+}
+
+// this function should be in a lib
+function loadStyle (styleUrl, media) {
+    if(!media) {
+        var media = 'screen';
+    }
+    var link  = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.media = media;
+    link.href  = styleUrl;
+    $('head').append(link);
+}
+
+/**
+ * Check if NewMapManager and OpenLayers objects exist,
+ * if so execute goForMap function,
+ * else start this function again after 100 ms
+ */
+function waitForMap () {
+    if (typeof(NewMapManager) == 'undefined' || typeof(OpenLayers) == 'undefined') {
+        setTimeout('waitForMap()', 100);
+    } else {
+        goForMap();
+    }
+}
+
+loadStyle('<?php echo $this->componentUrlBase.'css/OpenLayers.css'; ?>', 'screen');
+loadScript('<?php echo 'http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->apikey->google.'&async=2'; ?>');
+loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenLayers.js'; ?>');
+loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenStreetMap.js'; ?>');
+loadScript('<?php echo $this->componentUrlBase.'classes/NewMapManager.js'; ?>');
+
+$(document).ready(waitForMap);
+
+function goForMap () {
+    $('#mainMap').height( $('#mainMap').width() ); // TODO resize map to page height
+    $('#mainMap').removeClass('is-processing');
+    var manager             = new NewMapManager(
+        $('#mainMap').get(0),                      // the dom object containing the map
+        <?php echo json_encode($this->extent) ?>,       // the extend on the map, which is shown
+        '<?php echo (string) $this->jsonRequestUrl ?>'  // the request URL, wher to get the markerdata
+    );
+
+    // the themePath doesn't seam to work
+    manager.themePath       = '<?php echo $this->componentUrlBase ?>css/OpenLayers.css';
+    manager.defaultLayer    = '<?php echo $this->defaultLayer ?>';
+
+    // set the image path to the ontowiki theme's image folder
+    manager.imgPath         = '<?php echo $this->themeUrlBase; ?>images/';
+
+    manager.icon = new OpenLayers.Icon(
+        '<?php echo $this->componentUrlBase . $this->icon->path; ?>',
+        new OpenLayers.Size(<?php echo $this->icon->size; ?>),
+        new OpenLayers.Pixel(<?php echo $this->icon->offset; ?>)
+    );
+    manager.clusterIcon = new OpenLayers.Icon(
+        '<?php echo $this->componentUrlBase . $this->cluster->path; ?>',
+        new OpenLayers.Size(<?php echo $this->cluster->size; ?>),
+        new OpenLayers.Pixel(<?php echo $this->cluster->offset; ?>)
+    );
+    manager.prepare();
+    manager.init();
+}
 
 //]]>
 </script>
@@ -45,33 +99,6 @@ OpenLayers.ImgPath = '<?php echo $this->themeUrlBase; ?>images/';
     </p>
     <ul id="marker_container"></ul>
 <?php $this->placeholder('map.markers.content')->captureEnd() ?>
-
-<?php
-if ($this->indirect != false) {
-	$this->placeholder('map.indirectProperty')->captureStart();
-	echo "
-		<form>
-		<select name=\"selectedIndirect\" id=\"selectedIndirect\">
-		";
-
-	$titleHelper = new OntoWiki_Model_TitleHelper ();
-	$titleHelper->addResources ( $this->indirect );
-
-	for ($i = 0; $i < count ($this->indirect); $i++ ) {
-		if (isset ($this->selectedIndirect) && $i == $this->selectedIndirect) {
-			$selected = "selected=selected";
-		} else {
-			$selected = "";
-		}
-		echo "			<option " . $selected . " value=\"" . $i . "\">" . $titleHelper->getTitle($this->indirect[$i]) . "</option>\n";
-	}
-	echo "
-		</select>
-		</form>
-		";
-	$this->placeholder('map.indirectProperty')->captureEnd();
-}
-?>
 
 <?php $this->placeholder('main.window.innerwindows')->append(
 	$this->partial('partials/window.phtml', array(
@@ -93,19 +120,3 @@ if ($this->indirect != false) {
 		'cssId'        => ''
 	))
 );?>
-
-<?php
-if ($this->indirect != false)
-{
-	$this->placeholder('main.window.innerwindows')->append(
-		$this->partial('partials/window.phtml', array(
-			'headinglevel' => 2, 
-			'title'        => $this->_('indirect property'), 
-			'content'      => $this->placeholder('map.indirectProperty'), 
-			'cssClasses'   => '', 
-			'cssId'        => ''
-		))
-	);
-}
-?>
-

@@ -50,33 +50,29 @@ class MapController extends OntoWiki_Controller_Component
     {
         $this->view->placeholder('main.window.title')->set('OntoWiki Map Component');
 
-        unset($this->_owApp->session->instancelimit);
-        unset($this->_owApp->session->instanceoffset);
+        $this->_session->instances->setLimit(1000); // TODO should unset limit, but not supported by Query2 at the moment
+        $this->_session->instances->setOffset(0);
 
         $this->view->componentUrlBase = $this->_componentUrlBase;
-
+/*
         $this->view->headLink()->appendStylesheet($this->_componentUrlBase.'css/OpenLayers.css');
         $this->view->headScript()->appendFile('http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->_privateConfig->apikey->google);
         $this->view->headScript()->appendFile($this->_componentUrlBase.'resources/lib/OpenLayers.js');
         $this->view->headScript()->appendFile($this->_componentUrlBase.'resources/lib/OpenStreetMap.js');
         $this->view->headScript()->appendFile($this->_componentUrlBase.'resources/classes/MapManager.js');
-
-        $this->view->headScript()->appendScript('
-            $(document).ready(function() {setMapHeight();initMap();});
-        ');
-
+ */
         // default values from configuration
         $this->view->defaultLat             = $this->_privateConfig->default->latitude;
         $this->view->defaultLong            = $this->_privateConfig->default->longitude;
         $this->view->icon                   = $this->_privateConfig->icon;
         $this->view->cluster                = $this->_privateConfig->cluster;
+        $this->view->apikey                 = $this->_privateConfig->apikey;
 
         /* doesn't work at the moment, because the menu can't be accessed from javascript at runtime */
         /* add ontowiki-style layer switcher */
         $this->view->defaultLayer           = $this->_privateConfig->default->layer;
 
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'));
-        $jsonRequestUrl->setParam('datatype', "json", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
         $this->view->jsonRequestUrl = $jsonRequestUrl;

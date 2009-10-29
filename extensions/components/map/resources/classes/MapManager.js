@@ -31,6 +31,8 @@ function setMapHeight() {
 // initiate the map
 function initMap ( ) {
 
+    alert('initMap');
+
 	//alert("extent: l:"+extent.left+" b:"+extent.bottom+" r:"+extent.right+" t:"+extent.top );
 
 	// initiate the maps

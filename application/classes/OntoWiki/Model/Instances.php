@@ -899,7 +899,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function setLimit($limit)
     {
-        $this->_query->setLimit($limit);
+        $this->_resourceQuery->setLimit($limit);
         
         return $this;
     }
@@ -912,7 +912,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function setOffset($offset)
     {
-        $this->_query->setOffset($offset);
+        $this->_resourceQuery->setOffset($offset);
         
         return $this;
     }
@@ -924,7 +924,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function getLimit()
     {
-        return $this->_query->getLimit();
+        return $this->_resourceQuery->getLimit();
     }
     
     /**
@@ -935,7 +935,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function getOffset()
     {
-        return $this->_query->getOffset();
+        return $this->_resourceQuery->getOffset();
     }
     
 }
