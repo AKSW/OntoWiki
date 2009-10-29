@@ -743,9 +743,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             ->setOffset(0);
 
         $valueVar = new Erfurt_Sparql_Query2_Var('subj');
-        $query
-            ->addTriple($valueVar, $property, $this->_resourceVar)
-            ->addProjectionVar($valueVar);
+        $query->addTriple($valueVar, $property, $this->_resourceVar);
+        $query->addProjectionVar($valueVar);
 
         $results = $this->_model->sparqlQuery(
             $query,
@@ -773,8 +772,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         
         $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
     
-           $propertyResults = array();
-           $i = 0;
+       $propertyResults = array();
+       $i = 0;
         foreach ($properties as $property) {
             if (in_array($property['uri'], $this->_ignoredShownProperties)) {
                 continue;
