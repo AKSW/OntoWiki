@@ -43,7 +43,7 @@ function loadStyle (styleUrl, media) {
  * else start this function again after 100 ms
  */
 function waitForMap () {
-    if (typeof(NewMapManager) == 'undefined' || typeof(OpenLayers) == 'undefined') {
+    if (typeof(NewMapManager) == 'undefined' || typeof(OpenLayers) == 'undefined' || typeof(G_HYBRID_MAP) == 'undefined') {
         setTimeout('waitForMap()', 100);
     } else {
         goForMap();
@@ -52,8 +52,7 @@ function waitForMap () {
 
 loadStyle('<?php echo $this->componentUrlBase.'css/OpenLayers.css'; ?>', 'screen');
 loadScript('<?php echo 'http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->apikey->google.'&async=2'; ?>');
-loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenLayers.js'; ?>');
-loadScript('<?php echo $this->componentUrlBase.'resources/lib/OpenStreetMap.js'; ?>');
+loadScript('<?php echo $this->componentUrlBase.'classes/OpenLayers.js'; ?>');
 loadScript('<?php echo $this->componentUrlBase.'classes/NewMapManager.js'; ?>');
 
 waitForMap();

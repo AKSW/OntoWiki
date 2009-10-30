@@ -57,7 +57,11 @@ function initMap ( ) {
     this.map.zoomToExtent( new OpenLayers.Bounds( this.extent.left, this.extent.bottom, this.extent.right, this.extent.top ), false );
 
     // and zoom out once, because mormaly not all markers are in the above defined extend
-    if( this.map.getZoom( ) > 0 ) this.map.zoomOut( );
+/*
+    if( this.map.getZoom( ) > 0 ) {
+        this.map.zoomOut( );
+    }
+*/
 
     // read the default layer from configuration
     this.map.setBaseLayer( this.map.getLayersByName( this.defaultLayer )[0] );

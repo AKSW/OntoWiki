@@ -50,9 +50,14 @@ class MapController extends OntoWiki_Controller_Component
     {
         $this->view->placeholder('main.window.title')->set('OntoWiki Map Component');
 
-        $this->_session->instances->setLimit(1000); // TODO should unset limit, but not supported by Query2 at the moment
-        $this->_session->instances->setOffset(0);
+        $instances = $this->_session->instances;
+        $instances->setLimit(100); // TODO should unset limit, but not supported by Query2 at the moment
+        $instances->setOffset(0);
+        $this->_session->instances =  $instances;
 
+        $query = (string)$instances->getResourceQuery();
+        $this->_owApp->logger->debug('MapComponent/displayAction: session query: ' . var_export($query, true));
+        
         $this->view->componentUrlBase = $this->_componentUrlBase;
 /*
         $this->view->headLink()->appendStylesheet($this->_componentUrlBase.'css/OpenLayers.css');
@@ -268,10 +273,13 @@ class MapController extends OntoWiki_Controller_Component
 
         $query->addElement($queryOptional);
         $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
-        $this->_owApp->logger->debug('MapComponent/_getMarkerResult sent "' . $query . '" to get markers.');
+        $this->_owApp->logger->debug('MapComponent/_getResources sent "' . $query . '" to get markers.');
 
         /* get result of the query */
         $this->resources    = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
+
+        $this->_owApp->logger->debug('MapComponent/_getResources got respons "' . var_export($this->resources, true) . '".');
+
         $this->resourceVar  = $instances->getResourceVar()->getName();
     }
 
