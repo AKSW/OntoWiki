@@ -727,23 +727,40 @@ class TaggingController extends OntoWiki_Controller_Component
             new Erfurt_Sparql_Query2_IriRef($oldObject));
         $query->addProjectionVar($resVar);
         # echo htmlentities($query);die;
-        $getRes = $model->sparqlQuery($query);
-
+        $getRes = $model->sparqlQuery($query);        
+        
         if (!empty($getRes)) {
             foreach ($getRes as $row) {
+                // preparing versioning
+                $versioning                 = $this->_erfurt->getVersioning();
+                $actionSpec                 = array();
+                $actionSpec['modeluri']     = (string) $this->model;
+                $actionSpec['resourceuri']  = $row['resources'];
+                
                 // delete statements
+                $actionSpec['type']         = 134; // resource untaggt
+                $versioning->startAction($actionSpec);
                 $this->model->deleteMatchingStatements($row['resources'],
                     $oldRelation,
                     array('value' => $oldObject, 'type' => 'uri'));
+                $versioning->endAction($actionSpec);
+
+                $actionSpec['type']         = 133; // resource untaggt
+                $versioning->startAction($actionSpec);
                 $this->model->deleteMatchingStatements($oldObject, null, null);
                 # echo htmlentities($row['resources'].
                 # ' '.$oldRelation.
                 # ' '.$oldObject).'<br/>';
-
+                $versioning->endAction($actionSpec);
+                
                 // add statements
+                $actionSpec['type']         = 136; // resource untaggt
+                $versioning->startAction($actionSpec);
                 $this->model->addStatement($row['resources'],
                     $newRelation,
                     array('value' => $newObject, 'type' => 'uri'));
+                $versioning->endAction($actionSpec);
+                                
                 # echo htmlentities($row['resources'].
                 #' '.$newRelation.
                 #' '.$newObject).'<br/>';
@@ -754,7 +771,7 @@ class TaggingController extends OntoWiki_Controller_Component
         }
     }
 
-    public function taggingtoobjectAction() {
+    public function literaltoobjectAction() {
         // Model Based Access Control
         if (!$this->ac->isModelAllowed('edit', $this->model->getModelIri()) ) {
             require_once 'Erfurt/Ac/Exception.php';
@@ -852,20 +869,39 @@ class TaggingController extends OntoWiki_Controller_Component
         }
         # var_dump($resources);
 
+        // preparing versioning
+        $versioning                 = $this->_erfurt->getVersioning();
+        $actionSpec                 = array();
+        $actionSpec['modeluri']     = (string) $this->model;
+        $actionSpec['resourceuri']  = $resources;
+        
         foreach ($resources as $key => $value) {
+            
+            // add statements
+            $actionSpec['type']         = 137; // object relation created
+            $versioning->startAction($actionSpec);            
             $this->model->addStatement($key,
             $nP,
             array('value' => $value['newTr'], 'type' => 'uri'));
+            
             $this->model->addStatement($value['newTr'],
             $nNP,
             array('value' => $value['label'], 'type' => 'literal'));
+            $versioning->endAction($actionSpec);
+
+            $actionSpec['type']         = 138; // class relation created
+            $versioning->startAction($actionSpec); 
             $this->model->addStatement($value['newTr'],
             $conf->resOf,
             array('value' => $nC, 'type' => 'uri'));
+            $versioning->endAction($actionSpec);
 
+            $actionSpec['type']         = 139; // old literal relation deleted
+            $versioning->startAction($actionSpec);             
             $this->model->deleteMatchingStatements(null,
             $oP,
             array('value' => $value['label'], 'type' => 'literal'));
+            $versioning->endAction($actionSpec);
         }
         
         echo "Successful";
