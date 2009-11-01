@@ -10,11 +10,10 @@ require_once 'Zend/Json/Server.php';
  * wget -q -O - --post-data='{"method": "count", "params": {"uri": "yourmodeluri"}, "id": 33}' "ONTOWIKI/jsonrpc/request"
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_jsonrpc
+ * @package    extensions_components_jsonrpc
  * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id$
  */
 class JsonrpcController extends OntoWiki_Controller_Component
 {

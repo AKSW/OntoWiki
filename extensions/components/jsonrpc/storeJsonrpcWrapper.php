@@ -2,11 +2,11 @@
 /**
  * JSON RPC Class, this wrapper class is for all store RPC calls
  *
- * @package    ontowiki
+ * @category   OntoWiki
+ * @package    extensions_components_jsonrpc
  * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id$
  */
 class storeJsonrpcWrapper
 {
@@ -20,8 +20,7 @@ class storeJsonrpcWrapper
     }
 
     /**
-     * getAvailableModels
-     *
+     * @desc list modelIris which are readable with the current identity
      * @return array
      */
     public function listModels()
@@ -36,8 +35,7 @@ class storeJsonrpcWrapper
     }
 
     /**
-     * getBackendName
-     *
+     * @desc return the name of the backend (e.g. Zend or Virtuoso)
      * @return string
      */
     public function getBackendName()
@@ -46,8 +44,7 @@ class storeJsonrpcWrapper
     }
 
     /**
-     * sparql
-     *
+     * @desc performs a sparql query on the store
      * @param string query
      * @return string
      */
@@ -59,8 +56,7 @@ class storeJsonrpcWrapper
     }
 
     /**
-     * getIdentity
-     *
+     * @desc returns the label of the current identity
      * @return string
      */
     public function getIdentity()

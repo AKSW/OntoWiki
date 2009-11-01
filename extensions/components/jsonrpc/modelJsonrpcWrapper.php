@@ -2,11 +2,11 @@
 /**
  * JSON RPC Class, this wrapper class is for all model RPC calls
  *
- * @package    ontowiki
+ * @category   OntoWiki
+ * @package    extensions_components_jsonrpc
  * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id$
  */
 class modelJsonrpcWrapper
 {
@@ -20,8 +20,7 @@ class modelJsonrpcWrapper
     }
 
     /**
-     * export
-     *
+     * @desc exports a model as rdf/xml
      * @param string modelIri
      * @return string
      */
@@ -31,8 +30,7 @@ class modelJsonrpcWrapper
     }
 
     /**
-     * sparql
-     *
+     * @desc performs a sparql query on the model
      * @param string modelIri
      * @param string query
      * @return string
@@ -51,8 +49,7 @@ class modelJsonrpcWrapper
     }
 
     /**
-     * count
-     *
+     * @desc counts the number of statements of a model
      * @param string modelIri
      * @param string whereSpec
      * @param string countSpec
@@ -65,8 +62,7 @@ class modelJsonrpcWrapper
 
 
     /**
-     * add
-     *
+     * @desc add all input statements to the model
      * @param string $modelIri
      * @param string $inputModel
      * @return bool
@@ -80,8 +76,7 @@ class modelJsonrpcWrapper
     }
 
     /**
-     * create a new knowledge base
-     *
+     * @desc create a new knowledge base
      * @param string $modelIri
      * @return bool
      */
@@ -92,8 +87,7 @@ class modelJsonrpcWrapper
     }
 
     /**
-     * drop an existing knowledge base
-     *
+     * @desc drop an existing knowledge base
      * @param string $modelIri
      * @return bool
      */
