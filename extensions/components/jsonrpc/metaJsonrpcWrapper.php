@@ -26,9 +26,9 @@ class metaJsonrpcWrapper
     public function listServer()
     {
         $array = array (
-            'meta' => 'meta -- methods to query the json service itself',
-            'store' => 'store -- methods to manipulate and query the store',
-            'model' => 'model -- methods to manipulate and query a specific model',
+            'meta' => 'meta:methods to query the json service itself',
+            'store' => 'store:methods to manipulate and query the store',
+            'model' => 'model:methods to manipulate and query a specific model',
         );
         return $array;
     }
@@ -73,7 +73,7 @@ class metaJsonrpcWrapper
                 $methodDescription = $this->getDocComment($method, $tag = '@desc');
                 // we return only methods with a descriptions
                 if ($methodDescription) {
-                    $returnArray[$methodName] = "$methodName -- $methodDescription";
+                    $returnArray[$methodName] = "$methodName:$methodDescription";
                 }
             }
             ksort($returnArray);
