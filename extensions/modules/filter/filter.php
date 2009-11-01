@@ -19,18 +19,7 @@ class FilterModule extends OntoWiki_Module
     
     public function init()
     {
-        $this->store = $this->_owApp->erfurt->getStore();
-        $this->model = $this->_owApp->selectedModel;
-        $session  = $this->_owApp->session;
-        $this->titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
 
-        $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'resources/filter.css');
-        $this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/jquery.dump.js');
-        
-        $this->view->properties = $this->_owApp->instances->getAllProperties();
-        $this->view->inverseProperties = $this->_owApp->instances->getAllReverseProperties();
-
-        $this->view->filter = $session->filter;        
     }
     
     
@@ -41,18 +30,29 @@ class FilterModule extends OntoWiki_Module
     
     public function getContents()
     {
+        $this->store = $this->_owApp->erfurt->getStore();
+        $this->model = $this->_owApp->selectedModel;
+        $session  = $this->_owApp->session;
+        $this->titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
+
+        $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'resources/filter.css');
+        $this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/jquery.dump.js');
+        
+        $this->view->properties = $session->instances->getAllProperties();
+        $this->view->inverseProperties = $session->instances->getAllReverseProperties();
+
+        $this->view->filter = $session->instances->getFilter();
+        
         if (is_array( $this->view->filter)) {
             foreach ( $this->view->filter as $key => $filter) {
-                if ($this->view->filter[$key]['property']) {
+                if ($filter['property']) {
                     $this->view->filter[$key]['property'] = trim($filter['property']);
                     $this->titleHelper->addResource($filter['property']);
                 }
-                if (($this->view->filter[$key]['value1']) && ($filter['valuetype'] == 'uri') ) {
-                    $this->view->filter[$key]['value1'] = trim($filter['value1']);
-                    $this->titleHelper->addResource($filter['value1']);
+                if ($filter['valuetype'] == 'uri' && !empty($filter['value1'])) {
+                    //$this->titleHelper->addResource($filter['value1']);
                 }
-                if (($this->view->filter[$key]['value2']) && ($filter['valuetype'] == 'uri') ) {
-                    $this->view->filter[$key]['value2'] = trim($filter['value2']);
+                if ($filter['valuetype'] == 'uri' && !empty($filter['value2'])) {
                     $this->titleHelper->addResource($filter['value2']);
                 }
             }

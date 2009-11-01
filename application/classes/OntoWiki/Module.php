@@ -130,7 +130,7 @@ abstract class OntoWiki_Module
         if (is_readable($configFile)) {
             try {
                 $this->_privateConfig = new Zend_Config_Ini($configFile, 'private');
-            } catch (Exception $e) {
+            } catch (Zend_Config_Exception $e) {
                 // no private config available
             }
         }

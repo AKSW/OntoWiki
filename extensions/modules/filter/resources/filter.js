@@ -1,57 +1,77 @@
 /**
- * 
+ * @class
  */
 function FilterAPI(){
-	this.uri = urlBase+"service/session/?name=filter";
-	this.callbacks = new Array();
-	this.filters = filtersFromSession;
+	/*
+         * @var
+         */
+        this.uri = urlBase+"resource/instances/";
+
+        /*
+         *@var array
+         */
+        this.callbacks = new Array();
 	
+        /**
+         * @var array
+         */
+        this.filters = filtersFromSession;
+
+        /**
+         *@method
+         *
+         */
 	this.addCallback = function(callback){
 		if(typeof callback == 'function' || typeof callback == 'object')
 			this.callbacks.push(callback);
 	};
 	/**
-     * add a filter
-     * @param id int,string 
-     * @param property string an iri (predicate) which values should be filtered
-     * @param isInverse boolean if the property is inverse
-     * @param propertyLabel string a label for the property (will be displayed instead)
-     * @param filter string can be "contains" or "equals" . going to be enhanced
-     * @param value1 mixed the value applied to the filter
-     * @param value2 mixed the value applied to the filter. often optional (used for "between")
-     * @param valuetype string may be "uri" or "literal" or "typedliteral" or "langtaggedliteral"
-     * @param literaltype string if valuetype is "typedliteral" or "langtaggedliteral": you can put stuff like "de" or "xsd:int" here...
-     * @param callback function will be called on success
-     * @param hidden boolean will not show up in filterbox if true 
-     */
+         * add a filter
+         * @method
+         * @param id int,string
+         * @param property string an iri (predicate) which values should be filtered
+         * @param isInverse boolean if the property is inverse
+         * @param propertyLabel string a label for the property (will be displayed instead)
+         * @param filter string can be "contains" or "equals" . going to be enhanced
+         * @param value1 mixed the value applied to the filter
+         * @param value2 mixed the value applied to the filter. often optional (used for "between")
+         * @param valuetype string may be "uri" or "literal" or "typedliteral" or "langtaggedliteral"
+         * @param literaltype string if valuetype is "typedliteral" or "langtaggedliteral": you can put stuff like "de" or "xsd:int" here...
+         * @param callback function will be called on success
+         * @param hidden boolean will not show up in filterbox if true
+         */
 	this.add = function(id, property, isInverse, propertyLabel, filter, value1, value2, valuetype, literaltype, callback, hidden){
             if(typeof callback != 'function' && typeof callback != 'object')
 		callback = function(){};
                 
 		var data = {
-                    "id" : id,
-                    "property" : property,
-                    "isInverse" : isInverse,
-                    "propertyLabel" : propertyLabel,
-                    "filter" : filter,
-                    "value1": value1,
-                    "value2": value2,
-                    "valuetype": valuetype,
-                    "literaltype" : literaltype,
-                    "hidden" : hidden
+                    filter: [
+                        {
+                            "action" : "add",
+                            "id" : id,
+                            "property" : property,
+                            "isInverse" : isInverse,
+                            "propertyLabel" : propertyLabel,
+                            "filter" : filter,
+                            "value1": value1,
+                            "value2": value2,
+                            "valuetype": valuetype,
+                            "literaltype" : literaltype,
+                            "hidden" : hidden
+                        }
+                    ]
                 };
 
 		var dataserialized = serialize(data);
 		
 		me = this;
 		$.post(
-		this.uri+"&method=setArrayValue&valueIsSerialized=true",
+		this.uri,
 		{
-                    "key" : id,
-                    "value" : encodeURI(dataserialized)
+                    "instancesconfig" : encodeURI(dataserialized)
                 }, //as post because of size
 		function(res) {
-                    if(res==""){
+                    if(true){ //how to check for success
                         //remember
                         me.filters[id] = data;
 
@@ -90,11 +110,25 @@ function FilterAPI(){
             if(typeof callback != 'function' && typeof callback != 'object')
                 callback = function(){};
 
+            var data = {
+                filter: [
+                    {
+                        "action" : "remove",
+                        "id" : id
+                    }
+                ]
+            };
+
+            var dataserialized = serialize(data);
+
             me = this;
-            $.post(this.uri+"&method=unsetArrayKey",
-                {"key" : id},
+            $.post(
+		this.uri,
+		{
+                    "instancesconfig" : encodeURI(dataserialized)
+                }, //as post because of size
                 function(res) {
-                    if(res==""){
+                    if(true){
                         //unset
                         delete me.filters[id];
                         //do default action
@@ -164,9 +198,9 @@ function showAddFilterBox(){
 function removeAllFilters(){
     // $("#addFilterWindowOverlay").hide();
     $.modal.close();
-        filter.removeAll(function() {
-            
-        });
+    filter.removeAll(function() {
+
+    });
 }
 
 $(document).ready(function(){
@@ -237,5 +271,9 @@ $(document).ready(function(){
     //$.dump(filter);
     //register the filter box for (other) filter events
     //filter.addCallback(function(newfilter){ showFilter() });
+
+    $('.filter .delete').click(function(){
+        filter.remove($(this).parent().attr('id'));
+    })
 });
 

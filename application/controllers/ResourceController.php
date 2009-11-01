@@ -175,7 +175,7 @@ class ResourceController extends OntoWiki_Controller_Base
     
     /**
      * Displays resources of a certain type and property values that have
-     * bee selected by the user.
+     * been selected by the user.
      */
     public function instancesAction()
     {
@@ -185,72 +185,111 @@ class ResourceController extends OntoWiki_Controller_Base
         $navigation  = $this->_owApp->navigation;
         $translate   = $this->_owApp->translate;
         
-        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace((string)$resource);
+        $title = $resource->getTitle() ?
+            $resource->getTitle() : 
+            OntoWiki_Utils::contractNamespace((string)$resource);
+            
         $windowTitle = sprintf($translate->_('Instances of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
         
-        // Hack: reset shown properties
+        // when switching to another class:
+        // reset session vars (regarding the instancelist) 
         if ((string)$resource != $this->_owApp->selectedClass) {
+            // reset the instances object
+            unset($this->_session->instances);
+            
+            //reset config from tag explorer
+            unset($this->_session->cloudproperties);
+            
+            //these should be inside $this->_session->instances as well...
+            //TODO: eliminate usage of them, then delete the next 5 lines
             unset($this->_session->shownProperties);
             unset($this->_session->shownInverseProperties);
             unset($this->_session->filter);
-            unset($this->_session->cloudproperties);
             unset($this->_session->instancelimit);
             unset($this->_session->instanceoffset);
-            // if (is_array($this->_session->hierarchyOpen)) {
-            //     if (!in_array($resource, $this->_session->hierarchyOpen)) {
-            //         array_push($this->_session->hierarchyOpen, $resource);
-            //     }
-            // } else {
-            //     $this->_session->hierarchyOpen = array($resource);
-            // }
         }
         
         $this->_owApp->selectedClass = (string)$resource;
 
-        //determine limit & offset
-        //request params go first
-        //if they are not set : look into session
-        //if no session (first load) : take default values
-        $limit  = isset($this->_request->limit) ?
-                    $this->_request->limit :
-                    (isset($this->_session->instancelimit) ?
-                        $this->_session->instancelimit :
-                        10
-                    );
-        $offset = isset($this->_request->p) ? 
-                    $this->_request->p * $limit - $limit :
-                    (isset($this->_session->instancelimit) ?
-                        $this->_session->instanceoffset : 
-                        0
-                    );
-
-        //save to session
-        $this->_session->instancelimit = $limit;
-        $this->_session->instanceoffset = $offset;
-
-        $options = array(
-            'rdf_type' => $this->_owApp->selectedClass,
-            'memberPredicate' => EF_RDF_TYPE, // TODO make this variable for handling collections...
-            'withChilds' => true,
-            'limit' => $limit,
-            'offset' => $offset,
-            'shownProperties' => is_array($this->_session->shownProperties) ? $this->_session->shownProperties : array(),
-            'shownInverseProperties' => is_array($this->_session->shownInverseProperties) ? $this->_session->shownInverseProperties : array(),
-            'filter' => is_array($this->_session->filter) ? $this->_session->filter : array(),
-        );
-        
+        //ready, set,  ...
         $start = microtime(true);
-            
-        // instantiate model
-        $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
-        $this->_session->instances = $instances;
+        
+        if (!isset($this->_session->instances) || isset($this->_request->resetinstancesconfig)) {
+            $options = array(
+                /*
+                // this may be used when the new navigation is available
+                'rdf_type' => $this->_owApp->selectedClass,
+                'memberPredicate' => EF_RDF_TYPE, 
+                'withChilds' => true,
+                 */
+                'limit' => 10
+            );
 
+            // instantiate model
+            $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
+        } else {
+            $instances = $this->_session->instances;
+            $instances->updateValueQuery();
+            
+            //check for change-requests
+            if (isset($this->_request->instancesconfig)) {
+                $config = unserialize(urldecode(stripslashes($this->_request->instancesconfig)));
+                
+                if (isset($config['shownProperties'])) {
+                    //print_r($config);
+                    foreach ($config['shownProperties'] as $prop) {
+                        if ($prop['action'] == 'add') {
+                            $instances->addShownProperty($prop['uri'], $prop['label'], $prop['inverse']);
+                        } else {
+                            $instances->removeShownProperty($prop['uri'].'-'.$prop['inverse']);
+                        }
+                    }
+                }
+
+                if (isset($config['filter'])) {
+                    foreach ($config['filter'] as $filter) {
+                        if ($filter['action'] == 'add') {
+                            $instances->addFilter(
+                                $filter['id'],
+                                $filter['property'],
+                                $filter['isInverse'],
+                                $filter['propertyLabel'],
+                                $filter['filter'],
+                                $filter['value1'],
+                                $filter['value2'],
+                                $filter['valuetype'],
+                                $filter['literaltype'],
+                                $filter['hidden']
+                            );
+                            echo htmlentities($instances->getResourceQuery());
+                        } else {
+                            $instances->removeFilter($filter['id']);
+                        }
+                    }
+                }
+            }
+            if (isset($this->_request->limit)){
+                $instances->setLimit($this->_request->limit);
+            }
+            if (isset($this->_request->p)){
+                $instances->setOffset(
+                    ($this->_request->p * $instances->getLimit()) - $instances->getLimit()
+                );
+            } else {
+                $instances->setOffset(0);
+            }
+
+
+        }
+        $instances->invalidate(); // the dataset may have changed since the last request
+        //var_dump($instances); exit;
+        
         //needed?
-        $this->_owApp->instances = $instances;
+        //$this->_owApp->instances = $instances;
         
         $this->view->headScript()->appendScript('var classUri = "'.OntoWiki_Utils::contractNamespace($this->_owApp->selectedClass).'";');
-            
+
         if ($instances->hasData()) {
             $this->view->instanceInfo = $instances->getResources();
             $this->view->instanceData = $instances->getValues();
@@ -261,13 +300,13 @@ class ResourceController extends OntoWiki_Controller_Base
             $time = (microtime(true) - $start) * 1000;
             
             $this->view->type      = (string)$resource;
-            $this->view->start     = $offset ? $offset + 1 : 1;
+            $this->view->start     = $instances->getOffset() + 1;
             $this->view->class     = preg_replace('/^.*[#\/]/', '', (string )$resource);
             $translate = $this->_owApp->translate;
             
             $query = clone $instances->getResourceQuery();
             
-            $query->removeAllOptionals();
+            $query->removeAllOptionals(); //there should be none
 
             $where = 'WHERE '.$query->getWhere();
             
@@ -275,10 +314,10 @@ class ResourceController extends OntoWiki_Controller_Base
             
             $statusBar = $this->view->placeholder('main.window.statusbar');
             $this->view->count = $count;
-            $this->view->limit = $limit;
+            $this->view->limit = $instances->getLimit();
             $this->view->itemsOnPage = $itemsOnPage;
             
-            $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage));
+            $statusBar->append(OntoWiki_Pager::get($count, $instances->getLimit(), $itemsOnPage));
             
             if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
                 $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
@@ -308,7 +347,13 @@ class ResourceController extends OntoWiki_Controller_Base
                 $this->view->placeholder('main.window.toolbar')->set($toolbar);
             }
             
-            $url = new OntoWiki_Url(array('controller' => 'resource', 'action' => 'delete'), array());
+            $url = new OntoWiki_Url(
+                array(
+                    'controller' => 'resource',
+                    'action' => 'delete'
+                ),
+                array()
+            );
             
             $this->view->formActionUrl = (string)$url;
             $this->view->formMethod    = 'post';
@@ -319,7 +364,9 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->view->redirectUrl = (string)$url;
             
             $this->view->headScript()->appendFile(
-                $this->_owApp->getStaticUrlBase() . 'extensions/themes/silverblue/scripts/serialize-php.js');
+                $this->_owApp->getStaticUrlBase() 
+                . 'extensions/themes/silverblue/scripts/serialize-php.js'
+            );
             // register modules
             $moduleRegistry = OntoWiki_Module_Registry::getInstance();
             $moduleRegistry->register('properties', 'main.window.innerwindows')
@@ -327,6 +374,10 @@ class ResourceController extends OntoWiki_Controller_Base
                            ->register('filter', 'main.window.innerwindows');
         }
         
+        //save to session
+        $this->_session->instances = $instances;
+        
+  
         $this->addModuleContext('main.window.instances');
     }
     

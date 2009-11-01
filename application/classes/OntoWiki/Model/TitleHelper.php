@@ -156,7 +156,7 @@ class OntoWiki_Model_TitleHelper
         if (!Erfurt_Uri::check($resourceUri)) {
 #var_dump($resource);        die;
             require_once 'OntoWiki/Model/Exception.php';
-            throw new OntoWiki_Model_Exception("Supplied resource <$resource> is not a valid URI.");
+            throw new OntoWiki_Model_Exception('Supplied resource <'.htmlentities($resource).'> is not a valid URI.');
         }
         
         $this->_resources[$resourceUri] = $resourceUri;

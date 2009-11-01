@@ -1,6 +1,7 @@
 $(document).ready(function() {
     //Set up drag- and dropp-functionality
     $('.show-property').draggable({ helper: 'clone' });
+
     // highlight previously selected properties
     $('.show-property').each(function() {
         var propUri = $(this).attr('about');
@@ -15,39 +16,38 @@ $(document).ready(function() {
         }
     })
 
-    //set click handler
+    //set click handler for the properties
     $('.show-property').click(function() {
         var propUri = $(this).attr('about');
-        if (!$(this).hasClass('InverseProperty')) {
-            var pos = $.inArray(propUri, shownProperties);
-            if (pos > -1) {
-                shownProperties.splice(pos, 1);
-                $(this).removeClass('selected');
-            } else {
-                shownProperties.push(propUri);
-                $(this).addClass('selected');
-            }
-        } else {
-            var pos = $.inArray(propUri, shownInverseProperties);
-            if (pos > -1) {
-                shownInverseProperties.splice(pos, 1);
-                $(this).removeClass('selected');
-            } else {
-                shownInverseProperties.push(propUri);
-                $(this).addClass('selected');
-            }
-        }
+        $(this).toggleClass('selected');
+        
+        var action = $(this).hasClass('selected')? "add" : "remove";
+           
+        var inverse = $(this).hasClass('InverseProperty');
 
-        if($(this).hasClass('InverseProperty')){
-            var sessionVar = "shownInverseProperties";
-            var sendArray = shownInverseProperties;
-        } else {
-            var sessionVar = "shownProperties";
-            var sendArray = shownProperties;
-        }
+        var label = $(this).attr("title");
+        
+        var data =
+            {
+            "shownProperties" : 
+                [ {
+                "uri" : propUri,
+                "label" : label,
+                "action" : action,
+                "inverse" : inverse
+                } ]
+            };
+        var serialized = serialize(data);
+        //
+        //reload page
+        //$('#showproperties form input').attr("value", serialized);
+        //$('#showproperties form').submit();
+
+        // or reload list
         var mainInnerContent = $(this).parents('.content.has-innerwindows').eq(0).find('.innercontent');
-        sessionStore(sessionVar, serializeArray(sendArray), {withValue: true, method: 'set', callback: function() {
-            mainInnerContent.load(document.URL);
-        }});
+        mainInnerContent.addClass('is-processing');
+        mainInnerContent.load(document.URL, {"instancesconfig": serialized}, function(){
+            mainInnerContent.removeClass('is-processing');
+        });
     })
 })
