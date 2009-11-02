@@ -132,44 +132,40 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 array();
 
         $this->_resourceQuery   =  new Erfurt_Sparql_Query2();
+        $this->_resourceVar = new Erfurt_Sparql_Query2_Var("resourceUri");
         
         if ( isset($options['default_query']) ) {
             $this->_resourceQuery = $options['default_query'];
-        }
-        
-        if (is_string($member_predicate)){
-            $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
-        }
-        
-        $this->type = 
-            is_string($type) ? 
-                new Erfurt_Sparql_Query2_IriRef($type) : 
-                $type;
-        
-        $this->_resourceVar = new Erfurt_Sparql_Query2_Var("resourceUri");
-        
-        if (!($member_predicate instanceof Erfurt_Sparql_Query2_Verb)) {
-            throw new RuntimeException(
-                'Option "member_predicate" passed to Ontowiki_Model_Instances '.
-                'must be an instance of Erfurt_Sparql_Query2_IriRef '.
-                'or string instance of '.typeHelper($member_predicate).' given');
-        }
-        
-        if ($withChilds) {
-            $this->subClasses = 
-                array_keys(
-                    $store->getTransitiveClosure(
-                        $graph->getModelIri(), 
-                        EF_RDFS_SUBCLASSOF, 
-                        array($this->type->getIri()), 
-                        true
-                    )
-                );
         } else {
-            $this->subClasses = array();
-        }
         
-        if ( isset($options['type']) ) {
+            if (is_string($member_predicate)){
+                $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
+            }
+            
+            $this->type = 
+                is_string($type) ? 
+                    new Erfurt_Sparql_Query2_IriRef($type) : 
+                    $type;
+            
+            if (!($member_predicate instanceof Erfurt_Sparql_Query2_Verb)) {
+                throw new RuntimeException(
+                    'Option "member_predicate" passed to Ontowiki_Model_Instances '.
+                    'must be an instance of Erfurt_Sparql_Query2_IriRef '.
+                    'or string instance of '.typeHelper($member_predicate).' given');
+            }
+            
+            if ($withChilds) {
+                $this->subClasses = 
+                    array_keys(
+                        $store->getTransitiveClosure(
+                            $graph->getModelIri(), 
+                            EF_RDFS_SUBCLASSOF, 
+                            array($this->type->getIri()), 
+                            true
+                        )
+                    );
+            }
+            
             if (count($this->subClasses)>1) { 
                 // "1" because the class itself is somehow included in the subclasses...
                 $typeVar = new Erfurt_Sparql_Query2_Var($this->type);
@@ -196,10 +192,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                     $this->type
                 );
             }
+            
+            //show resource uri
+            $this->_resourceQuery->addProjectionVar($this->_resourceVar);
         }
-        
-        //show resource uri
-        $this->_resourceQuery->addProjectionVar($this->_resourceVar);
         
         $this->_resourceQuery
             ->setLimit($limit)
