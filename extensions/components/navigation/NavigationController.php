@@ -69,9 +69,7 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function queryNavigationEntries($setup) {
-        $handle = fopen('navi.log', "w");
-		    fwrite($handle, print_r($setup,true));     
-		    fclose($handle);
+        $this->_owApp->logger->info(print_r($setup,true));
         
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
