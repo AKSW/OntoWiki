@@ -114,10 +114,6 @@
                             <div class="messagebox"><?php echo $this->placeholder('main.window.toolbar') ?></div>
                         <?php endif; ?>
 
-                        <?php if ($this->has('formActionUrl')): ?>
-                            </form>
-                        <?php endif;?>
-
                         <div class="innercontent">                                
                             <?php foreach (OntoWiki::getInstance()->drawMessages() as $message): ?>
                                 <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
@@ -125,10 +121,14 @@
                                 
                             <?php echo $this->layout()->content ?>
                         </div><!-- .innercontent -->
+
+                        <?php if ($this->has('formActionUrl')): ?>
+                            </form>
+                        <?php endif;?>
                         <div class="innerwindows">
                             <?php echo $this->placeholder('main.window.innerwindows') ?>
                         </div><!-- .innerwindows -->
-                        
+                
                     </div><!-- .content .has-innerwindows -->
                 <?php else: ?>
                     <div class="content">
@@ -144,16 +144,16 @@
                             <div class="messagebox"><?php echo $this->placeholder('main.window.toolbar') ?></div>
                         <?php endif; ?>
 
-                        <?php if ($this->has('formActionUrl')): ?>
-                            </form>
-                        <?php endif;?>
+                        
                         
                         <?php foreach (OntoWiki::getInstance()->drawMessages() as $message): ?>
                             <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
                         <?php endforeach; ?>
                             
                         <?php echo $this->layout()->content ?>
-
+                        <?php if ($this->has('formActionUrl')): ?>
+                            </form>
+                        <?php endif;?>
                     </div><!-- .content -->
                 <?php endif; ?>
                 
