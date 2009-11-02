@@ -19,10 +19,13 @@ class MapController extends OntoWiki_Controller_Component
     private $resource;
     private $store;
 
+    private $instances = null;
     private $resources = null;
     private $resourceVar = 'resource';
 
     private $config;
+
+    public static $maxResources = 1000;
 
     public function init()
     {
@@ -49,23 +52,10 @@ class MapController extends OntoWiki_Controller_Component
     public function displayAction()
     {
         $this->view->placeholder('main.window.title')->set('OntoWiki Map Component');
+        $this->addModuleContext('main.window.map');
 
-        $instances = $this->_session->instances;
-        $instances->setLimit(100); // TODO should unset limit, but not supported by Query2 at the moment
-        $instances->setOffset(0);
-        $this->_session->instances =  $instances;
-
-        $query = (string)$instances->getResourceQuery();
-        $this->_owApp->logger->debug('MapComponent/displayAction: session query: ' . var_export($query, true));
-        
         $this->view->componentUrlBase = $this->_componentUrlBase;
-/*
-        $this->view->headLink()->appendStylesheet($this->_componentUrlBase.'css/OpenLayers.css');
-        $this->view->headScript()->appendFile('http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->_privateConfig->apikey->google);
-        $this->view->headScript()->appendFile($this->_componentUrlBase.'resources/lib/OpenLayers.js');
-        $this->view->headScript()->appendFile($this->_componentUrlBase.'resources/lib/OpenStreetMap.js');
-        $this->view->headScript()->appendFile($this->_componentUrlBase.'resources/classes/MapManager.js');
- */
+        
         // default values from configuration
         $this->view->defaultLat             = $this->_privateConfig->default->latitude;
         $this->view->defaultLong            = $this->_privateConfig->default->longitude;
@@ -74,10 +64,11 @@ class MapController extends OntoWiki_Controller_Component
         $this->view->apikey                 = $this->_privateConfig->apikey;
 
         /* doesn't work at the moment, because the menu can't be accessed from javascript at runtime */
-        /* add ontowiki-style layer switcher */
+        /* add ontowiki-style layer switcher (menu) */
         $this->view->defaultLayer           = $this->_privateConfig->default->layer;
 
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'));
+        $jsonRequestUrl->setParam('limit', "off", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
         $this->view->jsonRequestUrl = $jsonRequestUrl;
@@ -105,6 +96,7 @@ class MapController extends OntoWiki_Controller_Component
         // default values from configuration
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'));
         $jsonRequestUrl->setParam('clustering', "off", true);
+        $jsonRequestUrl->setParam('limit', "on", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
         $this->_owApp->logger->debug('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
@@ -129,11 +121,10 @@ class MapController extends OntoWiki_Controller_Component
      */
     public function markerAction()
     {
-        $this->_owApp->logger->debug('MapComponent/markerAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
         require_once $this->_componentRoot . 'classes/Marker.php';
         require_once $this->_componentRoot . 'classes/Clusterer.php';
         require_once $this->_componentRoot . 'classes/GeoCoder.php';
-
+        
         // tells the OntoWiki to not apply the template to this action
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();
@@ -251,12 +242,27 @@ class MapController extends OntoWiki_Controller_Component
         $long2Var       = new Erfurt_Sparql_Query2_Var('long2');
 
         //the future is now!
-        $instances      = $this->_session->instances;
-        $query          = $instances->getResourceQuery();
+        if($this->instances === null) {    
+            $this->instances = clone $this->_session->instances;
+            $this->_owApp->logger->debug('MapComponent/_getResources: clone this->_session->instances');
+        } else {
+            $this->_owApp->logger->debug('MapComponent/_getResources: this->instances already set');
+            // don't load instances again
+        }
+
+        if($this->_request->limit == 'off') {
+            $this->instances->setLimit(self::$maxResources);
+            $this->instances->setOffset(0);
+        } else {
+            // use the limit and offset set in the instances
+        }
+
+        $query          = $this->instances->getResourceQuery();
+        $this->_owApp->logger->debug('MapComponent/_getResources: session query: ' . var_export((string)$query, true));
         
         $query->removeAllOptionals()->removeAllProjectionVars();
 
-        $query->addProjectionVar($instances->getResourceVar());
+        $query->addProjectionVar($this->instances->getResourceVar());
         $query->addProjectionVar($latVar);
         $query->addProjectionVar($longVar);
         $query->addProjectionVar($lat2Var);
@@ -265,9 +271,9 @@ class MapController extends OntoWiki_Controller_Component
         $queryOptional     = new Erfurt_Sparql_Query2_OptionalGraphPattern();
 
         $node = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
-        $queryOptional->addTriple($instances->getResourceVar(), $latProperty, $latVar);
-        $queryOptional->addTriple($instances->getResourceVar(), $longProperty, $longVar);
-        $queryOptional->addTriple($instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
+        $queryOptional->addTriple($this->instances->getResourceVar(), $latProperty, $latVar);
+        $queryOptional->addTriple($this->instances->getResourceVar(), $longProperty, $longVar);
+        $queryOptional->addTriple($this->instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
         $queryOptional->addTriple($node, $latProperty, $lat2Var);
         $queryOptional->addTriple($node, $longProperty, $long2Var);
 
@@ -280,7 +286,7 @@ class MapController extends OntoWiki_Controller_Component
 
         $this->_owApp->logger->debug('MapComponent/_getResources got respons "' . var_export($this->resources, true) . '".');
 
-        $this->resourceVar  = $instances->getResourceVar()->getName();
+        $this->resourceVar  = $this->instances->getResourceVar()->getName();
     }
 
     /**

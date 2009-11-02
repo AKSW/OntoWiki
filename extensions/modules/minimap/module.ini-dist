@@ -3,4 +3,5 @@ title      = "Minimap"
 caching    = false
 priority   = 20
 contexts[] = "main.window.instances"
+contexts[] = "main.window.map"
 

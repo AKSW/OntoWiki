@@ -85,37 +85,3 @@ function goForMap () {
 
 //]]>
 </script>
-
-<?php $this->placeholder('map.detailmap')->captureStart() ?>
-    <div id="detailMap">
-    </div>
-<?php $this->placeholder('map.detailmap')->captureEnd() ?>
-
-<?php $this->placeholder('map.markers.content')->captureStart() ?>
-    <!-- will be removed by seebi, when popups are implemented -->
-    <p class="messagebox info" id="marker_messagebox">
-        No marker selected.
-    </p>
-    <ul id="marker_container"></ul>
-<?php $this->placeholder('map.markers.content')->captureEnd() ?>
-
-<?php $this->placeholder('main.window.innerwindows')->append(
-	$this->partial('partials/window.phtml', array(
-		'headinglevel' => 2, 
-		'title'        => $this->_('detail map'), 
-		'content'      => $this->placeholder('map.detailmap'), 
-		'cssClasses'   => '', 
-		'cssId'        => ''
-	))
-);?>
-
-<?php /* will be removed by seebi, when popups are implemented */ ?>
-<?php $this->placeholder('main.window.innerwindows')->append(
-	$this->partial('partials/window.phtml', array(
-		'headinglevel' => 2, 
-		'title'        => $this->_('marker information'), 
-		'content'      => $this->placeholder('map.markers.content'), 
-		'cssClasses'   => '', 
-		'cssId'        => ''
-	))
-);?>

@@ -8,5 +8,8 @@
 
 ?>
 <?php if ( isset($this->message) ): ?>
-	<p class="messagebox error"><?php echo $this->_($this->message); ?></p>
+    <p class="messagebox error">
+    <?php echo $this->_($this->message); ?><br/>
+    See log for more Information.
+    </p>
 <?php endif; ?>
