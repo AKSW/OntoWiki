@@ -8,16 +8,21 @@
 
 ?>
 <?php if (!empty($this->properties)): ?>
-	<ul class="bullets-none separated-horizontal">
-	    <?php $i = 0; ?>
-		<?php foreach ($this->properties as $id => $propertyInfo): ?>
-		    <?php if (++$i == count($this->properties)): ?>
-		        <li class="last-child"><a class="show-property Property hasMenu" about="<?php echo $propertyInfo['uri']; ?>" title="<?php echo $propertyInfo['title'] ?>"><?php echo $propertyInfo['title'] ?></a></li>
-		    <?php else: ?>
-		        <li><a class="show-property hasMenu" about="<?php echo $propertyInfo['uri']; ?>" title="<?php echo $propertyInfo['title'] ?>"><?php echo $propertyInfo['title'] ?></a></li>
-		    <?php endif; ?>
-		<?php endforeach; ?>
-	</ul>
+    <div>
+        <form id="instancesconfig" action="#" method="post">
+                <input type="hidden" value="" name="instancesconfig">
+        </form>
+    </div>
+    <ul class="bullets-none separated-horizontal">
+        <?php $i = 0; ?>
+        <?php foreach ($this->properties as $id => $propertyInfo): ?>
+            <?php if (++$i == count($this->properties)): ?>
+                <li class="last-child"><a class="show-property Property hasMenu" about="<?php echo $propertyInfo['uri']; ?>" title="<?php echo $propertyInfo['title'] ?>"><?php echo $propertyInfo['title'] ?></a></li>
+            <?php else: ?>
+                <li><a class="show-property hasMenu" about="<?php echo $propertyInfo['uri']; ?>" title="<?php echo $propertyInfo['title'] ?>"><?php echo $propertyInfo['title'] ?></a></li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </ul>
 <?php endif ?>
 <?php if (!empty($this->reverseProperties)): ?>
 	<ul class="bullets-none separated-horizontal">
@@ -34,3 +39,4 @@
 <?php if ( ( !empty($this->Properties) ) && ( !empty($this->reverseProperties) ) ): ?>
 	<p class="messagebox info"><?php echo $this->_($this->message) ?></p>
 <?php endif; ?>
+

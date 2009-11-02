@@ -1,11 +1,4 @@
-<?php /*if(isset($this->count) && isset($this->limit) && isset($this->itemsOnPage)) { require_once 'OntoWiki/Pager.php'; ?>
-<div class="messagebox statusbar">
-<div class="statustool"><?php echo OntoWiki_Pager::get($this->count, $this->limit, $this->itemsOnPage) ?></div>
-<?php if(isset ($this->numResultsMsg)) : ?><div class="statustool"><?php echo $this->numResultsMsg; ?></div><?php endif; ?>
-<?php if(isset ($this->timeMsg)) : ?><div class="statustool"><?php echo $this->timeMsg; ?></div><?php endif; ?>
-</div>
-<br />
-<?php } */ $odd = true; ?>
+<?php  $odd = true; ?>
 <?php if ($this->has('instanceInfo')): ?>
     <table class="separated-vertical">
         <?php if (!empty($this->propertyInfo)): ?>

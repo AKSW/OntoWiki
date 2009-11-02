@@ -21,24 +21,28 @@ class ShowpropertiesModule extends OntoWiki_Module
         
         $session = $this->_owApp->session;
         
-        $shownProperties = (is_array($session->shownProperties) 
-                         ? json_encode($session->shownProperties) 
-                         : '[]');
-        
-        $shownInverseProperties = (is_array($session->shownInverseProperties) 
-                                ? json_encode($session->shownInverseProperties) 
-                                : '[]');
-        
-        $this->view->headScript()->appendScript('
-            var shownProperties = ' . $shownProperties.';
-            var shownInverseProperties = ' . $shownInverseProperties . ';');
+        $allShownProperties =  $this->_owApp->session->instances->getShownPropertiesPlain();
+        $shownProperties = array();
+        $shownInverseProperties = array();
+        foreach ($allShownProperties as $prop) {
+            if($prop['inverse']){
+                $shownInverseProperties[] = $prop['uri'];
+            } else {
+                $shownProperties[] = $prop['uri'];
+            }
+        }
+        $this->view->headScript()->appendScript(
+           'var shownProperties = ' . json_encode($shownProperties).';
+            var shownInverseProperties = ' . json_encode($shownInverseProperties) . ';'
+        );
     }
     
     public function getContents()
     {
-        if (isset($this->_owApp->instances)) {
-            $this->view->properties = $this->_owApp->instances->getAllProperties();
-            $this->view->reverseProperties = $this->_owApp->instances->getAllReverseProperties();
+        $session = $this->_owApp->session;
+        if (isset($session->instances)) {
+            $this->view->properties = $session->instances->getAllProperties();
+            $this->view->reverseProperties = $session->instances->getAllReverseProperties();
             
             return $this->render('showproperties');
         }

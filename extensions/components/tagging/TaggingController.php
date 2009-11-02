@@ -510,13 +510,7 @@ class TaggingController extends OntoWiki_Controller_Component
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
 
-        $options = array(
-            'filter' => is_array($this->_session->filter) ? $this->_session->filter : array(),
-        ); //other options are fine with default values
-
-        // instantiate model
-        require_once 'OntoWiki/Model/Instances.php';
-        $instances   = new OntoWiki_Model_Instances($this->store, $this->model, $options);
+        $instances   = $this->session->instances;
 
         //set default cloudproperty
         if (!is_array($this->session->cloudproperties) || empty($this->session->cloudproperties)) {
@@ -526,9 +520,9 @@ class TaggingController extends OntoWiki_Controller_Component
         //find selected tags by looking into filters
         $selectedTags = array();
         $selectedTagsInverse = array();
-
-        if (is_array($this->session->filter)) {
-            foreach ($this->session->filter as $key => $filter) {
+        $filters = $this->session->instances->getFilter();
+        if (is_array($filters)) {
+            foreach ($filters as $key => $filter) {
                 $parts = explode('-', $filter['id']);
                 if (count($parts) >= 3 && $parts[0] == 'explore') {
                     if ($parts[1] == 'normal') {
