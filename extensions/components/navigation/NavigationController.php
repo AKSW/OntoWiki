@@ -69,25 +69,24 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function queryNavigationEntries($setup) {
-        $this->_owApp->logger->info(print_r($setup,true));
+        //$this->_owApp->logger->info(print_r($setup,true));
         
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
-        /*$query = 'SELECT ?navEntry WHERE {
-            ?navEntry <'.EF_RDF_TYPE.'> <'.EF_OWL_CLASS.'>.
-            FILTER (isURI(?navEntry))
-            } LIMIT 10
-            ';*/
-        $query = $this->buildQuery($setup);
+        if( $setup->state->lastEvent == "search" ){ // search request
+            $query = $this->store->findResourcesWithPropertyValue($setup->state->searchString,$this->model->__toString());
+        }else{
+            $query = $this->buildQuery($setup);
+        }
         
         // error logging
-        $this->_owApp->logger->info($query->__toString());
+        //$this->_owApp->logger->info($query->__toString());
         
         $results = $this->model->sparqlQuery($query);
     
         // log results
-        $this->_owApp->logger->info("\n\n\n".print_r($results,true));     
+        //$this->_owApp->logger->info("\n\n\n".print_r($results,true));     
     
         if( isset($setup->config->titleMode) ){ 
             $mode = $setup->config->titleMode;
@@ -97,7 +96,7 @@ class NavigationController extends OntoWiki_Controller_Component
         
         $entries = array();
         foreach ($results as $result) {
-            $uri = $result['navEntry'];
+            $uri = $result['resourceUri'];
             $entry = array();
             $entry['title'] = $this->getTitle($uri, $mode);
             $entry['link'] = (string) $linkurl->setParam('r', $uri, true);
@@ -126,7 +125,7 @@ class NavigationController extends OntoWiki_Controller_Component
     
     protected function buildQuery($setup){
         $query = new Erfurt_Sparql_SimpleQuery();
-        $prologue = 'SELECT DISTINCT ?navEntry ';
+        $prologue = 'SELECT DISTINCT ?resourceUri ';
         $query->setProloguePart($prologue);
         
         $whereSpecs = array();
@@ -136,26 +135,26 @@ class NavigationController extends OntoWiki_Controller_Component
             
             foreach($setup->config->hierarchyRelations->in as $rel){
                 if ($rel == "http://www.w3.org/2000/01/rdf-schema#subClassOf") {
-                    $whereSpecs[] = '{?navEntry a <'.$setup->state->parent.'>.}';
+                    $whereSpecs[] = '{?resourceUri a <'.$setup->state->parent.'>.}';
                 }
                 // entities with a subtype must be a type
-                $whereSpecs[] = '{?navEntry <' . $rel . '> <'.$setup->state->parent.'>.}';
+                $whereSpecs[] = '{?resourceUri <' . $rel . '> <'.$setup->state->parent.'>.}';
             }
             
-        }else{
+        }else{ // default
                 
             // Init query
             foreach ($setup->config->hierarchyTypes as $type) {
-                $whereSpecs[] = '{?navEntry a <' . $type . '>}';
+                $whereSpecs[] = '{?resourceUri a <' . $type . '>}';
             }
         
             if ( !isset($setup->state->parent) ) {
                 foreach($setup->config->hierarchyRelations->in as $rel){
                     if ($rel == "http://www.w3.org/2000/01/rdf-schema#subClassOf") {
-                        $whereSpecs[] = '{?instance a ?navEntry.}';
+                        $whereSpecs[] = '{?instance a ?resourceUri.}';
                     }
                     // entities with a subtype must be a type
-                    //$whereSpecs[] = '{?subtype <' . $rel . '> ?navEntry.}';
+                    //$whereSpecs[] = '{?subtype <' . $rel . '> ?resourceUri.}';
                 }
             }
         
@@ -163,7 +162,7 @@ class NavigationController extends OntoWiki_Controller_Component
             if ( isset($setup->config->instanceRelation) ){
                 foreach($setup->config->instanceRelation->out as $rel){
                     // entities must have a subtype
-                    $whereSpecs[] = '{?navEntry <' . $rel . '> ?subtype.}';
+                    $whereSpecs[] = '{?resourceUri <' . $rel . '> ?subtype.}';
                 }        
             }
         }
@@ -173,26 +172,26 @@ class NavigationController extends OntoWiki_Controller_Component
         // namespaces to be ignored, rdfs/owl-defined objects
         if( isset($setup->config->hiddenRelation) ){
             foreach ($setup->config->hiddenRelation as $ignore) {
-                $whereSpec .= ' OPTIONAL { ?navEntry <' . $ignore . '> ?reg . }';
+                $whereSpec .= ' OPTIONAL { ?resourceUri <' . $ignore . '> ?reg . }';
             }
             $whereSpec .= 'FILTER (!bound(?reg))';
         }
 
-        $whereSpec .= 'FILTER (isURI(?navEntry))';
+        $whereSpec .= 'FILTER (isURI(?resourceUri))';
         
         // dont't show rdfs/owl entities and subtypes in the first level
         if ( !isset($setup->state->parent) ) {
             $whereSpec .= ' FILTER (regex(str(?super), "^' . EF_OWL_NS . '") || !bound(?super))';
         
             foreach($setup->config->hierarchyRelations->in as $rel){
-                $whereSpec .= ' OPTIONAL {?navEntry <' . $rel . '> ?super. FILTER(isUri(?super))}';
+                $whereSpec .= ' OPTIONAL {?resourceUri <' . $rel . '> ?super. FILTER(isUri(?super))}';
             }
         }
         
         // namespaces to be ignored, rdfs/owl-defined objects
         if( isset($setup->config->hiddenNS) ){
             foreach ($setup->config->hiddenNS as $ignore) {
-                $whereSpec .= ' FILTER (!regex(str(?navEntry), "^' . $ignore . '"))';
+                $whereSpec .= ' FILTER (!regex(str(?resourceUri), "^' . $ignore . '"))';
             }
         }
         
