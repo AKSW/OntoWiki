@@ -24,6 +24,7 @@ class MinimapModule extends OntoWiki_Module
             return $this->render('minimap');
         } else {
             $this->view->message = 'No Instances object in session.';
+            $this->_owApp->logger->debug('minimap: error: this->_session->instances is not set!');
             return $this->render('error');
         } 
     }
