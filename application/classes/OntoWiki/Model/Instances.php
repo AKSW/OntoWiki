@@ -133,6 +133,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $this->_resourceQuery   =  new Erfurt_Sparql_Query2();
         
+        if ( isset($options['default_query']) ) {
+            $this->_resourceQuery = $options['default_query'];
+        }
+        
         if (is_string($member_predicate)){
             $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
         }
@@ -161,33 +165,37 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                         true
                     )
                 );
+        } else {
+            $this->subClasses = array();
         }
-     
-        if (count($this->subClasses)>1) { 
-            // "1" because the class itself is somehow included in the subclasses...
-            $typeVar = new Erfurt_Sparql_Query2_Var($this->type);
-            $this->_resourceQuery->addTriple(
-                $this->_resourceVar, 
-                $member_predicate, 
-                $typeVar);
+        
+        if ( isset($options['type']) ) {
+            if (count($this->subClasses)>1) { 
+                // "1" because the class itself is somehow included in the subclasses...
+                $typeVar = new Erfurt_Sparql_Query2_Var($this->type);
+                $this->_resourceQuery->addTriple(
+                    $this->_resourceVar, 
+                    $member_predicate, 
+                    $typeVar);
 
-            $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
-            foreach ($this->subClasses as $subclass) {
-                $or->addElement(
-                    new Erfurt_Sparql_Query2_sameTerm(
-                        $typeVar, 
-                        new Erfurt_Sparql_Query2_IriRef($subclass)
-                    )
+                $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
+                foreach ($this->subClasses as $subclass) {
+                    $or->addElement(
+                        new Erfurt_Sparql_Query2_sameTerm(
+                            $typeVar, 
+                            new Erfurt_Sparql_Query2_IriRef($subclass)
+                        )
+                    );
+                }
+                
+                $this->_resourceQuery->addFilter($or);
+            } else {
+                $this->_resourceQuery->addTriple(
+                    $this->_resourceVar, 
+                    $member_predicate, 
+                    $this->type
                 );
             }
-            
-            $this->_resourceQuery->addFilter($or);
-        } else {
-            $this->_resourceQuery->addTriple(
-                $this->_resourceVar, 
-                $member_predicate, 
-                $this->type
-            );
         }
         
         //show resource uri

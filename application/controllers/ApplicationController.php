@@ -766,7 +766,23 @@ class ApplicationController extends OntoWiki_Controller_Base
             $this->view->placeholder('main.window.title')->set($title);
         } else {
 
-            if ($results = $store->findResourcesWithPropertyValue($searchText,$modelUri)) {
+            if ($query = $store->findResourcesWithPropertyValue($searchText,$modelUri)) {
+                $options = array(
+                    /*
+                    // this may be used when the new navigation is available
+                    'rdf_type' => $this->_owApp->selectedClass,
+                    'memberPredicate' => EF_RDF_TYPE, 
+                    'withChilds' => true,
+                     */
+                    'default_query' => $query ,
+                    'limit' => 10,
+                    'withChilds' => false
+                );
+
+                // instantiate model
+                $instances   = new OntoWiki_Model_Instances($this->_erfurt->getStore(), $this->_owApp->selectedModel, $options);
+                $this->_session->instances = $instances;
+                /*
                 $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
                 foreach ($results as $result) {
@@ -777,25 +793,12 @@ class ApplicationController extends OntoWiki_Controller_Base
                         'name' => $result
                     );
                 }
-                
-
+                */
                 
             }
-            $this->view->data = $resources;
-        
-            $title = sprintf($this->_owApp->translate->_('Resources having literal property values that match \'%1$s\''), $searchText);
-            $this->view->placeholder('main.window.title')->set($title);
+            
+            $this->_redirect('list');
 
-            $message = 'Some store backends may not be able to do sub-string matching. '
-                     . 'Try a prefix if you didn\'t get search results you expected.';
-            $this->_owApp->appendMessage(new OntoWiki_Message($this->_owApp->translate->_($message), OntoWiki_Message::INFO));
-
-            if (count($resources) < 1) {
-                $this->_owApp->appendMessage(new OntoWiki_Message(
-                    $this->_owApp->translate->_('Search returned no results.'),
-                    OntoWiki_Message::INFO
-                ));
-            }
         }
         
         // put a message if debug enabled and start is set
