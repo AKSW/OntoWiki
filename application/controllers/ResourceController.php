@@ -310,7 +310,12 @@ class ResourceController extends OntoWiki_Controller_Base
 
             $where = 'WHERE '.$query->getWhere();
             
-            $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
+            try {
+                $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
+            } catch (Erfurt_Store_Exception $e) {
+                $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
+            }
+            
             
             $statusBar = $this->view->placeholder('main.window.statusbar');
             $this->view->count = $count;
@@ -393,7 +398,16 @@ class ResourceController extends OntoWiki_Controller_Base
         $newquery = $query->getRealQuery()->setDistinct(true);
 
         $where = 'WHERE '.$newquery->getWhere()->getSparql();
-        $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
+        
+        try {
+            $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
+        } catch (Erfurt_Store_Exception $e) {
+            $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
+        }
+        
+        
+        
+        
         $itemsOnPage = count($this->_owApp->instances->getValues());
         $limit =  $this->_owApp->instances->getLimit();
             
