@@ -20,16 +20,16 @@ class MinimapModule extends OntoWiki_Module
 
     public function getContents()
     {
-        if(isset($this->_owApp->instances)) {
-            $this->_owApp->logger->info('minimap/getContent session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
+        if(isset($this->_session->instances)) {
             return $this->render('minimap');
+        } else {
+            $this->view->message = 'No Instances object in session.';
+            return $this->render('error');
         } 
     }
 
     public function shouldShow()
     {
-        $this->_owApp->logger->info('minimap/shouldShow session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
-        //        require_once 'extensions/components/MapHelper.php';
         if(class_exists('MapHelper')) {
             $helper = new MapHelper($this->_owApp->componentManager);
             return $helper->shouldShow();
