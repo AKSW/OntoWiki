@@ -174,9 +174,9 @@ class MapController extends OntoWiki_Controller_Component
                 $url->setParam('r', $uri, true);
 
                 if (empty ($r['lat']) || empty ($r['long'])) {
-                    if(!empty($r['indirectLat']) && !empty($r['indirectLong'])) {
-                        $lat = $r['indirectLat'];
-                        $long = $r['indirectLong'];
+                    if(!empty($r['lat2']) && !empty($r['long2'])) {
+                        $lat = $r['lat2'];
+                        $long = $r['long2'];
                     }
                 } else {
                     $lat = $r['lat'];
