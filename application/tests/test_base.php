@@ -32,4 +32,11 @@ set_include_path($includePath);
 require_once 'Zend/Session/Namespace.php';
 $session = new Zend_Session_Namespace('OntoWiki_Test');
 
+// Zend_Loader for class autoloading
+require_once 'Zend/Loader/Autoloader.php';
+$loader = Zend_Loader_Autoloader::getInstance();
+$loader->registerNamespace('OntoWiki_');
+
+
+
 ?>
