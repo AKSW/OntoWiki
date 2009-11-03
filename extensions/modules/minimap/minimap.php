@@ -19,8 +19,8 @@ class MinimapModule extends OntoWiki_Module
     }
 
     public function getContents()
-    {
-        if(isset($this->_session->instances)) {
+    {        
+        if(isset($this->_owApp->session->instances)) {
             return $this->render('minimap');
         } else {
             $this->view->message = 'No Instances object in session.';

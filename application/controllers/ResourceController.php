@@ -284,7 +284,10 @@ class ResourceController extends OntoWiki_Controller_Base
         }
         $instances->invalidate(); // the dataset may have changed since the last request
         //var_dump($instances); exit;
-        
+        //
+        //save to session
+        $this->_session->instances = $instances;
+
         //needed?
         //$this->_owApp->instances = $instances;
         
@@ -378,11 +381,7 @@ class ResourceController extends OntoWiki_Controller_Base
                            ->register('showproperties', 'main.window.innerwindows')
                            ->register('filter', 'main.window.innerwindows');
         }
-        
-        //save to session
-        $this->_session->instances = $instances;
-        
-  
+
         $this->addModuleContext('main.window.instances');
     }
     

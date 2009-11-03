@@ -242,7 +242,19 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         //echo htmlentities($this->_resourceQuery);
         //echo '</pre>';
     }
-    
+
+    /**
+     * dont keep the references to the query objects in $this->resourceQuery (the must be cloned too)
+     */
+    public function __clone(){
+        foreach ($this as $key => $val) {
+            if (is_object($val)||(is_array($val))) {
+                $this->{$key} = unserialize(serialize($val));
+                //$this->$key= clone($this->$key); 
+            }
+        }
+    }
+
     /**
      * Adds a property to the properties fetched for every resource.
      *
