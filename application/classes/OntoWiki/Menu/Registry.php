@@ -96,7 +96,7 @@ class OntoWiki_Menu_Registry
     
     private function _getApplicationMenu()
     {
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
         
         // user sub menu
         if ($owApp->erfurt->isActionAllowed('RegisterNewUser')) {

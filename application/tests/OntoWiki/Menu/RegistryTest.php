@@ -12,7 +12,8 @@ class OntoWiki_Menu_RegistryTest extends PHPUnit_Framework_TestCase
     
     public function setUp()
     {
-        $this->_registry = OntoWiki_Menu_Registry::getInstance();
+        //we need a fully loaded ow+erfurt here?!
+        //$this->_registry = OntoWiki_Menu_Registry::getInstance();
     }
 
     public function testEmpty(){
