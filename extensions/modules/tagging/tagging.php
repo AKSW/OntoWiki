@@ -17,7 +17,6 @@ class TaggingModule extends OntoWiki_Module
 {
     public function init() {
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'tagging.js');
-        $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'tagging.css');
     }
     
 	
