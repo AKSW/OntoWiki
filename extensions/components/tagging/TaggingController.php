@@ -951,9 +951,14 @@ class TaggingController extends OntoWiki_Controller_Component
         $tags = array();
 
         foreach ($temp as $key => $value) {
-            $tags[] = $value['literal'];
-            echo $value['literal']."\n";
+            $row = $value['literal'].'|'.$value['tr'];
+            $tags[] = $row;
         }
+        
+        // var_dump($tags);die;
+        echo json_encode(implode(PHP_EOL, $tags));
+        
+        exit;
     }
 
     /**

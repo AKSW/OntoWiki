@@ -32,14 +32,21 @@ $(document).ready(function() {
         return false;
     });
 	
-	// suggestion tagging
-    $('#tagging-input').autocomplete(taggingUrl+'autocomplete/', {
-         formatItem: function(data, i, n, value) {
-            return "<font color='#3399CC'>" + value + "</font>";
-         },
-         formatResult: function(data,value) { 	 
-             return value;   
-         }
+    $('#tagging-input').autocomplete(function(term, cb) { uriSearch(term, cb); }, {
+    minChars: 3,
+    delay: 1000,
+    max: 100,
+    formatItem: function(data, i, n, term) {
+	    return '<div style="overflow:hidden">\
+	        <span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
+	        <br />\
+	        <span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
+	        </div>';
+	    }
+    });
+	
+	$('#tagging-input').result(function(e, data, formated) {
+        $(this).attr('value', data[1]);
     });
 });
 
@@ -78,13 +85,12 @@ function taggingAction ( type , typeparam) {
 /** 
  * Function that executes a URI search.
  */
-function uriSearch(term)
+function uriSearch(term, cb)
 {
-    var searchUrl = urlBase + 'tagging/autocomplete/?term=' + term;	
-    $.getJSON(searchUrl,myCallback);
-}
-
-function myCallback (jsonData) {
-  test = jsonData;
-  // console.log(test);
+    var searchUrl = urlBase + 'tagging/autocomplete?q=' + term;
+    
+    $.getJSON(searchUrl, 
+        function(jsonData) {
+            cb(jsonData);
+    });
 }
