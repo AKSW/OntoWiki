@@ -8,6 +8,19 @@ classes    = "has-contextmenus-block"
 [private]
 default = classes
 
+;;;;;;;;;;;;;;;;; Faunistics Hierarchy
+config.faun.name = "Faunistics"
+config.faun.hierarchyTypes[] = "http://purl.org/net/faunistics#Family"
+config.faun.hierarchyTypes[] = "http://purl.org/net/faunistics#Genus"
+config.faun.hierarchyTypes[] = "http://purl.org/net/faunistics#Species"
+config.faun.hierarchyTypes[] = "http://purl.org/net/faunistics#Order"
+config.faun.hierarchyTypes[] = "http://purl.org/net/faunistics#SubOrder"
+config.faun.hierarchyRelations.in[]   = "http://purl.org/net/faunistics#subTaxonOf"
+config.faun.hierarchyRelations.in[]   = "http://purl.org/net/faunistics#subTaxonOf"
+config.faun.instanceRelation.out[]  = "http://purl.org/net/faunistics#identifiesAs"
+config.faun.titleMode = titleHelper
+
+
 ;;;;;;;;;;;;;;;;; SKOS Hierarchy
 config.skos.name = "SKOS"
 config.skos.hierarchyTypes[] = "http://www.w3.org/2004/02/skos/core#Concept"
