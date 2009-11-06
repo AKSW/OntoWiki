@@ -5,12 +5,10 @@
  */
 $odd = false;
 ?>
-<?php if (!empty($this->message)): ?>
-    <?php if (!empty($this->messagetype)): ?>
-        <span class="messagebox <?php echo $this->messagetype ?>"><?php echo ($this->message) ?></span>
-    <?php else: ?>
-        <span class="messagebox info"><?php echo ($this->message) ?></span>
-    <?php endif ?>
+<?php if (!empty($this->messages)): ?>
+    <?php foreach ($this->messages as $message): ?>
+        <span class="messagebox <?php echo $message['type'] ?>"><?php echo $message['text'] ?></span>
+    <?php endforeach; ?>
 <?php endif ?>
 
 <?php if ($this->entries) :?>

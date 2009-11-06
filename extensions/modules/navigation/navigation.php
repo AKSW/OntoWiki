@@ -46,8 +46,9 @@ class NavigationModule extends OntoWiki_Module
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
         $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')")
-             ->setEntry('Number of entries', $countMenu)
-             ->setEntry('Sort', $sortTagcloud);
+            ->setEntry('Toggle hidden Entries', "javascript:navigationEvent('toggleHidden')")
+            ->setEntry('Number of entries', $countMenu)
+            ->setEntry('Sort', $sortTagcloud);
 
         // build menu out of sub menus
         $mainMenu = new OntoWiki_Menu();

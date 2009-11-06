@@ -16,6 +16,8 @@ class NavigationController extends OntoWiki_Controller_Component
     private $session;
     private $ac;
     private $model;
+    /* an array of arrays, each has type and text */
+    private $messages = array();
     /* the setup consists of state and config */
     private $setup = null;
     private $limit = 50;
@@ -61,6 +63,15 @@ class NavigationController extends OntoWiki_Controller_Component
         }
 
         $this->view->entries = $this->queryNavigationEntries($this->setup);
+        if (empty($this->view->entries)) {
+            if ($this->setup->state->lastEvent == "search") {
+                $this->messages[] = array( 'type' => 'info', 'text' => 'No result for this search.');
+            } else {
+                $this->messages[] = array( 'type' => 'info', 'text' => 'Nothing to navigate deeper here.');
+            }
+        }
+
+        $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
         return;
     }

@@ -78,6 +78,16 @@ function navigationEvent (navEvent, eventParameter) {
         setup['state']['searchString'] = eventParameter;
     }
 
+    else if (navEvent == 'toggleHidden') {
+        var setup = navigationSetup;
+        setup['state']['lastEvent'] = navEvent;
+        if (setup['state']['showHidden'] == true) {
+            setup['state']['showHidden'] = false;
+        } else {
+            setup['state']['showHidden'] = true;
+        }
+    }
+
     else if (navEvent == 'reset') {
         // set the default config
         var navType = navigationConfig['default'];
