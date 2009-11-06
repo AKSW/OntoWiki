@@ -61,7 +61,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
 
         $this->view->entries = $this->queryNavigationEntries($this->setup);
-        //$this->view->setup = $this->setup;
+        $this->view->setup = $this->setup;
         return;
     }
 
