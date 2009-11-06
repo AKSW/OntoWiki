@@ -44,31 +44,33 @@ function FilterAPI(){
             if(typeof callback != 'function' && typeof callback != 'object')
 		callback = function(){};
                 
-		var data = {
-                    filter: [
-                        {
-                            "action" : "add",
-                            "id" : id,
-                            "property" : property,
-                            "isInverse" : isInverse,
-                            "propertyLabel" : propertyLabel,
-                            "filter" : filter,
-                            "value1": value1,
-                            "value2": value2,
-                            "valuetype": valuetype,
-                            "literaltype" : literaltype,
-                            "hidden" : hidden
-                        }
-                    ]
+		var data =
+                    {
+                    filter:
+                        [
+                            {
+                                "action" : "add",
+                                "id" : id,
+                                "property" : property,
+                                "isInverse" : typeof isInverse != 'undefined' ? isInverse : false,
+                                "propertyLabel" : typeof propertyLabel != 'undefined' ? propertyLabel : null,
+                                "filter" : filter,
+                                "value1": value1,
+                                "value2": typeof value2 != 'undefined' ? value2 : null,
+                                "valuetype": typeof valuetype != 'undefined' ? valuetype : null,
+                                "literaltype" : typeof literaltype != 'undefined' ? literaltype : null,
+                                "hidden" : typeof hidden != 'undefined' ? hidden : false
+                            }
+                        ]
                 };
 
-		var dataserialized = serialize(data);
+		var dataserialized = $.toJSON(data);
 		
 		me = this;
 		$.post(
 		this.uri,
 		{
-                    "instancesconfig" : encodeURI(dataserialized)
+                    "instancesconfig" : dataserialized
                 }, //as post because of size
 		function(res) {
                     if(true){ //how to check for success
@@ -119,13 +121,13 @@ function FilterAPI(){
                 ]
             };
 
-            var dataserialized = serialize(data);
+            var dataserialized = $.toJSON(data);
 
             me = this;
             $.post(
 		this.uri,
 		{
-                    "instancesconfig" : encodeURI(dataserialized)
+                    "instancesconfig" : dataserialized
                 }, //as post because of size
                 function(res) {
                     if(true){

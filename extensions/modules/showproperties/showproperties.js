@@ -29,15 +29,17 @@ $(document).ready(function() {
         
         var data =
             {
-            "shownProperties" : 
-                [ {
-                "uri" : propUri,
-                "label" : label,
-                "action" : action,
-                "inverse" : inverse
-                } ]
+            shownProperties : 
+                [ 
+                    {
+                        "uri" : propUri,
+                        "label" : label,
+                        "action" : action,
+                        "inverse" : inverse
+                    }
+                ]
             };
-        var serialized = serialize(data);
+        var serialized = $.toJSON(data);
         //
         //reload page
         //$('#showproperties form input').attr("value", serialized);

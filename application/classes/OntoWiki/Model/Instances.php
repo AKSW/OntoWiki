@@ -91,120 +91,131 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     /**
      * Constructor
      */
-    public function __construct (Erfurt_Store $store, $graph, $options = array())
+public function __construct (Erfurt_Store $store, $graph, $options = array())
     {
         parent::__construct($store, $graph);
 
-        //the structure of the resource query remains constant
-        //so its only build once
-        //(filters and limit,offset,order can be changed without rebuilding it)
-        $type                   = 
-            isset($options['type']) ?                   
-                $options['type'] : 
+        
+        $type                   =
+            isset($options['type']) ?
+                $options['type'] :
                 OntoWiki_Application::getInstance()->selectedClass;
-        $withChilds             = 
-           isset($options['withChilds']) ?             
-               $options['withChilds'] : 
+        $withChilds             =
+           isset($options['withChilds']) ?
+               $options['withChilds'] :
                true;
-        $member_predicate       =  
-            isset($options['memberPredicate']) ?        
-                $options['memberPredicate'] : 
+        $member_predicate       =
+            isset($options['memberPredicate']) ?
+                $options['memberPredicate'] :
                 EF_RDF_TYPE;
-        $limit                  = 
-            isset($options['limit']) ?                  
-                $options['limit'] : 
+        $hierarchy_up       =
+            isset($options['hierarchyUp']) ?
+                $options['hierarchyUp'] :
+                null;
+        $hierarchy_down       =
+            isset($options['hierarchyDown']) ?
+                $options['hierarchyDown'] :
+                EF_RDFS_SUBCLASSOF;
+        $limit                  =
+            isset($options['limit']) ?
+                $options['limit'] :
                 0;
-        $offset                 = 
-            isset($options['offset']) ?                 
-                $options['offset'] : 
+        $offset                 =
+            isset($options['offset']) ?
+                $options['offset'] :
                 0;
-        $shownProperties        = 
-            isset($options['shownProperties']) ?        
-                $options['shownProperties'] : 
+        $shownProperties        =
+            isset($options['shownProperties']) ?
+                $options['shownProperties'] :
                 array();
-        $shownInverseProperties = 
-            isset($options['shownInverseProperties']) ? 
-                $options['shownInverseProperties'] : 
+        $shownInverseProperties =
+            isset($options['shownInverseProperties']) ?
+                $options['shownInverseProperties'] :
                 array();
-        $sessionfilter          = 
-            isset($options['filter']) ?                 
-                $options['filter'] : 
+        $sessionfilter          =
+            isset($options['filter']) ?
+                $options['filter'] :
                 array();
 
         $this->_resourceQuery   =  new Erfurt_Sparql_Query2();
         $this->_resourceVar = new Erfurt_Sparql_Query2_Var("resourceUri");
-        
-        if ( isset($options['default_query']) ) {
-            $this->_resourceQuery = $options['default_query'];
+
+        if ( isset($options['searchText']) ) {
+            $this->_resourceQuery = $store->findResourcesWithPropertyValue(
+                $options['searchText'],
+                $graph->getModelIri()
+            );
         } else {
-        
+
             if (is_string($member_predicate)){
                 $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
             }
-            
-            $this->type = 
-                is_string($type) ? 
-                    new Erfurt_Sparql_Query2_IriRef($type) : 
+
+            $this->type =
+                is_string($type) ?
+                    new Erfurt_Sparql_Query2_IriRef($type) :
                     $type;
-            
+
             if (!($member_predicate instanceof Erfurt_Sparql_Query2_Verb)) {
                 throw new RuntimeException(
                     'Option "member_predicate" passed to Ontowiki_Model_Instances '.
                     'must be an instance of Erfurt_Sparql_Query2_IriRef '.
                     'or string instance of '.typeHelper($member_predicate).' given');
             }
-            
+
             if ($withChilds) {
-                $this->subClasses = 
+                $this->_subClasses =
                     array_keys(
                         $store->getTransitiveClosure(
-                            $graph->getModelIri(), 
-                            EF_RDFS_SUBCLASSOF, 
-                            array($this->type->getIri()), 
+                            $graph->getModelIri(),
+                            $hierarchy_down,
+                            array($this->type->getIri()),
                             true
                         )
                     );
+            } else if(isset($options['subtypes'])){ //dont query, take the given. maybe the new navigation can use this
+                $this->_subClasses = $options['subtypes'];
             }
-            
-            if (count($this->subClasses)>1) { 
+
+            if (count($this->_subClasses)>1) {
                 // "1" because the class itself is somehow included in the subclasses...
                 $typeVar = new Erfurt_Sparql_Query2_Var($this->type);
                 $this->_resourceQuery->addTriple(
-                    $this->_resourceVar, 
-                    $member_predicate, 
+                    $this->_resourceVar,
+                    $member_predicate,
                     $typeVar);
 
                 $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
-                foreach ($this->subClasses as $subclass) {
+                foreach ($this->_subClasses as $subclass) {
                     $or->addElement(
                         new Erfurt_Sparql_Query2_sameTerm(
-                            $typeVar, 
+                            $typeVar,
                             new Erfurt_Sparql_Query2_IriRef($subclass)
                         )
                     );
                 }
-                
+
                 $this->_resourceQuery->addFilter($or);
             } else {
                 $this->_resourceQuery->addTriple(
-                    $this->_resourceVar, 
-                    $member_predicate, 
+                    $this->_resourceVar,
+                    $member_predicate,
                     $this->type
                 );
             }
-            
+
             //show resource uri
             $this->_resourceQuery->addProjectionVar($this->_resourceVar);
         }
-        
+
         $this->_resourceQuery
             ->setLimit($limit)
             ->setOffset($offset)
             ->setDistinct(true)
             ->getOrder()
                 ->add($this->_resourceVar);
-        
-        
+
+
         // add filters TO resource-query
         foreach ($sessionfilter as $onefilter) {
             $this->addFilter(
@@ -506,7 +517,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         print_r($this->_filter[$id]);
 
-        //echo '<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>'; 
+        echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
         $this->invalidate();
         $this->updateValueQuery();
         return $this;
@@ -574,7 +585,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                     isset($row[$property['varName']])
                     && $row[$property['varName']]['type'] == 'uri'
                 ) {
-                    $titleHelper->addResource($row[$property['name']]['value']);
+                    $titleHelper->addResource($row[$property['varName']]['value']);
                 }
             }
         }

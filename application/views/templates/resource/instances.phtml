@@ -1,5 +1,11 @@
-<?php  $odd = true; ?>
-<?php if ($this->has('instanceInfo')): ?>
+<?php if ($this->has('searchText')): ?>
+    <p>Results for Search "<?php echo $this->searchText; ?>"</p>
+<?php endif; ?>
+    
+<?php 
+    $odd = true;
+    if ($this->has('instanceInfo')):
+?>
     <table class="separated-vertical">
         <?php if (!empty($this->propertyInfo)): ?>
             <tr>

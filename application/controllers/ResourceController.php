@@ -215,7 +215,7 @@ class ResourceController extends OntoWiki_Controller_Base
         //ready, set,  ...
         $start = microtime(true);
         
-        if (!isset($this->_session->instances) || isset($this->_request->resetinstancesconfig)) {
+        if (!isset($this->_session->instances) || isset($this->_request->resetinstancesconfig) || isset($this->_request->s)) {
             $options = array(
                 /*
                 // this may be used when the new navigation is available
@@ -226,6 +226,11 @@ class ResourceController extends OntoWiki_Controller_Base
                 'limit' => 10
             );
 
+            if (isset($this->_request->s)) {
+                $options['searchText'] = $this->_request->s;
+                $this->view->searchText = $this->_request->s;
+            }
+
             // instantiate model
             $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
         } else {
@@ -234,37 +239,34 @@ class ResourceController extends OntoWiki_Controller_Base
             
             //check for change-requests
             if (isset($this->_request->instancesconfig)) {
-                $config = unserialize(urldecode(stripslashes($this->_request->instancesconfig)));
-                
-                if (isset($config['shownProperties'])) {
-                    //print_r($config);
-                    foreach ($config['shownProperties'] as $prop) {
-                        if ($prop['action'] == 'add') {
-                            $instances->addShownProperty($prop['uri'], $prop['label'], $prop['inverse']);
+                $config = json_decode(stripslashes(utf8_decode($this->_request->instancesconfig)));
+                if (isset($config->shownProperties)) {
+                    foreach ($config->shownProperties as $prop) {
+                        if ($prop->action == 'add') {
+                            $instances->addShownProperty($prop->uri, $prop->label, $prop->inverse);
                         } else {
-                            $instances->removeShownProperty($prop['uri'].'-'.$prop['inverse']);
+                            $instances->removeShownProperty($prop->uri.'-'.$prop->inverse);
                         }
                     }
                 }
 
-                if (isset($config['filter'])) {
-                    foreach ($config['filter'] as $filter) {
-                        if ($filter['action'] == 'add') {
+                if (isset($config->filter)) {
+                    foreach ($config->filter as $filter) {
+                        if ($filter->action == 'add') {
                             $instances->addFilter(
-                                $filter['id'],
-                                $filter['property'],
-                                $filter['isInverse'],
-                                $filter['propertyLabel'],
-                                $filter['filter'],
-                                $filter['value1'],
-                                $filter['value2'],
-                                $filter['valuetype'],
-                                $filter['literaltype'],
-                                $filter['hidden']
+                                $filter->id,
+                                $filter->property,
+                                $filter->isInverse,
+                                $filter->propertyLabel,
+                                $filter->filter,
+                                $filter->value1,
+                                $filter->value2,
+                                $filter->valuetype,
+                                $filter->literaltype,
+                                $filter->hidden
                             );
-                            echo htmlentities($instances->getResourceQuery());
                         } else {
-                            $instances->removeFilter($filter['id']);
+                            $instances->removeFilter($filter->id);
                         }
                     }
                 }

@@ -86,7 +86,7 @@ class ApplicationModule extends OntoWiki_Module
     public function getContents()
     {
         $data = array(
-            'actionUrl'      => $this->_config->urlBase . 'search/', 
+            'actionUrl'      => $this->_config->urlBase . 'resource/instances/',
             #'user'           => $this->_owApp->user['username'], 
             'modelSelected'  => isset($this->_owApp->selectedModel), 
             's'              => $this->_request->getParam('s')
