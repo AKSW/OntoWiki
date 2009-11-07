@@ -64,7 +64,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
         $this->view->entries = $this->queryNavigationEntries($this->setup);
         if (empty($this->view->entries)) {
-            if ($this->setup->state->lastEvent == "search") {
+            if ($this->setup->searchString) {
                 $this->messages[] = array( 'type' => 'info', 'text' => 'No result for this search.');
             } else {
                 $this->messages[] = array( 'type' => 'info', 'text' => 'Nothing to navigate deeper here.');
@@ -85,7 +85,7 @@ class NavigationController extends OntoWiki_Controller_Component
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
-        if( $setup->state->lastEvent == "search" ){ // search request
+        if( $this->setup->searchString ){ // search request
             $query = $this->store->findResourcesWithPropertyValue($setup->state->searchString,$this->model->__toString());
         }else{
             $query = $this->buildQuery($setup);
@@ -142,7 +142,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $whereSpecs = array();
         
         // deeper qeury
-        if ( isset($setup->state->parent) && ($setup->state->lastEvent == "navigateDeeper") ) {
+        if ( isset($setup->state->parent) ) {
             
             foreach($setup->config->hierarchyRelations->in as $rel){
                 if ($rel == "http://www.w3.org/2000/01/rdf-schema#subClassOf") {
@@ -152,7 +152,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 $whereSpecs[] = '{?resourceUri <' . $rel . '> <'.$setup->state->parent.'>.}';
             }
             
-        }else{ // default
+        }else{ // toplevel query
                 
             // Init query
             foreach ($setup->config->hierarchyTypes as $type) {
