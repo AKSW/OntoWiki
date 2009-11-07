@@ -110,6 +110,10 @@ function navigationEvent (navEvent, eventParameter) {
     }
 
     else if (navEvent == 'navigateRoot') {
+        if ( typeof setup['state']['parent'] == 'undefined' ) {
+            // we are at root level, so nothing higher than here
+            return;
+        }
         delete(setup['state']['parent']);
         setup['state']['path'] = new Array;
     }
