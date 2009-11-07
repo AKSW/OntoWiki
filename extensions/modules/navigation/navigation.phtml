@@ -7,11 +7,33 @@
 
 #var_dump($this->data);
 ?>
-
+<div class="module-toolbar">
+    <div class="left-side">
+        <a class="minibutton"
+            title="Reset navigation to root"><img
+            alt="first" id="navFirst"
+            src="<?php echo $this->themeUrlBase ?>/images/icon-first.png"/></a>
+        <a class="minibutton"
+            title="Navigate back"><img
+            alt="previous" id="navBack"
+            src="<?php echo $this->themeUrlBase ?>/images/icon-previous.png"/></a>
+    </div>
+    <div class="right-side">
+        <a class="minibutton"
+            title="Create node at this level"><img
+            alt="add" id="navAdd"
+            src="<?php echo $this->themeUrlBase ?>/images/icon-add.png"/></a>
+        <a class="minibutton"
+            title="Search in navigation tree"><img
+            alt="search" id="navSearch"
+            src="<?php echo $this->themeUrlBase ?>/images/icon-search.png"/></a>
+    </div>
+</div><br style="clear: both" />
 <p><input
+    style="display: none"
     class="text width98 inner-label"
     type="text"
     id="navigation-input"
     name="navigation-input"
     value=""/></p>
-<p id="navigation-content" class="init-me-please">...</p>
+<p id="navigation-content" class="width99 init-me-please">...</p>

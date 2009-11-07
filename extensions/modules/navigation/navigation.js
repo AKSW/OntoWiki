@@ -17,6 +17,17 @@ $(document).ready(function() {
     navigationWindow = $("#navigation");
     navigationUrl = urlBase + 'navigation/explore';
 
+    /* Navigation toolbar */
+    $('#navFirst').click(function(event){
+        navigationEvent('navigateRoot');
+    })
+    $('#navBack').click(function(event){
+        navigationEvent('navigateHigher');
+    })
+    $('#navSearch').click(function(event){
+        navigationInput.toggle().focus();
+    })
+
     navigationInput.livequery('keypress', function(event) {
         // do not create until user pressed enter
 	if ((event.which == 13) && (event.currentTarget.value != '') ) {
@@ -41,46 +52,73 @@ function navigationSetParam (key, value) {
  * Setups the Navgiation Parameters and start the request
  */
 function navigationEvent (navEvent, eventParameter) {
-    if (navEvent == 'init') {
-        // init only works if navcontainer is empty
-        if (navigationContainer.hasClass('init-me-please')) {
-            // set the default config
-            var navType = navigationConfig['default'];
-            var config = navigationConfig['config'][navType];
-            // set the state
-            var state = {};
-            state['lastEvent'] = navEvent;
-            // pack state and config into setup value for post
-            var setup = { 'state' : state, 'config' : config };
-            navigationContainer.removeClass('init-me-please');
+    var setup, navType;
+
+    /* init config when not existing or resetted by user */
+    if ( ( typeof navigationSetup == 'undefined' ) || (navEvent == 'reset') || (navEvent == 'setType') ) {
+        // set the default or setType config
+        if (navEvent == 'setType') {
+            navType = eventParameter;
+        } else {
+            navType = navigationConfig['default'];
         }
+
+        var config = navigationConfig['config'][navType];
+        // set the state
+        var state = {};
+        state['path'] = new Array;
+        // pack state and config into setup value for post
+        setup = { 'state' : state, 'config' : config };
+    } else {
+        setup = navigationSetup;
+    }
+    setup['state']['lastEvent'] = navEvent;
+
+
+    if ( (navEvent == 'init') || (navEvent == 'reset') || (navEvent == 'setType') ) {
+        // remove init sign and setup module title
+        navigationContainer.removeClass('init-me-please');
+        $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
     }
 
     else if (navEvent == 'navigateDeeper') {
-        var setup = navigationSetup;
-        setup['state']['lastEvent'] = navEvent;
+        // save path element
+        if ( typeof setup['state']['parent'] != 'undefined' ) {
+            setup['state']['path'].push(setup['state']['parent']);
+        }
+        // set new parent
         setup['state']['parent'] = eventParameter;
     }
 
-    else if (navEvent == 'setType') {
-        // set the new config
-        var config = navigationConfig['config'][eventParameter];
-        // set the state
-        var state = {};
-        state['lastEvent'] = navEvent;
-        // pack state and config into setup value for post
-        var setup = { 'state' : state, 'config' : config };
+    else if (navEvent == 'navigateHigher') {
+        // count path elements
+        var pathlength = setup['state']['path'].length;
+        if ( typeof setup['state']['parent'] == 'undefined' ) {
+            // we are at root level, so nothing higher than here
+            return;
+        }
+        if (pathlength == 0) {
+            // we are at the first sublevel (so we go to root)
+            delete(setup['state']['parent']);
+        } else {
+            // we are somewhere deeper ...
+            // set parent to the last path element
+            setup['state']['parent'] = setup['state']['path'][pathlength-1];
+            // and delete the last path element
+            setup['state']['path'].pop();
+        }
+    }
+
+    else if (navEvent == 'navigateRoot') {
+        delete(setup['state']['parent']);
+        setup['state']['path'] = new Array;
     }
 
     else if (navEvent == 'search') {
-        var setup = navigationSetup;
-        setup['state']['lastEvent'] = navEvent;
         setup['state']['searchString'] = eventParameter;
     }
 
     else if (navEvent == 'toggleHidden') {
-        var setup = navigationSetup;
-        setup['state']['lastEvent'] = navEvent;
         if (setup['state']['showHidden'] == true) {
             setup['state']['showHidden'] = false;
         } else {
@@ -88,25 +126,14 @@ function navigationEvent (navEvent, eventParameter) {
         }
     }
 
-    else if (navEvent == 'reset') {
-        // set the default config
-        var navType = navigationConfig['default'];
-        var config = navigationConfig['config'][navType];
-        // set the state
-        var state = {};
-        state['lastEvent'] = navEvent;
-        // pack state and config into setup value for post
-        var setup = { 'state' : state, 'config' : config };
+    else {
+        alert('error: unknown navigation event: '+navEvent);
+        return;
     }
 
-
-    // check for setup and load Navigation
-    if ( typeof setup != 'undefined' ) {
-        navigationSetup = setup;
-        navigationLoad (navEvent, setup);
-    } else {
-        alert('error: navigationSetup doesnt produced a setup here (event was: '+navEvent+')');
-    }
+    navigationSetup = setup;
+    navigationLoad (navEvent, setup);
+    return;
 }
 
 /**
