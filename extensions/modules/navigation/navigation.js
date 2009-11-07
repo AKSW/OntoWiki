@@ -123,8 +123,8 @@ function navigationEvent (navEvent, eventParameter) {
     }
 
     else if (navEvent == 'toggleHidden') {
-        if (setup['state']['showHidden'] == true) {
-            setup['state']['showHidden'] = false;
+        if ( typeof setup['state']['showHidden'] != 'undefined' ) {
+            delete(setup['state']['showHidden']);
         } else {
             setup['state']['showHidden'] = true;
         }

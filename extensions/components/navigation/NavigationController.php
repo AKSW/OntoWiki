@@ -200,9 +200,11 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         // namespaces to be ignored, rdfs/owl-defined objects
-        if( isset($setup->config->hiddenNS) ){
-            foreach ($setup->config->hiddenNS as $ignore) {
-                $whereSpec .= ' FILTER (!regex(str(?resourceUri), "^' . $ignore . '"))';
+        if ( !$setup->state->showHidden) {
+            if( isset($setup->config->hiddenNS) ){
+                foreach ($setup->config->hiddenNS as $ignore) {
+                    $whereSpec .= ' FILTER (!regex(str(?resourceUri), "^' . $ignore . '"))';
+                }
             }
         }
         
