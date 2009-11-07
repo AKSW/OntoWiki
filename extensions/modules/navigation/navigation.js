@@ -74,66 +74,68 @@ function navigationEvent (navEvent, eventParameter) {
     }
     setup['state']['lastEvent'] = navEvent;
 
+    switch (navEvent) {
+        case 'init':
+        case 'reset':
+        case 'setType':
+            // remove init sign and setup module title
+            navigationContainer.removeClass('init-me-please');
+            $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
+            break;
 
-    if ( (navEvent == 'init') || (navEvent == 'reset') || (navEvent == 'setType') ) {
-        // remove init sign and setup module title
-        navigationContainer.removeClass('init-me-please');
-        $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
-    }
+        case 'navigateDeeper':
+            // save path element
+            if ( typeof setup['state']['parent'] != 'undefined' ) {
+                setup['state']['path'].push(setup['state']['parent']);
+            }
+            // set new parent
+            setup['state']['parent'] = eventParameter;
+            break;
+        
+        case 'navigateHigher':
+            // count path elements
+            var pathlength = setup['state']['path'].length;
+            if ( typeof setup['state']['parent'] == 'undefined' ) {
+                // we are at root level, so nothing higher than here
+                return;
+            }
+            if (pathlength == 0) {
+                // we are at the first sublevel (so we go to root)
+                delete(setup['state']['parent']);
+            } else {
+                // we are somewhere deeper ...
+                // set parent to the last path element
+                setup['state']['parent'] = setup['state']['path'][pathlength-1];
+                // and delete the last path element
+                setup['state']['path'].pop();
+            }
+            break;
 
-    else if (navEvent == 'navigateDeeper') {
-        // save path element
-        if ( typeof setup['state']['parent'] != 'undefined' ) {
-            setup['state']['path'].push(setup['state']['parent']);
-        }
-        // set new parent
-        setup['state']['parent'] = eventParameter;
-    }
-
-    else if (navEvent == 'navigateHigher') {
-        // count path elements
-        var pathlength = setup['state']['path'].length;
-        if ( typeof setup['state']['parent'] == 'undefined' ) {
-            // we are at root level, so nothing higher than here
-            return;
-        }
-        if (pathlength == 0) {
-            // we are at the first sublevel (so we go to root)
+        case 'navigateRoot':
+            if ( typeof setup['state']['parent'] == 'undefined' ) {
+                // we are at root level, so nothing higher than here
+                return;
+            }
             delete(setup['state']['parent']);
-        } else {
-            // we are somewhere deeper ...
-            // set parent to the last path element
-            setup['state']['parent'] = setup['state']['path'][pathlength-1];
-            // and delete the last path element
-            setup['state']['path'].pop();
-        }
-    }
+            setup['state']['path'] = new Array;
+            break;
+            
+        case 'search':
+            setup['state']['searchString'] = eventParameter;
+            break;
 
-    else if (navEvent == 'navigateRoot') {
-        if ( typeof setup['state']['parent'] == 'undefined' ) {
-            // we are at root level, so nothing higher than here
+        case 'toggleHidden':
+            if ( typeof setup['state']['showHidden'] != 'undefined' ) {
+                delete(setup['state']['showHidden']);
+            } else {
+                setup['state']['showHidden'] = true;
+            }
+            break;
+
+        default:
+            alert('error: unknown navigation event: '+navEvent);
             return;
         }
-        delete(setup['state']['parent']);
-        setup['state']['path'] = new Array;
-    }
-
-    else if (navEvent == 'search') {
-        setup['state']['searchString'] = eventParameter;
-    }
-
-    else if (navEvent == 'toggleHidden') {
-        if ( typeof setup['state']['showHidden'] != 'undefined' ) {
-            delete(setup['state']['showHidden']);
-        } else {
-            setup['state']['showHidden'] = true;
-        }
-    }
-
-    else {
-        alert('error: unknown navigation event: '+navEvent);
-        return;
-    }
 
     navigationSetup = setup;
     navigationLoad (navEvent, setup);
@@ -153,14 +155,13 @@ function navigationLoad (navEvent, setup) {
     navigationInput.addClass('is-processing');
 
     navigationContainer.css('overflow', 'hidden');
-    navigationContainer.animate({marginLeft:'-100%'},'slow', '', function(){
+    navigationContainer.animate({marginLeft:'-100%'},'fast', '', function(){
         $.post(navigationUrl, { setup: $.toJSON(setup) },
             function (data) {
                 navigationContainer.empty();
                 navigationContainer.append(data);
                 // remove the processing status
                 navigationInput.removeClass('is-processing');
-
                 navigationContainer.css('marginLeft', '100%');
                 navigationContainer.animate({marginLeft:'0px'},'fast');
 
