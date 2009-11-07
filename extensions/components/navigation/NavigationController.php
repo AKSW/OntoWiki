@@ -85,7 +85,7 @@ class NavigationController extends OntoWiki_Controller_Component
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
-        if( $this->setup->searchString ){ // search request
+        if( isset($this->setup->searchString) ){ // search request
             $query = $this->store->findResourcesWithPropertyValue($setup->state->searchString,$this->model->__toString());
         }else{
             $query = $this->buildQuery($setup);
@@ -200,7 +200,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         // namespaces to be ignored, rdfs/owl-defined objects
-        if ( !$setup->state->showHidden) {
+        if ( !isset($setup->state->showHidden)) {
             if( isset($setup->config->hiddenNS) ){
                 foreach ($setup->config->hiddenNS as $ignore) {
                     $whereSpec .= ' FILTER (!regex(str(?resourceUri), "^' . $ignore . '"))';
