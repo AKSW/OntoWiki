@@ -64,7 +64,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
         $this->view->entries = $this->queryNavigationEntries($this->setup);
         if (empty($this->view->entries)) {
-            if ($this->setup->searchString) {
+            if (isset($this->setup->searchString)) {
                 $this->messages[] = array( 'type' => 'info', 'text' => 'No result for this search.');
             } else {
                 $this->messages[] = array( 'type' => 'info', 'text' => 'Nothing to navigate deeper here.');
