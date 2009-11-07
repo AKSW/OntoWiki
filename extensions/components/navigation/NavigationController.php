@@ -64,7 +64,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
         $this->view->entries = $this->queryNavigationEntries($this->setup);
         if (empty($this->view->entries)) {
-            if (isset($this->setup->searchString)) {
+            if (isset($this->setup->state->searchString)) {
                 $this->messages[] = array( 'type' => 'info', 'text' => 'No result for this search.');
             } else {
                 $this->messages[] = array( 'type' => 'info', 'text' => 'Nothing to navigate deeper here.');
@@ -85,8 +85,8 @@ class NavigationController extends OntoWiki_Controller_Component
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
-        if( isset($this->setup->searchString) ){ // search request
-            $query = $this->store->findResourcesWithPropertyValue($setup->state->searchString,$this->model->__toString());
+        if( isset($this->setup->state->searchString) ){ // search request
+            $query = $this->store->findResourcesWithPropertyValue($this->setup->state->searchString,$this->model->__toString());
         }else{
             $query = $this->buildQuery($setup);
         }
