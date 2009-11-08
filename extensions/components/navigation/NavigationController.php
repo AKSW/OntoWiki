@@ -62,6 +62,10 @@ class NavigationController extends OntoWiki_Controller_Component
             exit;
         }
 
+        if (isset($this->setup->state->limit)) {
+            $this->limit = $this->setup->state->limit;
+        }
+        
         $this->view->entries = $this->queryNavigationEntries($this->setup);
         if (empty($this->view->entries)) {
             if (isset($this->setup->state->searchString)) {

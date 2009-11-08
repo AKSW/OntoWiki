@@ -33,22 +33,16 @@ class NavigationModule extends OntoWiki_Module
 
         // count sub menu
 	$countMenu = new OntoWiki_Menu();
-        $countMenu->setEntry('10', "javascript:navigationEvent('setCount', 10)")
-            ->setEntry('20', "javascript:navigationEvent('setCount', 20)")
-            ->setEntry('30', "javascript:navigationEvent('setCount', 30)")
-            ->setEntry('all', "javascript:navigationEvent('setCount', 'all')");
-
-        // sort sub menu
-        $sortTagcloud = new OntoWiki_Menu();
-        $sortTagcloud->setEntry('by name', "javascript:navigationEvent('setSort', 'name')")
-            ->setEntry('by frequency', "javascript:navigationEvent('setSort', 'frequency')");
+        $countMenu->setEntry('10', "javascript:navigationEvent('setLimit', 10)")
+            ->setEntry('20', "javascript:navigationEvent('setLimit', 20)")
+            ->setEntry('30', "javascript:navigationEvent('setLimit', 30)")
+            ->setEntry('all', "javascript:navigationEvent('setLimit', 'all')");
 
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
         $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')")
             ->setEntry('Toggle hidden Entries', "javascript:navigationEvent('toggleHidden')")
-            ->setEntry('Number of entries', $countMenu)
-            ->setEntry('Sort', $sortTagcloud);
+            ->setEntry('Number of entries', $countMenu);
 
         // build menu out of sub menus
         $mainMenu = new OntoWiki_Menu();

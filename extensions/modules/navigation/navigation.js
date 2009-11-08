@@ -72,7 +72,6 @@ function navigationEvent (navEvent, eventParameter) {
     } else {
         setup = navigationSetup;
     }
-    setup['state']['lastEvent'] = navEvent;
     // delete old search string
     delete(setup['state']['searchString']);
 
@@ -114,8 +113,10 @@ function navigationEvent (navEvent, eventParameter) {
             break;
 
         case 'navigateRoot':
-            if ( typeof setup['state']['parent'] == 'undefined' ) {
-                // we are at root level, so nothing higher than here
+            // we are at root level, so nothing higher than here
+            // exception: after a search, it should be also rootable
+            if ( ( typeof setup['state']['parent'] == 'undefined' )
+                && ( setup['state']['lastEvent'] != 'search' ) ){
                 return;
             }
             delete(setup['state']['parent']);
@@ -124,6 +125,10 @@ function navigationEvent (navEvent, eventParameter) {
             
         case 'search':
             setup['state']['searchString'] = eventParameter;
+            break;
+
+        case 'setLimit':
+            setup['state']['limit'] = eventParameter;
             break;
 
         case 'toggleHidden':
@@ -139,6 +144,7 @@ function navigationEvent (navEvent, eventParameter) {
             return;
         }
 
+    setup['state']['lastEvent'] = navEvent;
     navigationSetup = setup;
     navigationLoad (navEvent, setup);
     return;
@@ -153,24 +159,8 @@ function navigationLoad (navEvent, setup) {
         return false;
     }
 
-    var firstAnimation, secondAnimation;
-
-
-    switch (navEvent) {
-        case 'navigateHigher':
-        case 'navigateRoot':
-            firstAnimation = {marginLeft:'100%'};
-            break;
-        default:
-            firstAnimation = {marginLeft:'-100%'}
-    }
-
-
-    // first we set the processing status
-    navigationInput.addClass('is-processing');
-
-    navigationContainer.css('overflow', 'hidden');
-    navigationContainer.animate(firstAnimation,'slow', '', function(){
+    // preparation of a callback function
+    var cbAfterLoad = function(){
         $.post(navigationUrl, { setup: $.toJSON(setup) },
             function (data) {
                 navigationContainer.empty();
@@ -180,13 +170,15 @@ function navigationLoad (navEvent, setup) {
 
                 switch (navEvent) {
                     case 'navigateHigher':
-                    case 'navigateRoot':
                         navigationContainer.css('marginLeft', '-100%');
                         navigationContainer.animate({marginLeft:'0px'},'slow');
                         break;
-                    default:
+                    case 'navigateDeeper':
                         navigationContainer.css('marginLeft', '100%');
                         navigationContainer.animate({marginLeft:'0px'},'slow');
+                        break;
+                    default:
+                        navigationContainer.slideDown('fast');
                 }
 
                 $('.navigation').click(function(event) {
@@ -194,26 +186,22 @@ function navigationLoad (navEvent, setup) {
                 });
             }
         );
-    });
+    }
 
-/*
+    // first we set the processing status
+    navigationInput.addClass('is-processing');
     navigationContainer.css('overflow', 'hidden');
-    navigationContainer.animate({marginLeft:'-100%'},'fast', '', function(){
-        $.post(navigationUrl, { setup: $.toJSON(setup) },
-            function (data) {
-                navigationContainer.empty();
-                navigationContainer.append(data);
-                // remove the processing status
-                navigationInput.removeClass('is-processing');
-                navigationContainer.css('marginLeft', '100%');
-                navigationContainer.animate({marginLeft:'0px'},'fast');
 
-                $('.navigation').click(function(event) {
-                    navigationEvent('navigateDeeper', $(this).attr('about'));
-                });
-            }
-        );
-    });
-*/
+    switch (navEvent) {
+        case 'navigateHigher':
+            navigationContainer.animate({marginLeft:'100%'},'slow', '', cbAfterLoad);
+            break;
+        case 'navigateDeeper':
+            navigationContainer.animate({marginLeft:'-100%'},'slow', '', cbAfterLoad);
+            break;
+        default:
+            navigationContainer.slideUp('fast', cbAfterLoad);
+    }
+
     return true;
 }
