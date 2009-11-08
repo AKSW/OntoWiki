@@ -208,7 +208,12 @@ class ResourceController extends OntoWiki_Controller_Base
         //ready, set,  ...
         $start = microtime(true);
         
-        if (!isset($this->_session->instances) || isset($this->_request->resetinstancesconfig) || isset($this->_request->s)) {
+        if (!isset($this->_session->instances) ||
+            isset($this->_request->resetinstancesconfig) ||
+            isset($this->_request->s) ||
+            isset($this->_request->r)
+        ) {
+            
             $options = array(
                 /*
                 // this may be used when the new navigation is available
