@@ -156,7 +156,7 @@ function navigationEvent (navEvent, eventParameter) {
 function navigationLoad (navEvent, setup) {
     if (typeof setup == 'undefined') {
         alert('error: No navigation setup given, but navigationLoad requested');
-        return false;
+        return;
     }
 
     // preparation of a callback function
