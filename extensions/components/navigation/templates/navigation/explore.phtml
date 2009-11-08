@@ -17,7 +17,9 @@ $odd = true;
         <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
             <a class="navigation"
                about="<?php echo $uri ?>"
-               ><?php echo $entry['title'] ?></a>
+               ><?php echo $entry['title'] ?>
+                <img alt="next" id="navDeeper" src="<?php echo $this->themeUrlBase ?>/images/icon-next.png"/>
+            </a>
         </li>
     <?php endforeach; ?>
     </ol>

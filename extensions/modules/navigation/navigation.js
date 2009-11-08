@@ -15,7 +15,7 @@ $(document).ready(function() {
     navigationContainer = $('#navigation-content');
     navigationInput = $("#navigation-input");
     navigationWindow = $("#navigation");
-    navigationUrl = urlBase + 'navigation/explore';
+    navigationExploreUrl = urlBase + 'navigation/explore';
 
     /* Navigation toolbar */
     $('#navFirst').click(function(event){
@@ -161,7 +161,7 @@ function navigationLoad (navEvent, setup) {
 
     // preparation of a callback function
     var cbAfterLoad = function(){
-        $.post(navigationUrl, { setup: $.toJSON(setup) },
+        $.post(navigationExploreUrl, { setup: $.toJSON(setup) },
             function (data) {
                 navigationContainer.empty();
                 navigationContainer.append(data);
@@ -181,9 +181,7 @@ function navigationLoad (navEvent, setup) {
                         navigationContainer.slideDown('fast');
                 }
 
-                $('.navigation').click(function(event) {
-                    navigationEvent('navigateDeeper', $(this).attr('about'));
-                });
+                navigationPrepareList();
             }
         );
     }
@@ -203,5 +201,21 @@ function navigationLoad (navEvent, setup) {
             navigationContainer.slideUp('fast', cbAfterLoad);
     }
 
-    return true;
+    return ;
+}
+
+/*
+ * This function creates navigation events
+ */
+function navigationPrepareList () {
+    // the link to deeper navigation entries
+    $('.navigation img').click(function(event) {
+        navigationEvent('navigateDeeper', $(this).parent().attr('about'));
+        return false;
+    });
+    // the link to the instance list
+    $('.navigation').click(function(event) {
+        navigationEvent('showInstances', $(this).attr('about'));
+        return false;
+    });
 }
