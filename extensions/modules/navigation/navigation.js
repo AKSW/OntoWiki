@@ -73,6 +73,8 @@ function navigationEvent (navEvent, eventParameter) {
         setup = navigationSetup;
     }
     setup['state']['lastEvent'] = navEvent;
+    // delete old search string
+    delete(setup['state']['searchString']);
 
     switch (navEvent) {
         case 'init':
@@ -151,9 +153,50 @@ function navigationLoad (navEvent, setup) {
         return false;
     }
 
+    var firstAnimation, secondAnimation;
+
+
+    switch (navEvent) {
+        case 'navigateHigher':
+        case 'navigateRoot':
+            firstAnimation = {marginLeft:'100%'};
+            break;
+        default:
+            firstAnimation = {marginLeft:'-100%'}
+    }
+
+
     // first we set the processing status
     navigationInput.addClass('is-processing');
 
+    navigationContainer.css('overflow', 'hidden');
+    navigationContainer.animate(firstAnimation,'slow', '', function(){
+        $.post(navigationUrl, { setup: $.toJSON(setup) },
+            function (data) {
+                navigationContainer.empty();
+                navigationContainer.append(data);
+                // remove the processing status
+                navigationInput.removeClass('is-processing');
+
+                switch (navEvent) {
+                    case 'navigateHigher':
+                    case 'navigateRoot':
+                        navigationContainer.css('marginLeft', '-100%');
+                        navigationContainer.animate({marginLeft:'0px'},'slow');
+                        break;
+                    default:
+                        navigationContainer.css('marginLeft', '100%');
+                        navigationContainer.animate({marginLeft:'0px'},'slow');
+                }
+
+                $('.navigation').click(function(event) {
+                    navigationEvent('navigateDeeper', $(this).attr('about'));
+                });
+            }
+        );
+    });
+
+/*
     navigationContainer.css('overflow', 'hidden');
     navigationContainer.animate({marginLeft:'-100%'},'fast', '', function(){
         $.post(navigationUrl, { setup: $.toJSON(setup) },
@@ -171,6 +214,6 @@ function navigationLoad (navEvent, setup) {
             }
         );
     });
-
+*/
     return true;
 }
