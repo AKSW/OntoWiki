@@ -185,13 +185,6 @@ class ResourceController extends OntoWiki_Controller_Base
         $navigation  = $this->_owApp->navigation;
         $translate   = $this->_owApp->translate;
         
-        $title = $resource->getTitle() ?
-            $resource->getTitle() : 
-            OntoWiki_Utils::contractNamespace((string)$resource);
-            
-        $windowTitle = sprintf($translate->_('Instances of %1$s'), $title);
-        $this->view->placeholder('main.window.title')->set($windowTitle);
-        
         // when switching to another class:
         // reset session vars (regarding the instancelist) 
         if ((string)$resource != $this->_owApp->selectedClass) {
@@ -228,9 +221,9 @@ class ResourceController extends OntoWiki_Controller_Base
 
             if (isset($this->_request->s)) {
                 $options['searchText'] = $this->_request->s;
-                $this->view->searchText = $this->_request->s;
+                //$this->view->searchText = $this->_request->s;
             }
-
+            
             // instantiate model
             $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
         } else {
@@ -239,10 +232,11 @@ class ResourceController extends OntoWiki_Controller_Base
             
             //check for change-requests
             if (isset($this->_request->instancesconfig)) {
-                $config = json_decode(stripslashes(utf8_decode($this->_request->instancesconfig)));
+                $config = json_decode(stripslashes($this->_request->instancesconfig));
                 if (isset($config->shownProperties)) {
                     foreach ($config->shownProperties as $prop) {
                         if ($prop->action == 'add') {
+                            echo "add property";
                             $instances->addShownProperty($prop->uri, $prop->label, $prop->inverse);
                         } else {
                             $instances->removeShownProperty($prop->uri.'-'.$prop->inverse);
@@ -281,19 +275,39 @@ class ResourceController extends OntoWiki_Controller_Base
             } else {
                 $instances->setOffset(0);
             }
-
-
         }
         $instances->invalidate(); // the dataset may have changed since the last request
-        //var_dump($instances); exit;
-        //
+
         //save to session
         $this->_session->instances = $instances;
 
-        //needed?
-        //$this->_owApp->instances = $instances;
+        //begin view building
+        if ($instances->getMode() == OntoWiki_Model_Instances::modeType) {
+            $title = $resource->getTitle() ?
+                $resource->getTitle() :
+                OntoWiki_Utils::contractNamespace((string)$resource);
+
+            $windowTitle = sprintf($translate->_('Instances of %1$s'), $title);
+        } else if ($instances->getMode() == OntoWiki_Model_Instances::modeSearch){
+            $windowTitle = sprintf($translate->_('Results for search "%1$s"'), $instances->getSearchText());
+        } else if ($instances->getMode() == OntoWiki_Model_Instances::modeGiven){
+            $windowTitle = $translate->_('Results for given query');
+        }
+
+        $this->view->placeholder('main.window.title')->set($windowTitle);
         
-        $this->view->headScript()->appendScript('var classUri = "'.OntoWiki_Utils::contractNamespace($this->_owApp->selectedClass).'";');
+        $this->view->headScript()->appendScript(
+            'var classUri = "'.
+            OntoWiki_Utils::contractNamespace($this->_owApp->selectedClass).
+            '"
+            var reloadUrl = "'.
+            new OntoWiki_Url(array(), array('p', 'limit')).
+            '";;'
+        );
+
+        $this->view->headScript()->appendScript(
+            ''
+        );
 
         if ($instances->hasData()) {
             $this->view->instanceInfo = $instances->getResources();
@@ -373,10 +387,6 @@ class ResourceController extends OntoWiki_Controller_Base
             $url = new OntoWiki_Url();
             $this->view->redirectUrl = (string)$url;
             
-            $this->view->headScript()->appendFile(
-                $this->_owApp->getStaticUrlBase() 
-                . 'extensions/themes/silverblue/scripts/serialize-php.js'
-            );
             // register modules
             $moduleRegistry = OntoWiki_Module_Registry::getInstance();
             $moduleRegistry->register('properties', 'main.window.innerwindows')

@@ -44,11 +44,12 @@ $(document).ready(function() {
         //reload page
         //$('#showproperties form input').attr("value", serialized);
         //$('#showproperties form').submit();
-
+        var arr = document.URL.split('?');
+        var url = arr[0]; //without parameters (a s-parameter would re-build the query)
         // or reload list
         var mainInnerContent = $(this).parents('.content.has-innerwindows').eq(0).find('.innercontent');
         mainInnerContent.addClass('is-processing');
-        mainInnerContent.load(document.URL, {"instancesconfig": serialized}, function(){
+        mainInnerContent.load(reloadUrl, {"instancesconfig": serialized}, function(){
             mainInnerContent.removeClass('is-processing');
         });
     })

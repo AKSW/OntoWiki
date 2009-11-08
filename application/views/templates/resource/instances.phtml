@@ -1,6 +1,8 @@
-<?php if ($this->has('searchText')): ?>
+<?php /* if ($this->has('searchText')): ?>
     <p>Results for Search "<?php echo $this->searchText; ?>"</p>
-<?php endif; ?>
+<?php endif;
+ //this is printed in the windows title now
+ */?>
     
 <?php 
     $odd = true;
@@ -11,7 +13,7 @@
             <tr>
                 <th></th><th></th><th></th>
                 <?php foreach ($this->propertyInfo as $property): ?>
-                    <th><a href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a><?php if($property['inverse']){ echo "<sup>-1</sup>";} ?></th>
+                    <th><a href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a><?php if($property['inverse']){ echo "<sup>-1</sup>";} ?></a></th>
                 <?php endforeach; ?>
             </tr>
         <?php endif; ?>

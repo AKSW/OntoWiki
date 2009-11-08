@@ -67,8 +67,8 @@ class OntoWiki_Pager
             //self::$_options['max_page_links']  = 0;
         }
         
-        // get URL with params
-        self::$_url = new OntoWiki_Url();
+        // get URL with params p (page number) and limit (not used atm)
+        self::$_url = new OntoWiki_Url(array(), array('p', 'limit'));
         
         $limit = isset(self::$_url->limit) 
                ? self::$_url->limit 

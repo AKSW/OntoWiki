@@ -39,7 +39,7 @@ $(document).ready(function() {
             $.post(getUri,
              {
                  "key": $(ui.draggable).attr("about"),
-                 "value" : escape(serialize(data))
+                 "value" : $.toJSON(data)
              }, //as post because of possible size
             function(res) {
                 if(res==""){
@@ -216,6 +216,16 @@ function resetSelectedTags() {
     //$('.cloudvalue').removeClass("selected");
 
     reloadExploreTagsModule();
+}
+
+function resetExploreTags() {
+    $.post(urlBase+"service/session?name=cloudproperties&method=unsetArray",
+        function(res){
+            if(res==""){
+                reloadExploreTagsModule();
+            } else alert('could not remove cloudproperties\nReason:\n'+res)
+        }
+    );
 }
 
 // show number of tags

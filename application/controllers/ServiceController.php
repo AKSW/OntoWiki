@@ -392,7 +392,7 @@ class ServiceController extends Zend_Controller_Action
         }
 
         if (isset($this->_request->value) && isset($this->_request->valueIsSerialized) && $this->_request->valueIsSerialized == "true") {
-            $value = unserialize(urldecode(stripslashes($value)));
+            $value = json_decode(stripslashes($value), true);
         }
         
         if (isset($this->_request->key)) {

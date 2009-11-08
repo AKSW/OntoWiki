@@ -16,6 +16,12 @@
  */
 class OntoWiki_Model_Instances extends OntoWiki_Model
 {
+    protected $mode;
+    const modeType = "type"; 
+    const modeSearch = "search"; 
+    const modeGiven = "given";
+
+    protected $searchText;
     /**
      *  rdf:type for the resources of interest
      * @var string
@@ -141,12 +147,24 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $this->_resourceVar = new Erfurt_Sparql_Query2_Var("resourceUri");
 
         if ( isset($options['searchText']) ) {
+            //used from the search box
             $this->_resourceQuery = $store->findResourcesWithPropertyValue(
                 $options['searchText'],
                 $graph->getModelIri()
             );
-        } else {
 
+            $this->searchText = $options['searchText'];
+            $this->mode = self::modeSearch;
+        } else if ( isset($options['default_query']) ){
+            //use a given query (e.g. from the editor)
+            if($options['default_query'] instanceof Erfurt_Sparql_Query2){
+                $this->_resourceQuery = $options['default_query'];
+            } else {
+                throw new Exception('$options[\'default_query\'] must be a Erfurt_Sparql_Query2', 123);
+            }
+            $this->mode = self::modeGiven;
+        } else {
+            // select all instances of a type, members of a collection, etc.
             if (is_string($member_predicate)){
                 $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
             }
@@ -178,7 +196,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             }
 
             if (count($this->_subClasses)>1) {
-                // "1" because the class itself is somehow included in the subclasses...
+                // there are subclasses. "1" because the class itself is somehow included in the subclasses...
                 $typeVar = new Erfurt_Sparql_Query2_Var($this->type);
                 $this->_resourceQuery->addTriple(
                     $this->_resourceVar,
@@ -197,6 +215,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
                 $this->_resourceQuery->addFilter($or);
             } else {
+                // no subclasses
                 $this->_resourceQuery->addTriple(
                     $this->_resourceVar,
                     $member_predicate,
@@ -206,6 +225,8 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
             //show resource uri
             $this->_resourceQuery->addProjectionVar($this->_resourceVar);
+
+            $this->mode = self::modeType;
         }
 
         $this->_resourceQuery
@@ -326,6 +347,10 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         
         $this->_valuesUptodate = false; // getValues will not use the cache next time
         $this->_resultsUptodate = false;
+
+        //echo 'add shown property: <pre>';
+        //echo htmlentities($this->_valueQuery);
+        //echo '</pre>';
         
         return $this;
     }
@@ -1032,20 +1057,29 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     new Erfurt_Sparql_Query2_IriRef($resource)
                 );
         }
+
         if ($this->_valueQueryResourceFilter == null) {
             $this->_valueQueryResourceFilter = new Erfurt_Sparql_Query2_Filter(new Erfurt_Sparql_Query2_BooleanLiteral(false));
             $this->_valueQuery->addElement($this->_valueQueryResourceFilter);
         }
+
         $this->_valueQueryResourceFilter->setConstraint(
             empty($resources) ? 
                 new Erfurt_Sparql_Query2_BooleanLiteral(false) :
                 new Erfurt_Sparql_Query2_ConditionalOrExpression($resources)
         );
 
-
         //echo 'updated value query: <pre>';
         //echo htmlentities($this->_valueQuery);
         //echo '</pre>';
+    }
+    
+    public function getMode(){
+        return $this->mode;
+    }
+
+    public function getSearchText(){
+        return $this->searchText;
     }
 }
 

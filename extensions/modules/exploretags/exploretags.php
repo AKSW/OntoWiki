@@ -45,7 +45,8 @@ class ExploretagsModule extends OntoWiki_Module
         		     
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
-        $viewMenu->setEntry('Reset selected tags', 'javascript:resetSelectedTags()')
+        $viewMenu->setEntry('Reset Explore Tags Box', 'javascript:resetExploreTags()')
+                 ->setEntry('Reset selected tags', 'javascript:resetSelectedTags()')
                  ->setEntry('Number of showed tags', $countMenu)
                  ->setEntry('Sort', $sortTagcloud);              
         		 
