@@ -84,19 +84,30 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function queryNavigationEntries($setup) {
-        //$this->_owApp->logger->info(print_r($setup,true));
+        $this->_owApp->logger->info(print_r($setup,true));
         
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
-        if( isset($this->setup->state->searchString) ){ // search request
-            $query = $this->store->findResourcesWithPropertyValue($this->setup->state->searchString,$this->model->__toString());
+        if( $setup->state->lastEvent == "search" ){ // search request
+            $query = $this->store->findResourcesWithPropertyValue($setup->state->searchString,$this->model->__toString());
+            // Init query
+            $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+            foreach ($setup->config->hierarchyTypes as $type) {
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                $u1->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'), 
+                        new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
+                        new Erfurt_Sparql_Query2_IriRef($type) );
+                $union->addElement($u1);
+            }
+            $query->addElement($union);
+            
         }else{
             $query = $this->buildQuery($setup);
         }
         
         // error logging
-        //$this->_owApp->logger->info($query->__toString());
+        $this->_owApp->logger->info($query->__toString());
         
         $results = $this->model->sparqlQuery($query);
     
@@ -109,7 +120,17 @@ class NavigationController extends OntoWiki_Controller_Component
             $mode = null;
         }
         
+        if($mode == "titleHelper"){
+            $this->titleHelper = new OntoWiki_Model_TitleHelper($this->model);
+            foreach ($results as $result) {
+                $this->titleHelper->addResource($result['resourceUri']);
+            }
+        }
+        
         $entries = array();
+        
+        if($results == null) return;
+        
         foreach ($results as $result) {
             $uri = $result['resourceUri'];
             $entry = array();
@@ -124,9 +145,7 @@ class NavigationController extends OntoWiki_Controller_Component
     protected function getTitle($uri, $mode){
         if(!isset($mode) || $mode == null) $mode = "baseName";
         if($mode == "titleHelper"){
-            $titleHelper = new OntoWiki_Model_TitleHelper($this->model);
-            $titleHelper->addResource($uri);
-            return $titleHelper->getTitle($uri);
+            return $this->titleHelper->getTitle($uri);
         }else if($mode == "baseName"){
             if(strrpos($uri, '/') > 0){
                 return substr($uri, strrpos($uri, '/')+1);
@@ -143,6 +162,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $prologue = 'SELECT DISTINCT ?resourceUri ';
         $query->setProloguePart($prologue);
         
+        $whereSpecsType = array();
         $whereSpecs = array();
         
         // deeper qeury
@@ -160,7 +180,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 
             // Init query
             foreach ($setup->config->hierarchyTypes as $type) {
-                $whereSpecs[] = '{?resourceUri a <' . $type . '>}';
+                $whereSpecsType[] = '{?resourceUri a <' . $type . '>}';
             }
         
             if ( !isset($setup->state->parent) ) {
@@ -182,14 +202,17 @@ class NavigationController extends OntoWiki_Controller_Component
             }
         }
         
+        $whereSpecType = implode(' UNION ', $whereSpecsType);
         $whereSpec = implode(' UNION ', $whereSpecs);
         
         // namespaces to be ignored, rdfs/owl-defined objects
-        if( isset($setup->config->hiddenRelation) ){
-            foreach ($setup->config->hiddenRelation as $ignore) {
-                $whereSpec .= ' OPTIONAL { ?resourceUri <' . $ignore . '> ?reg . }';
+        if ( !isset($setup->state->showHidden)) {
+            if( isset($setup->config->hiddenRelation) ){
+                foreach ($setup->config->hiddenRelation as $ignore) {
+                    $whereSpec .= ' OPTIONAL { ?resourceUri <' . $ignore . '> ?reg . }';
+                }
+                $whereSpec .= 'FILTER (!bound(?reg))';
             }
-            $whereSpec .= 'FILTER (!bound(?reg))';
         }
 
         $whereSpec .= 'FILTER (isURI(?resourceUri))';
@@ -217,7 +240,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $whereSpec .= ' FILTER (str(?super) = str(<' . $setup->state->parent . '>))';
         }
         
-        $query->setWherePart('WHERE {' . $whereSpec . '}');
+        $query->setWherePart('WHERE {' . $whereSpecType . $whereSpec . '}');
         
         $query->setLimit($this->limit);
         return $query;
