@@ -84,6 +84,10 @@ function navigationEvent (navEvent, eventParameter) {
             $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
             break;
 
+        case 'showResourceList':
+            setup['state']['parent'] = eventParameter;
+            break;
+
         case 'navigateDeeper':
             // save path element
             if ( typeof setup['state']['parent'] != 'undefined' ) {
@@ -215,7 +219,7 @@ function navigationPrepareList () {
     });
     // the link to the instance list
     $('.navigation').click(function(event) {
-        navigationEvent('showInstances', $(this).attr('about'));
+        navigationEvent('showResourceList', $(this).attr('about'));
         return false;
     });
 }

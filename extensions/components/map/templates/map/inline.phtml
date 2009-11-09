@@ -1,6 +1,6 @@
 <?php
 // vim: sw=4:sts=4:expandtab
-require_once 'OntoWiki/Model/TitleHelper.php'
+require_once 'OntoWiki/Model/TitleHelper.php';
 ?>
 <?php if ( isset($this->message) ): ?>
 	<p class="messagebox info"><?php echo $this->_($this->message); ?></p>
@@ -51,7 +51,7 @@ function waitForMap () {
 }
 
 loadStyle('<?php echo $this->componentUrlBase.'css/OpenLayers.css'; ?>', 'screen');
-loadScript('<?php echo 'http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->apikey->google.'&async=2'; ?>');
+loadScript('<?php echo 'http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->config->apikey->google.'&async=2'; ?>');
 loadScript('<?php echo $this->componentUrlBase.'classes/OpenLayers.js'; ?>');
 loadScript('<?php echo $this->componentUrlBase.'classes/NewMapManager.js'; ?>');
 
@@ -67,20 +67,20 @@ function goForMap () {
 
     // the themePath doesn't seam to work
     manager.themePath       = '<?php echo $this->componentUrlBase ?>css/OpenLayers.css';
-    manager.defaultLayer    = '<?php echo $this->defaultLayer ?>';
+    manager.defaultLayer    = '<?php echo $this->config->default->layer ?>';
 
     // set the image path to the ontowiki theme's image folder
     manager.imgPath         = '<?php echo $this->themeUrlBase; ?>images/';
 
     manager.icon = new OpenLayers.Icon(
-        '<?php echo $this->componentUrlBase . $this->icon->path; ?>',
-        new OpenLayers.Size(<?php echo $this->icon->size; ?>),
-        new OpenLayers.Pixel(<?php echo $this->icon->offset; ?>)
+        '<?php echo $this->componentUrlBase . $this->config->icon->path; ?>',
+        new OpenLayers.Size(<?php echo $this->config->icon->size; ?>),
+        new OpenLayers.Pixel(<?php echo $this->config->icon->offset; ?>)
     );
     manager.clusterIcon = new OpenLayers.Icon(
-        '<?php echo $this->componentUrlBase . $this->cluster->path; ?>',
-        new OpenLayers.Size(<?php echo $this->cluster->size; ?>),
-        new OpenLayers.Pixel(<?php echo $this->cluster->offset; ?>)
+        '<?php echo $this->componentUrlBase . $this->config->cluster->path; ?>',
+        new OpenLayers.Size(<?php echo $this->config->cluster->size; ?>),
+        new OpenLayers.Pixel(<?php echo $this->config->cluster->offset; ?>)
     );
     manager.prepare();
     manager.init();
