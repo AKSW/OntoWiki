@@ -153,13 +153,16 @@ class OntoWiki_Model_TitleHelper
     {
         $resourceUri = (string)$resource;
 
-        if (!Erfurt_Uri::check($resourceUri)) {
-#var_dump($resource);        die;
-            require_once 'OntoWiki/Model/Exception.php';
-            throw new OntoWiki_Model_Exception('Supplied resource <'.htmlentities($resource).'> is not a valid URI.');
+        if (Erfurt_Uri::check($resourceUri)) {
+            $this->_resources[$resourceUri] = $resourceUri;
+        } else {
+            // throw exeption in debug mode only
+            if (defined('_OWDEBUG')) {
+                require_once 'OntoWiki/Model/Exception.php';
+                throw new OntoWiki_Model_Exception('Supplied resource <' . htmlentities($resource) . '> is not a valid URI.');
+            }
         }
         
-        $this->_resources[$resourceUri] = $resourceUri;
         $this->_resourcesAdded = true;
         
         return $this;
