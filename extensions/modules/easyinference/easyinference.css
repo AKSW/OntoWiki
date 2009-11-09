@@ -1,0 +1,39 @@
+/* module.css */
+
+.ei-loading {
+	width: 30px;
+    display: block;
+    float: left;
+    min-height: 30px;
+    display: none;
+    background-color: transparent;
+}
+
+.ei-loading-small {
+	width: 16px;
+    display: block;
+    float: left;
+    min-height: 16px;
+    padding: 0 5px;
+    display: none;
+    background-color: transparent;
+    background-position: center;
+}
+
+.ei_delete_directly_div {
+	width:100%; 
+	display: block; 
+	clear:both; 
+	padding-top:5px;
+}
+
+.ei_add_with_inferences_div {
+	width:100%; 
+	display: block; 
+	clear:both; 
+	padding-top:5px;
+}
+
+.ei_message {
+	display: none;
+}

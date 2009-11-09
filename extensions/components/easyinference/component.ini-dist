@@ -1,0 +1,6 @@
+active     = on
+action     = "display"
+name       = "Easy Inference"
+languages  = "languages/"
+
+[private]

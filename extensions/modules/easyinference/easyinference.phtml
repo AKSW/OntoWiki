@@ -1,0 +1,63 @@
+<?php
+?>
+<link rel="stylesheet" type="text/css" media="screen" href="<?php echo  $this->moduleUrl; ?>easyinference.css" />
+<span id="ei_message" class="ei_message"></span>
+<!-- tab_add -->
+<div id="tab_add">
+	<div>
+		<select id="ei_addRulesList" style="max-width:13em;min-width:13em;">
+			<option class="ei_addRulesList_none">(<?php echo $this->_('none') ?>)</option>
+		</select>
+<!--
+		<select id="ei_ruleList" style="max-width:13em;min-width:13em;">
+<?php if ($this->rules): foreach ($this->rules as $r => $n): ?>
+           <option value='<?php echo $r ?>'><?php echo $this->_($n) ?></option>
+<?php endforeach; else: ?>
+           <option>(<?php echo $this->_('none') ?>)</option>
+<?php endif; ?>
+		</select>  
+-->
+	</div>
+	<div>
+		<a class="minibutton"  id="ei_add" ><?php echo $this->_('Add rule') ?></a>
+		<a id="status_add" title="<?php echo $this->_('View status message') ?>"></a>
+	</div>
+    <div class="ei_add_with_inferences_div">
+		<input type="checkbox" id="ei_add_with_inferences" name="ei_add_with_inferences" /> 
+		<label for="ei_add_with_inferences"><?php echo $this->_('Generate inferences immediately') ?></label>
+	</div>
+</div>
+
+<div id="tab_delete">
+	<div>
+		<select id="ei_deleteRulesList" style="max-width:13em;min-width:13em;">
+			<option class="ei_deleteRulesList_none">(<?php echo $this->_('none') ?>)</option>
+		</select>
+<!--
+		<select id="ei_delete_ruleList" style="max-width:13em;min-width:13em;">
+<?php if ($this->delRules): foreach ($this->delRules as $r => $n): ?>
+           <option value='<?php echo $r ?>'><?php echo $this->_($n) ?></option>
+<?php endforeach; else: ?>
+           <option>(<?php echo $this->_('none') ?>)</option>
+<?php endif; ?>
+		</select>
+-->
+	</div>
+	<div>
+		<a class="minibutton" id="ei_delete" ><?php echo $this->_('Delete rule') ?></a>
+		<a id="status_delete" title="<?php echo $this->_('View status message') ?>"></a>
+	</div>
+	<div class="ei_delete_directly_div">
+		<input type="checkbox" id="ei_delete_directly" name="ei_delete_directly" /> 
+		<label for="ei_delete_directly"><?php echo $this->_('Delete inferences knowledge directly') ?></label>
+	</div>
+</div>
+
+<div id="tab_generate">
+	<a class=button id="ei_generate" ><?php echo $this->_('Generate Inference Model') ?></a>
+	<a id="status_generate" title="<?php echo $this->_('View status message') ?>"></a>
+</div>
+<div id="tab_activate">
+	<a class=button id="ei_activate" ><?php echo $this->_('Activate inference model') ?></a>
+	<a id="status_activate" title="<?php echo $this->_('View status message') ?>"></a>
+</div>
