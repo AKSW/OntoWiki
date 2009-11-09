@@ -84,7 +84,7 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function queryNavigationEntries($setup) {
-        $this->_owApp->logger->info(print_r($setup,true));
+        //$this->_owApp->logger->info(print_r($setup,true));
         
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
@@ -107,7 +107,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         // error logging
-        $this->_owApp->logger->info($query->__toString());
+        $this->_owApp->logger->info("query: ".$query->__toString());
         
         $results = $this->model->sparqlQuery($query);
     
@@ -158,91 +158,138 @@ class NavigationController extends OntoWiki_Controller_Component
     }
     
     protected function buildQuery($setup){
-        $query = new Erfurt_Sparql_SimpleQuery();
-        $prologue = 'SELECT DISTINCT ?resourceUri ';
-        $query->setProloguePart($prologue);
+        require_once 'Erfurt/Sparql/Query2.php';
         
-        $whereSpecsType = array();
-        $whereSpecs = array();
+        $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri'); 
+        $query = new Erfurt_Sparql_Query2();
+        $query->setDistinct();
+        $query->addProjectionVar($searchVar);
         
-        // deeper qeury
+        // if deeper query
         if ( isset($setup->state->parent) ) {
-            
+            // init union var
+            $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+            // parse config gile
             foreach($setup->config->hierarchyRelations->in as $rel){
+                // set type
                 if ($rel == "http://www.w3.org/2000/01/rdf-schema#subClassOf") {
-                    $whereSpecs[] = '{?resourceUri a <'.$setup->state->parent.'>.}';
+                    $u2 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                    $u2->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'),
+                        new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
+                        new Erfurt_Sparql_Query2_IriRef($setup->state->parent) );
+                    $union->addElement($u2);
                 }
-                // entities with a subtype must be a type
-                $whereSpecs[] = '{?resourceUri <' . $rel . '> <'.$setup->state->parent.'>.}';
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'), 
+                    new Erfurt_Sparql_Query2_IriRef($rel), 
+                    new Erfurt_Sparql_Query2_IriRef($setup->state->parent) );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+            $query->addElement($union);
+            
+        }else{ // if default request
+            
+            // init union var
+            $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+            // set hierarchy types
+            foreach ($setup->config->hierarchyTypes as $type) {
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                $u1->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'), 
+                    new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
+                    new Erfurt_Sparql_Query2_IriRef($type) );
+                // add triplet to union var
+                $union->addElement($u1);    
+            }
+            $query->addElement($union);
+        
+            // setup hierarchy relations
+            if ( !isset($setup->state->parent) ) {
+                // init union var
+                $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                // parse config
+                foreach($setup->config->hierarchyRelations->in as $rel){
+                    // set type
+                    if ($rel == "http://www.w3.org/2000/01/rdf-schema#subClassOf") {
+                        // create new graph pattern
+                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        // add triplen
+                        $u1->addTriple( new Erfurt_Sparql_Query2_Var('instance'), 
+                            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
+                            new Erfurt_Sparql_Query2_Var('resourceUri') );
+                        // add triplet to union var
+                        $union->addElement($u1);
+                    }
+                }
+                $query->addElement($union);
             }
             
-        }else{ // toplevel query
-                
-            // Init query
-            foreach ($setup->config->hierarchyTypes as $type) {
-                $whereSpecsType[] = '{?resourceUri a <' . $type . '>}';
-            }
-        
-            if ( !isset($setup->state->parent) ) {
-                foreach($setup->config->hierarchyRelations->in as $rel){
-                    if ($rel == "http://www.w3.org/2000/01/rdf-schema#subClassOf") {
-                        $whereSpecs[] = '{?instance a ?resourceUri.}';
-                    }
-                    // entities with a subtype must be a type
-                    //$whereSpecs[] = '{?subtype <' . $rel . '> ?resourceUri.}';
-                }
-            }
-        
-            // relations
+            // setup relations
             if ( isset($setup->config->instanceRelation) ){
+                // init union var
+                $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                // parse config
                 foreach($setup->config->instanceRelation->out as $rel){
-                    // entities must have a subtype
-                    $whereSpecs[] = '{?resourceUri <' . $rel . '> ?subtype.}';
+                    // create new graph pattern
+                    $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                    $u1->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'), 
+                        new Erfurt_Sparql_Query2_IriRef($rel), 
+                        new Erfurt_Sparql_Query2_Var('subtype') );
+                    // add triplet to union var
+                    $union->addElement($u1);
                 }        
+                $query->addElement($union);
             }
+            
         }
         
-        $whereSpecType = implode(' UNION ', $whereSpecsType);
-        $whereSpec = implode(' UNION ', $whereSpecs);
-        
         // namespaces to be ignored, rdfs/owl-defined objects
-        if ( !isset($setup->state->showHidden)) {
+        /*if ( !isset($setup->state->showHidden)) {
             if( isset($setup->config->hiddenRelation) ){
+                // optional var
+                $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                // parse config
                 foreach ($setup->config->hiddenRelation as $ignore) {
-                    $whereSpec .= ' OPTIONAL { ?resourceUri <' . $ignore . '> ?reg . }';
+                    $queryOptional->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'),
+                        new Erfurt_Sparql_Query2_IriRef($ignore),
+                        new Erfurt_Sparql_Query2_Var('reg') );
                 }
-                $whereSpec .= 'FILTER (!bound(?reg))';
+                $query->addElement($queryOptional);
+                $query->addFilter(new Erfurt_Sparql_Query2_bound(new Erfurt_Sparql_Query2_Var('reg'))); // ??????????????????
+                //$whereSpec .= 'FILTER (!bound(?reg))';
             }
-        }
-
-        $whereSpec .= 'FILTER (isURI(?resourceUri))';
-        
-        // dont't show rdfs/owl entities and subtypes in the first level
-        if ( !isset($setup->state->parent) ) {
-            $whereSpec .= ' FILTER (regex(str(?super), "^' . EF_OWL_NS . '") || !bound(?super))';
-        
-            foreach($setup->config->hierarchyRelations->in as $rel){
-                $whereSpec .= ' OPTIONAL {?resourceUri <' . $rel . '> ?super. FILTER(isUri(?super))}';
-            }
-        }
-        
-        // namespaces to be ignored, rdfs/owl-defined objects
-        if ( !isset($setup->state->showHidden)) {
+            
             if( isset($setup->config->hiddenNS) ){
+                // parse config
                 foreach ($setup->config->hiddenNS as $ignore) {
-                    $whereSpec .= ' FILTER (!regex(str(?resourceUri), "^' . $ignore . '"))';
+                    $query->addFilter(
+                        new Erfurt_Sparql_Query2_Regex(
+                            new Erfurt_Sparql_Query2_Var('resourceUri'), 
+                            new Erfurt_Sparql_Query2_RDFLiteral('^' . $ignore)
+                        )
+                    );
+                    //$whereSpec .= ' FILTER (!regex(str(?resourceUri), "^' . $ignore . '"))'; ????????????????
                 }
             }
         }
         
         // entry point into the class tree
         if (isset($setup->state->parent)) {
-            $whereSpec .= ' FILTER (str(?super) = str(<' . $setup->state->parent . '>))';
-        }
-        
-        $query->setWherePart('WHERE {' . $whereSpecType . $whereSpec . '}');
+            $query->addFilter(
+                new Erfurt_Sparql_Query2_Regex(
+                    new Erfurt_Sparql_Query2_Var('super'), 
+                    new Erfurt_Sparql_Query2_RDFLiteral('str(<' . $setup->state->parent . '>')
+                )
+            );
+            // $whereSpec .= ' FILTER (str(?super) = str(<' . $setup->state->parent . '>))'; ?????????????
+        }*/
         
         $query->setLimit($this->limit);
+        
+        
         return $query;
     } 
 }
