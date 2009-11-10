@@ -138,6 +138,11 @@ class NavigationController extends OntoWiki_Controller_Component
             $entry['link'] = (string) $linkurl->setParam('r', $uri, true);
             $entries[$uri] = $entry;
         }
+        
+        $entry = array();
+        $entry['title'] = "Show 10 more";
+        $entry['link'] = "#";
+        $entries[] = $entry;
 
         return $entries;
     }
@@ -177,6 +182,9 @@ class NavigationController extends OntoWiki_Controller_Component
                     $u2->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'),
                         new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
                         new Erfurt_Sparql_Query2_IriRef($setup->state->parent) );
+                    /*$u2->addTriple( new Erfurt_Sparql_Query2_Var('instance'), 
+                        new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
+                        new Erfurt_Sparql_Query2_Var('resourceUri') );*/
                     $union->addElement($u2);
                 }
                 // create new graph pattern
@@ -185,10 +193,14 @@ class NavigationController extends OntoWiki_Controller_Component
                 $u1->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'), 
                     new Erfurt_Sparql_Query2_IriRef($rel), 
                     new Erfurt_Sparql_Query2_IriRef($setup->state->parent) );
+                $u1->addTriple( new Erfurt_Sparql_Query2_Var('instance'), 
+                    new Erfurt_Sparql_Query2_IriRef($rel), 
+                    new Erfurt_Sparql_Query2_Var('resourceUri') );
                 // add triplet to union var
                 $union->addElement($u1);
             }
             $query->addElement($union);
+            $query->addFilter( new Erfurt_Sparql_Query2_bound( new Erfurt_Sparql_Query2_Var('instance') ) );
             
         }else{ // if default request
             
