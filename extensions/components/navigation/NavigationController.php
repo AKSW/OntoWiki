@@ -84,7 +84,7 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function queryNavigationEntries($setup) {
-        //$this->_owApp->logger->info(print_r($setup,true));
+        $this->_owApp->logger->info(print_r($setup,true));
         
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
@@ -246,8 +246,17 @@ class NavigationController extends OntoWiki_Controller_Component
             
         }
         
+        $query->addFilter(
+            new Erfurt_Sparql_Query2_isUri( 
+                new Erfurt_Sparql_Query2_Var('resourceUri') 
+            )
+        );
+        
         // namespaces to be ignored, rdfs/owl-defined objects
-        /*if ( !isset($setup->state->showHidden)) {
+        if ( !isset($setup->state->showHidden) ) {
+            
+            $this->_owApp->logger->info("\nset hidden relation\n\n");
+            
             if( isset($setup->config->hiddenRelation) ){
                 // optional var
                 $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
@@ -258,34 +267,61 @@ class NavigationController extends OntoWiki_Controller_Component
                         new Erfurt_Sparql_Query2_Var('reg') );
                 }
                 $query->addElement($queryOptional);
-                $query->addFilter(new Erfurt_Sparql_Query2_bound(new Erfurt_Sparql_Query2_Var('reg'))); // ??????????????????
-                //$whereSpec .= 'FILTER (!bound(?reg))';
+                $query->addFilter(
+                    new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                        new Erfurt_Sparql_Query2_bound( 
+                            new Erfurt_Sparql_Query2_Var('reg') 
+                        )
+                    )
+                );
             }
             
             if( isset($setup->config->hiddenNS) ){
                 // parse config
                 foreach ($setup->config->hiddenNS as $ignore) {
                     $query->addFilter(
-                        new Erfurt_Sparql_Query2_Regex(
-                            new Erfurt_Sparql_Query2_Var('resourceUri'), 
-                            new Erfurt_Sparql_Query2_RDFLiteral('^' . $ignore)
+                        new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                            new Erfurt_Sparql_Query2_Regex(
+                                new Erfurt_Sparql_Query2_Str( new Erfurt_Sparql_Query2_Var('resourceUri') ), 
+                                new Erfurt_Sparql_Query2_RDFLiteral('^' . $ignore)
+                            )
                         )
                     );
-                    //$whereSpec .= ' FILTER (!regex(str(?resourceUri), "^' . $ignore . '"))'; ????????????????
                 }
             }
         }
         
-        // entry point into the class tree
-        if (isset($setup->state->parent)) {
-            $query->addFilter(
-                new Erfurt_Sparql_Query2_Regex(
-                    new Erfurt_Sparql_Query2_Var('super'), 
-                    new Erfurt_Sparql_Query2_RDFLiteral('str(<' . $setup->state->parent . '>')
+        // dont't show rdfs/owl entities and subtypes in the first level
+        if ( !isset($setup->state->parent) ) {
+            // optional var
+            $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+            foreach($setup->config->hierarchyRelations->in as $rel){
+                $queryOptional->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
+                    new Erfurt_Sparql_Query2_Var('super') );
+            }
+            $queryOptional->addFilter(
+                new Erfurt_Sparql_Query2_isUri( 
+                    new Erfurt_Sparql_Query2_Var('super') 
                 )
             );
-            // $whereSpec .= ' FILTER (str(?super) = str(<' . $setup->state->parent . '>))'; ?????????????
-        }*/
+            
+            $query->addElement($queryOptional);
+            
+            $filter[] = new Erfurt_Sparql_Query2_Regex(
+                            new Erfurt_Sparql_Query2_Str( new Erfurt_Sparql_Query2_Var('super') ), 
+                            new Erfurt_Sparql_Query2_RDFLiteral('^'.EF_OWL_NS )
+                        );
+            $filter[] = new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                            new Erfurt_Sparql_Query2_bound( 
+                                new Erfurt_Sparql_Query2_Var('super') 
+                            )
+                        );
+            
+            $query->addFilter(
+                new Erfurt_Sparql_Query2_ConditionalOrExpression($filter)
+            );
+        }
         
         $query->setLimit($this->limit);
         

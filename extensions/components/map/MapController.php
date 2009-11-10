@@ -33,16 +33,6 @@ class MapController extends OntoWiki_Controller_Component
         $this->resource = $this->_owApp->selectedResource->getIri();
         $this->model    = $this->_owApp->selectedModel;
         $this->store    = $this->_erfurt->getStore();
-
-        $this->config   = array(
-            'icon'          => $this->_privateConfig->icon,
-            'clusterIcon'   => $this->_privateConfig->cluster,
-            'apikeys'       => array(
-                'google'        => $this->_privateConfig->apikey->google,
-            ),
-            'lat'           => $this->_privateConfig->default->latitude,
-            'long'          => $this->_privateConfig->default->longitude
-        );
     }
 
     /**
@@ -51,29 +41,17 @@ class MapController extends OntoWiki_Controller_Component
      */
     public function displayAction()
     {
-        $this->view->placeholder('main.window.title')->set('OntoWiki Map Component');
         $this->addModuleContext('main.window.map');
-
-        $this->view->componentUrlBase = $this->_componentUrlBase;
-        
-        // default values from configuration
-        $this->view->defaultLat             = $this->_privateConfig->default->latitude;
-        $this->view->defaultLong            = $this->_privateConfig->default->longitude;
-        $this->view->icon                   = $this->_privateConfig->icon;
-        $this->view->cluster                = $this->_privateConfig->cluster;
-        $this->view->apikey                 = $this->_privateConfig->apikey;
-
-        /* doesn't work at the moment, because the menu can't be accessed from javascript at runtime */
-        /* add ontowiki-style layer switcher (menu) */
-        $this->view->defaultLayer           = $this->_privateConfig->default->layer;
+        $this->view->placeholder('main.window.title')->set('OntoWiki Map Component');
 
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'));
         $jsonRequestUrl->setParam('limit', "off", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
-        $this->view->jsonRequestUrl = $jsonRequestUrl;
-
-        $this->view->extent         = $this->_getMaxExtent();
+        $this->view->jsonRequestUrl   = $jsonRequestUrl;
+        $this->view->componentUrlBase = $this->_componentUrlBase;
+        $this->view->extent           = $this->_getMaxExtent();
+        $this->view->config           = $this->_privateConfig;
 
         $this->_owApp->logger->debug('MapComponent/displayAction: maximal map extention: ' . var_export($this->view->extent, true));
     }
@@ -88,32 +66,19 @@ class MapController extends OntoWiki_Controller_Component
     public function inlineAction()
     {
         $this->_helper->layout->disableLayout();
-
-        $this->view->componentUrlBase = $this->_componentUrlBase;
         
-        $this->_owApp->logger->debug('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
-
         // default values from configuration
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'));
         $jsonRequestUrl->setParam('clustering', "off", true);
         $jsonRequestUrl->setParam('limit', "on", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
-        $this->_owApp->logger->debug('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
-
-        $this->view->jsonRequestUrl     = $jsonRequestUrl;
-        $this->view->apikey             = $this->_privateConfig->apikey;
-        $this->view->defaultLat         = $this->_privateConfig->default->latitude;
-        $this->view->defaultLong        = $this->_privateConfig->default->longitude;
-        $this->view->icon               = $this->_privateConfig->icon;
-        $this->view->cluster            = $this->_privateConfig->cluster;
-        $this->view->icon_selected      = $this->_privateConfig->icon_selected;
-        $this->view->cluster_selected   = $this->_privateConfig->cluster_selected;
-        $this->view->defaultLayer       = $this->_privateConfig->default->layer;
-        $this->view->extent             = $this->_getMaxExtent();
+        $this->view->jsonRequestUrl   = $jsonRequestUrl;
+        $this->view->componentUrlBase = $this->_componentUrlBase;
+        $this->view->extent           = $this->_getMaxExtent();
+        $this->view->config           = $this->_privateConfig;
 
         $this->_owApp->logger->debug('MapComponent/inlineAction: maximal map extention: ' . var_export($this->view->extent, true));
-        $this->_owApp->logger->debug('MapComponent/inlineAction session: rdf_type => ' . var_export($this->_owApp->selectedClass, true));
     }
 
     /**
