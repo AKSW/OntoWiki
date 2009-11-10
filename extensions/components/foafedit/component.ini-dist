@@ -1,9 +1,27 @@
 ;;
 ; Basic component configuration
 ;;
-active = true
-name = "Foaf Editor"
+enabled    = true
+name       = "Foaf Editor"
 templates  = "templates"
 
 [private]
 person = "http://xmlns.com/foaf/0.1/Person"
+
+; Properties
+properties.depiction         = "http://xmlns.com/foaf/0.1/depiction"
+properties.title             = "http://xmlns.com/foaf/0.1/title"
+properties.name              = "http://xmlns.com/foaf/0.1/name"
+properties.firstName         = "http://xmlns.com/foaf/0.1/firstName"
+properties.surname           = "http://xmlns.com/foaf/0.1/surname"
+properties.familyName        = "http://xmlns.com/foaf/0.1/family_name"
+properties.nick              = "http://xmlns.com/foaf/0.1/nick"
+properties.givenname         = "http://xmlns.com/foaf/0.1/givenname"
+properties.mbox              = "http://xmlns.com/foaf/0.1/mbox"
+properties.weblog            = "http://xmlns.com/foaf/0.1/weblog"
+properties.workplaceHomepage = "http://xmlns.com/foaf/0.1/workplaceHomepage"
+properties.workinfoHomepage  = "http://xmlns.com/foaf/0.1/workinfoHomepage"
+properties.schoolHomepage    = "http://xmlns.com/foaf/0.1/schoolHomepage"
+properties.topicInterest     = "http://xmlns.com/foaf/0.1/topic_interest"
+properties.basedNear         = "http://xmlns.com/foaf/0.1/based_near"
+properties.knows             = "http://xmlns.com/foaf/0.1/knows"

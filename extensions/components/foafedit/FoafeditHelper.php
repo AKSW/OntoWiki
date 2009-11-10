@@ -56,7 +56,6 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                 $types = array_combine($types, $types);
                 
                 if (array_key_exists($this->_privateConfig->person, $types)) {
-    
                     // we have a foaf:Person
                     // register new tab
                     OntoWiki_Navigation::register('foafedit', array(

@@ -1,6 +1,9 @@
 <h3><?php echo $this->resourceName ?>'s vCard</h3>
 
-<div class="vcard" about="<?php echo $this->resourceUri ?>">
+<div class="vcard" about="<?php echo $this->resourceUri ?>"
+    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+    <?php endforeach; ?>>
     <span class="fdepiction">
         <?php if (isset($this->depiction)): ?>
             <img class="fdepiction" src="<?php echo $this->depiction[0]['value'] ?>" alt="depiction of <?php echo $this->resourceName ?>">

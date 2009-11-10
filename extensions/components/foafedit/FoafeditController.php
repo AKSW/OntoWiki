@@ -98,6 +98,21 @@ class FoafeditController extends OntoWiki_Controller_Component
                     ->appendButton(OntoWiki_Toolbar::DELETE, $params);
 
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
+            
+            // prepare namespaces
+            $namespaces = $this->_model->getNamespaces();
+            $graphBase  = $this->_model->getBaseUri();
+            if (!array_key_exists($graphBase, $namespaces)) {
+                $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
+            }
+            $this->view->namespaces = $namespaces;
+            
+            // add update vocabulary graph definitions
+            $this->view->placeholder('update')->append(array(
+                'sourceGraph'    => $this->_model->getModelUri(), 
+                'queryEndpoint'  => $this->_config->urlBase . 'sparql/', 
+                'updateEndpoint' => $this->_config->urlBase . 'update/'
+            ));
         }
         
         // set up model
