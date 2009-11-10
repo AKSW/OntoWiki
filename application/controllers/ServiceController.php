@@ -12,7 +12,7 @@
  */
 class ServiceController extends Zend_Controller_Action
 {
-    /** @var OntoWiki_Application */
+    /** @var OntoWiki */
     protected $_owApp = null;
     
     /** @var Zend_Config */
@@ -127,7 +127,7 @@ class ServiceController extends Zend_Controller_Action
     public function init()
     {
         // init controller variables
-        $this->_owApp   = OntoWiki_Application::getInstance();
+        $this->_owApp   = OntoWiki::getInstance();
         $this->_config  = $this->_owApp->config;
         $this->_session = $this->_owApp->session;
         
@@ -475,7 +475,7 @@ class ServiceController extends Zend_Controller_Action
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
         
-        $store    = OntoWiki_Application::getInstance()->erfurt->getStore();
+        $store    = OntoWiki::getInstance()->erfurt->getStore();
         $response = $this->getResponse();
         
         // fetch params
@@ -567,7 +567,7 @@ class ServiceController extends Zend_Controller_Action
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
         
-        $store      = OntoWiki_Application::getInstance()->erfurt->getStore();
+        $store      = OntoWiki::getInstance()->erfurt->getStore();
         $response   = $this->getResponse();
         $namedGraph = $this->_request->getParam('named-graph-uri', null);
         
@@ -689,7 +689,7 @@ class ServiceController extends Zend_Controller_Action
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
 
-        $store    = OntoWiki_Application::getInstance()->erfurt->getStore();
+        $store    = OntoWiki::getInstance()->erfurt->getStore();
         $response = $this->getResponse();
 
         // fetch start resource parameter
@@ -752,7 +752,7 @@ class ServiceController extends Zend_Controller_Action
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
 
-        $store    = OntoWiki_Application::getInstance()->erfurt->getStore();
+        $store    = OntoWiki::getInstance()->erfurt->getStore();
         $response = $this->getResponse();
         $model    = $this->_owApp->selectedModel;
 
@@ -850,7 +850,7 @@ class ServiceController extends Zend_Controller_Action
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
 
-        $store    = OntoWiki_Application::getInstance()->erfurt->getStore();
+        $store    = OntoWiki::getInstance()->erfurt->getStore();
         $response = $this->getResponse();
         $model    = $this->_owApp->selectedModel;
 

@@ -15,7 +15,7 @@ class SkosController extends OntoWiki_Controller_Component {
 	
 	public function skosobjectAction() {
     
-    	$owApp = OntoWiki_Application::getInstance();
+    	$owApp = OntoWiki::getInstance();
     	$this->resource = (string) $owApp->selectedResource;
 
         require_once 'Erfurt/Sparql/SimpleQuery.php';
@@ -37,7 +37,7 @@ class SkosController extends OntoWiki_Controller_Component {
     
     public function renderSkosObject() {
     	
-		$owApp = OntoWiki_Application::getInstance();
+		$owApp = OntoWiki::getInstance();
     	
         $this->view->placeholder('main.window.title')->append("SKOS View of ".$this->resource);
         

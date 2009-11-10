@@ -30,7 +30,7 @@ class SkosRelationsModule extends OntoWiki_Module {
 	
     public function getContents() {
     	
-    	$owApp = OntoWiki_Application::getInstance();
+    	$owApp = OntoWiki::getInstance();
     	
     	if (null === $owApp->selectedModel) {
             return;

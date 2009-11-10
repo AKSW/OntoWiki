@@ -290,7 +290,7 @@ class OntoWiki_Url
         }
         // HACK:
         $this->_useSefUrls = true;
-        $base = OntoWiki_Application::getInstance()->config->urlBase;
+        $base = OntoWiki::getInstance()->config->urlBase;
         
         return $base . ltrim($url, '/');
     }

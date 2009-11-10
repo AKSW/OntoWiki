@@ -31,13 +31,13 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
         if ($credentials = $this->_getAuthHeaderCredentials($request)) {
             switch ($credentials['type']) {
                 case 'basic':
-                    $erfurt = OntoWiki_Application::getInstance()->erfurt;
-                    $logger = OntoWiki_Application::getInstance()->logger;
+                    $erfurt = OntoWiki::getInstance()->erfurt;
+                    $logger = OntoWiki::getInstance()->logger;
                     // authenticate
                     $authResult = $erfurt->authenticate($credentials['username'], $credentials['password']);
 
                     if ($authResult->isValid()) {
-                        $logger = OntoWiki_Application::getInstance()->logger;
+                        $logger = OntoWiki::getInstance()->logger;
                         $logger->info("User '$credentials[username]' authenticated via HTTP.");
                     } else {
                         // if authentication attempt fails, send appropriate headers
@@ -55,7 +55,7 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                     Erfurt_App::getInstance()->getAuth()->setIdentity($authResult);
                     
                     if ($authResult->isValid()) {
-                        $logger = OntoWiki_Application::getInstance()->logger;
+                        $logger = OntoWiki::getInstance()->logger;
                         $logger->info("User authenticated with FOAF+SSL via HTTPS.");
                     }
                     break;

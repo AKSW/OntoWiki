@@ -19,7 +19,7 @@ class DashboardController extends OntoWiki_Controller_Component {
     public function showdashAction() {
 		// check if user is logged on
 		$this->view->anon = false;
-        $user = OntoWiki_Application::getInstance()->erfurt->getAuth()->getIdentity();
+        $user = OntoWiki::getInstance()->erfurt->getAuth()->getIdentity();
         // if a model has been selected
         if ($user->isAnonymousUser()){
 			// Set window title

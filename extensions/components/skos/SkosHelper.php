@@ -11,7 +11,7 @@ class SkosHelper extends OntoWiki_Component_Helper
 {
     public function init()
     {
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
 
         if (null === $owApp->selectedModel) {
             return;

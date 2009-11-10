@@ -42,7 +42,7 @@ class RepositoryservicesController extends OntoWiki_Controller_Component
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
 
-        $store    = OntoWiki_Application::getInstance()->erfurt->getStore();
+        $store    = OntoWiki::getInstance()->erfurt->getStore();
         $response = $this->getResponse();
         
         // The parameters 

@@ -163,7 +163,7 @@ class OntoWiki_Menu
     public function toArray($translate = false, $recursive = true)
     {
         if ($translate) {
-            $translation = OntoWiki_Application::getInstance()->translate;
+            $translation = OntoWiki::getInstance()->translate;
         }
         
         $return = array();

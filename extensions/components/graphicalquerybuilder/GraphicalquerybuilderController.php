@@ -44,7 +44,7 @@ class GraphicalquerybuilderController extends OntoWiki_Controller_Component {
 
 		/*
 		    // Action Based Access Control for the Query Builder
-		    $owApp = OntoWiki_Application::getInstance();
+		    $owApp = OntoWiki::getInstance();
 		    if (!$owApp->erfurt->isActionAllowed('QueryBuilding')){
 		      require_once 'Erfurt/Ac/Exception.php';
 		      throw new Erfurt_Ac_Exception("You are not allowed to use the Query Builder.");
@@ -181,7 +181,7 @@ class GraphicalquerybuilderController extends OntoWiki_Controller_Component {
 	//       for any valid SPARQL-Query <QUERY>
 	// returns the number of elements returned by the query
 	public function getquerysizeAction() {
-		$store = OntoWiki_Application :: getInstance()->erfurt->getStore();
+		$store = OntoWiki::getInstance()->erfurt->getStore();
 		$response = $this->getResponse();
 		$response->setHeader('Content-Type', 'text/plain');
 		$count = 0;
@@ -257,7 +257,7 @@ class GraphicalquerybuilderController extends OntoWiki_Controller_Component {
 
 		$query = $this->_request->getParam('query', '');
 		$queryObj = Erfurt_Sparql_SimpleQuery :: initWithString($query);
-		$store = OntoWiki_Application :: getInstance()->erfurt->getStore();
+		$store = OntoWiki::getInstance()->erfurt->getStore();
 		$data = $store->sparqlQuery($queryObj);
 
 		$time = round((microtime(true) - $now) * 1000) . " msec needed";

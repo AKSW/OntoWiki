@@ -17,7 +17,7 @@ class EasyinferencePlugin extends OntoWiki_Plugin
 
    public function init()
     {
-	  $_app = OntoWiki_Application::getInstance();
+	  $_app = OntoWiki::getInstance();
 	  $_erfurt = $_app->erfurt;
 
 	  $this->prologue = ($this->has_ask ? 'ASK' : ($this->has_star_select ? 'SELECT *' : die('db not supported')));
@@ -67,7 +67,7 @@ class EasyinferencePlugin extends OntoWiki_Plugin
 
 	  $object = $object ? '<'.$event->value.'>' : '"'.$event->value.'"';
 
-	  $_app = OntoWiki_Application::getInstance();
+	  $_app = OntoWiki::getInstance();
 	  $_erfurt = $_app->erfurt;
 	  
 	  $where = 'WHERE { <'.$_app->selectedResource.'> <'.$event->property.'> '.$object.' }';
@@ -88,7 +88,7 @@ class EasyinferencePlugin extends OntoWiki_Plugin
      */
 	private function _setupInferenceRuleKB()
 	{
-	  $_app = OntoWiki_Application::getInstance();
+	  $_app = OntoWiki::getInstance();
 	  $_erfurt = $_app->erfurt;
 
 	  // patch inference list

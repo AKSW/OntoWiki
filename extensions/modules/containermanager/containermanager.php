@@ -126,7 +126,7 @@ class ContainermanagerModule extends OntoWiki_Module {
 	}	
 
 	public function getStateId() {
-	    $session = OntoWiki_Application::getInstance()->session;
+	    $session = OntoWiki::getInstance()->session;
 	    
         $id = $this->_owApp->selectedModel->getModelIri()
             . $this->_owApp->selectedClass

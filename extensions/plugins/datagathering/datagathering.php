@@ -67,13 +67,13 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         $this->_syncModelUri = $this->_privateConfig->syncModelUri;
         
         // Translation hack in order to enable the plugin to translate...
-        $translate = OntoWiki_Application::getInstance()->translate;
+        $translate = OntoWiki::getInstance()->translate;
         $translate->addTranslation(
             $this->_pluginRoot . 'languages', 
             null, 
             array('scan' => Zend_Translate::LOCALE_FILENAME)
         );
-        $translate->setLocale(OntoWiki_Application::getInstance()->config->languages->locale);
+        $translate->setLocale(OntoWiki::getInstance()->config->languages->locale);
     }
     
     
@@ -101,7 +101,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
             return;
         }
         
-        $owApp     = OntoWiki_Application::getInstance();
+        $owApp     = OntoWiki::getInstance();
         $translate = $owApp->translate;
 
         $wrapperRegistry   = Erfurt_App::getInstance()->getWrapperRegistry();
@@ -190,7 +190,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onPropertiesAction($event)
     {   
-        $translate = OntoWiki_Application::getInstance()->translate;
+        $translate = OntoWiki::getInstance()->translate;
         $session   = new Zend_Session_Namespace(_OWSESSION);
         
         // Add the location bar menu entry.
@@ -238,7 +238,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         $message .= $translate->_('Sync') . '</a>';
         $message .= '</span>';
         
-        OntoWiki_Application::getInstance()->appendMessage(
+        OntoWiki::getInstance()->appendMessage(
             new OntoWiki_Message($message, OntoWiki_Message::INFO, array('escape' => false))
         );
         
@@ -255,7 +255,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onPreTabsContentAction($event)
     {
-        $translate = OntoWiki_Application::getInstance()->translate;
+        $translate = OntoWiki::getInstance()->translate;
         $uri = $event->uri;
         
         $html = '<div style="display: none; padding: 10px 20px 10px 30px" id="location_bar_container" class="cmDiv">

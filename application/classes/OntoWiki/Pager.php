@@ -82,7 +82,7 @@ class OntoWiki_Pager
         $pagerLinks = array();
         
         // translation helper
-        $translate = OntoWiki_Application::getInstance()->translate;
+        $translate = OntoWiki::getInstance()->translate;
         
         // pagination necessary
         if (($count > $limit) || ($count == Erfurt_Store::COUNT_NOT_SUPPORTED)) {

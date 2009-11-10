@@ -19,7 +19,7 @@
 		public function __construct($q, $json, $limit, $config, $debug = false){
 			$this->debug =  $debug;
 			$this->options = new Options($config);
-			$owApp = OntoWiki_Application::getInstance();
+			$owApp = OntoWiki::getInstance();
 			$graphUri = $owApp->selectedModel->getModelIri();
 			$this->options->add("graphUri", $graphUri );
 			
@@ -63,7 +63,7 @@
 				//$jsonArray = $execute->executeSparqlQuery1( 'http://db0.aksw.org:8890/',$graphURI,$sparqlQuery, 3000);
 				//print_r($jsonArray);
 			}else{
-				$owApp = OntoWiki_Application::getInstance();
+				$owApp = OntoWiki::getInstance();
 				$store  = $owApp->erfurt->getStore();
 				$json = $store->sparqlQuery($sparqlQuery, array('result_format' => 'json', 'use_ac' => false));
 				$jsonArray = json_decode($json, true );

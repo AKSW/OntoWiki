@@ -15,7 +15,7 @@ class ArtisteditHelper extends OntoWiki_Component_Helper
 {
     public function init()
     {
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
 
         if ($owApp->selectedModel) {
             $store    = $owApp->erfurt->getStore();

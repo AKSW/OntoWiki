@@ -57,7 +57,7 @@ abstract class OntoWiki_Module
     
     /**
      * OntoWiki Application object 
-     * @var OntoWiki_Application 
+     * @var OntoWiki 
      */
     protected $_owApp = null;
     

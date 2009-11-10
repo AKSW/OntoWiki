@@ -51,7 +51,7 @@ class MapHelper extends OntoWiki_Component_Helper
     public function shouldShow () 
     {
 
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
 
         //var_dump($owApp);
 

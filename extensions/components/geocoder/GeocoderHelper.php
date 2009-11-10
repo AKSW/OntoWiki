@@ -11,7 +11,7 @@ class GeocoderHelper extends OntoWiki_Component_Helper
 {
     public function __construct()
     {
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
         // if a model has been selected
         if ($owApp->selectedModel != null) {
             // register with extras menu

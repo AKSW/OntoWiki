@@ -24,7 +24,7 @@ class LoginModule extends OntoWiki_Module
         if ($authResult = $this->_owApp->authResult) {
         
             // Translate partial messages before creation of message box
-            $translate = OntoWiki_Application::getInstance()->translate;
+            $translate = OntoWiki::getInstance()->translate;
             $cm = $this->_owApp->componentManager;
 
             $message = $translate->translate($authResult[0]);

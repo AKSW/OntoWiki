@@ -49,7 +49,7 @@ class SemanticsitemapController extends OntoWiki_Controller_Component
     */
     public function sitemapAction()
     {
-        $owApp = OntoWiki_Application::getInstance(); 
+        $owApp = OntoWiki::getInstance(); 
         // these dataset items are used by the template
         $datasets = array();
         foreach ($this->_models as $modelUri => $model) {

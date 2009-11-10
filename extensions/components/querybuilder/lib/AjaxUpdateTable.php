@@ -19,7 +19,7 @@ class AjaxUpdateTable {
     {
 			
 			$this->options = new Options($config);
-			$owApp = OntoWiki_Application::getInstance();
+			$owApp = OntoWiki::getInstance();
 			$graphUri = $owApp->selectedModel->getModelIri();
 			$this->options->add("graphUri", $graphUri );
 			
@@ -41,7 +41,7 @@ class AjaxUpdateTable {
      */
     public function getResultAsArray()
     {
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
         $store  = $owApp->erfurt->getStore();
 
         $qo = new QueryOptimizer($this->patterns,  $this->limit, $this->options, $this->ph);
@@ -56,7 +56,7 @@ class AjaxUpdateTable {
     }
  
 	function updateTable() {
-		$owApp = OntoWiki_Application::getInstance();
+		$owApp = OntoWiki::getInstance();
 		$store  = $owApp->erfurt->getStore();
 		//$q="";
 		$qo = new QueryOptimizer($this->patterns,  $this->limit, $this->options, $this->ph);

@@ -46,7 +46,7 @@ class OntoWiki_Utils
     public static function compactUri($uri, $saveMode = false)
     {
         $namespaces    = self::_getNamespaces();
-        $selectedModel = OntoWiki_Application::getInstance()->selectedModel;
+        $selectedModel = OntoWiki::getInstance()->selectedModel;
         $compactUri    = null;
         $prefix        = null;
         
@@ -103,7 +103,7 @@ class OntoWiki_Utils
         
         $matchesCount = count($matches);
         if ($matchesCount >= 3) {
-            $selectedModel = OntoWiki_Application::getInstance()->selectedModel;
+            $selectedModel = OntoWiki::getInstance()->selectedModel;
             if ($selectedModel && $matches[1] == $selectedModel->getBaseIri()) {
                 if ($prependBase) {
                     return self::DEFAULT_BASE . ':' . $matches[2];
@@ -127,7 +127,7 @@ class OntoWiki_Utils
 	 */
 	public static function dateDifference($start_timestamp, $end_timestamp = false, $unit = 0)
 	{
-	    $translate  = OntoWiki_Application::getInstance()->translate;
+	    $translate  = OntoWiki::getInstance()->translate;
 	    
 	    $secsStr  = $translate->_('moments ago');
 	    $minStr   = $translate->_('approx. 1 minute ago');
@@ -218,7 +218,7 @@ class OntoWiki_Utils
                 $qName .= implode('', $parts);
             } else {
                 // TODO: check store, better URI check, use model base URI
-                $owApp = OntoWiki_Application::getInstance();
+                $owApp = OntoWiki::getInstance();
                 
                 $erfurtConfig = Erfurt_App::getInstance()->getConfig();
                 $uriSchemas   = array_flip($erfurtConfig->uri->schemata->toArray());
@@ -307,7 +307,7 @@ class OntoWiki_Utils
      */
     private static function _reloadNamespaces()
     {
-        $model = OntoWiki_Application::getInstance()->selectedModel;
+        $model = OntoWiki::getInstance()->selectedModel;
         if ($model instanceof Erfurt_Rdfs_Model) {
             self::$_namespaces = $model->getNamespaces();
         } else {

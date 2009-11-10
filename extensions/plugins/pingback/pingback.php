@@ -18,7 +18,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 		$this->errorlog("onAddStatement called");
 		
 		// check if linked data is enabled
-		$owApp = OntoWiki_Application::getInstance(); 
+		$owApp = OntoWiki::getInstance(); 
 		$pluginManager = $owApp->erfurt->getPluginManager(false);
 		if(!$pluginManager->isPluginEnabled('linkeddata')){
 			$this->errorlog("plugin linkeddata disabled, pingbacks are not allowed");  
@@ -36,7 +36,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 		$this->errorlog("onAddMultipleStatements called");
 		
 		// check if linked data is enabled
-		$owApp = OntoWiki_Application::getInstance(); 
+		$owApp = OntoWiki::getInstance(); 
 		$pluginManager = $owApp->erfurt->getPluginManager(false);
 		if(!$pluginManager->isPluginEnabled('linkeddata')){
 			$this->errorlog("plugin linkeddata disabled, pingbacks are not allowed");  

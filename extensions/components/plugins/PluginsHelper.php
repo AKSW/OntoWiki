@@ -10,7 +10,7 @@ class PluginsHelper extends OntoWiki_Component_Helper
 {
     public function __construct()
     {
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
 
         // register with extras menu only if user is allowed to use the PluginManager
         if ($owApp->erfurt->isActionAllowed('PluginManagement')){

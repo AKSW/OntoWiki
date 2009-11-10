@@ -11,7 +11,7 @@ class CacheconfigurationHelper extends OntoWiki_Component_Helper
 {
     public function __construct()
     {
-        $this->owApp = OntoWiki_Application::getInstance();
+        $this->owApp = OntoWiki::getInstance();
         // register with extras menu
         $this->translate  = $this->owApp->translate;
         $url        = new OntoWiki_Url(array('controller' => 'cacheconfiguration', 'action' => 'init'));

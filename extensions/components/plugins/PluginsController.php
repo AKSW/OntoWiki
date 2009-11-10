@@ -26,7 +26,7 @@ class PluginsController extends OntoWiki_Controller_Component
         require_once('Zend/Paginator/Adapter/Array.php');
         
         // Action Based Access Control for the Plugin Manager
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
         if (!$this->_erfurt->isActionAllowed('PluginManagement')){
             require_once 'Erfurt/Ac/Exception.php';
             throw new Erfurt_Ac_Exception('You are not allowed to use the Plugin Manager.');

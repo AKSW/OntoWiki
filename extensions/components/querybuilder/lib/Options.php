@@ -41,13 +41,13 @@ class Options {
 				}
 			else{
 				//TODO
-				 $owApp = OntoWiki_Application::getInstance();
+				 $owApp = OntoWiki::getInstance();
 				 return array_flip($owApp->selectedModel->getNamespaces());
 				}
 		}
 		
 	function getDefaultNamespace(){
-			$owApp = OntoWiki_Application::getInstance();
+			$owApp = OntoWiki::getInstance();
 
             // (CR) needed due to bug in model import in zenddb store
             $base = $owApp->selectedModel->getBaseIri();

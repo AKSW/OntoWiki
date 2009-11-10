@@ -79,8 +79,8 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
     {
         parent::__construct($store, $graph);
         $this->_options = array_merge($this->_options, $options);
-        $this->_current = (string)OntoWiki_Application::getInstance()->selectedResource;
-        $this->_session = OntoWiki_Application::getInstance()->session;
+        $this->_current = (string)OntoWiki::getInstance()->selectedResource;
+        $this->_session = OntoWiki::getInstance()->session;
         
         // HACK: if the graph itself is one that is normally ignored in other
         // models, don't ignore it

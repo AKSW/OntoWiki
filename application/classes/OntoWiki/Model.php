@@ -73,8 +73,8 @@ class OntoWiki_Model
     {
         // system variables
         $this->_store           = $store;
-        $this->_config          = OntoWiki_Application::getInstance()->config;
-        $this->_logger          = OntoWiki_Application::getInstance()->logger;
+        $this->_config          = OntoWiki::getInstance()->config;
+        $this->_logger          = OntoWiki::getInstance()->logger;
         $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
         
         $this->_lang = $this->_config->languages->locale;

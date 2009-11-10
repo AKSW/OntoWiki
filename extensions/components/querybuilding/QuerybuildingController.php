@@ -260,7 +260,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 	}
 	
 	public function deleteAction() {
-		$store = OntoWiki_Application :: getInstance()->erfurt->getStore();
+		$store = OntoWiki::getInstance()->erfurt->getStore();
 
 		$response = $this->getResponse();
 		$response->setHeader('Content-Type', 'text/plain');

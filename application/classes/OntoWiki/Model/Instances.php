@@ -105,7 +105,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $type                   =
             isset($options['type']) ?
                 $options['type'] :
-                OntoWiki_Application::getInstance()->selectedClass;
+                OntoWiki::getInstance()->selectedClass;
         $withChilds             =
            isset($options['withChilds']) ?
                $options['withChilds'] :

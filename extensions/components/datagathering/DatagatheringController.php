@@ -122,7 +122,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         
         $this->_wrapperRegisty = Erfurt_Wrapper_Registry::getInstance();
         
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
         if (null !== $owApp->selectedModel) {
             $this->_graphUri = $owApp->selectedModel->getModelIri();
         }

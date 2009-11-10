@@ -45,7 +45,7 @@ class MapHelper extends OntoWiki_Component_Helper
 
     public function shouldShow () 
     {
-		$this->_owApp = OntoWiki_Application::getInstance();
+		$this->_owApp = OntoWiki::getInstance();
 
 		var_dump($this->_owApp);
 
@@ -135,7 +135,7 @@ class MapHelper extends OntoWiki_Component_Helper
 			*/
 
         /* 
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
         if($owApp->selectedModel) {
             require_once 'Erfurt/Sparql/SimpleQuery.php';
 

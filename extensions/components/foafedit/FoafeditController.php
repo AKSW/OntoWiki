@@ -5,7 +5,6 @@
  *
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id:$
  */
 
 require_once 'OntoWiki/Controller/Component.php';
@@ -13,11 +12,11 @@ require_once 'OntoWiki/Controller/Component.php';
 /**
  * Component controller for the FOAF Editor.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @category OntoWiki
  * @package Extensions
  * @subpackage Foafedit
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class FoafeditController extends OntoWiki_Controller_Component

@@ -7,16 +7,16 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
-require_once 'OntoWiki/Component/Helper.php';
-
 /**
  * Helper class for the FOAF Editor component.
  * Checks whether the current resource is an instance of foaf:Person
  * and registers the FOAF Editor component if so.
  *
+ * @category OntoWiki
+ * @package Extensions
+ * @subpackage Foafedit
  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @category OntoWiki
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class FoafeditHelper extends OntoWiki_Component_Helper
@@ -56,6 +56,7 @@ class FoafeditHelper extends OntoWiki_Component_Helper
                 $types = array_combine($types, $types);
                 
                 if (array_key_exists($this->_privateConfig->person, $types)) {
+    
                     // we have a foaf:Person
                     // register new tab
                     OntoWiki_Navigation::register('foafedit', array(

@@ -72,7 +72,7 @@ class SkosObject {
               //      FILTER (LANG(?object) = \'' . $this->locale . '\')
               ' }');
                
-       if ( $result = OntoWiki_Application::getInstance()->selectedModel->sparqlQuery($query) ) {
+       if ( $result = OntoWiki::getInstance()->selectedModel->sparqlQuery($query) ) {
              
            foreach ( $result as $row ) {
                

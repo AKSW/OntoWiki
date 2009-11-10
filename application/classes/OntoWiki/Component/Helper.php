@@ -37,7 +37,7 @@ class OntoWiki_Component_Helper
     
     /**
      * OntoWiki Application
-     * @var OntoWiki_Application
+     * @var OntoWiki
      */
     protected $_owApp;
     

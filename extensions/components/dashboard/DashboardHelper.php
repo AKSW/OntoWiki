@@ -10,7 +10,7 @@ class DashboardHelper extends OntoWiki_Component_Helper
 {
     public function __construct()
     {	
-        $owApp = OntoWiki_Application::getInstance();
+        $owApp = OntoWiki::getInstance();
         $user = $owApp->erfurt->getAuth()->getIdentity();
         // if a model has been selected
         if (!$user->isAnonymousUser()) {

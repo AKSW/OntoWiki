@@ -11,7 +11,7 @@
  * OntoWiki main class.
  *
  * Serves as a central registry for storing objects needed througout the application.
- * Prior to 0.9.5, this class was called OntoWiki_Application and was also partly
+ * Prior to 0.9.5, this class was called OntoWiki and was also partly
  * responsible for application bootstrapping. As of 0.9.5, bootstrapping is handled
  * by the Bootstrap class. OntoWiki_Application is aliased to OntoWiki, whereby it is 
  * still usable, but deprecated and will certainly disappea in the next release.
@@ -47,7 +47,7 @@ class OntoWiki
     
     /** 
      * Singleton instance
-     * @var OntoWiki_Application 
+     * @var OntoWiki 
      */
     private static $_instance = null;
     
@@ -152,7 +152,7 @@ class OntoWiki
      * Appends a message to the message stack
      *
      * @param OntoWiki_Message $message The message to be added.
-     * @return OntoWiki_Application
+     * @return OntoWiki
      */
     public function appendMessage(OntoWiki_Message $message)
     {
@@ -311,7 +311,7 @@ class OntoWiki
      * Prepends a message to the message stack
      *
      * @param OntoWiki_Message $message The message to be added.
-     * @return OntoWiki_Application
+     * @return OntoWiki
      */
     public function prependMessage(OntoWiki_Message $message)
     {

@@ -17,7 +17,7 @@ class CacheconfigurationController extends OntoWiki_Controller_Component {
     public function init() {
 
         parent::init();
-        $this->owApp = OntoWiki_Application::getInstance(); 
+        $this->owApp = OntoWiki::getInstance(); 
 
         // disable tabs
         require_once 'OntoWiki/Navigation.php';

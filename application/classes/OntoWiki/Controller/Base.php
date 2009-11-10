@@ -20,7 +20,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
 {    
     /** 
      * OntoWiki Application
-     * @var OntoWiki_Application 
+     * @var OntoWiki
      */
     protected $_owApp = null;
     

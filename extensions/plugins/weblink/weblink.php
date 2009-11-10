@@ -10,7 +10,7 @@ class WeblinkPlugin extends OntoWiki_Plugin
     
     public function init()
     {
-        $this->_config = OntoWiki_Application::getInstance()->config;
+        $this->_config = OntoWiki::getInstance()->config;
         
         $properties = array_values($this->_privateConfig->weblink->toArray());
         $this->_properties = array_combine($properties, $properties);
