@@ -133,6 +133,26 @@ class OntoWiki_Component_Manager
     }
     
     /**
+     * Returns the helper associated with the component specified.
+     *
+     * @throws OntoWiki_Component_Exception if no component with the specified name has been registered or
+     *         OntoWiki_Component_Exception if the specified component has no helper defined.
+     * @return OntoWiki_Component_Helper
+     */
+    public function getComponentHelper($componentName)
+    {
+        if (!$this->isComponentRegistered($componentName)) {
+            throw new OntoWiki_Component_Exception("Component with key '$componentName' not registered");
+        }
+        
+        if (!array_key_exists('instance', $this->_helpers[$componentName])) {
+            throw new OntoWiki_Component_Exception("Could not load helper for component '$componentName'.");
+        }
+        
+        return $this->_helpers[$componentName]['instance'];
+    }
+    
+    /**
      * Returns the path the component manager used to search for components.
      *
      * @return string
@@ -142,6 +162,12 @@ class OntoWiki_Component_Manager
         return $this->_componentPath;
     }
     
+    /**
+     * Returns the specified component's URL.
+     *
+     * @throws OntoWiki_Component_Exception if no component with the specified name has been registered
+     * @return string
+     */
     public function getComponentUrl($componentName)
     {
         if (!$this->isComponentRegistered($componentName)) {
@@ -257,9 +283,11 @@ class OntoWiki_Component_Manager
     {
         // init component helpers
         if (!$this->_helpersCalled) {
-            foreach ($this->_helpers as $helper) {
-                require_once $helper['path'];
-                $helper = new $helper['class']($this);
+            foreach ($this->_helpers as $componentName => &$helper) {
+                // only if helper has not been previously loaded
+                if (!array_key_exists('instance', $helper)) {             
+                    $helper['instance'] = $this->_loadHelper($componentName);
+                }
             }
             
             $this->_helpersCalled = true;
@@ -269,6 +297,22 @@ class OntoWiki_Component_Manager
     // ------------------------------------------------------------------------
     // --- Private Methods ----------------------------------------------------
     // ------------------------------------------------------------------------
+    
+    protected function _loadHelper($componentName)
+    {
+        if (!array_key_exists($componentName, $this->_helpers)) {
+            throw new OntoWiki_Component_Exception("No helper defined for component '$componentName'.");
+        }
+        
+        $helperSpec = $this->_helpers[$componentName];
+        
+        // load helper class
+        require $helperSpec['path'];
+        // instantiate helper object
+        $helperInstance = new $helperSpec['class']($this);
+        
+        return $helperInstance;
+    }
     
     /**
      * Scans the component path for conforming components and 
@@ -346,7 +390,7 @@ class OntoWiki_Component_Manager
         
         if (is_readable($helperPathName)) {
             // keep for later
-            $this->_helpers[] = array(
+            $this->_helpers[$componentName] = array(
                 'path'  => $helperPathName, 
                 'class' => $helperClassName
             );

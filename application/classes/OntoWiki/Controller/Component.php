@@ -32,6 +32,12 @@ class OntoWiki_Controller_Component extends OntoWiki_Controller_Base
      */
     protected $_componentUrlBase = null;
     
+    /**
+     * The component helper object
+     * @var OntoWiki_Component_Helper
+     */
+    protected $_componentHelper = null;
+    
     /** 
      * The component private config
      * @var array 
@@ -68,6 +74,23 @@ class OntoWiki_Controller_Component extends OntoWiki_Controller_Base
                                  . $this->_config->extensions->components 
                                  . $name 
                                  . '/';
+    }
+    
+    /**
+     * Returns the helper object associated with the component.
+     *
+     * @throws OntoWiki_Component_Exception if the component has no helper defined.
+     * @return OntoWiki_Component_Helper
+     */
+    public function getComponentHelper()
+    {
+        if (null === $this->_componentHelper) {
+            $name = $this->_request->getControllerName();
+            $componentManager = $this->_owApp->componentManager;
+            $this->_componentHelper = $componentManager->getComponentHelper($name);
+        }
+        
+        return $this->_componentHelper;
     }
 }
 
