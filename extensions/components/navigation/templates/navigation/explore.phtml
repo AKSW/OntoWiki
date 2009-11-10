@@ -5,25 +5,51 @@
  */
 $odd = true;
 ?>
-<?php if (!empty($this->messages)): ?>
-    <?php foreach ($this->messages as $message): ?>
-        <span class="messagebox <?php echo $message['type'] ?>"><?php echo $message['text'] ?></span>
-    <?php endforeach; ?>
-<?php endif ?>
+<ol class="bullets-none separated-vertical">
+    <li>
+    <?php if (isset($this->rootEntry)):?>
+        <a
+           about="<?php echo $this->rootEntry['uri'] ?>">
+            <img alt="first" class="navFirst"
+                src="<?php echo $this->themeUrlBase ?>/images/icon-first.png"/>
+            <img alt="previous" class="navBack"
+                src="<?php echo $this->themeUrlBase ?>/images/icon-previous.png"/>
+            <?php echo $this->rootEntry['title'] ?>
+        </a>
+    <?php else: ?>
+        Root
+    <?php endif ?>
 
-<?php if ($this->entries) :?>
-    <ol class="bullets-none separated-vertical">
-    <?php foreach ($this->entries as $uri => $entry): ?>
-        <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
-            <a class="navigation"
-               about="<?php echo $uri ?>"
-               ><?php echo $entry['title'] ?>
-                <img alt="next" id="navDeeper" src="<?php echo $this->themeUrlBase ?>/images/icon-next.png"/>
-            </a>
+    <?php if (!empty($this->messages)): ?>
+        <?php foreach ($this->messages as $message): ?>
+        <li>
+            <span class="messagebox <?php echo $message['type'] ?>"><?php echo $message['text'] ?></span>
         </li>
-    <?php endforeach; ?>
-    </ol>
+        <?php endforeach; ?>
+    <?php endif ?>
+
+
+    <?php if ($this->entries) :?>
+        <li>
+        <ol class="bullets-none separated-vertical">
+        <?php foreach ($this->entries as $uri => $entry): ?>
+            <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+                <a class="navigation"
+                   about="<?php echo $uri ?>"
+                   ><?php echo $entry['title'] ?>
+                    <img alt="next" id="navDeeper" src="<?php echo $this->themeUrlBase ?>/images/icon-next.png"/>
+                </a>
+            </li>
+        <?php endforeach; ?>
+        </ol>
+    <?php endif; ?>
+    </li>
+</ol>
+
+<?php if ($this->showMeMore) :?>
+Show Me More
 <?php endif; ?>
+
 
 <pre>
 <?php

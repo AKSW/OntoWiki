@@ -35,8 +35,7 @@ class NavigationModule extends OntoWiki_Module
 	$countMenu = new OntoWiki_Menu();
         $countMenu->setEntry('10', "javascript:navigationEvent('setLimit', 10)")
             ->setEntry('20', "javascript:navigationEvent('setLimit', 20)")
-            ->setEntry('30', "javascript:navigationEvent('setLimit', 30)")
-            ->setEntry('all', "javascript:navigationEvent('setLimit', 'all')");
+            ->setEntry('30', "javascript:navigationEvent('setLimit', 30)");
 
         // view sub menu
         $viewMenu = new OntoWiki_Menu();

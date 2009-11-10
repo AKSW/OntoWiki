@@ -62,18 +62,37 @@ class NavigationController extends OntoWiki_Controller_Component
             exit;
         }
 
+        // overwrite the limit with a given one
         if (isset($this->setup->state->limit)) {
             $this->limit = $this->setup->state->limit;
         }
         
         $this->view->entries = $this->queryNavigationEntries($this->setup);
+
+        // set view variable for the show more button
+        if (count($this->view->entries) > $this->limit) {
+            $this->view->showMeMore = true;
+        } else {
+            $this->view->showMeMore = false;
+        }
+
         if (empty($this->view->entries)) {
             if (isset($this->setup->state->searchString)) {
                 $this->messages[] = array( 'type' => 'info', 'text' => 'No result for this search.');
             } else {
-                $this->messages[] = array( 'type' => 'info', 'text' => 'Nothing to navigate deeper here.');
+                $this->messages[] = array( 'type' => 'info', 'text' => 'Nothing to navigate here.');
             }
         }
+
+        // the root entry (parent of the shown elements)
+        if ( isset($this->setup->state->parent) ) {
+            $this->view->rootEntry = array();
+            $this->view->rootEntry['uri'] = $this->setup->state->parent;
+            $this->view->rootEntry['title'] = $this->getTitle(
+                $this->setup->state->parent,
+                $this->setup->config->titleMode);
+        }
+
 
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
@@ -89,8 +108,10 @@ class NavigationController extends OntoWiki_Controller_Component
         // used for generating internal OntoWiki Links
         $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
 
-        if( $setup->state->lastEvent == "search" ){ // search request
-            $query = $this->store->findResourcesWithPropertyValue($setup->state->searchString,$this->model->__toString());
+        if( $setup->state->lastEvent == "search" ){
+            // search request
+            // @todo: also search request should not show ignored entities
+            $query = $this->store->findResourcesWithPropertyValue($setup->state->searchString, (string) $this->model);
             // Init query
             $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
             foreach ($setup->config->hierarchyTypes as $type) {
@@ -129,8 +150,8 @@ class NavigationController extends OntoWiki_Controller_Component
         
         $entries = array();
         
-        if($results == null) return;
-        
+        if ($results == null) return;
+
         foreach ($results as $result) {
             $uri = $result['resourceUri'];
             $entry = array();
@@ -138,26 +159,24 @@ class NavigationController extends OntoWiki_Controller_Component
             $entry['link'] = (string) $linkurl->setParam('r', $uri, true);
             $entries[$uri] = $entry;
         }
-        
-        $entry = array();
-        $entry['title'] = "Show 10 more";
-        $entry['link'] = "#";
-        $entries[] = $entry;
 
         return $entries;
     }
     
     protected function getTitle($uri, $mode){
-        if(!isset($mode) || $mode == null) $mode = "baseName";
-        if($mode == "titleHelper"){
+        if (!isset($mode) || $mode == null) $mode = "baseName";
+
+        if ($mode == "titleHelper") {
             return $this->titleHelper->getTitle($uri);
-        }else if($mode == "baseName"){
-            if(strrpos($uri, '/') > 0){
+        } elseif($mode == "baseName"){
+            if (strrpos($uri, '#') > 0) {
+                return substr($uri, strrpos($uri, '#')+1);
+            } elseif (strrpos($uri, '/') > 0) {
                 return substr($uri, strrpos($uri, '/')+1);
-            }else{
+            } else {
                 return $uri;
             }
-        }else{
+        } else {
             return "error";   
         }
     }
@@ -334,8 +353,9 @@ class NavigationController extends OntoWiki_Controller_Component
                 new Erfurt_Sparql_Query2_ConditionalOrExpression($filter)
             );
         }
-        
-        $query->setLimit($this->limit);
+
+        // set to limit+1, so we can see if there are more than $limit entries
+        $query->setLimit($this->limit + 1);
         
         
         return $query;

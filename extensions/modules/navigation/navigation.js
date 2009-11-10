@@ -17,17 +17,6 @@ $(document).ready(function() {
     navigationWindow = $("#navigation");
     navigationExploreUrl = urlBase + 'navigation/explore';
 
-    /* Navigation toolbar */
-    $('#navFirst').click(function(event){
-        navigationEvent('navigateRoot');
-    })
-    $('#navBack').click(function(event){
-        navigationEvent('navigateHigher');
-    })
-    $('#navSearch').click(function(event){
-        navigationInput.toggle().focus();
-    })
-
     navigationInput.livequery('keypress', function(event) {
         // do not create until user pressed enter
 	if ((event.which == 13) && (event.currentTarget.value != '') ) {
@@ -60,15 +49,19 @@ function navigationEvent (navEvent, eventParameter) {
         if (navEvent == 'setType') {
             navType = eventParameter;
         } else {
-            navType = navigationConfig['default'];
+            navType = navigationConfig['defaults']['config'];
         }
-
         var config = navigationConfig['config'][navType];
+
+        // the limit
+        var limit = navigationConfig['defaults']['limit']
+
         // set the state
         var state = {};
+        state['limit'] = limit;
         state['path'] = new Array;
         // pack state and config into setup value for post
-        setup = { 'state' : state, 'config' : config };
+        setup = {'state': state, 'config': config };
     } else {
         setup = navigationSetup;
     }
@@ -212,14 +205,25 @@ function navigationLoad (navEvent, setup) {
  * This function creates navigation events
  */
 function navigationPrepareList () {
-    // the link to deeper navigation entries
+    // the links to deeper navigation entries
     $('.navigation img').click(function(event) {
         navigationEvent('navigateDeeper', $(this).parent().attr('about'));
         return false;
     });
-    // the link to the instance list
+    // the links to the instance list
     $('.navigation').click(function(event) {
         navigationEvent('showResourceList', $(this).attr('about'));
         return false;
     });
+
+    // the link to the root
+    $('.navFirst').click(function(event){
+        navigationEvent('navigateRoot');
+        return false;
+    })
+    // the link to higher level
+    $('.navBack').click(function(event){
+        navigationEvent('navigateHigher');
+        return false;
+    })
 }
