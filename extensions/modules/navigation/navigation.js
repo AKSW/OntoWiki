@@ -16,6 +16,7 @@ $(document).ready(function() {
     navigationInput = $("#navigation-input");
     navigationWindow = $("#navigation");
     navigationExploreUrl = urlBase + 'navigation/explore';
+    navigationListUrl = urlBase + 'list';
 
     navigationInput.livequery('keypress', function(event) {
         // do not create until user pressed enter
@@ -28,14 +29,6 @@ $(document).ready(function() {
     /* first start */
     navigationEvent('init');
 });
-
-/**
- * Setups the Navgiation Parameters and start the request
- */
-function navigationSetParam (key, value) {
-
-}
-
 
 /**
  * Setups the Navgiation Parameters and start the request
@@ -210,17 +203,13 @@ function navigationPrepareList () {
         navigationEvent('navigateDeeper', $(this).parent().attr('about'));
         return false;
     });
-    // the links to the instance list
-    $('.navigation').click(function(event) {
-        navigationEvent('showResourceList', $(this).attr('about'));
-        return false;
-    });
 
     // the link to the root
     $('.navFirst').click(function(event){
         navigationEvent('navigateRoot');
         return false;
     })
+    
     // the link to higher level
     $('.navBack').click(function(event){
         navigationEvent('navigateHigher');

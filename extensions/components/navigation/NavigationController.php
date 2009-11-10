@@ -62,15 +62,17 @@ class NavigationController extends OntoWiki_Controller_Component
             exit;
         }
 
-        // overwrite the limit with a given one
+        // overwrite the hard limit with the given one
         if (isset($this->setup->state->limit)) {
             $this->limit = $this->setup->state->limit;
         }
         
-        $this->view->entries = $this->queryNavigationEntries($this->setup);
+        $this->view->entries = $this->_queryNavigationEntries($this->setup);
 
         // set view variable for the show more button
         if (count($this->view->entries) > $this->limit) {
+            // return only $limit entries
+            $this->view->entries = array_slice($this->view->entries, 0, $this->limit);
             $this->view->showMeMore = true;
         } else {
             $this->view->showMeMore = false;
@@ -88,11 +90,14 @@ class NavigationController extends OntoWiki_Controller_Component
         if ( isset($this->setup->state->parent) ) {
             $this->view->rootEntry = array();
             $this->view->rootEntry['uri'] = $this->setup->state->parent;
-            $this->view->rootEntry['title'] = $this->getTitle(
+            $this->view->rootEntry['title'] = $this->_getTitle(
                 $this->setup->state->parent,
                 $this->setup->config->titleMode);
         }
 
+        if (isset($this->setup->state->searchString)) {
+            $this->view->searchString = $this->setup->state->searchString;
+        }
 
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
@@ -102,12 +107,9 @@ class NavigationController extends OntoWiki_Controller_Component
     /*
      * Queries all navigation entries according to a given setup
      */
-    protected function queryNavigationEntries($setup) {
+    protected function _queryNavigationEntries($setup) {
         $this->_owApp->logger->info(print_r($setup,true));
         
-        // used for generating internal OntoWiki Links
-        $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-
         if( $setup->state->lastEvent == "search" ){
             // search request
             // @todo: also search request should not show ignored entities
@@ -123,8 +125,11 @@ class NavigationController extends OntoWiki_Controller_Component
             }
             $query->addElement($union);
             
+            // set to limit+1, so we can see if there are more than $limit entries
+            $query->setLimit($this->limit + 1);
+            
         }else{
-            $query = $this->buildQuery($setup);
+            $query = $this->_buildQuery($setup);
         }
         
         // error logging
@@ -155,15 +160,15 @@ class NavigationController extends OntoWiki_Controller_Component
         foreach ($results as $result) {
             $uri = $result['resourceUri'];
             $entry = array();
-            $entry['title'] = $this->getTitle($uri, $mode);
-            $entry['link'] = (string) $linkurl->setParam('r', $uri, true);
+            $entry['title'] = $this->_getTitle($uri, $mode);
+            $entry['link'] = $this->_getListLink($uri, $setup);
             $entries[$uri] = $entry;
         }
 
         return $entries;
     }
     
-    protected function getTitle($uri, $mode){
+    protected function _getTitle($uri, $mode){
         if (!isset($mode) || $mode == null) $mode = "baseName";
 
         if ($mode == "titleHelper") {
@@ -181,7 +186,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
     }
     
-    protected function buildQuery($setup){
+    protected function _buildQuery($setup){
         require_once 'Erfurt/Sparql/Query2.php';
         
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri'); 
@@ -360,4 +365,32 @@ class NavigationController extends OntoWiki_Controller_Component
         
         return $query;
     } 
+
+
+    /*
+     * This method returns the link to the resource list action
+     * according to a given URI in the navigation module and a
+     * given navigation setup
+     */
+    protected function _getListLink ($uri, $setup) {
+        $owUrl = new OntoWiki_Url(array('route' => 'instances'), array());
+        $return = (string) $owUrl;
+
+        // shortcut for classes
+        if ( ( $setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
+            ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ) {
+            // at the moment, we use r= here, not class=
+            return $return .= "?r=" . urlencode(OntoWiki_Utils::contractNamespace($uri));
+        }
+
+        foreach ($setup->config->instanceRelation->out as $resToNavRelation) {
+            //@todo: create a filter here
+        }
+        foreach ($setup->config->instanceRelation->in as $navToResRelation) {
+            //@todo: create a filter here
+        }
+        return $return;
+        
+    }
+
 }

@@ -35,6 +35,7 @@ $odd = true;
         <?php foreach ($this->entries as $uri => $entry): ?>
             <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
                 <a class="navigation"
+                   href="<?php echo $entry['link'] ?>"
                    about="<?php echo $uri ?>"
                    ><?php echo $entry['title'] ?>
                     <img alt="next" id="navDeeper" src="<?php echo $this->themeUrlBase ?>/images/icon-next.png"/>
