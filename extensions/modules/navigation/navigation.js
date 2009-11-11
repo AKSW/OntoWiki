@@ -47,7 +47,7 @@ function navigationEvent (navEvent, eventParameter) {
         var config = navigationConfig['config'][navType];
 
         // the limit
-        var limit = navigationConfig['defaults']['limit']
+        var limit = navigationConfig['defaults']['limit'];
 
         // set the state
         var state = {};
