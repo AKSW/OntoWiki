@@ -42,6 +42,9 @@ config.classes.titleMode = titleHelper
 ;
 ;;; If present, this Relation ist used for ordering the hierarchy elements.
 ;;; In addition to that, ordering can be done in DESC or ASC direction
+;;; THIS CAN BE TIME CONSUMING because this is done on the RDF store
+;;; If you dont use ordering, the first X entries are returned and sorted by PHP
+;;; according to the name
 ;config.classes.ordering.relation = "http://ns.ontowiki.net/SysOnt/order"
 ;config.classes.ordering.modifier = DESC
 ;
@@ -67,5 +70,23 @@ config.classes.hiddenNS[]   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 config.classes.hiddenNS[]   = "http://www.w3.org/2000/01/rdf-schema#"
 config.classes.hiddenNS[]   = "http://www.w3.org/2002/07/owl#"
 
-; same as ignored namespaces but by relation
+;;; same as ignored namespaces but by relation
 config.classes.hiddenRelation[]   = "http://ns.ontowiki.net/SysOnt/hidden"
+
+;;; If showImplicitElements is true, also resources without a type are shown in the list,
+;;; when they are correctly connected with an instanceRelation
+config.classes.showImplicitElements = true
+
+;;; If set to false, empty navigation entries are not shown by default
+;;; Empty means, they do not have instances
+;;; THIS CAN BE TIME CONSUMING
+config.classes.showEmptyElements = true
+
+;;; If set to true, instances are counted and display right next to the name
+;;; THIS CAN BE TIME CONSUMING
+config.classes.showCounts = false
+
+;;; If set to true, no default hierarchy is shown and the user MUST search
+;;; for an entry in order to browse from one of the search results
+;;; This is needed for very big databases like DBpedia
+config.classes.hideDefaultHierarchy = false
