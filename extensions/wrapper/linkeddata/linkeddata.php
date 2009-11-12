@@ -139,7 +139,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
             
             $success = $this->_handleResponse($client, $response);
             if ($success === true) {
-                $tempArray = $this->_handleResponseBody($client->getLastResponse(), $baseUri);
+                $tempArray = $this->_handleResponseBody($client->getLastResponse());
                 $ns = $tempArray['ns'];
                 $tempArray = $tempArray['data'];
 
@@ -158,7 +158,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                 
                 $success = $this->_handleResponse($client, $response);
                 if ($success === true) {
-                    $tempArray = $this->_handleResponseBody($client->getLastResponse(), $baseUri);
+                    $tempArray = $this->_handleResponseBody($client->getLastResponse());
                     $ns = $tempArray['ns'];
                     $tempArray = $tempArray['data'];
 
