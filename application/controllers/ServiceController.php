@@ -561,15 +561,17 @@ class ServiceController extends Zend_Controller_Action
      * @todo LOAD <> INTO <>, CLEAR GRAPH <>, CREATE[ SILENT] GRAPH <>, DROP[ SILENT] GRAPH <>
      */
     public function updateAction()
-    {
+    {        
         // service controller needs no view renderer
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
         
-        $store      = OntoWiki::getInstance()->erfurt->getStore();
-        $response   = $this->getResponse();
-        $namedGraph = $this->_request->getParam('named-graph-uri', null);
+        $store       = OntoWiki::getInstance()->erfurt->getStore();
+        $response    = $this->getResponse();
+        $namedGraph  = $this->_request->getParam('named-graph-uri', null);
+        $insertGraph = null;
+        $deleteGraph = null;
         
         if (isset($this->_request->query)) {            
             // we have a query, enter SPARQL/Update mode
@@ -578,12 +580,12 @@ class ServiceController extends Zend_Controller_Action
             $matches = array();
             // insert
             preg_match('/INSERT\s+DATA(\s+INTO\s*<(.+)>)?\s*{\s*([^}]*)/i', $query, $matches);
-            $insertGraph   = isset($matches[2]) ? $matches[2] : '';
+            $insertGraph   = isset($matches[2]) ? $matches[2] : null;
             $insertTriples = isset($matches[3]) ? $matches[3] : '';
             
             // delete
             preg_match('/DELETE\s+DATA(\s+FROM\s*<(.+)>)?\s*{\s*([^}]*)/i', $query, $matches);
-            $deleteGraph   = isset($matches[2]) ? $matches[2] : '';
+            $deleteGraph   = isset($matches[2]) ? $matches[2] : null;
             $deleteTriples = isset($matches[3]) ? $matches[3] : '';
             
             $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('nt');
@@ -600,22 +602,56 @@ class ServiceController extends Zend_Controller_Action
             // TODO: error
         }
         
-        // update the graph
-        $model = null;
+        // get update graphs
+        $insertModel = null;
+        $deleteModel = null;
         try {
-            $model = $store->getModel($namedGraph);
+            $insertModel = $insertGraph ? $store->getModel($insertGraph) : $store->getModel($namedGraph);
+            $deleteModel = $deleteGraph ? $store->getModel($deleteGraph) : $store->getModel($namedGraph);            
         } catch (Erfurt_Store_Exception $e) {
             // TODO: error
+            if (defined('_OWDEBUG')) {
+                OntoWiki::getInstance()->logger->info('Could not instantiate models.');
+            }
         }
         
-        if ($model and $model->isEditable()) {
-            // TODO: this should be a transaction
-            $model->deleteMultipleStatements((array)$delete);
-            $model->addMultipleStatements((array)$insert);
-        } else {
+        $flag = false;
+        
+        // delete
+        if ($deleteModel && $deleteModel->isEditable()) {
+            try {
+                $count = $deleteModel->deleteMultipleStatements((array)$delete);
+            } catch (Erfurt_Store_Exception $e) {
+                if (defined('_OWDEBUG')) {
+                    OntoWiki::getInstance()->logger->info('Could not delete statements from graph: ' . $e->getMessage() . PHP_EOL . 
+                        'Statements: ' . print_r($delete, true));
+                }
+            }
+            
+            $flag = true;
+            if (defined('_OWDEBUG')) {
+                OntoWiki::getInstance()->logger->info(
+                    sprintf('Deleted %i statements from graph <%s>', $count, $deleteModel->getModelUri())
+                );
+            }
+        }
+        
+        // insert
+        if ($insertModel && $insertModel->isEditable()) {
+            $count = $insertModel->addMultipleStatements((array)$insert);
+            $flag = true;
+            if (defined('_OWDEBUG')) {
+                OntoWiki::getInstance()->logger->info(
+                    sprintf('Inserted %i statements into graph <%s>', $count, $insertModel->getModelUri())
+                );
+            }
+        }
+        
+        // nothing done?
+        if (!$flag) {
             // When no user is given (Anoymous) give the requesting party a chance to authenticate.
             if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
-                // In this case we allow the requesting party to authorize...
+                // In this case we allow the requesting party to authorize
                 $response->setRawHeader('HTTP/1.1 401 Unauthorized');
                 $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
                 $response->sendResponse();
