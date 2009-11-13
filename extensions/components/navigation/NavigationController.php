@@ -245,15 +245,19 @@ class NavigationController extends OntoWiki_Controller_Component
                 // add triplet to union var
                 $union->addElement($u1);    
             }
-            if( !isset($setup->config->showImplicitElements) ){
+            if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
                 $query->addElement($union);
             }
         
             // setup hierarchy relations
             if ( !isset($setup->state->parent) ) {
                 // init union var
-                if( !isset($setup->config->showImplicitElements) ){
+                if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
                     $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                }
+                if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
+                    $optionalEmpty = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                    $emptyUnion = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
                 }
                 // parse config
                 foreach($setup->config->hierarchyRelations->in as $rel){
@@ -265,6 +269,9 @@ class NavigationController extends OntoWiki_Controller_Component
                         new Erfurt_Sparql_Query2_Var('resourceUri') );
                     // add triplet to union var
                     $union->addElement($u1);
+                    if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
+                        $emptyUnion->addElement($u1);
+                    }
                 }
                 // show implicit elements if enabled
                 if( isset($setup->config->showImplicitElements) && $setup->config->showImplicitElements == true){
@@ -274,16 +281,22 @@ class NavigationController extends OntoWiki_Controller_Component
                         new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
                         new Erfurt_Sparql_Query2_Var('resourceUri') );
                     $union->addElement($u1);
+                    if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
+                        $emptyUnion->addElement($u1);
+                    }
                 }
-                // show empty elements if enabled
-                /*if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
-                    $query->addFilter( 
+                // init optional empty filtering
+                if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
+                    $optionalEmpty->addElement($union);
+                    $optionalEmpty->addFilter( 
                         new Erfurt_Sparql_Query2_bound( 
                             new Erfurt_Sparql_Query2_Var('instance') 
                         )
-                    );  
-                }*/
-                if( !isset($setup->config->showImplicitElements) ){
+                    ); 
+                    $query->addElement($emptyUnion);
+                }
+                //
+                if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
                     $query->addElement($union);
                 }
             }
@@ -291,7 +304,7 @@ class NavigationController extends OntoWiki_Controller_Component
             // setup relations
             if ( isset($setup->config->instanceRelation) ){
                 // init union var
-                if( !isset($setup->config->showImplicitElements) ){
+                if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
                     $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
                 }
                 // parse config
@@ -304,7 +317,7 @@ class NavigationController extends OntoWiki_Controller_Component
                     // add triplet to union var
                     $union->addElement($u1);
                 }
-                if( !isset($setup->config->showImplicitElements) ){
+                if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
                     $query->addElement($union);
                 }
             }
@@ -314,6 +327,7 @@ class NavigationController extends OntoWiki_Controller_Component
             }
             
         }
+        
         
         $query->addFilter(
             new Erfurt_Sparql_Query2_isUri( 
