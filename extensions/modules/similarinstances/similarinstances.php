@@ -56,6 +56,7 @@ class SimilarinstancesModule extends OntoWiki_Module
                 if (count($instances) == OW_SHOW_MAX + 1) {
                     unset($instances[OW_SHOW_MAX]);
                     $listUrl->setParam('r', $typeUri, true);
+                    $listUrl->setParam('init', true, true);
                     $typesArr[$typeUri]['has_more'] = (string) $listUrl;
                 }
                 

@@ -208,84 +208,102 @@ class ResourceController extends OntoWiki_Controller_Base
         //ready, set,  ...
         $start = microtime(true);
         
-        if (!isset($this->_session->instances) ||
-            isset($this->_request->resetinstancesconfig) ||
-            isset($this->_request->s) ||
-            isset($this->_request->r)
+        if (!isset($this->_session->instances) || // nothing build yet
+            isset($this->_request->init) // force a rebuild
         ) {
-            
             $options = array(
-                /*
-                // this may be used when the new navigation is available
-                'rdf_type' => $this->_owApp->selectedClass,
-                'memberPredicate' => EF_RDF_TYPE, 
-                'withChilds' => true,
-                 */
-                'limit' => 10
+                'mode' => 'all' //default
             );
 
-            if (isset($this->_request->s)) {
-                $options['searchText'] = $this->_request->s;
-                //$this->view->searchText = $this->_request->s;
+            //shortcut for "all instances of a rdfs class"
+            if(isset($this->_request->r)){
+                $options['mode'] = 'instances';
+                $options['type'] = $this->_owApp->selectedClass; //dont use r here: is a curi
+                $options['memberPredicate'] = EF_RDF_TYPE;
+                $options['withChilds'] = true;
+
+                $options['hierarchyUp'] = EF_RDFS_SUBCLASSOF;
+                $options['hierarchyIsInverse'] = true;
+                //$options['hierarchyDown'] = null;
+                $options['direction'] = 1; // down the tree
+            }
+
+            if(isset($this->_request->query)){
+                //init with a serialized query2 obj in post
+                //usefull? should be mostly done like: init new list with this param, save to session, goto list page
+                $options['mode'] = 'defaultQuery';
+                $options['defaultQuery'] = unserialize(stripslashes($this->_request->query));
             }
             
             // instantiate model
             $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
         } else {
+            // use the object from the session
             $instances = $this->_session->instances;
-            $instances->updateValueQuery();
-            
-            //check for change-requests
-            if (isset($this->_request->instancesconfig)) {
-                $config = json_decode(stripslashes($this->_request->instancesconfig));
-                if (isset($config->shownProperties)) {
-                    foreach ($config->shownProperties as $prop) {
-                        if ($prop->action == 'add') {
-                            echo "add property";
-                            $instances->addShownProperty($prop->uri, $prop->label, $prop->inverse);
-                        } else {
-                            $instances->removeShownProperty($prop->uri.'-'.$prop->inverse);
-                        }
-                    }
-                }
+        }
 
-                if (isset($config->filter)) {
-                    foreach ($config->filter as $filter) {
-                        if ($filter->action == 'add') {
-                            $instances->addFilter(
-                                $filter->id,
-                                $filter->property,
-                                $filter->isInverse,
-                                $filter->propertyLabel,
-                                $filter->filter,
-                                $filter->value1,
-                                $filter->value2,
-                                $filter->valuetype,
-                                $filter->literaltype,
-                                $filter->hidden
-                            );
-                        } else {
-                            $instances->removeFilter($filter->id);
-                        }
+        //check for change-requests
+        if (isset($this->_request->instancesconfig)) {
+            $config = json_decode(stripslashes($this->_request->instancesconfig));
+            //var_dump($config); exit;
+            if (isset($config->shownProperties)) {
+                foreach ($config->shownProperties as $prop) {
+                    if ($prop->action == 'add') {
+                        $instances->addShownProperty($prop->uri, $prop->label, $prop->inverse);
+                    } else {
+                        $instances->removeShownProperty($prop->uri.'-'.$prop->inverse);
                     }
                 }
             }
-            if (isset($this->_request->limit)){
-                $instances->setLimit($this->_request->limit);
-            }
-            if (isset($this->_request->p)){
-                $instances->setOffset(
-                    ($this->_request->p * $instances->getLimit()) - $instances->getLimit()
-                );
-            } else {
-                $instances->setOffset(0);
+
+            if (isset($config->filter)) {
+                foreach ($config->filter as $filter) {
+                    if ($filter->action == 'add') {
+                        $instances->addFilter(
+                            $filter->id,
+                            $filter->property,
+                            $filter->isInverse,
+                            $filter->propertyLabel,
+                            $filter->filter,
+                            $filter->value1,
+                            $filter->value2,
+                            $filter->valuetype,
+                            $filter->literaltype,
+                            $filter->hidden
+                        );
+                    } else {
+                        $instances->removeFilter($filter->id);
+                    }
+                }
             }
         }
-        $instances->invalidate(); // the dataset may have changed since the last request
 
-        //save to session
-        $this->_session->instances = $instances;
+        if (isset($this->_request->s)) {
+            $instances->addSearchFilter('search-the-list', $this->_request->s);
+        }
 
+        if (isset($this->_request->limit)){
+            $instances->setLimit($this->_request->limit);
+        } else {
+            $instances->setLimit(10);
+        }
+        if (isset($this->_request->p)){ // p is the page number
+            $instances->setOffset(
+                ($this->_request->p * $instances->getLimit()) - $instances->getLimit()
+            );
+        } else {
+            $instances->setOffset(0);
+        }
+
+        // even if the was no change made to the query -> update it (especially the value-query)
+        // because the dataset may have changed since the last request
+        $instances->invalidate(); 
+        $instances->updateValueQuery();
+
+        //echo htmlentities($instances->getResourceQuery());
+        //echo htmlentities($instances->getQuery());
+        //var_dump($instances->getShownResources());
+        
         //begin view building
         if ($instances->getMode() == OntoWiki_Model_Instances::modeType) {
             $title = $resource->getTitle() ?
@@ -297,21 +315,36 @@ class ResourceController extends OntoWiki_Controller_Base
             $windowTitle = sprintf($translate->_('Results for search "%1$s"'), $instances->getSearchText());
         } else if ($instances->getMode() == OntoWiki_Model_Instances::modeGiven){
             $windowTitle = $translate->_('Results for given query');
+        } else if ($instances->getMode() == OntoWiki_Model_Instances::modeAll){
+            $windowTitle = $translate->_('All Resources');
+            if(count($instances->getFilter()) > 0){
+                $windowTitle .= " (filtered)";
+            }
         }
 
-        $this->view->placeholder('main.window.title')->set($windowTitle);
-        
+        if(isset($windowTitle)){
+            $this->view->placeholder('main.window.title')->set($windowTitle);
+        } else {
+            throw new Exception("something went wrong with the instance list: OntoWiki_Model_Instances has no mode set", 1);
+        }
         $this->view->headScript()->appendScript(
-            'var classUri = "'.
-            OntoWiki_Utils::contractNamespace($this->_owApp->selectedClass).
-            '"
-            var reloadUrl = "'.
-            new OntoWiki_Url(array(), array('p', 'limit')).
-            '";;'
+            'var reloadUrl = "'.
+            new OntoWiki_Url(array(), array('p', 'limit')). // url to reload -> without config params
+            '";'
         );
 
-        $this->view->headScript()->appendScript(
-            ''
+        if($this->_request->savelist != "false"){
+            //save to session
+            $this->_session->instances = $instances;
+        }
+
+        $this->view->filter = $instances->getFilter();
+        $filter_js = json_encode(is_array($this->view->filter) ? $this->view->filter : array());
+        $this->view->headScript()->appendScript('filtersFromSession = ' . $filter_js.';');
+
+        $this->view->headScript()->appendFile(
+            $this->_config->staticUrlBase.
+            'extensions/modules/filter/resources/FilterAPI.js'
         );
 
         if ($instances->hasData()) {
@@ -391,8 +424,8 @@ class ResourceController extends OntoWiki_Controller_Base
             
             $url = new OntoWiki_Url();
             $this->view->redirectUrl = (string)$url;
-            
-            // register modules
+
+            // register & init modules
             $moduleRegistry = OntoWiki_Module_Registry::getInstance();
             $moduleRegistry->register('properties', 'main.window.innerwindows')
                            ->register('showproperties', 'main.window.innerwindows')
@@ -400,6 +433,8 @@ class ResourceController extends OntoWiki_Controller_Base
         }
 
         $this->addModuleContext('main.window.instances');
+
+
     }
     
     public function statusbarpagerAction() {

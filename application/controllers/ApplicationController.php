@@ -766,7 +766,7 @@ class ApplicationController extends OntoWiki_Controller_Base
             $this->view->placeholder('main.window.title')->set($title);
         } else {
 
-            if ($query = $store->findResourcesWithPropertyValue($searchText,$modelUri)) {
+            if ($query = $store->getSearchPattern($searchText,$modelUri)) {
                 $options = array(
                     /*
                     // this may be used when the new navigation is available

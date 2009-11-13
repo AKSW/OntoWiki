@@ -40,28 +40,34 @@ class FilterModule extends OntoWiki_Module
         
         $this->view->properties = $session->instances->getAllProperties();
         $this->view->inverseProperties = $session->instances->getAllReverseProperties();
-
-        $this->view->filter = $session->instances->getFilter();
         
+        $this->view->actionUrl      = $this->_owApp->urlBase . 'resource/instances/';
+        $this->view->s      = $this->_request->s;
+        
+        $this->view->filter = $session->instances->getFilter();
         if (is_array( $this->view->filter)) {
             foreach ( $this->view->filter as $key => $filter) {
-                if ($filter['property']) {
-                    $this->view->filter[$key]['property'] = trim($filter['property']);
-                    $this->titleHelper->addResource($filter['property']);
-                }
-                if ($filter['valuetype'] == 'uri' && !empty($filter['value1'])) {
-                    //$this->titleHelper->addResource($filter['value1']);
-                }
-                if ($filter['valuetype'] == 'uri' && !empty($filter['value2'])) {
-                    $this->titleHelper->addResource($filter['value2']);
+                switch($filter['mode']){
+                    case 'filterbox':
+                        if ($filter['property']) {
+                            $this->view->filter[$key]['property'] = trim($filter['property']);
+                            $this->titleHelper->addResource($filter['property']);
+                        }
+                        if ($filter['valuetype'] == 'uri' && !empty($filter['value1'])) {
+                            //$this->titleHelper->addResource($filter['value1']);
+                        }
+                        if ($filter['valuetype'] == 'uri' && !empty($filter['value2'])) {
+                            $this->titleHelper->addResource($filter['value2']);
+                        }
+                    break;
+                    case 'typeFilter':
+                        $this->titleHelper->addResource($filter['type']);
+                    break;
                 }
             }
         }
 
         $this->view->titleHelper = $this->titleHelper;
-
-        $filter_js = json_encode(is_array($this->view->filter) ? $this->view->filter : array());
-        $this->view->headScript()->appendScript('var filtersFromSession = ' . $filter_js.';');
 
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/filter.js');
 

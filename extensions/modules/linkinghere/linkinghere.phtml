@@ -6,7 +6,26 @@
  *
  * @version $Id: linkinghere.phtml 3396 2009-06-26 15:01:44Z sebastian.dietzold $
  */
-
+function buildFilterExp($res, $pred, $label){
+    $allfilter = array(
+        'filter' => array(
+            array (
+                'action' => 'add',
+                'id' => 'linkinghere',
+                'property' => $pred,
+                'isInverse' => false,
+                'propertyLabel' => $label,
+                'filter' => 'equals',
+                'value1' => $res,
+                'value2' => null,
+                'valuetype' => 'uri',
+                'literaltype' => null,
+                'hidden' => false
+            )
+        )
+    );
+    return urlencode(json_encode($allfilter));
+}
 ?>
 <?php if (!empty($this->instances)): ?>
 	<ul class="bullets-none separated-vertical">
@@ -20,8 +39,9 @@
 	                    <?php else: ?>
 	                        <li><a  class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
 	                    <?php endif; ?>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
 	            </ul>
+                    <a href="<?php echo $this->urlBase; ?>list/?init&instancesconfig=<?php echo buildFilterExp((string)$this->resource, $property, $this->properties[$property]); ?>">[all as list]</a>
 	        </li>
 	    <?php endforeach; ?>
 	</ul>

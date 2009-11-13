@@ -271,18 +271,33 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                         $this->_predicateResults[$graph][$predicateUri]['has_more'] = true;
                         
                         if (!isset($this->_predicateResults[$graph][$predicateUri]['has_more_link'])) {
-                            $hasMoreUrl = new OntoWiki_Url(array('controller' => 'model', 'action' => 'query'));
-                            $query = <<<EOT
-SELECT ?value 
-FROM <$this->_graph> 
-WHERE {
-<$this->_uri> <$predicateUri> ?value . 
-}
-EOT;
+                            $hasMoreUrl = new OntoWiki_Url(array('route' => 'instances', 'action' => 'list'), array());
+                            $filterExp = json_encode(array(
+                                'filter' => array(
+                                    array (
+                                        'action' => 'add',
+                                        'id' => 'allvalues',
+                                        'property' => $predicateUri,
+                                        'isInverse' => true,
+                                        'propertyLabel' => "value",
+                                        'filter' => 'equals',
+                                        'value1' => $this->_uri,
+                                        'value2' => null,
+                                        'valuetype' => 'uri',
+                                        'literaltype' => null,
+                                        'hidden' => false
+                                    )
+                                )
+                            ));
+                            
                             $hasMoreUrl->setParam(
-                                'query', 
-                                $query
-                            )->setParam('immediate', '1');
+                                'instancesconfig',
+                                $filterExp
+                            )->setParam(
+                                'init',
+                                true
+                            );
+
                             $this->_predicateResults[$graph][$predicateUri]['has_more_link'] = (string)$hasMoreUrl;
                         }
                     }

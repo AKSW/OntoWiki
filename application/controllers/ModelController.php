@@ -908,6 +908,7 @@ class ModelController extends OntoWiki_Controller_Base
 		$prefixes = $this->_owApp->selectedModel->getNamespacePrefixes();
 
 		$query = $this->getParam('query');
+                
 		$format = $this->_request->getParam('result_format', 'plain');
 
 		if ($this->_request->isPost() || isset ($this->_request->immediate)) {
@@ -933,6 +934,7 @@ class ModelController extends OntoWiki_Controller_Base
 						$queryObj->addFrom((string)$this->_owApp->selectedModel);
 					}
 					// var_dump((string)$queryObj);
+                                        //echo htmlentities((string)$queryObj); exit;
 					$result = $store->sparqlQuery($queryObj, array (
 						'result_format' => $format
 					));

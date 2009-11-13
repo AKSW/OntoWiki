@@ -114,7 +114,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         if (!$this->_hierarchyResults) {
             $query = $this->_buildQuery();
             
-            $this->_url = new OntoWiki_Url(array('route' => 'instances'), array('r'));
+            $this->_url = new OntoWiki_Url(array('route' => 'instances'), array('r', 'init'));
             
             if ($result = $this->_model->sparqlQuery($query)) {
                 $this->_hierarchyResults = array();

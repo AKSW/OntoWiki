@@ -96,6 +96,7 @@ class LinkinghereModule extends OntoWiki_Module
             }
         }
 
+        $this->view->resource = $this->_owApp->selectedResource;
         $this->view->properties = $properties;
         $this->view->instances  = $instances;
         

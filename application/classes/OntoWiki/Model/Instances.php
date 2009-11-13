@@ -18,10 +18,17 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 {
     protected $mode;
     const modeType = "type"; 
-    const modeSearch = "search"; 
+    const modeSearch = "search";
     const modeGiven = "given";
+    const modeAll = "all";
 
+    //search
     protected $searchText;
+    protected $searchTriple;
+
+    //all
+    protected $allTriple;
+
     /**
      *  rdf:type for the resources of interest
      * @var string
@@ -50,7 +57,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_shownPropertiesConverted;
     protected $_shownPropertiesConvertedUptodate  = false;
     protected $_ignoredShownProperties = array(
-        EF_RDF_TYPE
+        //EF_RDF_TYPE
     );
     
     /**
@@ -101,156 +108,61 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     {
         parent::__construct($store, $graph);
 
-        
-        $type                   =
-            isset($options['type']) ?
-                $options['type'] :
-                OntoWiki::getInstance()->selectedClass;
-        $withChilds             =
-           isset($options['withChilds']) ?
-               $options['withChilds'] :
-               true;
-        $member_predicate       =
-            isset($options['memberPredicate']) ?
-                $options['memberPredicate'] :
-                EF_RDF_TYPE;
-        $hierarchy_up       =
-            isset($options['hierarchyUp']) ?
-                $options['hierarchyUp'] :
-                null;
-        $hierarchy_down       =
-            isset($options['hierarchyDown']) ?
-                $options['hierarchyDown'] :
-                EF_RDFS_SUBCLASSOF;
-        $limit                  =
-            isset($options['limit']) ?
-                $options['limit'] :
-                0;
-        $offset                 =
-            isset($options['offset']) ?
-                $options['offset'] :
-                0;
-        $shownProperties        =
-            isset($options['shownProperties']) ?
-                $options['shownProperties'] :
-                array();
-        $shownInverseProperties =
-            isset($options['shownInverseProperties']) ?
-                $options['shownInverseProperties'] :
-                array();
-        $sessionfilter          =
-            isset($options['filter']) ?
-                $options['filter'] :
-                array();
-
         $this->_resourceQuery   =  new Erfurt_Sparql_Query2();
         $this->_resourceVar = new Erfurt_Sparql_Query2_Var("resourceUri");
 
-        if ( isset($options['searchText']) ) {
-            //used from the search box
-            $this->_resourceQuery = $store->findResourcesWithPropertyValue(
-                $options['searchText'],
-                $graph->getModelIri()
-            );
+        $this->allTriple = new Erfurt_Sparql_Query2_Triple($this->_resourceVar, new Erfurt_Sparql_Query2_Var("p"), new Erfurt_Sparql_Query2_Var("o"));
 
-            $this->searchText = $options['searchText'];
-            $this->mode = self::modeSearch;
-        } else if ( isset($options['default_query']) ){
-            //use a given query (e.g. from the editor)
-            if($options['default_query'] instanceof Erfurt_Sparql_Query2){
-                $this->_resourceQuery = $options['default_query'];
-            } else {
-                throw new Exception('$options[\'default_query\'] must be a Erfurt_Sparql_Query2', 123);
-            }
-            $this->mode = self::modeGiven;
-        } else {
-            // select all instances of a type, members of a collection, etc.
-            if (is_string($member_predicate)){
-                $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
-            }
-
-            $this->type =
-                is_string($type) ?
-                    new Erfurt_Sparql_Query2_IriRef($type) :
-                    $type;
-
-            if (!($member_predicate instanceof Erfurt_Sparql_Query2_Verb)) {
-                throw new RuntimeException(
-                    'Option "member_predicate" passed to Ontowiki_Model_Instances '.
-                    'must be an instance of Erfurt_Sparql_Query2_IriRef '.
-                    'or string instance of '.typeHelper($member_predicate).' given');
-            }
-
-            if ($withChilds) {
-                $this->_subClasses =
-                    array_keys(
-                        $store->getTransitiveClosure(
-                            $graph->getModelIri(),
-                            $hierarchy_down,
-                            array($this->type->getIri()),
-                            true
-                        )
-                    );
-            } else if(isset($options['subtypes'])){ //dont query, take the given. maybe the new navigation can use this
-                $this->_subClasses = $options['subtypes'];
-            }
-
-            if (count($this->_subClasses)>1) {
-                // there are subclasses. "1" because the class itself is somehow included in the subclasses...
-                $typeVar = new Erfurt_Sparql_Query2_Var($this->type);
-                $this->_resourceQuery->addTriple(
-                    $this->_resourceVar,
-                    $member_predicate,
-                    $typeVar);
-
-                $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
-                foreach ($this->_subClasses as $subclass) {
-                    $or->addElement(
-                        new Erfurt_Sparql_Query2_sameTerm(
-                            $typeVar,
-                            new Erfurt_Sparql_Query2_IriRef($subclass)
-                        )
-                    );
+        switch ($options['mode']) {
+            case 'searchText':
+                $this->addSearchFilter('constructor-search', $options);
+                $this->setMode(self::modeSearch);
+                $this->searchText = $options['searchText'];
+            break;
+            case 'defaultQuery':
+                //use a given query (e.g. from the editor)
+                if($options['defaultQuery'] instanceof Erfurt_Sparql_Query2){
+                    $this->_resourceQuery = $options['defaultQuery'];
+                } else {
+                    throw new Exception('$options[\'defaultQuery\'] must be a Erfurt_Sparql_Query2', 123);
                 }
-
-                $this->_resourceQuery->addFilter($or);
-            } else {
-                // no subclasses
-                $this->_resourceQuery->addTriple(
-                    $this->_resourceVar,
-                    $member_predicate,
-                    $this->type
-                );
-            }
-
-            //show resource uri
-            $this->_resourceQuery->addProjectionVar($this->_resourceVar);
-
-            $this->mode = self::modeType;
+                $this->setMode(self::modeGiven);
+            break;
+            case 'instances':
+                // select all instances of a type, members of a collection, etc.
+                $this->addTypeFilter('constructor-type', $options);
+                $this->setMode(self::modeType);
+            break;
+            case 'all':
+            default:
+                $this->setMode(self::modeAll);
+            break;
         }
 
+        //show resource uri
+        $this->_resourceQuery->addProjectionVar($this->_resourceVar);
         $this->_resourceQuery
-            ->setLimit($limit)
-            ->setOffset($offset)
+            ->setLimit(10) //per default query only for 10 resources
             ->setDistinct(true)
             ->getOrder()
                 ->add($this->_resourceVar);
 
+        $this->_resourceQuery->addFilter(
+            new Erfurt_Sparql_Query2_ConditionalAndExpression(
+                array(
+                    new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                        new Erfurt_Sparql_Query2_isLiteral($this->_resourceVar)
+                    )// when resourceVar is the object - prevent literals
+                    /*new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                        new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
+                    )*/
+                )
+            )
+        );
 
-        // add filters TO resource-query
-        foreach ($sessionfilter as $onefilter) {
-            $this->addFilter(
-                $onefilter["id"],
-                $onefilter["property"],
-                $onefilter["isInverse"],
-                $onefilter["propertyLabel"],
-                $onefilter["filter"],
-                $onefilter["value1"],
-                $onefilter["value2"],
-                $onefilter["valuetype"],
-                $onefilter["literaltype"]
-            );
-        }
+        //echo 'resource query: <pre>';
+        //echo htmlentities($this->_resourceQuery);
+        //echo '</pre>'; exit;
 
         //build value query
         $this->_valueQuery = new Erfurt_Sparql_Query2();
@@ -259,20 +171,18 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         //always query for type (not optional)
         $typeVar = new Erfurt_Sparql_Query2_Var('__TYPE');
-        $this->_valueQuery->addTriple(
+        $optional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+        $optional->addTriple(
             $this->_resourceVar,
             new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
             $typeVar
         );
+        $this->_valueQuery->addElement($optional);
         $this->_valueQuery->addProjectionVar($typeVar);
 
         //this has a own function that is also called after changes
         //because the value query varies (when other resources are selected)
         $this->updateValueQuery();
-
-        //echo 'resource query: <pre>';
-        //echo htmlentities($this->_resourceQuery);
-        //echo '</pre>';
     }
 
     /**
@@ -287,6 +197,11 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         }
     }
 
+    public function addAllTriple(){
+        $this->_resourceQuery->addElement(
+            $this->allTriple
+        );
+    }
     /**
      * Adds a property to the properties fetched for every resource.
      *
@@ -377,7 +292,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             );
             $this->_resultsUptodate = true;
         } 
-        
         return $this->_results;
     }
     
@@ -524,9 +438,13 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             
         }
 
+        //these filters bring there own triple
+        $this->allTriple->remove();
+
         //save
         $this->_filter[$id] = array(
              'id'               => $id,
+             'mode'             => 'filterbox',
              'property'         => $property,
              'isInverse'        => $isInverse,
              'propertyLabel'    => $propertyLabel,
@@ -536,35 +454,141 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
              'valuetype'        => $valuetype,
              'literaltype'      => $literaltype,
              'hidden'           => $hidden,
-             'triple'           => $triple,
-             'filterObj'           => isset($filterObj) ? $filterObj : null
+             'objects'          => array($triple, isset($filterObj) ? $filterObj : null)
         );
 
-        print_r($this->_filter[$id]);
+        //print_r($this->_filter[$id]);
 
-        echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
+        //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
         $this->invalidate();
         $this->updateValueQuery();
         return $this;
     }
 
     public function removeFilter($id){
-        if(isset($this->_filter[$id])){
-            $this->_filter[$id]['triple']->remove();
-            if ($this->_filter[$id]['filter'] instanceof Erfurt_Sparql_Query2_Filter) {
-                $this->_filter[$id]['filter']->remove();
+        if (isset($this->_filter[$id])){
+            foreach($this->_filter[$id]['objects'] as $obj){
+                if($obj instanceof Erfurt_Sparql_Query2_ObjectHelper){
+                    $obj->remove();
+                }
             }
+
             unset($this->_filter[$id]);
+            
+            //when all deleted
+            if (count($this->_resourceQuery->getWhere()->getElements()) == 1){ //this last element is the "isUri and !isBlank"-filter
+                if($this->mode != self::modeAll){
+                    $this->setMode(self::modeAll);
+                } else {
+                    $this->addAllTriple();
+                }
+            }
 
             //echo '<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
             $this->invalidate();
-            $this->updateValueQuery();
             return $this;
         }
     }
 
     public function getFilter(){
         return $this->_filter;
+    }
+
+    public function addTypeFilter($id, $options){
+        $member_predicate = $options['memberPredicate'];
+        if (is_string($member_predicate)){
+            $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
+        }
+
+        if (!($member_predicate instanceof Erfurt_Sparql_Query2_Verb)) {
+            throw new RuntimeException(
+                'Option "member_predicate" passed to Ontowiki_Model_Instances '.
+                'must be an instance of Erfurt_Sparql_Query2_IriRef '.
+                'or string instance of '.typeHelper($member_predicate).' given');
+        }
+
+        $this->type = new Erfurt_Sparql_Query2_IriRef($options['type']);
+        if ($options['withChilds']) {
+            $this->_subClasses =
+                array_keys(
+                    $this->_store->getTransitiveClosure(
+                        $this->_graph,
+                        $options['hierarchyUp'],
+                        array($this->type->getIri()),
+                        $options['hierarchyIsInverse']
+                    )
+                );
+        } else if(isset($options['subtypes'])){ //dont query, take the given. maybe the new navigation can use this
+            $this->_subClasses = $options['subtypes'];
+        }
+
+        if (count($this->_subClasses)>1) {
+            // there are subclasses. "1" because the class itself is somehow included in the subclasses...
+            $typeVar = new Erfurt_Sparql_Query2_Var($this->type);
+            $triple = $this->_resourceQuery->addTriple(
+                $this->_resourceVar,
+                $member_predicate,
+                $typeVar);
+
+            $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
+            foreach ($this->_subClasses as $subclass) {
+                $or->addElement(
+                    new Erfurt_Sparql_Query2_sameTerm(
+                        $typeVar,
+                        new Erfurt_Sparql_Query2_IriRef($subclass)
+                    )
+                );
+            }
+
+            $filterObj = $this->_resourceQuery->addFilter($or);
+        } else {
+            // no subclasses
+            $triple = $this->_resourceQuery->addTriple(
+                $this->_resourceVar,
+                $member_predicate,
+                new Erfurt_Sparql_Query2_IriRef($this->_subClasses[0])
+            );
+        }
+
+        //save
+        $this->_filter[$id] = array(
+             'id'               => $id,
+             'mode'             => 'typeFilter',
+             'type'             => $options['type'],
+             'withChilds'       => $options['withChilds'],
+             'objects'           => array($triple, isset($filterObj) ? $filterObj : null)
+        );
+
+        //print_r($this->_filter[$id]);
+
+        //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
+        $this->invalidate();
+        $this->setMode(self::modeType);
+        return $this;
+    }
+
+    public function addSearchFilter($id, $str){
+
+        $pattern = $this->_store->getSearchPattern(
+            $str,
+            $this->_graph
+        );
+        $this->_resourceQuery->addElements($pattern);
+        //var_dump($pattern);
+        //save
+        $this->_filter[$id] = array(
+             'id'               => $id,
+             'mode'             => 'searchFilter',
+             'searchText'       => $str,
+             'objects'           => $pattern
+        );
+
+        //print_r($this->_filter[$id]);
+
+        //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
+        $this->invalidate();
+        $this->setMode(self::modeSearch);
+        return $this;
     }
     
     public function getQuery ()
@@ -613,6 +637,12 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     $titleHelper->addResource($row[$property['varName']]['value']);
                 }
             }
+            if (
+                    isset($row['__TYPE'])
+                    && $row['__TYPE']['type'] == 'uri' //sould both be true
+                ) {
+                    $titleHelper->addResource($row['__TYPE']['value']);
+                }
         }
 
         $valueResults = array();
@@ -692,6 +722,14 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             }
 
         }
+
+        foreach($this->getShownResources() as $resource){
+            if(!isset($valueResults[$resource])){
+                //there are no statements about this resource
+                $valueResults[$resource] = null;
+            }
+        }
+
         //echo 'converted values: <pre>';  print_r($valueResults);  echo '</pre>';
         $this->_values = $valueResults;
         $this->_valuesUptodate = true;
@@ -938,20 +976,18 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     public function getShownResources ()
     {
         if (!$this->_resourcesUptodate) {
-            //echo '$this->_resourceQuery :'.htmlentities($this->_resourceQuery);
             $result = $this->_model->sparqlQuery(
                 $this->_resourceQuery,
                 array('result_format' => 'extended')
             );
 
-            //print_r($result);
             $this->_resources = array();
             foreach ($result['bindings'] as $row) {
                 $uri = $row['resourceUri']['value'];
                 $this->_resources[] = $uri;
             }
             $this->_resourcesUptodate = true;
-        }
+        } 
 
         return $this->_resources;
     }
@@ -979,8 +1015,8 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      */
     public function hasData ()
     {
-        $this->getResults();
-        return !empty($this->_results['bindings']);
+        $this->getShownResources();
+        return !empty($this->_resources);
     }
     
     /**
@@ -991,9 +1027,12 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      */
     public function setLimit ($limit)
     {
+        if($this->_resourceQuery->getLimit() == $limit){
+            return $this;
+        }
+
         $this->_resourceQuery->setLimit($limit);
         $this->invalidate();
-        $this->updateValueQuery();
         return $this;
     }
     
@@ -1005,9 +1044,12 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      */
     public function setOffset ($offset)
     {
+        if($this->_resourceQuery->getOffset() == $offset){
+            return $this;
+        }
+
         $this->_resourceQuery->setOffset($offset);
         $this->invalidate();
-        $this->updateValueQuery();
         return $this;
     }
     
@@ -1045,8 +1087,17 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         return $this;
     }
 
+    /**
+     * if the selected resources changed (due to filters or limit or stuff)
+     * we have to change the value query as well (because the resources are mentioned as subjects)
+     * @return OntoWiki_Model_Instances $this
+     */
     public function updateValueQuery ()
     {
+        if($this->_resourcesUptodate){
+            return $this;
+        }
+
         $resources = $this->getShownResources();
         //echo 'resources: <pre>'; print_r($resources); echo '</pre>';
 
@@ -1072,8 +1123,39 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         //echo 'updated value query: <pre>';
         //echo htmlentities($this->_valueQuery);
         //echo '</pre>';
+
+        return $this;
     }
-    
+
+    public function setMode($mode){
+        if (
+            $mode != self::modeAll &&
+            $mode != self::modeSearch &&
+            $mode != self::modeGiven &&
+            $mode != self::modeType
+        ){
+            throw new RuntimeException('OntoWiki_Model_Instances::setMode invalid param $mode');
+        }
+
+        if ($this->mode == $mode){
+            return $this;
+        }
+
+        //doing some state transition spefic stuff
+        if ($this->mode == self::modeAll){
+            //leaving all mode
+            $this->allTriple->remove();
+        } else if ($mode == self::modeAll){
+            //entering all mode
+            if (!in_array($this->_resourceQuery, $this->allTriple->getParents())){
+                $this->addAllTriple();
+            }
+        }
+
+        $this->mode = $mode;
+        return $this;
+    }
+
     public function getMode(){
         return $this->mode;
     }

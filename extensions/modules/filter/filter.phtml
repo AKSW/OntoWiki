@@ -8,15 +8,30 @@ $odd = false;
 ?>
 <div id="filterbox">
     <!--ul id="list"></ul-->
-
+    <form name="search" method="get" action="<?php echo $this->actionUrl ?>">
+	<p class="width98">
+		<label class="display-block" for="filtersearchtext-input"><?php echo $this->_('Search in list') ?></label>
+		<input class="text width99 inner-label" type="text" id="filtersearchtext-input" name="s" value="<?php echo $this->s ?>" />
+	</p>
+	
+	<p>
+		<!--a class="button submit"><?php echo $this->_('Submit') ?></a-->
+	</p>
+    </form>
+    <p>
+        <a class="minibutton" href="javascript:showAddFilterBox()" />Add complex Filter</a>
+        <a class="minibutton" href="javascript:removeAllFilters()" />Clear</a>
+    </p>
+    <br />
     <?php if ($this->filter) : ?>
     <?php $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r')) ?>
-    <ul class="bullets-none separated-vertical">
+    <ul class="separated-vertical">
         <?php foreach ($this->filter as $filter) : 
-                if($filter['hidden']){continue;} ?>
+                if(isset($filter['hidden']) && $filter['hidden']){continue;} ?>
         <li id="<?php echo $filter['id'] ?>"
             class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> filter"
             >
+            <?php if($filter['mode'] == "filterbox"): ?>
             <a  class="hasMenu"
                 about="<?php echo $filter['property'] ?>"
                 href="<?php echo (string) $linkurl->setParam('r', $filter['property'], true) ?>">
@@ -37,16 +52,22 @@ $odd = false;
                     <strong><?php echo $filter['value1'] ?></strong>
                 <?php endif ?>
             <?php endif ?>
-                    <a class="delete">x</a>
+            <?php endif; if($filter['mode'] == "typeFilter") : ?>
+                    Type: <a  class="hasMenu"
+                        about="<?php echo $filter['type']; ?>"
+                        href="<?php echo (string) $linkurl->setParam('r', $filter['type'], true) ?>">
+                        <?php echo $this->titleHelper->getTitle($filter['type']); ?>
+                    </a>
+            <?php endif; if($filter['mode'] == "searchFilter") : ?>
+                    Search: <?php echo $filter['searchText']; ?>
+            <?php endif?>
+                    &nbsp;&nbsp;&nbsp;<a class="delete">x</a>
         </li>
         <?php endforeach ?>
     </ul>
     <?php endif ?>
 
-    <p>
-        <a class="minibutton" href="javascript:showAddFilterBox()" />Add Filter</a>
-        <a class="minibutton" href="javascript:removeAllFilters()" />Clear</a>
-    </p>
+   
     <div id="addFilterWindowOverlay">
         <div class="window" id="addwindow">
             <h2 class="title">Add Filter</h2>
