@@ -276,13 +276,13 @@ class NavigationController extends OntoWiki_Controller_Component
                     $union->addElement($u1);
                 }
                 // show empty elements if enabled
-                if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
+                /*if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
                     $query->addFilter( 
                         new Erfurt_Sparql_Query2_bound( 
                             new Erfurt_Sparql_Query2_Var('instance') 
                         )
                     );  
-                }
+                }*/
                 if( !isset($setup->config->showImplicitElements) ){
                     $query->addElement($union);
                 }
