@@ -87,7 +87,7 @@ class QuerybuilderController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.menu')->set($menu->toArray());
 
         $include_base = $this->_componentUrlBase;
-        
+        $this->view->headScript()->appendFile($this->_config->staticUrlBase . 'extensions/components/querybuilding/resources/savepartial.js');
     	$this->view->headScript()->appendFile($include_base.'resources/jquery.autocomplete.min.js');
     	$this->view->headScript()->appendFile($include_base.'resources/jquery.json-1.3.min.js');
 		$this->view->headScript()->appendFile($include_base.'resources/json2.js');

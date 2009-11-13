@@ -880,6 +880,7 @@ class ModelController extends OntoWiki_Controller_Base
 			));
 			OntoWiki_Navigation :: setActive('queryeditor', true);
 			$tab_exist = true;
+                        $this->view->headScript()->appendFile($this->_config->staticUrlBase . 'extensions/components/querybuilding/resources/savepartial.js');
 		}
 		if (class_exists("QuerybuildingHelper") && class_exists("QuerybuilderHelper")) {
 			OntoWiki_Navigation :: register('querybuilder', array (
