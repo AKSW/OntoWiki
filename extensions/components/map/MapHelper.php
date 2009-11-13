@@ -24,7 +24,6 @@ class MapHelper extends OntoWiki_Component_Helper
 
     public function init()
     {
-        return false;
         $onSwitch = false;  // decide, if map should be on
 
         if (isset($this->_privateConfig->switch->on) AND $this->_privateConfig->switch->on == 'ever') {
