@@ -8,6 +8,8 @@
  * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
+ 
+require_once 'Erfurt/Sparql/Query2.php';
 
 class NavigationController extends OntoWiki_Controller_Component
 {
@@ -92,7 +94,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $this->view->rootEntry['uri'] = $this->setup->state->parent;
             $this->view->rootEntry['title'] = $this->_getTitle(
                 $this->setup->state->parent,
-                $this->setup->config->titleMode);
+                $this->setup->config->titleMode, null);
         }
 
         if (isset($this->setup->state->searchString)) {
@@ -173,7 +175,7 @@ class NavigationController extends OntoWiki_Controller_Component
         foreach ($results as $result) {
             $uri = $result['resourceUri'];
             $entry = array();
-            $entry['title'] = $this->_getTitle($uri, $mode);
+            $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             $entry['link'] = $this->_getListLink($uri, $setup);
             $entries[$uri] = $entry;
         }
@@ -181,27 +183,74 @@ class NavigationController extends OntoWiki_Controller_Component
         return $entries;
     }
     
-    protected function _getTitle($uri, $mode){
+    protected function _getTitle($uri, $mode, $setup){
+        $name = '';
+        // set default mode if none is set
         if (!isset($mode) || $mode == null) $mode = "baseName";
 
+        // get title
         if ($mode == "titleHelper") {
-            return $this->titleHelper->getTitle($uri);
+            $name = $this->titleHelper->getTitle($uri);
         } elseif($mode == "baseName"){
             if (strrpos($uri, '#') > 0) {
-                return substr($uri, strrpos($uri, '#')+1);
+                $name = substr($uri, strrpos($uri, '#')+1);
             } elseif (strrpos($uri, '/') > 0) {
-                return substr($uri, strrpos($uri, '/')+1);
+                $name = substr($uri, strrpos($uri, '/')+1);
             } else {
-                return $uri;
+                $name = $uri;
             }
         } else {
-            return "error";   
+            $name = 'error';
         }
+        
+        // count entries
+        if( isset($setup->config->showCounts) && $setup->config->showCounts == true ){
+            $query = $this->_buildCountQuery($uri, $setup);
+            
+            $this->_owApp->logger->info("count query: ".$query->__toString());
+            
+            $results = $this->model->sparqlQuery($query);
+            
+            $this->_owApp->logger->info("count query results: ".print_r($results,true));
+            
+            $name .= ' ('.count($results).')';
+        }
+        
+        return $name;
+    }
+    
+    protected function _buildCountQuery($uri, $setup){
+        $searchVar = new Erfurt_Sparql_Query2_Var('instance');
+        $query = new Erfurt_Sparql_Query2();
+        $query->setCountStar();
+        //$query->setDistinct();
+        //$query->addProjectionVar($searchVar);
+        
+        // init union var
+        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+        // parse config
+        foreach($setup->config->hierarchyRelations->in as $rel){
+            // create new graph pattern
+            $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+            // add triplen
+            $u1->addTriple( $searchVar, 
+                new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE), 
+                new Erfurt_Sparql_Query2_IriRef($uri) );
+            // add triplet to union var
+            $union->addElement($u1);
+        }
+        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+        // add triplen
+        $u1->addTriple( $searchVar, 
+            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
+            new Erfurt_Sparql_Query2_IriRef($uri) );
+        $union->addElement($u1);
+        $query->addElement($union);
+        
+        return $query;
     }
     
     protected function _buildQuery($setup){
-        require_once 'Erfurt/Sparql/Query2.php';
-        
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri'); 
         $query = new Erfurt_Sparql_Query2();
         $query->setDistinct();
