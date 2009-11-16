@@ -1,4 +1,5 @@
 <?php
+// vim: sw=4:sts=4:expandtab
 /**
  * Marker-Class of the OW MapPlugin
  *
@@ -13,30 +14,25 @@
  */
 class Marker {
 
-	/**
-	 * A label which describes the resource
-	 */
-	public $label;
+    /**
+     * The geo location (normaly on the earth)
+     */
+    public $longitude, $latitude;
 
-	/**
-	 * The geo location (normaly on the earth)
-	 */
-	public $longitude, $latitude;
+    /**
+     * The resource identifier of the resource represented by this marker
+     */
+    public $uri;
 
-	/**
-	 * The resource locator and the resource identifier of/to the resource represented by this marker
-	 */
-	public $url, $uri;
+    /**
+     *  status properties indeicating, if a marker is on the Map (visibility) and if a marker is clustered and represented by a cluster on the map
+     */
+    private $onMap, $inCluster;
 
-	/**
-	 *  status properties indeicating, if a marker is on the Map (visibility) and if a marker is clustered and represented by a cluster on the map
-	 */
-	private $onMap, $inCluster;
-	
-	/**
-	 *  The url of the icon for the marker
-	 */
-	public $icon;
+    /**
+     *  The url of the icon for the marker
+     */
+    public $icon;
 
     /**
      * Constructor of a Marker object.
@@ -137,45 +133,6 @@ class Marker {
      */
     public function getIcon( ) {
         return $this->icon;
-    }
-
-    /**
-     * Sets the label of the marker.
-     * @param $label of the marker
-     */
-    public function setLabel( $label ) {
-        $this->label = $label;
-    }
-
-    /**
-     * Gets the label of the marker.
-     * @return label of the marker
-     */
-    public function getLabel( ) {
-        return $this->label;
-	}
-
-    /**
-     * Sets the url of the ontowikipage of the markers resource.
-     * @param $url to the page
-     */
-    public function setUrl( $url ) {
-        $this->url = $url;
-    }
-
-    /**
-     * Gets the url of the ontowikipage of the markers resource.
-     * @return url of the page
-     */
-    public function getUrl( ) {
-        return $this->url;
-    }
-
-    /**
-     * TODO Move the Marker to an other place
-     * back on an other way
-     */
-    public function move( $longitude, $latitude ) {
     }
 
 }

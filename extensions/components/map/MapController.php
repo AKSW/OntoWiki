@@ -122,9 +122,7 @@ class MapController extends OntoWiki_Controller_Component
             }
 
             foreach ($this->resources as $r) {
-                $url = new OntoWiki_Url(array('route' => 'properties'));
                 $uri = isset($r[$this->resourceVar]) ? $r[$this->resourceVar] : $this->resource;
-                $url->setParam('r', $uri, true);
 
                 if (empty ($r['lat']) || empty ($r['long'])) {
                     if(!empty($r['lat2']) && !empty($r['long2'])) {
@@ -140,7 +138,6 @@ class MapController extends OntoWiki_Controller_Component
                     $marker = new Marker($uri);
                     $marker->setLat($lat);
                     $marker->setLon($long);
-                    $marker->setUrl((string) $url);
                     $marker->setIcon(null);
 
                     $markers[] = $marker;

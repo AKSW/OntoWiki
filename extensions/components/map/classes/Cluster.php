@@ -1,4 +1,5 @@
 <?php
+// vim: sw=4:sts=4:expandtab
 
 require_once $this->_componentRoot.'classes/Marker.php';
 
@@ -19,9 +20,9 @@ class Cluster extends Marker {
      */
     private $isCluster = true;
 
-	/**
-	 * The array of the markers in this cluster
-	 */
+    /**
+     * The array of the markers in this cluster
+     */
     public $containingMarkers = array();
 
     /**
@@ -29,14 +30,14 @@ class Cluster extends Marker {
      */
     private $area = array();
 
-	/**
-	 * A boolean telling, if the cell of this cluster contains the dateline
-	 */
-	private $withDateLine;
+    /**
+     * A boolean telling, if the cell of this cluster contains the dateline
+     */
+    private $withDateLine;
 
-	/**
-	 * Set the inherited inCluster false, because a cluster can't be in a cluster
-	 */
+    /**
+     * Set the inherited inCluster false, because a cluster can't be in a cluster
+     */
     private static $inCluster = false;
 
     /**
@@ -45,7 +46,6 @@ class Cluster extends Marker {
     public function __construct($area) {
         parent::__construct( null );
         $this->area = $area;
-        $this->setLabel( "cluster" );
     }
 
     /**
@@ -77,70 +77,70 @@ class Cluster extends Marker {
     /**
      * Calculates latitude and longitude for the cluster (arithmetic mean).
      */
-	public function createLonLat( ) {
+    public function createLonLat( ) {
 
-		/**
-		 * Check if the longitude and latitude is already set.
-		 */
-		if(!isset($this->longitude) OR !isset($this->latitude)){
+        /**
+         * Check if the longitude and latitude is already set.
+         */
+        if(!isset($this->longitude) OR !isset($this->latitude)){
 
-			/**
-			 * Adding up the latitude respactively longitude of all markers contained by the cluster
-			 */
-			$lonTmp = 0;
-			$latTmp = 0;
+            /**
+             * Adding up the latitude respactively longitude of all markers contained by the cluster
+             */
+            $lonTmp = 0;
+            $latTmp = 0;
             for($i = 0; $i < count($this->containingMarkers); $i++){
                 $lonTmp += $this->containingMarkers[$i]->getLon( );
                 $latTmp += $this->containingMarkers[$i]->getLat( );
-			}
+            }
 
-			/**
-			 * Divide by the amount of the contained markers to calcule the arithmetic mean
-			 */
+            /**
+             * Divide by the amount of the contained markers to calcule the arithmetic mean
+             */
             if(count($this->containingMarkers) > 0){
                 $lonTmp /= count($this->containingMarkers);
                 $latTmp /= count($this->containingMarkers);
             }
 
-			/**
-			 * Check if the cluster contains markers from the right and from the left side of the dateline
-			 */
-			if($this->withDateLine) {
+            /**
+             * Check if the cluster contains markers from the right and from the left side of the dateline
+             */
+            if($this->withDateLine) {
 
-				/**
-				 * If the dateline is in the cluster turn the lon half around the world
-				 */
-				if($lonTmp > 0) {
-					$lonTmp -= 180;
-				}
-				else {
-					$lonTmp += 180;
-				}
-			}
+                /**
+                 * If the dateline is in the cluster turn the lon half around the world
+                 */
+                if($lonTmp > 0) {
+                    $lonTmp -= 180;
+                }
+                else {
+                    $lonTmp += 180;
+                }
+            }
 
-			/**
-			 * Set the calculated attributes
-			 */
-			$this->setLon($lonTmp);
+            /**
+             * Set the calculated attributes
+             */
+            $this->setLon($lonTmp);
             $this->setLat($latTmp);
         }
-	}
+    }
 
-	/**
-	 * Get the Markers in the Cluster.
-	 * @return an array of marker objects
-	 */
-	public function getContent( ) {
-		return $this->containingMarkers;
-	}
+    /**
+     * Get the Markers in the Cluster.
+     * @return an array of marker objects
+     */
+    public function getContent( ) {
+        return $this->containingMarkers;
+    }
 
-	/**
-	 * Set a value if the dateline is in the cluster or not
-	 * @param $var boolean
-	 */
-	public function setWithDateLine( $var ) {
-		$this->withDateLine = $var;
-	}
+    /**
+     * Set a value if the dateline is in the cluster or not
+     * @param $var boolean
+     */
+    public function setWithDateLine( $var ) {
+        $this->withDateLine = $var;
+    }
 
 }
 ?>

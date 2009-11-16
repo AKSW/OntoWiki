@@ -123,7 +123,7 @@ function markerCallbackHandler (data,that) {
             // single Marker
             if ( data[i].containingMarkers == null ) {
                 // at the moment the marker doesn't bring a own icon with it
-                var feature_data = { icon: that.icon.clone( ), uri: data[i].uri, url: data[i].url};
+                var feature_data = { icon: that.icon.clone( ), uri: data[i].uri};
             }
             // Cluster
             else {
