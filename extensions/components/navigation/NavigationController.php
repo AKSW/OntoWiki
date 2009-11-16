@@ -213,7 +213,11 @@ class NavigationController extends OntoWiki_Controller_Component
             
             $this->_owApp->logger->info("count query results: ".print_r($results,true));
             
-            $name .= ' ('.count($results).')';
+            if( isset($results[0]['callret-0']) ){
+                $name .= ' ('.$results[0]['callret-0'].')';
+            }else{
+                $name .= ' ('.count($results).')';
+            }
         }
         
         return $name;
