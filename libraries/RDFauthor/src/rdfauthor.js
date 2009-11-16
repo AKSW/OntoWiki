@@ -617,19 +617,24 @@ RDFauthor = {
             
             var objectOptions = {};
             var object = triple.object.value;
+            var quoteLiteral = true;
             
             if (triple.object.lang) {
                 objectOptions.lang = triple.object.lang;
+                quoteLiteral = false;
             } else if (triple.object.datatype) {
                 objectOptions.datatype = triple.object.datatype.uri;
+                quoteLiteral = false;
             }
             
-            // replace quotes
-            if (String(object).match(/["]/)) {
-                object = object.replace(/["]/g, '\\\"');
+            if (!triple.object.uri && quoteLiteral) {
+                // replace quotes
+                if (String(object).match(/["]/)) {
+                    object = object.replace(/["]/g, '\\\"');
+                }
+                
+                object = '"' + object + '"';
             }
-            
-            object = '"' + object + '"';
             
             try {
                 var tripleObject = triple.object.uri 
@@ -644,7 +649,7 @@ RDFauthor = {
                 
                 // add triple info (graph)
                 this.tripleInfo[triple] = graph;
-
+                
                 // add triple to databanks
                 var databank = this.getDatabank(graph);
                 databank.add(rdfTriple);

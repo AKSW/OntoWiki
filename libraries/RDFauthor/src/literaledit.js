@@ -152,20 +152,25 @@ LiteralEdit.prototype.onSubmit = function() {
         if (this.object !== '') {
             var objectOptions = {};
             var object = this.object;
+            var quoteLiteral = true;
             
             if (this.datatype !== '') {
                 objectOptions.datatype = this.datatype;
+                quoteLiteral = false;
             } else if (this.language !== '') {
                 objectOptions.lang = this.language;
-            }
-            
-            // replace quotes
-            if (String(object).match(/["]/)) {
-                object = String(object).replace(/["]/g, '\\\"');
+                quoteLiteral = false;
             }
             
             // add literal quotes
-            object = '"' + object + '"';
+            if (quoteLiteral) {
+                // replace quotes
+                if (String(object).match(/["]/)) {
+                    object = String(object).replace(/["]/g, '\\\"');
+                }
+                
+                object = '"' + object + '"';
+            }
             
             var oldTriple = $.rdf.triple(
                 $.rdf.resource('<' + this.subject + '>'), 
@@ -180,20 +185,25 @@ LiteralEdit.prototype.onSubmit = function() {
             // add new triple
             var newObjectOptions = {};
             var newObject = newObjectValue;
+            var quoteLiteral = true;
 
             if (newObjectLang !== '') {
                 newObjectOptions.lang = newObjectLang;
+                quoteLiteral = false;
             } else if (newObjectDatatype !== '') {
                 newObjectOptions.datatype = newObjectDatatype;
-            }
-            
-            // replace quotes
-            if (String(newObjectValue).match(/["]/)) {
-                newObjectValue = String(newObjectValue).replace(/["]/g, '\\\"');
+                quoteLiteral = false;
             }
             
             // add literal quotes
-            newObject = '"' + newObjectValue + '"';
+            if (quoteLiteral) {
+                // replace quotes
+                if (String(newObjectValue).match(/["]/)) {
+                    newObjectValue = String(newObjectValue).replace(/["]/g, '\\\"');
+                }
+                
+                newObject = '"' + newObjectValue + '"';
+            }
             
             try {
                 var newTriple = $.rdf.triple(
