@@ -6,15 +6,13 @@ require_once 'OntoWiki/Model/TitleHelper.php';
 	<p class="messagebox info"><?php echo $this->_($this->message); ?></p>
 <?php endif; ?>
 <!-- The main Map div, will be populated by OpenLayers in JavaScript -->
-<div id="mapContainer"></div>
+<div id="mapContainer" class="is-processing width99"></div>
 
 <script type="text/javascript">
 //<![CDATA[
 
 // resize the mainMap according to the windowheight, if it is resized
-$('#mapContainer').addClass('width99');
 $('#mapContainer').height( $('#mapContainer').width() );
-$('#mapContainer').addClass('is-processing');
 
 // this function should be in a lib
 function loadScript (scriptUrl) {

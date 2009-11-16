@@ -123,7 +123,7 @@ function markerCallbackHandler (data,that) {
             // single Marker
             if ( data[i].containingMarkers == null ) {
                 // at the moment the marker doesn't bring a own icon with it
-                var feature_data = { icon: that.icon.clone( ), label: data[i].label, uri: data[i].uri, url: data[i].url};
+                var feature_data = { icon: that.icon.clone( ), uri: data[i].uri, url: data[i].url};
             }
             // Cluster
             else {
@@ -133,9 +133,9 @@ function markerCallbackHandler (data,that) {
 
             // create new feature with the special properties
             // feature is a very abstract thing
-           // console.log("create new feature on the markers layer");
+            // console.log("create new feature on the markers layer");
             var feature = new OpenLayers.Feature( that.markers, new OpenLayers.LonLat( data[i].longitude, data[i].latitude ), feature_data );
-           // console.log("created new feature on the markers layer ... done");
+            // console.log("created new feature on the markers layer ... done");
 
             // create a marker from the feature
             var marker = feature.createMarker( );

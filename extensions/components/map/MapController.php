@@ -117,11 +117,8 @@ class MapController extends OntoWiki_Controller_Component
         $markers = array();
 
         if($this->resources) {
-            $titleHelper = new OntoWiki_Model_TitleHelper($this->model);
-
             foreach ($this->resources as $r) {
                 $uri = isset($r[$this->resourceVar]) ? $r[$this->resourceVar] : $this->resource;
-                $titleHelper->addResource($uri); // do I realy need titles here?
             }
 
             foreach ($this->resources as $r) {
@@ -141,7 +138,6 @@ class MapController extends OntoWiki_Controller_Component
 
                 if (!empty($lat) && !empty($long)) {
                     $marker = new Marker($uri);
-                    $marker->setLabel($titleHelper->getTitle($uri)); // do I realy need titles here?
                     $marker->setLat($lat);
                     $marker->setLon($long);
                     $marker->setUrl((string) $url);
