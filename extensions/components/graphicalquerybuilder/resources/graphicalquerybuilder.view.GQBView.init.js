@@ -119,18 +119,20 @@ GQBView.prototype.initCanvas = function() {
  * Also sets a JQuery "droppable" handler for the Raphael canvas.
  */
 GQBView.prototype.initMouseMoveAndDropHandlers = function() {
-	$(".Resource").draggable({
-		appendTo: 'body',
-		iframeFix: false,
-		cursorAt: { right: 0 },
-		zIndex: 1000,
-		ghosting: true,
-		revert: true,
-		opacity: 0.7,
-		scroll: false,
-		stack: {group:'#gqbcanvas',min: 50},
-		helper: 'clone'
-	});
+    $(".navigation.Resource").livequery(
+        function(){ $(this).draggable({
+            appendTo: 'body',
+            iframeFix: false,
+            cursorAt: { right: 0 },
+            zIndex: 1000,
+            ghosting: true,
+            revert: true,
+            opacity: 0.7,
+            scroll: false,
+            stack: {group:'#gqbcanvas',min: 50},
+            helper: 'clone'
+        });
+    });
 	
 	// Handles the translation of dragged objects on the Raphael canvas, as
 	// well as collision detection with the canvas edge.
