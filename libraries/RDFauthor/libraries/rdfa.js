@@ -665,8 +665,8 @@ function RDFIndexedFormula(features) {
     this.predicateIndex = [];  // Array of statements with this X as subject
     this.objectIndex = [];  // Array of statements with this X as object
     this.namespaces = {} // Dictionary of namespace prefixes
-    if (typeof features == 'undefined') features = ["sameAs",
-                    "InverseFunctionalProperty", "FunctionalProperty"];
+    // if (typeof features == 'undefined') features = ["sameAs", "InverseFunctionalProperty", "FunctionalProperty"];
+    if (typeof features == 'undefined') features = [];
 //    this.features = features
 
     // Callbackify?
