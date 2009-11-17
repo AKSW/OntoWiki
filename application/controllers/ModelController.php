@@ -820,7 +820,8 @@ class ModelController extends OntoWiki_Controller_Base
 		$this->view->formMethod = 'post';
 		$this->view->formName = 'sparqlquery';
 		$this->view->query = $this->_request->getParam('query', '');
-
+                $this->view->urlBase = $this->_owApp->urlBase;
+                
 		// set URIs
 		if ($this->_owApp->selectedModel) {
 			$this->view->modelUri = $this->_owApp->selectedModel->getModelIri();

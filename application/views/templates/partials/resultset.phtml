@@ -32,12 +32,12 @@
                 		$shorturl = OntoWiki_Utils::contractNamespace($field);
                 		
                 		$localpart = OntoWiki_Utils::getUriLocalPart($field);
-                		?><a class="hasMenu expandable Resource" about="<?php echo $field;?>"  href="<?php echo $this->_owApp->urlBase."/view/r/".urlencode($localpart);?>"><?php echo $shorturl;?></a><?php
+                		?><a class="hasMenu expandable Resource" about="<?php echo $field;?>"  href="<?php echo $this->urlBase."/view/r/".urlencode($localpart);?>"><?php echo $shorturl;?></a><?php
                 	} else {
                 		echo $this->escape($field); //literal
                 	}
                 } else { $localpart = OntoWiki_Utils::getUriLocalPart($field["uri"]); ?>
-                	<a class="hasMenu expandable Resource" about="<?php echo $field["uri"];?>"  href="<?php echo $this->_owApp->urlBase."/view/r/".urlencode($localpart); ?>"><?php echo $field["title"];?></a>
+                	<a class="hasMenu expandable Resource" about="<?php echo $field["uri"];?>"  href="<?php echo $this->urlBase."/view/r/".urlencode($localpart); ?>"><?php echo $field["title"];?></a>
                 <?php } ?>
                 </td>
             <?php endforeach; $odd = !$odd; ?>
