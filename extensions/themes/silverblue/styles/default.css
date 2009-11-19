@@ -574,7 +574,7 @@ p {
 
 img {
     border: none;
-    vertical-align: baseline;
+    vertical-align: middle;
 }
 
 img.object {
@@ -1507,7 +1507,7 @@ body.javascript-on div.window-buttons .button:hover, div.contextmenu-enhanced .b
 body.javascript-on .has-contextmenus-block a {
     display: block;
     position: relative;
-    border: solid 1px transparent;
+    /*border: solid 1px transparent;*/
 }
 
 body.javascript-on .has-contextmenus-block a span.button {
@@ -1517,17 +1517,21 @@ body.javascript-on .has-contextmenus-block a span.button {
     right: 5000em;
     top: 0;
     height: 100%;
-    width: 15px;
-    background: url(./../images/button-drop-down.png) no-repeat center #999;
+    width: 1.5em;
+    background: url(./../images/icon-contextwidget.png) no-repeat center #666;
+    /*background: url(./../images/button-drop-down.png) no-repeat center #666;*/
     margin: 0;
     padding: 0;
     border-style: none;
-    border-left: solid 1px #999;
+    /*border-left: solid 1px #999;*/
+    -moz-border-radius:0.25em;
+    opacity:0.5;
 }
 
 body.javascript-on .has-contextmenus-block a.Resource:hover,
 body.javascript-on .has-contextmenus-block a.Resource:focus {
-    border-color: #999;
+    /*border-color: #999;*/
+    background-color:#EFF9FF;
 }
 
 body.javascript-on .has-contextmenus-block a.Resource:hover span.button,
@@ -1535,6 +1539,12 @@ body.javascript-on .has-contextmenus-block a.Resource:focus span.button,
 body.javascript-on .has-contextmenus-block a.Resource:active span.button {
     right: 0;
 }
+
+body.javascript-on .has-contextmenus-block span.button:hover
+{
+    opacity:1;
+}
+
 
 /* -- 4.3. Drag and Drop ---------------------------------------------------- */
 
@@ -1668,21 +1678,22 @@ body.javascript-on a.hasMenu span.toggle {
     height: 0;
     width: 0;
     /* border: solid 1px #999; */
-    right: -0.5em;
+    right: -0.625em;
     top: 0;
-    background: url(./../images/button-drop-down.png) no-repeat center #999;
-    opacity:0.75;
+    background: url(./../images/icon-contextwidget.png) no-repeat center #555;
+    /*background: url(./../images/button-drop-down.png) no-repeat center #555;*/
+    opacity:0.5;
+    -moz-border-radius:0.15em;
 }
 
 body.javascript-on a.hasMenu span.toggle:hover {
-    background-color:#000;
     opacity:1;
 }
 
 body.javascript-on a.hasMenu:hover span.toggle {
     display: block;
-    height: 1em;
-    width: 1em;
+    height: 100%;
+    width: 1.25em;
 }
 
 /* 5. Etcetera -------------------------------------------------------------- */
