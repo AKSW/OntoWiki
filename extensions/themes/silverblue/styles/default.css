@@ -549,7 +549,7 @@ ol.separated-horizontal > li:after {
 
 ul.separated-horizontal > li,
 ol.separated-horizontal > li {
-    display: inline;
+    display: inline-block;
     padding-right: 0.3em;
     margin-right: 0.5em;
     border-right: dotted 1px #ccc;
@@ -1659,22 +1659,30 @@ body.javascript-on tbody.closed tr.grouptitle th a.toggle:active {
 
 body.javascript-on a.hasMenu {
     position: relative;
-    /* white-space:nowrap; */ 
+    /*white-space:nowrap;*/
 }
 
 body.javascript-on a.hasMenu span.toggle {
-    display: none;
+    display: block;
     position: absolute;
-    height: 1em;
-    width: 1em;
-    border: solid 1px #999;
-    right: -0.75em;
-    top: 0em;
+    height: 0;
+    width: 0;
+    /* border: solid 1px #999; */
+    right: -0.5em;
+    top: 0;
     background: url(./../images/button-drop-down.png) no-repeat center #999;
+    opacity:0.75;
+}
+
+body.javascript-on a.hasMenu span.toggle:hover {
+    background-color:#000;
+    opacity:1;
 }
 
 body.javascript-on a.hasMenu:hover span.toggle {
     display: block;
+    height: 1em;
+    width: 1em;
 }
 
 /* 5. Etcetera -------------------------------------------------------------- */
