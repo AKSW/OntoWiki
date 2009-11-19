@@ -515,9 +515,6 @@ class ServiceController extends Zend_Controller_Action
                                  ->sendResponse();
                         exit;
                     }
-                    
-                    
-                    
                 }
             }
             
