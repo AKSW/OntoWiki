@@ -71,16 +71,17 @@ RDFauthorPropertySelector.prototype.showInContainer = function (graph, subject, 
         }
     }
     
+    /*
     if (animated) {
         $(cssId).slideDown(this.options.animationTime);
-    } else {
+    } else {*/
         $(cssId).show();
-    }
+    /*}*/
     
     // scroll the container to the top, so property selector is visible
     var selectorTop  = $(cssId).offset().top;
-    var containerTop = this.container.offset().top;
-    this.container.animate({scrollTop: (selectorTop - containerTop) + 'px'}, 0);
+    /* var containerTop = this.container.offset().top; */
+    this.container.animate({scrollTop: (selectorTop/* - containerTop*/) + 'px'}, this.animationTime);
     
     // HACK: depends on widget
     $('#resource-value-' + widget.id).focus();
