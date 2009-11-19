@@ -184,15 +184,20 @@ RDFauthor = {
         return view;
     }, 
     
-    fetchPredicateInfo: function () {
-        // query for ranges and extend predicate info
-        if (!this.predicateInfoExtended) {
-            // TODO: extend predicate info for all predicates in each graph
-            var filters = [];
+    fetchPredicateInfo: function (predicateUri) {
+        var filters = [];
+        
+        if (arguments.length == 1) {
+            filters.push('sameTerm(?predicate, <' + predicateUri + '>)');
+            filters.push('sameTerm(?predicate, <http://example.com/dummy>)')
+        } else if (!this.predicateInfoExtended) {
+            // query for ranges and extend predicate info
             for (p in this.predicateInfo) {
                 filters.push('sameTerm(?predicate, <' + p + '>)')
             }
-            
+        }
+        
+        if (filters.length > 0) {
             // build query
             var query = '\
                 SELECT DISTINCT ?predicate ?type ?range ?label\
@@ -209,18 +214,22 @@ RDFauthor = {
             // query graph
             var instance = this;
             this.query(this.getDefaultGraph(), query, function(json) {
-                // TODO: correct application/sparql-results+json format
-                for (i in json['bindings']) {
+                // hack for old Erfurt format
+                var bindings = ('results' in json) ? json['results']['bindings'] : json['bindings'];
+                
+                for (i in bindings) {
                     // load predicate
-                    var predicate = json['bindings'][i]['predicate']['value'];
-                    // create space if necessary
-                    if (!predicate in instance.predicateInfo) {
-                        instance.predicateInfo[property] = {};
-                    }
-                    // ref to current info object
-                    var info = instance.predicateInfo[predicate];
+                    var predicate = bindings[i]['predicate']['value'];
                     
-                    var type = json['bindings'][i]['type'] ? json['bindings'][i]['type']['value'] : null;
+                    // current info object
+                    var info;
+                    if (instance.predicateInfo[predicate]) {
+                        info = instance.predicateInfo[predicate];
+                    } else {
+                        info = {};
+                    }
+                    
+                    var type = bindings[i]['type'] ? bindings[i]['type']['value'] : null;
                     if (type) {
                         // add or set new type
                         if ('types' in info) {
@@ -232,7 +241,7 @@ RDFauthor = {
                         }
                     }
                     
-                    var range = json['bindings'][i]['range'] ? json['bindings'][i]['range']['value'] : null;
+                    var range = bindings[i]['range'] ? bindings[i]['range']['value'] : null;
                     if (range) {
                         // add or set new range
                         if ('ranges' in info) {
@@ -244,15 +253,20 @@ RDFauthor = {
                         }
                     }
                     
-                    var label = json['bindings'][i]['label'] ? json['bindings'][i]['label']['value'] : null;
+                    var label = bindings[i]['label'] ? bindings[i]['label']['value'] : null;
                     if (label) {
                         // set new title
                         info.title = info.title ? info.title : label;
                     }
+                    
+                    // store new info
+                    instance.predicateInfo[predicate] = info;
                 }
                 
-                instance.predicateInfoExtended = true;
-            });
+                instance.predicateInfoExtended    = true;
+            }, function(error) {
+                alert('Error: ' + error);
+            }, false);
         }
     },
     
@@ -402,6 +416,11 @@ RDFauthor = {
     getWidgetForStatement: function (graph, subject, predicate, object) {
         var widgetConstructor = null;
         
+        // specifically fetch the property if it isn't available
+        if (!(predicate in this.predicateInfo)) {
+            this.fetchPredicateInfo(predicate);
+        }
+        
         // local widget selection
         if (subject in this.widgetRegistry.resource) {
             widgetConstructor = this.widgetRegistry.resource[subject];
@@ -499,20 +518,36 @@ RDFauthor = {
     
     // preforms a SPARQL query to the store accociated with the graph provided
     // and returns a JSON object to the function supplied as callback parameter
-    query: function (graph, query, callback) {
+    query: function (graph, query, callbackSuccess, callbackError, async) {
         // var triple   = arguments.caller.triple;
         var endpoint = this.getServiceUriForGraph(graph);
         
+        // parameters
         var endpointParams = {
             'query': query, 
             'named-graph-uri': graph
         };
         
-        // call the JSON service
-        $.getJSON(endpoint, endpointParams, function(data) {
-            if (typeof callback == 'function') {
-                callback(data);
-            }
+        // call the JSON service via low-level ajax method
+        $.ajax({
+            'dataType': 'json', 
+            'timeout':  2000, 
+            'beforeSend': function(xhr) {
+                xhr.setRequestHeader('Accept', 'application/sparql-results+json');
+            }, 
+            'url':      endpoint, 
+            'success':  function(data, status) {
+                if (typeof callbackSuccess == 'function') {
+                    callbackSuccess(data);
+                }
+            }, 
+            'error':    function(request, status, error) {
+                if (typeof callbackError == 'function') {
+                    callbackError(status);
+                }
+            }, 
+            'data': endpointParams, 
+            'async': async
         });
     }, 
     
@@ -764,6 +799,7 @@ RDFauthor = {
                     
                     for (var index = 0; index < values.length; index++) {
                         var current = values[index];
+                        this.predicateInfo[property] = {};
                         
                         if ('value' in current) {
                             // complete statement
@@ -794,7 +830,9 @@ RDFauthor = {
                             }
                             
                             // save title
-                            this.predicateInfo[property] = {title: current.title};
+                            if (current.title) {
+                                this.predicateInfo[property]['title'] = current.title;
+                            }
                         } else {
                             // inclomplete triple, keep for later
                             predefinedStatements.push({'s': resource, 'p': property, 'o': null, 't': current.title});
@@ -803,17 +841,27 @@ RDFauthor = {
                 }
             }
             
-            // databank has been filled, create view
-            var view = this.createPropertyView();
-            RDFauthor.pageParsed = true;
+            this.fetchPredicateInfo();
+            // alert($.toJSON(instance.predicateInfo));
             
-            // fill view with to-be-filled rows
-            for (var i = 0; i < predefinedStatements.length; i++) {
-                var currentFragment = predefinedStatements[i];
-                var id = view.addRow(currentFragment.s, currentFragment.p, currentFragment.t, currentFragment.o, this.getDefaultGraph());
-            }
-            
-            view.display(this.options.animated);
+            var instance = this;
+            window.setTimeout(function() {
+                // databank has been filled, create view
+                var view = instance.createPropertyView();
+                RDFauthor.pageParsed = true;
+
+                // fill view with to-be-filled rows
+                for (var i = 0; i < predefinedStatements.length; i++) {
+                    var currentFragment = predefinedStatements[i];
+                    var id = view.addRow(currentFragment.s, 
+                                         currentFragment.p, 
+                                         currentFragment.t, 
+                                         currentFragment.o, 
+                                         instance.getDefaultGraph());
+                }
+
+                view.display(instance.options.animated);
+            }, 0);
         }
     }
 };
