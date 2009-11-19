@@ -203,15 +203,24 @@ RDFauthorView.prototype.getPropertySelector = function () {
                 propertySelector.dismiss(false);
                 
                 var id = instance.addRow(subject, propertyUri, propertyTitle, null, graph);
-                var widgetTop    = $('#' + id).offset().top;
-                var containerTop = $('.rdfAuthorPropertyRows').offset().top;
+                var rowTop          = $('#' + id).closest('.property-row').offset().top;
+                var containerTop    = $('.rdfAuthorPropertyRows').offset().top;
+                var containerScroll = $('.rdfAuthorPropertyRows').scrollTop();
                 
-                if (widgetTop > 0) {
-                    $('.rdfAuthorPropertyRows').animate({scrollTop: (widgetTop - containerTop) + 'px'}, instance.options.animationTime);
+                var scrollTo = containerScroll - (containerTop - rowTop);
+                $('.rdfAuthorPropertyRows').animate({scrollTop: scrollTo}, instance.options.animationTime);
+                
+                // widget should get focus
+                var row = instance.getRowForSubjectAndProperty(subject, propertyUri);
+                var widgetInstance = row.getWidgetForId(id);
+                if (typeof widgetInstance.focus == 'function') {
+                    widgetInstance.focus();
                 }
             }, 
+            
             id: 'rdfAuthorPropertySelector'
         };
+        
         this.propertySelector = new RDFauthorPropertySelector(selectorOptions);
     }
     
@@ -226,6 +235,10 @@ RDFauthorView.prototype.getRow = function (id) {
     }
     
     return row;
+};
+
+RDFauthorView.prototype.getRowForSubjectAndProperty = function (subject, property) {
+    return this.rows[subject][property];
 };
 
 RDFauthorView.prototype.hide = function (animated, callback) {

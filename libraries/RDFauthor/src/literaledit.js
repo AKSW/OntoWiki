@@ -39,6 +39,10 @@ function LiteralEdit(graph, subject, predicate, object) {
     this.remove = false;
 }
 
+LiteralEdit.prototype.focus = function() {
+    $('#literal-value-' + this.id).focus();
+};
+
 LiteralEdit.prototype.getHtml = function() {
     var widget = this;
     function shortArea() {
