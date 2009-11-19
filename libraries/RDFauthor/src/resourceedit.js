@@ -80,7 +80,7 @@ ResourceEdit.prototype.getHtml = function()
     var html = '';
     if (this.options.propertyMode) {
         html += '<div class="container resource-value" style="width:90%">'+
-            '<input type="text resource-edit-input"'+
+            '<input type="text"'+
             ' id="resource-value-' + this.id + '"'+
             ' class="text resource-edit-input"'+
             ' value="' +this.object + '"'+
