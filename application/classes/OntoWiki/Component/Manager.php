@@ -113,6 +113,9 @@ class OntoWiki_Component_Manager
         // scan for components
         $this->_scanComponentPath();
         
+        // scan for translations
+        $this->_scanTranslations();
+        
         // register for event
         $dispatcher = Erfurt_Event_Dispatcher::getInstance();
         $dispatcher->register('onRouteShutdown', $this);
@@ -272,6 +275,9 @@ class OntoWiki_Component_Manager
     {
         $this->_translate = $translate;
         
+        // (re)scan for translations
+        $this->_scanTranslations();
+
         return $this;
     }
     
@@ -332,6 +338,8 @@ class OntoWiki_Component_Manager
                 }
             }
         }
+        
+        $this->_scanTranslations();
     }
     
     /**
@@ -416,22 +424,37 @@ class OntoWiki_Component_Manager
                 'active'     => false
             ));
         }
-        
-        
-        if (is_object($this->_translate)) {
-            if (array_key_exists('languages', $tempArray) && is_readable($componentPath . $tempArray['languages'])) {
-                // keep current locale
-                $locale = $this->_translate->getAdapter()->getLocale();
-                
-                $this->_translate->addTranslation(
-                    $componentPath . $tempArray['languages'], 
-                    null, 
-                    array('scan' => Zend_Translate::LOCALE_FILENAME));
-                
-                // reset current locale
-                $this->_translate->setLocale($locale);
+
+    }
+    
+    /**
+      * Reads all available component translations and adds them to the translation object
+      */
+    private function _scanTranslations()
+    {
+
+        // check for valid translation object
+        if ( is_object($this->_translate) ) {
+            foreach ($this->_componentRegistry as $component => $settings) {
+                // check if component owns translation
+                if (
+                    array_key_exists('languages', $settings) &&
+                    is_readable($settings['path'] . $settings['languages'])
+                ) {
+                    // keep current locale
+                    $locale = $this->_translate->getAdapter()->getLocale();
+                    
+                    $this->_translate->addTranslation(
+                        $settings['path'] . $settings['languages'], 
+                        null, 
+                        array('scan' => Zend_Translate::LOCALE_FILENAME));
+                    
+                    // reset current locale
+                    $this->_translate->setLocale($locale);
+                }
             }
         }
+    
     }
 }
 
