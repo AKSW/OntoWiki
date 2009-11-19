@@ -1,7 +1,7 @@
 ;;
 ; Basic component configuration
 ;;
-active = false
+active = true
 name = "Editor"
 templates  = "templates"
 

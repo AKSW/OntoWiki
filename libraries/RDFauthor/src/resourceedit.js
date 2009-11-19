@@ -10,6 +10,15 @@ function ResourceEdit(graph, subject, predicate, object, options) {
     this.subject   = subject;
     this.predicate = predicate;
     this.object    = object ? object.value : '';
+
+    // @todo: try to use the graph to identify the label
+    if (this.options.objectLabel) {
+        this.objectLabel = this.options.objectLabel;
+    } else if (object) {
+        this.objectLabel = object.value;
+    } else {
+        this.objectLabel = '';
+    }
     this.label = null;
     
     this.remove = false;
@@ -26,10 +35,10 @@ ResourceEdit.prototype.init = function ()
             max: 20,
             formatItem: function(data, i, n, term) {
                 return '<div style="overflow:hidden">\
-						<span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
-						<br />\
-						<span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
-						</div>';
+                    <span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
+                    <br />\
+                    <span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
+                    </div>';
             }
         });
         
@@ -38,35 +47,60 @@ ResourceEdit.prototype.init = function ()
             instance.label = data[0];
         });
     } else {
-		$('#resource-value-' + this.id).autocomplete(function(term, cb) { return ResourceEdit.search(term, cb, false); }, {
-            minChars: 3,
-            delay: 1000,
-            max: 20,
-            formatItem: function(data, i, n, term) {
-				return '<div style="overflow:hidden">\
-						<span style="white-space: nowrap;font-size: 0.8em">' + data[2] + '</span>\
-						<br />\
-						<span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
-						<br />\
-						<span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
-						</div>';
+        $('#resource-name-' + this.id).autocomplete(
+            function(term, cb) {
+                return ResourceEdit.search(term, cb, false);
+            },
+            {
+                minChars: 3,
+                delay: 1000,
+                max: 20,
+                formatItem: function(data, i, n, term) {
+                    return '<div style="overflow:hidden">\
+                        <span style="white-space: nowrap;font-size: 0.8em">' + data[2] + '</span>\
+                        <br />\
+                        <span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
+                        <br />\
+                        <span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
+                        </div>';
             }
         });
 
-		$('#resource-value-' + this.id).result(function(e, data, formated) {
-            $(this).attr('value', data[1]);
+        $('#resource-name-' + this.id).result(function(e, data, formated) {
+            $(this).attr('value', data[0]);
+            $(this).attr('title', data[1]);
+            $(this).prev().attr('value', data[1]);
         });
-	}	
+    }
 }
 
 
 ResourceEdit.prototype.getHtml = function() 
-{    
-	var html = '\
-      <div class="container resource-value">\
-        <input type="text" id="resource-value-' + this.id +	'" class="text resource-edit-input" value="' + 
-		this.object + '" style="width:38em" />\
-      </div>';
+{
+    var html = '';
+    if (this.options.propertyMode) {
+        html += '<div class="container resource-value" style="width:90%">'+
+            '<input type="text"'+
+            ' id="resource-value-' + this.id + '"'+
+            ' class="text resource-edit-input"'+
+            ' value="' +this.object + '"'+
+            ' style="width:100%;" />'+
+            '</div>';
+    } else {
+        html += '<div class="container resource-value" style="width:90%">'+
+            '<input type="text resource-edit-input"'+
+            ' id="resource-value-' + this.id + '"'+
+            ' class="text resource-edit-input"'+
+            ' value="' +this.object + '"'+
+            ' style="width:100%; display:none" />'+
+            '<input type="text"'+
+            ' id="resource-name-' + this.id + '"'+
+            ' class="text"'+
+            ' value="' + this.objectLabel + '"'+
+            ' title="' + this.object + '"'+
+            ' style="width:100%" />'+
+            '</div>';
+    }
     
     return html;
 }
@@ -126,26 +160,24 @@ ResourceEdit.prototype.getValue = function()
 
 ResourceEdit.search = function(terms, callbackFunction, propertiesOnly)
 {
-	// Currently RDFauthor has no generic SPARQL service, so we use the OW service if used with OW.
-	// Otherwise we currently only support the sindice search.
-	var isOW = false;
-	if ($('title').html().match('OntoWiki')) {
-		isOW = true;
-	}
+    // Currently RDFauthor has no generic SPARQL service, so we use the OW service if used with OW.
+    // Otherwise we currently only support the sindice search.
+    var isOW = false;
+    if ($('title').html().match('OntoWiki')) {
+        isOW = true;
+    }
 	
-	if (isOW) {
-		var url = urlBase + 'datagathering/search?q=' + encodeURIComponent(terms);
-		
-		if (propertiesOnly) {
-			url += '&mode=1';
-		}
-		
-		$.getJSON(url, {}, function(data) {
-	        callbackFunction(data);
-	    });
-	} else {
-		ResourceEdit.sindiceSearch(terms, callbackFunction);
-	}
+    if (isOW) {
+            var url = urlBase + 'datagathering/search?q=' + encodeURIComponent(terms);
+            if (propertiesOnly) {
+                    url += '&mode=1';
+            }
+            $.getJSON(url, {}, function(data) {
+            callbackFunction(data);
+        });
+    } else {
+            ResourceEdit.sindiceSearch(terms, callbackFunction);
+    }
 }
 
 ResourceEdit.sindiceSearch = function(terms, callbackFunction) 

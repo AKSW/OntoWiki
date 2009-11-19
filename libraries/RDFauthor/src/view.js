@@ -158,25 +158,11 @@ RDFauthorView.prototype.display = function (animated) {
     if (typeof jQuery.ui != 'undefined' && !$('#' + this.id).hasClass('ui-draggable')) {
         $('#' + this.id).draggable({handle: 'h2', zIndex: 1000});
     }
-    
-    // force max height for container
-    var getDimensions = function() {
-        var el = $(window);
-
-		// fix a jQuery/Opera bug with determining the window height
-		var h = $.browser.opera && $.browser.version > '9.5' && $.fn.jquery <= '1.2.6' ? document.documentElement['clientHeight'] :
-			$.browser.opera && $.browser.version < '9.5' && $.fn.jquery > '1.2.6' ? window.innerHeight :
-			el.height();
-
-		return [h, el.width()];
-    }        
+          
     // var htmlHeight  = $('html').height();
-    // var modalHeight = this.container.height();
-    // this.container.height(Math.max(htmlHeight, modalHeight) + 'px');
-    
-    var d = getDimensions();
-    this.container.height(d[0]);
-    this.container.width(d[1]);
+    var htmlHeight  = window.outerHeight;
+    var modalHeight = this.container.height();
+    this.container.height(Math.max(htmlHeight, modalHeight) + 'px');
     
     this.container.show();
     this.reposition();
@@ -190,7 +176,6 @@ RDFauthorView.prototype.display = function (animated) {
             }
         }
     };
-    
     
     if (!animated) {
         $('#' + this.id).show();
