@@ -63,7 +63,7 @@ RDFauthorPropertySelector.prototype.showInContainer = function (graph, subject, 
     // prepend if necessary
     if (this.container.find(cssId).length < 1) {
         var content = widget.getHtml();
-        this.container.prepend(this.getHtml(content));
+        this.container.append(this.getHtml(content));
         
         // HACK: widget-specific
         if (typeof widget.init == 'function') {
