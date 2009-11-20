@@ -130,18 +130,32 @@ function navigationEvent (navEvent, eventParameter) {
             break;
 
         case 'toggleEmpty':
-            if ( typeof setup['state']['showEmpty'] != 'undefined' ) {
-                delete(setup['state']['showEmpty']);
-            } else {
+            // if no state is set, use default value from config
+            if ( typeof setup['state']['showEmpty'] == 'undefined' ) {
+                if ( typeof setup['config']['showEmptyElements'] != 'undefined' ) {
+                    setup['state']['showEmpty'] = setup['config']['showEmptyElements'];
+                } else {
+                    setup['state']['showEmpty'] = true
+                }
+            } else if (setup['state']['showEmpty'] == false) {
                 setup['state']['showEmpty'] = true;
+            } else {
+                setup['state']['showEmpty'] = false;
             }
             break;
 
         case 'toggleImplicit':
-            if ( typeof setup['state']['showImplicit'] != 'undefined' ) {
-                delete(setup['state']['showImplicit']);
-            } else {
+            // if no state is set, use default value from config
+            if ( typeof setup['state']['showImplicit'] == 'undefined' ) {
+                if ( typeof setup['config']['showImplicitElements'] != 'undefined' ) {
+                    setup['state']['showImplicit'] = setup['config']['showImplicitElements'];
+                } else {
+                    setup['state']['showImplicit'] = true
+                }
+            } else if (setup['state']['showImplicit'] == false) {
                 setup['state']['showImplicit'] = true;
+            } else {
+                setup['state']['showImplicit'] = false;
             }
             break;
 
