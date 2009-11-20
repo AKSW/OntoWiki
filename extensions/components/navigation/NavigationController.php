@@ -210,11 +210,11 @@ class NavigationController extends OntoWiki_Controller_Component
             $query = NavigationHelper::buildQuery($uri, $setup);
             $query->setCountStar(true);
             
-            $this->_owApp->logger->info("count query: ".$query->__toString());
+            //$this->_owApp->logger->info("count query: ".$query->__toString());
             
             $results = $this->model->sparqlQuery($query);
             
-            $this->_owApp->logger->info("count query results: ".print_r($results,true));
+            //$this->_owApp->logger->info("count query results: ".print_r($results,true));
             
             if( isset($results[0]['callret-0']) ){
                 $name .= ' ('.$results[0]['callret-0'].')';
@@ -309,6 +309,22 @@ class NavigationController extends OntoWiki_Controller_Component
                         $emptyUnion->addElement($u1);
                     }
                 }
+                // parse config
+                if( isset($setup->config->hierarchyRelations->out) ){
+                    foreach($setup->config->hierarchyRelations->out as $rel){
+                        // create new graph pattern
+                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        // add triplen
+                        $u1->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'), 
+                            new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE), 
+                            new Erfurt_Sparql_Query2_Var('instance') );
+                        // add triplet to union var
+                        $union->addElement($u1);
+                        if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
+                            $emptyUnion->addElement($u1);
+                        }
+                    }
+                }
                 // show implicit elements if enabled
                 if( isset($setup->config->showImplicitElements) && $setup->config->showImplicitElements == true){
                     $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
@@ -338,7 +354,7 @@ class NavigationController extends OntoWiki_Controller_Component
             }
             
             // setup relations
-            if ( isset($setup->config->instanceRelation) ){
+            if ( isset($setup->config->instanceRelation->out) ){
                 // init union var
                 if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
                     $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
@@ -350,6 +366,26 @@ class NavigationController extends OntoWiki_Controller_Component
                     $u1->addTriple( new Erfurt_Sparql_Query2_Var('subtype'), 
                         new Erfurt_Sparql_Query2_IriRef($rel), 
                         new Erfurt_Sparql_Query2_Var('resourceUri') );
+                    // add triplet to union var
+                    $union->addElement($u1);
+                }
+                if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
+                    $query->addElement($union);
+                }
+            }
+            // setup relations
+            if ( isset($setup->config->instanceRelation->in) ){
+                // init union var
+                if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
+                    $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                }
+                // parse config
+                foreach($setup->config->instanceRelation->in as $rel){
+                    // create new graph pattern
+                    $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                    $u1->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'), 
+                        new Erfurt_Sparql_Query2_IriRef($rel), 
+                        new Erfurt_Sparql_Query2_Var('subtype') );
                     // add triplet to union var
                     $union->addElement($u1);
                 }
