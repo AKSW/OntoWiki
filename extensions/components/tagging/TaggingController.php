@@ -538,24 +538,22 @@ class TaggingController extends OntoWiki_Controller_Component
         $this->view->tags = array();
         $this->view->propertylabels = array();
         $limit = isset($this->_request->count) ?
-        $this->_request->count :
-        (isset($this->session->tagginglimit) ?
-        $this->session->tagginglimit
-        : $this->_privateConfig->defaults->count
-        );
+            $this->_request->count :
+            (isset($this->session->tagginglimit) ?
+                $this->session->tagginglimit :
+                $this->_privateConfig->defaults->count
+            );
         $this->session->tagginglimit = $limit;
         $sort = isset($this->_request->sort) ?
-        $this->_request->sort :
-        (isset($this->session->taggingsort) ?
-        $this->session->taggingsort
-        : $this->_privateConfig->defaults->sort
-        );
+            $this->_request->sort :
+            (isset($this->session->taggingsort) ?
+                $this->session->taggingsort :
+                $this->_privateConfig->defaults->sort
+            );
         $this->session->taggingsort = $sort;
-        //echo "<pre>";print_r($this->session->cloudproperties);
-        //echo "</pre>"; exit;
+
         foreach ($this->session->cloudproperties as $cloudproperty) {
             //get values
-            //echo $cloudproperty["uri"];
             if (!$cloudproperty["isInverse"]) {
                 $values = $instances->getObjects($cloudproperty["uri"], false);
             } else {

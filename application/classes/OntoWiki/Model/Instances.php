@@ -127,6 +127,13 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     throw new Exception('$options[\'defaultQuery\'] must be a Erfurt_Sparql_Query2', 123);
                 }
                 $this->setMode(self::modeGiven);
+                $objects = $this->_resourceQuery->getWhere()->getElements();
+
+                $this->_filter['constructor-given'] = array(
+                    'id' => 'constructor-given',
+                    'mode' => 'given',
+                    'objects' => $this->_resourceQuery->getWhere()->getElements()
+                );
             break;
             case 'instances':
                 // select all instances of a type, members of a collection, etc.
@@ -150,12 +157,11 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $this->_resourceQuery->addFilter(
             new Erfurt_Sparql_Query2_ConditionalAndExpression(
                 array(
+                    new Erfurt_Sparql_Query2_isUri($this->_resourceVar),
+                    // when resourceVar is the object - prevent literals
                     new Erfurt_Sparql_Query2_UnaryExpressionNot(
-                        new Erfurt_Sparql_Query2_isLiteral($this->_resourceVar)
-                    )// when resourceVar is the object - prevent literals
-                    /*new Erfurt_Sparql_Query2_UnaryExpressionNot(
                         new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
-                    )*/
+                    )
                 )
             )
         );
@@ -836,6 +842,17 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         
         $valueVar = new Erfurt_Sparql_Query2_Var('obj');
         $query->addTriple($this->_resourceVar, $property, $valueVar);
+        $query->addFilter(
+            new Erfurt_Sparql_Query2_ConditionalAndExpression(
+                array(
+                    new Erfurt_Sparql_Query2_isUri($valueVar),
+                    // when resourceVar is the object - prevent literals
+                    new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                        new Erfurt_Sparql_Query2_isBlank($valueVar)
+                    )
+                )
+            )
+        );
         $query->addProjectionVar($valueVar);
 
         $results = $this->_model->sparqlQuery(
@@ -874,6 +891,11 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         $valueVar = new Erfurt_Sparql_Query2_Var('subj');
         $query->addTriple($valueVar, $property, $this->_resourceVar);
+        $query->addFilter(
+            new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                new Erfurt_Sparql_Query2_isBlank($valueVar)
+            )
+        );
         $query->addProjectionVar($valueVar);
 
         $results = $this->_model->sparqlQuery(

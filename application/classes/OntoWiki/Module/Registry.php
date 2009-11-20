@@ -293,7 +293,7 @@ class OntoWiki_Module_Registry
      */
     private function __construct()
     {
-        $this->_moduleStates = new Zend_Session_Namespace(_OWSESSION . 'Module_Registry');
+        $this->_moduleStates = new Zend_Session_Namespace('Module_Registry');
         
         // TODO: module order per namespace?
         if (isset($this->_moduleStates->moduleOrder)) {

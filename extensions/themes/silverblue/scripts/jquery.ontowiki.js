@@ -554,7 +554,12 @@ function createInstanceFromClassURI(type) {
        mode: 'class',
        uri: type
     }, function(data) {
+       // get default resource uri for subjects in added statements (issue 673)
+       for (var subjectUri in data) {
+           // do nothing (key needed for defaultResource in RDFauthor.setOptions() )
+       }
        RDFauthor.setOptions({
+           defaultResource: subjectUri, 
            anchorElement: '.innercontent',
            onSubmitSuccess: function () {
                // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
