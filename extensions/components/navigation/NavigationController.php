@@ -218,7 +218,12 @@ class NavigationController extends OntoWiki_Controller_Component
             if( $filterEmpty ){
                 $query = NavigationHelper::buildEmptyQuery($uri, $setup);
                 $results = $this->model->sparqlQuery($query);
-                if(count($results) == 0) $show = false;
+                if( isset($results[0]['callret-0']) ){
+                    $count = $results[0]['callret-0'];
+                }else{
+                    $count = count($results);
+                }
+                if($count == 0) $show = false;
             }
             
             if($show) $entries[$uri] = $entry;
