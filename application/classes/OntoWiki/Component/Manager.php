@@ -338,8 +338,7 @@ class OntoWiki_Component_Manager
                 }
             }
         }
-        
-        $this->_scanTranslations();
+
     }
     
     /**
