@@ -86,8 +86,9 @@ function RDFauthorPropertyRow(container, subject, property, title) {
         if (null !== widgetInstance) {            
             var widgetHtml = getWidgetChrome(widgetId, widgetInstance.getHtml());
             var index = this.widgetCount++;
-            this.widgets[index] = widgetInstance;
+            
             // store widget-id index mapping
+            this.widgets[index] = widgetInstance;
             this.widgetsById[widgetId] = index;
             
             $('#property-row-' + this.id).children('fieldset').append(widgetHtml);
@@ -104,6 +105,7 @@ function RDFauthorPropertyRow(container, subject, property, title) {
             
             // return widget's CSS id
             return 'widget-' + widgetId;
+            // return widgetInstance;
         } else {
             $('#property-row-' + this.id).children('fieldset').append('<div class="container">No suitable widget found.</div>');
         }
@@ -112,6 +114,11 @@ function RDFauthorPropertyRow(container, subject, property, title) {
 
 // Variable to keep track of the number of instances
 RDFauthorPropertyRow.prototype.numberOfRows = 0;
+
+RDFauthorPropertyRow.prototype.getWidgetForId = function(cssId) {
+    var id = cssId.replace('widget-', '');
+    return this.widgets[this.widgetsById[id]];
+}
 
 RDFauthorPropertyRow.prototype.initDisplay = function () {
     for (var i = 0; i < this.widgetCount; i++) {
