@@ -37,17 +37,26 @@ class NavigationModule extends OntoWiki_Module
             ->setEntry('20', "javascript:navigationEvent('setLimit', 20)")
             ->setEntry('30', "javascript:navigationEvent('setLimit', 30)");
 
+        // edit sub menu
+        $toggleMenu = new OntoWiki_Menu();
+        $toggleMenu->setEntry('Show/Hide hidden Elements', "javascript:navigationEvent('toggleHidden')");
+        $toggleMenu->setEntry('Show/Hide empty Elements', "javascript:navigationEvent('toggleEmpty')");
+
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
         $viewMenu->setEntry('Type', $typeMenu);
-        $viewMenu->setEntry('Number of entries', $countMenu);
-        $viewMenu->setEntry('Toggle hidden Entries', "javascript:navigationEvent('toggleHidden')");
-        $viewMenu->setEntry('Toggle empty Entries', "javascript:navigationEvent('toggleEmpty')");
+        $viewMenu->setEntry('Number of Elements', $countMenu);
+        $viewMenu->setEntry('Toggle Elements', $toggleMenu);
         $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')");
+
+        // edit sub menu
+        $editMenu = new OntoWiki_Menu();
+        $editMenu->setEntry('Add Element', "javascript:navigationEvent('addElement')");
 
         // build menu out of sub menus
         $mainMenu = new OntoWiki_Menu();
         $mainMenu->setEntry('View', $viewMenu);
+        $mainMenu->setEntry('Edit', $editMenu);
 
         return $mainMenu;
     }
