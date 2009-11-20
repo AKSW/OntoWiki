@@ -117,15 +117,15 @@ class NavigationController extends OntoWiki_Controller_Component
         if( $setup->state->lastEvent == "search" ){
             // search request
             // @todo: also search request should not show ignored entities
+            $resVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+            $typeVar = new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE);
+            
             $query = new Erfurt_Sparql_Query2();
             $query->addProjectionVar($resVar)->setDistinct(true);
 
             $pattern = $this->store->getSearchPattern($setup->state->searchString, (string) $this->model);
             $query->addElements($pattern);
             
-            $resVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-            $typeVar = new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE);
-
             $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
             
             foreach ($setup->config->hierarchyTypes as $type) {
@@ -207,10 +207,31 @@ class NavigationController extends OntoWiki_Controller_Component
         
         // count entries
         if( isset($setup->config->showCounts) && $setup->config->showCounts == true ){
+            /*if( isset() &&  == true ){
+                $query = NavigationHelper::buildClassesQuery($uri);
+                $classes = $this->model->sparqlQuery($query);
+                
+                $count = 0;
+                
+                foreach($classes as $class){
+                    $query = NavigationHelper::buildQuery($uri, $setup);
+                    $query->setCountStar(true);
+            
+                    $results = $this->model->sparqlQuery($query);
+                    
+                    if( isset($results[0]['callret-0']) ){
+                        $count += $results[0]['callret-0'];
+                    }else{
+                        $count += count($results);
+                    }
+                }
+                
+                $name .= ' ('.$count.')';
+            }else{*/
+            //$this->_owApp->logger->info("count query: ".$query->__toString());
+            
             $query = NavigationHelper::buildQuery($uri, $setup);
             $query->setCountStar(true);
-            
-            //$this->_owApp->logger->info("count query: ".$query->__toString());
             
             $results = $this->model->sparqlQuery($query);
             
@@ -221,6 +242,7 @@ class NavigationController extends OntoWiki_Controller_Component
             }else{
                 $name .= ' ('.count($results).')';
             }
+            //}
         }
         
         return $name;

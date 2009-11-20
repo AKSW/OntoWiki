@@ -12,7 +12,6 @@ class NavigationHelper extends OntoWiki_Component_Helper
         $query = new Erfurt_Sparql_Query2();
         $query->setCountStar(true);
         //$query->setDistinct();
-        //$query->addProjectionVar($searchVar);
 
         // init union var
         $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
@@ -44,13 +43,6 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 $union->addElement($u1);
             }
         }
-        /*$u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-        // add triplen
-        $u1->addTriple( $searchVar,
-            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
-            new Erfurt_Sparql_Query2_IriRef($uri) );
-        $union->addElement($u1);
-        //*/
         $query->addElement($union);
 
         return $query;
