@@ -30,7 +30,22 @@ function prepareMap() {
 
 // initiate the map
 function initMap ( ) {
-    this.map	    = new OpenLayers.Map( this.mapContainer, { theme: this.themePath });
+
+    // for information about OpenLayers spherical mercator projection
+    // seeAlso: http://docs.openlayers.org/library/spherical_mercator.html
+    // seeAlso: http://openlayers.org/dev/examples/spherical-mercator.html (example)
+
+    var options = {
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            displayProjection: new OpenLayers.Projection("EPSG:4326"),
+            units: "m",
+            numZoomLevels: 18,
+            maxResolution: 156543.0339,
+            maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
+            theme: this.themePath
+    };
+
+    this.map	    = new OpenLayers.Map( this.mapContainer, options);
 //    this.map.theme  = this.themePath;
 
     //alert("extent: l:"+extent.left+" b:"+extent.bottom+" r:"+extent.right+" t:"+extent.top );
@@ -44,17 +59,23 @@ function initMap ( ) {
 
     // Create a set of Google Map layers for physical, street, hybrid and satellite view
     // has no projection problems, because i use the google projection as default :-(
-    var gmap = new OpenLayers.Layer.Google( "Google Streets"); // type ist default
-    var ghyb = new OpenLayers.Layer.Google( "Google Hybrid", {type: G_HYBRID_MAP});
-    var gsat = new OpenLayers.Layer.Google( "Google Satellite", {type: G_SATELLITE_MAP});
-    var gphy = new OpenLayers.Layer.Google( "Google Physical", {type: G_PHYSICAL_MAP});
+    var gmap = new OpenLayers.Layer.Google( "Google Streets",   {sphericalMercator:true}); // type ist default
+    var ghyb = new OpenLayers.Layer.Google( "Google Hybrid",    {sphericalMercator:true, type: G_HYBRID_MAP});
+    var gsat = new OpenLayers.Layer.Google( "Google Satellite", {sphericalMercator:true, type: G_SATELLITE_MAP, numZoomLevels: 22});
+    var gphy = new OpenLayers.Layer.Google( "Google Physical",  {sphericalMercator:true, type: G_PHYSICAL_MAP});
 
+    // create OpenStreetMap layer
+    var osmm = new OpenLayers.Layer.OSM();
+    var osmt = new OpenLayers.Layer.OSM( "OpenStreetMap (Tiles@Home)", "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png");
+    
     // Adds the layers to the mainMap and detailMap, because i couldn't clone them i only add the googlestreets layer to the detailmap
     // mainMap.addLayers( [gmap, ghyb, gsat, gphy, osmmnk, osmtah, osmcyc, yahooLayer]);
-    this.map.addLayers( [ gmap, ghyb, gsat, gphy ] );
+    this.map.addLayers( [ gmap, ghyb, gsat, gphy, osmm, osmt ] );
 
     // zoom the mainMap to the minimal extend containing all markers, hopefully
-    this.map.zoomToExtent( new OpenLayers.Bounds( this.extent.left, this.extent.bottom, this.extent.right, this.extent.top ), false );
+    var maxExtent = new OpenLayers.Bounds( this.extent.left, this.extent.bottom, this.extent.right, this.extent.top );
+    maxExtent.transform(this.map.displayProjection, this.map.projection);
+    this.map.zoomToExtent( maxExtent, false );
 
     // and zoom out once, because mormaly not all markers are in the above defined extend
 /*
@@ -123,18 +144,19 @@ function markerCallbackHandler (data,that) {
             // single Marker
             if ( data[i].containingMarkers == null ) {
                 // at the moment the marker doesn't bring a own icon with it
-                var feature_data = { icon: that.icon.clone( ), uri: data[i].uri};
+                var featureData = { icon: that.icon.clone( ), uri: data[i].uri};
             }
             // Cluster
             else {
                 // at the moment the marker doesn't bring a own icon with it
-                var feature_data = { icon: that.clusterIcon.clone( ), content: data[i].containingMarkers };
+                var featureData = { icon: that.clusterIcon.clone( ), content: data[i].containingMarkers };
             }
 
             // create new feature with the special properties
             // feature is a very abstract thing
             // console.log("create new feature on the markers layer");
-            var feature = new OpenLayers.Feature( that.markers, new OpenLayers.LonLat( data[i].longitude, data[i].latitude ), feature_data );
+            var featureLonLat = new OpenLayers.LonLat( data[i].longitude, data[i].latitude ).transform(that.map.displayProjection, that.map.projection);
+            var feature = new OpenLayers.Feature( that.markers, featureLonLat, featureData );
             // console.log("created new feature on the markers layer ... done");
 
             // create a marker from the feature
@@ -153,4 +175,3 @@ function markerCallbackHandler (data,that) {
         }
     }
 }
-
