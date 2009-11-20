@@ -158,11 +158,15 @@ RDFauthorView.prototype.display = function (animated) {
     if (typeof jQuery.ui != 'undefined' && !$('#' + this.id).hasClass('ui-draggable')) {
         $('#' + this.id).draggable({handle: 'h2', zIndex: 1000});
     }
-          
-    // var htmlHeight  = $('html').height();
-    var htmlHeight  = window.outerHeight;
-    var modalHeight = this.container.height();
-    this.container.height(Math.max(htmlHeight, modalHeight) + 'px');
+    
+    var D = document;
+    var documentHeight = Math.max(
+        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+        Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+    );
+    
+    this.container.height(documentHeight + 'px');
     
     this.container.show();
     this.reposition();
