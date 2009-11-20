@@ -60,7 +60,9 @@ $odd = false;
                     </a>
             <?php endif; if($filter['mode'] == "searchFilter") : ?>
                     Search: <?php echo $filter['searchText']; ?>
-            <?php endif?>
+            <?php endif; if($filter['mode'] == "given") : ?>
+                    Base Query
+            <?php endif; ?>
                     &nbsp;&nbsp;&nbsp;<a class="delete">x</a>
         </li>
         <?php endforeach ?>

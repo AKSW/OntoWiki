@@ -127,6 +127,13 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     throw new Exception('$options[\'defaultQuery\'] must be a Erfurt_Sparql_Query2', 123);
                 }
                 $this->setMode(self::modeGiven);
+                $objects = $this->_resourceQuery->getWhere()->getElements();
+
+                $this->_filter['constructor-given'] = array(
+                    'id' => 'constructor-given',
+                    'mode' => 'given',
+                    'objects' => $this->_resourceQuery->getWhere()->getElements()
+                );
             break;
             case 'instances':
                 // select all instances of a type, members of a collection, etc.

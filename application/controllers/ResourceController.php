@@ -217,15 +217,24 @@ class ResourceController extends OntoWiki_Controller_Base
 
             //shortcut for "all instances of a rdfs class"
             if(isset($this->_request->r)){
-                $options['mode'] = 'instances';
-                $options['type'] = $this->_owApp->selectedClass; //dont use r here: is a curi
-                $options['memberPredicate'] = EF_RDF_TYPE;
-                $options['withChilds'] = true;
+                if(!isset($this->_request->cnav)){
+                    //shortcut navigation - only a rdfs class given
+                    $options['mode'] = 'instances';
+                    $options['type'] = $this->_owApp->selectedClass; //dont use r here: is a curi
+                    $options['memberPredicate'] = EF_RDF_TYPE;
+                    $options['withChilds'] = true;
 
-                $options['hierarchyUp'] = EF_RDFS_SUBCLASSOF;
-                $options['hierarchyIsInverse'] = true;
-                //$options['hierarchyDown'] = null;
-                $options['direction'] = 1; // down the tree
+                    $options['hierarchyUp'] = EF_RDFS_SUBCLASSOF;
+                    $options['hierarchyIsInverse'] = true;
+                    //$options['hierarchyDown'] = null;
+                    $options['direction'] = 1; // down the tree
+                } else {
+                    // complex nav (from navigation module)
+                    $options['mode'] = 'defaultQuery';
+                    $conf = json_decode(stripslashes($this->_request->cnav), false);
+                    $options['defaultQuery'] = NavigationHelper::buildQuery($this->_owApp->selectedClass, $conf);
+                    $options['defaultQuery']->setCountStar(false);
+                }
             }
 
             if(isset($this->_request->query)){

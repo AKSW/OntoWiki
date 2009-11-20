@@ -94,7 +94,9 @@ class NavigationController extends OntoWiki_Controller_Component
             $this->view->rootEntry['uri'] = $this->setup->state->parent;
             $this->view->rootEntry['title'] = $this->_getTitle(
                 $this->setup->state->parent,
-                $this->setup->config->titleMode, null);
+                isset($this->setup->config->titleMode) ? $this->setup->config->titleMode : null,
+                null
+            );
         }
 
         if (isset($this->setup->state->searchString)) {
@@ -205,7 +207,8 @@ class NavigationController extends OntoWiki_Controller_Component
         
         // count entries
         if( isset($setup->config->showCounts) && $setup->config->showCounts == true ){
-            $query = $this->_buildCountQuery($uri, $setup);
+            $query = NavigationHelper::buildQuery($uri, $setup);
+            $query->setCountStar(true);
             
             $this->_owApp->logger->info("count query: ".$query->__toString());
             
@@ -221,37 +224,6 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         return $name;
-    }
-    
-    protected function _buildCountQuery($uri, $setup){
-        $searchVar = new Erfurt_Sparql_Query2_Var('instance');
-        $query = new Erfurt_Sparql_Query2();
-        $query->setCountStar();
-        //$query->setDistinct();
-        //$query->addProjectionVar($searchVar);
-        
-        // init union var
-        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
-        // parse config
-        foreach($setup->config->hierarchyRelations->in as $rel){
-            // create new graph pattern
-            $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-            // add triplen
-            $u1->addTriple( $searchVar, 
-                new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE), 
-                new Erfurt_Sparql_Query2_IriRef($uri) );
-            // add triplet to union var
-            $union->addElement($u1);
-        }
-        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-        // add triplen
-        $u1->addTriple( $searchVar, 
-            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
-            new Erfurt_Sparql_Query2_IriRef($uri) );
-        $union->addElement($u1);
-        $query->addElement($union);
-        
-        return $query;
     }
     
     protected function _buildQuery($setup){
@@ -507,24 +479,19 @@ class NavigationController extends OntoWiki_Controller_Component
         $owUrl = new OntoWiki_Url(array('route' => 'instances'), array());
         $return = (string) $owUrl;
 
+        // at the moment, we use r= here, not class=
+        $return .= "?init&r=" . urlencode(OntoWiki_Utils::contractNamespace($uri));
+
         // shortcut for classes
         if ( isset($setup->config->instanceRelation) && ( $setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
             ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ) {
-            // at the moment, we use r= here, not class=
-            return $return .= "?init&r=" . urlencode(OntoWiki_Utils::contractNamespace($uri));
+            //nothing to do
+            return $return;
         }
         
-        if ( isset($setup->config->instanceRelation->in) ){
-            foreach ($setup->config->instanceRelation->out as $resToNavRelation) {
-                //@todo: create a filter here
-            }
-        }
+        //pass config as get
+        $return .= "&cnav=" . urlencode(json_encode($setup));
         
-        if ( isset($setup->config->instanceRelation->in) ){
-            foreach ($setup->config->instanceRelation->in as $navToResRelation) {
-                //@todo: create a filter here
-            }
-        }
         return $return;
         
     }
