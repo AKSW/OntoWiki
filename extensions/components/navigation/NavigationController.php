@@ -208,6 +208,17 @@ class NavigationController extends OntoWiki_Controller_Component
         // count entries
         if( isset($setup->config->showCounts) && $setup->config->showCounts == true ){
             /*if( isset() &&  == true ){
+                // loading some more required classes
+                // getting transitive closure for types
+                $types   = array_keys(
+                    $store->getTransitiveClosure(
+                        $model->getModelIri(),
+                        EF_RDFS_SUBCLASSOF,
+                        array((string) $resource),
+                        true
+                    )
+                );
+            
                 $query = NavigationHelper::buildClassesQuery($uri);
                 $classes = $this->model->sparqlQuery($query);
                 
@@ -302,9 +313,9 @@ class NavigationController extends OntoWiki_Controller_Component
                     //$query->addFilter( new Erfurt_Sparql_Query2_bound( new Erfurt_Sparql_Query2_Var('instance') ) );
                 }else{
                     $rel = $setup->config->hierarchyRelations->out;
-                    $query->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'), 
+                    $query->addTriple( new Erfurt_Sparql_Query2_IriRef($setup->state->parent), 
                             new Erfurt_Sparql_Query2_IriRef($rel[0]), 
-                            new Erfurt_Sparql_Query2_IriRef($setup->state->parent) );    
+                            new Erfurt_Sparql_Query2_Var('resourceUri') );    
                 }
             }
             
@@ -322,6 +333,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 // add triplet to union var
                 $union->addElement($u1);    
             }
+            
             if( !isset($setup->config->showImplicitElements) || $setup->config->showImplicitElements == false ){
                 $query->addElement($union);
             }
@@ -510,6 +522,13 @@ class NavigationController extends OntoWiki_Controller_Component
                     $queryOptional->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'),
                         new Erfurt_Sparql_Query2_IriRef($rel),
                         new Erfurt_Sparql_Query2_Var('super') );
+                }
+            }
+            if( isset($setup->config->hierarchyRelations->out) ){
+                foreach($setup->config->hierarchyRelations->out as $rel){
+                    $queryOptional->addTriple( new Erfurt_Sparql_Query2_Var('super'),
+                        new Erfurt_Sparql_Query2_IriRef($rel),
+                        new Erfurt_Sparql_Query2_Var('resourceUri') );
                 }
             }
             $queryOptional->addFilter(
