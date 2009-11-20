@@ -17,16 +17,18 @@ class NavigationHelper extends OntoWiki_Component_Helper
         // init union var
         $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
         // parse config
-        foreach($setup->config->hierarchyRelations->in as $rel){
-            // create new graph pattern
-            $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-            // add triplen
-            $u1->addTriple( $searchVar,
-                new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
-                new Erfurt_Sparql_Query2_IriRef($uri)
-            );
-            // add triplet to union var
-            $union->addElement($u1);
+        if( isset($setup->config->hierarchyRelations->in) ){
+            foreach($setup->config->hierarchyRelations->in as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($uri)
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
         }
         $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
         // add triplen

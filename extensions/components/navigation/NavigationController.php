@@ -296,17 +296,19 @@ class NavigationController extends OntoWiki_Controller_Component
                     $emptyUnion = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
                 }
                 // parse config
-                foreach($setup->config->hierarchyRelations->in as $rel){
-                    // create new graph pattern
-                    $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-                    // add triplen
-                    $u1->addTriple( new Erfurt_Sparql_Query2_Var('instance'), 
-                        new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE), 
-                        new Erfurt_Sparql_Query2_Var('resourceUri') );
-                    // add triplet to union var
-                    $union->addElement($u1);
-                    if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
-                        $emptyUnion->addElement($u1);
+                if( isset($setup->config->hierarchyRelations->in) ){
+                    foreach($setup->config->hierarchyRelations->in as $rel){
+                        // create new graph pattern
+                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        // add triplen
+                        $u1->addTriple( new Erfurt_Sparql_Query2_Var('instance'), 
+                            new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE), 
+                            new Erfurt_Sparql_Query2_Var('resourceUri') );
+                        // add triplet to union var
+                        $union->addElement($u1);
+                        if ( isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
+                            $emptyUnion->addElement($u1);
+                        }
                     }
                 }
                 // parse config
@@ -462,10 +464,12 @@ class NavigationController extends OntoWiki_Controller_Component
         if ( !isset($setup->state->parent) ) {
             // optional var
             $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
-            foreach($setup->config->hierarchyRelations->in as $rel){
-                $queryOptional->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'),
-                    new Erfurt_Sparql_Query2_IriRef($rel),
-                    new Erfurt_Sparql_Query2_Var('super') );
+            if( isset($setup->config->hierarchyRelations->in) ){
+                foreach($setup->config->hierarchyRelations->in as $rel){
+                    $queryOptional->addTriple( new Erfurt_Sparql_Query2_Var('resourceUri'),
+                        new Erfurt_Sparql_Query2_IriRef($rel),
+                        new Erfurt_Sparql_Query2_Var('super') );
+                }
             }
             $queryOptional->addFilter(
                 new Erfurt_Sparql_Query2_isUri( 
