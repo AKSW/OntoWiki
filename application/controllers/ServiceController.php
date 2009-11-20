@@ -570,7 +570,7 @@ class ServiceController extends Zend_Controller_Action
         $insertGraph = null;
         $deleteGraph = null;
         
-        if (isset($this->_request->query)) {            
+        if (isset($this->_request->query)) {
             // we have a query, enter SPARQL/Update mode
             $query = $this->_request->getParam('query', '');
             
@@ -614,14 +614,35 @@ class ServiceController extends Zend_Controller_Action
         
         $flag = false;
         
+        /**
+         * @trigger onUpdateServiceAction is triggered when Service-Controller Update Action is executed.
+         * Event contains following attributes:
+         * deleteModel  :   model to delete statments from
+         * deleteData   :   statements payload being deleted
+         * insertModel  :   model to add statements to
+         * insertDara   :   statements payload being added
+         */
+        $event = new Erfurt_Event('onUpdateServiceAction');
+        $event->deleteModel = $deleteModel;
+        $event->insertModel = $insertModel;
+        $event->deleteData  = $delete;
+        $event->insertData  = $insert;
+        $event->trigger();
+        
+        // writeback
+        $delete = $event->deleteData;
+        $insert = $event->insertData;
+
         // delete
         if ($deleteModel && $deleteModel->isEditable()) {
             try {
                 $count = $deleteModel->deleteMultipleStatements((array)$delete);
             } catch (Erfurt_Store_Exception $e) {
                 if (defined('_OWDEBUG')) {
-                    OntoWiki::getInstance()->logger->info('Could not delete statements from graph: ' . $e->getMessage() . PHP_EOL . 
-                        'Statements: ' . print_r($delete, true));
+                    OntoWiki::getInstance()->logger->info(
+                        'Could not delete statements from graph: ' . $e->getMessage() . PHP_EOL . 
+                        'Statements: ' . print_r($delete, true)
+                    );
                 }
             }
             
@@ -909,7 +930,7 @@ class ServiceController extends Zend_Controller_Action
         }
 
 
-        $newResourceURI = $model->getBaseUri().md5(date('F j, Y, g:i:s:u a'));
+        $newResourceURI = $model->getBaseUri(). 'newResource/' .md5(date('F j, Y, g:i:s:u a'));
 
         if ($workingModus == 'class') {
             $properties = $model->sparqlQuery('SELECT DISTINCT ?uri ?value {
