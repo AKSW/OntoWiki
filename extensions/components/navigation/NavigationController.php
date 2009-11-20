@@ -151,7 +151,18 @@ class NavigationController extends OntoWiki_Controller_Component
         $results = $this->model->sparqlQuery($query);
         
         // if we need to show implicit elements
-        if(isset($setup->config->showImplicitElements) && $setup->config->showImplicitElements == true){
+        $showImplicit = false;
+        if(!isset($setup->state->showImplicit)){
+            if(isset($setup->config->showImplicitElements) && $setup->config->showImplicitElements == true ){
+                $showImplicit = true;
+            }
+        }else{ 
+            if($setup->state->showImplicit == true){
+                $showImplicit = true;
+            }
+        }
+        
+        if($showImplicit){
             $query = $this->_buildQuery($setup, true);
             $results_implicit = $this->model->sparqlQuery($query);
             
