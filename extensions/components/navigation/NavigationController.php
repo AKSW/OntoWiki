@@ -210,14 +210,7 @@ class NavigationController extends OntoWiki_Controller_Component
             /*if( isset() &&  == true ){
                 // loading some more required classes
                 // getting transitive closure for types
-                $types   = array_keys(
-                    $store->getTransitiveClosure(
-                        $model->getModelIri(),
-                        EF_RDFS_SUBCLASSOF,
-                        array((string) $resource),
-                        true
-                    )
-                );
+                
             
                 $query = NavigationHelper::buildClassesQuery($uri);
                 $classes = $this->model->sparqlQuery($query);
@@ -239,20 +232,35 @@ class NavigationController extends OntoWiki_Controller_Component
                 
                 $name .= ' ('.$count.')';
             }else{*/
-            //$this->_owApp->logger->info("count query: ".$query->__toString());
             
-            $query = NavigationHelper::buildQuery($uri, $setup);
-            $query->setCountStar(true);
+            $modelIRI = $this->model->getModelIri();
+        
+            // get all subclass of the super class
+            $classes = $this->store->getTransitiveClosure($modelIRI, "http://ns.ontowiki.net/SysOnt/subGroup", $uri, false);
             
-            $results = $this->model->sparqlQuery($query);
+            $this->_owApp->logger->info("array: ".print_r($classes,true));
             
-            //$this->_owApp->logger->info("count query results: ".print_r($results,true));
+            $count = 0;
             
-            if( isset($results[0]['callret-0']) ){
-                $name .= ' ('.$results[0]['callret-0'].')';
-            }else{
-                $name .= ' ('.count($results).')';
+            foreach($classes as $class){
+                $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
+                $query = NavigationHelper::buildQuery($uri, $setup);
+                $query->setCountStar(true);
+            
+                //$this->_owApp->logger->info("count query: ".$query->__toString());
+                
+                $results = $this->model->sparqlQuery($query);
+            
+                //$this->_owApp->logger->info("count query results: ".print_r($results,true));
+            
+                if( isset($results[0]['callret-0']) ){
+                    $count += $results[0]['callret-0'];
+                }else{
+                    $count += count($results);
+                }
             }
+            
+            if( $count > 0 ) $name .= ' ('.$count.')';
             //}
         }
         
