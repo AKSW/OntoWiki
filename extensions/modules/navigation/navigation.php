@@ -39,13 +39,14 @@ class NavigationModule extends OntoWiki_Module
 
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
-        $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')")
-            ->setEntry('Toggle hidden Entries', "javascript:navigationEvent('toggleHidden')")
-            ->setEntry('Number of entries', $countMenu);
+        $viewMenu->setEntry('Type', $typeMenu);
+        $viewMenu->setEntry('Number of entries', $countMenu);
+        $viewMenu->setEntry('Toggle hidden Entries', "javascript:navigationEvent('toggleHidden')");
+        $viewMenu->setEntry('Toggle empty Entries', "javascript:navigationEvent('toggleEmpty')");
+        $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')");
 
         // build menu out of sub menus
         $mainMenu = new OntoWiki_Menu();
-        $mainMenu->setEntry('Type', $typeMenu);
         $mainMenu->setEntry('View', $viewMenu);
 
         return $mainMenu;
