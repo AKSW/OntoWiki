@@ -346,10 +346,39 @@ class NavigationController extends OntoWiki_Controller_Component
                     new Erfurt_Sparql_Query2_ConditionalOrExpression($filter_type)
                 );
             }else{
-                $query->addTriple( 
-                    new Erfurt_Sparql_Query2_Var('sub'), 
-                    new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE), 
-                    $searchVar );
+                // define subvar
+                $subVar = new Erfurt_Sparql_Query2_Var('sub'); 
+                // init union var
+                $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                // parse config
+                if( isset($setup->config->instanceRelation->out) ){
+                    foreach($setup->config->instanceRelation->out as $rel){
+                        // create new graph pattern
+                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        // add triplen
+                        $u1->addTriple( $subVar,
+                            new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                            $searchVar
+                        );
+                        // add triplet to union var
+                        $union->addElement($u1);
+                    }
+                }
+                // parse config
+                if( isset($setup->config->instanceRelation->in) ){
+                    foreach($setup->config->instanceRelation->in as $rel){
+                        // create new graph pattern
+                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        // add triplen
+                        $u1->addTriple( $searchVar,
+                            new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                            $subVar
+                        );
+                        // add triplet to union var
+                        $union->addElement($u1);
+                    }
+                }
+                $query->addElement($union);
             }
             
         }
