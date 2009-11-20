@@ -30,12 +30,27 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 $union->addElement($u1);
             }
         }
-        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+        // parse config
+        if( isset($setup->config->hierarchyRelations->out) ){
+            foreach($setup->config->hierarchyRelations->out as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple(  new Erfurt_Sparql_Query2_IriRef($uri),
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    $searchVar
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
+        /*$u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
         // add triplen
         $u1->addTriple( $searchVar,
             new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
             new Erfurt_Sparql_Query2_IriRef($uri) );
         $union->addElement($u1);
+        //*/
         $query->addElement($union);
 
         return $query;
