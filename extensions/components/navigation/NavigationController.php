@@ -236,14 +236,29 @@ class NavigationController extends OntoWiki_Controller_Component
             $modelIRI = $this->model->getModelIri();
         
             // get all subclass of the super class
-            $classes = $this->store->getTransitiveClosure($modelIRI, "http://ns.ontowiki.net/SysOnt/subGroup", $uri, false);
+            $classes = array();
+            if( isset($setup->config->hierarchyRelations->out) ){
+                foreach($setup->config->hierarchyRelations->out as $rel){
+                    $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, false);
+                }
+            }
+            if( isset($setup->config->hierarchyRelations->in) ){
+                foreach($setup->config->hierarchyRelations->in as $rel){
+                    $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, true);
+                }
+            }
             
             $this->_owApp->logger->info("array: ".print_r($classes,true));
             
             $count = 0;
-            
+            $counted = array();
             foreach($classes as $class){
+                // get uri
                 $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
+                
+                // if this class is already counted - continue
+                if( in_array($uri, $counted) ) continue;
+                
                 $query = NavigationHelper::buildQuery($uri, $setup);
                 $query->setCountStar(true);
             
@@ -258,6 +273,9 @@ class NavigationController extends OntoWiki_Controller_Component
                 }else{
                     $count += count($results);
                 }
+                
+                // add uri to counted
+                $counted[] = $uri;
             }
             
             if( $count > 0 ) $name .= ' ('.$count.')';
