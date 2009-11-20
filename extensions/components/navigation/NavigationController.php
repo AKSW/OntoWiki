@@ -201,7 +201,27 @@ class NavigationController extends OntoWiki_Controller_Component
             $entry = array();
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             $entry['link'] = $this->_getListLink($uri, $setup);
-            $entries[$uri] = $entry;
+            
+            // if filtering empty is needed
+            $filterEmpty = false;
+            if(!isset($setup->state->showEmpty)){
+                if(isset($setup->config->showEmptyElements) && $setup->config->showEmptyElements == false ){
+                    $filterEmpty = true;
+                }
+            }else{ 
+                if($setup->state->showEmpty == false){
+                    $filterEmpty = true;
+                }
+            }
+            // do filter
+            $show = true;
+            if( $filterEmpty ){
+                $query = NavigationHelper::buildEmptyQuery($uri, $setup);
+                $results = $this->model->sparqlQuery($query);
+                if(count($results) == 0) $show = false;
+            }
+            
+            if($show) $entries[$uri] = $entry;
         }
 
         return $entries;
