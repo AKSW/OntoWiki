@@ -74,6 +74,9 @@ ResourceEdit.prototype.init = function ()
     }
 }
 
+ResourceEdit.prototype.focus = function() {
+    $('#resource-name-' + this.id).focus();
+};
 
 ResourceEdit.prototype.getHtml = function() 
 {
