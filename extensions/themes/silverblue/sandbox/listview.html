@@ -241,8 +241,11 @@ var navigationConfig = $.evalJSON(navigationConfigString);
                                     <div class="content">
                                         <div class="Resource ui-droppable" id="exploretags-content" name="exploretags-content" about="http://xmlns.com/foaf/0.1/Person">
     <ul class="bullets-none separated-vertical">
-            <li class="even">
-            member<sup>-1</sup>            <a class="delete-cloudproperty Resource" about="http://xmlns.com/foaf/0.1/member">x</a>
+            <li class="even has-contextmenu-area">
+            member<sup>-1</sup>
+            <div class="contextmenu">
+                <a class="delete-cloudproperty Resource item" about="http://xmlns.com/foaf/0.1/member"><span class="icon icon-close" title="Entfernen"><span>Entfernen</span></span></a>
+            </div>
         <ol title="member" about="http://xmlns.com/foaf/0.1/member" class="bullets-none separated-horizontal InverseProperty Resource">
                     <li><a value="http://sebastian.dietzold.de/terms/group.aksw" about="http://sebastian.dietzold.de/terms/group.aksw" type="uri" datatype="" language="" class="cloudvalue tagweight4 selected Resource" cloudproperty="http://xmlns.com/foaf/0.1/member">
                     AKSW                </a>
@@ -255,8 +258,11 @@ var navigationConfig = $.evalJSON(navigationConfigString);
             </li>
                 </ol>
                 </li>
-             <li class="odd">
-            current project            <a class="delete-cloudproperty Resource" about="http://xmlns.com/foaf/0.1/currentProject">x</a>
+             <li class="odd has-contextmenu-area">
+            current project
+            <div class="contextmenu">
+                <a class="delete-cloudproperty Resource item" about="http://xmlns.com/foaf/0.1/currentProject"><span class="icon icon-close" title="Entfernen"><span>Entfernen</span></span></a>
+            </div>
         <ol title="current project" about="http://xmlns.com/foaf/0.1/currentProject" class="bullets-none separated-horizontal Resource">
                     <li><a value="http://sebastian.dietzold.de/terms/project.wackofork" about="http://sebastian.dietzold.de/terms/project.wackofork" type="uri" datatype="" language="" class="cloudvalue tagweight0 Resource" cloudproperty="http://xmlns.com/foaf/0.1/currentProject">
                     WackoFork                </a>
