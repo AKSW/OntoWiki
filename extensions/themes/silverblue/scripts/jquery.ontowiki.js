@@ -206,20 +206,22 @@
      * Make inline elements editable.
      */
     $.fn.makeEditable = function () {
-        // return this.each(function() {
-        //     $(this).addClass('has-contextmenu-area');
-        //     
-        //     if ($(this).children('.contextmenu').length < 1) {
-        //         $(this).append('<div class="contextmenu></div>"');
-        //     }
-        //     
-        //     $(this).children('.contextmenu').append('\
-        //         <div class="item">\
-        //             <span class="icon icon-edit" title="Edit">\
-        //             </span>\
-        //         </div>\
-        //     ');
-        // })
+         return this.each(function() {
+             $(this).addClass('has-contextmenu-area').css('display', 'block');
+             
+             if ($(this).children('.contextmenu').length < 1) {
+                 $(this).append('<div class="contextmenu"></div>');
+             }
+             
+             $(this).children('.contextmenu').append('\
+                 <div class="item">\
+                     <span class="icon icon-edit" title="Edit these values">\
+                     </span>\
+                     <span class="icon icon-delete" title="Delete all values">\
+                     </span>\
+                 </div>\
+             ');
+         })
     }
     
     /**
