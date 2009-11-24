@@ -25,11 +25,14 @@ $odd = false;
     <br />
     <?php if ($this->filter) : ?>
     <?php $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r')) ?>
-    <ul class="separated-vertical">
+    <ul class="separated-vertical bullets-none">
         <?php foreach ($this->filter as $filter) : 
-                if(isset($filter['hidden']) && $filter['hidden']){continue;} ?>
+            if ( isset($filter['hidden'] ) && $filter['hidden'] ) {
+                continue;
+            }
+        ?>
         <li id="<?php echo $filter['id'] ?>"
-            class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> filter"
+            class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> filter has-contextmenu-area"
             >
             <?php if($filter['mode'] == "filterbox"): ?>
             <a  class="hasMenu"
@@ -64,6 +67,13 @@ $odd = false;
                     Base Query
             <?php endif; ?>
                     &nbsp;&nbsp;&nbsp;<a class="delete">x</a>
+            <div class="contextmenu">
+                <span class="item delete">
+                    <span class="icon icon-close" title="Remove Filter">
+                        <span>Remove Filter</span>
+                    </span>
+                </span>
+            </div>
         </li>
         <?php endforeach ?>
     </ul>
