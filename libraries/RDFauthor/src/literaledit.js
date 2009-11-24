@@ -59,7 +59,7 @@ LiteralEdit.prototype.getHtml = function() {
     function longArea() {
         return '\
             <div class="container literal-value">\
-                <textarea rows="3" cols="20" style="width:38em" id="literal-value-' + 
+                <textarea rows="3" cols="20" style="width:29em" id="literal-value-' + 
                     widget.id + '">' + widget.object + '</textarea>\
             </div>\
             <div class="container util" style="clear:left">\
