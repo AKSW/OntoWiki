@@ -30,7 +30,8 @@ function buildFilterExp($res, $pred, $label){
 <?php if (!empty($this->instances)): ?>
 	<ul class="bullets-none separated-vertical">
 	    <?php foreach ($this->instances as $property => $instances): ?>
-	        <li><?php echo $this->properties[$property] ?><sup>-1</sup>
+	        <li class="has-contextmenu-area">
+                <?php echo $this->properties[$property] ?><sup>-1</sup>
 	            <ul class="bullets-none separated-horizontal">
 	                <?php $i = 0; ?>
 	                <?php foreach ($instances as $instance): ?>
@@ -41,7 +42,14 @@ function buildFilterExp($res, $pred, $label){
 	                    <?php endif; ?>
                         <?php endforeach; ?>
 	            </ul>
-                    <a href="<?php echo $this->urlBase; ?>list/?init&instancesconfig=<?php echo buildFilterExp((string)$this->resource, $property, $this->properties[$property]); ?>">[all as list]</a>
+                  <div class="contextmenu">
+                    <a class="item"
+                       href="<?php echo $this->urlBase; ?>list/?init&instancesconfig=<?php echo buildFilterExp((string)$this->resource, $property, $this->properties[$property]); ?>">
+                        <span class="icon icon-list" title="Show as List">
+                            <span>Show as List</span>
+                        </span>
+                    </a>
+                  </div>
 	        </li>
 	    <?php endforeach; ?>
 	</ul>

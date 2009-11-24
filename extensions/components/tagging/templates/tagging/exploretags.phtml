@@ -1,9 +1,7 @@
 <?php
 
 /**
- * OntoWiki model list template
- *
- * @version $Id: exploretags.phtml 4292 2009-10-13 10:27:05Z sebastian.dietzold $
+ * OntoWiki tag cloud template
  */
 $odd = false;
 ?>
@@ -17,12 +15,11 @@ $odd = false;
 <?php else: ?>
     <ul class="bullets-none separated-vertical">
     <?php foreach ($this->tags as $cloud) : ?>
-        <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+        <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> has-contextmenu-area">
             <?php echo $cloud["info"]["label"];
             if($cloud["info"]["isInverse"]){
                 echo '<sup>-1</sup>';
             } ?>
-            <a class="delete-cloudproperty" about="<?php echo $cloud["info"]["uri"] ?>">x</a>
         <ol title="<?php echo $cloud["info"]["label"];?>"
             about="<?php echo $cloud["info"]["uri"] ?>"
             class="bullets-none separated-horizontal
@@ -51,6 +48,13 @@ $odd = false;
                 No tags to generate tagcloud. Click on resources to add!
             </div>
         <?php endif; ?>
+          <div class="contextmenu">
+            <span class="item delete-cloudproperty" about="<?php echo $cloud["info"]["uri"] ?>">
+                <span class="icon icon-delete" title="Remove Tagcloud">
+                    <span>Remove Tagcloud</span>
+                </span>
+            </span>
+          </div>
         </li>
      <?php endforeach; ?>
      </ul>
