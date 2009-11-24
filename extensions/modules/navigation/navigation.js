@@ -129,6 +129,22 @@ function navigationEvent (navEvent, eventParameter) {
             }
             break;
 
+        case 'toggleEmpty':
+            if ( typeof setup['state']['showEmpty'] != 'undefined' ) {
+                delete(setup['state']['showEmpty']);
+            } else {
+                setup['state']['showEmpty'] = true;
+            }
+            break;
+
+        case 'toggleImplicit':
+            if ( typeof setup['state']['showImplicit'] != 'undefined' ) {
+                delete(setup['state']['showImplicit']);
+            } else {
+                setup['state']['showImplicit'] = true;
+            }
+            break;
+
         default:
             alert('error: unknown navigation event: '+navEvent);
             return;
