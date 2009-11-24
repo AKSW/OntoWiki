@@ -28,9 +28,8 @@ RDFauthor = {
     elementInfo: {}, 
     originalDatabanks: {}, 
     protectedTriples: {}, 
-    
-    // initialization for ids
-    idSeed: 123, 
+    // Array of inline views
+    inlineViews: {},
     
     // instance has been initialized
     initialized: false,
@@ -39,9 +38,6 @@ RDFauthor = {
      
     // the view object
     view: null, 
-    
-    // Array of inline views
-    inlineViews: {}, 
     
     // widget store
     widgetRegistry: {
@@ -53,6 +49,9 @@ RDFauthor = {
         '__literal': {}, 
         '__default': {}
     }, 
+    
+    // initialization for ids
+    idSeed: 123, 
     
     // options object
     options: {
@@ -115,10 +114,13 @@ RDFauthor = {
             });
         }
         
-        // reset RDFauthor
-        // this.pageParsed = false;
-        // this.elementInfo = {};
-        // this.inlineViews = {};
+        // query all inline views for submission
+        for (viewId in this.inlineViews) {
+            var view = this.inlineViews[viewId];
+            view.reset();
+        }
+        
+        this.reset();
     }, 
     
     commitEditing: function () {
@@ -209,7 +211,6 @@ RDFauthor = {
     
     createInlineView: function (element) {
         var view = this.getInlineView($(element));
-        view.reset();
         
         // for all graphs
         for (var graph in this.databanks) {
@@ -223,7 +224,7 @@ RDFauthor = {
                     var tripleElement = this.elementInfo[current];
                     var instance = this;
                     
-                    $(element).andSelf().find('*[content], *[resource]').each(function() {                        
+                    $(element).andSelf().find('*[content], *[resource]').each(function() {
                         if (this != tripleElement) {
                             return;
                         }
@@ -803,6 +804,29 @@ RDFauthor = {
         }
     }, 
     
+    reset: function() {
+        this.pageParsed = false;
+        this.databanks = {}; 
+        this.defaultGraph = null; 
+        this.graphInfo = {}; 
+        this.tripleInfo = {}; 
+        this.elementInfo = {}; 
+        this.originalDatabanks = {}; 
+        this.protectedTriples = {}; 
+        this.inlineViews = {}; 
+        this.errors = 0; 
+        view = null; 
+        this.widgetRegistry = {
+            'resource':  {}, 
+            'property':  {}, 
+            'range':     {}, 
+            'datatype':  {}, 
+            '__object':  {},
+            '__literal': {}, 
+            '__default': {}
+        };
+    }, 
+    
     // Registers a widget with the API
     // widgetSpec is an object that must contain the following keys:
     //  - constructor: a reference to or the name of the constructor function 
@@ -1062,6 +1086,8 @@ __RDFA_BASE = widgetBase + 'libraries/';
 
 // scripts to be loaded
 var scripts = {
+    // jQuery plug-in
+    RDFauthorPropertyRow:       widgetBase + 'src/jquery.equals.js', 
     // RDFauthor modules
     RDFauthorPropertyRow:       widgetBase + 'src/propertyrow.js', 
     RDFauthorView:              widgetBase + 'src/view.js', 

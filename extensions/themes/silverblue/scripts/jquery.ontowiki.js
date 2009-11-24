@@ -221,6 +221,15 @@
         //     ');
         // })
     }
+    
+    /**
+     * Checks whether two elements are equal
+     */
+    $.fn.equals = function (element) {
+        return this.each(function () {
+            
+        });
+    }
 
 })(jQuery);
 

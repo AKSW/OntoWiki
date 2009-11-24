@@ -51,6 +51,8 @@ function RDFauthorView(options) {
     
     this.id = this.options.id;
     
+    this.containerHtml = null;
+    
     // retain this for private members
     var instance = this;
     
@@ -112,6 +114,11 @@ function RDFauthorView(options) {
         // reset HTML
         if ($('#' + this.id).length) {
             $('#' + this.id).replaceWith(getChrome());
+        }
+        
+        // restore container content if it had been replaced
+        if (this.options.replaceContainerContent) {
+            this.container.html(this.containerHtml);
         }
     };
 }
@@ -206,6 +213,10 @@ RDFauthorView.prototype.display = function (animated) {
     
     if (this.options.replaceContainerContent) {
         var content = $('#' + this.id);
+        // keep old content
+        this.containerHtml = this.container.html();
+        
+        // replace with new content
         this.container.html(content);
     }
     

@@ -145,10 +145,12 @@ $(document).ready(function() {
     });
     
     $('.edit.cancel').click(function() {
-        RDFauthor.cancelEditing();
-        var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-        mainInnerContent.load(document.URL);
-        $('.edit-enable').click();
+        // reload page
+        window.location.href = window.location.href;
+        // RDFauthor.cancelEditing();
+        // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
+        // mainInnerContent.load(document.URL);
+        // $('.edit-enable').click();
     })
     
     // edit mode
