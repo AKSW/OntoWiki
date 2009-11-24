@@ -34,7 +34,7 @@
                        href="<?php echo $currentPredicate['url'] ?>"><?php echo $currentPredicate['title'] ?></a>
                 </td>
                 <?php if (count($this->values[$graph][$uri]) > 1): ?>
-                <td>
+                <td class="editable">
                     <ul class="bullets-none">
                         <?php foreach ($this->values[$graph][$uri] as $entry): ?>
                             <?php if ($entry['url']): ?>
@@ -63,7 +63,7 @@
                 </td>
                 <?php else: ?>
                     <?php $entry = current($this->values[$graph][$uri]) ?>
-                <td>
+                <td class="editable">
                     <?php if ($entry['url']): ?>
                         <?php if ($entry['uri']): ?>
                             <a rel="<?php echo $currentPredicate['curi'] ?>" 

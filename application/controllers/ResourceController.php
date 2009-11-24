@@ -162,9 +162,9 @@ class ResourceController extends OntoWiki_Controller_Base
             $toolbar->appendButton(OntoWiki_Toolbar::SEPARATOR)
                     ->appendButton(OntoWiki_Toolbar::DELETE, $params);
             
-            // $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-            //         ->prependButton(OntoWiki_Toolbar::CANCEL)
-            //         ->prependButton(OntoWiki_Toolbar::SAVE);
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
+                    ->prependButton(OntoWiki_Toolbar::CANCEL)
+                    ->prependButton(OntoWiki_Toolbar::SAVE);
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
         }
         
