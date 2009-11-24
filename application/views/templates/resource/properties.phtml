@@ -34,7 +34,26 @@
                        href="<?php echo $currentPredicate['url'] ?>"><?php echo $currentPredicate['title'] ?></a>
                 </td>
                 <?php if (count($this->values[$graph][$uri]) > 1): ?>
-                <td class="editable">
+                <?php
+                    // if there is at least one resource in this value list -> show list icon
+                    $hasContexMenu = false;
+                    foreach ($this->values[$graph][$uri] as $entry) {
+                         if ($entry['url']) {
+                             $hasContexMenu = true;
+                         }
+                    }
+                ?>
+                <td class="editable <?php echo $hasContexMenu ? 'has-contextmenu-area' : '' ?>">
+                    <?php if ($hasContexMenu): ?>
+                        <div class="contextmenu">
+                            <a class="item"
+                               href="<?php echo $currentPredicate['has_more_link'] ?>">
+                                <span class="icon icon-list" title="Show as List">
+                                    <span>Show as List</span>
+                                </span>
+                            </a>
+                        </div>
+                    <?php endif; ?>
                     <ul class="bullets-none">
                         <?php foreach ($this->values[$graph][$uri] as $entry): ?>
                             <?php if ($entry['url']): ?>
