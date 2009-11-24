@@ -38,8 +38,8 @@ class OntoWiki_Toolbar
      * @var array 
      */
     protected $_defaultButtons = array(
-        self::CANCEL  => array('name' => 'Cancel', 'image' => 'cancel', 'class' => 'edit'), 
-        self::SAVE    => array('name' => 'Save Changes', 'image' => 'save2', 'class' => 'edit'), 
+        self::CANCEL  => array('name' => 'Cancel', 'image' => 'cancel', 'class' => 'edit cancel'), 
+        self::SAVE    => array('name' => 'Save Changes', 'image' => 'save2', 'class' => 'edit save'), 
         self::EDIT    => array('name' => 'Edit', 'image' => 'edit', 'class' => 'edit-enable'), 
         self::ADD     => array('name' => 'Add', 'image' => 'add'), 
         self::EDITADD => array('name' => 'Add', 'image' => 'editadd'), 

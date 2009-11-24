@@ -25,11 +25,11 @@ RDFauthor = {
     defaultGraph: null, 
     graphInfo: {}, 
     tripleInfo: {}, 
+    elementInfo: {}, 
     originalDatabanks: {}, 
     protectedTriples: {}, 
-    
-    // initialization for ids
-    idSeed: 123, 
+    // Array of inline views
+    inlineViews: {},
     
     // instance has been initialized
     initialized: false,
@@ -49,6 +49,9 @@ RDFauthor = {
         '__literal': {}, 
         '__default': {}
     }, 
+    
+    // initialization for ids
+    idSeed: 123, 
     
     // options object
     options: {
@@ -104,12 +107,40 @@ RDFauthor = {
     }, 
     
     cancelEditing: function () {
-        var view = this.getView();
-        // TODO: cancel editing
-        view.hide(this.options.animated, function() {
+        var view;
+        if (view = this.getView()) {
+            view.hide(this.options.animated, function() {
+                view.reset();
+            });
+        }
+        
+        // query all inline views for submission
+        for (viewId in this.inlineViews) {
+            var view = this.inlineViews[viewId];
             view.reset();
-        });
+        }
+        
+        this.reset();
     }, 
+    
+    commitEditing: function () {
+        // keep db before changes
+        this.cloneDatabanks();
+        
+        // query all inline views for submission
+        for (viewId in this.inlineViews) {
+            var view = this.inlineViews[viewId];
+            view.onSubmit();
+        }
+        
+        // submit global view (if any)
+        if (this.view) {
+            this.view.onSubmit();
+        }
+        
+        // update the sources
+        this.updateSources();
+    },
     
     // clones the databank for each graph before calling 
     // for the widgets to write their data
@@ -140,45 +171,89 @@ RDFauthor = {
         var view = this.getView();
         view.reset();
         
-        if (this.options.bulkMode) {
-            // for all graphs
-            for (var graph in this.databanks) {
-                // only add triples from editable graphs
-                // i.e. for which an update endpoint has been defined
-                if (graph in this.graphInfo && this.graphInfo[graph].updateEndpoint != 'undefined') {
-                    // iterate over all triples
-                    var triples = this.databanks[graph].triples();
-                    // for (index in triples) {
-                    for (var i = 0, length = triples.length; i < length; i++) {
-                        var current = triples[i];
-                         // build RDF/JSON object
-                         var object = {};
-                         if (current.object.type == 'uri') {
-                             object.type  = 'uri';
-                             object.value = current.object.value;
-                         } else {
-                             object.type  = 'literal';
-                             object.value = current.object.value;
+        // for all graphs
+        for (var graph in this.databanks) {
+            // only add triples from editable graphs
+            // i.e. for which an update endpoint has been defined
+            if (graph in this.graphInfo && this.graphInfo[graph].updateEndpoint != 'undefined') {
+                // iterate over all triples
+                var triples = this.databanks[graph].triples();
+                for (var i = 0, length = triples.length; i < length; i++) {
+                    var current = triples[i];
+                     // build RDF/JSON object
+                     var object = {};
+                     if (current.object.type == 'uri') {
+                         object.type  = 'uri';
+                         object.value = current.object.value;
+                     } else {
+                         object.type  = 'literal';
+                         object.value = current.object.value;
 
-                             // typed literal
-                             if (current.object.datatype) {
-                                 object.datatype = current.object.datatype;
-                             } else if (current.object.lang) {
-                                 object.lang = current.object.lang;
-                             }
+                         // typed literal
+                         if (current.object.datatype) {
+                             object.datatype = current.object.datatype;
+                         } else if (current.object.lang) {
+                             object.lang = current.object.lang;
+                         }
+                    }
+                    
+                    var predicateTitle = null;
+                    if (current.property.value in this.predicateInfo) {
+                        predicateTitle = this.predicateInfo[current.property.value].title;
+                    }
+                    view.addRow(current.subject.value, current.property.value, predicateTitle, object, graph);
+                }
+            };
+        }
+        
+        return view;
+    }, 
+    
+    createInlineView: function (element) {
+        var view = this.getInlineView($(element));
+        
+        // for all graphs
+        for (var graph in this.databanks) {
+            // only add triples from editable graphs
+            // i.e. for which an update endpoint has been defined
+            if (graph in this.graphInfo && this.graphInfo[graph].updateEndpoint != 'undefined') {
+                // iterate over all triples
+                var triples = this.databanks[graph].triples();
+                for (var i = 0, length = triples.length; i < length; i++) {
+                    var current = triples[i];
+                    var tripleElement = this.elementInfo[current];
+                    var instance = this;
+                    
+                    $(element).andSelf().find('*[content], *[resource]').each(function() {
+                        if (this != tripleElement) {
+                            return;
                         }
                         
+                        // build RDF/JSON object
+                        var object = {};
+                        if (current.object.type == 'uri') {
+                            object.type  = 'uri';
+                            object.value = current.object.value;
+                        } else {
+                            object.type  = 'literal';
+                            object.value = current.object.value;
+                        
+                            // typed literal
+                            if (current.object.datatype) {
+                                object.datatype = current.object.datatype;
+                            } else if (current.object.lang) {
+                                object.lang = current.object.lang;
+                            }
+                        }
+
                         var predicateTitle = null;
-                        if (current.property.value in this.predicateInfo) {
-                            predicateTitle = this.predicateInfo[current.property.value].title;
+                        if (current.property.value in instance.predicateInfo) {
+                            predicateTitle = instance.predicateInfo[current.property.value].title;
                         }
                         view.addRow(current.subject.value, current.property.value, predicateTitle, object, graph);
-                    }
-                };
-            }
-        } else {
-           // add click event to element/edit trigger
-           // add triple to store
+                    })
+                }
+            };
         }
         
         return view;
@@ -325,6 +400,34 @@ RDFauthor = {
         }
         
         return this.databanks[graph];
+    }, 
+    
+    // Creates and returns a new RDFauthor view object in inline configuration
+    getInlineView: function (elementOrId) {
+        var view;
+        
+        if (typeof elementOrId == 'object') {
+            var instance = this;
+
+            var options = $.extend(this.options, {
+                container: elementOrId, 
+                inline: true, 
+                replaceContainerContent: true
+            });
+
+            // init view
+            view = new RDFauthorView(options);
+            // store as inline view
+            this.inlineViews[view.options.id] = view;
+
+            RDFauthor.loadStyleSheet(widgetBase + 'src/rdfauthor.css');
+        } else {
+            if (this.inlineViews[elementOrId]) {
+                view = this.inlineViews[elementOrId];
+            }
+        }
+        
+        return view;
     }, 
     
     // Creates and returns the RDFauthor view object used by this instance
@@ -597,7 +700,9 @@ RDFauthor = {
             }
         }
         
-        this.view.hide(this.options.animated);
+        if (this.view) {
+            this.view.hide(this.options.animated);
+        }
     }, 
     
     // depending on the current edit mode adds a triple row to the edit view
@@ -685,6 +790,9 @@ RDFauthor = {
                 // add triple info (graph)
                 this.tripleInfo[triple] = graph;
                 
+                // add element info
+                this.elementInfo[triple] = element;
+                
                 // add triple to databanks
                 var databank = this.getDatabank(graph);
                 databank.add(rdfTriple);
@@ -696,7 +804,30 @@ RDFauthor = {
         }
     }, 
     
-    // registers a widget with the API
+    reset: function() {
+        this.pageParsed = false;
+        this.databanks = {}; 
+        this.defaultGraph = null; 
+        this.graphInfo = {}; 
+        this.tripleInfo = {}; 
+        this.elementInfo = {}; 
+        this.originalDatabanks = {}; 
+        this.protectedTriples = {}; 
+        this.inlineViews = {}; 
+        this.errors = 0; 
+        view = null; 
+        this.widgetRegistry = {
+            'resource':  {}, 
+            'property':  {}, 
+            'range':     {}, 
+            'datatype':  {}, 
+            '__object':  {},
+            '__literal': {}, 
+            '__default': {}
+        };
+    }, 
+    
+    // Registers a widget with the API
     // widgetSpec is an object that must contain the following keys:
     //  - constructor: a reference to or the name of the constructor function 
     //    for instances of that widget
@@ -750,7 +881,7 @@ RDFauthor = {
             try {
                 RDFA.parse();
             } catch (e) {
-                alert(e);
+                alert('RDFa parsing error: ' + e);
             }
             
             var instance = this;
@@ -772,16 +903,54 @@ RDFauthor = {
         }
     }, 
     
-    // starts the editing process based on a DOM element
-    startElement: function(element) {
-        if (!element instanceof jQuery) {
-            element = $(element);
+    // Starts the editing process based on a DOM element.
+    // The element's content will be replaced with RDFauthor widgets for 
+    // editing RDFa statements completed inside the element.
+    startInline: function(element) {
+        // parse page if necessary
+        if (!RDFauthor.pageParsed) {
+            try {
+                RDFA.parse();
+            } catch (e) {
+                alert('RDFa parsing error: ' + e);
+            }
+            
+            var instance = this;
+            RDFA.CALLBACK_DONE_PARSING = function () {
+                RDFauthor.pageParsed = true;
+                
+                // fetch predicate infos
+                instance.fetchPredicateInfo();
+                
+                if (instance.errors > 0) {
+                    alert('There where ' + instance.errors + ' errors while parsing the page. All valid triples have been extracted.');
+                }
+                
+                if (typeof element == 'object') {
+                    var inlineView = instance.createInlineView(element);
+                    inlineView.display(instance.options.animated);
+                } else if ($(element).length > 0) {
+                    $(element).each(function() {
+                        var inlineView = instance.createInlineView(this);
+                        inlineView.display(instance.options.animated);
+                    })
+                }
+            };
+        } else {
+            if (typeof element == 'object') {
+                var inlineView = this.createInlineView(element);
+                inlineView.display(this.options.animated);
+            } else if ($(element).length > 0) {
+                var instance = this;
+                $(element).each(function() {
+                    var inlineView = instance.createInlineView(this);
+                    inlineView.display(instance.options.animated);
+                })
+            }
         }
-        
-        // TODO: 
     }, 
     
-    // start editing a resource based on a template
+    // Start editing a resource based on a template
     startTemplate: function (template) {
         // HACK:
         var graph = this.getDefaultGraph();
@@ -917,6 +1086,8 @@ __RDFA_BASE = widgetBase + 'libraries/';
 
 // scripts to be loaded
 var scripts = {
+    // jQuery plug-in
+    RDFauthorPropertyRow:       widgetBase + 'src/jquery.equals.js', 
     // RDFauthor modules
     RDFauthorPropertyRow:       widgetBase + 'src/propertyrow.js', 
     RDFauthorView:              widgetBase + 'src/view.js', 

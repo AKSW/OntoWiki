@@ -9,7 +9,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
     public static function buildQuery($uri, $setup)
     {
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        $classVar = new Erfurt_Sparql_Query2_Var('classUri'); // new Erfurt_Sparql_Query2_IriRef($uri)
+        //$classVar = new Erfurt_Sparql_Query2_Var('classUri'); // new Erfurt_Sparql_Query2_IriRef($uri)
         $query = new Erfurt_Sparql_Query2();
         $query->setCountStar(true);
         //$query->setDistinct();
@@ -22,7 +22,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // create new graph pattern
                 $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
                 // add triplen
-                $u1->addTriple( $classVar,
+                $u1->addTriple( new Erfurt_Sparql_Query2_IriRef($uri),
                     new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
                     $searchVar
                 );
@@ -38,24 +38,24 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // add triplen
                 $u1->addTriple( $searchVar,
                     new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
-                    $classVar
+                    new Erfurt_Sparql_Query2_IriRef($uri)
                 );
                 // add triplet to union var
                 $union->addElement($u1);
             }
         }
         $query->addElement($union);
-        $query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
+        //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
         
         return $query;
     }
     
-    /*public static function buildQuery($uri, $setup)
+    public static function buildEmptyQuery($uri, $setup)
     {
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        //$classVar = new Erfurt_Sparql_Query2_Var('classUri');
         $query = new Erfurt_Sparql_Query2();
         $query->setCountStar(true);
-        //$query->setDistinct();
 
         // init union var
         $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
@@ -87,9 +87,38 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 $union->addElement($u1);
             }
         }
+        // parse config
+        if( isset($setup->config->instanceRelation->in) ){
+            foreach($setup->config->instanceRelation->in as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( new Erfurt_Sparql_Query2_IriRef($uri),
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    $searchVar
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
+        // parse config
+        if( isset($setup->config->instanceRelation->out) ){
+            foreach($setup->config->instanceRelation->out as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($uri)
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
         $query->addElement($union);
+        //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
 
         return $query;
-    }*/
+    }
 }
 

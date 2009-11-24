@@ -201,6 +201,35 @@
                 });
         })
     }
+    
+    /**
+     * Make inline elements editable.
+     */
+    $.fn.makeEditable = function () {
+        // return this.each(function() {
+        //     $(this).addClass('has-contextmenu-area');
+        //     
+        //     if ($(this).children('.contextmenu').length < 1) {
+        //         $(this).append('<div class="contextmenu></div>"');
+        //     }
+        //     
+        //     $(this).children('.contextmenu').append('\
+        //         <div class="item">\
+        //             <span class="icon icon-edit" title="Edit">\
+        //             </span>\
+        //         </div>\
+        //     ');
+        // })
+    }
+    
+    /**
+     * Checks whether two elements are equal
+     */
+    $.fn.equals = function (element) {
+        return this.each(function () {
+            
+        });
+    }
 
 })(jQuery);
 

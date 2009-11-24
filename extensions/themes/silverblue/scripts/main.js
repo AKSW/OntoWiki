@@ -50,9 +50,9 @@ $(document).ready(function() {
     // make resizer draggable
     // draggables need an explicit (inline) position
     $('.section-sidewindows .resizer-horizontal').css('position', 'absolute');
-    var resizerHeight = Math.max($(window).height()/*, $('.section-mainwindows').height()*/);
+    var documentHeight = $(document).height();
     $('.section-sidewindows .resizer-horizontal')
-        .height(resizerHeight)
+        .height(documentHeight + 'px')
         .draggable({
             axis: 'x', 
             zIndex: dragZIndex,  
@@ -79,6 +79,8 @@ $(document).ready(function() {
     
     // prefix preserving inputs
     $('input.prefix-value').prefixValue();
+    
+    $('.editable').makeEditable();
     
     // autosubmit
     $('a.submit').click(function() {
@@ -138,6 +140,19 @@ $(document).ready(function() {
        createInstanceFromClassURI(type);
     });
     
+    $('.edit.save').click(function() {
+        RDFauthor.commitEditing();
+    });
+    
+    $('.edit.cancel').click(function() {
+        // reload page
+        window.location.href = window.location.href;
+        // RDFauthor.cancelEditing();
+        // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
+        // mainInnerContent.load(document.URL);
+        // $('.edit-enable').click();
+    })
+    
     // edit mode
     $('.edit-enable').click(function() {
         if ($(this).hasClass('active')) {
@@ -180,7 +195,9 @@ $(document).ready(function() {
                 
             });
             
-            RDFauthor.startEditing();
+            // RDFauthor.startEditing();
+            
+            RDFauthor.startInline('*[about] td:nth-child(2)');
             
             $('.edit').each(function() {
                 $(this).fadeIn(effectTime);
@@ -298,6 +315,11 @@ $(document).ready(function() {
     //         }
     //     });
     // }
+    
+    // inline widgets
+    $('.inline-edit-local').live('click', function() {
+        RDFauthor.startInline($(this).closest('.editable').get(0));
+    })
     
     //-------------------------------------------------------------------------
     //---- liveQuery triggers

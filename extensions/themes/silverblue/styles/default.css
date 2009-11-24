@@ -682,7 +682,7 @@ img.clickicon, a.clickicon img {
 
 .icon-close { background-image:url(./../images/button-windowclose.png); }
 .icon-edit  { background-image:url(./../images/icon-edit.png); }
-.icon-list  { background-image:url(./../images/icon-.png); }
+.icon-list  { background-image:url(./../images/icon-list.png); }
 .icon-delete  { background-image:url(./../images/icon-delete.png); }
 .icon-save  { background-image:url(./../images/icon-save.png); }
 .icon-cancel  { background-image:url(./../images/icon-cancel.png); }
@@ -1682,7 +1682,7 @@ a.hasMenu:hover span.toggle {
 {
     display:block;
     position:absolute;
-    left:-5000em;
+    left:-5000em; top:-5000em;
     /* wegen .window .contextmenu */
     border:none !important;
     font-size: 1em !important;

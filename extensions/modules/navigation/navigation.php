@@ -39,8 +39,9 @@ class NavigationModule extends OntoWiki_Module
 
         // edit sub menu
         $toggleMenu = new OntoWiki_Menu();
-        $toggleMenu->setEntry('Show/Hide hidden Elements', "javascript:navigationEvent('toggleHidden')");
-        $toggleMenu->setEntry('Show/Hide empty Elements', "javascript:navigationEvent('toggleEmpty')");
+        $toggleMenu->setEntry('Hidden Elements', "javascript:navigationEvent('toggleHidden')");
+        $toggleMenu->setEntry('Empty Elements', "javascript:navigationEvent('toggleEmpty')");
+        $toggleMenu->setEntry('Implicit Elements', "javascript:navigationEvent('toggleImplicit')");
 
         // view sub menu
         $viewMenu = new OntoWiki_Menu();

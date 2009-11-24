@@ -163,7 +163,8 @@ RDFauthorPropertyRow.prototype.onSubmit = function () {
 
 // add generic jQuery events for widget action buttons
 $(document).ready(function() {
-    $('.actions a.delete-button').live('click', function(event) {
+    // non-inline
+    $('#rdfAuthorContainer .actions .delete-button').live('click', function(event) {
         if ($(this).closest('.property-row').length) {
             var rowId    = $(this).closest('.property-row').attr('id').replace('property-row-', '');
             var widgetId = $(this).closest('.widget').attr('id').replace('widget-', '');
@@ -176,12 +177,43 @@ $(document).ready(function() {
         }
     });
     
-    $('.actions .add-button').live('click', function() {
+    $('#rdfAuthorContainer .actions .add-button').live('click', function() {
         if ($(this).closest('.property-row').length) {
             var rowId    = $(this).closest('.property-row').attr('id').replace('property-row-', '');
             var widgetId = $(this).closest('.widget').attr('id').replace('widget-', '');
             
             var view = RDFauthor.getView();
+            var row  = view.getRow(rowId);
+            
+            var widgetIndex = row.widgetsById[widgetId];
+            var graph       = row.widgets[widgetIndex].graph;
+            var constructor = row.widgets[widgetIndex].constructor;
+            row.addWidget(null, graph, constructor);
+        }
+    });
+    
+    // inline
+    $('.rdfAuthorInline .actions .delete-button').live('click', function(event) {
+        if ($(this).closest('.property-row').length) {
+            var viewId   = $(this).closest('.rdfAuthorInline').attr('id');
+            var rowId    = $(this).closest('.property-row').attr('id').replace('property-row-', '');
+            var widgetId = $(this).closest('.widget').attr('id').replace('widget-', '');
+            
+            var view = RDFauthor.getInlineView(viewId);
+            var row  = view.getRow(rowId);
+            
+            var widgetIndex = row.widgetsById[widgetId];
+            row.removeWidget(widgetIndex, widgetId);
+        }
+    });
+    
+    $('.rdfAuthorInline .actions .add-button').live('click', function() {
+        if ($(this).closest('.property-row').length) {
+            var viewId   = $(this).closest('.rdfAuthorInline').attr('id');
+            var rowId    = $(this).closest('.property-row').attr('id').replace('property-row-', '');
+            var widgetId = $(this).closest('.widget').attr('id').replace('widget-', '');
+            
+            var view = RDFauthor.getInlineView(viewId);
             var row  = view.getRow(rowId);
             
             var widgetIndex = row.widgetsById[widgetId];

@@ -10,7 +10,8 @@
 <?php if (!empty($this->similars)): ?>
 	<ul class="bullets-none separated-vertical">
 	    <?php foreach ($this->similars as $type => $instances): ?>
-	        <li><?php echo $this->types[$type]['title'] ?>:
+	        <li class="has-contextmenu-area">
+                    <?php echo $this->types[$type]['title'] ?>:
 	            <ul class="bullets-none separated-horizontal">
 	                <?php $i = 0; ?>
 	                <?php foreach ($instances as $instance): ?>
@@ -20,12 +21,15 @@
 	                        <li><a class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
 	                    <?php endif; ?>
                     <?php endforeach; ?>
-                    <?php if ($this->types[$type]['has_more']): ?>
-    	                <li class="last-child">
-    	                    <a href="<?php echo $this->types[$type]['has_more'] ?>">[<?php echo $this->_('more') ?>]</a>
-    	                </li>
-    	            <?php endif; ?>
 	            </ul>
+                    <div class="contextmenu">
+                        <a class="item"
+                           href="<?php echo $this->types[$type]['has_more'] ?>">
+                            <span class="icon icon-list" title="Show as List">
+                                <span>Show as List</span>
+                            </span>
+                        </a>
+                    </div>
 	        </li>
 	    <?php endforeach; ?>
 	</ul>
