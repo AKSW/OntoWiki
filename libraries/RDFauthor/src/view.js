@@ -24,11 +24,21 @@ function RDFauthorView(options) {
         showButtons: true, 
         showAddPropertyButton: true, 
         animationTime: 250,   // ms
-        id: 'rdfAuthorContainer'
+        id: 'rdfAuthorContainer', 
+        rowContainerClass: 'rdfAuthorPropertyRows', 
+        inline: false, 
+        replaceContainerContent: false
     };
     this.options = $.extend(defaults, options);
     
-    this.container = this.options.container != 'undefined' ? this.options.container : $('body');
+    // this.container = this.options.container != 'undefined' ? this.options.container : $('body');
+    this.container = this.options.container ? this.options.container : $('body');
+    
+    // inline mode requires a unique ID
+    if (this.options.inline) {
+        this.options.id = RDFauthor.getNextId();
+        this.options.rowContainerClass = 'rdfAuthorInline';
+    }
     
     // the property selector object
     this.propertySelector = null;
@@ -45,14 +55,17 @@ function RDFauthorView(options) {
     var instance = this;
     
     function getChrome() {
-        var chrome = '\
-            <div class="window" id="' + instance.id + '" style="display:none">\
-                <h2 class="title">' + instance.options.title + '</h2>\
-                <div class="rdfAuthorPropertyRows">\
-                </div>\
-                    ' + getButtons() + '\
-                <div style="clear:both"></div>\
-            </div>';
+        var chrome = '';
+        if (!instance.options.inline) {
+            chrome = '\
+                <div class="window" id="' + instance.id + '" style="display:none">\
+                    <h2 class="title">' + instance.options.title + '</h2>\
+                    <div class="' + instance.options.rowContainerClass + '">\
+                    </div>' + getButtons() + '<div style="clear:both"></div>\
+                </div>';
+        } else {
+            chrome = '<div id="' + instance.id + '" class="' + instance.options.rowContainerClass + '" style="display:none"></div>';
+        }
         
         return chrome;
     }
@@ -60,6 +73,7 @@ function RDFauthorView(options) {
     if ($('#' + this.id).length < 1) {
         // append chrome
         var chromeHtml = getChrome();
+        
         this.container.append(chromeHtml);
     }
     
@@ -116,8 +130,14 @@ RDFauthorView.prototype.addRow = function (subject, property, title, object, gra
         // property row already exists
         row = this.rows[subject][property];
     } else {
-        // create new property row
-        var container = $('.rdfAuthorPropertyRows');
+        // create new property row in view container
+        var container;// = $('#' + this.id).andSelf().find('.' + this.options.rowContainerClass);
+        if (this.options.inline) {
+            container = $('#' + this.id);
+        } else {
+            container = $('.' + this.options.rowContainerClass);
+        }
+        
         row = new RDFauthorPropertyRow(container, subject, property, title);
         this.rows[subject][property] = row;
         
@@ -128,7 +148,7 @@ RDFauthorView.prototype.addRow = function (subject, property, title, object, gra
 };
 
 RDFauthorView.prototype.addWidgetInstance = function (widgetInstance) {
-    var container = $('.rdfAuthorPropertyRows');
+    var container = $('.' + this.options.rowContainerClass);
     var newProperty = '\
         <div class="container" id="newPropertyContainer123">\
             ' + widgetInstance.getHtml() + '<button id="addWidgetButton">Add Widget</button>\
@@ -154,19 +174,22 @@ RDFauthorView.prototype.callHook = function (hookName) {
 };
 
 RDFauthorView.prototype.display = function (animated) {
-    // make draggable if jQuery UI loaded
-    if (typeof jQuery.ui != 'undefined' && !$('#' + this.id).hasClass('ui-draggable')) {
-        $('#' + this.id).draggable({handle: 'h2', zIndex: 1000});
+    // non-inline view is to be positioned
+    if (!this.options.inline) {
+        // make draggable if jQuery UI loaded
+        if (typeof jQuery.ui != 'undefined' && !$('#' + this.id).hasClass('ui-draggable')) {
+            $('#' + this.id).draggable({handle: 'h2', zIndex: 1000});
+        }
+
+        var D = document;
+        var documentHeight = Math.max(
+            Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+            Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+            Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+        );
+
+        this.container.height(documentHeight + 'px');
     }
-    
-    var D = document;
-    var documentHeight = Math.max(
-        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
-        Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
-        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
-    );
-    
-    this.container.height(documentHeight + 'px');
     
     this.container.show();
     this.reposition();
@@ -180,6 +203,11 @@ RDFauthorView.prototype.display = function (animated) {
             }
         }
     };
+    
+    if (this.options.replaceContainerContent) {
+        var content = $('#' + this.id);
+        this.container.html(content);
+    }
     
     if (!animated) {
         $('#' + this.id).show();
@@ -197,7 +225,7 @@ RDFauthorView.prototype.getPropertySelector = function () {
         var subject = RDFauthor.getDefaultResource();
         
         var selectorOptions = {
-            container: '.rdfAuthorPropertyRows', 
+            container: '.' + rowContainerClass, 
             callback: function() {
                 var propertySelector = instance.getPropertySelector();
                 var propertyUri      = propertySelector.selectedProperty();
@@ -208,11 +236,11 @@ RDFauthorView.prototype.getPropertySelector = function () {
                 
                 var id = instance.addRow(subject, propertyUri, propertyTitle, null, graph);
                 var rowTop          = $('#' + id).closest('.property-row').offset().top;
-                var containerTop    = $('.rdfAuthorPropertyRows').offset().top;
-                var containerScroll = $('.rdfAuthorPropertyRows').scrollTop();
+                var containerTop    = $('.' + rowContainerClass).offset().top;
+                var containerScroll = $('.' + rowContainerClass).scrollTop();
                 
                 var scrollTo = containerScroll - (containerTop - rowTop);
-                $('.rdfAuthorPropertyRows').animate({scrollTop: scrollTo}, instance.options.animationTime);
+                $('.' + rowContainerClass).animate({scrollTop: scrollTo}, instance.options.animationTime);
                 
                 // widget should get focus
                 var row = instance.getRowForSubjectAndProperty(subject, propertyUri);

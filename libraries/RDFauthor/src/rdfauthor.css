@@ -26,7 +26,7 @@
     overflow: auto;
 }
 
-#rdfAuthorContainer * {min-width: 0 !important; min-height: 0 !important;}
+#rdfAuthorContainer *, .rdfAuthorInline * {min-width: 0 !important; min-height: 0 !important;}
 
 #rdfAuthorContainer fieldset {
     border: 1px dotted grey;
@@ -38,34 +38,41 @@
     padding-bottom: 0.5em !important;
 }
 
-#rdfAuthorContainer .property-row, #rdfAuthorContainer .container, #rdfAuthorContainer .inline-container {
+#rdfAuthorContainer .property-row, #rdfAuthorContainer .container, #rdfAuthorContainer .inline-container, 
+.rdfAuthorInline .container, .rdfAuthorInline .inline-container {
 /*    border: 1px dotted red;*/
     padding: 0.3em 0.5em;
 }
 
-#rdfAuthorContainer input, #rdfAuthorContainer textarea {
+#rdfAuthorContainer input, #rdfAuthorContainer textarea, 
+.rdfAuthorInline    input, .rdfAuthorInline textarea {
     font-size: 1.1em;
 }
 
-#rdfAuthorContainer .util {
+#rdfAuthorContainer .util, .rdfAuthorInline .util {
     font-size: 0.85em;
     display: block;
 }
 
-#rdfAuthorContainer .literal-lang select, #rdfAuthorContainer .literal-datatype select {margin-left: 0.5em;}
+#rdfAuthorContainer .literal-lang select, #rdfAuthorContainer .literal-datatype select, 
+.rdfAuthorInline    .literal-lang select, .rdfAuthorInline    .literal-datatype select {
+    margin-left: 0.5em;
+}
 
-#rdfAuthorContainer .container, #rdfAuthorContainer .inline-container {
+#rdfAuthorContainer .container, #rdfAuthorContainer .inline-container, 
+.rdfAuthorInline    .container, .rdfAuthorInline    .inline-container {
     float: left;
 /*    border: 1px dotted green;*/
 }
 
-#rdfAuthorContainer .widget {
+#rdfAuthorContainer .widget, 
+.rdfAuthorInline    .widget {
     min-height: 42px;
 /*    border: 1px solid green;*/
 }
 
-#rdfAuthorContainer .actions {float: right;}
-#rdfAuthorContainer .container > * {display: block;}
+#rdfAuthorContainer .actions, .rdfAuthorInline .actions {float: right;}
+#rdfAuthorContainer .container > *, .rdfAuthorInline .container > * {display: block;}
 
 #rdfAuthorContainer legend {
     margin: 0 0.3em;
@@ -73,29 +80,34 @@
     font-weight: bold;
 }
 
-#rdfAuthorContainer .add-button, #rdfAuthorContainer .delete-button {
+.rdfAuthorInline legend {
+    display: none;
+}
+
+#rdfAuthorContainer .add-button, #rdfAuthorContainer .delete-button, 
+.rdfAuthorInline    .add-button, .rdfAuthorInline    .delete-button {
     width: 16px;
     height: 16px;
 /*    margin: 1px 0;*/
 }
 
-#rdfAuthorContainer .add-button {
+#rdfAuthorContainer .add-button, .rdfAuthorInline .add-button {
     background-image: url('./../img/badge-add.png');
 }
 
-#rdfAuthorContainer .add-button:hover {
+#rdfAuthorContainer .add-button:hover, .rdfAuthorInline .add-button:hover {
     background-position: -16px;
 }
 
-#rdfAuthorContainer .delete-button {
+#rdfAuthorContainer .delete-button, .rdfAuthorInline .delete-button {
     background-image: url('./../img/badge-delete.png');
 }
 
-#rdfAuthorContainer .delete-button:hover {
+#rdfAuthorContainer .delete-button:hover, .rdfAuthorInline .delete-button:hover {
     background-position: -16px;
 }
 
-#rdfAuthorContainer .container > * {display: block;}
+#rdfAuthorContainer .container > *, .rdfAuthorInline .container > * {display: block;}
 
 .disclosure-button-horizontal {
     height: 2em !important;
