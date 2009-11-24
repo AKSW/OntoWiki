@@ -682,6 +682,10 @@ img.clickicon, a.clickicon img {
 
 .icon-close { background-image:url(./../images/button-windowclose.png); }
 .icon-edit  { background-image:url(./../images/icon-edit.png); }
+.icon-list  { background-image:url(./../images/icon-.png); }
+.icon-delete  { background-image:url(./../images/icon-delete.png); }
+.icon-save  { background-image:url(./../images/icon-save.png); }
+.icon-cancel  { background-image:url(./../images/icon-cancel.png); }
 
 /* -- 2.5. Links ------------------------------------------------------------ */
 
