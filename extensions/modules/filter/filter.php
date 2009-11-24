@@ -41,7 +41,7 @@ class FilterModule extends OntoWiki_Module
         $this->view->properties = $session->instances->getAllProperties();
         $this->view->inverseProperties = $session->instances->getAllReverseProperties();
         
-        $this->view->actionUrl      = $this->_owApp->urlBase . 'resource/instances/';
+        $this->view->actionUrl      = $this->_config->staticUrlBase . 'index.php/list/';
         $this->view->s      = $this->_request->s;
         
         $this->view->filter = $session->instances->getFilter();
@@ -54,7 +54,7 @@ class FilterModule extends OntoWiki_Module
                             $this->titleHelper->addResource($filter['property']);
                         }
                         if ($filter['valuetype'] == 'uri' && !empty($filter['value1'])) {
-                            //$this->titleHelper->addResource($filter['value1']);
+                            $this->titleHelper->addResource($filter['value1']);
                         }
                         if ($filter['valuetype'] == 'uri' && !empty($filter['value2'])) {
                             $this->titleHelper->addResource($filter['value2']);

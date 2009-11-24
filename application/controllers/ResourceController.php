@@ -184,134 +184,15 @@ class ResourceController extends OntoWiki_Controller_Base
         $resource    = $this->_owApp->selectedResource;
         $navigation  = $this->_owApp->navigation;
         $translate   = $this->_owApp->translate;
-        
-        // when switching to another class:
-        // reset session vars (regarding the instancelist) 
-        if ((string)$resource != $this->_owApp->selectedClass) {
-            // reset the instances object
-            unset($this->_session->instances);
-            
-            //reset config from tag explorer
-            unset($this->_session->cloudproperties);
-            
-            //these should be inside $this->_session->instances as well...
-            //TODO: eliminate usage of them, then delete the next 5 lines
-            unset($this->_session->shownProperties);
-            unset($this->_session->shownInverseProperties);
-            unset($this->_session->filter);
-            unset($this->_session->instancelimit);
-            unset($this->_session->instanceoffset);
-        }
-        
-        $this->_owApp->selectedClass = (string)$resource;
 
-        //ready, set,  ...
+        if(!($resource instanceof Ontowiki_Resource)){
+            throw new OntoWiki_Exception("No selected Resource.");
+        }
+
+        //the instances object is setup in Ontowiki/Controller/Plugin/ListSetupHelper.php
+
         $start = microtime(true);
-        
-        if (!isset($this->_session->instances) || // nothing build yet
-            isset($this->_request->init) // force a rebuild
-        ) {
-            $options = array(
-                'mode' => 'all' //default
-            );
-
-            //shortcut for "all instances of a rdfs class"
-            if(isset($this->_request->r)){
-                if(!isset($this->_request->cnav)){
-                    //shortcut navigation - only a rdfs class given
-                    $options['mode'] = 'instances';
-                    $options['type'] = $this->_owApp->selectedClass; //dont use r here: is a curi
-                    $options['memberPredicate'] = EF_RDF_TYPE;
-                    $options['withChilds'] = true;
-
-                    $options['hierarchyUp'] = EF_RDFS_SUBCLASSOF;
-                    $options['hierarchyIsInverse'] = true;
-                    //$options['hierarchyDown'] = null;
-                    $options['direction'] = 1; // down the tree
-                } else {
-                    // complex nav (from navigation module)
-                    $options['mode'] = 'defaultQuery';
-                    $conf = json_decode(stripslashes($this->_request->cnav), false);
-                    $options['defaultQuery'] = NavigationHelper::buildQuery($this->_owApp->selectedClass, $conf);
-                    $options['defaultQuery']->setCountStar(false);
-                }
-            }
-
-            if(isset($this->_request->query)){
-                //init with a serialized query2 obj in post
-                //usefull? should be mostly done like: init new list with this param, save to session, goto list page
-                $options['mode'] = 'defaultQuery';
-                $options['defaultQuery'] = unserialize(stripslashes($this->_request->query));
-            }
-            
-            // instantiate model
-            $instances   = new OntoWiki_Model_Instances($store, $graph, $options);
-        } else {
-            // use the object from the session
-            $instances = $this->_session->instances;
-        }
-
-        //check for change-requests
-        if (isset($this->_request->instancesconfig)) {
-            $config = json_decode(stripslashes($this->_request->instancesconfig));
-            //var_dump($config); exit;
-            if (isset($config->shownProperties)) {
-                foreach ($config->shownProperties as $prop) {
-                    if ($prop->action == 'add') {
-                        $instances->addShownProperty($prop->uri, $prop->label, $prop->inverse);
-                    } else {
-                        $instances->removeShownProperty($prop->uri.'-'.$prop->inverse);
-                    }
-                }
-            }
-
-            if (isset($config->filter)) {
-                foreach ($config->filter as $filter) {
-                    if ($filter->action == 'add') {
-                        $instances->addFilter(
-                            $filter->id,
-                            $filter->property,
-                            $filter->isInverse,
-                            $filter->propertyLabel,
-                            $filter->filter,
-                            $filter->value1,
-                            $filter->value2,
-                            $filter->valuetype,
-                            $filter->literaltype,
-                            $filter->hidden
-                        );
-                    } else {
-                        $instances->removeFilter($filter->id);
-                    }
-                }
-            }
-        }
-
-        if (isset($this->_request->s)) {
-            $instances->addSearchFilter('search-the-list', $this->_request->s);
-        }
-
-        if (isset($this->_request->limit)){
-            $instances->setLimit($this->_request->limit);
-        } else {
-            $instances->setLimit(10);
-        }
-        if (isset($this->_request->p)){ // p is the page number
-            $instances->setOffset(
-                ($this->_request->p * $instances->getLimit()) - $instances->getLimit()
-            );
-        } else {
-            $instances->setOffset(0);
-        }
-
-        // even if the was no change made to the query -> update it (especially the value-query)
-        // because the dataset may have changed since the last request
-        $instances->invalidate(); 
-        $instances->updateValueQuery();
-
-        //echo htmlentities($instances->getResourceQuery());
-        //echo htmlentities($instances->getQuery());
-        //var_dump($instances->getShownResources());
+        $instances = $this->_session->instances;
         
         //begin view building
         if ($instances->getMode() == OntoWiki_Model_Instances::modeType) {
@@ -342,11 +223,6 @@ class ResourceController extends OntoWiki_Controller_Base
             '";'
         );
 
-        if($this->_request->savelist != "false"){
-            //save to session
-            $this->_session->instances = $instances;
-        }
-
         $this->view->filter = $instances->getFilter();
         $filter_js = json_encode(is_array($this->view->filter) ? $this->view->filter : array());
         $this->view->headScript()->appendScript('filtersFromSession = ' . $filter_js.';');
@@ -359,6 +235,7 @@ class ResourceController extends OntoWiki_Controller_Base
         if ($instances->hasData()) {
             $this->view->instanceInfo = $instances->getResources();
             $this->view->instanceData = $instances->getValues();
+            //echo '<pre>'; print_r($this->view->instanceData); echo '</pre>';
             $itemsOnPage = count($this->view->instanceData);
             
             $this->view->propertyInfo = $instances->getShownProperties();
@@ -489,9 +366,9 @@ class ResourceController extends OntoWiki_Controller_Base
             if (defined('_OWDEBUG')) {
                 $statusBar += sprintf($this->_owApp->translate->translate('Query execution took %1$d ms.'), -1);
             }
-        echo "vor set";
+
         $this->view->statusBar = $statusBar;
-        echo "nach set";
+
     }
     /**
      * Deletes one or more resources denoted by param 'r'

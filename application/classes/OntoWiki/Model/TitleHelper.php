@@ -236,24 +236,28 @@ class OntoWiki_Model_TitleHelper
     public function getResources()
     {
         if (!$this->_resourcesAdded) {
-            $this->_resources = array();
-            return array_keys($this->_resources);
-            
-            $query = $this->getResourceQuery();
-            
-            if (null !== $this->_model) {
-                $result = $this->_model->sparqlQuery($query);
-            } else {
-                $result = $this->_store->sparqlQuery($query);
+            $this->_resources = array(); //sync
+            return array();
+        }
+
+        // why not simply:
+        return array_keys($this->_resources);
+        // ?
+
+        //what happens here? $wtf++ :)
+        $query = $this->getResourceQuery();
+
+        if (null !== $this->_model) {
+            $result = $this->_model->sparqlQuery($query);
+        } else {
+            $result = $this->_store->sparqlQuery($query);
+        }
+
+        if ($result) {
+            foreach ($result as $row) {
+                $uri = $row[self::RESOURCE_VARIABLE];
+                $this->_resources[$uri] = $uri;
             }
-            
-            if ($result) {
-                foreach ($result as $row) {
-                    $uri = $row[self::RESOURCE_VARIABLE];
-                    $this->_resources[$uri] = $uri;
-                }
-            }
-            $this->_resourcesAdded = true;
         }
         
         return array_keys((array)$this->_resources);
@@ -293,10 +297,10 @@ class OntoWiki_Model_TitleHelper
             $language = null;
         }
         
-        // do nothing if we don't have this URI
-        if (!isset($this->_resources[$resourceUri])) {
+        // add if we don't have this URI (but logg)
+        if (!array_key_exists($resourceUri, $this->_resources)) {
             $logger = OntoWiki::getInstance()->logger;
-            
+            var_dump($this->_resources);
             $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
             $this->addResource($resourceUri);
         }

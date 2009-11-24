@@ -67,7 +67,6 @@ class MapHelper extends OntoWiki_Component_Helper
             $lat2Var        = new Erfurt_Sparql_Query2_Var('lat2');
             $long2Var       = new Erfurt_Sparql_Query2_Var('long2');
 
-            //the future is now!
             if($this->instances === null) {    
                 $this->instances = clone $session->instances;
                 $owApp->logger->debug('MapHelper/shouldShow: clone this->_session->instances');

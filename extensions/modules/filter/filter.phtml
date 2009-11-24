@@ -44,12 +44,12 @@ $odd = false;
             <?php if ($filter['value1']) : ?>
                 <?php if ($filter['valuetype'] == 'uri') : ?>
                     <a  class="hasMenu"
-                        about="<?php echo $filter['value1']->getIri(); ?>"
-                        href="<?php echo (string) $linkurl->setParam('r', $filter['value1']->getIri(), true) ?>">
-                        <?php echo $this->titleHelper->getTitle($filter['value1']->getIri()); ?>
+                        about="<?php echo $filter['value1']; ?>"
+                        href="<?php echo (string) $linkurl->setParam('r', $filter['value1'], true) ?>">
+                        <?php echo $this->titleHelper->getTitle($filter['value1']); ?>
                     </a>
                 <?php else : ?>
-                    <strong><?php echo $filter['value1'] ?></strong>
+                    <strong>"<?php echo $filter['value1'] ?>"</strong>
                 <?php endif ?>
             <?php endif ?>
             <?php endif; if($filter['mode'] == "typeFilter") : ?>

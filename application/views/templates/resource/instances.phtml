@@ -28,7 +28,7 @@
                        href="<?php echo $instance['url']?>">
                         <?php echo $instance['title'] ?>
                     </a><br />
-                    <?php if (isset($this->instanceData[$instanceUri])): ?>
+                    <?php if (isset($this->instanceData[$instanceUri]) && isset($this->instanceData[$instanceUri]['__TYPE'])): ?>
                         <?php if (count($this->instanceData[$instanceUri]['__TYPE']) > 1): ?>
                             <?php $j = 0; $count = count($this->instanceData[$instanceUri]['__TYPE']) ?>
                             <?php foreach ($this->instanceData[$instanceUri]['__TYPE'] as $type): ?>

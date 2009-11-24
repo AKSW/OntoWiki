@@ -6,7 +6,6 @@ function FilterAPI(){
          * @var
          */
         this.uri = urlBase+"list/";
-
         /*
          *@var array
          */
@@ -25,6 +24,7 @@ function FilterAPI(){
 		if(typeof callback == 'function' || typeof callback == 'object')
 			this.callbacks.push(callback);
 	};
+
 	/**
          * add a filter
          * @method
@@ -41,60 +41,39 @@ function FilterAPI(){
          * @param hidden boolean will not show up in filterbox if true
          */
 	this.add = function(id, property, isInverse, propertyLabel, filter, value1, value2, valuetype, literaltype, callback, hidden){
-            if(typeof callback != 'function' && typeof callback != 'object')
+            if(typeof callback != 'function' && typeof callback != 'object'){
 		callback = function(){};
+            }
 
-		var data =
-                    {
-                    filter:
-                        [
-                            {
-                                "action" : "add",
-                                "id" : id,
-                                "property" : property,
-                                "isInverse" : typeof isInverse != 'undefined' ? isInverse : false,
-                                "propertyLabel" : typeof propertyLabel != 'undefined' ? propertyLabel : null,
-                                "filter" : filter,
-                                "value1": value1,
-                                "value2": typeof value2 != 'undefined' ? value2 : null,
-                                "valuetype": typeof valuetype != 'undefined' ? valuetype : null,
-                                "literaltype" : typeof literaltype != 'undefined' ? literaltype : null,
-                                "hidden" : typeof hidden != 'undefined' ? hidden : false
-                            }
-                        ]
-                };
-
-		var dataserialized = $.toJSON(data);
-
-		me = this;
-		$.post(
-		this.uri,
-		{
-                    "instancesconfig" : dataserialized
-                }, //as post because of size
-		function(res) {
-                    if(true){ //how to check for success
-                        //remember
-                        me.filters[id] = data;
-
-                        //do default action
-                        me.reloadInstances();
-
-                        //do caller specific action
-                        callback(me.filters);
-
-                        //inform others
-                        for(key in me.callbacks){
-                                me.callbacks[key](me.filters);
+            var data =
+                {
+                filter:
+                    [
+                        {
+                            "action" : "add",
+                            "id" : id,
+                            "property" : property,
+                            "isInverse" : typeof isInverse != 'undefined' ? isInverse : false,
+                            "propertyLabel" : typeof propertyLabel != 'undefined' ? propertyLabel : null,
+                            "filter" : filter,
+                            "value1": value1,
+                            "value2": typeof value2 != 'undefined' ? value2 : null,
+                            "valuetype": typeof valuetype != 'undefined' ? valuetype : null,
+                            "literaltype" : typeof literaltype != 'undefined' ? literaltype : null,
+                            "hidden" : typeof hidden != 'undefined' ? hidden : false
                         }
-                    } else alert("Could not add filter!\nGot error while saving: \n"+res);
-		},
-		"text");
+                    ]
+            };
+
+            var dataserialized = $.toJSON(data);
+
+            window.location = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized);
+            
 	};
 
 	this.reloadInstances = function(){
             //$('.content .innercontent').load(document.URL);
-            window.location = this.uri;
+            //window.location = this.uri;
 	};
 
         this.filterExists = function(id){
@@ -121,52 +100,11 @@ function FilterAPI(){
 
             var dataserialized = $.toJSON(data);
 
-            me = this;
-            $.post(
-		this.uri,
-		{
-                    "instancesconfig" : dataserialized
-                }, //as post because of size
-                function(res) {
-                    if(true){
-                        //unset
-                        delete me.filters[id];
-                        //do default action
-                        me.reloadInstances();
-
-                        //do caller specific action
-                        callback(me.filters);
-
-                        //inform others
-                        for(key in me.callbacks){
-                                me.callbacks[key](me.filters);
-                        }
-                    } else alert("Could not remove filter with id "+id+"!\nReason: \n"+res);
-                }
-            );
+            window.location = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized);
 	};
 
-	this.removeAll = function(callback){
-            if(typeof callback != 'function' && typeof callback != 'object')
-                    callback = function(){};
-            me = this;
-            $.get(this.uri+"&method=unsetArray", function(res) {
-                if(res==""){
-                    //do default action
-                    me.reloadInstances();
-
-                    //forget
-                    me.filters = new Array();
-
-                    //do caller specific action
-                    callback(me.filters);
-
-                    //inform others
-                    for(key in me.callbacks){
-                            me.callbacks[key](me.filters);
-                    }
-                 } else alert("Could not remove all filters!\nReason: \n"+res);
-            });
+	this.removeAll = function(){
+            window.location = this.uri+"?init"
 	};
 }
 

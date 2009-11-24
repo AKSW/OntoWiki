@@ -521,6 +521,7 @@ class TaggingController extends OntoWiki_Controller_Component
         $selectedTags = array();
         $selectedTagsInverse = array();
         $filters = $this->session->instances->getFilter();
+
         if (is_array($filters)) {
             foreach ($filters as $key => $filter) {
                 $parts = explode('-', $filter['id']);

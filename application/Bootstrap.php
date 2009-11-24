@@ -370,6 +370,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         $frontController->registerPlugin(new OntoWiki_Controller_Plugin_HttpAuth(), 1); // Needs to be done first!
         $frontController->registerPlugin(new OntoWiki_Controller_Plugin_SetupHelper(), 2);
+        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_ListSetupHelper(), 3); //needs to be done after SetupHelper
     }
     
     /**
