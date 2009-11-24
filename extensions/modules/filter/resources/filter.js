@@ -100,7 +100,7 @@ $(document).ready(function(){
     //filter.addCallback(function(newfilter){ showFilter() });
 
     $('.filter .delete').click(function(){
-        filter.remove($(this).parent().attr('id'));
+        filter.remove($(this).parents('.filter').attr('id'));
     })
 });
 
