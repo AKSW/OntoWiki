@@ -2,7 +2,7 @@
     <div><?php echo $this->prePropertiesContent; ?></div>    
 <?php endif; ?>
 <?php $flag = false; ?>
-<span about="<?php echo $this->resourceUri ?>" style="display: none" class="about_span"></span>
+<span about="<?php echo $this->resourceUri ?>" style="display:none" class="about_span"></span>
 <?php if ($this->has('predicates')): ?>
 <?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
 <table class="separated-vertical rdfa" about="<?php echo $this->resourceUri ?>"

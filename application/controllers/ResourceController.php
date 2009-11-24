@@ -404,6 +404,14 @@ class ResourceController extends OntoWiki_Controller_Base
             //$this->statusbarpagerAction();
             //$this->view->placeholder('main.window.statusbar')->append($this->render("statusbarpager"));
             
+            // prepare namespaces
+            $namespaces = $graph->getNamespaces();
+            $graphBase  = $graph->getBaseUri();
+            if (!array_key_exists($graphBase, $namespaces)) {
+                $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
+            }
+            $this->view->namespaces = $namespaces;
+            
             // TODO: check acl
             // build toolbar
             if ($graph->isEditable()) {

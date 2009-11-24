@@ -1,19 +1,16 @@
-<?php /* if ($this->has('searchText')): ?>
-    <p>Results for Search "<?php echo $this->searchText; ?>"</p>
-<?php endif;
- //this is printed in the windows title now
- */?>
-    
-<?php 
-    $odd = true;
-    if ($this->has('instanceInfo')):
-?>
-    <table class="separated-vertical">
+<?php $odd = true; if ($this->has('instanceInfo')): ?>
+    <table class="separated-vertical"
+        <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+            <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+        <?php endforeach; ?>>
         <?php if (!empty($this->propertyInfo)): ?>
             <tr>
                 <th></th><th></th><th></th>
                 <?php foreach ($this->propertyInfo as $property): ?>
-                    <th><a href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a><?php if($property['inverse']){ echo "<sup>-1</sup>";} ?></a></th>
+                    <th>
+                        <a href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
+                        <?php if ($property['inverse']): ?><sup>-1</sup><?php endif; ?>
+                    </th>
                 <?php endforeach; ?>
             </tr>
         <?php endif; ?>
@@ -27,8 +24,8 @@
                 <td>
                     <a class="hasMenu expandable" 
                        about="<?php echo $instanceUri ?>" 
-                       typeof="<?php echo $this->type ?>"
-                       href="<?php echo $instance['url'] ?>">
+                       typeof="<?php echo $this->curie($this->type) ?>"
+                       href="<?php echo $instance['url']?>">
                         <?php echo $instance['title'] ?>
                     </a><br />
                     <?php if (isset($this->instanceData[$instanceUri])): ?>
@@ -48,31 +45,40 @@
                                   array_key_exists($property['varName'], $this->instanceData[$instanceUri]) &&
                                   !empty($this->instanceData[$instanceUri][$property['varName']])): ?>
                             <?php if (count($this->instanceData[$instanceUri][$property['varName']]) > 1): ?>
-                                <ul>
+                                <ul class="bullets-none">
                                 <?php $i=0; foreach ($this->instanceData[$instanceUri][$property['varName']] as $property): ?>
                                     <?php if($i==OW_SHOW_MAX): //ignoring OW_SHOW_MAX is probably bad - but the remaining data is hidden with js
                                     
                                     		// this is probably not cool but with appendScript this code would not be delivered at an ajax req 
                                     	?>
-                                    	<script language="JavaScript">$(document).ready(function(){$("<span class=\"all-ommited-symbol\">[...] <a class=\"all-opener\">show</a></span>").insertBefore($(".all-omitted-data").hide()); $(".all-opener").click(function(){$(this).parent().next().show(); $(this).parent().remove();})});</script>
+                                    	<script type="text/javascript">$(document).ready(function(){$("<span class=\"all-ommited-symbol\">[...] <a class=\"all-opener\">show</a></span>").insertBefore($(".all-omitted-data").hide()); $(".all-opener").click(function(){$(this).parent().next().show(); $(this).parent().remove();})});</script>
 										<div class="all-omitted-data">
-										<?php endif; 
-										if ($property['url']): ?>
-                                        	<li><a href="<?php echo $property['url'] ?>"><?php echo $property['value'] ?></a></li>
+										<?php endif; ?>
+										<?php if ($property['url']): ?>
+                                        	<li>
+                                        	    <a href="<?php echo $property['url'] ?>" resource="<?php echo $property['value'] ?>"><?php 
+                                        	        echo $property['value'] 
+                                        	    ?></a>
+                                        	</li>
 	                                    <?php else: ?>
-	                                        <li><?php echo $property['value'] ?></li>
+	                                        <li content="<?php echo $property['value'] ?>"><?php echo $property['value'] ?></li>
 	                                    <?php endif; ?>
                                 <?php $i++; if($i==101) break; 
                                 	endforeach; 
                                 if($i>=OW_SHOW_MAX):?></div><?php endif; ?>
                                 </ul>
                             <?php else: ?>
-                                <?php if ($this->instanceData[$instanceUri][$property["varName"]][0]['url']): ?>
-                                    <a href="<?php echo $this->instanceData[$instanceUri][$property["varName"]][0]['url'] ?>">
-                                        <?php echo $this->instanceData[$instanceUri][$property["varName"]][0]['value'] ?>
+                                <?php if ($this->instanceData[$instanceUri][$property['varName']][0]['url']): ?>
+                                    <a about="<?php echo $instanceUri ?>" 
+                                       rel="<?php echo $this->curie($property['uri']) ?>" 
+                                       resource="<?php echo $this->instanceData[$instanceUri][$property['varName']][0]['uri'] ?>"
+                                       href="<?php echo $this->instanceData[$instanceUri][$property['varName']][0]['url'] ?>">
+                                        <?php echo $this->instanceData[$instanceUri][$property['varName']][0]['value'] ?>
                                     </a>
                                 <?php else: ?>
-                                    <?php echo $this->instanceData[$instanceUri][$property["varName"]][0]['value'] ?>
+                                    <span about="<?php echo $instanceUri ?>" property="<?php echo $this->curie($property['uri']) ?>" content="<?php echo $this->instanceData[$instanceUri][$property['varName']][0]['value'] ?>">
+                                        <?php echo $this->instanceData[$instanceUri][$property['varName']][0]['value'] ?>
+                                    </span>
                                 <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
