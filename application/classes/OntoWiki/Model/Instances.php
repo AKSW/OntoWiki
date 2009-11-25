@@ -866,7 +866,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $query->addFilter(
             new Erfurt_Sparql_Query2_ConditionalAndExpression(
                 array(
-                    new Erfurt_Sparql_Query2_isUri($valueVar),
+                    //new Erfurt_Sparql_Query2_isUri($valueVar),
                     // when resourceVar is the object - prevent literals
                     new Erfurt_Sparql_Query2_UnaryExpressionNot(
                         new Erfurt_Sparql_Query2_isBlank($valueVar)

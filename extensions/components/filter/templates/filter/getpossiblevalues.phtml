@@ -12,8 +12,9 @@
             if (!empty($value['xml:lang'])) {
                 echo ' language="'.$value['xml:lang'].'"';
             }
-            echo '>';
-            echo isset($value['title']) ? $value['title'] : $value['value']; ?>
+        ?>
+    >
+       <?php  echo isset($value['title']) ? $value['title'] : $value['value']; ?>
     </option>
 <?php endforeach ?>
 
