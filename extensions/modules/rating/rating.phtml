@@ -1,0 +1,81 @@
+<table class="separated-vertical">
+    <tr >
+        <td>
+            <div>Current Rating </div>
+        </td>
+    </tr>
+
+
+    <tr class="even">
+        <td>
+            <input  type="radio" class="star {split:2}" name="rating" value="0.5"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="1"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="1.5"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="2"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="2.5"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="3"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="3.5"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="4"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="4.5"/>
+            <input  type="radio" class="star {split:2}" name="rating" value="5"/>
+
+            <div id="rate_text" > </div>
+        </td>
+    </tr>
+
+    <tr  id ="change0" >
+        <td>
+            <div> Rate the Resource </div>
+        </td>
+    </tr>
+    <tr id ="change1">
+        <td id="ratingfield">
+            <input  type="radio" class="star {split:1}" name="rating_input" value="1"/>
+            <input  type="radio" class="star {split:1}" name="rating_input" value="2"/>
+            <input  type="radio" class="star {split:1}" name="rating_input" value="3"/>
+            <input  type="radio" class="star {split:1}" name="rating_input" value="4"/>
+            <input  type="radio" class="star {split:1}" name="rating_input" value="5"/>
+        </td>
+    </tr>
+    <tr  id ="change2" >
+        <td>
+            <form action="<?php echo $this->actionUrl ?>" method="post" accept-charset="utf-8" name="note" class="ajaxForm reloadOnSuccess">
+                <fieldset style="display:none;">
+                    <textarea id ="submit" style="min-width:50%;min-height:4.5em" class="width99" name="rating"></textarea>
+                </fieldset>
+                <a class="button submit" name ="submitbutton">
+                    <img src="<?php echo $this->themeUrlBase ?>/images/icon-comment-add.png" alt="add comment icon" />
+                    <span><?php echo $this->_('Rate') ?></span>
+                </a>
+            </form>
+        </td>
+    </tr>
+
+
+    <tr style="display:none;" id ="change3">
+        <td>
+            <div> Your Vote: </div>
+        </td>
+    </tr>
+    <tr style="display:none;" id ="change4">
+        <td>
+            <input  type="radio" class="star {split:1}" name="rating_user" value="1"/>
+            <input  type="radio" class="star {split:1}" name="rating_user" value="2"/>
+            <input  type="radio" class="star {split:1}" name="rating_user" value="3"/>
+            <input  type="radio" class="star {split:1}" name="rating_user" value="4"/>
+            <input  type="radio" class="star {split:1}" name="rating_user" value="5"/>
+        </td>
+    </tr>
+    <tr style="display:none;" id ="change5">
+        <td>
+            <a class="button submit" id ="changebutton" >
+                <img src="<?php echo $this->themeUrlBase ?>/images/icon-edit.png" alt="add comment icon" />
+                <span><?php echo $this->_('Change') ?></span>
+            </a>
+        </td>
+    </tr>
+
+
+</table>
+
+

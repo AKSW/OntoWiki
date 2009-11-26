@@ -1,0 +1,10 @@
+enabled     = on
+name        = HideProperties
+description = "A plug-in that hides defined Properties in the ressourceview"
+author      = "Niederstaetter Michael ,  Maier Christian"
+[events]
+1 = onPropertiesActionData
+
+[private]
+sort.method     = "rdf"
+sort.property   = "http://ns.ontowiki.net/SysOnt/hidden"

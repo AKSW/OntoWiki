@@ -1,0 +1,22 @@
+;;
+; Static module configuration
+;;
+enabled    = true
+title      = "Rating"
+caching    = no
+priority   = 20
+contexts[] = "main.window.properties"
+
+
+[private]
+
+********************************************************************************
+Classes for Rating
+********************************************************************************
+; default is rating for all resources - if any rating class is set the 
+; rating-module will be available only for these resources
+
+;ratingClass[] = "http://anyuri.com"
+
+
+
