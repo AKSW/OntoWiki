@@ -185,47 +185,26 @@ class ResourceController extends OntoWiki_Controller_Base
         $navigation  = $this->_owApp->navigation;
         $translate   = $this->_owApp->translate;
 
-        if(!($resource instanceof Ontowiki_Resource)){
-            throw new OntoWiki_Exception("No selected Resource.");
-        }
-
         //the instances object is setup in Ontowiki/Controller/Plugin/ListSetupHelper.php
 
         $start = microtime(true);
         $instances = $this->_session->instances;
         
         //begin view building
-        if ($instances->getMode() == OntoWiki_Model_Instances::modeType) {
-            $title = $resource->getTitle() ?
-                $resource->getTitle() :
-                OntoWiki_Utils::contractNamespace((string)$resource);
-
-            $windowTitle = sprintf($translate->_('Instances of %1$s'), $title);
-        } else if ($instances->getMode() == OntoWiki_Model_Instances::modeSearch){
-            $windowTitle = sprintf($translate->_('Results for search "%1$s"'), $instances->getSearchText());
-        } else if ($instances->getMode() == OntoWiki_Model_Instances::modeGiven){
-            $windowTitle = $translate->_('Results for given query');
-        } else if ($instances->getMode() == OntoWiki_Model_Instances::modeAll){
-            $windowTitle = $translate->_('All Resources');
-            if(count($instances->getFilter()) > 0){
-                $windowTitle .= " (filtered)";
-            }
-        }
-
-        if(isset($windowTitle)){
-            $this->view->placeholder('main.window.title')->set($windowTitle);
-        } else {
-            throw new Exception("something went wrong with the instance list: OntoWiki_Model_Instances has no mode set", 1);
-        }
-        $this->view->headScript()->appendScript(
-            'var reloadUrl = "'.
-            new OntoWiki_Url(array(), array('p', 'limit')). // url to reload -> without config params
-            '";'
-        );
+        $this->view->placeholder('main.window.title')->set('Resource List');
+        
+        $this->view->resourceQuery = (string) $instances->getResourceQuery();
+        $this->view->valueQuery = (string) $instances->getQuery();
+        $this->view->permalink = $this->_config->urlBase.'list/'.$instances->getPermalink();
+        $this->view->urlBase = $this->_config->urlBase;
 
         $this->view->filter = $instances->getFilter();
         $filter_js = json_encode(is_array($this->view->filter) ? $this->view->filter : array());
-        $this->view->headScript()->appendScript('filtersFromSession = ' . $filter_js.';');
+        $this->view->headScript()->appendScript(
+            'var reloadUrl = "'.
+            new OntoWiki_Url(array(), array('p', 'limit')). // url to reload -> without config params
+            '";
+            filtersFromSession = ' . $filter_js.';');
 
         $this->view->headScript()->appendFile(
             $this->_config->staticUrlBase.
@@ -330,46 +309,7 @@ class ResourceController extends OntoWiki_Controller_Base
 
 
     }
-    
-    public function statusbarpagerAction() {
-        $store       = $this->_owApp->erfurt->getStore();
-        $graph       = $this->_owApp->selectedModel;
-        if (!isset($this->_owApp->instances))
-            $this->instancesAction();
-        
-        $translate = $this->_owApp->translate;
-        $query = clone $this->_owApp->instances->getQuery();
-        $query->getStartNode()->clearShownProperties();
-        $newquery = $query->getRealQuery()->setDistinct(true);
 
-        $where = 'WHERE '.$newquery->getWhere()->getSparql();
-        
-        try {
-            $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
-        } catch (Erfurt_Store_Exception $e) {
-            $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
-        }
-        
-        
-        
-        
-        $itemsOnPage = count($this->_owApp->instances->getValues());
-        $limit =  $this->_owApp->instances->getLimit();
-            
-            $statusBar = OntoWiki_Pager::get($count, $limit, $itemsOnPage);
-            
-            if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
-                $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
-                $statusBar += sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results);
-            }
-            
-            if (defined('_OWDEBUG')) {
-                $statusBar += sprintf($this->_owApp->translate->translate('Query execution took %1$d ms.'), -1);
-            }
-
-        $this->view->statusBar = $statusBar;
-
-    }
     /**
      * Deletes one or more resources denoted by param 'r'
      */

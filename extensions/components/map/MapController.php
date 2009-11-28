@@ -30,7 +30,9 @@ class MapController extends OntoWiki_Controller_Component
     public function init()
     {
         parent::init();
-        $this->resource = $this->_owApp->selectedResource->getIri();
+        if(is_object($this->_owApp->selectedResource)){
+            $this->resource = $this->_owApp->selectedResource->getIri();
+        }
         $this->model    = $this->_owApp->selectedModel;
         $this->store    = $this->_erfurt->getStore();
     }

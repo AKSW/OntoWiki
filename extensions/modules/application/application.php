@@ -14,6 +14,18 @@
  */
 class ApplicationModule extends OntoWiki_Module
 {   
+    public function init(){
+        /*$this->view->headScript()->appendScript('
+        $(document).ready(function(){
+            $("#applicationsearch input").keyup(function(e) {
+                if(e.keyCode == 13) {
+                    alert($(this).val());
+                }
+            });
+        });
+        ');*/
+    }
+
     /**
      * Returns the title of the module
      *
@@ -86,7 +98,7 @@ class ApplicationModule extends OntoWiki_Module
     public function getContents()
     {
         $data = array(
-            'actionUrl'      => $this->_config->urlBase . 'resource/instances/init/true',
+            'actionUrl'      => $this->_config->urlBase . 'list/init/1/',
             #'user'           => $this->_owApp->user['username'], 
             'modelSelected'  => isset($this->_owApp->selectedModel), 
             's'              => $this->_request->getParam('s')

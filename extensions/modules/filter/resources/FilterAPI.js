@@ -50,6 +50,7 @@ function FilterAPI(){
                 filter:
                     [
                         {
+                            "mode" : "box",
                             "action" : "add",
                             "id" : id,
                             "property" : property,

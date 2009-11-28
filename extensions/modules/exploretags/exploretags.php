@@ -62,8 +62,7 @@ class ExploretagsModule extends OntoWiki_Module
 	 */
 	function getContents()
 	{						
-            $data['resourceUri'] = $this->_owApp->selectedResource->getIri();
-            $content = $this->render('exploretags', $data, 'data');
+            $content = $this->render('exploretags');
             return $content;
 	}
 }

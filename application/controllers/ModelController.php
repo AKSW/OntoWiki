@@ -779,6 +779,7 @@ class ModelController extends OntoWiki_Controller_Base
         
         $title = $resource->getTitle();
         $this->view->modelTitle = $title ? $title : OntoWiki_Utils::contractNamespace((string)$resource);
+        $this->view->resourcesUrl = $this->_config->staticUrlBase . 'index.php/list/init/1';
 
         if (!empty($resource)) {
             $model = new OntoWiki_Model_Resource($store, $graph, (string)$resource);

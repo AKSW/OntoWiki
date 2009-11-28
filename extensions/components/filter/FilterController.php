@@ -21,11 +21,7 @@ class FilterController extends OntoWiki_Controller_Component
         $predicate = $this->_request->getParam('predicate', '');
         $inverse = $this->_request->getParam('inverse', '');
         
-        if ($inverse == "true") {
-            $this->view->values = $instances->getSubjects($predicate);
-        } else {
-            $this->view->values = $instances->getObjects($predicate);
-        }
+        $this->view->values = $instances->getPossibleValues($predicate, true, $inverse == "true");
         
         require_once 'OntoWiki/Model/TitleHelper.php';
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);

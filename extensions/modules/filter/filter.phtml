@@ -34,7 +34,7 @@ $odd = false;
         <li id="<?php echo $filter['id'] ?>"
             class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> filter has-contextmenu-area"
             >
-            <?php if($filter['mode'] == "filterbox"): ?>
+            <?php if($filter['mode'] == "box"): ?>
             <a  class="hasMenu"
                 about="<?php echo $filter['property'] ?>"
                 href="<?php echo (string) $linkurl->setParam('r', $filter['property'], true) ?>">
@@ -55,13 +55,13 @@ $odd = false;
                     <strong>"<?php echo $filter['value1'] ?>"</strong>
                 <?php endif ?>
             <?php endif ?>
-            <?php endif; if($filter['mode'] == "typeFilter") : ?>
+            <?php endif; if($filter['mode'] == "rdfsclass") : ?>
                     Type: <a  class="hasMenu"
-                        about="<?php echo $filter['type']; ?>"
-                        href="<?php echo (string) $linkurl->setParam('r', $filter['type'], true) ?>">
-                        <?php echo $this->titleHelper->getTitle($filter['type']); ?>
+                        about="<?php echo $filter['rdfsclass']; ?>"
+                        href="<?php echo (string) $linkurl->setParam('r', $filter['rdfsclass'], true) ?>">
+                        <?php echo $this->titleHelper->getTitle($filter['rdfsclass']); ?>
                     </a>
-            <?php endif; if($filter['mode'] == "searchFilter") : ?>
+            <?php endif; if($filter['mode'] == "search") : ?>
                     Search: <?php echo $filter['searchText']; ?>
             <?php endif; if($filter['mode'] == "given") : ?>
                     Base Query
@@ -109,6 +109,8 @@ $odd = false;
                 or<br/>
                 <select id="resttype">
                         <option>contains</option>
+                        <option>larger</option>
+                        <option>smaller</option>
                 </select>
                 <input type="text" id="value"/>
                 <formset><a id="add" class="button minibutton">set</a>

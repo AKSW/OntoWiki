@@ -33,14 +33,16 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
         if (!$this->_isSetup &&
             $ontoWiki->selectedModel instanceof Erfurt_Rdf_Model &&
             (
-                $request->controller == "resource" &&
-                $request->action == "instances"
+                isset($request->init) ||
+                isset($request->instancesconfig) ||
+                isset($request->s) ||
+                isset($request->class)
                 /*
                  *TODO: fix here...
                  * we need to separate two usages of r param
                  * use "class" param when the resource is a class
                  *
-                 * then this condition can express "true if there is a class param or cnav or init"
+                 * then this condition can express "true if there is a init param or instancesconfig or the shortcuts s and class
                  * (now it triggers only when calling the instances action - as before this plugin)
                  */
             )
@@ -53,7 +55,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
             // when switching to another class:
             // reset session vars (regarding the instancelist)
-            if ((string)$resource != $ontoWiki->selectedClass) {
+            if (isset($request->init)) {
                 //echo 'kill list session';
                 // reset the instances object
                 unset($session->instances);
@@ -70,55 +72,55 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 unset($session->instanceoffset);
             }
 
-            $ontoWiki->selectedClass = (string)$resource;
 
             if (!isset($session->instances) || // nothing build yet
                 isset($request->init) // force a rebuild
             ) {
-                $options = array(
-                    'mode' => 'all' //default
-                );
-
-                //shortcut for "all instances of a rdfs class"
-                if(isset($request->r)){
-                    if(!isset($request->cnav)){
-                        //shortcut navigation - only a rdfs class given
-                        $options['mode'] = 'instances';
-                        $options['type'] = $ontoWiki->selectedClass; //dont use r here: is a curi
-                        $options['memberPredicate'] = EF_RDF_TYPE;
-                        $options['withChilds'] = true;
-
-                        $options['hierarchyUp'] = EF_RDFS_SUBCLASSOF;
-                        $options['hierarchyIsInverse'] = true;
-                        //$options['hierarchyDown'] = null;
-                        $options['direction'] = 1; // down the tree
-                    } else {
-                        // complex nav (from navigation module)
-                        $options['mode'] = 'defaultQuery';
-                        $conf = json_decode(stripslashes($request->cnav), false);
-                        $options['defaultQuery'] = NavigationHelper::buildQuery($ontoWiki->selectedClass, $conf);
-                        $options['defaultQuery']->setCountStar(false);
-                    }
-                }
-
-                if(isset($request->query)){
-                    //init with a serialized query2 obj in post
-                    //usefull? should be mostly done like: init new list with this param, save to session, goto list page
-                    $options['mode'] = 'defaultQuery';
-                    $options['defaultQuery'] = unserialize(stripslashes($request->query));
-                }
-
                 // instantiate model
-                $instances   = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, $options);
+                $instances   = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
             } else {
                 // use the object from the session
                 $instances = $session->instances;
             }
 
+            //a shortcut for s param
+            if(isset($request->s)){
+                if(isset($request->instancesconfig)){
+                    $config = json_decode(stripslashes($request->instancesconfig));
+                } else {
+                    $config = new stdClass();
+                }
+                if(!isset($config->filter)){
+                    $config->filter = array();
+                }
+                $config->filter[] = array(
+                    'action' => 'add',
+                    'mode' => 'search',
+                    'searchText' => $request->s
+                );
+                $request->setParam('instancesconfig', json_encode($config));
+            }
+            //a shortcut for class param
+            if(isset($request->class)){
+                if(isset($request->instancesconfig)){
+                    $config = json_decode(stripslashes($request->instancesconfig));
+                } else {
+                    $config = new stdClass();
+                }
+                if(!isset($config->filter)){
+                    $config->filter = array();
+                }
+                $config->filter[] = array(
+                    'action' => 'add',
+                    'mode' => 'rdfsclass',
+                    'rdfsclass' => $request->class
+                );
+                $request->setParam('instancesconfig', json_encode($config));
+            }
+
             //check for change-requests
             if (isset($request->instancesconfig)) {
                 $config = json_decode(stripslashes($request->instancesconfig));
-                //var_dump($config); exit;
                 if (isset($config->shownProperties)) {
                     foreach ($config->shownProperties as $prop) {
                         if ($prop->action == 'add') {
@@ -132,18 +134,35 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 if (isset($config->filter)) {
                     foreach ($config->filter as $filter) {
                         if ($filter->action == 'add') {
-                            $instances->addFilter(
-                                $filter->id,
-                                $filter->property,
-                                $filter->isInverse,
-                                $filter->propertyLabel,
-                                $filter->filter,
-                                $filter->value1,
-                                $filter->value2,
-                                $filter->valuetype,
-                                $filter->literaltype,
-                                $filter->hidden
-                            );
+                            if($filter->mode == 'box'){
+                                $instances->addFilter(
+                                    $filter->property,
+                                    $filter->isInverse,
+                                    $filter->propertyLabel,
+                                    $filter->filter,
+                                    $filter->value1,
+                                    $filter->value2,
+                                    $filter->valuetype,
+                                    $filter->literaltype,
+                                    $filter->hidden,
+                                    isset($filter->id) ? $filter->id : null
+                                );
+                            } else if($filter->mode == 'search'){
+                                $instances->addSearchFilter(
+                                    $filter->searchText,
+                                    isset($filter->id) ? $filter->id : null
+                                );
+                            } else if($filter->mode == 'rdfsclass') {
+                                $instances->addTypeFilter(
+                                    $filter->rdfsclass,
+                                    isset($filter->id) ? $filter->id : null
+                                );
+                            } else if($filter->mode == 'cnav') {
+                                $instances->addTripleFilter(
+                                    NavigationHelper::getSearchTriples($filter->cnav, true),
+                                    isset($filter->id) ? $filter->id : null
+                                );
+                            }
                         } else {
                             $instances->removeFilter($filter->id);
                         }
@@ -151,13 +170,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 }
             }
 
-            if (isset($request->s)) {
-                $count = count($instances->getFilter());
-                $name = 'search-the-list'. ( $count  > 0 ? $count + 1 : "" );
-                $instances->addSearchFilter($name, $request->s);
-            }
-
-            if (isset($request->limit)){ //how many results per page
+            if (isset($request->limit)){ // how many results per page
                 $instances->setLimit($request->limit);
             } else {
                 $instances->setLimit(10);

@@ -40,7 +40,7 @@ class SimilarinstancesModule extends OntoWiki_Module
                       FILTER (!sameTerm(?uri, <' . (string) $this->_owApp->selectedResource . '>))
                       FILTER (isURI(?uri))
                   }')
-                  ->setLimit(OW_SHOW_MAX + 1);
+                  ->setLimit(OW_SHOW_MAX);
             
             if ($instances = $this->_owApp->selectedModel->sparqlQuery($query)) {
                 $results = true;
@@ -52,13 +52,16 @@ class SimilarinstancesModule extends OntoWiki_Module
                 $instTitleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
                 $instTitleHelper->addResources($instances, 'uri');
                 
-                // HACK: allow to show more w/o actually counting
-                if (count($instances) == OW_SHOW_MAX + 1) {
-                    unset($instances[OW_SHOW_MAX]);
-                    $listUrl->setParam('r', $typeUri, true);
-                    $listUrl->setParam('init', true, true);
-                    $typesArr[$typeUri]['has_more'] = (string) $listUrl;
-                }
+                $conf['filter'][0] = array(
+                    'mode' => 'rdfsclass',
+                    'rdfsclass' => $typeUri,
+                    'action' => 'add'
+                );
+
+                $listUrl->setParam('instancesconfig', json_encode($conf), true);
+                $listUrl->setParam('init', true, true);
+                $typesArr[$typeUri]['has_more'] = (string) $listUrl;
+                
                 
                 foreach ($instances as $row) {
                     $instanceUri = $row['uri'];

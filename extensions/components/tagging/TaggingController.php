@@ -555,11 +555,8 @@ class TaggingController extends OntoWiki_Controller_Component
 
         foreach ($this->session->cloudproperties as $cloudproperty) {
             //get values
-            if (!$cloudproperty["isInverse"]) {
-                $values = $instances->getObjects($cloudproperty["uri"], false);
-            } else {
-                $values = $instances->getSubjects($cloudproperty["uri"], false);
-            } //returns sparql-variable-solutions
+            $values = $instances->getPossibleValues($cloudproperty["uri"], false, $cloudproperty["isInverse"]);
+            //returns sparql-variable-solutions
             // (e.g. array("value" => <uri|literal>,
             //"type" => "uri"|"literal"|"typed-literal",
             //"xml:lang" => "de" [, "datatype" => <uri>]))

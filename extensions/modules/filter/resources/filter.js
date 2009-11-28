@@ -1,4 +1,7 @@
-var filterboxcounter = filtersFromSession.length; // dont overwrite previous filters
+var filterboxcounter = 0; // dont overwrite previous filters
+for(onefilter in filtersFromSession){
+    filterboxcounter++;
+}
 
 function showAddFilterBox(){
     // $("#addFilterWindowOverlay").show();

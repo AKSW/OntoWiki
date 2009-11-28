@@ -48,7 +48,7 @@ class FilterModule extends OntoWiki_Module
         if (is_array( $this->view->filter)) {
             foreach ( $this->view->filter as $key => $filter) {
                 switch($filter['mode']){
-                    case 'filterbox':
+                    case 'box':
                         if ($filter['property']) {
                             $this->view->filter[$key]['property'] = trim($filter['property']);
                             $this->titleHelper->addResource($filter['property']);
@@ -60,8 +60,8 @@ class FilterModule extends OntoWiki_Module
                             $this->titleHelper->addResource($filter['value2']);
                         }
                     break;
-                    case 'typeFilter':
-                        $this->titleHelper->addResource($filter['type']);
+                    case 'rdfsclass':
+                        $this->titleHelper->addResource($filter['rdfsclass']);
                     break;
                 }
             }

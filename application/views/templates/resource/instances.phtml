@@ -1,3 +1,12 @@
+<div class="toolbar" style="margin-bottom:3px;">
+    <a class="minibutton" onclick="javascript:$('#permalink').slideToggle(400)">show Permalink</a>
+    <a class="minibutton" onclick="javascript:$('#resQuery').slideToggle(400)">show Resource Query</a>
+    <a class="minibutton" onclick="javascript:$('#valQuery').slideToggle(400)">show Value Query</a>
+</div>
+<div id="permalink" class="messagebox" style="display:none"><?php echo $this->permalink; ?></div>
+<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($this->resourceQuery); ?><br><a href="<?php echo $this->urlBase; ?>model/query/?query=<?php echo urlencode($this->resourceQuery)?>">Open in editor</a></div>
+<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($this->valueQuery); ?><br><a href="<?php echo $this->urlBase; ?>model/query/?query=<?php echo urlencode($this->valueQuery)?>">Open in editor</a></div>
+
 <?php $odd = true; if ($this->has('instanceInfo')): ?>
     <table class="separated-vertical"
         <?php foreach ($this->namespaces as $namespace => $prefix): ?>

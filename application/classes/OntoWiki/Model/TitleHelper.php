@@ -300,7 +300,6 @@ class OntoWiki_Model_TitleHelper
         // add if we don't have this URI (but logg)
         if (!array_key_exists($resourceUri, $this->_resources)) {
             $logger = OntoWiki::getInstance()->logger;
-            var_dump($this->_resources);
             $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
             $this->addResource($resourceUri);
         }
