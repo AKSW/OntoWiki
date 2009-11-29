@@ -22,6 +22,7 @@ function NewMapManager ( mapContainer, extent, jsonUrl ) {
     this.loadMarkers            = loadMarkers;
     this.markerCallbackHandler  = markerCallbackHandler;
     this.prepare                = prepareMap;
+    this.addFilter              = addFilter;
 }
 
 function prepareMap() {
@@ -48,11 +49,34 @@ function initMap ( ) {
     this.map	    = new OpenLayers.Map( this.mapContainer, options);
 //    this.map.theme  = this.themePath;
 
-    //alert("extent: l:"+extent.left+" b:"+extent.bottom+" r:"+extent.right+" t:"+extent.top );
+    var filterSelector = new OpenLayers.Control();
+
+    OpenLayers.Util.extend(filterSelector, {
+        draw: function () {
+            this.box = new OpenLayers.Handler.Box(filterSelector,
+                {'done': this.notice},
+                {keyMask: OpenLayers.Handler.MOD_CONTROL}
+                );
+            this.box.activate();
+        },
+
+        notice: function (bounds) {
+            // add Filter
+
+            var latProp  = 'http://www.w3.org/2003/01/geo/wgs84_pos#lat';
+            var longProp = 'http://www.w3.org/2003/01/geo/wgs84_pos#long';
+            var xsd      = 'http://www.w3.org/2001/XMLSchema#'; //decimal';
+
+            filter.add('mapLatitudeBounds',  latProp,  false, 'geo:lat',  'between', bounds.top,  bounds.bottom, xsd + 'decimal', xsd + 'decimal', function() {}, false);
+            filter.add('mapLongitudeBounds', longProp, false, 'geo:long', 'between', bounds.left, bounds.right,  xsd + 'decimal', xsd + 'decimal', function() {}, false);
+            //OpenLayers.Console.userError(bounds);
+        }
+    });
 
     // add controls to the main map and the detail map
     this.map.addControl( new OpenLayers.Control.PanZoom( ) );
     this.map.addControl( new OpenLayers.Control.LayerSwitcher( ) );
+    this.map.addControl( filterSelector );
 
     // Create a set of OpenStreetMap (OSM) layers
     // but the OSM layers have a projection problem, will hopefully come back later
@@ -174,4 +198,10 @@ function markerCallbackHandler (data,that) {
             //console.log("put new marker on the markers layer ... done");
         }
     }
+}
+
+
+
+function addFilter() {
+
 }
