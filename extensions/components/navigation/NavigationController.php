@@ -62,10 +62,11 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->setup = json_decode($this->_request->getParam('setup'));
         
         // restore setup from session
-        if ( $this->setup->state->lastEvent == 'init' && $this->stateSession->model == (string)$this->model &&
+        /*if ( $this->setup->state->lastEvent == 'init' && $this->stateSession->model == (string)$this->model &&
             isset($this->stateSession->navActive) && $this->stateSession->navActive == true) {
             $this->setup = $this->stateSession->setup;
-        }
+            $this->view->navActive = true;
+        }*/
         
         //
         if ($this->setup == false) {
@@ -118,6 +119,13 @@ class NavigationController extends OntoWiki_Controller_Component
 
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
+        
+        /*if($this->setup->state->lastEvent != 'init'){
+            $this->stateSession->navActive = true;
+            $this->stateSession->setup = $this->setup;
+            $this->stateSession->model = (string)$this->model;
+        }*/
+        
         return;
     }
 
@@ -379,12 +387,6 @@ class NavigationController extends OntoWiki_Controller_Component
     }
    
     protected function _buildQuery($setup, $forImplicit = false){
-        if($setup->state->lastEvent != 'init'){
-            $this->stateSession->navActive = true;
-            $this->stateSession->setup = $setup;
-            $this->stateSession->model = (string)$this->model;
-        }
-        
         $query = new Erfurt_Sparql_Query2();
         $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
         //$query->setCountStar(true);
