@@ -26,7 +26,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $u1->addTriple(
                             $searchVar,
                             new Erfurt_Sparql_Query2_IriRef($rel),
-                            new Erfurt_Sparql_Query2_IriRef($setup->state->parent)
+                            $classVar
                         );
                         // add triplet to union var
                         $union->addElement($u1);
@@ -38,7 +38,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     $elements[] = new Erfurt_Sparql_Query2_Triple(
                         $searchVar,
                         new Erfurt_Sparql_Query2_IriRef($rel[0]),
-                        new Erfurt_Sparql_Query2_IriRef($setup->state->parent)
+                        $classVar
                     );
                 }
             }
@@ -54,7 +54,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
                         // add triplen
                         $u1->addTriple(
-                            new Erfurt_Sparql_Query2_IriRef($setup->state->parent),
+                            $classVar,
                             new Erfurt_Sparql_Query2_IriRef($rel),
                             $searchVar
                         );
@@ -66,12 +66,19 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 }else{
                     $rel = $setup->config->hierarchyRelations->out;
                     $elements[] = new Erfurt_Sparql_Query2_Triple(
-                        new Erfurt_Sparql_Query2_IriRef($setup->state->parent),
+                        $classVar,
                         new Erfurt_Sparql_Query2_IriRef($rel[0]),
                         $searchVar
                     );
                 }
             }
+            
+            $elements[] = new Erfurt_Sparql_Query2_Filter(
+                new Erfurt_Sparql_Query2_Regex(
+                    new Erfurt_Sparql_Query2_Str( $classVar ),
+                    new Erfurt_Sparql_Query2_RDFLiteral( $setup->state->parent )
+                )
+            );
 
         } else { // if default request
 
