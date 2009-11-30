@@ -111,7 +111,7 @@ class NavigationController extends OntoWiki_Controller_Component
     /*
      * Queries all navigation entries according to a given setup
      */
-    protected function _queryNavigationEntries($setup) {
+    protected function _queryNavigationEntries($setup, $forceOffset=0) {
         $this->_owApp->logger->info(print_r($setup,true));
         
         if( $setup->state->lastEvent == "search" ){
@@ -126,7 +126,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $pattern = $this->store->getSearchPattern($setup->state->searchString, (string) $this->model);
             $query->addElements($pattern);
             
-            $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+            /*$union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
             
             foreach ($setup->config->hierarchyTypes as $type) {
                 $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
@@ -136,7 +136,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 );
                 $union->addElement($u1);
             }
-            $query->addElement($union);
+            $query->addElement($union);*/
             
             // set to limit+1, so we can see if there are more than $limit entries
             $query->setLimit($this->limit + 1);
@@ -175,7 +175,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
             
         // log results
-        //$this->_owApp->logger->info("\n\n\n".print_r($results,true));
+        $this->_owApp->logger->info("\n\n\n".print_r($results,true));
     
         if ( isset($setup->config->titleMode) ){
             $mode = $setup->config->titleMode;
@@ -279,8 +279,12 @@ class NavigationController extends OntoWiki_Controller_Component
             
             if($show) $entries[$uri] = $entry;
         }
-
-        return $entries;
+        
+        //if( count($entries) < $this->limit ){
+        //    return _queryNavigationEntries($setup, $this->limit)
+        //}else{
+            return $entries;
+        //}
     }
     
     protected function _getTitle($uri, $mode, $setup){
@@ -365,11 +369,11 @@ class NavigationController extends OntoWiki_Controller_Component
         return $name;
     }
    
-    protected function _buildQuery($setup, $forImplicit = false){
+    protected function _buildQuery($setup, $forImplicit = false, $forcedOffset = 0){
         $query = new Erfurt_Sparql_Query2();
         $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
         //$query->setCountStar(true);
-        //$query->setDistinct(true);
+        $query->setDistinct(true);
         $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
         // set to limit+1, so we can see if there are more than $limit entries
         $query->setLimit($this->limit + 1);
@@ -379,6 +383,10 @@ class NavigationController extends OntoWiki_Controller_Component
                 new Erfurt_Sparql_Query2_IriRef($setup->config->ordering->relation),
                 $setup->config->ordering->modifier
             );
+        }
+        
+        if( $forcedOffset > 0 ){
+            $query->setOffset( $forcedOffset );
         }
         
         return $query;
