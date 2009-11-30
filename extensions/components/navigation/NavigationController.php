@@ -223,12 +223,56 @@ class NavigationController extends OntoWiki_Controller_Component
             // do filter
             $show = true;
             if( $filterEmpty ){
-                $query = $this->_buildCountQuery($setup, false);
-                $results = $this->model->sparqlQuery($query);
-                if( isset($results[0]['callret-0']) ){
-                    $count = $results[0]['callret-0'];
-                }else{
-                    $count = count($results);
+                $modelIRI = $this->model->getModelIri();
+        
+                // get all subclass of the super class
+                $classes = array();
+                if( isset($setup->config->hierarchyRelations->out) ){
+                    foreach($setup->config->hierarchyRelations->out as $rel){
+                        $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, false);
+                    }
+                }
+                if( isset($setup->config->hierarchyRelations->in) ){
+                    foreach($setup->config->hierarchyRelations->in as $rel){
+                        $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, true);
+                    }
+                }
+                
+                //$this->_owApp->logger->info("array: ".print_r($classes,true));
+            
+                $count = 0;
+                $counted = array();
+                foreach($classes as $class){
+                    // get uri
+                    $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
+                
+                    // if this class is already counted - continue
+                    if( in_array($uri, $counted) ) {
+                        if( $class['node'] != '' ){
+                            $uri = $class['node'];
+                            if( in_array($uri, $counted) )
+                                continue;
+                        }else{
+                            continue;
+                        }
+                    }
+                
+                    $query = $this->_buildCountQuery($uri, $setup);
+                
+                    //$this->_owApp->logger->info('EMPTY QUERY: '.$query);
+                
+                    $results = $this->model->sparqlQuery($query);
+                    
+                    //$this->_owApp->logger->info('EMPTY RES: '.print_r($results,true));
+                    
+                    if( isset($results[0]['callret-0']) ){
+                        $count += $results[0]['callret-0'];
+                    }else{
+                        $count += count($results);
+                    }
+                    
+                    // add uri to counted
+                    $counted[] = $uri;
                 }
                 if($count == 0) $show = false;
             }
@@ -276,7 +320,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 }
             }
             
-            $this->_owApp->logger->info("array: ".print_r($classes,true));
+            //$this->_owApp->logger->info("array: ".print_r($classes,true));
             
             $count = 0;
             $counted = array();
@@ -298,11 +342,11 @@ class NavigationController extends OntoWiki_Controller_Component
                 $query = $this->_buildCountQuery($uri, $setup);
                 //$query->setCountStar(true);
             
-                $this->_owApp->logger->info("count query: ".$query->__toString());
+                //$this->_owApp->logger->info("count query: ".$query->__toString());
                 
                 $results = $this->model->sparqlQuery($query);
             
-                $this->_owApp->logger->info("count query results: ".print_r($results,true));
+                //$this->_owApp->logger->info("count query results: ".print_r($results,true));
             
                 if( isset($results[0]['callret-0']) ){
                     $count += $results[0]['callret-0'];
