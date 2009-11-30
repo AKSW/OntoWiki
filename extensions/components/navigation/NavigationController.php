@@ -31,6 +31,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->translate = $this->_owApp->translate;
         $this->session = $this->_owApp->session->navigation;
         $this->ac = $this->_erfurt->getAc();
+        $this->stateSession = new Zend_Session_Namespace("NavigationState");
 
         $this->model = $this->_owApp->selectedModel;
         if (isset($this->_request->m)) {
@@ -59,6 +60,14 @@ class NavigationController extends OntoWiki_Controller_Component
             exit;
         }
         $this->setup = json_decode($this->_request->getParam('setup'));
+        
+        // restore setup from session
+        if ( $this->setup->state->lastEvent == 'init' && $this->stateSession->model == (string)$this->model &&
+            isset($this->stateSession->navActive) && $this->stateSession->navActive == true) {
+            $this->setup = $this->stateSession->setup;
+        }
+        
+        //
         if ($this->setup == false) {
             throw new OntoWiki_Exception('Invalid parameter setup (json_decode failed): ' . $this->_request->setup);
             exit;
@@ -370,6 +379,12 @@ class NavigationController extends OntoWiki_Controller_Component
     }
    
     protected function _buildQuery($setup, $forImplicit = false){
+        if($setup->state->lastEvent != 'init'){
+            $this->stateSession->navActive = true;
+            $this->stateSession->setup = $setup;
+            $this->stateSession->model = (string)$this->model;
+        }
+        
         $query = new Erfurt_Sparql_Query2();
         $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
         //$query->setCountStar(true);
