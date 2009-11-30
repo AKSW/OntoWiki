@@ -120,6 +120,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
         
+        // save last event setup to session
         /*if($this->setup->state->lastEvent != 'init'){
             $this->stateSession->navActive = true;
             $this->stateSession->setup = $this->setup;
@@ -465,7 +466,8 @@ class NavigationController extends OntoWiki_Controller_Component
         $return .= "?init";
         $conf = array();
         // there is a shortcut for rdfs classes
-        if ( isset($setup->config->instanceRelation) && ( $setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
+        if ( !empty($setup->config->instanceRelation->out) && 
+            !empty($setup->config->instanceRelation->in) && ( $setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
             ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ) {
             $conf['filter'][] = array(
                 'mode' => 'rdfsclass',

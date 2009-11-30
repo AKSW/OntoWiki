@@ -120,6 +120,7 @@ function navigationEvent (navEvent, eventParameter) {
 
         case 'setLimit':
             setup['state']['limit'] = eventParameter;
+            delete(setup['state']['offset']);
             break;
 
         case 'toggleHidden':
