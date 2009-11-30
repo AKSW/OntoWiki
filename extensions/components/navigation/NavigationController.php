@@ -184,9 +184,12 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         if ($mode == "titleHelper"){
+            //$this->_owApp->logger->info('TITLE HELPER.');
+            //$this->_owApp->logger->info('TITLE HELPER REs: '.print_r($results,true));
             $this->titleHelper = new OntoWiki_Model_TitleHelper($this->model);
-            if (is_array($results)){
+            if (isset($results)){
                 foreach ($results as $result) {
+                    //$this->_owApp->logger->info('TITLE HELPER: '.$result['resourceUri']);
                     $this->titleHelper->addResource($result['resourceUri']);
                 }
             }
@@ -216,7 +219,7 @@ class NavigationController extends OntoWiki_Controller_Component
             // do filter
             $show = true;
             if( $filterEmpty ){
-                $query = $this->_buildQuery($setup, false);
+                $query = $this->_buildCountQuery($setup, false);
                 $results = $this->model->sparqlQuery($query);
                 if( isset($results[0]['callret-0']) ){
                     $count = $results[0]['callret-0'];
@@ -269,7 +272,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 }
             }
             
-            //$this->_owApp->logger->info("array: ".print_r($classes,true));
+            $this->_owApp->logger->info("array: ".print_r($classes,true));
             
             $count = 0;
             $counted = array();
@@ -279,7 +282,13 @@ class NavigationController extends OntoWiki_Controller_Component
                 
                 // if this class is already counted - continue
                 if( in_array($uri, $counted) ) {
-                    continue;
+                    if( $class['node'] != '' ){
+                        $uri = $class['node'];
+                        if( in_array($uri, $counted) )
+                            continue;
+                    }else{
+                        continue;
+                    }
                 }
                 
                 $query = $this->_buildCountQuery($uri, $setup);
