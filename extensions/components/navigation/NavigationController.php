@@ -70,7 +70,11 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         $this->view->entries = $this->_queryNavigationEntries($this->setup);
-
+        
+        if( $this->setup->state->lastEvent == 'more' ){
+            $this->view->showRoot = false;
+        }
+        
         // set view variable for the show more button
         if (count($this->view->entries) > $this->limit) {
             // return only $limit entries
@@ -111,7 +115,7 @@ class NavigationController extends OntoWiki_Controller_Component
     /*
      * Queries all navigation entries according to a given setup
      */
-    protected function _queryNavigationEntries($setup, $forceOffset=0) {
+    protected function _queryNavigationEntries($setup) {
         $this->_owApp->logger->info(print_r($setup,true));
         
         if( $setup->state->lastEvent == "search" ){
@@ -282,11 +286,7 @@ class NavigationController extends OntoWiki_Controller_Component
             if($show) $entries[$uri] = $entry;
         }
         
-        //if( count($entries) < $this->limit ){
-        //    return _queryNavigationEntries($setup, $this->limit)
-        //}else{
-            return $entries;
-        //}
+        return $entries;
     }
     
     protected function _getTitle($uri, $mode, $setup){
@@ -371,7 +371,7 @@ class NavigationController extends OntoWiki_Controller_Component
         return $name;
     }
    
-    protected function _buildQuery($setup, $forImplicit = false, $forcedOffset = 0){
+    protected function _buildQuery($setup, $forImplicit = false){
         $query = new Erfurt_Sparql_Query2();
         $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
         //$query->setCountStar(true);
@@ -387,8 +387,8 @@ class NavigationController extends OntoWiki_Controller_Component
             );
         }
         
-        if( $forcedOffset > 0 ){
-            $query->setOffset( $forcedOffset );
+        if( isset($setup->state->offset) ){
+            $query->setOffset($setup->state->offset);
         }
         
         return $query;

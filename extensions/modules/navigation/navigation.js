@@ -16,6 +16,7 @@ $(document).ready(function() {
     navigationInput = $("#navigation-input");
     navigationWindow = $("#navigation");
     navigationExploreUrl = urlBase + 'navigation/explore';
+    navigationMoreUrl = urlBase + 'navigation/more';
     navigationListUrl = urlBase + 'list';
 
     navigationInput.livequery('keypress', function(event) {
@@ -158,6 +159,13 @@ function navigationEvent (navEvent, eventParameter) {
                 setup['state']['showImplicit'] = false;
             }
             break;
+        case 'more':
+            if( setup['state']['offset'] !== undefined  ){
+                setup['state']['offset'] = setup['state']['offset']*2;
+            }else{
+                setup['state']['offset'] = setup['state']['limit']; 
+            }
+            break;
 
         default:
             alert('error: unknown navigation event: '+navEvent);
@@ -166,7 +174,11 @@ function navigationEvent (navEvent, eventParameter) {
 
     setup['state']['lastEvent'] = navEvent;
     navigationSetup = setup;
-    navigationLoad (navEvent, setup);
+    if( navEvent == 'more' ){
+        navigationUpdateLoad (navEvent, setup);
+    }else{
+        navigationLoad (navEvent, setup);
+    }
     return;
 }
 
@@ -220,6 +232,41 @@ function navigationLoad (navEvent, setup) {
         default:
             navigationContainer.slideUp('fast', cbAfterLoad);
     }
+
+    return ;
+}
+
+/**
+ * update the navigation
+ */
+function navigationUpdateLoad (navEvent, setup) {
+    if (typeof setup == 'undefined') {
+        alert('error: No navigation setup given, but navigationLoad requested');
+        return;
+    }
+    
+    navigationMore = $("#naviganion-more");
+
+    // preparation of a callback function
+    var cbAfterLoad = function(){
+        $.post(navigationExploreUrl, { setup: $.toJSON(setup) },
+            function (data) {
+                navigationMore.remove();
+                navigationContainer.append(data);
+                // remove the processing status
+                //navigationMore.removeClass('is-processing');
+
+                navigationPrepareList();
+            }
+        );
+    }
+
+    // first we set the processing status
+    navigationMore.html('&nbsp;&nbsp;&nbsp;&nbsp;');
+    navigationMore.addClass('is-processing');
+    //navigationContainer.css('overflow', 'hidden');
+    
+    cbAfterLoad();
 
     return ;
 }
