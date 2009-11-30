@@ -282,14 +282,14 @@ class NavigationController extends OntoWiki_Controller_Component
                     continue;
                 }
                 
-                $query = $this->_buildQuery($setup, false);
-                $query->setCountStar(true);
+                $query = $this->_buildCountQuery($uri, $setup);
+                //$query->setCountStar(true);
             
-                //$this->_owApp->logger->info("count query: ".$query->__toString());
+                $this->_owApp->logger->info("count query: ".$query->__toString());
                 
                 $results = $this->model->sparqlQuery($query);
             
-                //$this->_owApp->logger->info("count query results: ".print_r($results,true));
+                $this->_owApp->logger->info("count query results: ".print_r($results,true));
             
                 if( isset($results[0]['callret-0']) ){
                     $count += $results[0]['callret-0'];
@@ -323,6 +323,49 @@ class NavigationController extends OntoWiki_Controller_Component
                 $setup->config->ordering->modifier
             );
         }
+        
+        return $query;
+    }
+    
+    protected function _buildCountQuery($uri, $setup){
+        $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        //$classVar = new Erfurt_Sparql_Query2_Var('classUri'); // new Erfurt_Sparql_Query2_IriRef($uri)
+        $query = new Erfurt_Sparql_Query2();
+        $query->setCountStar(true);
+        //$query->setDistinct();
+
+        // init union var
+        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+        // parse config
+        if( isset($setup->config->instanceRelation->in) ){
+            foreach($setup->config->instanceRelation->in as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( new Erfurt_Sparql_Query2_IriRef($uri),
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    $searchVar
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
+        // parse config
+        if( isset($setup->config->instanceRelation->out) ){
+            foreach($setup->config->instanceRelation->out as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($uri)
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
+        $query->addElement($union);
+        //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
         
         return $query;
     }
