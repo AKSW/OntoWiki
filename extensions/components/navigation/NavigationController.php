@@ -193,6 +193,10 @@ class NavigationController extends OntoWiki_Controller_Component
                     $this->titleHelper->addResource($result['resourceUri']);
                 }
             }
+            // add parent to titleHelper to get title
+            if( isset($setup->state->parent) ){
+                $this->titleHelper->addResource($setup->state->parent);
+            }
         }
 
         $entries = array();
