@@ -189,18 +189,15 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 //save to session
                 $session->instances = $instances;
             }
-            //echo htmlentities($instances->getResourceQuery());
-            //echo htmlentities($instances->getQuery());
-            //var_dump($instances->getShownResources());
-            /**
-             * @trigger onRouteShutdown
-             */
-            $event = new Erfurt_Event('onRouteShutdown');
-            $event->request = $request;
-            //$event->trigger();
 
             // avoid setting up twice
             $this->_isSetup = true;
+            
+            //redirect normal requests if config-params are given to a param-free uri (so a later browser reload does nothing)
+            if(!isset($request->isAjax)){
+                header('Location:' . $ontoWiki->config->urlBase . 'list');
+                exit;
+            }
         }
     }
 }

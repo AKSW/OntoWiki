@@ -121,14 +121,15 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             ->getOrder()
                 ->add($this->_resourceVar);
 
+        // when resourceVar is the object - prevent literals
         $this->_resourceQuery->addFilter(
             new Erfurt_Sparql_Query2_ConditionalAndExpression(
                 array(
-                    new Erfurt_Sparql_Query2_isUri($this->_resourceVar),
-                    // when resourceVar is the object - prevent literals
-                    new Erfurt_Sparql_Query2_UnaryExpressionNot(
-                        new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
-                    )
+                    new Erfurt_Sparql_Query2_isUri($this->_resourceVar)//,
+                    
+                    //new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                    //    new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
+                    //)
                 )
             )
         );
