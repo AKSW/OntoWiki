@@ -167,9 +167,11 @@ class NavigationController extends OntoWiki_Controller_Component
             $results_implicit = $this->model->sparqlQuery($query);
             
             // append implicit classes to results
-            foreach($results_implicit as $res){
-                if( !in_array($res, $results) ){
-                    $results[] = $res;
+            if(is_array($results_implicit)){
+                foreach($results_implicit as $res){
+                    if( !in_array($res, $results) ){
+                        $results[] = $res;
+                    }
                 }
             }
         }

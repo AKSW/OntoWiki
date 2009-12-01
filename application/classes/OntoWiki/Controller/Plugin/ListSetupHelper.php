@@ -33,18 +33,15 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
         if (!$this->_isSetup &&
             $ontoWiki->selectedModel instanceof Erfurt_Rdf_Model &&
             (
+                /*
+                 *these are paramters that change the list
+                 */
                 isset($request->init) ||
                 isset($request->instancesconfig) ||
                 isset($request->s) ||
-                isset($request->class)
-                /*
-                 *TODO: fix here...
-                 * we need to separate two usages of r param
-                 * use "class" param when the resource is a class
-                 *
-                 * then this condition can express "true if there is a init param or instancesconfig or the shortcuts s and class
-                 * (now it triggers only when calling the instances action - as before this plugin)
-                 */
+                isset($request->class) ||
+                isset($request->p) ||
+                isset($request->limit)
             )
         ) {
            
