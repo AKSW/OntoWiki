@@ -25,14 +25,14 @@ class NavigationModule extends OntoWiki_Module
      * @return string
      */
     public function getMenu() {
-        // navigation type submenu
-	$typeMenu = new OntoWiki_Menu();
+        // navigation type submenu 
+        $typeMenu = new OntoWiki_Menu();
         foreach ($this->_privateConfig->config as $key => $config) {
             $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
         }
 
         // count sub menu
-	$countMenu = new OntoWiki_Menu();
+        $countMenu = new OntoWiki_Menu();
         $countMenu->setEntry('10', "javascript:navigationEvent('setLimit', 10)")
             ->setEntry('20', "javascript:navigationEvent('setLimit', 20)")
             ->setEntry('30', "javascript:navigationEvent('setLimit', 30)");
@@ -84,6 +84,18 @@ class NavigationModule extends OntoWiki_Module
                 'var navigationConfig = $.evalJSON(\''.
                 json_encode($this->_privateConfig->toArray()) . '\');' .PHP_EOL
             );
+        }
+        
+        $stateSession = new Zend_Session_Namespace("NavigationState");
+        if( isset($stateSession) ){
+            if ( $stateSession->model == (string)$this->_owApp->selectedModel ) {
+                // this gives the navigation session config to the javascript parts
+                $this->view->inlineScript()->prependScript(
+                    '/* from modules/navigation/ */'.PHP_EOL.
+                    'var navigationStateSetupString = \''.$stateSession->setup.'\';'.PHP_EOL.
+                    'var navigationStateSetup = $.evalJSON(navigationStateSetupString);' .PHP_EOL
+                );
+            }
         }
 
         $data['session'] = $this->session->navigation;

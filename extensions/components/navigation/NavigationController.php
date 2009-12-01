@@ -52,6 +52,7 @@ class NavigationController extends OntoWiki_Controller_Component
      */
     public function exploreAction() {
         OntoWiki_Navigation::disableNavigation();
+        $this->_owApp->logger->info('stage 1');
         $this->view->placeholder('main.window.title')
             ->set($this->translate->_('Navigation'));
 
@@ -61,14 +62,6 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         $this->setup = json_decode($this->_request->getParam('setup'));
         
-        // restore setup from session
-        /*if ( $this->setup->state->lastEvent == 'init' && $this->stateSession->model == (string)$this->model &&
-            isset($this->stateSession->navActive) && $this->stateSession->navActive == true) {
-            $this->setup = $this->stateSession->setup;
-            $this->view->navActive = true;
-        }*/
-        
-        //
         if ($this->setup == false) {
             throw new OntoWiki_Exception('Invalid parameter setup (json_decode failed): ' . $this->_request->setup);
             exit;
@@ -120,14 +113,31 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
         
-        // save last event setup to session
-        /*if($this->setup->state->lastEvent != 'init'){
-            $this->stateSession->navActive = true;
-            $this->stateSession->setup = $this->setup;
-            $this->stateSession->model = (string)$this->model;
-        }*/
-        
         return;
+    }
+    
+    public function savestateAction(){
+        OntoWiki_Navigation::disableNavigation();
+        $view = $this->_request->view;
+        $setup = $this->_request->setup;
+        
+        $replaceFrom = array("\\'", '\\"');
+        $replaceTo = array("'", '"');
+        $view = str_replace($replaceFrom, $replaceTo, $view);
+        $setup = str_replace($replaceFrom, $replaceTo, $setup);
+        
+        $this->stateSession->view = $view;
+        $this->stateSession->setup = $setup;
+        $this->stateSession->model = (string)$this->model;
+        $this->_owApp->logger->info($setup);
+    }
+    
+    public function loadstateAction(){
+        //OntoWiki_Navigation::disableNavigation();
+        if ( $this->stateSession->model == (string)$this->model ) {
+            $this->view->data = $this->stateSession->view;
+            //$this->view->setup = $this->stateSession->setup;
+        }
     }
 
     /*
@@ -148,7 +158,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $pattern = $this->store->getSearchPattern($setup->state->searchString, (string) $this->model);
             $query->addElements($pattern);
             
-            /*$union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+            $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
             
             foreach ($setup->config->hierarchyTypes as $type) {
                 $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
@@ -158,14 +168,20 @@ class NavigationController extends OntoWiki_Controller_Component
                 );
                 $union->addElement($u1);
             }
-            $query->addElement($union);*/
+            $query->addElement($union);
             
             // set to limit+1, so we can see if there are more than $limit entries
             $query->setLimit($this->limit + 1);
             
         }else{
-            $query = $this->_buildQuery($setup, false);
+            if ( !isset($setup->config->hideDefaultHierarchy) || $setup->config->hideDefaultHierarchy == false ){
+                $query = $this->_buildQuery($setup, false);
+            }else{
+                $query = null;
+            }
         }
+        
+        if($query == null) return;
         
         // error logging
         $this->_owApp->logger->info("query: ".$query->__toString());

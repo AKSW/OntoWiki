@@ -62,7 +62,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $u1->addTriple(
                             $searchVar,
                             new Erfurt_Sparql_Query2_IriRef($rel),
-                            $classVar
+                            new Erfurt_Sparql_Query2_IriRef($setup->state->parent)
                         );
                         // add triplet to union var
                         $union->addElement($u1);
@@ -74,7 +74,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     $elements[] = new Erfurt_Sparql_Query2_Triple(
                         $searchVar,
                         new Erfurt_Sparql_Query2_IriRef($rel[0]),
-                        $classVar
+                        new Erfurt_Sparql_Query2_IriRef($setup->state->parent)
                     );
                 }
             }
@@ -90,8 +90,8 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
                         // add triplen
                         $u1->addTriple(
-                            $classVar,
-                            new Erfurt_Sparql_Query2_IriRef($rel),
+                            new Erfurt_Sparql_Query2_IriRef($setup->state->parent),
+                            new Erfurt_Sparql_Query2_IriRef($rel), 
                             $searchVar
                         );
                         // add triplet to union var
@@ -102,79 +102,12 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 }else{
                     $rel = $setup->config->hierarchyRelations->out;
                     $elements[] = new Erfurt_Sparql_Query2_Triple(
-                        $classVar,
+                        new Erfurt_Sparql_Query2_IriRef($setup->state->parent),
                         new Erfurt_Sparql_Query2_IriRef($rel[0]),
                         $searchVar
                     );
                 }
             }
-            
-            // in relations
-            if ( isset($setup->config->instanceRelations->in) ){
-                if( count($setup->config->instanceRelations->in) > 1 ){
-                    // init union var
-                    $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
-                    // parse config gile
-                    foreach($setup->config->instanceRelations->in as $rel){
-                        // set type
-                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-                        // add triplen
-                        $u1->addTriple(
-                            $searchVar,
-                            new Erfurt_Sparql_Query2_IriRef($rel),
-                            $classVar
-                        );
-                        // add triplet to union var
-                        $union->addElement($u1);
-                    }
-                    $elements[] = $union;
-                    //$query->addFilter( new Erfurt_Sparql_Query2_bound( new Erfurt_Sparql_Query2_Var('instance') ) );
-                }else{
-                    $rel = $setup->config->instanceRelations->in;
-                    $elements[] = new Erfurt_Sparql_Query2_Triple(
-                        $searchVar,
-                        new Erfurt_Sparql_Query2_IriRef($rel[0]),
-                        $classVar
-                    );
-                }
-            }
-            
-            // out relations
-            if ( isset($setup->config->instanceRelations->out) ){
-                if ( count($setup->config->instanceRelations->out) > 1 ){
-                    // init union var
-                    $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
-                    // parse config gile
-                    foreach($setup->config->instanceRelations->out as $rel){
-                        // set type
-                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-                        // add triplen
-                        $u1->addTriple(
-                            $classVar,
-                            new Erfurt_Sparql_Query2_IriRef($rel),
-                            $searchVar
-                        );
-                        // add triplet to union var
-                        $union->addElement($u1);
-                    }
-                    $elements[] = $union;
-                    //$query->addFilter( new Erfurt_Sparql_Query2_bound( new Erfurt_Sparql_Query2_Var('instance') ) );
-                }else{
-                    $rel = $setup->config->instanceRelations->out;
-                    $elements[] = new Erfurt_Sparql_Query2_Triple(
-                        $classVar,
-                        new Erfurt_Sparql_Query2_IriRef($rel[0]),
-                        $searchVar
-                    );
-                }
-            }
-            
-            $elements[] = new Erfurt_Sparql_Query2_Filter(
-                new Erfurt_Sparql_Query2_Regex(
-                    new Erfurt_Sparql_Query2_Str( $classVar ),
-                    new Erfurt_Sparql_Query2_RDFLiteral( $setup->state->parent )
-                )
-            );
 
         } else { // if default request
             if(!$forImplicit){
@@ -244,7 +177,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // optional var
                 $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
                 // parse config
-                $regUsed = false;
+                //$regUsed = false;
                 foreach ($setup->config->hiddenRelation as $ignore) {
                     $queryOptional->addTriple(
                         new Erfurt_Sparql_Query2_Var('resourceUri'),
@@ -282,7 +215,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
         // dont't show rdfs/owl entities and subtypes in the first level
         if ( !isset($setup->state->parent) ) {
-            $superUsed = false;
+            //$superUsed = false;
             // optional var
             $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
             if( isset($setup->config->hierarchyRelations->in) ){
@@ -293,6 +226,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         new Erfurt_Sparql_Query2_Var('super')
                     );
                 }
+                $superUsed = true;
             }
             if( isset($setup->config->hierarchyRelations->out) ){
                 foreach($setup->config->hierarchyRelations->out as $rel){
@@ -302,6 +236,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         new Erfurt_Sparql_Query2_Var('resourceUri')
                     );
                 }
+                $superUsed = true;
             }
             if($superUsed){
                 $elements[] = $queryOptional;

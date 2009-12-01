@@ -5,21 +5,24 @@
  */
 $odd = true;
 ?>
-<ol class="bullets-none separated-vertical">
-    <li>
+<!-- <ol class="bullets-none separated-vertical">
+    <li> -->
     <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>
+        <h2 class="navRoot">
         <?php if (isset($this->rootEntry)):?>
-            <a
-               about="<?php echo $this->rootEntry['uri'] ?>">
-                <img alt="first" class="navFirst"
-                    src="<?php echo $this->themeUrlBase ?>/images/icon-first.png"/>
-                <img alt="previous" class="navBack"
-                    src="<?php echo $this->themeUrlBase ?>/images/icon-previous.png"/>
+            <a class="navFirst icon icon-arrow-first" title="Go to root level">
+                <span>[Go to root level]</span>
+            </a>
+            <a class="navBack icon icon-arrow-previous" title="Go to previous level">
+                <span>[Go to previous level]</span>
+            </a>
+            <a about="<?php echo $this->rootEntry['uri'] ?>">
                 <?php echo $this->rootEntry['title'] ?>
             </a>
         <?php else: ?>
             Root
         <?php endif ?>
+        </h2>
     <?php endif ?>
 </h2>
 
