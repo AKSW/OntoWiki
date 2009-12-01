@@ -201,7 +201,10 @@ class ResourceController extends OntoWiki_Controller_Base
         $this->view->filter = $instances->getFilter();
         $filter_js = json_encode(is_array($this->view->filter) ? $this->view->filter : array());
         $this->view->headScript()->appendScript(
-            'var reloadUrl = "'.
+            'function showPermaLink(){$("#permalink").slideToggle(400);}
+function showresQuery(){$("#resQuery").slideToggle(400);}
+function showvalQuery(){$("#valQuery").slideToggle(400);}
+ var reloadUrl = "'.
             new OntoWiki_Url(array(), array('p', 'limit')). // url to reload -> without config params
             '";
             filtersFromSession = ' . $filter_js.';');
@@ -210,6 +213,15 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->_config->staticUrlBase.
             'extensions/modules/filter/resources/FilterAPI.js'
         );
+
+        // build menu
+        $actionMenu = new OntoWiki_Menu();
+        $actionMenu->setEntry('Toggle show Permalink', "javascript:showPermaLink()");
+        $actionMenu->setEntry('Toggle show Resource Query',"javascript:showresQuery()");
+        $actionMenu->setEntry('Toggle show Value Query', "javascript:showvalQuery()");
+        $actions = new OntoWiki_Menu();
+        $actions->setEntry('Action', $actionMenu);
+        $this->view->placeholder('main.window.menu')->set($actions->toArray());
 
         if ($instances->hasData()) {
             $this->view->instanceInfo = $instances->getResources();
