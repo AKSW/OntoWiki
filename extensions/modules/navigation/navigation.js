@@ -229,7 +229,7 @@ function navigationLoad (navEvent, setup) {
  */
 function navigationPrepareList () {
     // the links to deeper navigation entries
-    $('.navigation img').click(function(event) {
+    $('.navDeeper').click(function(event) {
         navigationEvent('navigateDeeper', $(this).parent().attr('about'));
         return false;
     });

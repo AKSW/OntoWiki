@@ -5,47 +5,49 @@
  */
 $odd = true;
 ?>
-<ol class="bullets-none separated-vertical">
-    <li>
+<h2 class="navRoot">
     <?php if (isset($this->rootEntry)):?>
+        <a class="navFirst icon icon-arrow-first"
+           title="Go to root level">
+            <span>[Go to root level]</span>
+        </a><a class="navBack icon icon-arrow-previous"
+           title="Go to previous level">
+            <span>[Go to previous level]</span>
+        </a>
         <a
            about="<?php echo $this->rootEntry['uri'] ?>">
-            <img alt="first" class="navFirst"
-                src="<?php echo $this->themeUrlBase ?>/images/icon-first.png"/>
-            <img alt="previous" class="navBack"
-                src="<?php echo $this->themeUrlBase ?>/images/icon-previous.png"/>
             <?php echo $this->rootEntry['title'] ?>
         </a>
     <?php else: ?>
         Root
     <?php endif ?>
+</h2>
 
     <?php if (!empty($this->messages)): ?>
         <?php foreach ($this->messages as $message): ?>
-        <li>
-            <span class="messagebox <?php echo $message['type'] ?>"><?php echo $message['text'] ?></span>
-        </li>
+        <p class="messagebox <?php echo $message['type'] ?>">
+            <?php echo $message['text'] ?>
+        </p>
         <?php endforeach; ?>
     <?php endif ?>
 
 
     <?php if ($this->entries) :?>
-        <li>
-        <ol class="bullets-none separated-vertical">
+        <ol class="bullets-none separated-vertical has-contextmenus-block">
         <?php foreach ($this->entries as $uri => $entry): ?>
             <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
                 <a class="navigation"
                    href="<?php echo $entry['link'] ?>"
                    about="<?php echo $uri ?>"
                    ><?php echo $entry['title'] ?>
-                    <img alt="next" id="navDeeper" src="<?php echo $this->themeUrlBase ?>/images/icon-next.png"/>
+                   <span class="navDeeper icon icon-arrow-next" title="next level">
+                    <span>[next level]</span>
+                   </span>
                 </a>
             </li>
         <?php endforeach; ?>
         </ol>
     <?php endif; ?>
-    </li>
-</ol>
 
 <?php if ($this->showMeMore) :?>
 Show Me More

@@ -285,6 +285,20 @@ div.window .content .innerwindows .window .title {
 
 /**
  * @since 0.9.5
+ *
+ * optional classes:
+ * - shadowed: versatile window get a shadow in the back
+ * - centered: versatile window will be shown appr. centered
+ *
+ * <div class="overlay"></div>
+ * <div class="versatile shadowed centered">
+ *     <span class="shadow"></span>
+ *     ###CONTENT###
+ * </div>
+ *
+ * use inline styles for height/width (and negative margins for centered option)
+ * on the div.versatile
+ *
  */
  
 /* option- overlay background to prevent interaction with other elements from behind */
@@ -672,7 +686,7 @@ img.clickicon, a.clickicon img {
     font-size:16px; /* as long we cannot use svg */
     height:1em;
     width:1em;
-    vertical-align:center;
+    vertical-align:text-bottom;
     background-color:transparent;
     background-position:center;
     background-repeat:no-repeat;
@@ -684,12 +698,17 @@ img.clickicon, a.clickicon img {
     left:-5000em;
 }
 
-.icon-cancel  { background-image:url(./../images/icons/cancel.png); }
-.icon-close { background-image:url(./../images/icons/close.png); }
-.icon-delete  { background-image:url(./../images/icons/delete.png); }
-.icon-edit  { background-image:url(./../images/icons/edit.png); }
-.icon-list  { background-image:url(./../images/icons/list.png); }
-.icon-save  { background-image:url(./../images/icons/save.png); }
+.icon-cancel { background-image:url(./../images/icons/cancel.png); }
+.icon-close  { background-image:url(./../images/icons/close.png); }
+.icon-delete { background-image:url(./../images/icons/delete.png); }
+.icon-edit   { background-image:url(./../images/icons/edit.png); }
+.icon-list   { background-image:url(./../images/icons/list.png); }
+.icon-save   { background-image:url(./../images/icons/save.png); }
+
+.icon-arrow-first    { background-image:url(./../images/icons/arrow-first.png); }
+.icon-arrow-last     { background-image:url(./../images/icons/arrow-last.png); }
+.icon-arrow-next     { background-image:url(./../images/icons/arrow-next.png); }
+.icon-arrow-previous { background-image:url(./../images/icons/arrow-previous.png); }
 
 /* -- 2.5. Links ------------------------------------------------------------ */
 
