@@ -37,7 +37,7 @@ $(document).ready(function() {
     }
 
     /* first start */
-    loadState();
+    //navigationEvent('init');
 });
 
 /**
@@ -331,25 +331,4 @@ function saveState(){
     );
 
     return ;
-}
-
-/*
- * This function loads current navigation state
- */
-function loadState(){    
-    // do save
-    $.post(navigationLoadUrl,
-        function (data) {
-            if(data.length > 0){
-                //alert(data);
-                navigationContainer.empty();
-                navigationContainer.append(data);
-                navigationPrepareList();
-            }else{
-                navigationEvent('init');
-            }
-        }
-    );
-    
-    return;
 }

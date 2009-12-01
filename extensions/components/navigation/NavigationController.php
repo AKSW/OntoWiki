@@ -129,15 +129,6 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->stateSession->view = $view;
         $this->stateSession->setup = $setup;
         $this->stateSession->model = (string)$this->model;
-        $this->_owApp->logger->info($setup);
-    }
-    
-    public function loadstateAction(){
-        //OntoWiki_Navigation::disableNavigation();
-        if ( $this->stateSession->model == (string)$this->model ) {
-            $this->view->data = $this->stateSession->view;
-            //$this->view->setup = $this->stateSession->setup;
-        }
     }
 
     /*

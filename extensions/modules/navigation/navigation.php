@@ -87,19 +87,28 @@ class NavigationModule extends OntoWiki_Module
         }
         
         $stateSession = new Zend_Session_Namespace("NavigationState");
-        if( isset($stateSession) ){
-            if ( $stateSession->model == (string)$this->_owApp->selectedModel ) {
-                // this gives the navigation session config to the javascript parts
-                $this->view->inlineScript()->prependScript(
-                    '/* from modules/navigation/ */'.PHP_EOL.
-                    'var navigationStateSetupString = \''.$stateSession->setup.'\';'.PHP_EOL.
-                    'var navigationStateSetup = $.evalJSON(navigationStateSetupString);' .PHP_EOL
-                );
-            }
+        if( isset($stateSession) && ( $stateSession->model == (string)$this->_owApp->selectedModel ) ){
+            // load setup
+            $this->view->inlineScript()->prependScript(
+                '/* from modules/navigation/ */'.PHP_EOL.
+                'var navigationStateSetupString = \''.$stateSession->setup.'\';'.PHP_EOL.
+                'var navigationStateSetup = $.evalJSON(navigationStateSetupString);' .PHP_EOL
+            );
+            // load view
+            $this->view->stateView = $stateSession->view;
+            // set js actions
+            $this->view->inlineScript()->prependScript(
+                '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
+            );
+        }else{
+            // init view from scratch
+            $this->view->inlineScript()->prependScript(
+                '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
+            );
         }
 
         $data['session'] = $this->session->navigation;
-        $content = $this->render('navigation', $data, 'data');
+        $content = $this->render('navigation', $data, 'data'); // 
         return $content;
     }
 	
