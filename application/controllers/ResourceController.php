@@ -245,12 +245,12 @@ function showvalQuery(){$("#valQuery").slideToggle(400);}
             $where = 'WHERE '.$query->getWhere();
             
             try {
-                $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
+                $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
             } catch (Erfurt_Store_Exception $e) {
                 $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
             }
             
-            
+                        
             $statusBar = $this->view->placeholder('main.window.statusbar');
             $this->view->count = $count;
             $this->view->limit = $instances->getLimit();
