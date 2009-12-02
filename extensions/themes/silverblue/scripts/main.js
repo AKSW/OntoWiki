@@ -116,9 +116,12 @@ $(document).ready(function() {
         })
     });
     
-    // simulate Safari behaviour for other browsers
+    /*
+     *  simulate Safari behaviour for other browsers
+     *  on return/enter, submit the form
+     */
     if (!$.browser.safari) {
-        $('form *:input').keypress(function(event) {
+        $('.submitOnEnter').keypress(function(event) {
             // return pressed
             if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
                 $(this).parents('form').submit();

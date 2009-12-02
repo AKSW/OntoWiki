@@ -24,7 +24,9 @@ $(document).ready(function() {
 	if ((event.which == 13) && (event.currentTarget.value != '') ) {
             navigationEvent('search', event.currentTarget.value);
             $(event.currentTarget).val('');
+            return false;
 	}
+        return true;
     });
 
     /* first start */
