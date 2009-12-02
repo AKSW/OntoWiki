@@ -235,7 +235,7 @@ function showvalQuery(){$("#valQuery").slideToggle(400);}
             
             $this->view->type      = (string)$resource;
             $this->view->start     = $instances->getOffset() + 1;
-            $this->view->class     = preg_replace('/^.*[#\/]/', '', (string )$resource);
+            $this->view->class     = preg_replace('/^.*[#\/]/', '', (string)$resource);
             $translate = $this->_owApp->translate;
             
             $query = clone $instances->getResourceQuery();
@@ -284,8 +284,8 @@ function showvalQuery(){$("#valQuery").slideToggle(400);}
             // build toolbar
             if ($graph->isEditable()) {
                 $toolbar = $this->_owApp->toolbar;
-                $toolbar/*->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances'))
-                      */->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource'))
+                $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
+                        ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource'))
                         ->appendButton(OntoWiki_Toolbar::SEPARATOR)
                         ->appendButton(OntoWiki_Toolbar::DELETE, array('name' => 'Delete Selected', 'class' => 'submit'))
                         ->prependButton(OntoWiki_Toolbar::SEPARATOR)
