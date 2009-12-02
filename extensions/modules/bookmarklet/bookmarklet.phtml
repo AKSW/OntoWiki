@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * OntoWiki bookmarklet module template
+ *
+ * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
+ * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+?>
+<?php if ($this->has('warningmessage')): ?>
+    <p class="messagebox info"><?php echo $this->warningmessage ?></p>
+<?php endif?>
+<?php if ($this->has('infomessage')): ?>
+    <p class="messagebox info"><?php echo $this->infomessage ?></p>
+<?php endif?>

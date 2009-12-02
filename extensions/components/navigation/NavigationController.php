@@ -31,6 +31,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->translate = $this->_owApp->translate;
         $this->session = $this->_owApp->session->navigation;
         $this->ac = $this->_erfurt->getAc();
+        $this->stateSession = new Zend_Session_Namespace("NavigationState");
 
         $this->model = $this->_owApp->selectedModel;
         if (isset($this->_request->m)) {
@@ -59,6 +60,15 @@ class NavigationController extends OntoWiki_Controller_Component
             exit;
         }
         $this->setup = json_decode($this->_request->getParam('setup'));
+        
+        // restore setup from session
+        /*if ( $this->setup->state->lastEvent == 'init' && $this->stateSession->model == (string)$this->model &&
+            isset($this->stateSession->navActive) && $this->stateSession->navActive == true) {
+            $this->setup = $this->stateSession->setup;
+            $this->view->navActive = true;
+        }*/
+        
+        //
         if ($this->setup == false) {
             throw new OntoWiki_Exception('Invalid parameter setup (json_decode failed): ' . $this->_request->setup);
             exit;
@@ -70,7 +80,11 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         $this->view->entries = $this->_queryNavigationEntries($this->setup);
-
+        
+        if( $this->setup->state->lastEvent == 'more' ){
+            $this->view->showRoot = false;
+        }
+        
         // set view variable for the show more button
         if (count($this->view->entries) > $this->limit) {
             // return only $limit entries
@@ -105,6 +119,14 @@ class NavigationController extends OntoWiki_Controller_Component
 
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
+        
+        // save last event setup to session
+        /*if($this->setup->state->lastEvent != 'init'){
+            $this->stateSession->navActive = true;
+            $this->stateSession->setup = $this->setup;
+            $this->stateSession->model = (string)$this->model;
+        }*/
+        
         return;
     }
 
@@ -126,7 +148,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $pattern = $this->store->getSearchPattern($setup->state->searchString, (string) $this->model);
             $query->addElements($pattern);
             
-            $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+            /*$union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
             
             foreach ($setup->config->hierarchyTypes as $type) {
                 $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
@@ -136,7 +158,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 );
                 $union->addElement($u1);
             }
-            $query->addElement($union);
+            $query->addElement($union);*/
             
             // set to limit+1, so we can see if there are more than $limit entries
             $query->setLimit($this->limit + 1);
@@ -175,7 +197,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
             
         // log results
-        //$this->_owApp->logger->info("\n\n\n".print_r($results,true));
+        $this->_owApp->logger->info("\n\n\n".print_r($results,true));
     
         if ( isset($setup->config->titleMode) ){
             $mode = $setup->config->titleMode;
@@ -184,11 +206,18 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         if ($mode == "titleHelper"){
+            //$this->_owApp->logger->info('TITLE HELPER.');
+            //$this->_owApp->logger->info('TITLE HELPER REs: '.print_r($results,true));
             $this->titleHelper = new OntoWiki_Model_TitleHelper($this->model);
-            if (is_array($results)){
+            if (isset($results)){
                 foreach ($results as $result) {
+                    //$this->_owApp->logger->info('TITLE HELPER: '.$result['resourceUri']);
                     $this->titleHelper->addResource($result['resourceUri']);
                 }
+            }
+            // add parent to titleHelper to get title
+            if( isset($setup->state->parent) ){
+                $this->titleHelper->addResource($setup->state->parent);
             }
         }
 
@@ -216,19 +245,63 @@ class NavigationController extends OntoWiki_Controller_Component
             // do filter
             $show = true;
             if( $filterEmpty ){
-                $query = $this->_buildQuery($setup, false);
-                $results = $this->model->sparqlQuery($query);
-                if( isset($results[0]['callret-0']) ){
-                    $count = $results[0]['callret-0'];
-                }else{
-                    $count = count($results);
+                $modelIRI = $this->model->getModelIri();
+        
+                // get all subclass of the super class
+                $classes = array();
+                if( isset($setup->config->hierarchyRelations->out) ){
+                    foreach($setup->config->hierarchyRelations->out as $rel){
+                        $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, false);
+                    }
+                }
+                if( isset($setup->config->hierarchyRelations->in) ){
+                    foreach($setup->config->hierarchyRelations->in as $rel){
+                        $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, true);
+                    }
+                }
+                
+                //$this->_owApp->logger->info("array: ".print_r($classes,true));
+            
+                $count = 0;
+                $counted = array();
+                foreach($classes as $class){
+                    // get uri
+                    $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
+                
+                    // if this class is already counted - continue
+                    if( in_array($uri, $counted) ) {
+                        if( $class['node'] != '' ){
+                            $uri = $class['node'];
+                            if( in_array($uri, $counted) )
+                                continue;
+                        }else{
+                            continue;
+                        }
+                    }
+                
+                    $query = $this->_buildCountQuery($uri, $setup);
+                
+                    //$this->_owApp->logger->info('EMPTY QUERY: '.$query);
+                
+                    $results = $this->model->sparqlQuery($query);
+                    
+                    //$this->_owApp->logger->info('EMPTY RES: '.print_r($results,true));
+                    
+                    if( isset($results[0]['callret-0']) ){
+                        $count += $results[0]['callret-0'];
+                    }else{
+                        $count += count($results);
+                    }
+                    
+                    // add uri to counted
+                    $counted[] = $uri;
                 }
                 if($count == 0) $show = false;
             }
             
             if($show) $entries[$uri] = $entry;
         }
-
+        
         return $entries;
     }
     
@@ -279,11 +352,17 @@ class NavigationController extends OntoWiki_Controller_Component
                 
                 // if this class is already counted - continue
                 if( in_array($uri, $counted) ) {
-                    continue;
+                    if( $class['node'] != '' ){
+                        $uri = $class['node'];
+                        if( in_array($uri, $counted) )
+                            continue;
+                    }else{
+                        continue;
+                    }
                 }
                 
-                $query = $this->_buildQuery($setup, false);
-                $query->setCountStar(true);
+                $query = $this->_buildCountQuery($uri, $setup);
+                //$query->setCountStar(true);
             
                 //$this->_owApp->logger->info("count query: ".$query->__toString());
                 
@@ -312,7 +391,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $query = new Erfurt_Sparql_Query2();
         $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
         //$query->setCountStar(true);
-        //$query->setDistinct(true);
+        $query->setDistinct(true);
         $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
         // set to limit+1, so we can see if there are more than $limit entries
         $query->setLimit($this->limit + 1);
@@ -323,6 +402,23 @@ class NavigationController extends OntoWiki_Controller_Component
                 $setup->config->ordering->modifier
             );
         }
+        
+        if( isset($setup->state->offset) && $setup->state->lastEvent == 'more' ){
+            $query->setOffset($setup->state->offset);
+        }
+        
+        return $query;
+    }
+    
+    protected function _buildCountQuery($uri, $setup){
+        
+        //$classVar = new Erfurt_Sparql_Query2_Var('classUri'); // new Erfurt_Sparql_Query2_IriRef($uri)
+        $query = new Erfurt_Sparql_Query2();
+        $query->setCountStar(true);
+        //$query->setDistinct();
+        
+        $query->addElements(NavigationHelper::getInstancesTriples($uri, $setup));
+        //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
         
         return $query;
     }
@@ -340,7 +436,8 @@ class NavigationController extends OntoWiki_Controller_Component
         $return .= "?init";
         $conf = array();
         // there is a shortcut for rdfs classes
-        if ( isset($setup->config->instanceRelation) && ( $setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
+        if ( !empty($setup->config->instanceRelation->out) && 
+            !empty($setup->config->instanceRelation->in) && ( $setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
             ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ) {
             $conf['filter'][] = array(
                 'mode' => 'rdfsclass',
@@ -352,6 +449,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $conf['filter'][] = array(
                 'mode' => 'cnav',
                 'cnav' => $setup,
+                'uri'  => $uri,
                 'action' => 'add'
             );
             return $return . "&instancesconfig=" . urlencode(json_encode($conf));
