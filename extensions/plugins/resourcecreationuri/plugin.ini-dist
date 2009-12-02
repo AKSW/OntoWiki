@@ -9,14 +9,20 @@ author          = "Christoph Rieß <c.riess.dev@googlemail.com>"
 ;2 = onRouteStartup
 
 [private]
+;; load naming schema from Model
+fromModel               = true
+
+;; renaming schema property
+namingSchemeProperty    = "http://ns.ontowiki.net/SysOnt/instanceNamingScheme"
+
 ;; URIs to rewite (+baseUri +md5)
-newResourceUri      = "NewResource"
+newResourceUri          = "NewResource"
 
 ;; scheme to configure new uri (+baseUri)
-namingScheme        = "type/label"
+defaultNamingScheme     = "type/label"
 
 ;; type property
-property.type       = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+property.type           = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 
 ;; label property
 ;; these are more important than rdfs:label

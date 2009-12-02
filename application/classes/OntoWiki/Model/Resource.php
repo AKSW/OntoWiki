@@ -271,6 +271,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             'filter' => array(
                                 array (
                                     'action' => 'add',
+                                    'mode' => 'box',
                                     'id' => 'allvalues',
                                     'property' => $predicateUri,
                                     'isInverse' => true,

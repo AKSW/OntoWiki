@@ -284,7 +284,21 @@ div.window .content .innerwindows .window .title {
 /* -- 1.2.5. Versatile windows and popups ----------------------------------- */
 
 /**
+ * Versatile windows and popups
+ *
  * @since 0.9.5
+ *
+ * @option .shadowed versatile window get a shadow in the back
+ * @option .centered versatile window will be shown appr. centered
+ *
+ * <div class="overlay"></div> <!-- optional -->
+ * <div class="versatile shadowed centered">
+ *     ###CONTENT###
+ * </div>
+ *
+ * use inline styles for height/width (and negative margins for centered option)
+ * on the div.versatile
+ *
  */
  
 /* option- overlay background to prevent interaction with other elements from behind */
@@ -313,6 +327,10 @@ div.versatile
 div.versatile.shadowed
 {
     padding:10px;
+    background:rgba(204, 204, 204, 0.5); /* #ccc */
+    border-radius:10px;
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
 }
 
 div.versatile.shadowed > *
@@ -320,6 +338,7 @@ div.versatile.shadowed > *
     margin:0 !important;
 }
 
+/* do not use .shadow element, I just let it here as workaround idea for the IE */
 div.versatile.shadowed > .shadow
 {
     display:block;
@@ -672,7 +691,7 @@ img.clickicon, a.clickicon img {
     font-size:16px; /* as long we cannot use svg */
     height:1em;
     width:1em;
-    vertical-align:center;
+    vertical-align:text-bottom;
     background-color:transparent;
     background-position:center;
     background-repeat:no-repeat;
@@ -684,12 +703,17 @@ img.clickicon, a.clickicon img {
     left:-5000em;
 }
 
-.icon-cancel  { background-image:url(./../images/icons/cancel.png); }
-.icon-close { background-image:url(./../images/icons/close.png); }
-.icon-delete  { background-image:url(./../images/icons/delete.png); }
-.icon-edit  { background-image:url(./../images/icons/edit.png); }
-.icon-list  { background-image:url(./../images/icons/list.png); }
-.icon-save  { background-image:url(./../images/icons/save.png); }
+.icon-cancel { background-image:url(./../images/icons/cancel.png); }
+.icon-close  { background-image:url(./../images/icons/close.png); }
+.icon-delete { background-image:url(./../images/icons/delete.png); }
+.icon-edit   { background-image:url(./../images/icons/edit.png); }
+.icon-list   { background-image:url(./../images/icons/list.png); }
+.icon-save   { background-image:url(./../images/icons/save.png); }
+
+.icon-arrow-first    { background-image:url(./../images/icons/arrow-first.png); }
+.icon-arrow-last     { background-image:url(./../images/icons/arrow-last.png); }
+.icon-arrow-next     { background-image:url(./../images/icons/arrow-next.png); }
+.icon-arrow-previous { background-image:url(./../images/icons/arrow-previous.png); }
 
 /* -- 2.5. Links ------------------------------------------------------------ */
 
@@ -1658,9 +1682,9 @@ a.hasMenu span.toggle {
     /* border: solid 1px #999; */
     right: -0.625em;
     top: 0;
-    background: url(./../images/icons/context.png) no-repeat center #555;
+    background: url(./../images/icons/context.png) no-repeat center rgba(85, 85, 85, 0.5);
     /*background: url(./../images/button-drop-down.png) no-repeat center #555;*/
-    opacity:0.5;
+    opacity:0.75;
     border-radius:0.2em;
     -moz-border-radius:0.2em;
     -webkit-border-radius:0.2em;
@@ -1668,6 +1692,7 @@ a.hasMenu span.toggle {
 
 a.hasMenu span.toggle:hover {
     opacity:1;
+    background-color:#555;
 }
 
 a.hasMenu:hover span.toggle {
@@ -1702,8 +1727,13 @@ a.hasMenu:hover span.toggle {
     left:-5000em; top:-5000em;
     /* wegen .window .contextmenu */
     border:none !important;
-    font-size: 1em !important;
+    font-size: 16px !important;
     min-width: auto !important;
+}
+
+.has-contextmenu-area > .contextmenu .item .icon
+{
+    vertical-align:middle;
 }
 
 .has-contextmenu-area:hover > .contextmenu
@@ -1723,8 +1753,8 @@ a.hasMenu:hover span.toggle {
     line-height:1;
     display:inline-block; height:1em;
     padding:0.25em;
-    background-color:#555;
-    opacity:0.5;
+    background-color:rgba(85, 85, 85, 0.5); /* #555 */
+    opacity:0.75;
     border-radius:0.25em;
     -moz-border-radius:0.25em;
     -webkit-border-radius:0.25em;
@@ -1735,6 +1765,7 @@ a.hasMenu:hover span.toggle {
 .has-contextmenu-area > .contextmenu > .item:hover,
 .has-contextmenu-area > .contextmenu > .area .item:hover
 {
+    background-color:#555;
     opacity:1;
 }
 

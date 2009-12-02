@@ -41,7 +41,7 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
         'Ö'     => 'Oe' ,
         'ö'     => 'oe' ,
         ' '     => '_'  ,
-        PHP_EOL => '_'  ,
+        PHP_EOL => '_'
     );
     
     /**
@@ -66,16 +66,18 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
                         // MD5 Component
                         . '\/([A-Z]|[0-9]){32,32}'
                         . '/i';
-                            
+                        
+        $nameParts = $this->loadNamingSchema();
+        
         if ( count($event->insertData) == 1 && preg_match($pattern,$subjectUri) ) {
-            $newUri = $this->buildNiceUri($subjectUri);
+            $newUri = $this->buildNiceUri($subjectUri, $nameParts);
             $temp   = array();
             foreach ($this->insertData[$subjectUri] as $p => $o) {
                 $temp[$newUri][$p] = $o;
             }
             $this->insertData = $temp;
         } else {
-        
+            //do nothing
         }
         
         //writeback on event
@@ -91,10 +93,8 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
      * @param   $uri string to convert to nice uri
      * @return  string nice uri
      */
-    private function buildNiceUri($uri)
+    private function buildNiceUri($uri, $nameParts)
     {
-        $nameParts = explode('/',$this->_privateConfig->namingScheme);
-
         $newInstance = $this->insertData[$uri];
         
         $titleHelper = new OntoWiki_Model_TitleHelper($this->insertModel);
@@ -156,6 +156,43 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
     }
     
     /**
+     * Load Naming Scheme from Model or Ini
+     * @return Array
+     */
+    private function loadNamingSchema()
+    {
+        if ( $this->_privateConfig->fromModel ) {
+        
+            $query          = new Erfurt_Sparql_Query2();
+            $schemaVar      = new Erfurt_Sparql_Query2_Var('schema');
+            
+            $subjectArray   = array_keys($this->insertData);
+            $subjectUri     = current($subjectArray);
+            $typeArray      = current($this->insertData[$subjectUri][$this->_privateConfig->property->type]);
+            $type           = $typeArray['value'];
+            
+            $query->addTriple(
+                new Erfurt_Sparql_Query2_IriRef($type),
+                new Erfurt_Sparql_Query2_IriRef($this->_privateConfig->namingSchemeProperty),
+                $schemaVar
+            );
+            
+            $query->setDistinct(true);
+            
+            $result = $this->insertModel->sparqlQuery($query);
+            
+            if ( !empty($result['bindings']) ) {
+                $schema = current($result);
+                return explode('/',$schema['schema']['value']);
+            }
+            
+        }       
+        
+        return explode('/',$this->_privateConfig->defaultNamingSchema);
+        
+    }
+    
+    /**
      * Method to convert chars in a string to uri compatible
      * @param $str any string
      * @return string with some characters replaced or deleted
@@ -163,7 +200,7 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
     private function convertChars($str)
     {
         foreach ($this->charTable as $key => $value) {
-            $str = str_replace($key, $value, $str);        
+            $str = str_replace($key, $value, $str);
         }
         $str= preg_replace('/[^a-z0-9_]+/i','',$str);
         $str = substr($str,0,32);
@@ -217,7 +254,6 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
 
         $query->addFilter($filter);
         $result = $this->insertModel->sparqlQuery($query);
-        echo (string) $query; print_r($result);
         return count($result);
     }
 

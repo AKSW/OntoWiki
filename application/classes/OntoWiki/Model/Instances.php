@@ -121,11 +121,12 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             ->getOrder()
                 ->add($this->_resourceVar);
 
+        // when resourceVar is the object - prevent literals
         $this->_resourceQuery->addFilter(
             new Erfurt_Sparql_Query2_ConditionalAndExpression(
                 array(
                     new Erfurt_Sparql_Query2_isUri($this->_resourceVar),
-                    // when resourceVar is the object - prevent literals
+                    
                     new Erfurt_Sparql_Query2_UnaryExpressionNot(
                         new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
                     )
@@ -792,11 +793,14 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                         );
                     break;
                     case "triples":
+                        //problem: php objects can not be json encoded ...
+                        /*
                         $conf['filter'][] = array(
                             'action' => 'add',
                             'mode' => 'triples',
-                            'triples' => $filter['triples'] //problem: php objects can not be json encoded ...
+                            'triples' => $filter['triples'] 
                         );
+                        */
                     break;
                 }
             }

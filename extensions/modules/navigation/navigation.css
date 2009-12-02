@@ -1,0 +1,13 @@
+.content h2.navRoot
+{
+    font-size:1em;
+    font-weight:bold;
+}
+
+#navigation .icon { width:0.7em; }
+
+#navigation a .icon, #navigation a.icon { opacity:0.4; }
+#navigation a:hover .icon, #navigation a.icon:hover { opacity:0.6; text-decoration:none !important;}
+#navigation a:hover .icon:hover { opacity:1; }
+
+

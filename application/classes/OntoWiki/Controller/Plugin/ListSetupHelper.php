@@ -33,18 +33,15 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
         if (!$this->_isSetup &&
             $ontoWiki->selectedModel instanceof Erfurt_Rdf_Model &&
             (
+                /*
+                 *these are paramters that change the list
+                 */
                 isset($request->init) ||
                 isset($request->instancesconfig) ||
                 isset($request->s) ||
-                isset($request->class)
-                /*
-                 *TODO: fix here...
-                 * we need to separate two usages of r param
-                 * use "class" param when the resource is a class
-                 *
-                 * then this condition can express "true if there is a init param or instancesconfig or the shortcuts s and class
-                 * (now it triggers only when calling the instances action - as before this plugin)
-                 */
+                isset($request->class) ||
+                isset($request->p) ||
+                isset($request->limit)
             )
         ) {
            
@@ -87,6 +84,10 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             if(isset($request->s)){
                 if(isset($request->instancesconfig)){
                     $config = json_decode(stripslashes($request->instancesconfig));
+                    if ($config == false) {
+                        throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
+                        exit;
+                    }
                 } else {
                     $config = new stdClass();
                 }
@@ -104,6 +105,10 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             if(isset($request->class)){
                 if(isset($request->instancesconfig)){
                     $config = json_decode(stripslashes($request->instancesconfig));
+                    if ($config == false) {
+                        throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
+                        exit;
+                    }
                 } else {
                     $config = new stdClass();
                 }
@@ -121,6 +126,10 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             //check for change-requests
             if (isset($request->instancesconfig)) {
                 $config = json_decode(stripslashes($request->instancesconfig));
+                if ($config == false) {
+                    throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
+                    exit;
+                }
                 if (isset($config->shownProperties)) {
                     foreach ($config->shownProperties as $prop) {
                         if ($prop->action == 'add') {
@@ -159,7 +168,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                 );
                             } else if($filter->mode == 'cnav') {
                                 $instances->addTripleFilter(
-                                    NavigationHelper::getSearchTriples($filter->cnav, true),
+                                    NavigationHelper::getInstancesTriples($filter->uri, $filter->cnav),
                                     isset($filter->id) ? $filter->id : null
                                 );
                             }
@@ -192,18 +201,15 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 //save to session
                 $session->instances = $instances;
             }
-            //echo htmlentities($instances->getResourceQuery());
-            //echo htmlentities($instances->getQuery());
-            //var_dump($instances->getShownResources());
-            /**
-             * @trigger onRouteShutdown
-             */
-            $event = new Erfurt_Event('onRouteShutdown');
-            $event->request = $request;
-            //$event->trigger();
 
             // avoid setting up twice
             $this->_isSetup = true;
+            
+            //redirect normal requests if config-params are given to a param-free uri (so a later browser reload does nothing)
+            if(!isset($request->isAjax)){
+                header('Location:' . $ontoWiki->config->urlBase . 'list');
+                exit;
+            }
         }
     }
 }

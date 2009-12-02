@@ -49,7 +49,7 @@ $(document).ready(function() {
         // or reload list
         var mainInnerContent = $(this).parents('.content.has-innerwindows').eq(0).find('.innercontent');
         mainInnerContent.addClass('is-processing');
-        mainInnerContent.load(reloadUrl, {"instancesconfig": serialized}, function(){
+        mainInnerContent.load(reloadUrl+"?isAjax=true", {"instancesconfig": serialized}, function(){
             mainInnerContent.removeClass('is-processing');
         });
     })

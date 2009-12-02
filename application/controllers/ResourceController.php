@@ -201,7 +201,10 @@ class ResourceController extends OntoWiki_Controller_Base
         $this->view->filter = $instances->getFilter();
         $filter_js = json_encode(is_array($this->view->filter) ? $this->view->filter : array());
         $this->view->headScript()->appendScript(
-            'var reloadUrl = "'.
+            'function showPermaLink(){$("#permalink").slideToggle(400);}
+            function showresQuery(){$("#resQuery").slideToggle(400);}
+            function showvalQuery(){$("#valQuery").slideToggle(400);}
+             var reloadUrl = "'.
             new OntoWiki_Url(array(), array('p', 'limit')). // url to reload -> without config params
             '";
             filtersFromSession = ' . $filter_js.';');
@@ -210,6 +213,15 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->_config->staticUrlBase.
             'extensions/modules/filter/resources/FilterAPI.js'
         );
+
+        // build menu
+        $actionMenu = new OntoWiki_Menu();
+        $actionMenu->setEntry('Toggle show Permalink', "javascript:showPermaLink()");
+        $actionMenu->setEntry('Toggle show Resource Query',"javascript:showresQuery()");
+        $actionMenu->setEntry('Toggle show Value Query', "javascript:showvalQuery()");
+        $actions = new OntoWiki_Menu();
+        $actions->setEntry('Action', $actionMenu);
+        $this->view->placeholder('main.window.menu')->set($actions->toArray());
 
         if ($instances->hasData()) {
             $this->view->instanceInfo = $instances->getResources();
@@ -223,7 +235,7 @@ class ResourceController extends OntoWiki_Controller_Base
             
             $this->view->type      = (string)$resource;
             $this->view->start     = $instances->getOffset() + 1;
-            $this->view->class     = preg_replace('/^.*[#\/]/', '', (string )$resource);
+            $this->view->class     = preg_replace('/^.*[#\/]/', '', (string)$resource);
             $translate = $this->_owApp->translate;
             
             $query = clone $instances->getResourceQuery();
@@ -233,18 +245,25 @@ class ResourceController extends OntoWiki_Controller_Base
             $where = 'WHERE '.$query->getWhere();
             
             try {
-                $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri');
+                $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
             } catch (Erfurt_Store_Exception $e) {
                 $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
             }
             
-            
+                        
             $statusBar = $this->view->placeholder('main.window.statusbar');
             $this->view->count = $count;
-            $this->view->limit = $instances->getLimit();
+            $limit = $instances->getLimit();
+            $this->view->limit = $limit;
             $this->view->itemsOnPage = $itemsOnPage;
+            $offset = $instances->getOffset();
+            if($limit != 0){
+                $page = ($offset / $limit) +1;
+            } else {
+                $page = 1;
+            }
             
-            $statusBar->append(OntoWiki_Pager::get($count, $instances->getLimit(), $itemsOnPage));
+            $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page));
             
             if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
                 $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
@@ -272,8 +291,8 @@ class ResourceController extends OntoWiki_Controller_Base
             // build toolbar
             if ($graph->isEditable()) {
                 $toolbar = $this->_owApp->toolbar;
-                $toolbar/*->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances'))
-                      */->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource'))
+                $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
+                        ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource'))
                         ->appendButton(OntoWiki_Toolbar::SEPARATOR)
                         ->appendButton(OntoWiki_Toolbar::DELETE, array('name' => 'Delete Selected', 'class' => 'submit'))
                         ->prependButton(OntoWiki_Toolbar::SEPARATOR)
