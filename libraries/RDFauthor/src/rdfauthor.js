@@ -478,7 +478,7 @@ RDFauthor = {
     
     // returns languages to be used by widgets
     getLiteralLanguages: function () {
-        return ['de', 'en', 'fr', 'cn'];
+        return ['de', 'en', 'fr', 'nl', 'es', 'it', 'cn'];
     }, 
     
     // returns the SPARQL service URI for a given triple
