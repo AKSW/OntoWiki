@@ -153,6 +153,41 @@ $(document).ready(function() {
         // $('.edit-enable').click();
     })
     
+    $('.icon-edit').click(function() {
+        RDFauthor.setOptions({
+            anchorElement: '.innercontent', 
+            onSubmitSuccess: function () {
+                // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
+                // mainInnerContent.load(document.URL);
+                
+                // tell RDFauthor that page content has changed
+                // RDFauthor.invalidatePage();
+                
+                $('.edit').each(function() {
+                    $(this).fadeOut(effectTime);
+                });
+                $('.edit-enable').removeClass('active');
+                
+                // reload whole page
+                window.location.href = window.location.href;
+            }, 
+            onCancel: function () {
+                $('.edit').each(function() {
+                    $(this).fadeOut(effectTime);
+                });
+                $('.edit-enable').removeClass('active');
+            }, 
+            saveButtonTitle: 'Save Changes', 
+            cancelButtonTitle: 'Cancel', 
+            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+            'defaultGraph': defaultGraph, 
+            'defaultResource': defaultResource
+            
+        });
+        
+        RDFauthor.startInline($(this).closest('td'));
+    });
+    
     // edit mode
     $('.edit-enable').click(function() {
         if ($(this).hasClass('active')) {
@@ -196,8 +231,8 @@ $(document).ready(function() {
             });
             
             // RDFauthor.startEditing();
-            
             RDFauthor.startInline('*[about] td:nth-child(2)');
+            // RDFauthor.startInline('table tr td');
             
             $('.edit').each(function() {
                 $(this).fadeIn(effectTime);

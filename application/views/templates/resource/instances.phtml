@@ -33,7 +33,7 @@
                 <td>
                     <a class="hasMenu expandable" 
                        about="<?php echo $instanceUri ?>" 
-                       typeof="<?php echo $this->curie($this->type) ?>"
+                       typeof="<?php echo $this->curie($this->instanceData[$instanceUri]['__TYPE'][0]['value']) ?>"
                        href="<?php echo $instance['url']?>">
                         <?php echo $instance['title'] ?>
                     </a><br />
