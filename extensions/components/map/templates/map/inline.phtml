@@ -1,11 +1,10 @@
 <?php
 // vim: sw=4:sts=4:expandtab
-require_once 'OntoWiki/Model/TitleHelper.php';
+
+if ( isset($this->message) ) {
+echo '<p class="messagebox info">' . $this->_($this->message) . '</p>';
+}
 ?>
-<?php if ( isset($this->message) ): ?>
-	<p class="messagebox info"><?php echo $this->_($this->message); ?></p>
-<?php endif; ?>
-<!-- The main Map div, will be populated by OpenLayers in JavaScript -->
 <div id="mapContainer" class="is-processing width99"></div>
 
 <script type="text/javascript">
@@ -48,12 +47,13 @@ function waitForMap () {
     }
 }
 
-loadStyle('<?php echo $this->componentUrlBase.'css/OpenLayers.css'; ?>', 'screen');
-loadScript('<?php echo 'http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->config->apikey->google.'&async=2'; ?>');
-loadScript('<?php echo $this->componentUrlBase.'classes/OpenLayers.js'; ?>');
-loadScript('<?php echo $this->componentUrlBase.'classes/NewMapManager.js'; ?>');
+loadStyle('<?php echo $this->componentUrlBase . 'css/OpenLayers.css'; ?>', 'screen');
+loadScript('<?php echo 'http://maps.google.com/maps?file=api&v=2&hl=de&key=' . $this->config->apikey->google . '&async=2'; ?>');
+//loadScript('<?php echo 'http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=' . $this->config->apikey->yahoo . ''; ?>');
+loadScript('<?php echo $this->componentUrlBase . 'classes/OpenLayers.js'; ?>');
+loadScript('<?php echo $this->componentUrlBase . 'classes/NewMapManager.js'; ?>');
 
-waitForMap();
+$(document).ready(waitForMap);
 
 function goForMap () {
     $('#mapContainer').removeClass('is-processing');
