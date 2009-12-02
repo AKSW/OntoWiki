@@ -202,9 +202,9 @@ class ResourceController extends OntoWiki_Controller_Base
         $filter_js = json_encode(is_array($this->view->filter) ? $this->view->filter : array());
         $this->view->headScript()->appendScript(
             'function showPermaLink(){$("#permalink").slideToggle(400);}
-function showresQuery(){$("#resQuery").slideToggle(400);}
-function showvalQuery(){$("#valQuery").slideToggle(400);}
- var reloadUrl = "'.
+            function showresQuery(){$("#resQuery").slideToggle(400);}
+            function showvalQuery(){$("#valQuery").slideToggle(400);}
+             var reloadUrl = "'.
             new OntoWiki_Url(array(), array('p', 'limit')). // url to reload -> without config params
             '";
             filtersFromSession = ' . $filter_js.';');
@@ -253,10 +253,17 @@ function showvalQuery(){$("#valQuery").slideToggle(400);}
                         
             $statusBar = $this->view->placeholder('main.window.statusbar');
             $this->view->count = $count;
-            $this->view->limit = $instances->getLimit();
+            $limit = $instances->getLimit();
+            $this->view->limit = $limit;
             $this->view->itemsOnPage = $itemsOnPage;
+            $offset = $instances->getOffset();
+            if($limit != 0){
+                $page = ($offset / $limit) +1;
+            } else {
+                $page = 1;
+            }
             
-            $statusBar->append(OntoWiki_Pager::get($count, $instances->getLimit(), $itemsOnPage));
+            $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page));
             
             if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
                 $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
