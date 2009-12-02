@@ -22,7 +22,6 @@ function NewMapManager ( mapContainer, extent, jsonUrl ) {
     this.loadMarkers            = loadMarkers;
     this.markerCallbackHandler  = markerCallbackHandler;
     this.prepare                = prepareMap;
-    this.addFilter              = addFilter;
 }
 
 function prepareMap() {
@@ -51,24 +50,51 @@ function initMap ( ) {
 
     var filterSelector = new OpenLayers.Control();
 
+    var that = this;
+
     OpenLayers.Util.extend(filterSelector, {
         draw: function () {
             this.box = new OpenLayers.Handler.Box(filterSelector,
-                {'done': this.notice},
+                {'done': this.addFilter},
                 {keyMask: OpenLayers.Handler.MOD_CONTROL}
                 );
             this.box.activate();
         },
 
-        notice: function (bounds) {
+        addFilter: function (bounds) {
             // add Filter
-
             var latProp  = 'http://www.w3.org/2003/01/geo/wgs84_pos#lat';
             var longProp = 'http://www.w3.org/2003/01/geo/wgs84_pos#long';
             var xsd      = 'http://www.w3.org/2001/XMLSchema#'; //decimal';
 
-            filter.add('mapLatitudeBounds',  latProp,  false, 'geo:lat',  'between', bounds.top,  bounds.bottom, xsd + 'decimal', xsd + 'decimal', function() {}, false);
-            filter.add('mapLongitudeBounds', longProp, false, 'geo:long', 'between', bounds.left, bounds.right,  xsd + 'decimal', xsd + 'decimal', function() {}, false);
+            bounds.transform(that.map.projection, that.map.displayProjection);
+
+            alert('projection: ' + that.map.projection + ' displayProjection: ' + that.map.displayProjection + ' bounds: ' + bounds);
+
+            filter.add(
+                'mapLatitudeBounds',
+                latProp,
+                false,
+                'geo:lat',
+                'between',
+                '' + bounds.top + '',
+                '' + bounds.bottom + '',
+                'typed-literal',
+                xsd + 'float',
+                function() {},
+                false);
+            filter.add(
+                    'mapLongitudeBounds',
+                    longProp,
+                    false,
+                    'geo:long',
+                    'between',
+                    '' + bounds.left + '',
+                    '' + bounds.right + '',
+                    'typed-literal',
+                    xsd + 'float',
+                    function() {},
+                    false);
             //OpenLayers.Console.userError(bounds);
         }
     });
@@ -189,7 +215,7 @@ function markerCallbackHandler (data,that) {
             // register events for the marker to open popup and to move the detailmap
             // the second parameter gives the content in which the function will be called (accessible as this in the function)
             // === here will come a great new thing, I don't know what, but it will ===
-            //marker.events.register( 'click', feature, selected );
+            //marker.events.register( 'click', feature, selected );that.map.projection, that.map.displayProjectioo
             //marker.events.register( 'mouseover', feature, detailView );
 
             // add the marker to the markerlayer of the mainMap
@@ -200,8 +226,3 @@ function markerCallbackHandler (data,that) {
     }
 }
 
-
-
-function addFilter() {
-
-}

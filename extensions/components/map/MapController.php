@@ -46,7 +46,7 @@ class MapController extends OntoWiki_Controller_Component
         $this->addModuleContext('main.window.map');
         $this->view->placeholder('main.window.title')->set('OntoWiki Map Component');
 
-        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'));
+        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());
         $jsonRequestUrl->setParam('limit', "off", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
@@ -70,7 +70,7 @@ class MapController extends OntoWiki_Controller_Component
         $this->_helper->layout->disableLayout();
         
         // default values from configuration
-        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'));
+        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());
         $jsonRequestUrl->setParam('clustering', "off", true);
         $jsonRequestUrl->setParam('limit', "on", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
@@ -202,9 +202,15 @@ class MapController extends OntoWiki_Controller_Component
         $long2Var       = new Erfurt_Sparql_Query2_Var('long2');
 
         //the future is now!
-        if($this->instances === null) {    
-            $this->instances = clone $this->_session->instances;
+        if($this->instances === null) {
+            $this->_owApp->logger->debug('MapComponent/_getResources: memory_get_usage: ' . memory_get_usage());
             $this->_owApp->logger->debug('MapComponent/_getResources: clone this->_session->instances');
+            $this->_owApp->logger->debug('MapComponent/_getResources: this->_session->instances has a size of ' . strlen(serialize($this->_session->instances)));
+            if(strlen(serialize($this->_session->instances)) < 1024) {
+                $this->_owApp->logger->debug('MapComponent/_getResources: ' . $this->_session->instances);
+            }
+            $this->instances = clone $this->_session->instances;
+            $this->_owApp->logger->debug('MapComponent/_getResources: memory_get_usage: ' . memory_get_usage());
         } else {
             $this->_owApp->logger->debug('MapComponent/_getResources: this->instances already set');
             // don't load instances again
