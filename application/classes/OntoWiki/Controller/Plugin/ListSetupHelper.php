@@ -84,6 +84,10 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             if(isset($request->s)){
                 if(isset($request->instancesconfig)){
                     $config = json_decode(stripslashes($request->instancesconfig));
+                    if ($config == false) {
+                        throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
+                        exit;
+                    }
                 } else {
                     $config = new stdClass();
                 }
@@ -101,6 +105,10 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             if(isset($request->class)){
                 if(isset($request->instancesconfig)){
                     $config = json_decode(stripslashes($request->instancesconfig));
+                    if ($config == false) {
+                        throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
+                        exit;
+                    }
                 } else {
                     $config = new stdClass();
                 }
@@ -118,6 +126,10 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             //check for change-requests
             if (isset($request->instancesconfig)) {
                 $config = json_decode(stripslashes($request->instancesconfig));
+                if ($config == false) {
+                    throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
+                    exit;
+                }
                 if (isset($config->shownProperties)) {
                     foreach ($config->shownProperties as $prop) {
                         if ($prop->action == 'add') {
@@ -156,7 +168,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                 );
                             } else if($filter->mode == 'cnav') {
                                 $instances->addTripleFilter(
-                                    NavigationHelper::getSearchTriples($filter->cnav, true),
+                                    NavigationHelper::getInstancesTriples($filter->uri, $filter->cnav),
                                     isset($filter->id) ? $filter->id : null
                                 );
                             }

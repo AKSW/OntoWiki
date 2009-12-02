@@ -411,43 +411,13 @@ class NavigationController extends OntoWiki_Controller_Component
     }
     
     protected function _buildCountQuery($uri, $setup){
-        $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        
         //$classVar = new Erfurt_Sparql_Query2_Var('classUri'); // new Erfurt_Sparql_Query2_IriRef($uri)
         $query = new Erfurt_Sparql_Query2();
         $query->setCountStar(true);
         //$query->setDistinct();
-
-        // init union var
-        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
-        // parse config
-        if( isset($setup->config->instanceRelation->in) ){
-            foreach($setup->config->instanceRelation->in as $rel){
-                // create new graph pattern
-                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-                // add triplen
-                $u1->addTriple( new Erfurt_Sparql_Query2_IriRef($uri),
-                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
-                    $searchVar
-                );
-                // add triplet to union var
-                $union->addElement($u1);
-            }
-        }
-        // parse config
-        if( isset($setup->config->instanceRelation->out) ){
-            foreach($setup->config->instanceRelation->out as $rel){
-                // create new graph pattern
-                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-                // add triplen
-                $u1->addTriple( $searchVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
-                    new Erfurt_Sparql_Query2_IriRef($uri)
-                );
-                // add triplet to union var
-                $union->addElement($u1);
-            }
-        }
-        $query->addElement($union);
+        
+        $query->addElements(NavigationHelper::getInstancesTriples($uri, $setup));
         //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
         
         return $query;
@@ -479,6 +449,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $conf['filter'][] = array(
                 'mode' => 'cnav',
                 'cnav' => $setup,
+                'uri'  => $uri,
                 'action' => 'add'
             );
             return $return . "&instancesconfig=" . urlencode(json_encode($conf));

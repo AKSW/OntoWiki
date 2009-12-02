@@ -793,11 +793,14 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                         );
                     break;
                     case "triples":
+                        //problem: php objects can not be json encoded ...
+                        /*
                         $conf['filter'][] = array(
                             'action' => 'add',
                             'mode' => 'triples',
-                            'triples' => $filter['triples'] //problem: php objects can not be json encoded ...
+                            'triples' => $filter['triples'] 
                         );
+                        */
                     break;
                 }
             }
