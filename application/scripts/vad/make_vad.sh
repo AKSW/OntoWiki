@@ -1,9 +1,5 @@
 #!/bin/bash
-echo "checking out ontowiki"
-svn checkout http://ontowiki.googlecode.com/svn/trunk/ontowiki/src/ ontowiki
 
-echo "deleting all svn files from ontowiki"
-find ontowiki | grep '/\.svn$' | xargs rm -r 
 echo "copy ini file"
 cp -fv files/config.ini ontowiki/config.ini
 mkdir -v ontowiki/logs
@@ -12,8 +8,9 @@ mkdir -v ontowiki/cache
 chmod 777 ontowiki/cache
 cp -v ontowiki/index.php tmp.php
 echo "setting $rewriteEngineOn     = false; to true in index.php "
-cat tmp.php | sed 's/$rewriteEngineOn     = false;/$rewriteEngineOn     = true;/' > ontowiki/index.php
-echo "check success manually"
+cat tmp.php | sed 's/$rewriteEngineOn = false;/$rewriteEngineOn = true;/' > ontowiki/index.php
+echo "CHECK SUCCESS MANUALLY:"
+echo "diff tmp.php ontowiki/index.php "
 diff tmp.php ontowiki/index.php
 rm -v tmp.php
 
