@@ -32,7 +32,8 @@ class MinimapModule extends OntoWiki_Module
     public function shouldShow()
     {
         if(class_exists('MapHelper')) {
-            $helper = new MapHelper($this->_owApp->componentManager);
+            $helper = $this->_owApp->componentManager->getComponentHelper('map');
+           // $helper = new MapHelper($this->_owApp->componentManager);
             return $helper->shouldShow();
         } else {
             return false;
