@@ -31,7 +31,9 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->translate = $this->_owApp->translate;
         $this->session = $this->_owApp->session->navigation;
         $this->ac = $this->_erfurt->getAc();
-        $this->stateSession = new Zend_Session_Namespace("NavigationState");
+        
+        $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');        
+        $this->stateSession = new Zend_Session_Namespace($sessionKey);
 
         $this->model = $this->_owApp->selectedModel;
         if (isset($this->_request->m)) {
@@ -191,9 +193,14 @@ class NavigationController extends OntoWiki_Controller_Component
             }
         }
         
-        if($showImplicit &&  $setup->state->lastEvent != "search"){
-            $query = $this->_buildQuery($setup, true);
-            $results_implicit = $this->model->sparqlQuery($query);
+        if($showImplicit){
+            if($setup->state->lastEvent != "search"){
+                $query = $this->_buildQuery($setup, true);
+                $results_implicit = $this->model->sparqlQuery($query);
+            }else{
+                $query = $this->_buildStringSearchQuery($setup);
+                $results_implicit = $this->model->sparqlQuery($query);
+            }
             
             // append implicit classes to results
             foreach($results_implicit as $res){
@@ -336,6 +343,58 @@ class NavigationController extends OntoWiki_Controller_Component
         if( isset($setup->state->offset) && $setup->state->lastEvent == 'more' ){
             $query->setOffset($setup->state->offset);
         }
+        
+        return $query;
+    }
+    
+    protected function _buildStringSearchQuery($setup){
+        // define vars
+        $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        $subVar = new Erfurt_Sparql_Query2_Var('sub');
+        
+        // define query
+        $query = new Erfurt_Sparql_Query2();
+        $query->addProjectionVar($searchVar);
+        $query->setDistinct();
+        
+        // init union var
+        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+        // parse config
+        if( isset($setup->config->instanceRelation->out) ){
+            foreach($setup->config->instanceRelation->out as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( $subVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    $searchVar
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
+        // parse config
+        if( isset($setup->config->instanceRelation->in) ){
+            foreach($setup->config->instanceRelation->in as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    $subVar
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
+        $query->addElement($union);
+        
+        $query->addFilter(
+            new Erfurt_Sparql_Query2_Regex(
+                new Erfurt_Sparql_Query2_Str( $searchVar ),
+                new Erfurt_Sparql_Query2_RDFLiteral($setup->state->searchString)
+            )
+        );
         
         return $query;
     }

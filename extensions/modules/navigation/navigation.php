@@ -87,7 +87,8 @@ class NavigationModule extends OntoWiki_Module
             );
         }
         
-        $stateSession = new Zend_Session_Namespace("NavigationState");
+        $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');        
+        $stateSession = new Zend_Session_Namespace($sessionKey);
         if( isset($stateSession) && ( $stateSession->model == (string)$this->_owApp->selectedModel ) ){
             // load setup
             $this->view->inlineScript()->prependScript(
