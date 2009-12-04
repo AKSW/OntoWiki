@@ -29,7 +29,9 @@
                 <td>
                     <a class="hasMenu expandable" 
                        about="<?php echo $instanceUri ?>" 
-                       typeof="<?php echo $this->curie($this->instanceData[$instanceUri]['__TYPE'][0]['value']) ?>"
+                       <?php if(isset($this->instanceData[$instanceUri]['__TYPE'])) : ?>
+                        typeof="<?php echo $this->curie($this->instanceData[$instanceUri]['__TYPE'][0]['value']) ?>"
+                       <?php endif; ?>
                        href="<?php echo $instance['url']?>">
                         <?php echo $instance['title'] ?>
                     </a><br />
