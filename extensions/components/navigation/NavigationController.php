@@ -180,7 +180,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->_owApp->logger->info("query: ".$query->__toString());
         
         $results = $this->model->sparqlQuery($query);
-               
+
         // if we need to show implicit elements
         $showImplicit = false;
         if(!isset($setup->state->showImplicit)){
@@ -244,6 +244,10 @@ class NavigationController extends OntoWiki_Controller_Component
             $entry = array();
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             $entry['link'] = $this->_getListLink($uri, $setup);
+            
+            if( isset($setup->config->rootElement) ){
+                if($setup->config->rootElement == $uri) continue;
+            }   
             
             // if filtering empty is needed
             $filterEmpty = false;

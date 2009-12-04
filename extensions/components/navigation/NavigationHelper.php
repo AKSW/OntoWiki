@@ -213,7 +213,39 @@ class NavigationHelper extends OntoWiki_Component_Helper
             }
 
         }
-
+        
+        if( isset($setup->config->rootElement) ){
+            $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+            if( isset($setup->config->hierarchyRelations->in) ){
+                foreach($setup->config->hierarchyRelations->in as $rel){
+                    // create new graph pattern
+                    $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                    // add triplen
+                    $u1->addTriple( $searchVar,
+                        new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                        new Erfurt_Sparql_Query2_IriRef($setup->config->rootElement)
+                    );
+                    // add triplet to union var
+                    $union->addElement($u1);
+                }
+                $superUsed = true;
+            }
+            if( isset($setup->config->hierarchyRelations->out) ){
+                foreach($setup->config->hierarchyRelations->out as $rel){
+                    // create new graph pattern
+                    $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                    // add triplen
+                    $u1->addTriple( new Erfurt_Sparql_Query2_IriRef($setup->config->rootElement),
+                        new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                        $searchVar
+                    );
+                    // add triplet to union var
+                    $union->addElement($u1);
+                }
+                $superUsed = true;
+            }
+            if($superUsed) $elements[] = $union;
+        }        
 
         $elements[] = new Erfurt_Sparql_Query2_Filter(
             new Erfurt_Sparql_Query2_isUri(
@@ -271,7 +303,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
             if( isset($setup->config->hierarchyRelations->in) ){
                 foreach($setup->config->hierarchyRelations->in as $rel){
                     $queryOptional->addTriple(
-                        new Erfurt_Sparql_Query2_Var('resourceUri'),
+                        $searchVar,
                         new Erfurt_Sparql_Query2_IriRef($rel),
                         new Erfurt_Sparql_Query2_Var('super')
                     );
@@ -283,7 +315,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     $queryOptional->addTriple(
                         new Erfurt_Sparql_Query2_Var('super'),
                         new Erfurt_Sparql_Query2_IriRef($rel),
-                        new Erfurt_Sparql_Query2_Var('resourceUri')
+                        $searchVar
                     );
                 }
                 $superUsed = true;
