@@ -48,7 +48,7 @@ class EasyinferenceModule extends OntoWiki_Module
 	  $res = !$this->_erfurt->getStore()->sparqlQuery($query) && $_ac->isActionAllowed ('userAnyModelEditAllowed');
                                                                    //$_ac->isModelAllowed('edit', $this->_owApp->selectedModel) ;
 	
-           var_dump($res);
+           
            return $res;
         }
     
