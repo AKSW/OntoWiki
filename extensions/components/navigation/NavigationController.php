@@ -183,16 +183,21 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // if we need to show implicit elements
         $showImplicit = false;
-        if(!isset($setup->state->showImplicit)){
-            if(isset($setup->config->showImplicitElements) && $setup->config->showImplicitElements == true ){
-                $showImplicit = true;
-            }
-        }else{ 
-            if($setup->state->showImplicit == true){
-                $showImplicit = true;
+        if( !isset($setup->config->rootElement) ){
+            if(!isset($setup->state->showImplicit)){
+                if(isset($setup->config->showImplicitElements) && $setup->config->showImplicitElements == true ){
+                    $showImplicit = true;
+                }
+            }else{ 
+                if($setup->state->showImplicit == true){
+                    $showImplicit = true;
+                }
             }
         }
         
+                    /*if( isset($setup->config->rootElement) ){
+                if($setup->config->rootElement == $uri) continue;
+            }*/
         if($showImplicit){
             if($setup->state->lastEvent != "search"){
                 $query = $this->_buildQuery($setup, true);
@@ -243,11 +248,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $uri = $result['resourceUri'];
             $entry = array();
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
-            $entry['link'] = $this->_getListLink($uri, $setup);
-            
-            if( isset($setup->config->rootElement) ){
-                if($setup->config->rootElement == $uri) continue;
-            }   
+            $entry['link'] = $this->_getListLink($uri, $setup);  
             
             // if filtering empty is needed
             $filterEmpty = false;

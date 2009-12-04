@@ -296,7 +296,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
         }
 
         // dont't show rdfs/owl entities and subtypes in the first level
-        if ( !isset($setup->state->parent) ) {
+        if ( !isset($setup->state->parent) && !isset($setup->config->rootElement) ) {
             //$superUsed = false;
             // optional var
             $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
