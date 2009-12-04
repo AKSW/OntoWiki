@@ -191,7 +191,7 @@ class NavigationController extends OntoWiki_Controller_Component
             }
         }
         
-        if($showImplicit){
+        if($showImplicit &&  $setup->state->lastEvent != "search"){
             $query = $this->_buildQuery($setup, true);
             $results_implicit = $this->model->sparqlQuery($query);
             
