@@ -56,11 +56,6 @@ $odd = true;
 <a href="javascript:navigationEvent ('more', '')" id="naviganion-more">Show Me More</a>
 <?php endif; ?>
 
-<?php if(isset($this->navActive) && $this->navActive == true && $this->setup->state->lastEvent == "init"): ?>
-<script type="text/javascript">
-    setup = <?php echo $this->setup ?>
-</script>
-<?php endif; ?>
 <!-- <pre>
 <?php
         #print_r($this->setup)

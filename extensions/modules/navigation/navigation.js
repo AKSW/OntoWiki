@@ -24,9 +24,11 @@ $(document).ready(function() {
 
     navigationInput.livequery('keypress', function(event) {
         // do not create until user pressed enter
-	      if ((event.which == 13) && (event.currentTarget.value != '') ) {
+        if ((event.which == 13) && (event.currentTarget.value != '') ) {
             navigationEvent('search', event.currentTarget.value);
             $(event.currentTarget).val('');
+            return false;
+        } else if ( event.which == 13 ) {
             return false;
         }
         return true;

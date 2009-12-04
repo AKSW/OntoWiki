@@ -7,9 +7,11 @@
 class NavigationHelper extends OntoWiki_Component_Helper
 {
     public static function getInstancesTriples($uri, $setup){
-       $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-
-       // init union var
+        $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        $classVar = new Erfurt_Sparql_Query2_Var('classUri');
+        $elements = array();
+        
+        // init union var
         $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
         // parse config
         if( isset($setup->config->instanceRelation->in) ){
@@ -17,7 +19,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // create new graph pattern
                 $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
                 // add triplen
-                $u1->addTriple( new Erfurt_Sparql_Query2_IriRef($uri),
+                $u1->addTriple( $classVar,
                     new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
                     $searchVar
                 );
@@ -33,14 +35,62 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // add triplen
                 $u1->addTriple( $searchVar,
                     new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
-                    new Erfurt_Sparql_Query2_IriRef($uri)
+                    $classVar
                 );
                 // add triplet to union var
                 $union->addElement($u1);
             }
         }
-        return array($union);
+        $elements[] = $union;
+        
+        $owApp = OntoWiki::getInstance();
+        $modelIRI = (string)$owApp->selectedModel;
+        $store = $owApp->erfurt->getStore();
+        // get all subclass of the super class
+        $classes = array();
+        if( isset($setup->config->hierarchyRelations->out) ){
+            foreach($setup->config->hierarchyRelations->out as $rel){
+                $classes += $store->getTransitiveClosure($modelIRI, $rel, $uri, false);
+            }
+        }
+        if( isset($setup->config->hierarchyRelations->in) ){
+            foreach($setup->config->hierarchyRelations->in as $rel){
+                $classes += $store->getTransitiveClosure($modelIRI, $rel, $uri, true);
+            }
+        }
+        
+        // create filter for types
+        $filter_type = array();
+        $counted = array();
+        foreach ($classes as $class) {
+            // get uri
+            $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
+            
+            // if this class is already counted - continue
+            if( in_array($uri, $counted) ) {
+                if( $class['node'] != '' ){
+                    $uri = $class['node'];
+                    if( in_array($uri, $counted) )
+                        continue;
+                }else{
+                    continue;
+                }
+            }
+            
+            $filter_type[] = new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri));
+            
+            // add uri to counted
+            $counted[] = $uri;
+        }
+        // add filter
+        $elements[] = new Erfurt_Sparql_Query2_Filter(
+            new Erfurt_Sparql_Query2_ConditionalOrExpression($filter_type)
+        );
+        
+        return $elements;
     }
+
+
 
     public static function getSearchTriples($setup, $forImplicit = false){
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');

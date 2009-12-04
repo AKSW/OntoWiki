@@ -31,7 +31,9 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->translate = $this->_owApp->translate;
         $this->session = $this->_owApp->session->navigation;
         $this->ac = $this->_erfurt->getAc();
-        $this->stateSession = new Zend_Session_Namespace("NavigationState");
+        
+        $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');        
+        $this->stateSession = new Zend_Session_Namespace($sessionKey);
 
         $this->model = $this->_owApp->selectedModel;
         if (isset($this->_request->m)) {
@@ -79,7 +81,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         // set view variable for the show more button
-        if (count($this->view->entries) > $this->limit) {
+        if ( (count($this->view->entries) > $this->limit) && $this->setup->state->lastEvent != "search") {
             // return only $limit entries
             $this->view->entries = array_slice($this->view->entries, 0, $this->limit);
             $this->view->showMeMore = true;
@@ -192,8 +194,13 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         if($showImplicit){
-            $query = $this->_buildQuery($setup, true);
-            $results_implicit = $this->model->sparqlQuery($query);
+            if($setup->state->lastEvent != "search"){
+                $query = $this->_buildQuery($setup, true);
+                $results_implicit = $this->model->sparqlQuery($query);
+            }else{
+                $query = $this->_buildStringSearchQuery($setup);
+                $results_implicit = $this->model->sparqlQuery($query);
+            }
             
             // append implicit classes to results
             foreach($results_implicit as $res){
@@ -252,57 +259,20 @@ class NavigationController extends OntoWiki_Controller_Component
             // do filter
             $show = true;
             if( $filterEmpty ){
-                $modelIRI = $this->model->getModelIri();
-        
-                // get all subclass of the super class
-                $classes = array();
-                if( isset($setup->config->hierarchyRelations->out) ){
-                    foreach($setup->config->hierarchyRelations->out as $rel){
-                        $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, false);
-                    }
-                }
-                if( isset($setup->config->hierarchyRelations->in) ){
-                    foreach($setup->config->hierarchyRelations->in as $rel){
-                        $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, true);
-                    }
-                }
+                $query = $this->_buildCountQuery($uri, $setup);
                 
-                //$this->_owApp->logger->info("array: ".print_r($classes,true));
-            
-                $count = 0;
-                $counted = array();
-                foreach($classes as $class){
-                    // get uri
-                    $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
+                //$this->_owApp->logger->info('EMPTY QUERY: '.$query);
                 
-                    // if this class is already counted - continue
-                    if( in_array($uri, $counted) ) {
-                        if( $class['node'] != '' ){
-                            $uri = $class['node'];
-                            if( in_array($uri, $counted) )
-                                continue;
-                        }else{
-                            continue;
-                        }
-                    }
-                
-                    $query = $this->_buildCountQuery($uri, $setup);
-                
-                    //$this->_owApp->logger->info('EMPTY QUERY: '.$query);
-                
-                    $results = $this->model->sparqlQuery($query);
+                $results = $this->model->sparqlQuery($query);
                     
-                    //$this->_owApp->logger->info('EMPTY RES: '.print_r($results,true));
+                //$this->_owApp->logger->info('EMPTY RES: '.print_r($results,true));
                     
-                    if( isset($results[0]['callret-0']) ){
-                        $count += $results[0]['callret-0'];
-                    }else{
-                        $count += count($results);
-                    }
-                    
-                    // add uri to counted
-                    $counted[] = $uri;
+                if( isset($results[0]['callret-0']) ){
+                    $count = $results[0]['callret-0'];
+                }else{
+                    $count = count($results);
                 }
+                
                 if($count == 0) $show = false;
             }
             
@@ -333,62 +303,22 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         // count entries
-        if( isset($setup->config->showCounts) && $setup->config->showCounts == true ){            
-            $modelIRI = $this->model->getModelIri();
-        
-            // get all subclass of the super class
-            $classes = array();
-            if( isset($setup->config->hierarchyRelations->out) ){
-                foreach($setup->config->hierarchyRelations->out as $rel){
-                    $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, false);
-                }
+        if( isset($setup->config->showCounts) && $setup->config->showCounts == true ){               
+            $query = $this->_buildCountQuery($uri, $setup);
+            
+            //$this->_owApp->logger->info("count query: ".$query->__toString());
+                
+            $results = $this->model->sparqlQuery($query);
+            
+            //$this->_owApp->logger->info("count query results: ".print_r($results,true));
+            
+            if( isset($results[0]['callret-0']) ){
+                $count = $results[0]['callret-0'];
+            }else{
+                $count = count($results);
             }
-            if( isset($setup->config->hierarchyRelations->in) ){
-                foreach($setup->config->hierarchyRelations->in as $rel){
-                    $classes += $this->store->getTransitiveClosure($modelIRI, $rel, $uri, true);
-                }
-            }
-            
-            //$this->_owApp->logger->info("array: ".print_r($classes,true));
-            
-            $count = 0;
-            $counted = array();
-            foreach($classes as $class){
-                // get uri
-                $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
-                
-                // if this class is already counted - continue
-                if( in_array($uri, $counted) ) {
-                    if( $class['node'] != '' ){
-                        $uri = $class['node'];
-                        if( in_array($uri, $counted) )
-                            continue;
-                    }else{
-                        continue;
-                    }
-                }
-                
-                $query = $this->_buildCountQuery($uri, $setup);
-                //$query->setCountStar(true);
-            
-                //$this->_owApp->logger->info("count query: ".$query->__toString());
-                
-                $results = $this->model->sparqlQuery($query);
-            
-                //$this->_owApp->logger->info("count query results: ".print_r($results,true));
-            
-                if( isset($results[0]['callret-0']) ){
-                    $count += $results[0]['callret-0'];
-                }else{
-                    $count += count($results);
-                }
-                
-                // add uri to counted
-                $counted[] = $uri;
-            }
-            
+                        
             if( $count > 0 ) $name .= ' ('.$count.')';
-            //}
         }
         
         return $name;
@@ -417,15 +347,72 @@ class NavigationController extends OntoWiki_Controller_Component
         return $query;
     }
     
+    protected function _buildStringSearchQuery($setup){
+        // define vars
+        $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        $subVar = new Erfurt_Sparql_Query2_Var('sub');
+        
+        // define query
+        $query = new Erfurt_Sparql_Query2();
+        $query->addProjectionVar($searchVar);
+        $query->setDistinct();
+        
+        // init union var
+        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+        // parse config
+        if( isset($setup->config->instanceRelation->out) ){
+            foreach($setup->config->instanceRelation->out as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( $subVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    $searchVar
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
+        // parse config
+        if( isset($setup->config->instanceRelation->in) ){
+            foreach($setup->config->instanceRelation->in as $rel){
+                // create new graph pattern
+                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $u1->addTriple( $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel),//EF_RDF_TYPE),
+                    $subVar
+                );
+                // add triplet to union var
+                $union->addElement($u1);
+            }
+        }
+        $query->addElement($union);
+        
+        $query->addFilter(
+            new Erfurt_Sparql_Query2_Regex(
+                new Erfurt_Sparql_Query2_Str( $searchVar ),
+                new Erfurt_Sparql_Query2_RDFLiteral($setup->state->searchString)
+            )
+        );
+        
+        return $query;
+    }
+    
     protected function _buildCountQuery($uri, $setup){
         
         //$classVar = new Erfurt_Sparql_Query2_Var('classUri'); // new Erfurt_Sparql_Query2_IriRef($uri)
         $query = new Erfurt_Sparql_Query2();
+        $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
         $query->setCountStar(true);
-        //$query->setDistinct();
+        $query->setDistinct();
+        
+        //$this->_owApp->logger->info("data: ".print_r($query,true));
         
         $query->addElements(NavigationHelper::getInstancesTriples($uri, $setup));
         //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
+        
+        $this->_owApp->logger->info("data: ".print_r($query,true));
         
         return $query;
     }
