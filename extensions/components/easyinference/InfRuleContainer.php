@@ -51,8 +51,9 @@ class InfRuleContainer
 	     $ruleData = Erfurt_App::getInstance()->getStore()->sparqlQuery(
              Erfurt_Sparql_SimpleQuery::initWithString(
                  'PREFIX : <http://ns.ontowiki.net/Extension/EasyInference/>'.
+
 				 //' PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>'.
-				 //' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'.
+				 ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'.
 				 ' SELECT DISTINCT ?name ?r ?predicate ?conclusion'.
                  ' FROM :'.
                  ' WHERE { ?r a :InfRule ;'

@@ -16,14 +16,14 @@ require_once 'extensions/components/easyinference/InfRuleContainer.php';
 
 class EasyinferenceModule extends OntoWiki_Module
 {
-	private $has_ask = true;
-	private $has_star_select = true;
-	private $prologue;
-	private $star_limit;
+    private $has_ask = true;
+    private $has_star_select = true;
+    private $prologue;
+    private $star_limit;
 
     public function init()
     {
-	    $this->prologue = ($this->has_ask ? 'ASK' : ($this->has_star_select ? 'SELECT *' : die('db not supported')));
+	$this->prologue = ($this->has_ask ? 'ASK' : ($this->has_star_select ? 'SELECT *' : die('db not supported')));
         $this->star_limit = (!$this->has_ask ? ' LIMIT 1' : '');
         $this->view->headScript()->captureStart(); // Start JavaScript Entry
 		?>
@@ -33,28 +33,31 @@ class EasyinferenceModule extends OntoWiki_Module
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'easyinference.js');
         //$this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'easyinference.css', 'screen');
         
-	  $this->_owApp->translate->addTranslation(_OWROOT . $this->_config->extensions->modules .
+	$this->_owApp->translate->addTranslation(_OWROOT . $this->_config->extensions->modules .
                                                $this->_name . DIRECTORY_SEPARATOR . 'languages/', null,
                                                array('scan' => Zend_Translate::LOCALE_FILENAME));
     }
 	
 	public function shouldShow()
 	{
-        $_ac =  $this->_erfurt->getAc(); 
+            $_ac =  $this->_erfurt->getAc();
 	  // dont show for objects and users who aren't almighty at model edit
-	  return !$this->_erfurt->getStore()->sparqlQuery
-		(Erfurt_Sparql_SimpleQuery::initWithString
+          $query = Erfurt_Sparql_SimpleQuery::initWithString
 		 (' '.$this->prologue.' FROM <'.$this->_owApp->selectedModel.'> WHERE { <'.$this->_owApp->selectedResource.'>'.
-		  ' a ?z . ?z a <'.EF_RDFS_CLASS.'> }'.$this->star_limit)) && $_ac->isActionAllowed ('userAnyModelEditAllowed');
-                                                                    //$_ac->isModelAllowed('edit', $this->_owApp->selectedModel) ;
-	}
+		  ' a ?z . ?z a <'.EF_RDFS_CLASS.'> }'.$this->star_limit);
+	  $res = !$this->_erfurt->getStore()->sparqlQuery($query) && $_ac->isActionAllowed ('userAnyModelEditAllowed');
+                                                                   //$_ac->isModelAllowed('edit', $this->_owApp->selectedModel) ;
+	
+           var_dump($res);
+           return $res;
+        }
     
     /* add a menu to the module */
     public function getMenu()
     {
-		require_once 'easyInferenceMenu.php';
+        require_once 'easyInferenceMenu.php';
     	$easyInferenceMenu = new EasyInferenceMenu();
-    	return $easyInferenceMenu->getMenu('easyInfernceMenu')->toArray();
+    	return $easyInferenceMenu->getMenu('easyInfernceMenu');
     }
     
     /**
