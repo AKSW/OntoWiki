@@ -81,7 +81,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
         
         // set view variable for the show more button
-        if (count($this->view->entries) > $this->limit) {
+        if ( (count($this->view->entries) > $this->limit) && $this->setup->state->lastEvent != "search") {
             // return only $limit entries
             $this->view->entries = array_slice($this->view->entries, 0, $this->limit);
             $this->view->showMeMore = true;
