@@ -45,28 +45,34 @@ class ModellistModule extends OntoWiki_Module
     }
     
     /**
-     * Returns the context menu of the module
+     * Returns the menu of the module
      *
      * @return string
      */
-    public function getContextMenu()
+    public function getMenu()
     {
-        $contextMenu = new OntoWiki_Menu();
         if ($this->_erfurt->getAc()->isActionAllowed('ModelManagement')) {
-            $contextMenu->setEntry('Create Knowledge Base', $this->_config->urlBase . 'model/create')
-                        ->setEntry(OntoWiki_Menu::SEPARATOR);
+            $editMenu = new OntoWiki_Menu();
+            $editMenu->setEntry('Create Knowledge Base', $this->_config->urlBase . 'model/create');
         }
         
+        $viewMenu = new OntoWiki_Menu();
         $session = new Zend_Session_Namespace(_OWSESSION);
         if (!isset($session->showHiddenGraphs) || $session->showHiddenGraphs == false) {
-            $contextMenu->setEntry('Show Hidden Knowledge Bases', array('class' => 'modellist_hidden_button show'));
+            $viewMenu->setEntry('Show Hidden Knowledge Bases', array('class' => 'modellist_hidden_button show'));
         } else {
-            $contextMenu->setEntry('Hide Hidden Knowledge Bases', array('class' => 'modellist_hidden_button'));
+            $viewMenu->setEntry('Hide Hidden Knowledge Bases', array('class' => 'modellist_hidden_button'));
         }
         
-        //$contextMenu->setEntry(OntoWiki_Menu::SEPARATOR)->setEntry('Help', '#');
+        // build menu out of sub menus
+        $mainMenu = new OntoWiki_Menu();
+
+        if (isset($editMenu)) {
+            $mainMenu->setEntry('Edit', $editMenu);
+        }
+        $mainMenu->setEntry('View', $viewMenu);
         
-        return $contextMenu;
+        return $mainMenu;
     }
     
     /**
