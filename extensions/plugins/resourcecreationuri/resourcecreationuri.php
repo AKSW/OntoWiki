@@ -188,7 +188,7 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
             
         }       
         
-        return explode('/',$this->_privateConfig->defaultNamingSchema);
+        return explode('/',$this->_privateConfig->defaultNamingScheme);
         
     }
     
