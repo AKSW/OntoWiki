@@ -215,7 +215,7 @@ function markerCallbackHandler (data,that) {
             // register events for the marker to open popup and to move the detailmap
             // the second parameter gives the content in which the function will be called (accessible as this in the function)
             // === here will come a great new thing, I don't know what, but it will ===
-            //marker.events.register( 'click', feature, selected );that.map.projection, that.map.displayProjectioo
+            //marker.events.register( 'click', feature, selected );
             //marker.events.register( 'mouseover', feature, detailView );
 
             // add the marker to the markerlayer of the mainMap
