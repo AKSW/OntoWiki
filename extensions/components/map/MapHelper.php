@@ -54,13 +54,14 @@ class MapHelper extends OntoWiki_Component_Helper
 
         $owApp = OntoWiki::getInstance();
         $session = $owApp->session;
+        $front  = Zend_Controller_Front::getInstance();
 
         /**
          * don't show if $this->_request->isXmlHttpRequest() == true
          * except the request came from the map
          */
 
-        if (isset($session->instances)) {
+        if (!$front->getRequest()->isXmlHttpRequest() && isset($session->instances)) {
 
             $latProperties  = $this->_privateConfig->property->latitude->toArray();
             $longProperties = $this->_privateConfig->property->longitude->toArray();
@@ -124,50 +125,15 @@ class MapHelper extends OntoWiki_Component_Helper
 
             return $result;
         } else {
-            $owApp->logger->debug('MapHelper/shouldShow: no instances object set in session → no instances to show → no map.');
+            if($front->getRequest()->isXmlHttpRequest()) {
+                $owApp->logger->debug('MapHelper/shouldShow: xmlHttpRequest → no map.');
+            } else if(!isset($session->instances)) {
+                $owApp->logger->debug('MapHelper/shouldShow: no instances object set in session → no instances to show → no map.');
+            } else {
+                $owApp->logger->debug('MapHelper/shouldShow: decided to hide the map, but not because of a XmlHttpRequest and not, because there is no valide session.');
+            }
 
             return false;
-
-            /* old code */
-
-            if($owApp->selectedModel) {
-
-                require_once 'Erfurt/Sparql/SimpleQuery.php';
-
-                $store    = $owApp->erfurt->getStore();
-                $resource = (string) $owApp->selectedResource;
-
-                // build the query to get all marker resources
-                $query = new Erfurt_Sparql_SimpleQuery( );
-
-                $query->setProloguePart( 'SELECT ?p' );
-
-                $where = "WHERE {"      . EOL;
-                $where.= "	?s ?p ?o."  . EOL;
-                $where.= "	FILTER("    . EOL;
-
-                $latitude	= $this->_privateConfig->property->latitude->toArray();
-                $longitude	= $this->_privateConfig->property->longitude->toArray();
-
-                for ($i = 0; $i < count($latitude); $i++) {
-                    $lat = $latitude[$i];
-                    $long = $longitude[$i];
-                    if( $i != 0 ) {
-                        $where.= " || ";
-                    }
-                    $where.= "		sameTerm(?p, <" . $lat . ">) ||" . EOL;
-                    $where.= "		sameTerm(?p, <" . $long . ">)"   . EOL;
-                }
-
-                $where.= ") }";
-
-                $query->setWherePart($where);
-                $query->setLimit(1);
-                // ask for the properties
-                return $owApp->selectedModel->sparqlQuery($query);
-            } else {
-                return false;
-            }
         }
     }
 }
