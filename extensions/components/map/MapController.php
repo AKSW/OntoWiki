@@ -1,17 +1,14 @@
 <?php
 // vim: sw=4:sts=4:expandtab
 
-/* Hint: use PHP_EOL which is defined to the 
-   system's line ending character ;) */
-if (!defined("EOL")) {
-    define("EOL","\n");
-}
-
 /**
  * Map component controller.
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_components_map
+ * @author Natanael Arndt <arndtn@gmail.com>
+ * @version $Id$
+ * TODO comments
  */
 class MapController extends OntoWiki_Controller_Component
 {

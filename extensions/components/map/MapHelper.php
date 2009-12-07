@@ -1,21 +1,18 @@
 <?php
 // vim: sw=4:sts=4:expandtab
 
-if (!defined("EOL")) {
-    define("EOL","\n");
-}
-
 require_once 'OntoWiki/Component/Helper.php';
 
 /**
- * Helper class for the FOAF Editor component.
- * Checks whether the current resource is an instance of foaf:Person
- * and registers the FOAF Editor component if so.
+ * Helper class for the Map component.
+ * Checks whether there are geospacial properties in result of the currant QueryObject
+ * and registers the Map tab component if so.
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_components_map
- * @author Norman Heino <norman.heino@gmail.com>
- * @version $Id: FoafeditHelper.php 3053 2009-05-08 12:15:51Z norman.heino $
+ * @author Natanael Arndt <arndtn@gmail.com>
+ * @version $Id$
+ * TODO comments
  */
 class MapHelper extends OntoWiki_Component_Helper
 {
@@ -55,11 +52,6 @@ class MapHelper extends OntoWiki_Component_Helper
         $owApp = OntoWiki::getInstance();
         $session = $owApp->session;
         $front  = Zend_Controller_Front::getInstance();
-
-        /**
-         * don't show if $this->_request->isXmlHttpRequest() == true
-         * except the request came from the map
-         */
 
         if (!$front->getRequest()->isXmlHttpRequest() && isset($session->instances)) {
 
