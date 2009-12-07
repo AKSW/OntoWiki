@@ -27,42 +27,43 @@ class EasyinferenceController extends OntoWiki_Controller_Component
         $rule = $rules[$this->getParam('rule', true)];
 
         $resource = $_app->selectedResource->getIri();
-        if (!$resource || $resource === '') 
+        if (!$resource || $resource === ''){
             $resource = $_app->selectedModel->getModelIri();
+        }
 
-		if ($rule) {
-		    $store = $this->_erfurt->getStore();
-	        $_sysOnt = $store->getModel($this->_erfurt->getConfig()->sysOnt->modelUri, false);
+        if ($rule) {
+            $store = $this->_owApp->erfurt->getStore();
+            $_sysOnt = $store->getModel($this->_owApp->erfurt->getConfig()->sysont->modelUri, false);
 
-		    $st = array();
-		    $st['http://ns.ontowiki.net/Extension/EasyInference/hasRule'] =
-			    array(array('type'=>'uri','value'=>$this->getParam('rule',true)));
-		    $st['http://ns.ontowiki.net/Extension/EasyInference/hasModel'] =
-			    array(array('type'=>'uri','value'=>$_app->selectedModel->getModelIri()));
-		    $st['http://ns.ontowiki.net/Extension/EasyInference/hasConcrete'] =
-			    array(array('type'=>'uri','value'=>$resource));
-		    $st[EF_RDF_TYPE] =
-			    array(array('type'=>'uri','value'=>'http://ns.ontowiki.net/Extension/EasyInference/InfRule/Applied'));
-		    $eiModel = $store->getModel('http://ns.ontowiki.net/Extension/EasyInference/', false);
-		    $ruleRes = new Erfurt_Rdf_Resource($this->getParam('rule',true), $eiModel);
-		    $ruleTitle = $ruleRes->getTitle();
-		    $resTitle = $_app->selectedResource->getTitle();
-		    if ($ruleTitle === false) $ruleTitle = $ruleRes->getLocalName();
-		    if ($resTitle === false) $resTitle = $_app->selectedResource->getLocalName();
-		    $label = $ruleTitle . ' ' . $_app->translate->_('on') . ' ' . $_app->selectedModel->getTitle();
-		    if ((string)$_app->selectedModel != (string)$_app->selectedResource)
-			$label .= ' ' . $_app->translate->_('for') . ' ' . $resTitle;
-		    $st[EF_RDFS_LABEL] = array(array('type'=>'literal','value'=>$label));
+            $st = array();
+            $st['http://ns.ontowiki.net/Extension/EasyInference/hasRule'] =
+                    array(array('type'=>'uri','value'=>$this->getParam('rule',true)));
+            $st['http://ns.ontowiki.net/Extension/EasyInference/hasModel'] =
+                    array(array('type'=>'uri','value'=>$_app->selectedModel->getModelIri()));
+            $st['http://ns.ontowiki.net/Extension/EasyInference/hasConcrete'] =
+                    array(array('type'=>'uri','value'=>$resource));
+            $st[EF_RDF_TYPE] =
+                    array(array('type'=>'uri','value'=>'http://ns.ontowiki.net/Extension/EasyInference/InfRule/Applied'));
+            $eiModel = $store->getModel('http://ns.ontowiki.net/Extension/EasyInference/', false);
+            $ruleRes = new Erfurt_Rdf_Resource($this->getParam('rule',true), $eiModel);
+            $ruleTitle = $ruleRes->getTitle();
+            $resTitle = $_app->selectedResource->getTitle();
+            if ($ruleTitle === false) $ruleTitle = $ruleRes->getLocalName();
+            if ($resTitle === false) $resTitle = $_app->selectedResource->getLocalName();
+            $label = $ruleTitle . ' ' . $_app->translate->_('on') . ' ' . $_app->selectedModel->getTitle();
+            if ((string)$_app->selectedModel != (string)$_app->selectedResource)
+                $label .= ' ' . $_app->translate->_('for') . ' ' . $resTitle;
+            $st[EF_RDFS_LABEL] = array(array('type'=>'literal','value'=>$label));
 
-			$uid = $eiModel->createResourceUri('InfRule/Applied/' . $ruleRes->getLocalName() . '#');
+            $uid = $eiModel->createResourceUri('InfRule/Applied/' . $ruleRes->getLocalName() . '#');
             $_sysOnt->addMultipleStatements(array($uid => $st));
 
-		    $msg ='Die Regel '.$rule->getName().' wurde aktiviert';
+            $msg ='Die Regel '.$rule->getName().' wurde aktiviert';
 
             // add the inferences?
-            if ($this->getParam('with_inferences',false) == 1) 
+            if ($this->getParam('with_inferences',false) == 1)
             {
-                
+
                 if ((string)$resource === (string)$_app->selectedModel)
                     $resource = null;
 
@@ -70,11 +71,11 @@ class EasyinferenceController extends OntoWiki_Controller_Component
                                      $this->getInferenceModel($_app->selectedModel),
                                      $rule->getQueryFromRule ( $resource, array('disallowBoundedTripel'=>true)));
                 $msg .= PHP_EOL.'Inferenzen wurden generiert.';
-            } 
-		}
-		else {
-		  $msg = 'keine Regel ausgewählt.';
-		}
+            }
+        }
+        else {
+          $msg = 'keine Regel ausgewählt.';
+        }
       
         $this->_response->setHeader('Content-Type', 'application/json', true);      
         $this->_response->setBody(json_encode(array('success'=>true, 'msg'=>$msg)));  
@@ -83,27 +84,31 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 	// Gibt alle addRules und deleteRules zum füllen der Comboboxen im Modul zurück
     public function getallrulesAction()
     {       
-		$this->_helper->viewRenderer->setNoRender();
+        $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
         $this->_response->setHeader('Content-Type', 'application/json', true);  
 
 		try {
 			// get existing rules
 			$deleteRules = array();
-			foreach ($this->_erfurt->getStore()->sparqlQuery
-					(Erfurt_Sparql_SimpleQuery::initWithString
-					('PREFIX : <http://ns.ontowiki.net/Extension/EasyInference/>'.
+                        $query = 'PREFIX : <http://ns.ontowiki.net/Extension/EasyInference/>'.
 					 ' PREFIX rule: <http://ns.ontowiki.net/Extension/EasyInference/InfRule/>'.
+                                         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>'.
 					 ' SELECT DISTINCT ?n ?r'.
 					 ' FROM <http://ns.ontowiki.net/Extension/EasyInference/>'.
-					 ' FROM <'.$this->_erfurt->getConfig()->sysOnt->modelUri.'>'.
+					 ' FROM <'.$this->_owApp->erfurt->getConfig()->sysont->modelUri.'>'.
 					 ' WHERE {'.
 					 ' ?s a rule:Applied .'.
 					 ' ?s :hasRule ?r .'.
 					 ' ?s :hasModel <'.$this->_owApp->selectedModel.'> .'.
 					 ' ?s :hasConcrete <'.$this->_owApp->selectedResource.'> .'.
 					 ' ?r rdfs:label ?n'.
-					 ' }')) as $result) 
+					 ' }';
+                        //echo $query;
+                        $res = $this->_owApp->erfurt->getStore()->sparqlQuery(
+                            Erfurt_Sparql_SimpleQuery::initWithString($query)
+                        );
+			foreach ($res as $result)
 			{
 				$deleteRules[$result['r']] = $result['n'];
 			}
@@ -148,18 +153,18 @@ class EasyinferenceController extends OntoWiki_Controller_Component
         $rule = $this->getParam('rule',true);
         $delete_directly = $this->getParam('delete_directly',false);
 		$_app = $this->_owApp;
-        $sysont = $this->_erfurt->getSysOntModel();
+        $sysont = $this->_owApp->erfurt->getSysOntModel();
         $rules = InfRuleContainer::getInstance()->getRules();
         $msg = '';
 		if ($this->getParam('rule',true) && array_key_exists($rule, $rules)) {
-		    $fromGraph = $this->_erfurt->getConfig()->sysOnt->modelUri;
+		    $fromGraph = $this->_owApp->erfurt->getConfig()->sysont->modelUri;
 		    $conditions = 			 
 			    ' ?s a <http://ns.ontowiki.net/Extension/EasyInference/InfRule/Applied> .'.
 			    ' ?s <http://ns.ontowiki.net/Extension/EasyInference/hasRule> <'.$rule.'> .'.
 			    ' ?s <http://ns.ontowiki.net/Extension/EasyInference/hasModel> <'.$_app->selectedModel.'> .'.
 			    ' ?s <http://ns.ontowiki.net/Extension/EasyInference/hasConcrete> <'.$_app->selectedResource.'>';
 
-			$result = $this->_erfurt->getStore()->sparqlQuery
+			$result = $this->_owApp->erfurt->getStore()->sparqlQuery
 			  (Erfurt_Sparql_SimpleQuery::initWithString
 			   ('PREFIX : <http://ns.ontowiki.net/Extension/EasyInference/>'.
 				' PREFIX rule: <http://ns.ontowiki.net/Extension/EasyInference/InfRule/>'.
@@ -171,7 +176,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 
 		    if ($result) {
 			    foreach ($result as $r)
-			        $this->_erfurt->getStore()->deleteMatchingStatements($fromGraph, $r['s'], null, null);
+			        $this->_owApp->erfurt->getStore()->deleteMatchingStatements($fromGraph, $r['s'], null, null);
 		    }
 
 		    $msg .= "Die Regel wurde gelöscht.";
@@ -206,12 +211,12 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 
 		$rules = InfRuleContainer::getInstance()->getRules();
 		$msg='';
-		foreach ($this->_erfurt->getStore()->sparqlQuery
+		foreach ($this->_owApp->erfurt->getStore()->sparqlQuery
 		  (Erfurt_Sparql_SimpleQuery::initWithString
 		   ('PREFIX : <http://ns.ontowiki.net/Extension/EasyInference/>'.
 			' PREFIX rule: <http://ns.ontowiki.net/Extension/EasyInference/InfRule/>'.
 			' SELECT DISTINCT ?s ?r'.
-			' FROM <'.$this->_erfurt->getConfig()->sysOnt->modelUri.'>'.
+			' FROM <'.$this->_owApp->erfurt->getConfig()->sysont->modelUri.'>'.
 			' WHERE {'.
 			' ?u a rule:Applied .'.
 			' ?u :hasRule ?r .'.
@@ -251,12 +256,12 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 		
 		$rules = InfRuleContainer::getInstance()->getRules();
 		$msg='';
-		foreach ($this->_erfurt->getStore()->sparqlQuery
+		foreach ($this->_owApp->erfurt->getStore()->sparqlQuery
 		  (Erfurt_Sparql_SimpleQuery::initWithString
 		   ('PREFIX : <http://ns.ontowiki.net/Extension/EasyInference/>'.
 			' PREFIX rule: <http://ns.ontowiki.net/Extension/EasyInference/InfRule/>'.
 			' SELECT DISTINCT ?s ?r ?m'.
-			' FROM <'.$this->_erfurt->getConfig()->sysOnt->modelUri.'>'.
+			' FROM <'.$this->_owApp->erfurt->getConfig()->sysont->modelUri.'>'.
 			' WHERE {'.
 			' ?u a rule:Applied .'.
 			' ?u :hasRule ?r .'.
@@ -272,7 +277,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 
             $_model = null; 
             try {
-		        $_model = $this->_erfurt->getStore()->getModel($result['m'], false);
+		        $_model = $this->_owApp->erfurt->getStore()->getModel($result['m'], false);
 	        } catch (Erfurt_Store_Exception $e) {
                 $msg .= ' ERROR { MODEL '.$result['m'].' NOT FOUND } '.PHP_EOL;
                 continue;
@@ -325,12 +330,12 @@ class EasyinferenceController extends OntoWiki_Controller_Component
         $activate = $this->getParam('activate', false) == 'true' ? true : false;
     
         if ($activate)
-            $this->_erfurt->getSysOntModel()->addStatement($_model->getModelIri(),
-		                $this->_erfurt->getConfig()->sysOnt->properties->hiddenImports,
+            $this->_owApp->erfurt->getSysOntModel()->addStatement($_model->getModelIri(),
+		                $this->_owApp->erfurt->getConfig()->sysont->properties->hiddenImports,
 		                array('type'=>'uri','value'=>$infModel->getModelIri()));
         else {
-            $this->_erfurt->getSysOntModel()->deleteStatement($_model->getModelIri(),
-		                $this->_erfurt->getConfig()->sysOnt->properties->hiddenImports,
+            $this->_owApp->erfurt->getSysOntModel()->deleteStatement($_model->getModelIri(),
+		                $this->_owApp->erfurt->getConfig()->sysont->properties->hiddenImports,
 		                array('type'=>'uri','value'=>$infModel->getModelIri()));
         }
 
@@ -346,20 +351,20 @@ class EasyinferenceController extends OntoWiki_Controller_Component
         $result = false;
         $_model = $this->_owApp->selectedModel;
 
-	    try {
-		    $infModel = $this->_erfurt->getStore()->getModel($_model->getModelIri().'inference/');
+        try {
+            $infModel = $this->_owApp->erfurt->getStore()->getModel($_model->getModelIri().'inference/');
 
             $query = Erfurt_Sparql_SimpleQuery::initWithString(' ASK '.
-                            ' FROM <'.$this->_erfurt->getSysOntModel()->getModelIri().'>'.
-                            ' WHERE { <'.$_model->getModelIri().'>'.
-                            ' <'.$this->_erfurt->getConfig()->sysOnt->properties->hiddenImports.'>'.
-                            ' <'.$infModel->getModelIri().'> }');
-        
-            if ($this->_erfurt->getStore()->sparqlQuery($query))
+                        ' FROM <'.$this->_owApp->erfurt->getSysOntModel()->getModelIri().'>'.
+                        ' WHERE { <'.$_model->getModelIri().'>'.
+                        ' <'.$this->_owApp->erfurt->getConfig()->sysont->properties->hiddenImports.'>'.
+                        ' <'.$infModel->getModelIri().'> }');
+            
+            if ($this->_owApp->erfurt->getStore()->sparqlQuery($query)){
                 $result = true;
+            }
 
-	    }
-	    catch (Erfurt_Store_Exception $e)  
+        } catch (Erfurt_Store_Exception $e)
         {
             $result = false;
         }
@@ -373,7 +378,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 	 */
     private function getInferenceModel ($sourceModel) {
 	  try {
-		return $this->_erfurt->getStore()->getModel($sourceModel->getModelIri().'inference/');
+		return $this->_owApp->erfurt->getStore()->getModel($sourceModel->getModelIri().'inference/');
 	  }
 	  catch (Erfurt_Store_Exception $e) { // didn't exist yet
 		$this->setupInferenceModel($sourceModel);
@@ -386,8 +391,8 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 	 */
     private function makeNewInferenceModel ($sourceModel) {
 	  try {
-		$this->_erfurt->getStore()->getModel($sourceModel->getModelIri().'inference/', false);
-		$this->_erfurt->getStore()->deleteModel($sourceModel->getModelIri().'inference/', false);
+		$this->_owApp->erfurt->getStore()->getModel($sourceModel->getModelIri().'inference/', false);
+		$this->_owApp->erfurt->getStore()->deleteModel($sourceModel->getModelIri().'inference/', false);
 	  }
 	  catch (Erfurt_Store_Exception $e) { // didn't exist yet
 	  }
@@ -402,7 +407,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
      */
     private function createInferenceModel ($sourceModel) 
     {
-        $store = $this->_erfurt->getStore();
+        $store = $this->_owApp->erfurt->getStore();
 		$infModelIri = $sourceModel->getModelIri().'inference/';
 
 		// setup inference model & label
@@ -422,13 +427,13 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 	 */
 	private function setupInferenceModel ($sourceModel)
 	{
-        $store = $this->_erfurt->getStore();
+        $store = $this->_owApp->erfurt->getStore();
 		$infModelIri = $sourceModel->getModelIri().'inference/';
 
 		// hide inference model
-		$_sysOnt = $this->_erfurt->getConfig()->sysOnt->modelUri;
+		$_sysOnt = $this->_owApp->erfurt->getConfig()->sysont->modelUri;
 		$store->addStatement($_sysOnt, $infModelIri,
-		        $this->_erfurt->getConfig()->sysOnt->properties->hidden,
+		        $this->_owApp->erfurt->getConfig()->sysont->properties->hidden,
 		        array('type'=>'literal','value'=>'true'), false);
 
 		// from Erfurt_Rdf_model with this comment: "TODO add this statement on model add?!"
@@ -437,7 +442,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
 
 		// import inferences to base model
 		$store->addStatement($_sysOnt, $sourceModel->getModelIri(),
-		        $this->_erfurt->getConfig()->sysOnt->properties->hiddenImports,
+		        $this->_owApp->erfurt->getConfig()->sysont->properties->hiddenImports,
 		        array('type'=>'uri','value'=>$infModelIri), false);
 	}
 
@@ -452,7 +457,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
     {
         $query->addFrom($sourceModel->getModelIri());    
 
-        if ($results = $this->_erfurt->getStore()->sparqlQuery($query, array('use_ac'=>$useAc)))
+        if ($results = $this->_owApp->erfurt->getStore()->sparqlQuery($query, array('use_ac'=>$useAc)))
         {
             $addArray = array();
             $count = 0;
@@ -469,7 +474,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
                                                                            'value'=>$data['object']);
                 if ($count > 200) {
                     $count = 0;
-                    $this->_erfurt->getStore()->addMultipleStatements ($inferenceModel->getModelIri (), $addArray, $useAc);
+                    $this->_owApp->erfurt->getStore()->addMultipleStatements ($inferenceModel->getModelIri (), $addArray, $useAc);
                     $addArray = array();
                 }
 
@@ -477,7 +482,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
             }
 
             try {    
-                $this->_erfurt->getStore()->addMultipleStatements ($inferenceModel->getModelIri (), $addArray, $useAc);
+                $this->_owApp->erfurt->getStore()->addMultipleStatements ($inferenceModel->getModelIri (), $addArray, $useAc);
 			} catch (Erfurt_Exception $e) {
 				die(print_r($e));
 			} 
@@ -498,7 +503,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
         $resource = ((string)$sourceModel === (string)$resource) ? null : $resource;
         $rules = InfRuleContainer::getInstance()->getRules();
         $rule = $rules[$rule];
-        if ($result = $this->_erfurt->getStore()->sparqlQuery ($rule->getQueryFromRule($resource)))
+        if ($result = $this->_owApp->erfurt->getStore()->sparqlQuery ($rule->getQueryFromRule($resource)))
         {
             $deleteArray = array();
             $count = 0;
@@ -526,12 +531,12 @@ class EasyinferenceController extends OntoWiki_Controller_Component
             // restore inferences generated from other rules
             // get all active rules
             $activeRules = array ();
-	        foreach ($this->_erfurt->getStore()->sparqlQuery
+	        foreach ($this->_owApp->erfurt->getStore()->sparqlQuery
 		           (Erfurt_Sparql_SimpleQuery::initWithString
 		           ('PREFIX : <http://ns.ontowiki.net/Extension/EasyInference/>'.
 			        ' PREFIX rule: <http://ns.ontowiki.net/Extension/EasyInference/InfRule/>'.
         			' SELECT DISTINCT ?r ?s'.
-        			' FROM <'.$this->_erfurt->getConfig()->sysOnt->modelUri.'>'.
+        			' FROM <'.$this->_owApp->erfurt->getConfig()->sysont->modelUri.'>'.
         			' WHERE { ?u a rule:Applied . ?u :hasRule ?r .'.
         			' ?u :hasModel <'.$sourceModel.'> .'.
         			' ?u :hasConcrete ?s }')) as $result)
@@ -585,7 +590,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
      * @param $inferencemodel the model where the old history id is saved
      */
     private function hasChanged ($model, $inferenceModel) {
-        $versioning = $this->_erfurt->getVersioning();
+        $versioning = $this->_owApp->erfurt->getVersioning();
         $return = true;
 
         $history = $versioning->getHistoryForGraph($model);
@@ -600,7 +605,7 @@ class EasyinferenceController extends OntoWiki_Controller_Component
             ' <http://ns.ontowiki.net/Extension/EasyInference/based-on-version>'.
             ' ?v }');
 
-        $result = $this->_erfurt->getStore()->sparqlQuery ($query);
+        $result = $this->_owApp->erfurt->getStore()->sparqlQuery ($query);
 
         if (!$result || $result[0]['v'] == $history[0]['id']) {
             $return = false;
@@ -616,19 +621,19 @@ class EasyinferenceController extends OntoWiki_Controller_Component
      */
     private function setChangeLog ($model, $inferenceModel)
     {
-        $versioning = $this->_erfurt->getVersioning();
+        $versioning = $this->_owApp->erfurt->getVersioning();
 
         $history = $versioning->getHistoryForGraph($model);
 
         if (!$history)    
            return false;
 
-        $this->_erfurt->getStore ()->deleteMatchingStatements ($inferenceModel->getModelIri(),
+        $this->_owApp->erfurt->getStore ()->deleteMatchingStatements ($inferenceModel->getModelIri(),
                                        $inferenceModel->getModelIri (), 
                                        'http://ns.ontowiki.net/Extension/EasyInference/based-on-version',
                                        null);
 
-        $this->_erfurt->getStore ()->addStatement ($inferenceModel->getModelIri(),
+        $this->_owApp->erfurt->getStore ()->addStatement ($inferenceModel->getModelIri(),
                                        $inferenceModel->getModelIri (), 
                                        'http://ns.ontowiki.net/Extension/EasyInference/based-on-version',
                                        array ('value'=>$history[0]['id'],'type'=>'literal'));   
