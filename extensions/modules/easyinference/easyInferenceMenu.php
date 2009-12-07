@@ -23,12 +23,17 @@ class EasyInferenceMenu extends OntoWiki_Menu_Registry
     public function _getEasyInfernceMenu()
     {        
     	$moduleMenu = new OntoWiki_Menu();
-        $moduleMenu->setEntry('Add', "javascript:tabTo('add');");
-        $moduleMenu->setEntry('Delete', "javascript:tabTo('delete');");
-        $moduleMenu->setEntry('Generate', "javascript:tabTo('generate');");
-        $moduleMenu->setEntry('Status', "javascript:tabTo('activate');");
-        
-        return $moduleMenu;
+
+        $button = new OntoWiki_Menu();
+
+        $moduleMenu->setEntry('Add', 'javascript:tabTo(\'add\');');
+        $moduleMenu->setEntry('Delete', 'javascript:tabTo(\'delete\');');
+        $moduleMenu->setEntry('Generate', 'javascript:tabTo(\'generate\');');
+        $moduleMenu->setEntry('Status', 'javascript:tabTo(\'activate\');');
+
+        $button->appendEntry('Action', $moduleMenu);
+
+        return $button;
     }
 }
 

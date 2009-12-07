@@ -25,14 +25,14 @@ class NavigationModule extends OntoWiki_Module
      * @return string
      */
     public function getMenu() {
-        // navigation type submenu
-	$typeMenu = new OntoWiki_Menu();
+        // navigation type submenu 
+        $typeMenu = new OntoWiki_Menu();
         foreach ($this->_privateConfig->config as $key => $config) {
             $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
         }
 
         // count sub menu
-	$countMenu = new OntoWiki_Menu();
+        $countMenu = new OntoWiki_Menu();
         $countMenu->setEntry('10', "javascript:navigationEvent('setLimit', 10)")
             ->setEntry('20', "javascript:navigationEvent('setLimit', 20)")
             ->setEntry('30', "javascript:navigationEvent('setLimit', 30)");
@@ -45,19 +45,20 @@ class NavigationModule extends OntoWiki_Module
 
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
-        $viewMenu->setEntry('Type', $typeMenu);
         $viewMenu->setEntry('Number of Elements', $countMenu);
         $viewMenu->setEntry('Toggle Elements', $toggleMenu);
         $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')");
 
         // edit sub menu
         $editMenu = new OntoWiki_Menu();
-        $editMenu->setEntry('Add Element', "javascript:navigationEvent('addElement')");
+        $editMenu->setEntry('Add Element here', "javascript:navigationAddElement()");
+        $editMenu->setEntry('Add Top Element', "javascript:navigationAddTopElement()");
 
         // build menu out of sub menus
         $mainMenu = new OntoWiki_Menu();
-        $mainMenu->setEntry('View', $viewMenu);
         $mainMenu->setEntry('Edit', $editMenu);
+        $mainMenu->setEntry('View', $viewMenu);
+        $mainMenu->setEntry('Type', $typeMenu);
 
         return $mainMenu;
     }
@@ -85,9 +86,31 @@ class NavigationModule extends OntoWiki_Module
                 json_encode($this->_privateConfig->toArray()) . '\');' .PHP_EOL
             );
         }
+        
+        $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');        
+        $stateSession = new Zend_Session_Namespace($sessionKey);
+        if( isset($stateSession) && ( $stateSession->model == (string)$this->_owApp->selectedModel ) ){
+            // load setup
+            $this->view->inlineScript()->prependScript(
+                '/* from modules/navigation/ */'.PHP_EOL.
+                'var navigationStateSetupString = \''.$stateSession->setup.'\';'.PHP_EOL.
+                'var navigationStateSetup = $.evalJSON(navigationStateSetupString);' .PHP_EOL
+            );
+            // load view
+            $this->view->stateView = $stateSession->view;
+            // set js actions
+            $this->view->inlineScript()->prependScript(
+                '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
+            );
+        }else{
+            // init view from scratch
+            $this->view->inlineScript()->prependScript(
+                '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
+            );
+        }
 
         $data['session'] = $this->session->navigation;
-        $content = $this->render('navigation', $data, 'data');
+        $content = $this->render('navigation', $data, 'data'); // 
         return $content;
     }
 	

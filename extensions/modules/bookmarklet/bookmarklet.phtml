@@ -9,9 +9,42 @@
  */
 
 ?>
-<?php if ($this->has('warningmessage')): ?>
-    <p class="messagebox info"><?php echo $this->warningmessage ?></p>
-<?php endif?>
-<?php if ($this->has('infomessage')): ?>
-    <p class="messagebox info"><?php echo $this->infomessage ?></p>
-<?php endif?>
+<?php if ($this->has('warningMessage')): ?>
+    <p class="messagebox info"><?php echo $this->warningMessage ?></p>
+<?php endif; ?>
+<?php if ($this->has('infoMessage')): ?>
+    <p class="messagebox info"><?php echo $this->infoMessage ?></p>
+<?php endif; ?>
+<script type="text/javascript" charset="utf-8">
+    var saveTitle = 'Save to OntoWiki';
+    var windowTitle = 'Extract Triples to OntoWiki at <?php echo $this->ontoWikiUrl ?>';
+    var widgetBase = document.location.href.replace('tests/bookmarklet.html', '');
+    var href = '\
+        href="javascript:void((function() {\
+        if (!document.getElementById(\'RDFauthorScript\')) {\
+            widgetBase = \'<?php echo $this->rdfAuthorBase ?>\';\
+            var s = document.createElement(\'script\');\
+            s.type = \'text/javascript\';\
+            s.id = \'RDFauthorScript\';\
+            s.src = widgetBase + \'src/rdfauthor.js\';\
+            document.getElementsByTagName(\'head\')[0].appendChild(s);\
+        }\
+        RDFauthor.setOptions({\
+            saveButtonTitle: saveTitle,\
+            cancelButtonTitle: \'Cancel\',\
+            title: windowTitle,\
+            showAddPropertyButton: false,\
+            defaultGraph: \'<?php echo $this->defaultGraph ?>\',\
+            defaultUpdateEndpoint: \'<?php echo $this->defaultUpdateService ?>\'\
+        });\
+        RDFauthor.startEditing();\
+    })());"';
+
+    document.writeln('<a ' + href.replace(/[\s]/g, '').replace('saveTitle', '\'' + saveTitle + '\'').replace('windowTitle', '\'' + windowTitle + '\'') + '>RDFauthor</a>');
+</script>
+
+<?php
+/*
+defaultGraph: \'<?php echo (string)OntoWiki::getInstance()->selectedModel ?>\';\
+*/
+?>

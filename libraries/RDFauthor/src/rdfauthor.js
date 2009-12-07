@@ -348,18 +348,32 @@ RDFauthor = {
     // returns the default graph that receives newly added statements
     getDefaultGraph: function () {
         if (null === this.defaultGraph) {
-            // get default graph + info
-            var defaultGraph          = $('link[rel$=defaultGraph]').attr('href');
-            var defaultQueryEndpoint  = $('link[about=' + defaultGraph + '][rel$=queryEndpoint]').attr('href');
-            var defaultUpdateEndpoint = $('link[about=' + defaultGraph + '][rel$=updateEndpoint]').attr('href');
+            var defaultGraph = null;
+            var defaultQueryEndpoint = null;
+            var defaultUpdateEndpoint = null;
+            
+            if (this.options.defaultGraph) {
+                // get default graph from options
+                defaultGraph          = this.options.defaultGraph;
+                defaultUpdateEndpoint = this.getDefaultUpdateEndpoint();
+            } else {
+                // try RDFa
+                defaultGraph          = $('link[rel$=defaultGraph]').attr('href');
+                defaultQueryEndpoint  = $('link[about=' + defaultGraph + '][rel$=queryEndpoint]').attr('href');
+                defaultUpdateEndpoint = $('link[about=' + defaultGraph + '][rel$=updateEndpoint]').attr('href');
+            }
             
             // store default graph
             this.defaultGraph = defaultGraph;
             
             // store default graph info
             this.graphInfo[defaultGraph] = {};
-            this.graphInfo[defaultGraph].queryEndpoint  = defaultQueryEndpoint;
-            this.graphInfo[defaultGraph].updateEndpoint = defaultUpdateEndpoint;
+            if (defaultQueryEndpoint) {
+                this.graphInfo[defaultGraph].queryEndpoint  = defaultQueryEndpoint;
+            }
+            if (defaultUpdateEndpoint) {
+                this.graphInfo[defaultGraph].updateEndpoint = defaultUpdateEndpoint;
+            }
         }
         
         return this.defaultGraph;
@@ -373,6 +387,15 @@ RDFauthor = {
         
         return null;
     }, 
+    
+    // returns the default update Service URI
+    getDefaultUpdateEndpoint: function () {
+        if (this.options.defaultUpdateEndpoint) {
+            return this.options.defaultUpdateEndpoint;
+        }
+        
+        return null;
+    },
     
     // returns a unique id to be used for element ID
     getNextId: function () {
@@ -656,6 +679,16 @@ RDFauthor = {
     
     updateSources: function () {
         // send results for all graphs
+        var defaultGraph = this.getDefaultGraph();
+        var defaultService = this.getDefaultUpdateEndpoint();
+        var sendAlways = false;
+        var useDefaults = false;
+        
+        if (defaultGraph && defaultService) {
+            sendAlways = true;
+            useDefaults = true;
+        }
+        
         for (graph in this.graphInfo) {
             // get graph's update URI
             var updateUri = this.graphInfo[graph].updateEndpoint;
@@ -674,28 +707,43 @@ RDFauthor = {
                             instance.databanks[graph].add(this);
                         });
                     }
-                            
-                    var added = this.databanks[graph].except(this.originalDatabanks[graph]);
-                    jsonAdded = $.rdf.dump(added.triples(), {format: 'application/json'});
+                    
+                    if (sendAlways) {
+                        // send all triples
+                        var added = this.databanks[graph];
+                        jsonAdded = $.rdf.dump(added.triples(), {format: 'application/json'});
+                    } else {
+                        var added = this.databanks[graph].except(this.originalDatabanks[graph]);
+                        jsonAdded = $.rdf.dump(added.triples(), {format: 'application/json'});
+                    }
                     
                     var removed = this.originalDatabanks[graph].except(this.databanks[graph]);
                     jsonRemoved = $.rdf.dump(removed.triples(), {format: 'application/json'});
                 }
                 
                 // alert('Added: ' + $.toJSON(jsonAdded ? jsonAdded : {}) + '\n' + 
-                //       'Removed: ' + $.toJSON(jsonRemoved ? jsonRemoved : {}));
+                //       'Removed: ' + $.toJSON(jsonRemoved ? jsonRemoved : {}));  
                 
                 if (jsonAdded || jsonRemoved) {
-                    // sumbit only if something has changed
-                    $.post(updateUri, {
-                        'named-graph-uri': graph, 
-                        'insert': $.toJSON(jsonAdded ? jsonAdded : {}), 
-                        'delete': $.toJSON(jsonRemoved ? jsonRemoved : {})
-                    }, function () {
-                        if (typeof instance.options.onSubmitSuccess == 'function') {
-                            instance.options.onSubmitSuccess();
-                        }
-                    });
+                    // submit only if something has changed
+                    if (useDefaults) {
+                        // alert(defaultService);
+                        $.post(defaultService, {
+                            'named-graph-uri': defaultGraph, 
+                            'insert': $.toJSON(jsonAdded ? jsonAdded : {}), 
+                            'delete': $.toJSON(jsonRemoved ? jsonRemoved : {})
+                        });
+                    } else {
+                        $.post(updateUri, {
+                            'named-graph-uri': graph, 
+                            'insert': $.toJSON(jsonAdded ? jsonAdded : {}), 
+                            'delete': $.toJSON(jsonRemoved ? jsonRemoved : {})
+                        }, function () {
+                            if (typeof instance.options.onSubmitSuccess == 'function') {
+                                instance.options.onSubmitSuccess();
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -728,7 +776,7 @@ RDFauthor = {
                     this.graphInfo[objectGraph] = {};
                 }
                 
-                if (triple.predicate.uri == this.internalPredicates.defaultGraph) {
+                if (triple.predicate.uri == this.internalPredicates.defaultGraph && !this.options.defaultGraph) {
                     this.defaultGraph = objectGraph;
                 }
             } else {

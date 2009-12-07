@@ -18,4 +18,10 @@
         value=""
         name="navigation-input"/>
 </form>
-<div id="navigation-content" class="width99 init-me-please">...</div>
+<div id="navigation-content" class="width99 init-me-please">
+<?php 
+if( isset($this->stateView) ){
+    echo $this->stateView;
+} 
+?>    
+</div>

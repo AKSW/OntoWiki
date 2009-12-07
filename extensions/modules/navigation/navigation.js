@@ -17,20 +17,29 @@ $(document).ready(function() {
     navigationWindow = $("#navigation");
     navigationExploreUrl = urlBase + 'navigation/explore';
     navigationMoreUrl = urlBase + 'navigation/more';
+    navigationSaveUrl = urlBase + 'navigation/savestate';
+    navigationLoadUrl = urlBase + 'navigation/loadstate';
     navigationListUrl = urlBase + 'list';
+    navSetup = '';
 
     navigationInput.livequery('keypress', function(event) {
         // do not create until user pressed enter
-	if ((event.which == 13) && (event.currentTarget.value != '') ) {
+        if ((event.which == 13) && (event.currentTarget.value != '') ) {
             navigationEvent('search', event.currentTarget.value);
             $(event.currentTarget).val('');
             return false;
-	}
+        } else if ( event.which == 13 ) {
+            return false;
+        }
         return true;
     });
+    
+    if( typeof navigationStateSetup != 'undefined'){
+        navigationSetup = navigationStateSetup;
+    }
 
     /* first start */
-    navigationEvent('init');
+    //navigationEvent('init');
 });
 
 /**
@@ -38,7 +47,7 @@ $(document).ready(function() {
  */
 function navigationEvent (navEvent, eventParameter) {
     var setup, navType;
-
+    
     /* init config when not existing or resetted by user */
     if ( ( typeof navigationSetup == 'undefined' ) || (navEvent == 'reset') || (navEvent == 'setType') ) {
         // set the default or setType config
@@ -61,6 +70,9 @@ function navigationEvent (navEvent, eventParameter) {
     } else {
         setup = navigationSetup;
     }
+    
+    //alert(setup['state']);
+    
     // delete old search string
     delete(setup['state']['searchString']);
 
@@ -173,16 +185,17 @@ function navigationEvent (navEvent, eventParameter) {
         default:
             alert('error: unknown navigation event: '+navEvent);
             return;
-        }
-
+    }
+    
     setup['state']['lastEvent'] = navEvent;
     navigationSetup = setup;
+    navSetup = setup;
     if( navEvent == 'more' ){
         navigationUpdateLoad (navEvent, setup);
     }else{
         navigationLoad (navEvent, setup);
     }
-    return;
+    return; 
 }
 
 /**
@@ -198,6 +211,8 @@ function navigationLoad (navEvent, setup) {
     var cbAfterLoad = function(){
         $.post(navigationExploreUrl, { setup: $.toJSON(setup) },
             function (data) {
+                //alert(data);
+                
                 navigationContainer.empty();
                 navigationContainer.append(data);
                 // remove the processing status
@@ -278,6 +293,8 @@ function navigationUpdateLoad (navEvent, setup) {
  * This function creates navigation events
  */
 function navigationPrepareList () {
+    saveState();
+    
     // the links to deeper navigation entries
     $('.navDeeper').click(function(event) {
         navigationEvent('navigateDeeper', $(this).parent().attr('about'));
@@ -295,4 +312,25 @@ function navigationPrepareList () {
         navigationEvent('navigateHigher');
         return false;
     })
+}
+
+/*
+ * This function saves current navigation state
+ */
+function saveState(){
+    var curView = $("#navigation-content").html();
+    var set = $.toJSON(navSetup);
+    // if setup is not set - do not save anything
+    if( (set.length < 3) || ( typeof set == 'undefined' ) ){ 
+        return;
+    }
+
+    // do save
+    $.post(navigationSaveUrl, { view: curView, setup: set },
+        function (data) {
+            //alert(data);
+        }
+    );
+
+    return ;
 }
