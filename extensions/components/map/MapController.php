@@ -47,7 +47,7 @@ class MapController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set('OntoWiki Map Component');
 
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());
-        $jsonRequestUrl->setParam('limit', "off", true);
+        $jsonRequestUrl->setParam('use_limit', "off", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
         $this->view->jsonRequestUrl   = $jsonRequestUrl;
@@ -72,7 +72,7 @@ class MapController extends OntoWiki_Controller_Component
         // default values from configuration
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());
         $jsonRequestUrl->setParam('clustering', "off", true);
-        $jsonRequestUrl->setParam('limit', "on", true);
+        $jsonRequestUrl->setParam('use_limit', "on", true);
         $jsonRequestUrl->setParam('extent', "__extent__", true);
 
         $this->view->jsonRequestUrl   = $jsonRequestUrl;
@@ -216,7 +216,7 @@ class MapController extends OntoWiki_Controller_Component
             // don't load instances again
         }
 
-        if($this->_request->limit == 'off') {
+        if($this->_request->use_limit == 'off') {
             $this->instances->setLimit(self::$maxResources);
             $this->instances->setOffset(0);
         } else {
