@@ -55,6 +55,11 @@ class MapHelper extends OntoWiki_Component_Helper
         $owApp = OntoWiki::getInstance();
         $session = $owApp->session;
 
+        /**
+         * don't show if $this->_request->isXmlHttpRequest() == true
+         * except the request came from the map
+         */
+
         if (isset($session->instances)) {
 
             $latProperties  = $this->_privateConfig->property->latitude->toArray();
