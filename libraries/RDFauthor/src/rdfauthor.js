@@ -338,9 +338,9 @@ RDFauthor = {
                     instance.predicateInfo[predicate] = info;
                 }
                 
-                instance.predicateInfoExtended    = true;
-            }, function(error) {
-                alert('Error: ' + error);
+                instance.predicateInfoExtended = true;
+            }, function(status, error) {
+                alert('Ajax error: ' + status);
             }, false);
         }
     },
@@ -367,7 +367,10 @@ RDFauthor = {
             this.defaultGraph = defaultGraph;
             
             // store default graph info
-            this.graphInfo[defaultGraph] = {};
+            if (!this.graphInfo[defaultGraph]) {
+                this.graphInfo[defaultGraph] = {};
+            }
+            
             if (defaultQueryEndpoint) {
                 this.graphInfo[defaultGraph].queryEndpoint  = defaultQueryEndpoint;
             }
@@ -508,14 +511,12 @@ RDFauthor = {
     getServiceUriForTriple: function (triple) {
        var tripleString  = triple.toString();
        var graph         = this.tripleInfo[tripleString];
-       
        return this.getServiceUriForGraph(graph);
     }, 
     
     // returns the SPARQL service URI for a given graph
     getServiceUriForGraph: function (graph) {
         var queryEndpoint = this.graphInfo[graph].queryEndpoint;
-        
         return queryEndpoint;
     }, 
     
@@ -662,14 +663,14 @@ RDFauthor = {
                 xhr.setRequestHeader('Accept', 'application/sparql-results+json');
             }, 
             'url':      endpoint, 
-            'success':  function(data, status) {
+            'success': function(data, status) {
                 if (typeof callbackSuccess == 'function') {
                     callbackSuccess(data);
                 }
             }, 
-            'error':    function(request, status, error) {
+            'error': function(request, status, error) {
                 if (typeof callbackError == 'function') {
-                    callbackError(status);
+                    callbackError(status, error);
                 }
             }, 
             'data': endpointParams, 
@@ -1059,7 +1060,6 @@ RDFauthor = {
             }
             
             this.fetchPredicateInfo();
-            // alert($.toJSON(instance.predicateInfo));
             
             var instance = this;
             window.setTimeout(function() {
