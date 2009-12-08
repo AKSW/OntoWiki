@@ -189,6 +189,13 @@ $(document).ready(function() {
         });
         
         RDFauthor.startInline($(this).closest('td'));
+        
+        // hide inine edit for whole page
+        $('.edit-enable').hide();
+        // show submit/cancel buttons
+        $('.edit').each(function() {
+            $(this).fadeIn(effectTime);
+        });
     });
     
     // edit mode
@@ -356,7 +363,7 @@ $(document).ready(function() {
     
     // inline widgets
     $('.inline-edit-local').live('click', function() {
-        RDFauthor.startInline($(this).closest('.editable').get(0));
+        // RDFauthor.startInline($(this).closest('.editable').get(0));
     })
     
     //-------------------------------------------------------------------------

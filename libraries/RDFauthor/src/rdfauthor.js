@@ -975,26 +975,26 @@ RDFauthor = {
                     alert('There where ' + instance.errors + ' errors while parsing the page. All valid triples have been extracted.');
                 }
                 
-                if (typeof element == 'object') {
-                    var inlineView = instance.createInlineView(element);
-                    inlineView.display(instance.options.animated);
-                } else if ($(element).length > 0) {
+                if ($(element).length > 0) {
                     $(element).each(function() {
                         var inlineView = instance.createInlineView(this);
                         inlineView.display(instance.options.animated);
-                    })
+                    });
+                } else if (typeof element == 'object') {
+                    var inlineView = instance.createInlineView(element);
+                    inlineView.display(instance.options.animated);
                 }
             };
         } else {
-            if (typeof element == 'object') {
-                var inlineView = this.createInlineView(element);
-                inlineView.display(this.options.animated);
-            } else if ($(element).length > 0) {
+            if ($(element).length > 0) {
                 var instance = this;
                 $(element).each(function() {
                     var inlineView = instance.createInlineView(this);
                     inlineView.display(instance.options.animated);
-                })
+                });
+            } else if (typeof element == 'object') {
+                var inlineView = instance.createInlineView(element);
+                inlineView.display(instance.options.animated);
             }
         }
     }, 

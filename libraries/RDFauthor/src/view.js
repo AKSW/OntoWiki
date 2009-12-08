@@ -198,7 +198,12 @@ RDFauthorView.prototype.display = function (animated) {
         this.container.height(documentHeight + 'px');
     }
     
-    this.container.show();
+    // make sure container is visible
+    if (this.container.css('display') == 'none') {
+        this.container.css('display', 'block');
+        // this.container.show();
+    }
+    
     this.reposition();
     var instance = this;
     var initRows = function() {            
