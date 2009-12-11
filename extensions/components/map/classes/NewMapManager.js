@@ -36,7 +36,7 @@ function initMap ( ) {
     // seeAlso: http://openlayers.org/dev/examples/spherical-mercator.html (example)
 
     var options = {
-            projection: new OpenLayers.Projection("EPSG:900913"),
+projection: new OpenLayers.Projection("EPSG:900913"),
             displayProjection: new OpenLayers.Projection("EPSG:4326"),
             units: "m",
             numZoomLevels: 18,
@@ -46,7 +46,7 @@ function initMap ( ) {
     };
 
     this.map	    = new OpenLayers.Map( this.mapContainer, options);
-//    this.map.theme  = this.themePath;
+    //    this.map.theme  = this.themePath;
 
     var filterSelector = new OpenLayers.Control();
 
@@ -54,50 +54,56 @@ function initMap ( ) {
 
     OpenLayers.Util.extend(filterSelector, {
         draw: function () {
-            this.box = new OpenLayers.Handler.Box(filterSelector,
-                {'done': this.addFilter},
-                {keyMask: OpenLayers.Handler.MOD_CONTROL}
-                );
-            this.box.activate();
+        this.box = new OpenLayers.Handler.Box(filterSelector,
+            {'done': this.addFilter},
+            {keyMask: OpenLayers.Handler.MOD_CONTROL});
+        this.box.activate();
         },
 
         addFilter: function (bounds) {
-            // add Filter
-            var latProp  = 'http://www.w3.org/2003/01/geo/wgs84_pos#lat';
-            var longProp = 'http://www.w3.org/2003/01/geo/wgs84_pos#long';
-            var xsd      = 'http://www.w3.org/2001/XMLSchema#'; //decimal';
+        // add Filter
+        var latProp  = 'http://www.w3.org/2003/01/geo/wgs84_pos#lat';
+        var longProp = 'http://www.w3.org/2003/01/geo/wgs84_pos#long';
+        var xsd      = 'http://www.w3.org/2001/XMLSchema#'; //decimal';
 
-            bounds.transform(that.map.projection, that.map.displayProjection);
+        //            var projection          = new OpenLayers.Projection("EPSG:900913");
+        //            var displayProjection   = new OpenLayers.Projection("EPSG:4326");
+        //
+        var topLeft     = new OpenLayers.Pixel(bounds.left, bounds.top);
+        var bottomRight = new OpenLayers.Pixel(bounds.right, bounds.bottom);
+        topLeft         = that.map.getLonLatFromPixel(topLeft);
+        bottomRight     = that.map.getLonLatFromPixel(bottomRight);
+        topLeft.transform(that.map.projection, that.map.displayProjection);
+        bottomRight.transform(that.map.projection, that.map.displayProjection);
 
-            alert('projection: ' + that.map.projection + ' displayProjection: ' + that.map.displayProjection + ' bounds: ' + bounds);
+        //            alert('top-left: ' + topLeft + ' bottom-right: ' + bottomRight);
 
-            filter.add(
+        filter.add(
                 'mapLatitudeBounds',
                 latProp,
                 false,
                 'geo:lat',
                 'between',
-                '' + bounds.top + '',
-                '' + bounds.bottom + '',
+                '' + topLeft.lat + '',
+                '' + bottomRight.lat + '',
                 'typed-literal',
                 xsd + 'float',
                 function() {},
                 false);
-            filter.add(
-                    'mapLongitudeBounds',
-                    longProp,
-                    false,
-                    'geo:long',
-                    'between',
-                    '' + bounds.left + '',
-                    '' + bounds.right + '',
-                    'typed-literal',
-                    xsd + 'float',
-                    function() {},
-                    false);
-            //OpenLayers.Console.userError(bounds);
-        }
-    });
+        filter.add(
+                'mapLongitudeBounds',
+                longProp,
+                false,
+                'geo:long',
+                'between',
+                '' + topLeft.lon + '',
+                '' + bottomRight.lon + '',
+                'typed-literal',
+                xsd + 'float',
+                function() {},
+                false);
+                   }
+        });
 
     // add controls to the main map and the detail map
     this.map.addControl( new OpenLayers.Control.PanZoom( ) );
@@ -117,7 +123,7 @@ function initMap ( ) {
     // create OpenStreetMap layer
     var osmm = new OpenLayers.Layer.OSM();
     var osmt = new OpenLayers.Layer.OSM( "OpenStreetMap (Tiles@Home)", "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png");
-    
+
     // Adds the layers to the mainMap and detailMap, because i couldn't clone them i only add the googlestreets layer to the detailmap
     // mainMap.addLayers( [gmap, ghyb, gsat, gphy, osmmnk, osmtah, osmcyc, yahooLayer]);
     this.map.addLayers( [ gmap, ghyb, gsat, gphy, osmm, osmt ] );
@@ -128,11 +134,11 @@ function initMap ( ) {
     this.map.zoomToExtent( maxExtent, false );
 
     // and zoom out once, because mormaly not all markers are in the above defined extend
-/*
-    if( this.map.getZoom( ) > 0 ) {
-        this.map.zoomOut( );
-    }
-*/
+    /*
+       if( this.map.getZoom( ) > 0 ) {
+       this.map.zoomOut( );
+       }
+       */
 
     // read the default layer from configuration
     this.map.setBaseLayer( this.map.getLayersByName( this.defaultLayer )[0] );
@@ -158,9 +164,9 @@ function loadMarkers(that) {
     //console.log("going to destroy all markers");
     if( that.markers ) { 
         that.markers.destroy();
-    //    console.log("markers destoyes");
+        //    console.log("markers destoyes");
     } else {
-    //    console.log("there where no markers to destoy");
+        //    console.log("there where no markers to destoy");
     }
 
     // create and add new markerlayer to the maps
