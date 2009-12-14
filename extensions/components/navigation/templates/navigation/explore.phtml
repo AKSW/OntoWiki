@@ -20,7 +20,17 @@ $odd = true;
                 <?php echo $this->rootEntry['title'] ?>
             </a>
         <?php else: ?>
-            Root
+            <?php if ( isset($this->rootName) ){
+                if( isset($this->rootLink) ){
+                   echo '<a class="navigation" href="'.$this->rootLink.'" >';
+                   echo $this->rootName;
+                   echo '</a>';
+                }else{
+                    echo $this->rootName;
+                }
+            }else{ ?>
+                Root
+            <?php } ?>
         <?php endif ?>
         </h2>
     <?php endif ?>

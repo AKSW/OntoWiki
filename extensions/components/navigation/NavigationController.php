@@ -111,6 +111,14 @@ class NavigationController extends OntoWiki_Controller_Component
         if (isset($this->setup->state->searchString)) {
             $this->view->searchString = $this->setup->state->searchString;
         }
+        
+        if( isset($this->setup->config->rootName) ){
+            $this->view->rootName = $this->setup->config->rootName;
+        }
+        
+        if( isset($this->setup->config->rootURI) ){
+            $this->view->rootLink = $this->_getListLink($this->setup->config->rootURI, $this->setup);
+        }
 
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
@@ -195,9 +203,6 @@ class NavigationController extends OntoWiki_Controller_Component
             }
         }
         
-                    /*if( isset($setup->config->rootElement) ){
-                if($setup->config->rootElement == $uri) continue;
-            }*/
         if($showImplicit){
             if($setup->state->lastEvent != "search"){
                 $query = $this->_buildQuery($setup, true);
