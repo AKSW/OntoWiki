@@ -231,16 +231,18 @@ class MapController extends OntoWiki_Controller_Component
         $query->addProjectionVar($lat2Var);
         $query->addProjectionVar($long2Var);
 
-        $queryOptional     = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+        $queryOptionalCoke     = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+        $queryOptionalPepsi    = new Erfurt_Sparql_Query2_OptionalGraphPattern();
 
         $node = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
-        $queryOptional->addTriple($this->instances->getResourceVar(), $latProperty, $latVar);
-        $queryOptional->addTriple($this->instances->getResourceVar(), $longProperty, $longVar);
-        $queryOptional->addTriple($this->instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
-        $queryOptional->addTriple($node, $latProperty, $lat2Var);
-        $queryOptional->addTriple($node, $longProperty, $long2Var);
+        $queryOptionalCoke->addTriple($this->instances->getResourceVar(), $latProperty, $latVar);
+        $queryOptionalCoke->addTriple($this->instances->getResourceVar(), $longProperty, $longVar);
+        $queryOptionalPepsi->addTriple($this->instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
+        $queryOptionalPepsi->addTriple($node, $latProperty, $lat2Var);
+        $queryOptionalPepsi->addTriple($node, $longProperty, $long2Var);
 
-        $query->addElement($queryOptional);
+        $query->addElement($queryOptionalCoke);
+        $query->addElement($queryOptionalPepsi);
         $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
         $this->_owApp->logger->debug('MapComponent/_getResources sent "' . $query . '" to get markers.');
 

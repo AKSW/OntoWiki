@@ -36,13 +36,13 @@ function initMap ( ) {
     // seeAlso: http://openlayers.org/dev/examples/spherical-mercator.html (example)
 
     var options = {
-projection: new OpenLayers.Projection("EPSG:900913"),
-            displayProjection: new OpenLayers.Projection("EPSG:4326"),
-            units: "m",
-            numZoomLevels: 18,
-            maxResolution: 156543.0339,
-            maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
-            theme: this.themePath
+        projection: new OpenLayers.Projection("EPSG:900913"),
+        displayProjection: new OpenLayers.Projection("EPSG:4326"),
+        units: "m",
+        numZoomLevels: 18,
+        maxResolution: 156543.0339,
+        maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
+        theme: this.themePath
     };
 
     this.map	    = new OpenLayers.Map( this.mapContainer, options);

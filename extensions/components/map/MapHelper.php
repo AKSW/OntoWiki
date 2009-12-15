@@ -49,8 +49,17 @@ class MapHelper extends OntoWiki_Component_Helper
     public function shouldShow () 
     {
 
+        /*
+         * don't show on model, application, error, debug, module and index controller
+         */
+
+        
+
         $owApp = OntoWiki::getInstance();
         $session = $owApp->session;
+
+//        $front->getRequest()->controller()i
+
         $front  = Zend_Controller_Front::getInstance();
 
         if (!$front->getRequest()->isXmlHttpRequest() && isset($session->instances)) {
@@ -73,7 +82,7 @@ class MapHelper extends OntoWiki_Component_Helper
                 // don't load instances again
             }
 
-            $query          = $this->instances->getResourceQuery();
+            $query  = $this->instances->getResourceQuery();
             $owApp->logger->debug('MapHelper/shouldShow: session query: ' . var_export((string)$query, true));
 
             $query->setQueryType(Erfurt_Sparql_Query2::typeSelect); /* would like to ask but ask lies */
@@ -88,24 +97,24 @@ class MapHelper extends OntoWiki_Component_Helper
             $query->addProjectionVar($lat2Var);
             $query->addProjectionVar($long2Var);
 
-            $queryEu     = new Erfurt_Sparql_Query2_GroupGraphPattern();
-            $queryUsa     = new Erfurt_Sparql_Query2_GroupGraphPattern();
+            $queryEu  = new Erfurt_Sparql_Query2_GroupGraphPattern();
+            $queryUsa = new Erfurt_Sparql_Query2_GroupGraphPattern();
 
-            $node = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
+            $node     = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
             $queryEu->addTriple($this->instances->getResourceVar(), $latProperty, $latVar);
             $queryEu->addTriple($this->instances->getResourceVar(), $longProperty, $longVar);
             $queryUsa->addTriple($this->instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
             $queryUsa->addTriple($node, $latProperty, $lat2Var);
             $queryUsa->addTriple($node, $longProperty, $long2Var);
 
-            $queryUno     = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+            $queryUno = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
 
             $queryUno->addElement($queryEu)->addElement($queryUsa);
             $query->addElement($queryUno);
             $owApp->logger->debug('MapHelper/shouldShow: sent "' . $query . '" to know if SpacialThings are available.');
 
             /* get result of the query */
-            $result    = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
+            $result   = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
 
             $owApp->logger->debug('MapHelper/shouldShow: got respons "' . var_export($result, true) . '".');
 
@@ -116,6 +125,7 @@ class MapHelper extends OntoWiki_Component_Helper
             }
 
             return $result;
+
         } else {
             if($front->getRequest()->isXmlHttpRequest()) {
                 $owApp->logger->debug('MapHelper/shouldShow: xmlHttpRequest → no map.');

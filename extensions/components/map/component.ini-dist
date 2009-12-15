@@ -45,3 +45,11 @@ icon.offset		= "-5,-5"
 cluster.path	= "../../themes/silverblue/images/cluster-marker.png"
 cluster.size	= "20,20"
 cluster.offset	= "-10,-10"
+
+; don't show map in following controllers
+dontShowController[] = "model"
+dontShowController[] = "application"
+dontShowController[] = "error"
+dontShowController[] = "debug"
+dontShowController[] = "module"
+dontShowController[] = "index"
