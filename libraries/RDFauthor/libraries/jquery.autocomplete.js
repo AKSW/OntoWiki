@@ -15,7 +15,7 @@
 	
 $.fn.extend({
 	autocomplete: function(urlOrData, options) {
-		var isUrl = (typeof urlOrData == "string" || typeof urlOrData == "function");
+		var isUrl = (typeof urlOrData == "string" || typeof urlOrData == "function");
 		options = $.extend({}, $.Autocompleter.defaults, {
 			url: isUrl ? urlOrData : null,
 			data: isUrl ? null : urlOrData,

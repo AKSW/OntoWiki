@@ -202,8 +202,3 @@ ResourceEdit.sindiceSearch = function(terms, callbackFunction)
 RDFauthor.loadScript(widgetBase + 'libraries/jquery.autocomplete.js');
 RDFauthor.loadStyleSheet(widgetBase + 'libraries/jquery.autocomplete.css');
 RDFauthor.registerWidget({constructorFunction: ResourceEdit, hookName: '__object'});
-
-
-$(document).ready(function() {
-	// Currently nothing to do here.
-})

@@ -22,7 +22,7 @@ function RDFauthorPropertyRow(container, subject, property, title) {
     this.property = property;
     
     // the human-readable string representing the property 
-    if (typeof title == 'string') {
+    if (typeof title == 'string' && '' != title) {
         this.title = title;
     } else {
         this.title = property;
@@ -112,6 +112,8 @@ function RDFauthorPropertyRow(container, subject, property, title) {
     };
 }
 
+RDFauthorPropertyRow.prototype.eventsRegistered = false;
+
 // Variable to keep track of the number of instances
 RDFauthorPropertyRow.prototype.numberOfRows = 0;
 
@@ -162,7 +164,7 @@ RDFauthorPropertyRow.prototype.onSubmit = function () {
 ///////////////////////////////////////////////////////////////////////////////
 
 // add generic jQuery events for widget action buttons
-$(document).ready(function() {
+if (!RDFauthorPropertyRow.prototype.eventsRegistered) {
     // non-inline
     $('#rdfAuthorContainer .actions .delete-button').live('click', function(event) {
         if ($(this).closest('.property-row').length) {
@@ -222,4 +224,6 @@ $(document).ready(function() {
             row.addWidget(null, graph, constructor);
         }
     });
-});
+    
+    RDFauthorPropertyRow.prototype.eventsRegistered = true;
+}

@@ -340,7 +340,7 @@ RDFauthor = {
                 
                 instance.predicateInfoExtended = true;
             }, function(status, error) {
-                alert('Ajax error: ' + status);
+                instance.predicateInfoExtended = true;
             }, false);
         }
     },
@@ -363,19 +363,21 @@ RDFauthor = {
                 defaultUpdateEndpoint = $('link[about=' + defaultGraph + '][rel$=updateEndpoint]').attr('href');
             }
             
-            // store default graph
-            this.defaultGraph = defaultGraph;
-            
-            // store default graph info
-            if (!this.graphInfo[defaultGraph]) {
-                this.graphInfo[defaultGraph] = {};
-            }
-            
-            if (defaultQueryEndpoint) {
-                this.graphInfo[defaultGraph].queryEndpoint  = defaultQueryEndpoint;
-            }
-            if (defaultUpdateEndpoint) {
-                this.graphInfo[defaultGraph].updateEndpoint = defaultUpdateEndpoint;
+            if (defaultGraph) {
+                // store default graph
+                this.defaultGraph = defaultGraph;
+
+                // store default graph info
+                if (!this.graphInfo[defaultGraph]) {
+                    this.graphInfo[defaultGraph] = {};
+                }
+
+                if (defaultQueryEndpoint) {
+                    this.graphInfo[defaultGraph].queryEndpoint  = defaultQueryEndpoint;
+                }
+                if (defaultUpdateEndpoint) {
+                    this.graphInfo[defaultGraph].updateEndpoint = defaultUpdateEndpoint;
+                }
             }
         }
         
@@ -445,7 +447,8 @@ RDFauthor = {
             view = new RDFauthorView(options);
             // store as inline view
             this.inlineViews[view.options.id] = view;
-
+            
+            RDFauthor.loadStyleSheet(widgetBase + 'libraries/default.css');
             RDFauthor.loadStyleSheet(widgetBase + 'src/rdfauthor.css');
         } else {
             if (this.inlineViews[elementOrId]) {
@@ -485,6 +488,7 @@ RDFauthor = {
             });
             // init view
             this.view = new RDFauthorView(options);
+            RDFauthor.loadStyleSheet(widgetBase + 'libraries/default.css');
             RDFauthor.loadStyleSheet(widgetBase + 'src/rdfauthor.css');
         }
         
@@ -500,7 +504,6 @@ RDFauthor = {
         
         return types;
     }, 
-    
     
     // returns languages to be used by widgets
     getLiteralLanguages: function () {
@@ -611,14 +614,31 @@ RDFauthor = {
         this.view = null;
     }, 
     
-    loadScript: function (scriptUri) {
-        if (!(scriptUri in this.loadedScripts)) {
-            var script  = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src  = scriptUri;
-            $('head').append(script);
+    loadScript: function (uris, callback) {
+        // make sure array
+        if (uris.constructor !== Array) {
+            uris = [uris];
+        }
+        
+        var max = uris.length;
+        for (var i = 0; i < max; i++) {
+            var scriptUri = uris[i];
             
-            this.loadedScripts[scriptUri] = true;
+            if (!(scriptUri in this.loadedScripts)) {
+                var s = document.createElement('script');
+                s.type = 'text/javascript';
+                s.src = scriptUri;
+                s.charset = 'utf-8';
+                
+                // add onload event only for the last script in the URIs array
+                if ((i === (max - 1)) && (typeof callback == 'function')) {
+                    // works: Safari, Chrome, Firefox
+                    s.onload = callback;
+                }
+                
+                document.getElementsByTagName('head')[0].appendChild(s);
+                this.loadedScripts[scriptUri] = true;
+            }
         }
     }, 
     
@@ -646,39 +666,46 @@ RDFauthor = {
     // preforms a SPARQL query to the store accociated with the graph provided
     // and returns a JSON object to the function supplied as callback parameter
     query: function (graph, query, callbackSuccess, callbackError, async) {
-        // var triple   = arguments.caller.triple;
-        var endpoint = this.getServiceUriForGraph(graph);
-        
-        // parameters
-        var endpointParams = {
-            'query': query, 
-            'named-graph-uri': graph
-        };
-        
-        // call the JSON service via low-level ajax method
-        $.ajax({
-            'dataType': 'json', 
-            'timeout':  2000, 
-            'beforeSend': function(xhr) {
-                xhr.setRequestHeader('Accept', 'application/sparql-results+json');
-            }, 
-            'url':      endpoint, 
-            'success': function(data, status) {
-                if (typeof callbackSuccess == 'function') {
-                    callbackSuccess(data);
-                }
-            }, 
-            'error': function(request, status, error) {
-                if (typeof callbackError == 'function') {
-                    callbackError(status, error);
-                }
-            }, 
-            'data': endpointParams, 
-            'async': async
-        });
+        if (graph) {
+            var endpoint = this.getServiceUriForGraph(graph);
+
+            // parameters
+            var endpointParams = {
+                'query': query, 
+                'named-graph-uri': graph
+            };
+
+            // call the JSON service via low-level ajax method
+            $.jsonp({
+                'dataType': 'json', 
+                'timeout':  2000, 
+                'beforeSend': function(xhr) {
+                    // xhr.setRequestHeader('Accept', 'application/sparql-results+json');
+                }, 
+                'url':      endpoint, 
+                callbackParameter: 'callback', 
+                'success': function(data, status) {
+                    if (typeof callbackSuccess == 'function') {
+                        callbackSuccess(data);
+                    }
+                }, 
+                'error': function(request, status, error) {
+                    // ignore
+                    // if (typeof callbackError == 'function') {
+                    //     callbackError(status, error);
+                    // }
+                }, 
+                'data': endpointParams, 
+                'async': async
+            });
+        } else {
+            if (typeof callbackError == 'function') {
+                callbackError();
+            }
+        }
     }, 
     
-    updateSources: function () {
+    updateSources: function () {        
         // send results for all graphs
         var defaultGraph = this.getDefaultGraph();
         var defaultService = this.getDefaultUpdateEndpoint();
@@ -690,14 +717,12 @@ RDFauthor = {
             useDefaults = true;
         }
         
-        for (graph in this.graphInfo) {
+        for (graph in this.graphInfo) {            
             // get graph's update URI
-            var updateUri = this.graphInfo[graph].updateEndpoint;
-            
+            var updateUri   = this.graphInfo[graph].updateEndpoint;
             var jsonAdded   = null;
             var jsonRemoved = null;
-            
-            var instance = this;
+            var instance    = this;
             
             // only proceed if graph is updateable
             if (typeof updateUri == 'string' && updateUri !== '') {
@@ -722,20 +747,22 @@ RDFauthor = {
                     jsonRemoved = $.rdf.dump(removed.triples(), {format: 'application/json'});
                 }
                 
-                // alert('Added: ' + $.toJSON(jsonAdded ? jsonAdded : {}) + '\n' + 
-                //       'Removed: ' + $.toJSON(jsonRemoved ? jsonRemoved : {}));  
+                // alert('Adding to: ' + graph + ' (' + defaultService + ')');
+                // '\nAdded: ' + $.toJSON(jsonAdded ? jsonAdded : {}) +
+                // '\nRemoved: ' + $.toJSON(jsonRemoved ? jsonRemoved : {}));
                 
                 if (jsonAdded || jsonRemoved) {
                     // submit only if something has changed
                     if (useDefaults) {
-                        // alert(defaultService);
-                        $.post(defaultService, {
+                        // x-domain request sending works w/ $.get only
+                        $.get(defaultService, {
                             'named-graph-uri': defaultGraph, 
                             'insert': $.toJSON(jsonAdded ? jsonAdded : {}), 
                             'delete': $.toJSON(jsonRemoved ? jsonRemoved : {})
                         });
                     } else {
-                        $.post(updateUri, {
+                        // x-domain request sending works w/ $.get only
+                        $.get(updateUri, {
                             'named-graph-uri': graph, 
                             'insert': $.toJSON(jsonAdded ? jsonAdded : {}), 
                             'delete': $.toJSON(jsonRemoved ? jsonRemoved : {})
@@ -757,6 +784,7 @@ RDFauthor = {
     // depending on the current edit mode adds a triple row to the edit view
     // or adds a click event to the element
     makeElementEditable: function (element, triple, graph) {
+        // alert(graph + '\n' + triple);
         var ignore = false;
         
         // check if namespace should be ignored
@@ -1132,33 +1160,30 @@ RDFA.CALLBACK_NEW_TRIPLE_WITH_LITERAL_OBJECT = function (element, triple, graph)
 // hack for faster loading
 __RDFA_BASE = widgetBase + 'libraries/';
 
-// scripts to be loaded
-var scripts = {
-    // jQuery plug-in
-    RDFauthorPropertyRow:       widgetBase + 'src/jquery.equals.js', 
+// recursively load scripts
+RDFauthor.loadScript([
+    // jQuery plug-ins
+    widgetBase + 'libraries/jquery.jsonp.js', 
     // RDFauthor modules
-    RDFauthorPropertyRow:       widgetBase + 'src/propertyrow.js', 
-    RDFauthorView:              widgetBase + 'src/view.js', 
-    RDFauthorPopertySelector:   widgetBase + 'src/propertyselector.js', 
-    // rdfquery libs
-    rdfQueryCore:               widgetBase + 'libraries/jquery.rdfquery.core.js', 
-    // RDFa parser
-    RDFa:                       widgetBase + 'libraries/rdfa.js', 
-    // widgets
-    LiteralEdit:                widgetBase + 'src/literaledit.js', 
-    XMLLiteralEdit:             widgetBase + 'src/xmlliteral.js', 
-    DateEdit:                   widgetBase + 'src/dateedit.js',
-    ResourceEdit:               widgetBase + 'src/resourceedit.js', 
-    MetaEdit:                   widgetBase + 'src/metaedit.js'
-};
+    widgetBase + 'src/propertyrow.js', 
+    widgetBase + 'src/view.js', 
+    widgetBase + 'src/propertyselector.js'
+], function() {
+    RDFauthor.loadScript([
+        // RDFa parser
+        widgetBase + 'libraries/rdfa.js', 
+        // rdfquery libs
+        widgetBase + 'libraries/jquery.rdfquery.core.js', 
+        // widgets
+        widgetBase + 'src/literaledit.js', 
+        widgetBase + 'src/xmlliteral.js', 
+        widgetBase + 'src/dateedit.js', 
+        widgetBase + 'src/resourceedit.js', 
+        widgetBase + 'src/metaedit.js'
+    ], function() {
+        if (typeof rdfauthor_loaded_callback === 'function') {
+            rdfauthor_loaded_callback();
+        }
+    })
+})
 
-// if (jQuery.modal == 'undefined') {
-//     scripts.push(widgetBase + 'src/jquery.simplemodal.js');
-// }
-
-// load libraries
-for (key in scripts) {
-    if ($('script#' + key).length === 0) {
-        RDFauthor.loadScript(scripts[key]);
-    }
-}

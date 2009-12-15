@@ -39,6 +39,8 @@ function LiteralEdit(graph, subject, predicate, object) {
     this.remove = false;
 }
 
+LiteralEdit.prototype.eventsRegistered = false;
+
 LiteralEdit.prototype.focus = function() {
     $('#literal-value-' + this.id).focus();
 };
@@ -149,7 +151,7 @@ LiteralEdit.prototype.onSubmit = function() {
     var newObjectLang     = $('#literal-lang-' + this.id + ' option:selected').eq(0).val();
     var newObjectDatatype = $('#literal-datatype-' + this.id + ' option:selected').eq(0).val();
     
-    var somethingChanged = (newObjectValue != this.object) || (newObjectLang != this.language) || (newObjectDatatype != this.datatype);
+    var somethingChanged = (newObjectValue != this.object) || (newObjectLang != this.language) || (newObjectDatatype != this.datatype);
     
     if (somethingChanged || this.remove) {
         // remove old triple
@@ -230,7 +232,7 @@ LiteralEdit.prototype.onSubmit = function() {
 RDFauthor.loadScript(widgetBase + 'libraries/autoresize.jquery.min.js');
 RDFauthor.registerWidget({constructorFunction: LiteralEdit, hookName: '__literal'});
 
-$(document).ready(function() {
+if (!LiteralEdit.prototype.eventsRegistered) {
     $('.literal-type .radio').live('click', function() {
         var jDatatypeDiv = $(this).parents('.widget').children().find('.literal-datatype');
         var jLangDiv     = $(this).parents('.widget').children().find('.literal-lang');
@@ -265,4 +267,6 @@ $(document).ready(function() {
             });
         }
     });
-});
+    
+    LiteralEdit.prototype.eventsRegistered = true;
+}

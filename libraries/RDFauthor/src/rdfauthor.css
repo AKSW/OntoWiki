@@ -78,6 +78,9 @@
     margin: 0 0.3em;
     padding: 0 0.2em;
     font-weight: bold;
+    color: #000;
+    background-color: transparent;
+    font-size: 100%;
 }
 
 .rdfAuthorInline legend {

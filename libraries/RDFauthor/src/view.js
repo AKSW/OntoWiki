@@ -127,6 +127,8 @@ function RDFauthorView(options) {
 // Public shared methods
 //
 
+RDFauthorView.prototype.eventsRegistered = false;
+
 RDFauthorView.prototype.addRow = function (subject, property, title, object, graph) {    
     if (!(subject in this.rows)) {
         this.rows[subject] = {};
@@ -147,7 +149,6 @@ RDFauthorView.prototype.addRow = function (subject, property, title, object, gra
         
         row = new RDFauthorPropertyRow(container, subject, property, title);
         this.rows[subject][property] = row;
-        
         this.rowsById[row.id] = row;
     }
     
@@ -241,7 +242,7 @@ RDFauthorView.prototype.getPropertySelector = function () {
         var subject = RDFauthor.getDefaultResource();
         
         var selectorOptions = {
-            container: '.' + rowContainerClass, 
+            container: '.' + this.options.rowContainerClass, 
             callback: function() {
                 var propertySelector = instance.getPropertySelector();
                 var propertyUri      = propertySelector.selectedProperty();
@@ -252,11 +253,11 @@ RDFauthorView.prototype.getPropertySelector = function () {
                 
                 var id = instance.addRow(subject, propertyUri, propertyTitle, null, graph);
                 var rowTop          = $('#' + id).closest('.property-row').offset().top;
-                var containerTop    = $('.' + rowContainerClass).offset().top;
-                var containerScroll = $('.' + rowContainerClass).scrollTop();
+                var containerTop    = $('.' + this.options.rowContainerClass).offset().top;
+                var containerScroll = $('.' + this.options.rowContainerClass).scrollTop();
                 
                 var scrollTo = containerScroll - (containerTop - rowTop);
-                $('.' + rowContainerClass).animate({scrollTop: scrollTo}, instance.options.animationTime);
+                $('.' + this.options.rowContainerClass).animate({scrollTop: scrollTo}, instance.options.animationTime);
                 
                 // widget should get focus
                 var row = instance.getRowForSubjectAndProperty(subject, propertyUri);
@@ -376,7 +377,7 @@ RDFauthorView.prototype.reposition = function () {
 ///////////////////////////////////////////////////////////////////////////////
 
 // create live triggers for click buttons
-$('document').ready(function() {
+if (!RDFauthorView.prototype.eventsRegistered) {
     $('#rdfAuthorButtons .rdfAuthorButtonSave').live('click', function() {
         var view = RDFauthor.getView();
         view.onSubmit();
@@ -391,5 +392,7 @@ $('document').ready(function() {
         var view = RDFauthor.getView();
         view.onAddProperty();
     });
-});
+    
+    RDFauthorView.prototype.eventsRegistered = true;
+}
 

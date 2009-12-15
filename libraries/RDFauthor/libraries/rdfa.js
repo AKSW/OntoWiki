@@ -1309,6 +1309,29 @@ RDFA.getNodeAttributeValue = function(element, attr) {
     return element.attributes[attr].value;
 };
 
+RDFA.getNodeAttributeValueNS = function (element, attr, namespace, currentNamespaces) {
+    // Safari, Chrome, FF, Opera
+    if (element.getAttributeNS) {
+        var value = element.getAttributeNS(namespace, attr);
+        if ((null !== value) && ('' !== value)) {
+            return value;
+        }
+    }
+    
+    // IE
+    for (n in currentNamespaces) {
+        var ns = currentNamespaces[n]('');
+        ns = String(ns).replace('<', '').replace('>', '');
+        
+        if (namespace === ns) {
+            var namespacedAttribute = n + ':' + attr;
+            return RDFA.getNodeAttributeValue(element, namespacedAttribute);
+        }
+    }
+    
+    return null;
+}
+
 RDFA.setNodeAttributeValue = function(element, attr, value) {
     if (element == null)
         return;
@@ -1544,7 +1567,7 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
     lang = RDFA.getNodeAttributeValue(element, 'xml:lang') || lang;
     
     // check for named graph attribute
-    graph = RDFA.getNodeAttributeValue(element, 'u:from') || graph;
+    graph = RDFA.getNodeAttributeValueNS(element, 'from', 'http://ns.aksw.org/update/', namespaces) || graph;
 
     // special case the BODY
     if (element.nodeName == 'body')
@@ -1733,7 +1756,6 @@ RDFA.parse = function(parse_document, base) {
     // set up default namespace
     namespaces[''] = default_ns;
     namespaces['rdf'] = new Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-    namespaces['u'] = new Namespace('http://ns.aksw.org/update/');
 
     // hGRDDL for XHTML1 special needs
     RDFA.GRDDL.addProfile(__RDFA_BASE + 'xhtml1-hgrddl.js');

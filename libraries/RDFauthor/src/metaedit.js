@@ -14,6 +14,8 @@ function MetaEdit(graph, subject, predicate, object, options) {
     this.literalEdit  = RDFauthor.getWidgetForHook('__literal', null, options);
 }
 
+MetaEdit.prototype.eventsRegistered = false;
+
 MetaEdit.prototype.init = function () {
 	this.resourceEdit.init();
 };
@@ -75,7 +77,7 @@ MetaEdit.prototype.getActiveWidget = function () {
 
 RDFauthor.registerWidget({constructorFunction: MetaEdit, hookName: '__default'});
 
-$(document).ready(function() {
+if (!MetaEdit.prototype.eventsRegistered) {
     $('.meta-type .radio').live('click', function() {
         var jResourceDiv = $(this).closest('.meta-select').children('.meta-resource');
         var jLiteralDiv  = $(this).closest('.meta-select').children('.meta-literal');
@@ -88,4 +90,6 @@ $(document).ready(function() {
             jLiteralDiv.show();
         }
     });
-});
+    
+    MetaEdit.prototype.eventsRegistered = true;
+}
