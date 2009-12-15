@@ -680,7 +680,7 @@ img.clickicon, a.clickicon img {
 /* -- 2.4.1. Icons ---------------------------------------------------------- */
 
 /**
- * @since 0.95
+ * @since 0.9.5
  */
 
 .icon
@@ -688,7 +688,7 @@ img.clickicon, a.clickicon img {
     display:inline-block;
     line-height:1;
     padding:0; margin:0;
-    font-size:16px; /* as long we cannot use svg */
+    font-size:16px !important; /* as long we cannot use svg */
     height:1em;
     width:1em;
     vertical-align:text-bottom;
@@ -714,6 +714,10 @@ img.clickicon, a.clickicon img {
 .icon-arrow-last     { background-image:url(./../images/icons/arrow-last.png); }
 .icon-arrow-next     { background-image:url(./../images/icons/arrow-next.png); }
 .icon-arrow-previous { background-image:url(./../images/icons/arrow-previous.png); }
+.icon-arrow-top      { background-image:url(./../images/icons/arrow-top.png); }
+.icon-arrow-up       { background-image:url(./../images/icons/arrow-up.png); }
+.icon-arrow-down     { background-image:url(./../images/icons/arrow-down.png); }
+.icon-arrow-bottom   { background-image:url(./../images/icons/arrow-bottom.png); }
 
 /* -- 2.5. Links ------------------------------------------------------------ */
 
