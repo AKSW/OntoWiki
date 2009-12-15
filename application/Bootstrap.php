@@ -144,12 +144,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $urlBase     = sprintf('%s://%s%s%s', $protocol, $_SERVER['SERVER_NAME'], $port, $rewriteBase);
         
         // construct URL variables
-        $config->host          = parse_url($urlBase, PHP_URL_HOST);
-        $config->urlBase       = rtrim($urlBase . (ONTOWIKI_REWRITE ? '' : BOOTSTRAP_FILE), '/\\') . '/';
-        $config->staticUrlBase = rtrim($urlBase, '/\\') . '/';
-        $config->themeUrlBase  = $config->staticUrlBase
-                               . $config->themes->path 
-                               . $config->themes->default;
+        $config->host           = parse_url($urlBase, PHP_URL_HOST);
+        $config->urlBase        = rtrim($urlBase . (ONTOWIKI_REWRITE ? '' : BOOTSTRAP_FILE), '/\\') . '/';
+        $config->staticUrlBase  = rtrim($urlBase, '/\\') . '/';
+        $config->themeUrlBase   = $config->staticUrlBase
+                                . $config->themes->path 
+                                . $config->themes->default;
+        $config->libraryUrlBase = $config->staticUrlBase
+                                . $config->libraries->path;
         
         // define constants for development/debugging
         if (isset($config->debug) and (boolean)$config->debug) {

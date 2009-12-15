@@ -520,7 +520,8 @@ class ServiceController extends Zend_Controller_Action
             
             $typeMapping = array(
                 'application/sparql-results+xml'  => 'xml', 
-                'application/sparql-results+json' => 'json'   // we have to transform to JSON ourselves
+                'application/json'                => 'json', 
+                'application/sparql-results+json' => 'json'
             );
             
             try {
@@ -545,7 +546,16 @@ class ServiceController extends Zend_Controller_Action
             }
 
             $response->setHeader('Content-Type', $type);
-            $response->setBody($result);
+            
+            if ($type == 'json' && isset($this->_request->callback)) {
+                // return jsonp
+                $padding = $this->_request->getParam('callback', '');
+                $response->setBody($padding . $result);
+            } else {
+                // return normal
+                $response->setBody($result);
+            }
+            
             $response->sendResponse();
             exit;
         }

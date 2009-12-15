@@ -26,25 +26,27 @@
             var s = document.createElement(\'script\');\
             s.type = \'text/javascript\';\
             s.id = \'RDFauthorScript\';\
-            s.src = widgetBase + \'src/rdfauthor.js\';\
+            s.src = widgetBase + \'src/loader.js\';\
             document.getElementsByTagName(\'head\')[0].appendChild(s);\
         }\
-        RDFauthor.setOptions({\
-            saveButtonTitle: saveTitle,\
-            cancelButtonTitle: \'Cancel\',\
-            title: windowTitle,\
-            showAddPropertyButton: false,\
-            defaultGraph: \'<?php echo $this->defaultGraph ?>\',\
-            defaultUpdateEndpoint: \'<?php echo $this->defaultUpdateService ?>\'\
-        });\
-        RDFauthor.startEditing();\
+        rdfauthor_loaded_callback = function() {\
+            RDFauthor.setOptions({\
+                saveButtonTitle: saveTitle,\
+                cancelButtonTitle: \'Cancel\',\
+                title: windowTitle,\
+                showAddPropertyButton: false,\
+                defaultGraph: \'<?php echo $this->defaultGraph ?>\',\
+                defaultUpdateEndpoint: \'<?php echo $this->defaultUpdateService ?>\'\
+            });\
+            RDFauthor.startEditing();\
+        };\
     })());"';
-
-    document.writeln('<a ' + href.replace(/[\s]/g, '').replace('saveTitle', '\'' + saveTitle + '\'').replace('windowTitle', '\'' + windowTitle + '\'') + '>RDFauthor</a>');
+    
+    // rebuild strings
+    document.writeln('<a ' + 
+        href.replace(/[\s]/g, '')
+            .replace('saveTitle', '\'' + saveTitle + '\'')
+            .replace('windowTitle', '\'' + windowTitle + '\'')
+            .replace('vars', 'var s') + 
+        '>&rarr;OntoWiki</a>');
 </script>
-
-<?php
-/*
-defaultGraph: \'<?php echo (string)OntoWiki::getInstance()->selectedModel ?>\';\
-*/
-?>

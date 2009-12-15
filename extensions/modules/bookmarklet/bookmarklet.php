@@ -25,8 +25,11 @@ class BookmarkletModule extends OntoWiki_Module
         $this->view->defaultGraph = (string)OntoWiki::getInstance()->selectedModel;
         $this->view->defaultUpdateService = $this->_config->urlBase . 'update/';
         $this->view->ontoWikiUrl = $this->_config->urlBase;
+        
+        $frontController = Zend_Controller_Front::getInstance();
+        $request = $frontController->getRequest();
+        
         return $this->render('bookmarklet');
     }
-
 }
 

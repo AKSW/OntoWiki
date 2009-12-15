@@ -407,7 +407,8 @@ $(document).ready(function() {
                 if (($(searchInput).val().length >= liveSearchMinChars)) {
                     $(searchInput).parents('.content').children('ul').hide();
                     if ($(searchInput).parents('.content').children('.messagebox').length < 1) {
-                        $(searchInput).parents('.content').append('<div style="display:none" class="messagebox info">Not implemented yet.</div>');
+                        $(searchInput).parents('.content').append(
+                            '<div style="display:none" class="messagebox info">Not implemented yet.</div>');
                         $(searchInput).parents('.content').children('.messagebox').fadeIn(effectTime);
                     }
                 } else {
