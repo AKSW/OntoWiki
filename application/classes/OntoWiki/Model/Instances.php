@@ -254,7 +254,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             $prop =  $this->_shownProperties[$key];
             $this->_valueQuery->removeProjectionVar($prop['var']);
             $prop['optionalpart']->remove();
-            $prop['filter']->remove();
+            //$prop['filter']->remove();
             unset($this->_shownProperties[$key]);
         }
     }
@@ -846,6 +846,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                 if (
                     isset($row[$property['varName']])
                     && $row[$property['varName']]['type'] == 'uri'
+                    && substr($row[$property['varName']]['value'], 0, 2) != "_:"
                 ) {
                     $titleHelper->addResource($row[$property['varName']]['value']);
                 }
@@ -874,49 +875,52 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             $uri   = null;
 
             foreach ($row as $varName => $data) {
-                if (true) {
-                    if (!array_key_exists($varName, $valueResults[$resourceUri])) {
-                        $valueResults[$resourceUri][$varName] = array();
-                    }
-
-                    if ($data['type'] == 'uri') {
-                        // object type is uri --> handle object property
-                        $objectUri = $data['value'];
-                        $url->setParam('r', $objectUri, true);
-                        $link = (string)$url;
-
-                        // set up event
-                        $event = new Erfurt_Event('onDisplayObjectPropertyValue');
-
-                        //find uri
-                        foreach ($this->_shownProperties as $property) {
-                            if ($varName == $property['varName']) {
-                                $event->property = $property['uri'];
-                            }
-                        }
-                        $event->value    = $objectUri;
-
-                        // trigger
-                        $value = $event->trigger();
-
-                        // set default if event has not been handled
-                        if (!$event->handled()) {
-                            $value = $titleHelper->getTitle($objectUri, $this->_lang);
-                        }
-                    } else {
-                        // object is a literal
-                        $object = $data['value'];
-
-                        // set up event
-                        $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
-                        $event->property = $propertyUri;
-                        $event->value    = $object;
-                        $event->setDefault($object);
-
-                        // trigger
-                        $value = $event->trigger();
-                    }
+                if($data['type'] == 'uri' && substr($data['value'], 0, 2) == "_:"){
+                    continue; // skip blanknode values here due to backend problems with filters
                 }
+
+                if (!array_key_exists($varName, $valueResults[$resourceUri])) {
+                    $valueResults[$resourceUri][$varName] = array();
+                }
+
+                if ($data['type'] == 'uri') {
+                    // object type is uri --> handle object property
+                    $objectUri = $data['value'];
+                    $url->setParam('r', $objectUri, true);
+                    $link = (string)$url;
+
+                    // set up event
+                    $event = new Erfurt_Event('onDisplayObjectPropertyValue');
+
+                    //find uri
+                    foreach ($this->_shownProperties as $property) {
+                        if ($varName == $property['varName']) {
+                            $event->property = $property['uri'];
+                        }
+                    }
+                    $event->value    = $objectUri;
+
+                    // trigger
+                    $value = $event->trigger();
+
+                    // set default if event has not been handled
+                    if (!$event->handled()) {
+                        $value = $titleHelper->getTitle($objectUri, $this->_lang);
+                    }
+                } else {
+                    // object is a literal
+                    $object = $data['value'];
+
+                    // set up event
+                    $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                    $event->property = $propertyUri;
+                    $event->value    = $object;
+                    $event->setDefault($object);
+
+                    // trigger
+                    $value = $event->trigger();
+                }
+                
 
                 if (!isset($valueResults[$resourceUri][$varName])
                     || empty($valueResults[$resourceUri][$varName])
