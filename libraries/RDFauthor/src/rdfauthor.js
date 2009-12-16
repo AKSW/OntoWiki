@@ -755,9 +755,9 @@ RDFauthor = {
                     jsonRemoved = $.rdf.dump(removed.triples(), {format: 'application/json'});
                 }
                 
-                alert('Adding to: ' + graph + ' (' + updateUri + ')' + 
-                '\nAdded: ' + $.toJSON(jsonAdded ? jsonAdded : {}) +
-                '\nRemoved: ' + $.toJSON(jsonRemoved ? jsonRemoved : {}));
+                // alert('Adding to: ' + graph + ' (' + updateUri + ')' + 
+                // '\nAdded: ' + $.toJSON(jsonAdded ? jsonAdded : {}) +
+                // '\nRemoved: ' + $.toJSON(jsonRemoved ? jsonRemoved : {}));
                 
                 if (jsonAdded || jsonRemoved) {
                     // submit only if something has changed
