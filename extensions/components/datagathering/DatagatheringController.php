@@ -297,7 +297,24 @@ class DatagatheringController extends OntoWiki_Controller_Component
             }
         }
         
-        echo json_encode(implode(PHP_EOL, $result));
+        
+        $body = json_encode(implode(PHP_EOL, $result));
+        
+        if (isset($this->_request->callback)) {
+            $callback = $this->_request->callback;
+            
+            // build jsonp
+            $body = $callback
+                  . ' ('
+                  . $body 
+                  . ')';
+        }
+        
+        // send
+        $response = $this->getResponse();
+        $response->setBody($body);
+        $response->sendResponse();        
+        
         exit;
     }
     
