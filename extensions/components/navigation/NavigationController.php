@@ -448,7 +448,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 'rdfsclass' => $uri,
                 'action' => 'add'
             );
-            return $return . "&instancesconfig=".json_encode($conf);
+            return $return . "&instancesconfig=".urlencode(json_encode($conf));
         } else {
             $conf['filter'][] = array(
                 'mode' => 'cnav',
@@ -456,7 +456,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 'uri'  => $uri,
                 'action' => 'add'
             );
-            return $return . "&instancesconfig=" . json_encode($conf);
+            return $return . "&instancesconfig=" . urlencode(json_encode($conf));
         }
     }
 
