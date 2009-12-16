@@ -680,7 +680,13 @@ img.clickicon, a.clickicon img {
 /* -- 2.4.1. Icons ---------------------------------------------------------- */
 
 /**
+ * Icon
+ * should be work with most inline and block elements
+ *
  * @since 0.9.5
+ *
+ * <span class="icon icon-####"></span> Text
+ * <a class="icon icon-####" title="Actionname"><span>Actionname</span></a>
  */
 
 .icon
@@ -695,6 +701,7 @@ img.clickicon, a.clickicon img {
     background-color:transparent;
     background-position:center;
     background-repeat:no-repeat;
+    background-image:url(./../images/icons/icon-not-available.png);
 }
 
 .icon span
