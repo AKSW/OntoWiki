@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
+    <ul>
 <script type="text/javascript" charset="utf-8">
     var widgetBase = document.location.href.replace('tests/bookmarklet.html', '');
     var windowTitle = 'Edit Triples';
@@ -29,8 +30,37 @@
     })());"';
     
     // rebuild strings
-    document.writeln('<a ' + href.replace(/[\s]/g, '')
+    document.writeln('<li><a ' + href.replace(/[\s]/g, '')
         .replace('vars', 'var s')
-        .replace('{windowTitle}', '\'' + windowTitle + '\'') + '>RDFauthor</a>');
+        .replace('{windowTitle}', '\'' + windowTitle + '\'') + '>Edit page with RDFauthor</a></li>');
 </script>
+<script type="text/javascript" charset="utf-8">
+    var widgetBase = document.location.href.replace('tests/bookmarklet.html', '');
+    var windowTitle = 'Edit Triples';
+    var href = '\
+        href="javascript:void((function() {\
+        if (!document.getElementById(\'RDFauthorScript\')) {\
+            widgetBase = \'' + widgetBase + '\';\
+            var s = document.createElement(\'script\');\
+            s.type = \'text/javascript\';\
+            s.src = widgetBase + \'src/loader.js\';\
+            document.getElementsByTagName(\'head\')[0].appendChild(s);\
+        }\
+        rdfauthor_loaded_callback = function() {\
+            RDFauthor.setOptions({\
+                saveButtonTitle: \'Save\',\
+                cancelButtonTitle: \'Cancel\',\
+                title: {windowTitle},\
+                showAddPropertyButton: true,\
+            });\
+            RDFauthor.prepareInline(\'*[about]\');\
+        };\
+    })());"';
+    
+    // rebuild strings
+    document.writeln('<li><a ' + href.replace(/[\s]/g, '')
+        .replace('vars', 'var s')
+        .replace('{windowTitle}', '\'' + windowTitle + '\'') + '>Edit subjects with RDFauthor</a></li>');
+</script>
+    </ul>
 </body>

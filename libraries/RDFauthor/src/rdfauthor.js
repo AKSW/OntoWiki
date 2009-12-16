@@ -167,7 +167,7 @@ RDFauthor = {
     }, 
     
     // fills the current view with property rows out of the databanks
-    createPropertyView: function () {
+    createPropertyView: function (subject) {
         var view = this.getView();
         view.reset();
         
@@ -201,7 +201,15 @@ RDFauthor = {
                     if (current.property.value in this.predicateInfo) {
                         predicateTitle = this.predicateInfo[current.property.value].title;
                     }
-                    view.addRow(current.subject.value, current.property.value, predicateTitle, object, graph);
+                    
+                    if (subject) {
+                        var currentSubjectString = String(current.subject.value).replace('<', '').replace('>', '');
+                        if (subject === currentSubjectString) {
+                            view.addRow(current.subject.value, current.property.value, predicateTitle, object, graph);
+                        }
+                    } else {
+                        view.addRow(current.subject.value, current.property.value, predicateTitle, object, graph);
+                    }
                 }
             };
         }
@@ -747,9 +755,9 @@ RDFauthor = {
                     jsonRemoved = $.rdf.dump(removed.triples(), {format: 'application/json'});
                 }
                 
-                // alert('Adding to: ' + graph + ' (' + defaultService + ')');
-                // '\nAdded: ' + $.toJSON(jsonAdded ? jsonAdded : {}) +
-                // '\nRemoved: ' + $.toJSON(jsonRemoved ? jsonRemoved : {}));
+                alert('Adding to: ' + graph + ' (' + updateUri + ')' + 
+                '\nAdded: ' + $.toJSON(jsonAdded ? jsonAdded : {}) +
+                '\nRemoved: ' + $.toJSON(jsonRemoved ? jsonRemoved : {}));
                 
                 if (jsonAdded || jsonRemoved) {
                     // submit only if something has changed
@@ -941,19 +949,8 @@ RDFauthor = {
     }, 
     
     // shows the edit view
-    startEditing: function () {
+    startEditing: function (subject) {        
         var instance = this;
-        
-        // load selection cache
-        // if (!this.selectionCacheLoaded) {
-        //     $.getJSON(widgetBase + 'src/selectionCache.json', function(data) {
-        //         this.selectionCacheLoaded = true;
-        //         if (typeof data == 'object') {
-        //             RDFauthor.selectionCache = data;
-        //         }
-        //     });
-        // }
-        
         if (!RDFauthor.pageParsed) {
             try {
                 RDFA.parse();
@@ -970,12 +967,12 @@ RDFauthor = {
                     alert('There where ' + instance.errors + ' errors while parsing the page. All valid triples have been extracted.');
                 }
                 
-                var view = instance.createPropertyView();
+                var view = instance.createPropertyView(subject);
                 view.display(instance.options.animated);
                 RDFauthor.pageParsed = true;
             };
         } else {
-            var view = this.createPropertyView();
+            var view = this.createPropertyView(subject);
             view.display(instance.options.animated);
         }
     }, 
@@ -1021,11 +1018,46 @@ RDFauthor = {
                     inlineView.display(instance.options.animated);
                 });
             } else if (typeof element == 'object') {
-                var inlineView = instance.createInlineView(element);
-                inlineView.display(instance.options.animated);
+                var inlineView = this.createInlineView(element);
+                inlineView.display(this.options.animated);
             }
         }
     }, 
+    
+    // Prepares inline editing for the DOM element or
+    // matched jQuery objects
+    prepareInline: function (element) {
+        if (!RDFauthor.pageParsed) {
+            try {
+                RDFA.parse();
+            } catch (e) {
+                alert('RDFa parsing error: ' + e);
+            }
+            
+            var instance = this;
+            RDFA.CALLBACK_DONE_PARSING = function () {
+                RDFauthor.pageParsed = true;
+                
+                // fetch predicate infos
+                instance.fetchPredicateInfo();
+                
+                if (instance.errors > 0) {
+                    alert('There where ' + instance.errors + ' errors while parsing the page. All valid triples have been extracted.');
+                }
+                
+                // prepare inline mode
+                if (typeof element == 'string' && $(element).length > 0) {
+                    $(element).each(function() {
+                        var subject = $(this).closest('*[about]').attr('about');
+                        // HACK: ;)
+                        if (!(subject in instance.databanks)) {
+                            $(this).append('<a href="javascript:RDFauthor.startEditing(\'' + subject + '\')" style="float:right">Edit</a>');
+                        }
+                    });
+                }
+            }
+        }
+    },
     
     // Start editing a resource based on a template
     startTemplate: function (template) {
