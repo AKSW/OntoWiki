@@ -51,7 +51,7 @@
 
   */
   
-@import url('default.dev.css');
+/* @import url('default.dev.css'); - included extra with debug modus */
 
 /* 1. Layout ---------------------------------------------------------------- */
 
@@ -680,7 +680,13 @@ img.clickicon, a.clickicon img {
 /* -- 2.4.1. Icons ---------------------------------------------------------- */
 
 /**
+ * Icon
+ * should be work with most inline and block elements
+ *
  * @since 0.9.5
+ *
+ * <span class="icon icon-####"></span> Text
+ * <a class="icon icon-####" title="Actionname"><span>Actionname</span></a>
  */
 
 .icon
@@ -695,6 +701,7 @@ img.clickicon, a.clickicon img {
     background-color:transparent;
     background-position:center;
     background-repeat:no-repeat;
+    background-image:url(./../images/icons/icon-not-available.png);
 }
 
 .icon span
@@ -914,10 +921,11 @@ ul.minibutton li a,
 li.minibutton a,
 a.minibutton {
 
-/*  display: block;*/
-  float: left;
+  /*display: block;*/
+  display:inline-block;
+  /*float: left;*/
   
-  margin: 0 0.6em 0.7em 0;
+  margin: 0 0.35em 0.7em 0;
   padding: 0.35em 0.7em 0.3em 0.7em;   /* Links */
   
   border-style: double;

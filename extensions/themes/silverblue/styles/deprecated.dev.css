@@ -1,0 +1,21 @@
+/**
+  * deprecated.dev.css
+  *
+  * - it makes deprecated gui elements visible
+  * - should be only included in development environments
+  *
+  * @author: Michael Haschke
+  */
+  
+
+
+/* -- Buttons --------------------------------------------------------------- */
+
+/**
+ * @deprecated 0.9.5
+ */
+ul.minibutton li a,
+li.minibutton a
+{
+    outline:solid 1px red !important;
+}
