@@ -60,7 +60,7 @@ class OntoWiki_Url
     /**
      * Constructor
      */
-    public function __construct(array $options = array(), $paramsToKeep = null)
+    public function __construct(array $options = array(), $paramsToKeep = null, $paramsToExclude = null)
     {
         $this->_request    = Zend_Controller_Front::getInstance()->getRequest();
         $defaultAction     = Zend_Controller_Front::getInstance()->getDefaultAction();
@@ -74,6 +74,14 @@ class OntoWiki_Url
             $this->_params = array_intersect_key($this->_request->getParams(), array_flip($paramsToKeep));
         } else {
             $this->_params  = $this->_request->getParams();
+        }
+
+        if (is_array($paramsToExclude)) {
+            foreach($paramsToExclude as $param){
+                if(isset($this->_params[$param])){
+                    unset($this->_params[$param]);
+                }
+            }
         }
         
         // set route

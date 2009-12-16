@@ -73,6 +73,12 @@ class OntoWiki_Pager
         $limit = isset(self::$_url->limit) 
                ? self::$_url->limit 
                : self::$_options['default_limit'];
+
+        if($limit == 0){
+            // means no limit
+            // no pager needed
+            return "";
+        }
         
         $page = isset(self::$_url->{self::$_options['page_param']})
               ? self::$_url->{self::$_options['page_param']}

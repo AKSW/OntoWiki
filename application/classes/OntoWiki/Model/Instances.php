@@ -291,73 +291,76 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      * @param string $literaltype
      * @return string id
      */
-    public function addFilter ($property, $isInverse, $propertyLabel, $filter, $value1, $value2 = null, $valuetype = 'literal', $literaltype = null, $hidden = false, $id = null)
+    public function addFilter ($property, $isInverse, $propertyLabel, $filter, $value1 = null, $value2 = null, $valuetype = 'literal', $literaltype = null, $hidden = false, $id = null, $negate = false)
     {
         if($id == null){
             $id = "box" . count($this->_filter);
         }
         $prop = new Erfurt_Sparql_Query2_IriRef($property);
         //echo "<pre>"; print_r($parts);echo "</pre>"; exit;
-        switch($valuetype) {
-            case 'uri':
-                $value1_obj = new Erfurt_Sparql_Query2_IriRef($value1);
-                if (!empty($value2)){
-                    $value2_obj = new Erfurt_Sparql_Query2_IriRef($value2);
-                }
-            break;
-            case 'literal':
-                if (!empty($literaltype)) {
-                        //with language tags
-                        $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral(
-                            $value1, 
-                            $literaltype
-                        );
-                        if (!empty($value2)){
-                            $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral(
-                                $value2, 
-                                $literaltype);
-                        }
-                    } else {
-                        //no language tags
-                        if(!is_numeric($value1)){
-                            $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1);
+        if(!empty($value1)){
+            switch($valuetype) {
+                case 'uri':
+                    $value1_obj = new Erfurt_Sparql_Query2_IriRef($value1);
+
+                    if (!empty($value2)){
+                        $value2_obj = new Erfurt_Sparql_Query2_IriRef($value2);
+                    }
+                break;
+                case 'literal':
+                    if (!empty($literaltype)) {
+                            //with language tags
+                            $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral(
+                                $value1,
+                                $literaltype
+                            );
+                            if (!empty($value2)){
+                                $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral(
+                                    $value2,
+                                    $literaltype);
+                            }
                         } else {
-                            $value1_obj = new Erfurt_Sparql_Query2_NumericLiteral($value1);
-                        }
-                        if (!empty($value2)){
-                            if(!is_numeric($value2)){
-                                $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value2);
+                            //no language tags
+                            if(!is_numeric($value1)){
+                                $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1);
                             } else {
-                                $value1_obj = new Erfurt_Sparql_Query2_NumericLiteral($value2);
+                                $value1_obj = new Erfurt_Sparql_Query2_NumericLiteral($value1);
+                            }
+                            if (!empty($value2)){
+                                if(!is_numeric($value2)){
+                                    $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value2);
+                                } else {
+                                    $value1_obj = new Erfurt_Sparql_Query2_NumericLiteral($value2);
+                                }
                             }
                         }
+                break;
+                case 'typed-literal':
+                    if (in_array($literaltype, Erfurt_Sparql_Query2_RDFLiteral::$knownShortcuts)) {
+                        //is something like "bool" or "int"
+                        $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1, $literaltype);
+                        if (!empty($value2)){
+                            $value2_obj =
+                            new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
+                        }
+                    } else {
+                        // is a uri
+                        $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1, new Erfurt_Sparql_Query2_IriRef($literaltype));
+                        if (!empty($value2)){
+                            $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral(
+                                $value2,
+                                new Erfurt_Sparql_Query2_IriRef($literaltype)
+                            );
+                        }
                     }
-            break;
-            case 'typed-literal':
-                if (in_array($literaltype, Erfurt_Sparql_Query2_RDFLiteral::$knownShortcuts)) {
-                    //is something like "bool" or "int"
-                    $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1, $literaltype);
-                    if (!empty($value2)){
-                        $value2_obj =
-                        new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
-                    }
-                } else {
-                    // is a uri
-                    $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1, new Erfurt_Sparql_Query2_IriRef($literaltype));
-                    if (!empty($value2)){
-                        $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral(
-                            $value2, 
-                            new Erfurt_Sparql_Query2_IriRef($literaltype)
-                        );
-                    }
-                }
-            break;
-            default:
-                throw new RuntimeException(
-                    'called Ontowiki_Model_Instances::addFilter with '.
-                    'unknown param-value: valuetype = "'.$valuetype.'"'
-                );
-            break;
+                break;
+                default:
+                    throw new RuntimeException(
+                        'called Ontowiki_Model_Instances::addFilter with '.
+                        'unknown param-value: valuetype = "'.$valuetype.'"'
+                    );
+                break;
+            }
         }
         
         switch($filter) {
@@ -378,9 +381,17 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                 }
 
                 $filterObj = $this->_resourceQuery->addFilter(
+                    !$negate ?
                     new Erfurt_Sparql_Query2_Regex(
                         new Erfurt_Sparql_Query2_Str($var), 
                         $value1_obj
+                    )
+                    :
+                    new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                        new Erfurt_Sparql_Query2_Regex(
+                            new Erfurt_Sparql_Query2_Str($var),
+                            $value1_obj
+                        )
                     )
                 );
             break;
@@ -486,6 +497,39 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     )
                 );
             break;
+            case 'bound':
+                $var = new Erfurt_Sparql_Query2_Var($propertyLabel);
+                
+                if (!$isInverse) {
+                    $triple = new Erfurt_Sparql_Query2_Triple(
+                        $this->_resourceVar,
+                        $prop,
+                        $var
+                    );
+                } else {
+                    $triple = new Erfurt_Sparql_Query2_Triple(
+                        $var,
+                        $prop,
+                        $this->_resourceVar
+                    );
+                }
+                if($negate){
+                    $optional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                    $optional->addElement($triple);
+                    $this->_resourceQuery->addElement($optional);
+                    $triple = $optional; // to save this obj (see underneath 20 lines)
+                } else {
+                    $this->_resourceQuery->addElement($triple);
+                }
+
+                if($negate){
+                    $filterObj = $this->_resourceQuery->addFilter(
+                        new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                            new Erfurt_Sparql_Query2_bound($var)
+                        )
+                    );
+                }
+            break;
             default:
                 throw new RuntimeException(
                     'called Ontowiki_Model_Instances::addFilter with '.
@@ -511,6 +555,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
              'valuetype'        => $valuetype,
              'literaltype'      => $literaltype,
              'hidden'           => $hidden,
+             'negate'           => $negate,
              'objects'          => array($triple, isset($filterObj) ? $filterObj : null)
         );
 

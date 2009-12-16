@@ -189,6 +189,10 @@ class ResourceController extends OntoWiki_Controller_Base
 
         $start = microtime(true);
         $instances = $this->_session->instances;
+        if(!($instances instanceof OntoWiki_Model_Instances)){
+            throw new OntoWiki_Exception("something went wrong with list creation");
+            exit;
+        }
         
         //begin view building
         $this->view->placeholder('main.window.title')->set('Resource List');
@@ -240,8 +244,6 @@ class ResourceController extends OntoWiki_Controller_Base
             
             $query = clone $instances->getResourceQuery();
             
-            $query->removeAllOptionals(); //there should be none
-
             $where = 'WHERE '.$query->getWhere();
             
             try {

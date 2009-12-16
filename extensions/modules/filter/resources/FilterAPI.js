@@ -40,7 +40,7 @@ function FilterAPI(){
          * @param callback function will be called on success
          * @param hidden boolean will not show up in filterbox if true
          */
-	this.add = function(id, property, isInverse, propertyLabel, filter, value1, value2, valuetype, literaltype, callback, hidden){
+	this.add = function(id, property, isInverse, propertyLabel, filter, value1, value2, valuetype, literaltype, callback, hidden, negate){
             if(typeof callback != 'function' && typeof callback != 'object'){
 		callback = function(){};
             }
@@ -61,7 +61,8 @@ function FilterAPI(){
                             "value2": typeof value2 != 'undefined' ? value2 : null,
                             "valuetype": typeof valuetype != 'undefined' ? valuetype : null,
                             "literaltype" : typeof literaltype != 'undefined' ? literaltype : null,
-                            "hidden" : typeof hidden != 'undefined' ? hidden : false
+                            "hidden" : typeof hidden != 'undefined' ? hidden : false,
+                            "negate" : typeof negate != 'undefined' ? negate : false,
                         }
                     ]
             };

@@ -40,9 +40,10 @@ $odd = false;
                 href="<?php echo (string) $linkurl->setParam('r', $filter['property'], true) ?>">
                 <?php echo $this->titleHelper->getTitle($filter['property']) ?>
             </a>
-            <?php if ($filter['isInverse'] == true) : ?>
+            <?php if ($filter['isInverse']) : ?>
                 <sup>-1</sup>
             <?php endif ?>
+            <?php if ($filter['negate']) : ?> not <?php endif ?>
             <?php echo $filter['filter'] ?>
             <?php if ($filter['value1']) : ?>
                 <?php if ($filter['valuetype'] == 'uri') : ?>
@@ -107,12 +108,17 @@ $odd = false;
             </table>
             <div style="padding:10px;">
                 or<br/>
+                <input type="checkbox" id="negate"/> not
                 <select id="resttype">
                         <option>contains</option>
                         <option>larger</option>
                         <option>smaller</option>
+                        <option>between</option>
+                        <option>bound</option>
                 </select>
-                <input type="text" id="value"/>
+                <div id="valueboxes">
+                <input type="text" id="value1"/>
+                </div>
                 <formset><a id="add" class="button minibutton">set</a>
                 <a id="addwindowhide" class="button minibutton">cancel</a></formset>
             </div>

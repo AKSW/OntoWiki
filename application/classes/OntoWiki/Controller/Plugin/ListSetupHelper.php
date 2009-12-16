@@ -28,7 +28,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
         $ontoWiki        = OntoWiki::getInstance();
-        
+
         // only once and only when possible
         if (!$this->_isSetup &&
             $ontoWiki->selectedModel instanceof Erfurt_Rdf_Model &&
@@ -44,14 +44,13 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 isset($request->limit)
             )
         ) {
-           
             $frontController = Zend_Controller_Front::getInstance();
             $store           = $ontoWiki->erfurt->getStore();
             $resource = $ontoWiki->selectedResource;
             $session = $ontoWiki->session;
 
             // when switching to another class:
-            // reset session vars (regarding the instancelist)
+            // reset session vars (regarding the list)
             if (isset($request->init)) {
                 //echo 'kill list session';
                 // reset the instances object
@@ -80,10 +79,19 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 $instances = $session->instances;
             }
 
+            //local function :)
+            function _json_decode($string) {
+                if (get_magic_quotes_gpc()) {
+                    $string = stripslashes($string);
+                }
+                
+                return json_decode(stripslashes($string));
+            }
+
             //a shortcut for s param
             if(isset($request->s)){
                 if(isset($request->instancesconfig)){
-                    $config = json_decode(stripslashes($request->instancesconfig));
+                    $config = _json_decode($request->instancesconfig);
                     if ($config == false) {
                         throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
                         exit;
@@ -104,7 +112,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             //a shortcut for class param
             if(isset($request->class)){
                 if(isset($request->instancesconfig)){
-                    $config = json_decode(stripslashes($request->instancesconfig));
+                    $config = _json_decode($request->instancesconfig);
                     if ($config == false) {
                         throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
                         exit;
@@ -125,11 +133,12 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
             //check for change-requests
             if (isset($request->instancesconfig)) {
-                $config = json_decode(stripslashes($request->instancesconfig));
+                $config = _json_decode($request->instancesconfig);
                 if ($config == false) {
-                    throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
+                    throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed)');
                     exit;
                 }
+
                 if (isset($config->shownProperties)) {
                     foreach ($config->shownProperties as $prop) {
                         if ($prop->action == 'add') {
@@ -154,7 +163,8 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                     $filter->valuetype,
                                     $filter->literaltype,
                                     $filter->hidden,
-                                    isset($filter->id) ? $filter->id : null
+                                    isset($filter->id) ? $filter->id : null,
+                                    $filter->negate
                                 );
                             } else if($filter->mode == 'search'){
                                 $instances->addSearchFilter(
@@ -200,14 +210,15 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             if($request->savelist != "false"){
                 //save to session
                 $session->instances = $instances;
-            }
+            } 
 
             // avoid setting up twice
             $this->_isSetup = true;
-            
             //redirect normal requests if config-params are given to a param-free uri (so a later browser reload does nothing)
-            if(!isset($request->isAjax)){
-                header('Location:' . $ontoWiki->config->urlBase . 'list');
+            if(!$request->isXmlHttpRequest()){
+                //strip of parameters that modify the list
+                $url = new OntoWiki_Url(array(), true, array('init', 'instancesconfig', 's', 'p', 'limit', 'class'));
+                header('Location: ' . $url);
                 exit;
             }
         }
