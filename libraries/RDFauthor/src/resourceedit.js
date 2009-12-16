@@ -1,4 +1,4 @@
-function ResourceEdit(graph, subject, predicate, object, options) {
+function ResourceEdit(graph, subject, predicate, object, options) {    
     var defaultOptions = {
         propertyMode: false
     };
@@ -29,7 +29,7 @@ ResourceEdit.prototype.init = function ()
     var instance = this;
 
     if (this.options.propertyMode) {
-        $('#resource-value-' + this.id).autocomplete(function(term, cb) { return ResourceEdit.search(term, cb, true); }, {
+        $('#resource-value-' + this.id).autocomplete(function(term, cb) { return ResourceEdit.search(term, cb, true, instance.graph); }, {
             minChars: 3,
             delay: 1000,
             max: 20,
@@ -49,7 +49,7 @@ ResourceEdit.prototype.init = function ()
     } else {
         $('#resource-name-' + this.id).autocomplete(
             function(term, cb) {
-                return ResourceEdit.search(term, cb, false);
+                return ResourceEdit.search(term, cb, false, instance.graph);
             },
             {
                 minChars: 3,
@@ -161,27 +161,27 @@ ResourceEdit.prototype.getValue = function()
     }
 }
 
-ResourceEdit.search = function(terms, callbackFunction, propertiesOnly)
+ResourceEdit.search = function(terms, callbackFunction, propertiesOnly, graph)
 {
     // Currently RDFauthor has no generic SPARQL service, so we use the OW service if used with OW.
     // Otherwise we currently only support the sindice search.
-    var isOW = false;
-    if ($('title').html().match('OntoWiki')) {
-        isOW = true;
-    }
+    var endpointUri = RDFauthor.getServiceUriForGraph(graph);
 	
-    if (isOW) {
-            var url = urlBase + 'datagathering/search?q=' + encodeURIComponent(terms);
-            if (propertiesOnly) {
-                    url += '&mode=1';
+    if (endpointUri) {
+        var url = endpointUri + 'datagathering/search?q=' + encodeURIComponent(terms);
+        if (propertiesOnly) {
+            url += '&mode=1';
+        }
+                
+        $.getJSON(url + '&callback=?', 
+            function(data) {
+                callbackFunction(data);
             }
-            $.getJSON(url, {}, function(data) {
-            callbackFunction(data);
-        });
+        );
     } else {
-            ResourceEdit.sindiceSearch(terms, callbackFunction);
+        ResourceEdit.sindiceSearch(terms, callbackFunction);
     }
-}
+};
 
 ResourceEdit.sindiceSearch = function(terms, callbackFunction) 
 {
@@ -196,7 +196,7 @@ ResourceEdit.sindiceSearch = function(terms, callbackFunction)
             
             callbackFunction(dataString);
         });
-}
+};
 
 
 RDFauthor.loadScript(widgetBase + 'libraries/jquery.autocomplete.js');

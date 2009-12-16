@@ -25,7 +25,11 @@ function RDFauthorPropertyRow(container, subject, property, title) {
     if (typeof title == 'string' && '' != title) {
         this.title = title;
     } else {
-        this.title = property;
+        if (String(property).lastIndexOf('#') > -1) {
+            this.title = String(property).substr(String(property).lastIndexOf('#') + 1);
+        } else {
+            this.title = String(property).substr(String(property).lastIndexOf('/') + 1);
+        }
     }
     
     // widget array
