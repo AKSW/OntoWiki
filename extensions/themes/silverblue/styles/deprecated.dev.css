@@ -4,6 +4,7 @@
   * - it makes deprecated gui elements visible
   * - should be only included in development environments
   *
+  * @since 0.9.5
   * @author: Michael Haschke
   */
   
@@ -12,7 +13,11 @@
 /* -- Buttons --------------------------------------------------------------- */
 
 /**
+ * Inherited Minibuttons
  * @deprecated 0.9.5
+ *
+ * - ul.minibutton and li.minibutton is deprecated 0.9.5 for simplification of the default styles
+ * - please use directly span.minibutton or a.minibutton
  */
 ul.minibutton li a,
 li.minibutton a

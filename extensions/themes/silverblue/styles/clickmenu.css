@@ -3,7 +3,7 @@ div.cmDiv {
     border-bottom: 0.1em solid #ddd;
     background-color: #eee;
     line-height: 1;
-    z-index: 100;
+    /*z-index: 100;*/
     overflow: visible;
 }
 
@@ -29,7 +29,7 @@ div.cmDiv {
     display: none;
     min-width: 15em; /* firefox produces animation-flickering when the box is bigger than this : / */
     top: 1.65em;
-    z-index: 100;
+    z-index: 101;
     /* opacity: 0.95; */
 }
 
@@ -58,7 +58,7 @@ div.cmDiv {
 }
 
 .clickMenu li.main li {
-    z-index: 101;
+    z-index: 102;
     min-width: 78px;
 }
 
