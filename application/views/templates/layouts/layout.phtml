@@ -49,8 +49,16 @@
     
     <!-- ontowiki stylesheets -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
+    <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.css" type="text/css" media="screen" / -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
+
+    <?php if (defined('_OWDEBUG')): ?>
+    <!-- developer styles, e.g. for deprecated and legacy gui elements -->
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.dev.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/deprecated.dev.css" type="text/css" media="screen" />
+    <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.dev.css" type="text/css" media="screen" / -->
+    <?php endif; ?>
     
     <!-- IE conditional stylesheets -->
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="<?php echo $this->themeUrlBase ?>styles/default.ie7.css" /><![endif]-->

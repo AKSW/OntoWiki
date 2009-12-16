@@ -51,7 +51,7 @@
 
   */
   
-@import url('default.dev.css');
+/* @import url('default.dev.css'); - included extra with debug modus */
 
 /* 1. Layout ---------------------------------------------------------------- */
 
@@ -921,10 +921,11 @@ ul.minibutton li a,
 li.minibutton a,
 a.minibutton {
 
-/*  display: block;*/
-  float: left;
+  /*display: block;*/
+  display:inline-block;
+  /*float: left;*/
   
-  margin: 0 0.6em 0.7em 0;
+  margin: 0 0.35em 0.7em 0;
   padding: 0.35em 0.7em 0.3em 0.7em;   /* Links */
   
   border-style: double;

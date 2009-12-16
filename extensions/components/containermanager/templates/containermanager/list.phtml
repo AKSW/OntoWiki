@@ -39,7 +39,7 @@ if(!$output AND !is_array($output)) {
             	<?php
             		// output of the pager buttons
             		if(isset($this->pagerLinks['back']) && isset($this->pagerLinks['first'])) {
-            			echo "<li><li>".$this->pagerLinks['first']."</li></li>";
+            			echo "<li><li>".$this->pagerLinks['first']."</li></li>"; //TODO: do not create html code in controllers! here we cannot add the minibutton class to the link element
     					echo "<li><li>".$this->pagerLinks['back']."</li></li>";
             		}
             		
