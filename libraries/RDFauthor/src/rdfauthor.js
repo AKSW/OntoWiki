@@ -1211,7 +1211,9 @@ RDFauthor.loadScript([
         widgetBase + 'src/xmlliteral.js', 
         widgetBase + 'src/dateedit.js', 
         widgetBase + 'src/resourceedit.js', 
-        widgetBase + 'src/metaedit.js'
+        widgetBase + 'src/metaedit.js',
+        widgetBase + 'src/teluriedit.js',
+        widgetBase + 'src/mailtouriedit.js'
     ], function() {
         if (typeof rdfauthor_loaded_callback === 'function') {
             rdfauthor_loaded_callback();
