@@ -8,6 +8,7 @@ nbproject
 ontowiki/src/libraries/Erfurt
 ontowiki/src/libraries/RDFauthor
 ontowiki/src/libraries/Zend
+erfurt/src/Erfurt/libraries/Zend
 ontowiki/src/extensions/modules/minimap/module.ini
 ontowiki/src/extensions/modules/navigation/module.ini
 ontowiki/src/extensions/components/navigation/component.ini
