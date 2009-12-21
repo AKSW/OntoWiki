@@ -276,7 +276,11 @@ class ResourceController extends OntoWiki_Controller_Base
                 }
             }
             
-            
+            $limit = '<ul><li>Show me: <a class="minibutton" href="'. $this->_config->urlBase.'list/limit/10'.'">10</a></li>';
+            $limit .= '<li><a class="minibutton" href="'. $this->_config->urlBase.'list/limit/50'.'">50</a></li>';
+            $limit .= '<li><a class="minibutton" href="'. $this->_config->urlBase.'list/limit/100'.'">100</a></li>';
+            $limit .= '<li> ... <a class="minibutton" href="'. $this->_config->urlBase.'list/limit/0'.'">all</a></ul></li>';
+            $statusBar->append($limit);
             
             if (defined('_OWDEBUG')) {
                 $this->view->timeMsg = sprintf($this->_owApp->translate->translate('Query execution took %1$d ms.'), $time);
