@@ -185,6 +185,7 @@ class OntoWiki_Pager
             }
             $ret .= '</ul>';
             
+            
             return $ret;
         }
     }
