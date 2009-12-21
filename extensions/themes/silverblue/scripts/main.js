@@ -157,72 +157,22 @@ $(document).ready(function() {
     })
     
     $('.icon-edit').click(function() {
-        RDFauthor.setOptions({
-            anchorElement: '.innercontent', 
-            onSubmitSuccess: function () {
-                // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-                // mainInnerContent.load(document.URL);
-                
-                // tell RDFauthor that page content has changed
-                // RDFauthor.invalidatePage();
-                
-                $('.edit').each(function() {
-                    $(this).fadeOut(effectTime);
-                });
-                $('.edit-enable').removeClass('active');
-                
-                // reload whole page
-                window.location.href = window.location.href;
-            }, 
-            onCancel: function () {
-                $('.edit').each(function() {
-                    $(this).fadeOut(effectTime);
-                });
-                $('.edit-enable').removeClass('active');
-            }, 
-            saveButtonTitle: 'Save Changes', 
-            cancelButtonTitle: 'Cancel', 
-            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
-            'defaultGraph': defaultGraph, 
-            'defaultResource': defaultResource
-            
-        });
-        
-        RDFauthor.startInline($(this).closest('td'));
-        
-        // hide inine edit for whole page
-        $('.edit-enable').hide();
-        // show submit/cancel buttons
-        $('.edit').each(function() {
-            $(this).fadeIn(effectTime);
-        });
-    });
-    
-    // edit mode
-    $('.edit-enable').click(function() {
-        if ($(this).hasClass('active')) {
-            RDFauthor.cancelEditing();
-            
-            
-            $('.edit').each(function() {
-                $(this).fadeOut(effectTime);
-            })
-            $(this).removeClass('active');
-        } else {
+        var element = this;
+        rdfauthor_loaded_callback = function() {
             RDFauthor.setOptions({
                 anchorElement: '.innercontent', 
                 onSubmitSuccess: function () {
                     // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
                     // mainInnerContent.load(document.URL);
-                    
+
                     // tell RDFauthor that page content has changed
                     // RDFauthor.invalidatePage();
-                    
+
                     $('.edit').each(function() {
                         $(this).fadeOut(effectTime);
                     });
                     $('.edit-enable').removeClass('active');
-                    
+
                     // reload whole page
                     window.location.href = window.location.href;
                 }, 
@@ -237,17 +187,80 @@ $(document).ready(function() {
                 title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
                 'defaultGraph': defaultGraph, 
                 'defaultResource': defaultResource
-                
             });
             
-            // RDFauthor.startEditing();
-            RDFauthor.startInline('*[about] td:nth-child(2)');
-            // RDFauthor.startInline('table tr td');
+            RDFauthor.startInline($(element).closest('td'));
             
+            // hide inine edit for whole page
+            $('.edit-enable').hide();
+            // show submit/cancel buttons
             $('.edit').each(function() {
                 $(this).fadeIn(effectTime);
+            });
+        };
+        
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = urlBase + 'libraries/RDFauthor/src/loader.js';
+        document.getElementsByTagName('head')[0].appendChild(s);
+    });
+    
+    // edit mode
+    $('.edit-enable').click(function() {
+        if ($(this).hasClass('active')) {
+            RDFauthor.cancelEditing();
+            
+            
+            $('.edit').each(function() {
+                $(this).fadeOut(effectTime);
             })
-            $(this).addClass('active');
+            $(this).removeClass('active');
+        } else {
+            rdfauthor_loaded_callback = function () {
+                RDFauthor.setOptions({
+                    anchorElement: '.innercontent', 
+                    onSubmitSuccess: function () {
+                        // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
+                        // mainInnerContent.load(document.URL);
+
+                        // tell RDFauthor that page content has changed
+                        // RDFauthor.invalidatePage();
+
+                        $('.edit').each(function() {
+                            $(this).fadeOut(effectTime);
+                        });
+                        $('.edit-enable').removeClass('active');
+
+                        // reload whole page
+                        window.location.href = window.location.href;
+                    }, 
+                    onCancel: function () {
+                        $('.edit').each(function() {
+                            $(this).fadeOut(effectTime);
+                        });
+                        $('.edit-enable').removeClass('active');
+                    }, 
+                    saveButtonTitle: 'Save Changes', 
+                    cancelButtonTitle: 'Cancel', 
+                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+                    'defaultGraph': defaultGraph, 
+                    'defaultResource': defaultResource
+                });
+                
+                // RDFauthor.startEditing();
+                RDFauthor.startInline('*[about] td:nth-child(2)');
+                // RDFauthor.startInline('table tr td');
+                
+                $('.edit').each(function() {
+                    $(this).fadeIn(effectTime);
+                })
+                $(this).addClass('active');
+            };
+            
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.src = urlBase + 'libraries/RDFauthor/src/loader.js';
+            document.getElementsByTagName('head')[0].appendChild(s);
         }
     });
     
