@@ -242,19 +242,8 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->view->class     = preg_replace('/^.*[#\/]/', '', (string)$resource);
             $translate = $this->_owApp->translate;
             
-            $query = clone $instances->getResourceQuery();
-            
-            $where = 'WHERE '.$query->getWhere();
-            
-            try {
-                $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
-            } catch (Erfurt_Store_Exception $e) {
-                $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
-            }
-            
-                        
             $statusBar = $this->view->placeholder('main.window.statusbar');
-            $this->view->count = $count;
+
             $limit = $instances->getLimit();
             $this->view->limit = $limit;
             $this->view->itemsOnPage = $itemsOnPage;
@@ -264,14 +253,30 @@ class ResourceController extends OntoWiki_Controller_Base
             } else {
                 $page = 1;
             }
-            
-            $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page));
-            
-            if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
-                $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
-                $this->view->numResultsMsg = sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results);
-                $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
+
+            if($graph->getOption($this->_config->sysont->properties->isLarge)){
+                $statusBar->append(OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page));
+            } else {
+                $query = clone $instances->getResourceQuery();
+
+                $where = 'WHERE '.$query->getWhere();
+
+                try {
+                    $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
+                } catch (Erfurt_Store_Exception $e) {
+                    $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
+                }
+                $this->view->count = $count;
+                $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page));
+
+                if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
+                    $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
+                    $this->view->numResultsMsg = sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results);
+                    $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
+                }
             }
+            
+            
             
             if (defined('_OWDEBUG')) {
                 $this->view->timeMsg = sprintf($this->_owApp->translate->translate('Query execution took %1$d ms.'), $time);

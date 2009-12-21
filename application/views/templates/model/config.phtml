@@ -29,6 +29,10 @@
         <label for="ishidden"><?php echo $this->_('Hide Knowledge Base') ?></label>
         <input id="is-hidden-input" class="checkbox" type="checkbox" <?php echo $this->isHidden ?> value="ishidden" name="ishidden"/>
     </div>
+     <div>
+        <label for="isLarge"><?php echo $this->_('is large (disable counting and add limits)') ?></label>
+        <input id="is-large-input" class="checkbox" type="checkbox" <?php echo $this->isLarge ?> value="isLarge" name="isLarge"/>
+    </div>
     <div>
         <label for="usesysbase"><?php echo $this->_('Use SysBase model') ?></label>
         <input id="use-sysbase-input" class="checkbox" type="checkbox" <?php echo $this->useSysBase ?> <?php echo $this->useSysBaseDisabled ?> value="usesysbase" name="usesysbase"/>

@@ -168,7 +168,7 @@ class ModelController extends OntoWiki_Controller_Base
             $this->view->clearModuleCache('modellist');
             
             $post = $this->_request->getPost();
-            
+
             // Check the is hidden option.
             if (isset($post['ishidden']) && $post['ishidden'] === 'ishidden') {
                 // In this case we need to set the value to true in the sys ont.
@@ -180,6 +180,19 @@ class ModelController extends OntoWiki_Controller_Base
             } else {
                 // We unset the value here (means not hidden).
                 $model->setOption($this->_config->sysont->properties->hidden);
+            }
+            
+            // Check the is isLarge option.
+            if (isset($post['isLarge']) && $post['isLarge'] === 'isLarge') {
+                // In this case we need to set the value to true in the sys ont.
+                $model->setOption($this->_config->sysont->properties->isLarge, array(array(
+                    'value'    => 'true',
+                    'type'     => 'literal',
+                    'datatype' => EF_XSD_BOOLEAN
+                )));
+            } else {
+                // We unset the value here (means not hidden).
+                $model->setOption($this->_config->sysont->properties->isLarge);
             }
             
             // Check the use sysbase option.
@@ -331,11 +344,19 @@ class ModelController extends OntoWiki_Controller_Base
             $translate  = $this->_owApp->translate;
             $windowTitle = $translate->_('Model Configuration');
             $this->view->placeholder('main.window.title')->set($windowTitle);
-
+print_r($this->_config->sysont->properties);
             $this->view->formActionUrl = $this->_config->urlBase . 'model/config';
     		$this->view->formMethod    = 'post';
     		$this->view->formClass     = 'simple-input input-justify-left';
     		$this->view->formName      = 'modelconfig';
+
+    		$isLarge = $model->getOption($this->_config->sysont->properties->isLarge);
+    		if (null !== $isLarge && ( $isLarge[0]['value'] === 'true' ) || ($isLarge[0]['value'] == 1) ) {
+    		    // Model does not count currently
+    		    $this->view->isLarge = 'checked="checked"';
+    		} else {
+    		    $this->view->isLarge = '';
+    		}
 
     		$isHidden = $model->getOption($this->_config->sysont->properties->hidden);
     		if (null !== $isHidden && ( $isHidden[0]['value'] === 'true' ) || ($isHidden[0]['value'] == 1) ) {
@@ -344,6 +365,7 @@ class ModelController extends OntoWiki_Controller_Base
     		} else {
     		    $this->view->isHidden = '';
     		}
+
 
     		$useSysBase = $model->getOption($this->_config->sysont->properties->hiddenImports);
     		$sysBaseImported = false;
