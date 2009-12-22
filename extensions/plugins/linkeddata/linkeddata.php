@@ -73,14 +73,26 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 // content negotiation
                 $type = (string)$this->_matchDocumentTypeRequest($event->request);
              
+                $format = 'rdf';
+                if (isset($this->_privateConfig->format)) {
+                    $format = $this->_privateConfig->format;
+                }
+                
+                if (isset($this->_privateConfig->provenance) && ((boolean)$this->_privateConfig->provenance)) {
+                    $prov = 1;
+                } else {
+                    $prov = 0;
+                }
+             
                 // redirect accordingly
                 switch ($this->_typeMapping[$type]) {
                     case 'rdf':
                         // set export action
                         $url = new OntoWiki_Url(array('controller' => 'resource', 'action' => 'export'), array());
                         $url->setParam('r', $uri, true)
-                            ->setParam('f', 'rdf')
-                            ->setParam('m', $graph);
+                            ->setParam('f', $format)
+                            ->setParam('m', $graph)
+                            ->setParam('provenance', 1);
                         break;
                     case 'xhtml':
                     default:

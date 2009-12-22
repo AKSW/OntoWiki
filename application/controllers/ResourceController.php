@@ -502,13 +502,110 @@ class ResourceController extends OntoWiki_Controller_Base
                 $filename .= '.ttl';
                 break;
         }
+        
+        $additional = array();
+        if ((isset($this->_request->provenance) && (boolean)$this->_request->provenance)) {
+            $bNodeCounter = 1;
+            
+            $model = $store->getModel($modelUri); 
+            $fileUri = $this->_request->getRequestUri();
+            
+            $curBNode = '_:node' . $bNodeCounter++;
+            $additional[$fileUri] = array(
+                EF_RDF_TYPE => array(array(
+                    'value' => 'http://purl.org/net/provenance/ns#DataItem',
+                    'type' => 'uri'
+                )),
+                'http://purl.org/net/provenance/ns#createdBy' => array(array(
+                    'value' => $curBNode,
+                    'type' => 'bnode'
+                ))
+            );
+            $additional[$curBNode] = array(
+                EF_RDF_TYPE => array(array(
+                    'value' => 'http://purl.org/net/provenance/ns#DataCreation',
+                    'type' => 'uri'
+                )),
+                'http://purl.org/net/provenance/ns#performedAt' => array(array(
+                    'type' => 'literal', 
+                    'value' => date('c'),
+                    'datatype' => EF_XSD_DATETIME
+                )),
+                'http://purl.org/net/provenance/ns#performedBy' => array(array(
+                    'value' => '_:node'.(++$bNodeCounter),
+                    'type' => 'bnode'
+                ))
+            );
+            $curBNode = '_:node'.$bNodeCounter++;
+            
+            $additional[$curBNode] = array(
+                EF_RDF_TYPE => array(array(
+                    'value' => 'http://purl.org/net/provenance/types#DataCreatingService',
+                    'type' => 'uri'
+                )),
+                'http://www.w3.org/2000/01/rdf-schema#comment' => array(array(
+                    'type' => 'literal', 
+                    'value' => 'OntoWiki v0.95 (http://ontowiki.net)'
+                ))
+            );
+            
+            $s = $resource;
+            $operatorUri = $model->getOption('http://purl.org/net/provenance/ns#operatedBy');
+            if ($operatorUri !== null) {
+                $additional[$s] = array(
+                    'http://purl.org/net/provenance/ns#operatedBy' => array(array(
+                        'type' => 'uri', 
+                        'value' => $operatorUri[0]['value']
+                    ))
+                );
+            } else {
+                $additional[$s] = array();
+            }
+            
+            $versioning = Erfurt_App::getInstance()->getVersioning();
+            $history = $versioning->getHistoryForResource($resource, $modelUri);
+            
+            foreach ($history as $i=>$hItem) {
+                $curBNode = '_:node' . $bNodeCounter++;
+                
+                $additional[$s]['http://purl.org/net/provenance/ns#CreatedBy'] = array(array(
+                        'type' => 'bnode', 
+                        'value' => $curBNode
+                ));
+                
+                $additional[$curBNode] = array(
+                    EF_RDF_TYPE => array(array(
+                        'type' => 'uri', 
+                        'value' => 'http://purl.org/net/provenance/ns#DataCreation'
+                    )),
+                    'http://purl.org/net/provenance/ns#performedAt' => array(array(
+                        'type' => 'literal', 
+                        'value' => date('c', $hItem['tstamp']),
+                        'datatype' => EF_XSD_DATETIME
+                    )),
+                    'http://purl.org/net/provenance/ns#performedBy' => array(array(
+                        'type' => 'uri', 
+                        'value' => $hItem['useruri']
+                    ))
+                );
+                
+                if ($i<(count($history)-1)) {
+                    $additional[$curBNode]['http://purl.org/net/provenance/ns#precededBy'] = array(array(
+                        'type' => 'bnode',
+                        'value' => '_:node' . ($bNodeCounter+1) 
+                    ));
+                }
+                
+                $s = '_:node'.$bNodeCounter++;     
+            }
+        }
             
         $response = $this->getResponse();
         $response->setHeader('Content-Type', $contentType, true);
         $response->setHeader('Content-Disposition', ('filename="'.$filename.'"'));
-                
+    
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
-        echo $serializer->serializeResourceToString($resource, $modelUri);
+        echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $additional);
         $response->sendResponse();
         exit;
     }
