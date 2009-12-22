@@ -78,7 +78,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                     $format = $this->_privateConfig->format;
                 }
                 
-                if (isset($this->_privateConfig->provenance) && ((boolean)$this->_privateConfig->provenance)) {
+                if (isset($this->_privateConfig->provenance->enabled) && ((boolean)$this->_privateConfig->provenance->enabled)) {
                     $prov = 1;
                 } else {
                     $prov = 0;
