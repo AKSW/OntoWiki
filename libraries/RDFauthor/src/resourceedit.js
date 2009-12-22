@@ -164,15 +164,13 @@ ResourceEdit.prototype.getValue = function()
 ResourceEdit.search = function(terms, callbackFunction, propertiesOnly, graph)
 {
     // Currently RDFauthor has no generic SPARQL service, so we use the OW service if used with OW.
-    // Otherwise we currently only support the sindice search.
-    var endpointUri = RDFauthor.getServiceUriForGraph(graph);
-	
-    if (endpointUri) {
-        var url = endpointUri + 'datagathering/search?q=' + encodeURIComponent(terms);
+    // Otherwise we currently only support the sindice search.	
+    if (typeof urlBase != 'undefined') {
+        var url = urlBase + 'datagathering/search?q=' + encodeURIComponent(terms);
         if (propertiesOnly) {
             url += '&mode=1';
         }
-                
+        
         $.getJSON(url + '&callback=?', 
             function(data) {
                 callbackFunction(data);

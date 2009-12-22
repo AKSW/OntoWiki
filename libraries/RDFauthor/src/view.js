@@ -186,7 +186,8 @@ RDFauthorView.prototype.display = function (animated) {
     if (!this.options.inline) {
         // make draggable if jQuery UI loaded
         if (typeof jQuery.ui != 'undefined' && !$('#' + this.id).hasClass('ui-draggable')) {
-            $('#' + this.id).draggable({handle: 'h2', zIndex: 1000});
+            $('#' + this.id).draggable({handle: 'h2', zIndex: 10000});
+            $('#' + this.id).resizable();
         }
 
         var D = document;
@@ -370,10 +371,14 @@ RDFauthorView.prototype.reposition = function () {
         y: -(window.innerHeight * 0.1)
     };
     
+    var width = $('#' + this.id).width();
+    
     // position
     $('#' + this.id)
-        .css('top', Math.max(Math.floor(center.y - viewOffset.y + relocation.y), 0) + 'px')
-        .css('left', Math.max(Math.floor(center.x - viewOffset.x + relocation.x), 0) + 'px');
+        // .css('top', Math.max(Math.floor(center.y - viewOffset.y + relocation.y), 0) + 'px')
+        // .css('position', 'absolute')
+        .css('top', '175px')
+        .css('left', Math.max(Math.floor(center.x - width / 2), 0) + 'px');
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -456,7 +456,7 @@ RDFauthor = {
             // store as inline view
             this.inlineViews[view.options.id] = view;
             
-            RDFauthor.loadStyleSheet(widgetBase + 'libraries/default.css');
+            RDFauthor.loadStyleSheet(widgetBase + 'libraries/default.css', 'default.css');
             RDFauthor.loadStyleSheet(widgetBase + 'src/rdfauthor.css');
         } else {
             if (this.inlineViews[elementOrId]) {
@@ -496,7 +496,7 @@ RDFauthor = {
             });
             // init view
             this.view = new RDFauthorView(options);
-            RDFauthor.loadStyleSheet(widgetBase + 'libraries/default.css');
+            RDFauthor.loadStyleSheet(widgetBase + 'libraries/default.css', 'default.css');
             RDFauthor.loadStyleSheet(widgetBase + 'src/rdfauthor.css');
         }
         
@@ -650,16 +650,27 @@ RDFauthor = {
         }
     }, 
     
-    loadStyleSheet: function (styleSheetUri) {
-        if (!(styleSheetUri in this.loadedStylesheets)) {
+    loadStyleSheet: function (styleSheetUri, file) {
+        var styleSheetLoaded = false;
+        var links = document.getElementsByTagName('link');
+        var max = links.length;
+        
+        // check if stylesheet (or file) is loaded already
+        for (var i = 0; i < max; ++i) {
+            var uri = links[i].getAttribute('href');
+            if ((uri && uri == styleSheetUri) || (file && (uri.search(file) > -1))) {
+                styleSheetLoaded = true;
+                break;
+            }
+        }
+        
+        if (!styleSheetLoaded) {
             var link = document.createElement('link');
             link.rel = 'stylesheet';
             link.type = 'text/css';
             link.media = 'screen';
             link.href = styleSheetUri;
             $('head').append(link);
-            
-            this.loadedStylesheets[styleSheetUri] = true;
         }
     }, 
     
@@ -684,11 +695,11 @@ RDFauthor = {
             };
 
             // call the JSON service via low-level ajax method
-            $.jsonp({
-                'dataType': 'json', 
+            $.ajax({
+                'dataType': 'jsonp', 
                 'timeout':  2000, 
                 'beforeSend': function(xhr) {
-                    // xhr.setRequestHeader('Accept', 'application/sparql-results+json');
+                    xhr.setRequestHeader('Accept', 'application/sparql-results+json');
                 }, 
                 'url':      endpoint, 
                 callbackParameter: 'callback', 
