@@ -477,8 +477,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $queryResult = $store->sparqlQuery($query, array('result_format' => 'extended'));
         
         $tempResult = array();
+        
         foreach ($queryResult['bindings'] as $row) {
-            $weight = $this->_getWeight($termsArray, $row['uri']['value'], $row['o']['value']);
+            $object = isset($row['o']) ? $row['o']['value'] : null;
+            
+            $weight = $this->_getWeight($termsArray, $row['uri']['value'], $object);
             
             if (isset($tempResult[$row['uri']['value']])) {
                 if ($weight > $tempResult[$row['uri']['value']]) {
