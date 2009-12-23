@@ -508,8 +508,8 @@ class ResourceController extends OntoWiki_Controller_Base
             $bNodeCounter = 1;
             
             $model = $store->getModel($modelUri); 
-            $fileUri = $this->_request->getRequestUri();
             
+            $fileUri = 'http://' . $_SERVER['HTTP_HOST'] . $this->_request->getRequestUri(); 
             $curBNode = '_:node' . $bNodeCounter++;
             $additional[$fileUri] = array(
                 EF_RDF_TYPE => array(array(
