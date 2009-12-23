@@ -38,8 +38,8 @@ class FilterModule extends OntoWiki_Module
         $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'resources/filter.css');
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/jquery.dump.js');
         
-        $this->view->properties = $session->instances->getAllProperties();
-        $this->view->inverseProperties = $session->instances->getAllReverseProperties();
+        $this->view->properties = $session->instances->getAllProperties(false);
+        $this->view->inverseProperties = $session->instances->getAllProperties(true);
         
         $this->view->actionUrl      = $this->_config->staticUrlBase . 'index.php/list/';
         $this->view->s      = $this->_request->s;

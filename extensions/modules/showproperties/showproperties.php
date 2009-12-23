@@ -41,8 +41,8 @@ class ShowpropertiesModule extends OntoWiki_Module
     {
         $session = $this->_owApp->session;
         if (isset($session->instances)) {
-            $this->view->properties = $session->instances->getAllProperties();
-            $this->view->reverseProperties = $session->instances->getAllReverseProperties();
+            $this->view->properties = $session->instances->getAllProperties(false);
+            $this->view->reverseProperties = $session->instances->getAllProperties(true);
             
             return $this->render('showproperties');
         }
