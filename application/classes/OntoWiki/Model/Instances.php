@@ -575,7 +575,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     public function removeFilter($id){
         if (isset($this->_filter[$id])){
             foreach($this->_filter[$id]['objects'] as $obj){
-                if($obj instanceof Erfurt_Sparql_Query2_ObjectHelper){
+                if($obj instanceof Erfurt_Sparql_Query2_ElementHelper){
                     $obj->remove();
                     //echo "removed: ".$obj;
                 }
@@ -1046,43 +1046,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         return $this->convertProperties($properties);
     }
 
-    public function getAllReverseProperties ()
-    {
-        //TODO merge with above
-        $query = clone $this->_resourceQuery;
-        $query
-            ->removeAllProjectionVars()
-            ->removeAllOptionals()
-            ->setDistinct(true)
-            ->setLimit(0)
-            ->setOffset(0);
-
-        $predVar = new Erfurt_Sparql_Query2_Var('predicate');
-        $query->addTriple(
-            new Erfurt_Sparql_Query2_Var('obj'),
-            $predVar,
-            $this->_resourceVar
-        );
-
-        $query
-            ->addProjectionVar($predVar)
-            ->getOrder()
-                ->clear()
-                ->add($predVar);
-
-        $results = $this->_model->sparqlQuery(
-            $query,
-            array('result_format' => 'extended')
-        );
-        //echo '<pre>'; echo htmlentities($query); echo '</pre>';
-
-        $properties = array();
-        foreach ($results['bindings'] as $row) {
-            $properties[] = array('uri' => $row['predicate']['value']);
-        }
-
-        return $this->convertProperties($properties);
-    }
 
     /**
      * get the bound values for a predicate
