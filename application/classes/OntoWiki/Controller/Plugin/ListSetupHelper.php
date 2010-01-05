@@ -202,25 +202,30 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 $instances->setOffset(0);
             }
 
-            // even if the was no change made to the query -> update it (especially the value-query)
-            // because the dataset may have changed since the last request
-            $instances->invalidate();
-            $instances->updateValueQuery();
+            
 
-            if($request->savelist != "false"){
-                //save to session
-                $session->instances = $instances;
-            } 
+            //save to session
+            $session->instances = $instances;
 
             // avoid setting up twice
             $this->_isSetup = true;
-            //redirect normal requests if config-params are given to a param-free uri (so a later browser reload does nothing)
+            //redirect normal requests if config-params are given to a param-free uri (so a browser reload by user does nothing unwanted)
             if(!$request->isXmlHttpRequest()){
-                //strip of parameters that modify the list
+                //strip of url parameters that modify the list
                 $url = new OntoWiki_Url(array(), true, array('init', 'instancesconfig', 's', 'p', 'limit', 'class'));
+                
+                //redirect
                 header('Location: ' . $url);
                 exit;
             }
+        }
+        
+        // even if the was no change made to the resource query -> update the value-query
+        // because the dataset may have changed since the last request
+        if(isset($ontoWiki->session->instances)){
+
+            $ontoWiki->session->instances->invalidate();
+            $ontoWiki->session->instances->updateValueQuery();
         }
     }
 }

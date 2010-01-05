@@ -141,7 +141,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         //build value query
         $this->_valueQuery = new Erfurt_Sparql_Query2();
 
-        $this->_valueQuery->addProjectionVar($this->_resourceVar);
+        $this->_valueQuery
+            ->addProjectionVar($this->_resourceVar)
+            ->setDistinct(true);
 
         //always query for type (not optional)
         $typeVar = new Erfurt_Sparql_Query2_Var('__TYPE');
@@ -170,13 +172,15 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     }
 
    /**
-    * add ?s ?p ?o to the query
+    * add ?resourceUri ?p ?o to the query
+    * TODO: support objects as resources? optionally?
     */
-    public function addAllTriple(){
+    public function addAllTriple($withObjects = false){
         $this->_resourceQuery->addElement(
             $this->allTriple
         );
     }
+    
     /**
      * Adds a property to the properties fetched for every resource.
      *
@@ -604,11 +608,12 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
     /**
      *
-     * @param <type> $options
-     * @param <type> $id
-     * @return <type>
+     * @param string $type the uri of the class
+     * @param string $id
+     * @param array $options
+     * @return int id
      */
-    public function addTypeFilter($type, $id = null){
+    public function addTypeFilter($type, $id = null, $option = array()){
         if($id == null){
             $id = "type" . count($this->_filter);
         }
@@ -640,6 +645,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         if ($options['withChilds']) {
             $this->_subClasses =
                 array_keys(
+                    // get subclasses:
                     $this->_store->getTransitiveClosure(
                         $this->_graph,
                         $options['hierarchyUp'],
@@ -761,6 +767,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
              'mode'             => 'triples',
              'objects'           => $triples
         );
+        
+        //these filters bring there own triple
+        $this->allTriple->remove();
 
         $this->invalidate();
         return $id;
@@ -883,7 +892,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $this->getResults();
 
         $result = $this->_results['bindings'];
-
+        //echo 'unconverted values: <pre>';  print_r($result);  echo '</pre>';
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
 
         foreach ($result as $row) {
@@ -920,15 +929,15 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             $uri   = null;
 
             foreach ($row as $varName => $data) {
-                if($data['type'] == 'uri' && substr($data['value'], 0, 2) == "_:"){
-                    continue; // skip blanknode values here due to backend problems with filters
-                }
-
-                if (!array_key_exists($varName, $valueResults[$resourceUri])) {
+                if (!isset($valueResults[$resourceUri][$varName])) {
                     $valueResults[$resourceUri][$varName] = array();
                 }
 
                 if ($data['type'] == 'uri') {
+                    if(substr($data['value'], 0, 2) == "_:"){
+                        continue; // skip blanknode values here due to backend problems with filters
+                    }
+
                     // object type is uri --> handle object property
                     $objectUri = $data['value'];
                     $url->setParam('r', $objectUri, true);
@@ -966,19 +975,25 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     $value = $event->trigger();
                 }
                 
-
-                if (!isset($valueResults[$resourceUri][$varName])
-                    || empty($valueResults[$resourceUri][$varName])
-                    || $valueResults[$resourceUri][$varName][
-                            count($valueResults[$resourceUri][$varName])-1
-                        ]['value'] != $value
-                    ) {
-                    $valueResults[$resourceUri][$varName][] = array(
-                      'value' => $value,
-                      'url'   => $link,
-                      'uri'   => $data['value']
-                    );
+                //check for dulplicate values
+                if(isset($valueResults[$resourceUri][$varName])){
+                    foreach($valueResults[$resourceUri][$varName] as $old){
+                        if($old['origvalue'] == $data['value'] && $old['type'] == $data['type']){
+                            continue 2; // dont add this value
+                        }
+                    }
                 }
+
+                //add value
+                $valueResults[$resourceUri][$varName][] = array(
+                  'value' => $value,
+                  'origvalue' => $data['value'],
+                  'type'  => $data['type'],
+                  'url'   => $link,
+                  'uri'   => $data['value'] //TODO: rename (can be literal) -> use origvalue + type to output uri
+                );
+
+                
                 $value = null;
                 $link  = null;
                 $uri   = null;
@@ -1002,10 +1017,10 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     
     public function getAllProperties ($inverse = false)
     {
+        //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
         $query = clone $this->_resourceQuery;
         $query
             ->removeAllProjectionVars()
-            ->removeAllOptionals()
             ->setDistinct(true)
             ->setLimit(0)
             ->setOffset(0);
@@ -1031,12 +1046,12 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                 ->clear()
                 ->add($predVar);
 
+        
         $results = $this->_model->sparqlQuery(
             $query,
             array('result_format' => 'extended')
         );
-
-        //echo '<pre>'; echo htmlentities($query); print_r($results); echo '</pre>';
+        
 
         $properties = array();
         foreach ($results['bindings'] as $row) {
@@ -1070,7 +1085,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $query = clone $this->_resourceQuery;
         $query
             ->removeAllProjectionVars()
-            ->removeAllOptionals()
             ->setDistinct($distinct)
             ->setLimit(0)
             ->setOffset(0);
@@ -1338,7 +1352,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     }
 
     /**
-     * if the selected resources changed (due to filters or limit or stuff)
+     * if the selected resources changed (due to filters or limit or offset)
      * we have to change the value query as well (because the resources are mentioned as subjects)
      * @return OntoWiki_Model_Instances $this
      */
