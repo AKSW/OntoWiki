@@ -71,7 +71,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 }
                 
                 // content negotiation
-                $type = (string)$this->_matchDocumentTypeRequest($event->request);
+                $type = (string)$this->_matchDocumentTypeRequest($event->request, array(
+                    'text/html',
+                    'application/xhtml+xml',
+                    'application/rdf+xml',
+                    'text/n3',
+                    'application/json',
+                    'application/xml'
+                ));
              
                 $format = 'rdf';
                 if (isset($this->_privateConfig->format)) {
@@ -131,37 +138,8 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      *
      * @return string
      */
-    private function _matchDocumentTypeRequest($request)
+    private function _matchDocumentTypeRequest($request, array $supportedTypes = array())
     {
-        $matches = array();
-        $maxQ    = 0;
-        $serve   = null;
-        
-        // get accept header
-        $acceptHeader = strtolower($request->getHeader('Accept'));
-        
-        // patterns
-        $type    = '[\w]+\/[\w+]+|[\w]+\/\*|\*\/\*';
-        $quality = ';q=0.[0-9]+|1';
-        
-        // match
-        preg_match_all("/$type|$quality/", $acceptHeader, $matches);
-        // we only need full pattern matches
-        if (isset($matches[0])) {
-            for ($i = 0, $max = count($matches[0]); $i < $max; ++$i) {
-                // handle quality
-                if (is_numeric($quality = str_replace(';q=', '', $matches[0][$i]))) {
-                    $maxQ = $quality;
-                    continue;
-                }
-                // handle type
-                if ((!$serve || $quality > $maxQ) && array_key_exists($matches[0][$i], $this->_typeMapping)) {
-                    $serve = $matches[0][$i];
-                }
-            }
-            
-            return $serve;
-        }
+        return OntoWiki_Utils::matchMimetypeFromRequest($request, $supportedTypes);
     }
 }
-
