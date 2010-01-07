@@ -56,7 +56,7 @@ function initMap ( ) {
         draw: function () {
         this.box = new OpenLayers.Handler.Box(filterSelector,
             {'done': this.addFilter},
-            {keyMask: OpenLayers.Handler.MOD_CONTROL});
+            {keyMask: OpenLayers.Handler.MOD_CTRL});
         this.box.activate();
         },
 
