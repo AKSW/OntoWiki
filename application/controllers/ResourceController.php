@@ -192,6 +192,8 @@ class ResourceController extends OntoWiki_Controller_Base
         if(!($instances instanceof OntoWiki_Model_Instances)){
             throw new OntoWiki_Exception("something went wrong with list creation");
             exit;
+        } else {
+            $instances->updateValueQuery();
         }
         
         //begin view building

@@ -223,9 +223,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
         // even if the was no change made to the resource query -> update the value-query
         // because the dataset may have changed since the last request
         if(isset($ontoWiki->session->instances)){
-
             $ontoWiki->session->instances->invalidate();
-            $ontoWiki->session->instances->updateValueQuery();
         }
     }
 }
