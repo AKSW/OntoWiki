@@ -70,7 +70,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         $this->_helper->layout()->disableLayout();
 
         $user  = $this->_owApp->getUser()->getUri();
-        $date  = date('rating'); // xsd:datetime
+        $date  = date('c'); // xsd:datetime
         // $date  = date('Y-m-d\TH:i:s'); // xsd:dateTime
 
         $resource = (string) $this->_owApp->selectedResource;
@@ -79,7 +79,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         $commentType     = $this->_privateConfig->comment->type;
         $contentProperty = $this->_privateConfig->content->property;
         $dateProperty    = $this->_privateConfig->date->property;
-        $content         = $this->getParam('rating');
+        $content         = $this->getParam('c');
 
         if (!empty($content)) {
 
@@ -147,7 +147,7 @@ class CommunityController extends OntoWiki_Controller_Component {
 
 
         $user  = $this->_owApp->getUser()->getUri();
-        $date  = date('c'); // xsd:datetime
+        $date  = date('rating'); // xsd:datetime
 
 
         $resource = (string) $this->_owApp->selectedResource;
