@@ -15,6 +15,9 @@ position   = 10
 ;;
 [private]
 
+; possible values are "ever" to switch the tab on, "nerver" to switch the tab of or thomething else to show the tab if geospacial things are in the session
+show.tab = "never"
+
 ; this should be the config var for the default map layer
 ; but doesn't work at the moment
 ;default.layer		= "Google Streets"

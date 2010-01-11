@@ -78,6 +78,8 @@ function initMap ( ) {
 
         //            alert('top-left: ' + topLeft + ' bottom-right: ' + bottomRight);
 
+        //filter.remove('mapLatitudeBounds', function() {});
+        //filter.remove('mapLongitudeBounds', function() {});
         filter.add(
                 'mapLatitudeBounds',
                 latProp,

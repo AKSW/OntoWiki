@@ -23,11 +23,15 @@ class MapHelper extends OntoWiki_Component_Helper
     {
         $onSwitch = false;  // decide, if map should be on
 
-        if (isset($this->_privateConfig->switch->on) AND $this->_privateConfig->switch->on == 'ever') {
-            $onSwitch = true;
-        }
-
-        if (!$onSwitch) {
+        if (isset($this->_privateConfig->show->tab)){
+            if ($this->_privateConfig->show->tab == 'ever') {
+                $onSwitch = true;
+            } else if ($this->_privateConfig->show->tab == 'never') {
+                $onSwitch = false;
+            } else {
+                $onSwitch = $this->shouldShow();
+            }
+        } else {
             $onSwitch = $this->shouldShow();
         }
 
@@ -52,8 +56,6 @@ class MapHelper extends OntoWiki_Component_Helper
         /*
          * don't show on model, application, error, debug, module and index controller
          */
-
-        
 
         $owApp = OntoWiki::getInstance();
         $session = $owApp->session;

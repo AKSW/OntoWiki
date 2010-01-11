@@ -18,7 +18,12 @@
 //    $('#miniMap').addClass('width99');
 //    $('#miniMap').height( $('#miniMap').width() ); 
         
-    <?php $htmlPartialUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'inline')); ?>
+    <?php
+$htmlPartialUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'inline'));
+if(isset($this->context) && $this->context == 'single_instance') {
+    $htmlPartialUrl->setParam('single_instance', 'on', true);
+}
+    ?>
     $.get('<?php echo $htmlPartialUrl; ?>', function (data) {
         $('#miniMap').removeClass('is-processing');
         $('#miniMap').html(data);

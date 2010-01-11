@@ -44,8 +44,12 @@ class MapController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set('OntoWiki Map Component');
 
         $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());
-        $jsonRequestUrl->setParam('use_limit', "off", true);
-        $jsonRequestUrl->setParam('extent', "__extent__", true);
+        $jsonRequestUrl->setParam('use_limit', 'off', true);
+        $jsonRequestUrl->setParam('extent', '__extent__', true);
+        if($this->_request->getControllerName() == 'resource' && $this->_request->getActionName() == 'properties') {
+            $jsonRequestUrl->setParam('single_instance', 'on', true);
+        }
+
 
         $this->view->jsonRequestUrl   = $jsonRequestUrl;
         $this->view->componentUrlBase = $this->_componentUrlBase;
@@ -67,10 +71,10 @@ class MapController extends OntoWiki_Controller_Component
         $this->_helper->layout->disableLayout();
         
         // default values from configuration
-        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array());
-        $jsonRequestUrl->setParam('clustering', "off", true);
-        $jsonRequestUrl->setParam('use_limit', "on", true);
-        $jsonRequestUrl->setParam('extent', "__extent__", true);
+        $jsonRequestUrl = new OntoWiki_Url(array('controller' => 'map', 'action' => 'marker'), array('single_instance'));
+        $jsonRequestUrl->setParam('clustering', 'off', true);
+        $jsonRequestUrl->setParam('use_limit', 'on', true);
+        $jsonRequestUrl->setParam('extent', '__extent__', true);
 
         $this->view->jsonRequestUrl   = $jsonRequestUrl;
         $this->view->componentUrlBase = $this->_componentUrlBase;
@@ -116,18 +120,15 @@ class MapController extends OntoWiki_Controller_Component
         $markers = array();
 
         if($this->resources) {
-            foreach ($this->resources as $r) {
-                $uri = isset($r[$this->resourceVar]) ? $r[$this->resourceVar] : $this->resource;
-            }
 
             foreach ($this->resources as $r) {
                 $uri = isset($r[$this->resourceVar]) ? $r[$this->resourceVar] : $this->resource;
 
                 if (empty ($r['lat']) || empty ($r['long'])) {
-                    if(!empty($r['lat2']) && !empty($r['long2'])) {
+                   if(isset($r['lat2']) && isset($r['long2']) && !empty($r['lat2']) && !empty($r['long2'])) {
                         $lat = $r['lat2'];
                         $long = $r['long2'];
-                    }
+                   }
                 } else {
                     $lat = $r['lat'];
                     $long = $r['long'];
@@ -193,65 +194,89 @@ class MapController extends OntoWiki_Controller_Component
         $latProperty    = $latProperties[0];
         $longProperty   = $longProperties[0];
 
-        $latVar         = new Erfurt_Sparql_Query2_Var('lat');
-        $longVar        = new Erfurt_Sparql_Query2_Var('long');
-        $lat2Var        = new Erfurt_Sparql_Query2_Var('lat2');
-        $long2Var       = new Erfurt_Sparql_Query2_Var('long2');
+        if ($this->_request->single_instance != 'on') {
+            $latVar         = new Erfurt_Sparql_Query2_Var('lat');
+            $longVar        = new Erfurt_Sparql_Query2_Var('long');
 
-        //the future is now!
-        if($this->instances === null) {
-            $this->_owApp->logger->debug('MapComponent/_getResources: memory_get_usage: ' . memory_get_usage());
-            $this->_owApp->logger->debug('MapComponent/_getResources: clone this->_session->instances');
-            $this->_owApp->logger->debug('MapComponent/_getResources: this->_session->instances has a size of ' . strlen(serialize($this->_session->instances)));
-            if(strlen(serialize($this->_session->instances)) < 1024) {
-                $this->_owApp->logger->debug('MapComponent/_getResources: ' . $this->_session->instances);
+            //the future is now!
+            if($this->instances === null) {
+                $this->_owApp->logger->debug('MapComponent/_getResources: memory_get_usage: ' . memory_get_usage());
+                $this->_owApp->logger->debug('MapComponent/_getResources: clone this->_session->instances');
+                $this->_owApp->logger->debug('MapComponent/_getResources: this->_session->instances has a size of ' . strlen(serialize($this->_session->instances)));
+                if(strlen(serialize($this->_session->instances)) < 1024) {
+                    $this->_owApp->logger->debug('MapComponent/_getResources: ' . $this->_session->instances);
+                }
+                $this->instances = clone $this->_session->instances;
+                $this->_owApp->logger->debug('MapComponent/_getResources: memory_get_usage: ' . memory_get_usage());
+            } else {
+                $this->_owApp->logger->debug('MapComponent/_getResources: this->instances already set');
+                // don't load instances again
             }
-            $this->instances = clone $this->_session->instances;
-            $this->_owApp->logger->debug('MapComponent/_getResources: memory_get_usage: ' . memory_get_usage());
+
+            if($this->_request->use_limit == 'off') {
+                $this->instances->setLimit(self::$maxResources);
+                $this->instances->setOffset(0);
+            } else {
+                // use the limit and offset set in the instances
+            }
+
+            $query          = $this->instances->getResourceQuery();
+            $this->_owApp->logger->debug('MapComponent/_getResources: session query: ' . var_export((string)$query, true));
+
+            $query->removeAllOptionals()->removeAllProjectionVars();
+
+            $query->addProjectionVar($this->instances->getResourceVar());
+            $query->addProjectionVar($latVar);
+            $query->addProjectionVar($longVar);
+
+            $queryOptionalCoke     = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+            $queryOptionalPepsi    = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+
+            $node = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
+            $queryOptionalCoke->addTriple($this->instances->getResourceVar(), $latProperty, $latVar);
+            $queryOptionalCoke->addTriple($this->instances->getResourceVar(), $longProperty, $longVar);
+            $queryOptionalPepsi->addTriple($this->instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
+            $queryOptionalPepsi->addTriple($node, $latProperty, $latVar);
+            $queryOptionalPepsi->addTriple($node, $longProperty, $longVar);
+
+            $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
+            $queryDirect = clone $query;
+            $queryIndire = clone $query;
+            $queryDirect->addElement($queryOptionalCoke);
+            $queryIndire->addElement($queryOptionalPepsi);
+            $this->_owApp->logger->debug('MapComponent/_getResources sent "' . $query . '" to get markers.');
+
+            /* get result of the query */
+            $resourcesInd    = $this->_owApp->erfurt->getStore()->sparqlQuery($queryIndire);
+            $resourcesDir    = $this->_owApp->erfurt->getStore()->sparqlQuery($queryDirect);
+
+            $this->resourceVar  = $this->instances->getResourceVar()->getName();
+
+            /**
+             * merge theses two results
+             */
+            $this->cpVarToKey($resourcesInd, $this->resourceVar);
+            $this->cpVarToKey($resourcesDir, $this->resourceVar);
+            
+            $this->resources = array_merge_recursive($resourcesDir, $resourcesInd);
+
+            /**
+             * If you get problems with multiple coordinates for one resource you have to remove all array values with non string-keys
+             */
+
+        } else if ($this->_request->single_instance == 'on') {
+            //$query = new Erfurt_Sparql_SimpleQuery();
+            $queryString = 'SELECT ?lat ?long ?lat2 ?long2 WHERE { OPTIONAL { <' . $this->resource . '> <' . $latProperty . '> ?lat; <' . $longProperty . '> ?long.  } OPTIONAL { <' . $this->resource . '> ?p ?node.  ?node <' . $latProperty . '> ?lat2; <' . $longProperty . '> ?long2.  } }';
+            $query = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
+            $this->_owApp->logger->debug('MapComponent/_getResources query "' . $queryString . '".');
+            $this->resources = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
+
         } else {
-            $this->_owApp->logger->debug('MapComponent/_getResources: this->instances already set');
-            // don't load instances again
+            $this->_owApp->logger->debug('MapComponent/_getResources request single_instace contains neither "on" nor "off".');
         }
-
-        if($this->_request->use_limit == 'off') {
-            $this->instances->setLimit(self::$maxResources);
-            $this->instances->setOffset(0);
-        } else {
-            // use the limit and offset set in the instances
-        }
-
-        $query          = $this->instances->getResourceQuery();
-        $this->_owApp->logger->debug('MapComponent/_getResources: session query: ' . var_export((string)$query, true));
-        
-        $query->removeAllOptionals()->removeAllProjectionVars();
-
-        $query->addProjectionVar($this->instances->getResourceVar());
-        $query->addProjectionVar($latVar);
-        $query->addProjectionVar($longVar);
-        $query->addProjectionVar($lat2Var);
-        $query->addProjectionVar($long2Var);
-
-        $queryOptionalCoke     = new Erfurt_Sparql_Query2_OptionalGraphPattern();
-        $queryOptionalPepsi    = new Erfurt_Sparql_Query2_OptionalGraphPattern();
-
-        $node = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
-        $queryOptionalCoke->addTriple($this->instances->getResourceVar(), $latProperty, $latVar);
-        $queryOptionalCoke->addTriple($this->instances->getResourceVar(), $longProperty, $longVar);
-        $queryOptionalPepsi->addTriple($this->instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
-        $queryOptionalPepsi->addTriple($node, $latProperty, $lat2Var);
-        $queryOptionalPepsi->addTriple($node, $longProperty, $long2Var);
-
-        $query->addElement($queryOptionalCoke);
-        $query->addElement($queryOptionalPepsi);
-        $query->setQueryType(Erfurt_Sparql_Query2::typeSelect);
-        $this->_owApp->logger->debug('MapComponent/_getResources sent "' . $query . '" to get markers.');
-
-        /* get result of the query */
-        $this->resources    = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
 
         $this->_owApp->logger->debug('MapComponent/_getResources got respons "' . var_export($this->resources, true) . '".');
 
-        $this->resourceVar  = $this->instances->getResourceVar()->getName();
     }
 
     /**
@@ -306,6 +331,17 @@ class MapController extends OntoWiki_Controller_Component
         $this->_owApp->logger->debug('MapComponent/_getMaxExtent: extent: ' . var_export($return, true));
 
         return $return;
+    }
+
+    private function cpVarToKey($array, $key){
+        for($i = 0; $i < count($array); $i++) {
+            if(isset($array[$array[$i][$key]])) {
+                $array[$array[$i][$key]] = array_merge($array[$array[$i][$key]], $array[$i]);
+            } else {
+                $array[$array[$i][$key]] = $array[$i];
+            }
+            unset($array[$i]);
+        }
     }
 }
 
