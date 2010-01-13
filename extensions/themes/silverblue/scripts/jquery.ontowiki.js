@@ -217,8 +217,8 @@
                  <div class="item">\
                      <span class="icon icon-edit" title="Edit these values">\
                      </span>\
-                     <span class="icon icon-delete" title="Delete all values">\
-                     </span>\
+                     <!--span class="icon icon-delete" title="Delete all values">\
+                     </span-->\
                  </div>\
              ');
          })
