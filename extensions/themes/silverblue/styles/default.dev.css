@@ -1,8 +1,11 @@
 /**
   * default.dev.css
   * Ontowiki developer/experimental style sheet, advanced theme
-  * @author: Norman Heino
-  * @version: $Id: default.dev.css 4036 2009-08-14 05:22:14Z pfrischmuth $
+  *
+  * ATTENTION, since this file contains of development styles, it only included in
+  * debug mode. See more infos on CSS Development on
+  * http://code.google.com/p/ontowiki/wiki/CSSDevelopment
+  *
   */
 
 /* form stuff ****************************************************************/
