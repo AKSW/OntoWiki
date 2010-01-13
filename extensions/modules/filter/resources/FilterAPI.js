@@ -40,7 +40,7 @@ function FilterAPI(){
          * @param callback function will be called on success
          * @param hidden boolean will not show up in filterbox if true
          */
-	this.add = function(id, property, isInverse, propertyLabel, filter, value1, value2, valuetype, literaltype, callback, hidden, negate){
+	this.add = function(id, property, isInverse, propertyLabel, filter, value1, value2, valuetype, literaltype, callback, hidden, negate, dontReload){
             if(typeof callback != 'function' && typeof callback != 'object'){
 		callback = function(){};
             }
@@ -68,8 +68,17 @@ function FilterAPI(){
             };
 
             var dataserialized = $.toJSON(data);
-
-            window.location = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized);
+            
+            if(dontReload == true){
+                $.ajax(
+                  {
+                      url: this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized),
+                      type : "POST"
+                  }
+                );
+            } else {
+                window.location = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized);
+            }
             
 	};
 
