@@ -20,14 +20,6 @@ input.uri-input {
 	padding: 0.15em;
 }
 
-/* 
-fieldset {
-	padding: 0.8em;
-	border: 1px dotted #999;
-	margin: 1em 0;
-}
-*/
-
 label.input-label-left {
 	float: left;
 	width: 12em;
@@ -42,109 +34,6 @@ input.checkbox, input.radio {
 	margin-right: 0.3em !important;
 }
 
-/* message channel ***********************************************************/
-
-/*
-.window .message {
-	margin: 0.5% 10%;
-	border: 1px solid #999;
-	background-color: #ddd;
-	padding: 1%;
-}
-
-.window .message.success { Doppelklassen funzen nicht richtig im IE
-	border-color: #0f0;
-	background-color: #cfc;
-}
-
-.window .message.error {
-	border-color: #f00;
-	background-color: #fcc;
-}
-*/
-
-/* status bar ****************************************************************/
-
-/*
-.window .status-bar {
-	padding: 0.2em 0.5em;
-	border-top: 1px solid #ddd;
-	background-color: #f8f8f8;
-}
-
-.window .status-bar a {
-	color: #07c;
-    text-decoration: none;
-	padding: 0.15em 0.2em;
-}
-
-.window .status-bar a:focus, .window .status-bar a:hover {
-	color: #07f;
-	text-decoration: underline;
-}
-
-.window .status-bar-content {
-	padding: 0 1em;
-	border-left: 1px solid #ddd;
-}
-
-.window .status-bar-content:first-child {
-	border-left: 0;
-	padding-left: 0;
-}
-*/
-
-/* tables ********************************************************************/
-
-/*table.non-editable, table.editable {
-	width: 100%;
-}
-
-table caption {
-	color: #999;
-	margin-bottom: 0.5em;
-}*/
-
-/*
-table th {
-	padding: 0.2em 0.5em;
-	border-top: solid 1px #ddd;
-	text-align: left;
-	background-color: #eee;
-}
-*/
-
-/*table.non-editable td {
-	padding: 0.3em 0.5em;
-	border-top: 1px dotted #ddd;
-}
-
-table.non-editable tr:first-child td, table.editable tr:first-child td {
-	border-top: none;
-}
-
-table.non-editable td:first-child, table.editable td:first-child {
-	text-align: right;
-}
-
-table td.enumeration, table td.enumeration {
-	width: 4em;
-	text-align: right;
-}
-
-table.editable td {
-	cursor: text;
-	padding: 0.5em 0.5em;
-	border-top: 1px dotted #ddd;
-}
-
-table.editable tr:hover {
-	background-color: #f6f6f6;
-}
-
-table.editable tr:focus, table.editable tr:active {
-    background-color: #eff9ff;
-}*/
 
 /* lists *******************************************************************/
 
@@ -187,11 +76,6 @@ ol.inline > li {
 	display: none;
 }
 
-/*ul, ol {
-    margin: 0;
-    padding: 0;
-    list-style-position: outside;
-}*/
 
 /* -------------------- Hierarchy ------------------------------ */
 a.tree-closed {
@@ -236,6 +120,8 @@ span.tree-none {
 
 /* dev phil: to be sorted or deleted in the future ************************/
 
+/* -> login module - OpenID Tab */
+
 .openid {
 	background-image: url(./../images/openid.gif);
 	background-repeat: no-repeat;
@@ -249,6 +135,8 @@ span.openid {
 }
 
 
+/* -> application controller - openidreg action -  */
+
 div.openid_logo {
 	width: 250px;
 	height: 100px;
@@ -256,17 +144,6 @@ div.openid_logo {
 	background-image: url(./../images/openid-logo-wordmark.png);
 	background-repeat: no-repeat;
 }
-
-/*
-.search {
-	float: left;
-	width: 18px;
-	height: 19px;
-	background: url(./../images/icon-search.png) no-repeat;
-	background-position: 0 3px;
-}*/
-
-
 
 .success_icon {
 	float: left;
@@ -276,13 +153,8 @@ div.openid_logo {
 	background-position: 0 3px;
 }
 
-.nothing_icon {
-	float: left;
-	width: 18px;
-	height: 18px;
-	background: url(./../images/icon-failure.png) no-repeat;
-	background-position: 0 3px;
-}
+
+/* -> hierarchy module  */
 
 a.closed {
     float: left;
@@ -298,12 +170,20 @@ a.closed:hover {
     background-position: -10px 50%;
 }
 
+
+/* -> multimedia plugin */
+
 .object-30em {
     max-width: 30em;
     overflow: hidden;
     margin: 0 auto 10px auto;
     display: block;
 }
+
+
+/* -> tagging component - exploretags action
+      but displayed in the tagging module
+*/
 
 a.Tag {
     border: 1px solid #ccc;
