@@ -164,7 +164,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                     $filter->literaltype,
                                     $filter->hidden,
                                     isset($filter->id) ? $filter->id : null,
-                                    $filter->negate
+                                    isset($filter->negate) ? $filter->negate : false
                                 );
                             } else if($filter->mode == 'search'){
                                 $instances->addSearchFilter(

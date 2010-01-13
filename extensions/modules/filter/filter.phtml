@@ -35,27 +35,40 @@ $odd = false;
             class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> filter has-contextmenu-area"
             >
             <?php if($filter['mode'] == "box"): ?>
-            <a  class="hasMenu"
-                about="<?php echo $filter['property'] ?>"
-                href="<?php echo (string) $linkurl->setParam('r', $filter['property'], true) ?>">
-                <?php echo $this->titleHelper->getTitle($filter['property']) ?>
-            </a>
-            <?php if ($filter['isInverse']) : ?>
-                <sup>-1</sup>
-            <?php endif ?>
-            <?php if ($filter['negate']) : ?> not <?php endif ?>
-            <?php echo $filter['filter'] ?>
-            <?php if ($filter['value1']) : ?>
-                <?php if ($filter['valuetype'] == 'uri') : ?>
-                    <a  class="hasMenu"
-                        about="<?php echo $filter['value1']; ?>"
-                        href="<?php echo (string) $linkurl->setParam('r', $filter['value1'], true) ?>">
-                        <?php echo $this->titleHelper->getTitle($filter['value1']); ?>
-                    </a>
-                <?php else : ?>
-                    <strong>"<?php echo $filter['value1'] ?>"</strong>
+                <a  class="hasMenu"
+                    about="<?php echo $filter['property'] ?>"
+                    href="<?php echo (string) $linkurl->setParam('r', $filter['property'], true) ?>">
+                    <?php echo $this->titleHelper->getTitle($filter['property']) ?>
+                </a>
+                <?php if ($filter['isInverse']) : ?>
+                    <sup>-1</sup>
                 <?php endif ?>
-            <?php endif ?>
+                <?php if ($filter['negate']) : ?> not <?php endif ?>
+                <?php echo $filter['filter'] ?>
+                <?php if ($filter['value1']) : ?>
+                    <?php if ($filter['valuetype'] == 'uri') : ?>
+                        <a  class="hasMenu"
+                            about="<?php echo $filter['value1']; ?>"
+                            href="<?php echo (string) $linkurl->setParam('r', $filter['value1'], true) ?>">
+                            <?php echo $this->titleHelper->getTitle($filter['value1']); ?>
+                        </a>
+                    <?php else : ?>
+                        <strong>"<?php echo $filter['value1'] ?>"</strong>
+                    <?php endif ?>
+                <?php endif ?>
+                <?php if ($filter['value2']) : ?>
+                    and
+                    <?php if ($filter['valuetype'] == 'uri') : ?>
+                        <a  class="hasMenu"
+                            about="<?php echo $filter['value2']; ?>"
+                            href="<?php echo (string) $linkurl->setParam('r', $filter['value2'], true) ?>">
+                            <?php echo $this->titleHelper->getTitle($filter['value2']); ?>
+                        </a>
+                    <?php else : ?>
+                        <strong>"<?php echo $filter['value2'] ?>"</strong>
+                    <?php endif ?>
+                <?php endif ?>
+
             <?php endif; if($filter['mode'] == "rdfsclass") : ?>
                     Type: <a  class="hasMenu"
                         about="<?php echo $filter['rdfsclass']; ?>"

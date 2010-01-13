@@ -269,6 +269,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      */
     public function getResults ()
     {
+        //echo htmlentities($this->_valueQuery);
         if (!$this->_resultsUptodate) {
             $this->_results = $this->_model->sparqlQuery(
                 $this->_valueQuery, 
@@ -276,7 +277,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             );
             $this->_resultsUptodate = true;
         }
-        //echo '<pre>'; print_r($this->_results); echo '</pre>';
+        //echo '<pre>'; print_r($this->_results); echo '</pre>'; exit;
         return $this->_results;
     }
     
@@ -299,6 +300,10 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     {
         if($id == null){
             $id = "box" . count($this->_filter);
+        } else {
+            if(isset($this->_filter[$id])){
+                $this->removeFilter($id);
+            }
         }
         $prop = new Erfurt_Sparql_Query2_IriRef($property);
         //echo "<pre>"; print_r($parts);echo "</pre>"; exit;
@@ -416,7 +421,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     
                     $filterObj = $this->_resourceQuery->addFilter(
                         new Erfurt_Sparql_Query2_Regex(
-                            $valueVar, 
+                            new Erfurt_Sparql_Query2_Str($valueVar),
                             new Erfurt_Sparql_Query2_RDFLiteral('^'.$value1.'$')
                         )
                     );
@@ -616,6 +621,10 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     public function addTypeFilter($type, $id = null, $option = array()){
         if($id == null){
             $id = "type" . count($this->_filter);
+        } else {
+            if(isset($this->_filter[$id])){
+                $this->removeFilter($id);
+            }
         }
 
         //shortcut navigation - only a rdfs class given
@@ -710,6 +719,10 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     public function addSearchFilter($str, $id = null){
         if($id == null){
             $id = "search" . count($this->_filter);
+        } else {
+            if(isset($this->_filter[$id])){
+                $this->removeFilter($id);
+            }
         }
         $pattern = $this->_store->getSearchPattern(
             $str,
@@ -758,6 +771,10 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     public function addTripleFilter($triples, $id = null){
         if($id == null){
             $id = "triple" . count($this->_filter);
+        } else {
+            if(isset($this->_filter[$id])){
+                $this->removeFilter($id);
+            }
         }
         $this->_resourceQuery->addElements($triples);
 
@@ -892,7 +909,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $this->getResults();
 
         $result = $this->_results['bindings'];
-        //echo 'unconverted values: <pre>';  print_r($result);  echo '</pre>';
+        
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
 
         foreach ($result as $row) {
@@ -1374,7 +1391,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         }
 
         if ($this->_valueQueryResourceFilter == null) {
-            $this->_valueQueryResourceFilter = new Erfurt_Sparql_Query2_Filter(new Erfurt_Sparql_Query2_BooleanLiteral(false));
+            $this->_valueQueryResourceFilter = new Erfurt_Sparql_Query2_Filter(
+                new Erfurt_Sparql_Query2_BooleanLiteral(false)
+            );
             $this->_valueQuery->addElement($this->_valueQueryResourceFilter);
         }
 

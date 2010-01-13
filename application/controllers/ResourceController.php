@@ -200,7 +200,10 @@ class ResourceController extends OntoWiki_Controller_Base
         $this->view->placeholder('main.window.title')->set('Resource List');
         
         $this->view->resourceQuery = (string) $instances->getResourceQuery();
+        //echo htmlentities($this->view->resourceQuery);
         $this->view->valueQuery = (string) $instances->getQuery();
+        //echo htmlentities($this->view->valueQuery);
+        
         $this->view->permalink = $this->_config->urlBase.'list/'.$instances->getPermalink();
         $this->view->urlBase = $this->_config->urlBase;
 
