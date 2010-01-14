@@ -14,17 +14,20 @@
 	color: #999 !important;
 }
 
+/* not used? */
 input.uri-input {
 	width: 30em;
 	font-size: 90%;
 	padding: 0.15em;
 }
 
+/* not used? */
 label.input-label-left {
 	float: left;
 	width: 12em;
 }
 
+/* not used? */
 label.radio-label {
 	margin-left: 1.6em;
 }
@@ -67,56 +70,10 @@ ol.inline > li {
 	color: #999;
 }
 
-
-.width100 { 
-	width:100% !important;
-}
-
 .inline-edit {
 	display: none;
 }
 
-
-/* -------------------- Hierarchy ------------------------------ */
-a.tree-closed {
-	float: left;
-	background-image: url(./../images/tree_closed.png);
-	width: 9px;
-	height: 9px;
-	margin: .4em .3em 0 0;
-}
-
-a.tree-closed:hover {
-	background-image: url(./../images/tree_closed_hover.png);
-}
-
-a.tree-open {
-	float: left;
-	background-image: url(./../images/tree_open.png);
-	width: 9px;
-	height: 9px;
-	margin: .4em .3em 0 0;
-}
-
-a.tree-open:hover {
-	background-image: url(./../images/tree_open_hover.png);
-}
-
-span.tree-none {
-	float: left;
-	width: 9px;
-	height: 9px;
-	margin: .4em .3em 0 0;
-}
-
-.tree-is-processing {
-    background-image:url(./../images/spinner.gif) !important;
-    background-position: left center; !important;
-    background-repeat:no-repeat !important;
-    cursor:wait !important;
-	height: 25px;
-	width: 100%;
-}
 
 /* dev phil: to be sorted or deleted in the future ************************/
 
