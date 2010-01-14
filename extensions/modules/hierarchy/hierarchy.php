@@ -16,7 +16,12 @@
 class HierarchyModule extends OntoWiki_Module
 {
 	const SERVICE_URL = 'hierarchy';
-	
+
+    public function init()
+    {
+        $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'hierarchy.css');
+    }
+
 	public function getTitle()
 	{
 	    return 'Classes';

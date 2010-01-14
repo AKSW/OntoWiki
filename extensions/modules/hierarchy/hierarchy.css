@@ -1,0 +1,48 @@
+/* 
+    Document   : hierarchy
+    Created on : 14.01.2010, 16:44:45
+    Author     : Norman Heino
+    Description:
+        base hierarchy styles
+*/
+
+a.tree-closed {
+	float: left;
+	background-image: url(./../images/tree_closed.png);
+	width: 9px;
+	height: 9px;
+	margin: .4em .3em 0 0;
+}
+
+a.tree-closed:hover {
+	background-image: url(./../images/tree_closed_hover.png);
+}
+
+a.tree-open {
+	float: left;
+	background-image: url(./../images/tree_open.png);
+	width: 9px;
+	height: 9px;
+	margin: .4em .3em 0 0;
+}
+
+a.tree-open:hover {
+	background-image: url(./../images/tree_open_hover.png);
+}
+
+span.tree-none {
+	float: left;
+	width: 9px;
+	height: 9px;
+	margin: .4em .3em 0 0;
+}
+
+.tree-is-processing {
+    background-image:url(./../images/spinner.gif) !important;
+    background-position: left center; !important;
+    background-repeat:no-repeat !important;
+    cursor:wait !important;
+	height: 25px;
+	width: 100%;
+}
+
