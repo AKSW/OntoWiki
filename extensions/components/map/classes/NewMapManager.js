@@ -79,29 +79,33 @@ function initMap ( ) {
         //            alert('top-left: ' + topLeft + ' bottom-right: ' + bottomRight);
 
         filter.add(
-                'mapLatitudeBounds',
-                latProp,
-                false,
-                'geo:lat',
-                'between',
-                '' + bottomRight.lat + '',
-                '' + topLeft.lat + '',
-                'typed-literal',
-                xsd + 'float',
-                function() {},
-                false, true);
+                'mapLatitudeBounds',        // filter id
+                latProp,                    // property
+                false,                      //
+                'geo:lat',                  // 
+                'between',                  // filter type
+                '' + bottomRight.lat + '',  // 1st value
+                '' + topLeft.lat + '',      // 2nd value
+                'typed-literal',            // 
+                xsd + 'float',              // datatype
+                function() {},              // callback
+                false,                      // 
+                false,                      // negate
+                true);                      // don't reload
         filter.add(
-                'mapLongitudeBounds',
-                longProp,
-                false,
-                'geo:long',
-                'between',
-                '' + topLeft.lon + '',
-                '' + bottomRight.lon + '',
-                'typed-literal',
-                xsd + 'float',
-                function() {},
-                false);
+                'mapLongitudeBounds',       // filter id
+                longProp,                   // property
+                false,                      //
+                'geo:long',                 // 
+                'between',                  // filter type
+                '' + topLeft.lon + '',      // 1st value
+                '' + bottomRight.lon + '',  // 2nd value
+                'typed-literal',            // 
+                xsd + 'float',              // datatype
+                function() {},              // callback
+                false,                      // 
+                false,                      // negate
+                false);                     // don't reload
                    }
         });
 
