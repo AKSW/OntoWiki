@@ -201,7 +201,7 @@ $(document).ready(function() {
         
         var s = document.createElement('script');
         s.type = 'text/javascript';
-        s.src = urlBase + 'libraries/RDFauthor/src/loader.js';
+        s.src = widgetBase + 'src/loader.js';
         document.getElementsByTagName('head')[0].appendChild(s);
     });
     
@@ -259,7 +259,7 @@ $(document).ready(function() {
             
             var s = document.createElement('script');
             s.type = 'text/javascript';
-            s.src = urlBase + 'libraries/RDFauthor/src/loader.js';
+            s.src = widgetBase + 'src/loader.js';
             document.getElementsByTagName('head')[0].appendChild(s);
         }
     });
