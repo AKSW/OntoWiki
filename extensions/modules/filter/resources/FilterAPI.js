@@ -39,6 +39,8 @@ function FilterAPI(){
          * @param literaltype string if valuetype is "typedliteral" or "langtaggedliteral": you can put stuff like "de" or "xsd:int" here...
          * @param callback function will be called on success
          * @param hidden boolean will not show up in filterbox if true
+         * @param negate 
+         * @param dontReload prevent page reloading
          */
 	this.add = function(id, property, isInverse, propertyLabel, filter, value1, value2, valuetype, literaltype, callback, hidden, negate, dontReload){
             if(typeof callback != 'function' && typeof callback != 'object'){

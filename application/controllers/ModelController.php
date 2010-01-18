@@ -344,7 +344,7 @@ class ModelController extends OntoWiki_Controller_Base
             $translate  = $this->_owApp->translate;
             $windowTitle = $translate->_('Model Configuration');
             $this->view->placeholder('main.window.title')->set($windowTitle);
-print_r($this->_config->sysont->properties);
+
             $this->view->formActionUrl = $this->_config->urlBase . 'model/config';
     		$this->view->formMethod    = 'post';
     		$this->view->formClass     = 'simple-input input-justify-left';
