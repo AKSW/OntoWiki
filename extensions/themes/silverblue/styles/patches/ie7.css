@@ -45,3 +45,21 @@ table {
 
 body.javascript-on tbody.closed tr.grouptitle { display:block; }
 
+/* Lists */
+
+/**
+ * Horizontally separated lists
+ * @fix MSIE 7
+ */
+ul.inline.separated li, ol.inline.separated li,
+ul.inline.separated.comma li, ol.inline.separated.comma li
+{
+    padding-right:0.5em;
+    border-right:dotted 1px #ccc;
+}
+ul.inline.separated li.last-child, ol.inline.separated li.last-child,
+ul.inline.separated.comma li.last-child, ol.inline.separated.comma li.last-child
+{
+    border-right-style:none;
+}
+

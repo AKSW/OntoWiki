@@ -578,12 +578,11 @@ div.versatile.centered
 ul, ol {
     list-style-position: outside;
     margin-left: 1em;
-/*    padding-left: 2px;*/ /* what is this good for? */
 }
 
 ul ol, ol ul, ul ul, ol ol {
     list-style-position: inside;
-    margin-left: 1em !important;
+    /* margin-left: 1em !important; cannot see any sense for this anymore (mh) */
 }
 
 /* ---- 2.2.1. Bullets and Numbers ------------------------------------------ */
@@ -605,19 +604,44 @@ ul ol, ol ul, ul ul, ol ol {
     list-style-type: decimal;
 }
 
-/* ---- 2.2.2. Separations -------------------------------------------------- */
+/* ---- 2.2.2. Horizontal/Inline lists -------------------------------------- */
 
+/**
+ * Inline lists (items aligned horizontally inline)
+ * @deprecated 0.9.5
+ *
+ * - Usage: <ul class="inline">[...]</ul>
+ */
+ul.inline, ol.inline
+{
+    list-style:none;
+    margin-left:0;
+}
+
+ul.inline li, ol.inline li
+{
+    display:inline-block;
+    margin-right:1em;
+}
+
+
+/* ---- 2.2.3. Separations -------------------------------------------------- */
+
+/**
+ * Vertically separated lists -- old solution
+ * @deprecated 0.9.5
+ *
+ * - please use just <ul class="separated">...</ul>
+ */
 ul.separated-vertical > li,
 ol.separated-vertical > li {
     padding: 0.1em 0;
     border-top: dotted 1px #ccc;
 }
-
 ul.separated-vertical > li:first-child,
 ol.separated-vertical > li:first-child {
     border-top: none;
 }
-
 /* for nested lists we want a upper border */
 ul.separated-vertical > li:first-child ol.separated-vertical > li:first-child, 
 ol.separated-vertical > li:first-child ul.separated-vertical > li:first-child, 
@@ -626,22 +650,85 @@ ol.separated-vertical > li:first-child ol.separated-vertical > li:first-child {
     border-top: dotted 1px #ccc;
 }
 
-ul.separated-horizontal > li:after, 
-ol.separated-horizontal > li:after {
-    content: " ";
+/**
+ * Vertically separated lists
+ * @since 0.9.5
+ *
+ * - usage: <ul class="separated">...</ul>
+ */
+ul.separated > li,
+ol.separated > li {
+    padding: 0.1em 0;
+    border-top: dotted 1px #ccc;
+}
+ul.separated > li:first-child,
+ol.separated > li:first-child {
+    border-top: none;
+}
+/* for nested lists we want a upper border */
+ul.separated > li:first-child ol.separated > li:first-child, 
+ol.separated > li:first-child ul.separated > li:first-child, 
+ul.separated > li:first-child ul.separated > li:first-child, 
+ol.separated > li:first-child ol.separated > li:first-child {
+    border-top: dotted 1px #ccc;
 }
 
+/**
+ * Horizontally separated lists -- old solution
+ * @deprecated 0.9.5
+ *
+ * - please use just <ul class="inline separated">...</ul> or
+ *   <ul class="inline">...</ul> for horizontal/inline lists without separation
+ *   between items
+ */
 ul.separated-horizontal > li,
 ol.separated-horizontal > li {
     display: inline-block;
-    padding-right: 0.3em;
-    margin-right: 0.5em;
+    padding-right:0.5em;
     border-right: dotted 1px #ccc;
 }
 
-.separated-horizontal > li.last-child {
-	padding-right: 0;
+ul.separated-horizontal > li.last-child,
+ol.separated-horizontal > li.last-child
+{
 	border-right: none;
+}
+
+
+/**
+ * Horizontally separated lists
+ * @since 0.9.5
+ *
+ * - Usage: <ul class="inline separated">...</ul>
+ */
+ul.inline.separated li, ol.inline.separated li
+{
+    display:inline-block;
+    margin:0;
+    padding:0;
+    border-top:none !important;
+}
+ul.inline.separated li:after, ol.inline.separated li:after
+{
+    content:" • ";
+    color:#ccc;
+}
+ul.inline.separated li:last-child:after, ol.inline.separated li:last-child:after,
+ul.inline.separated li.last-child:after, ol.inline.separated li.last-child:after
+{
+    content:"" !important;
+}
+
+/**
+ * Horizontally comma-separated lists
+ * @since 0.9.5
+ *
+ * - Usage: <ul class="inline separated comma">...</ul>
+ */
+ul.inline.separated.comma li:after, ol.inline.separated.comma li:after
+{
+    content:", ";
+    color:#333;
 }
 
 /* -- 2.3. Standard margins and paddings ------------------------------------ */

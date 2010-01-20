@@ -14,24 +14,6 @@
 	color: #999 !important;
 }
 
-/* not used? */
-input.uri-input {
-	width: 30em;
-	font-size: 90%;
-	padding: 0.15em;
-}
-
-/* not used? */
-label.input-label-left {
-	float: left;
-	width: 12em;
-}
-
-/* not used? */
-label.radio-label {
-	margin-left: 1.6em;
-}
-
 input.checkbox, input.radio {
 	vertical-align: text-top !important;
 	margin-right: 0.3em !important;
@@ -45,19 +27,6 @@ input.checkbox, input.radio {
    Lieder ist dann :first-child nicht mehr brauchbar und die Klasse
    .last-child wird nötig. */
 
-
-ul.inline,
-ol.inline {
-	text-align: justify;
-	display: inline;
-	float: left;
-}
-
-ul.inline > li,
-ol.inline > li {
-	display: inline;
-	padding-right: 0.2em;
-}
 
 .highlighted {
 	background-color: #f70;
@@ -165,6 +134,11 @@ a.Tag:hover {
     background: url(./../images/icon-clear.png) 98% 50% no-repeat #eee;
 }
 
+/**
+ * Horizontal/Inline lists
+ *
+ * - please use directly ul.inline
+ */
 ul.horizontal > li,
 ol.horizontal > li {
     display: inline;
