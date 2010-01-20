@@ -65,6 +65,7 @@ $(document).ready(function() {
                 var sectionRatioPercent = Math.round((((event.pageX) / $(document).width())) * 1000) * 0.1;
                 setSectionRatio(sectionRatioPercent);
                 sessionStore('sectionRation', sectionRatioPercent, {encode: true});
+                $('.window div.cmDiv').adjustClickMenu();
                 // jQuery UI bug in Safari
                 $('.section-sidewindows').css('position', 'absolute');
                 $('.section-sidewindows .resizer-horizontal').removeClass('dragging');
@@ -530,7 +531,11 @@ $(document).ready(function() {
 
     // enhance every window with buttons, menu and resizer
     // this must be done at the end of the onready block (because we generate the menu automatically)
-    $('.window').enhanceWindow();    
+    $('.window').enhanceWindow();
+    
+    // adjust neede space for clickmenu
+    $('.window div.cmDiv').adjustClickMenu();
+    
 }) // $(document).ready
 
 

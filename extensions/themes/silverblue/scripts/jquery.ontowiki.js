@@ -233,6 +233,16 @@
         });
     }
 
+    /**
+     * adjust the space what is needed by the window menu
+     */
+    $.fn.adjustClickMenu = function () {
+        return this.each(function () {
+            var menu = $(this);
+            menu.parents('div.window').find('h1.title').attr('style', 'margin-bottom:'+menu.outerHeight(true)+'px !important;');
+        });
+    }
+
 })(jQuery);
 
 //-----------------------------------------------------------------------------
