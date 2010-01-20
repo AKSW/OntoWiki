@@ -25,7 +25,7 @@ $odd = false;
     <br />
     <?php if ($this->filter) : ?>
     <?php $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r')) ?>
-    <ul class="separated-vertical bullets-none">
+    <ul class="separated bullets-none">
         <?php foreach ($this->filter as $filter) : 
             if ( isset($filter['hidden'] ) && $filter['hidden'] ) {
                 continue;

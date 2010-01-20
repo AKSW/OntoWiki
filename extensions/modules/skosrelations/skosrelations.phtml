@@ -8,7 +8,7 @@
 
 <?php if ( !empty($this->relations) ): ?>
 	<div about="<?php echo $this->resourceUri; ?>">
-	<ul class="bullets-none separated-vertical">
+	<ul class="bullets-none separated">
 		<?php foreach ( $this->relations as $relationUri => $relation ): ?>
 	        <li><?php echo $relation['title']; ?>:
 	            <ul class="bullets-none separated-horizontal">

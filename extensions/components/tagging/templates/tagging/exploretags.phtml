@@ -13,7 +13,7 @@ $odd = false;
         <span class="messagebox info"><?php echo ($this->message) ?></span>
     <?php endif ?>    
 <?php else: ?>
-    <ul class="bullets-none separated-vertical">
+    <ul class="bullets-none separated">
     <?php foreach ($this->tags as $cloud) : ?>
         <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> has-contextmenu-area">
             <?php echo $cloud["info"]["label"];

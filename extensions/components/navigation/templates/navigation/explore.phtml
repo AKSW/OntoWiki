@@ -5,7 +5,7 @@
  */
 $odd = true;
 ?>
-<!-- <ol class="bullets-none separated-vertical">
+<!-- <ol class="bullets-none separated">
     <li> -->
     <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>
         <h2 class="navRoot">
@@ -46,7 +46,7 @@ $odd = true;
 
 
     <?php if ($this->entries) :?>
-        <ol class="bullets-none separated-vertical has-contextmenus-block">
+        <ol class="bullets-none separated has-contextmenus-block">
         <?php foreach ($this->entries as $uri => $entry): ?>
             <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
                 <a class="navigation"
