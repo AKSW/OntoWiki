@@ -121,11 +121,12 @@ div.window .title {
 
 div.window .title a {
     color: #fff;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 div.window .title a:focus, div.window .title a:hover {
-    color: #07f;
+    color: #fff;
+    text-decoration: underline;
 }
 
 /* ------ 1.2.1. Drop down menu --------------------------------------------- */
