@@ -220,7 +220,7 @@ div.window .tabs li.active a {
     padding-bottom: 0.6em;
     background: url(./../images/layout-tabactive-gradient.png) repeat-x top center #f2f2f2;
     z-index: 1;
-    font-color: #333;
+    color: #333;
     font-weight: bold;
 }
 
@@ -787,9 +787,9 @@ th.enumeration, td.enumeration {
 	padding-right: 0.5em;
 }
 
-th {font-size: bold;}
+th {font-weight: bold;}
 
-td {font-size: normal;}
+td {font-weight: normal;}
 
 table.backgrounded thead th, thead.backgrounded th {
 
@@ -807,7 +807,7 @@ table.backgrounded tr.odd td {
 
 
 table caption {
-    margin-top: 0.25em 0;
+    margin: 0.25em 0;
     font-size: 1em;
     font-weight: bold;
     color: #333;
@@ -1431,7 +1431,7 @@ div.actionbuttons * {
 /* -- 4.1. Windows ---------------------------------------------------------- */
 
 body.javascript-on div.is-minimized .title {
-    display: static;
+    display: block;
     margin-bottom: 0 !important;
     border-bottom: none !important;
 }

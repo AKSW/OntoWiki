@@ -147,8 +147,11 @@
                     }
                 );
 
+            win.find('div.cmDiv').adjustClickMenu();
+
             sessionStore(win.attr('id'), 1, {encode: true, namespace: 'Module_Registry'});
         } else {
+            win.find('h1.title').attr('style', '');
             win.children('.slidehelper')
                 .slideUp(effectTime, function() {
                     win.find('.button-windowminimize')
