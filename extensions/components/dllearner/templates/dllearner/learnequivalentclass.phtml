@@ -37,7 +37,7 @@ $this->actionUrl ?>">
                 <ul class="separated bullets-disc">
                     <?php if ($solution['titledCoveredInstances']) :?>
                     <li><strong>Covered Instances (<?php echo $solution['coverage'] ?>%):</strong>
-                        <ol class="bullets-none separated-horizontal" >
+                        <ol class="inline separated" >
                         <?php foreach ($solution['titledCoveredInstances'] as $uri => $instance): ?>
                             <li><a  class="Resource hasMenu"
                                     about="<?php echo $uri ?>"
@@ -48,7 +48,7 @@ $this->actionUrl ?>">
                     <?php endif; ?>
                     <?php if ($solution['titledAdditionalInstances']) :?>
                         <li><strong>Additional Instances:</strong>
-                            <ol class="bullets-none separated-horizontal" >
+                            <ol class="inline separated" >
                         <?php foreach ($solution['titledAdditionalInstances'] as $uri => $instance): ?>
                             <li><a  class="Resource hasMenu"
                                     about="<?php echo $uri ?>"

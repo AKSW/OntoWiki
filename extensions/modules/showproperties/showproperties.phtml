@@ -13,7 +13,7 @@
                 <input type="hidden" value="" name="instancesconfig">
         </form>
     </div>
-    <ul class="bullets-none separated-horizontal">
+    <ul class="inline separated">
         <?php $i = 0; ?>
         <?php foreach ($this->properties as $id => $propertyInfo): ?>
             <?php if (++$i == count($this->properties)): ?>
@@ -25,7 +25,7 @@
     </ul>
 <?php endif ?>
 <?php if (!empty($this->reverseProperties)): ?>
-	<ul class="bullets-none separated-horizontal">
+	<ul class="inline separated">
 	    <?php $i = 0; ?>
 		<?php foreach ($this->reverseProperties as $id => $propertyInfo): ?>
 		    <?php if (++$i == count($this->properties)): ?>

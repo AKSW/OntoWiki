@@ -33,7 +33,7 @@ function buildFilterExp($res, $pred, $label){
 	    <?php foreach ($this->instances as $property => $instances): ?>
 	        <li class="has-contextmenu-area">
                 <?php echo $this->properties[$property] ?><sup>-1</sup>
-	            <ul class="bullets-none separated-horizontal">
+	            <ul class="inline separated">
 	                <?php $i = 0; ?>
 	                <?php foreach ($instances as $instance): ?>
 	                    <?php if (++$i == count($instances)): ?>

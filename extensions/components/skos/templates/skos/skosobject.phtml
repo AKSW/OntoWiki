@@ -25,7 +25,7 @@
 	<br />
 	<?php echo $this->titleHelper->getTitle($this->skosObject->skosNotation, $this->locale); ?>:
 	<?php if ( count($this->skosObject->getNotations()) > 0 ): ?>
-		<ul class="indent bullets-none separated-horizontal">
+		<ul class="inline separated indent">
 			<?php $i = 0; ?>
 			<?php foreach ( $this->skosObject->getNotations() as $notation ): ?>
 				<?php if ( ++$i == count($this->skosObject->getNotations()) ): ?>

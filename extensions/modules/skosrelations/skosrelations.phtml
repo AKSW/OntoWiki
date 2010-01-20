@@ -11,7 +11,7 @@
 	<ul class="bullets-none separated">
 		<?php foreach ( $this->relations as $relationUri => $relation ): ?>
 	        <li><?php echo $relation['title']; ?>:
-	            <ul class="bullets-none separated-horizontal">
+	            <ul class="inline separated">
 	                <?php $i = 0; ?>
 	                <?php foreach ( $relation['instances'] as $instanceUri => $instance ): ?>
 	                    <?php if ( ++$i == count($relation['instances']) ): ?>

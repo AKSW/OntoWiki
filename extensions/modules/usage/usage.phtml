@@ -12,7 +12,7 @@
         <?php if (!empty($this->instances)): ?>
             <li>
                 <?php echo $this->_('Subjects') ?>
-            	<ul class="bullets-none separated-horizontal">
+            	<ul class="inline separated">
             	    <?php $i = 0; ?>
             	    <?php foreach ($this->instances as $instance): ?>
             	        <?php if (++$i == count($this->instances)): ?>
@@ -27,7 +27,7 @@
     	<?php if (!empty($this->objects)): ?>
         	<li>
         	    <?php echo $this->_('Objects') ?>
-            	<ul class="bullets-none separated-horizontal">
+            	<ul class="inline separated">
             	    <?php $i = 0; ?>
             	    <?php foreach ($this->objects as $object): ?>
             	        <?php if (++$i == count($this->objects)): ?>
