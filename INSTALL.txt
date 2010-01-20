@@ -1,5 +1,3 @@
-Version: $Id: INSTALL 3889 2009-08-02 01:28:32Z sebastian.dietzold $
-
 This installation guide is for MySQL Backend users. If you want to use
 OntoWiki with Apache and Virtuoso or within Virtuoso as a VAD Package
 please have a look at our Virtuoso Setup Guide:
