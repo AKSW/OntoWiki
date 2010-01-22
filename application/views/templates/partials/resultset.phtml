@@ -26,7 +26,7 @@ $resultCounter = 1;
     	$odd = true;
     	foreach ($this->data as $row): ?>
         <tr class="<?php echo $odd ? "odd" : "even" ?>">
-            <td><?php echo $resultCounter++ ?></td>
+            <td><?php echo $resultCounter++ . "."?></td>
             <?php foreach ($row as $field): ?>
                 <td>
                 <?php 
@@ -35,12 +35,12 @@ $resultCounter = 1;
                 		$shorturl = OntoWiki_Utils::contractNamespace($field);
                 		
                 		$localpart = OntoWiki_Utils::getUriLocalPart($field);
-                		?><a class="hasMenu expandable Resource" about="<?php echo $field;?>"  href="<?php echo $this->urlBase."/view/r/".urlencode($localpart);?>"><?php echo $shorturl;?></a><?php
+                		?><a class="hasMenu expandable Resource" about="<?php echo $field;?>"  href="<?php echo $this->urlBase."/view/?r=".urlencode($field);?>"><?php echo $shorturl;?></a><?php
                 	} else {
                 		echo $this->escape($field); //literal
                 	}
                 } else { $localpart = OntoWiki_Utils::getUriLocalPart($field["uri"]); ?>
-                	<a class="hasMenu expandable Resource" about="<?php echo $field["uri"];?>"  href="<?php echo $this->urlBase."/view/r/".urlencode($localpart); ?>"><?php echo $field["title"];?></a>
+                	<a class="hasMenu expandable Resource" about="<?php echo $field["uri"];?>"  href="<?php echo $this->urlBase."/view/?r=".urlencode($field); ?>"><?php echo $field["title"];?></a>
                 <?php } ?>
                 </td>
             <?php endforeach; $odd = !$odd; ?>
@@ -49,4 +49,4 @@ $resultCounter = 1;
 </table>
 <?php } else {
 	?><p class="messagebox info"><?php echo $this->_('No matches.') ?></p><?php
-} ?>
+} echo $this->urlBase; ?>
