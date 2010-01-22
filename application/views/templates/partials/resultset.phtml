@@ -4,8 +4,9 @@
  * OntoWiki resultset partial template
  *
  * @author  Jonas Brekle <jonas.brekle@gmail.com>
- * @version $$
  */
+
+$resultCounter = 1;
 ?>
 <?php if(!empty($this->data)){ ?>
 <table class="separated-vertical" <?php if (isset($this->cssid)) echo "id=\"".$this->cssid."\"" ?>>
@@ -15,6 +16,7 @@
     
     <?php if (!$this->has('header')) $this->header = array_keys($this->data[0]); ?>
         <tr>
+            <th style="width: 1em">#</th>
             <?php foreach ($this->header as $headerField): ?>
                 <th><?php echo $headerField ?></th>
             <?php endforeach; ?>
@@ -24,6 +26,7 @@
     	$odd = true;
     	foreach ($this->data as $row): ?>
         <tr class="<?php echo $odd ? "odd" : "even" ?>">
+            <td><?php echo $resultCounter++ ?></td>
             <?php foreach ($row as $field): ?>
                 <td>
                 <?php 
