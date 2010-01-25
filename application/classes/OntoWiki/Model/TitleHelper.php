@@ -152,7 +152,7 @@ class OntoWiki_Model_TitleHelper
     public function addResource($resource)
     {
         $resourceUri = (string)$resource;
-
+        
         if (Erfurt_Uri::check($resourceUri)) {
             $this->_resources[$resourceUri] = $resourceUri;
         } else {

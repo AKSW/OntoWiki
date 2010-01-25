@@ -174,13 +174,11 @@ class ServiceController extends Zend_Controller_Action
                     $url->setParam('m',$resource,false);
                 }
                 $url->setParam('r',$resource,true);
+                
                 $menu->prependEntry(
                     'Delete Resource',
                     (string)$url
                 );
-                
-            
-                
             }
             
             // add resource menu entries
@@ -198,15 +196,9 @@ class ServiceController extends Zend_Controller_Action
                 (string)$url
             );
             
-            
-            
-            
-            
-            
             if ($isModel) {    
                 // add a seperator
                 $menu->prependEntry(OntoWiki_Menu::SEPARATOR);
-                
                 
                 // can user delete models?
                 if ( $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $resource) &&
@@ -319,7 +311,8 @@ class ServiceController extends Zend_Controller_Action
                         array('action' => 'list'),
                         array()
                     );
-                    $url->setParam('r',$resource,true);
+                    $url->setParam('class',$resource,false);
+                    $url->setParam('init',"true",true);
 
                     // add class menu entries
                     if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) {
