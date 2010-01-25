@@ -196,6 +196,9 @@ class HistoryController extends OntoWiki_Controller_Component
         // setting more view variables
                $url = new OntoWiki_Url(array('controller' => 'view', 'action' => 'index' ), null);
         $this->view->backUrl = (string) $url;
+        
+        // set translate on view
+        $this->view->translate = $this->_owApp->translate;
 
         // abort on insufficient rights
         if (!$this->_erfurt->getAc()->isActionAllowed('Rollback')) {
