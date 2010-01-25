@@ -127,14 +127,22 @@ class NavigationController extends OntoWiki_Controller_Component
     }
     
     public function savestateAction(){
-        OntoWiki_Navigation::disableNavigation();
+		OntoWiki_Navigation::disableNavigation();
+
+		// tells the OntoWiki to not apply the template to this action
+		// because i think this action doesn't need to return anything formated
+        $this->_helper->viewRenderer->setNoRender();
+		$this->_helper->layout->disableLayout();
+
         $view = $this->_request->view;
         $setup = $this->_request->setup;
         
         $replaceFrom = array("\\'", '\\"');
         $replaceTo = array("'", '"');
-        $view = str_replace($replaceFrom, $replaceTo, $view);
-        $setup = str_replace($replaceFrom, $replaceTo, $setup);
+		$view = str_replace($replaceFrom, $replaceTo, $view);
+		$setup = str_replace($replaceFrom, $replaceTo, $setup);
+		// replaces urlencoded '~' (%7E) back to '~', this is neccesarry, when ontowiki runs in userdir on apache
+		$view = preg_replace('/(http[s]{0,1}:\/\/){1}([A-Za-z0-9@:\.]*)\/%7E([A-Za-z0-9]*)/i', '${1}${2}/~${3}', $view);
         
         $this->stateSession->view = $view;
         $this->stateSession->setup = $setup;
