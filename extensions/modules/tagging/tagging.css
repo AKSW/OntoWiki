@@ -1,0 +1,28 @@
+/* -> tagging component - exploretags action
+      but displayed in the tagging module
+*/
+
+a.Tag {
+    border: 1px solid #ccc;
+    background-color: #eee;
+    
+    padding: .1em 1.1em .1em .4em;
+    
+    -moz-border-radius-topleft: 1em;
+    -webkit-border-top-left-radius: 1em;
+    
+    -moz-border-radius-topright: 1em;
+    -webkit-border-top-right-radius: 1em;
+    
+    -moz-border-radius-bottomleft: 1em;
+    -webkit-border-bottom-left-radius: 1em;
+    
+    -moz-border-radius-bottomright: 1em;
+    -webkit-border-bottom-right-radius: 1em;
+}
+
+a.Tag:hover {
+/*    background: url(./../images/icon-clear.png) 98% 50% no-repeat #eee;*/
+    background: url(./../../themes/silverblue/images/icon-clear.png) 98% 50% no-repeat #eee;
+}
+
