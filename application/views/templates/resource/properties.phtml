@@ -44,7 +44,7 @@
                     }
                 ?>
 				<td>
-					<div class="editable <?php echo $hasContexMenu ? 'has-contextmenu-area' : '' ?>">
+					<div class="<?php echo $this->editable ? 'editable' : '' ?>  <?php echo $hasContexMenu ? 'has-contextmenu-area' : '' ?>">
 						<?php if ($hasContexMenu): ?>
 							<div class="contextmenu">
 								<a class="item"
@@ -85,7 +85,7 @@
                 <?php else: ?>
                     <?php $entry = current($this->values[$graph][$uri]) ?>
 				<td>
-					<div class="editable">
+					<div class="<?php echo $this->editable ? 'editable' : '' ?>">
 						<?php if ($entry['url']): ?>
 							<?php if ($entry['uri']): ?>
 								<a rel="<?php echo $currentPredicate['curi'] ?>" 

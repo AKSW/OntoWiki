@@ -4,7 +4,7 @@
  *
  * @version $Id: filter.phtml 4296 2009-10-13 12:16:54Z norman.heino $
  */
-$odd = false;
+$odd = true;
 ?>
 <div id="filterbox">
     <!--ul id="list"></ul-->
@@ -22,10 +22,10 @@ $odd = false;
         <a class="minibutton" href="javascript:showAddFilterBox()" />Add complex Filter</a>
         <a class="minibutton" href="javascript:removeAllFilters()" />Clear</a>
     </p>
-    <br />
     <?php if ($this->filter) : ?>
     <?php $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r')) ?>
-    <ul class="separated bullets-none">
+    Active Filters:
+    <ul class="separated">
         <?php foreach ($this->filter as $filter) : 
             if ( isset($filter['hidden'] ) && $filter['hidden'] ) {
                 continue;

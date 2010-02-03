@@ -124,7 +124,7 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->view->resourceUri   = (string)$resource;
             $this->view->graphUri      = $graph->getModelIri();
             $this->view->graphBaseUri  = $graph->getBaseIri();
-            
+            $this->view->editable = false; //$graph->isEditable();
             // prepare namespaces
             $namespaces = $graph->getNamespaces();
             $graphBase  = $graph->getBaseUri();

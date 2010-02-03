@@ -720,6 +720,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     
                     // Start action, add statements, finish action.
                     $versioning->startAction($actionSpec);
+
+                    foreach($wrapperAdd as $stmt){
+                        printr($stmt);
+                    }
+
                     $store->addMultipleStatements($this->_graphUri, $wrapperAdd);
                     $versioning->endAction();
 

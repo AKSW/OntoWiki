@@ -159,7 +159,7 @@ class OntoWiki_Model_TitleHelper
             // throw exeption in debug mode only
             if (defined('_OWDEBUG')) {
                 require_once 'OntoWiki/Model/Exception.php';
-                throw new OntoWiki_Model_Exception('Supplied resource <' . htmlentities($resource) . '> is not a valid URI.');
+                //throw new OntoWiki_Model_Exception('Supplied resource ' . htmlentities('<'.$resource.'>') . ' is not a valid URI.');
             }
         }
         

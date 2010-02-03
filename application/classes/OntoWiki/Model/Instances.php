@@ -984,7 +984,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
                     // set up event
                     $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
-                    $event->property = $propertyUri;
+                    //$event->property = $propertyUri;
                     $event->value    = $object;
                     $event->setDefault($object);
 
@@ -1248,6 +1248,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     
     public function getShownResources ()
     {
+        //echo htmlentities($this->_resourceQuery);
         if (!$this->_resourcesUptodate) {
             $result = $this->_model->sparqlQuery(
                 $this->_resourceQuery,
