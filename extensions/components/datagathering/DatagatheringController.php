@@ -721,10 +721,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     // Start action, add statements, finish action.
                     $versioning->startAction($actionSpec);
 
-                    foreach($wrapperAdd as $stmt){
-                        printr($stmt);
-                    }
-
                     $store->addMultipleStatements($this->_graphUri, $wrapperAdd);
                     $versioning->endAction();
 
@@ -880,9 +876,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $syncConfig = $this->_getSyncConfig($uri, $wrapperName, $modelUri);
             $translate = $this->_owApp->translate;
             if ($syncConfig === false) {
-                $syncQuery = 'SELECT ?s ?p ?o WHERE {
-                    ?s ?p ?o . FILTER (sameTerm(?s, <' . $uri . '>))
-                }';
+                $syncQuery = "SELECT ?s ?p ?o \nWHERE {\n ".
+                    "?s ?p ?o \n FILTER (sameTerm(?s, <" . $uri . ">) && !isBlank(?o))\n}";
                 $checkHasChanged = false;
                 
                 $msg = $translate->_('No existing sync configuration. Create one now by clicking the Save button.');
