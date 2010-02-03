@@ -1,9 +1,9 @@
-HISTORY_ACTIONTYPE_10;model imported
-HISTORY_ACTIONTYPE_20;statement added
-HISTORY_ACTIONTYPE_21;statement changed
-HISTORY_ACTIONTYPE_22;statement deleted
-HISTORY_ACTIONTYPE_23;statement rolled back
-HISTORY_ACTIONTYPE_120;added data to knowledge base
-HISTORY_ACTIONTYPE_130;resource deleted
+HISTORY_ACTIONTYPE_10;Model imported
+HISTORY_ACTIONTYPE_20;Statement added
+HISTORY_ACTIONTYPE_21;Statement changed
+HISTORY_ACTIONTYPE_22;Statement deleted
+HISTORY_ACTIONTYPE_23;Rollback
+HISTORY_ACTIONTYPE_120;Added data to knowledge base
+HISTORY_ACTIONTYPE_130;Resource deleted
 Versions for %1$s
 action-type;Action type
