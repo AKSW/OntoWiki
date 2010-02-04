@@ -950,17 +950,45 @@ class ModelController extends OntoWiki_Controller_Base
 				$result = null;
 				try {
 					$start = microtime(true);
-					$queryObj = Erfurt_Sparql_SimpleQuery :: initWithString($query);
-					if ($this->_owApp->selectedModel) {
-						$queryObj->addFrom((string)$this->_owApp->selectedModel);
-					}
-					// var_dump((string)$queryObj);
-                                        //echo htmlentities((string)$queryObj); exit;
-					$result = $store->sparqlQuery($queryObj, array (
-						'result_format' => $format
-					));
-					$this->view->time = ((microtime(true) - $start) * 1000);
+					
+                                        if($this->_request->getParam('target') == 'all'){
+                                            //query all models
+                                            $result = $store->sparqlQuery($query, array (
+                                                    'result_format' => $format
+                                            ));
+                                        } else {
+                                            //query selected model
+                                            $result = $this->_owApp->selectedModel->sparqlQuery($query, array (
+                                                    'result_format' => $format
+                                            ));
+                                        }
 
+                                        if(($format == 'json' || $format == 'xml') && $this->_request->getParam('result_outputfile') == 'true'){
+                                            $this->_helper->viewRenderer->setNoRender();
+                                            $this->_helper->layout()->disableLayout();
+                                            $response = $this->getResponse();
+
+                                            switch($format){
+                                                case 'xml':
+                                                    $contentType = 'application/rdf+xml';
+                                                    $filename = 'query-result.rdf';
+                                                    break;
+                                                case 'json':
+                                                    $contentType = 'application/json';
+                                                    $filename = 'query-result.json';
+                                                    break;
+                                            }
+
+                                            $response->setHeader('Content-Type', $contentType, true);
+                                            $response->setHeader('Content-Disposition', ('filename="'.$filename.'"'));
+
+                                            $response->setBody($result)
+                                            ->sendResponse();
+                                            exit;
+                                        }
+
+					$this->view->time = ((microtime(true) - $start) * 1000);
+                                        
 					$header = array ();
 					if (is_array($result) && isset ($result[0]) && is_array($result[0])) {
 						$header = array_keys($result[0]);

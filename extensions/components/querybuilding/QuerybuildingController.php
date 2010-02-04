@@ -27,7 +27,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 	public $saveQueryCreatorUri = 'http://rdfs.org/sioc/ns#has_creator';
 	public $saveQueryGeneratorUri = 'http://ns.ontowiki.net/SysOnt/generator'; // which query builder created this query. is there a better namespace?
 	public $saveQueryQueryUri = 'http://ns.ontowiki.net/SysOnt/sparql_code'; // the actual content. is there a better namespace?
-	public $saveQueryJsonUri = 'http://ns.ontowiki.net/SysOnt/json_code'; // the actual content. is there a better namespace?
+	public $saveQueryJsonUri = 'http://ns.ontowiki.net/SysOnt/json_code'; // the actual content for gqb. is there a better namespace?
 
 	//specific for graphical query builder
 	public $saveQuerySelClassUri = 'http://ns.ontowiki.net/GQB/UserQueries/Pattern/Type';
@@ -92,13 +92,13 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 		// set the active tab navigation
 		OntoWiki_Navigation :: setActive('listquery', true);
 
-		$storeGraph = $this->_owApp->selectedModel;
+		$store = $this->_owApp->erfurt->getStore();
 
-		//Loading data for general list of saved queries of this model
+		//Loading data for list of saved queries
+                //(even queries that are not for the selectedModel - do we want this?)
 		//TODO Paging for Queries
-                // NOTE: ZendDB does not support DISTINCT here ...
 		$loadInfoQuery = 'SELECT *
-		             FROM <'.$storeGraph->getModelIri().'> 
+		             FROM <'.$this->_owApp->selectedModel.'>
 		             FROM <'.$this->userDbUri.'>
 		     		WHERE {        		
 		             ?query a <' . $this->saveQueryClassUri . '> .
@@ -113,8 +113,13 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 		             OPTIONAL {?query <' . $this->saveQueryCreatorUri . '> ?creator } 
 		             } ORDER BY DESC(?date)';
 
-		$loadInfoData = $storeGraph->sparqlQuery($loadInfoQuery);
-		$this->view->getQueriesQuery = $loadInfoQuery;
+                echo htmlentities($loadInfoQuery);
+
+		$loadInfoData = $store->sparqlQuery($loadInfoQuery);
+
+                var_dump($loadInfoData);
+
+		//$this->view->getQueriesQuery = $loadInfoQuery;
 		// Assign data to view
 		$this->view->listData = $loadInfoData;
 
@@ -179,7 +184,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 
 			if (empty ($existingData)) {
 				//such a query is not saved yet - lets save it
-				$name = (string) $storeGraph . 'Query-' . md5($json . $qdesc);
+				$name = (string) $storeGraph . '#Query-' . md5($json . $qdesc);
 
 				$storeGraph->addStatement($name, EF_RDF_TYPE, array (
 					'value' => $this->saveQueryClassUri,

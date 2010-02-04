@@ -10,6 +10,7 @@
 ?>
 <?php 
 $this->placeholder('main.window.innerwindows')->append($this->module('sparqloptions'));
+$this->placeholder('main.window.innerwindows')->append($this->module('queryeditorfromsetter'));
 if(class_exists("QuerybuildingHelper")){
 	$this->placeholder('main.window.innerwindows')->append(
 	        $this->partial('partials/window.phtml', array(

@@ -29,4 +29,11 @@
 	/>
 	<label for="result_format_json" class="checkboxradio"><a href="http://www.w3.org/TR/rdf-sparql-json-res/">JSON</a></label>
 	<br class="clearall">
+        <input type="checkbox" class="checkbox" name="result_outputfile" id="result_outputfile" value="true"
+	<?php if ($this->placeholder('sparql.result.file') == 'true'): ?>
+        <?php echo ' checked="checked"' ?>
+    <?php endif; ?>
+	/>
+	<label for="result_format_json" class="checkboxradio">Get as file</label>
+	<br class="clearall">
 </div>
