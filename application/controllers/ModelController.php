@@ -615,15 +615,9 @@ class ModelController extends OntoWiki_Controller_Base
                 $locator = Erfurt_Syntax_RdfParser::LOCATOR_FILE;
                 $filetype = 'auto';
                 // guess file mime type
-                if ($postData['filetype-upload'] === 'rdfxml') {
-                    $filetype = 'rdfxml';
-                } else if ($postData['filetype-upload'] === 'n3') {
-                    $filetype = 'ttl';
-                } else if ($postData['filetype-upload'] === 'ttl') {
-                    $filetype = 'ttl';
-                } else if ($postData['filetype-upload'] === 'rdfjson') {
-                    $filetype = 'rdfjson';
-                } else if ($postData['filetype-upload'] === 'auto') {
+                if ($postData['filetype-upload'] != 'auto') {
+                    $filetype = $postData['filetype-upload'];
+                } else {
                     // guess file type extension
                     $extension = strtolower(strrchr($_FILES['source']['name'], '.'));
                     if ($extension == '.rdf' or $extension == '.owl') {
@@ -633,6 +627,8 @@ class ModelController extends OntoWiki_Controller_Base
                     } else if ($extension == '.json') {
                         $filetype = 'rdfjson';
                     } else if ($extension == '.ttl') {
+                        $filetype = 'ttl';
+                    } else if ($extension == '.nt') {
                         $filetype = 'ttl';
                     }
                 }
