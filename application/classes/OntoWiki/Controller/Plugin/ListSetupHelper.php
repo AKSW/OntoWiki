@@ -85,7 +85,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                     $string = stripslashes($string);
                 }
                 
-                return json_decode(stripslashes($string));
+                return json_decode($string);
             }
 
             //a shortcut for s param
