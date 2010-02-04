@@ -54,7 +54,7 @@ class NavigationController extends OntoWiki_Controller_Component
      */
     public function exploreAction() {
         OntoWiki_Navigation::disableNavigation();
-        $this->_owApp->logger->info('stage 1');
+        $this->_owApp->logger->info('NavigationController Stage 1');
         $this->view->placeholder('main.window.title')
             ->set($this->translate->_('Navigation'));
 
@@ -153,7 +153,9 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function _queryNavigationEntries($setup) {
-        $this->_owApp->logger->info(print_r($setup,true));
+        $this->_owApp->logger->info(
+            'NavigationController _queryNavigationEntries Input: ' .PHP_EOL . print_r($setup,true)
+        );
         
         if( $setup->state->lastEvent == "search" ){
             // search request
@@ -193,7 +195,9 @@ class NavigationController extends OntoWiki_Controller_Component
         if($query == null) return;
         
         // error logging
-        $this->_owApp->logger->info("query: ".$query->__toString());
+        $this->_owApp->logger->info(
+            'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
+        );
         
         $results = $this->model->sparqlQuery($query);
 
@@ -229,7 +233,9 @@ class NavigationController extends OntoWiki_Controller_Component
         }
             
         // log results
-        $this->_owApp->logger->info("\n\n\n".print_r($results,true));
+        $this->_owApp->logger->info(
+            'NavigationController _queryNavigationEntries Result: '  . PHP_EOL . print_r($results,true)
+        );
     
         if ( isset($setup->config->titleMode) ){
             $mode = $setup->config->titleMode;
