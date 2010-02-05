@@ -971,7 +971,7 @@ class ModelController extends OntoWiki_Controller_Base
                                             switch($format){
                                                 case 'xml':
                                                     $contentType = 'application/rdf+xml';
-                                                    $filename = 'query-result.rdf';
+                                                    $filename = 'query-result.xml';
                                                     break;
                                                 case 'json':
                                                     $contentType = 'application/json';
@@ -1018,6 +1018,7 @@ class ModelController extends OntoWiki_Controller_Base
 
 		$this->view->prefixes = $prefixes;
 		$this->view->placeholder('sparql.result.format')->set($format);
+                $this->view->placeholder('sparql.query.target')->set($this->_request->getParam('target', 'this'));
 	}
 
     

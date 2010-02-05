@@ -7,7 +7,8 @@
 
 ?>
 <div>
-	<input type="radio" class="radio" name="target" id="target_this" value="this"
+    <p class="messagebox info">Which Model do you want to query?</p>
+    <input type="radio" class="radio" name="target" id="target_this" value="this"
 	    <?php if ($this->placeholder('sparql.query.target') == 'this'): ?>
 	        <?php echo ' checked="checked"' ?>
 	    <?php endif; ?>
@@ -15,11 +16,10 @@
 	<label for="target_this" class="checkboxradio"><?php echo $this->_('this model') ?></label>
 	<br class="clearall" />
 	<input type="radio" class="radio" name="target" id="target_all" value="all"
-	<?php if ($this->placeholder('sparql.query.target') == ''): ?>
+	<?php if ($this->placeholder('sparql.query.target') == 'all'): ?>
         <?php echo ' checked="checked"' ?>
     <?php endif; ?>
 	/>
 	<label for="target_all" class="checkboxradio">all models</label>
 	<br class="clearall">
-        <p class="messagebox info">Which Model do you want to query?</p>
 </div>
