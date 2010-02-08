@@ -83,7 +83,7 @@
                                         <?php echo $this->instanceData[$instanceUri][$property['varName']][0]['value'] ?>
                                     </a>
                                 <?php else: ?>
-                                    <span about="<?php echo $instanceUri ?>" property="<?php echo $this->curie($property['uri']) ?>" content="<?php echo $this->instanceData[$instanceUri][$property['varName']][0]['value'] ?>">
+                                    <span about="<?php echo $instanceUri ?>" property="<?php echo $this->curie($property['uri']) ?>" content="<?php echo $this->instanceData[$instanceUri][$property['varName']][0]['uri'] ?>">
                                         <?php echo $this->instanceData[$instanceUri][$property['varName']][0]['value'] ?>
                                     </span>
                                 <?php endif; ?>

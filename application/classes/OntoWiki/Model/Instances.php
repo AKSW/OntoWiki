@@ -967,10 +967,12 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
                     //find uri
                     foreach ($this->_shownProperties as $property) {
+                        
                         if ($varName == $property['varName']) {
                             $event->property = $property['uri'];
                         }
                     }
+                    
                     $event->value    = $objectUri;
 
                     // trigger
@@ -984,14 +986,24 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     // object is a literal
                     $object = $data['value'];
 
+                    $propertyUri = null;
+                    foreach ($this->_shownProperties as $property) {
+                        if ($varName == $property['varName']) {
+                            $propertyUri = $property['uri'];
+                        }
+                    }
+                    
                     // set up event
                     $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
-                    //$event->property = $propertyUri;
+                    $event->property = $propertyUri;
                     $event->value    = $object;
                     $event->setDefault($object);
 
                     // trigger
-                    $value = $event->trigger();
+                    if ($object !== null) {
+                        $value = $event->trigger();
+                    }
+                    
                 }
                 
                 //check for dulplicate values
@@ -1012,12 +1024,10 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                   'uri'   => $data['value'] //TODO: rename (can be literal) -> use origvalue + type to output uri
                 );
 
-                
                 $value = null;
                 $link  = null;
                 $uri   = null;
             }
-
         }
 
         foreach($this->getShownResources() as $resource){
@@ -1030,7 +1040,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         //echo 'converted values: <pre>';  print_r($valueResults);  echo '</pre>';
         $this->_values = $valueResults;
         $this->_valuesUptodate = true;
-        
+
         return $valueResults;
     }
     
