@@ -346,7 +346,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                 break;
                 case 'typed-literal':
                     if (in_array($literaltype, Erfurt_Sparql_Query2_RDFLiteral::$knownShortcuts)) {
-                        //is something like "bool" or "int"
+                        //is something like "bool" or "int" - will be converted from "1"^^xsd:int to 1
                         $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1, $literaltype);
                         if (!empty($value2)){
                             $value2_obj =
@@ -388,7 +388,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                         $this->_resourceVar
                     );
                 }
-
+                $value1_obj->setValue(str_replace("\\", "\\\\", preg_quote($value1_obj->getValue())));
                 $filterObj = $this->_resourceQuery->addFilter(
                     !$negate ?
                     new Erfurt_Sparql_Query2_Regex(
@@ -422,7 +422,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                     $filterObj = $this->_resourceQuery->addFilter(
                         new Erfurt_Sparql_Query2_Regex(
                             new Erfurt_Sparql_Query2_Str($valueVar),
-                            new Erfurt_Sparql_Query2_RDFLiteral('^'.$value1.'$')
+                            new Erfurt_Sparql_Query2_RDFLiteral(
+                                 '^'.str_replace("\\", "\\\\", preg_quote($value1)).'$'
+                            )
                         )
                     );
                 } else {
