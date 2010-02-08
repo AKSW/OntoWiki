@@ -15,9 +15,7 @@ $(document).ready(function() {
             $(this).addClass('selected');
         }
     })
-
-    //set click handler for the properties
-    $('.show-property').click(function() {
+    function handleNewSelect() {
         var propUri = $(this).attr('about');
         $(this).toggleClass('selected');
         
@@ -51,6 +49,15 @@ $(document).ready(function() {
         mainInnerContent.addClass('is-processing');
         mainInnerContent.load(reloadUrl+"", {"instancesconfig": serialized}, function(){
             mainInnerContent.removeClass('is-processing');
-        });
-    })
+        })
+      };
+
+     $('.content table').droppable({accept: '.show-property', drop:
+        function(event, ui) {
+            $(ui.draggable).each(handleNewSelect);
+     }});
+    
+    
+    //set click handler for the properties
+    $('.show-property').click(handleNewSelect);
 })

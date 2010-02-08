@@ -24,7 +24,17 @@ function showAddFilterBox(){
     	}
     });
 }
+function updatePossibleValues() {
+      if($("#property option:selected").length == 0) {return;}
 
+      $("#addwindow #possiblevalues").addClass("is-processing");
+      $("#property option:selected").each(function () {
+            var inverse = $(this).hasClass("InverseProperty") ? "true" : "false";
+            $("#possiblevalues").load(urlBase+"filter/getpossiblevalues?predicate="+escape($(this).attr("about"))+"&inverse="+inverse, {}, function(){
+                 $("#addwindow #possiblevalues").removeClass("is-processing");
+            });
+          });
+    }
 function removeAllFilters(){
     // $("#addFilterWindowOverlay").hide();
     $.modal.close();
@@ -39,24 +49,21 @@ $(document).ready(function(){
     $("#addFilterWindowOverlay").hide();
     $("#filterbox #clear").hide();
 
-    //move them up so everything is overlayed
-    // $("body").append($("#addFilterWindowOverlay"));
-    // $("#addFilterWindowOverlay").height($('html').height()+50);
-    // $("#addFilterWindowOverlay").width($('html').width());
-
-    // $("#addwindow").css("min-height", 250);
-    // $("#addwindow").width(600);
-    // $("#addwindow").css("top", 50);
-    // $("#addwindow").css("left", 200);
-
+    $('#filter').droppable({accept: '.show-property', drop:
+        function(event, ui) {
+             $("#property option:selected").each(function () {
+                 $(this).attr('selected', false);
+             });
+             $("#property option[about="+$(ui.draggable).attr('about')+"]").attr('selected', true);
+            $("#property option:selected").each(updatePossibleValues);
+            showAddFilterBox();
+     }});
 
     $("#addwindowhide").click(function(){
-        // $("#addFilterWindowOverlay").hide();
         $.modal.close();
     });
 
     $("#addwindow #add").click( function(){
-        // $("#addFilterWindowOverlay").hide();
         $.modal.close();
 
         var prop = $("#addwindow #property option:selected").attr("about");
@@ -104,15 +111,7 @@ $(document).ready(function(){
     });
 
     //show possible values for select property
-    $("#property").change(function () {
-      $("#addwindow #possiblevalues").addClass("is-processing");
-      $("#property option:selected").each(function () {
-            var inverse = $(this).hasClass("InverseProperty") ? "true" : "false";
-            $("#possiblevalues").load(urlBase+"filter/getpossiblevalues?predicate="+escape($(this).attr("about"))+"&inverse="+inverse, {}, function(){
-                 $("#addwindow #possiblevalues").removeClass("is-processing");
-            });
-          });
-    });
+    $("#property").change(updatePossibleValues);
     
     //different filter types need different value input fields
     // bound: none
