@@ -12,6 +12,7 @@ class SourceController extends OntoWiki_Controller_Component
         $resource    = $this->_owApp->selectedResource;
         $translate   = $this->_owApp->translate;
         $allowSaving = false;
+        $showList = false;
         
         // window title
         $title       = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
@@ -23,12 +24,23 @@ class SourceController extends OntoWiki_Controller_Component
             $allowSaving = true;
         } else {
             $this->_owApp->appendMessage(
-                new OntoWiki_Message("Store adapter cannot handle TTL. Saving has been disabled.", OntoWiki_Message::WARNING)
+                new OntoWiki_Message("Store adapter cannot handle TTL.", OntoWiki_Message::WARNING)
             );
         }
 
         if (!$this->_owApp->selectedModel->isEditable()) {
             $allowSaving = false;
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message("You have no permissions to edit this model.", OntoWiki_Message::WARNING)
+            );
+        }
+
+        if($this->_owApp->lastRoute === 'instances'){
+            $allowSaving = false;
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message("Modifications of a list currently not supported.", OntoWiki_Message::WARNING)
+            );
+            $showList = true;
         }
 
         if ($allowSaving) {
@@ -36,6 +48,10 @@ class SourceController extends OntoWiki_Controller_Component
             $toolbar = $this->_owApp->toolbar;
             $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save Source', 'id' => 'savesource'));
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
+        } else {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message("Saving has been disabled.", OntoWiki_Message::WARNING)
+            );
         }
 
         // form
@@ -49,10 +65,17 @@ class SourceController extends OntoWiki_Controller_Component
 
         // construct N3
         $exporter = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat('ttl');
-        $source = $exporter->serializeResourceToString(
-            (string) $this->_owApp->selectedResource,
-            (string) $this->_owApp->selectedModel
-        );
+        if(!$showList){
+            $source = $exporter->serializeResourceToString(
+                (string) $this->_owApp->selectedResource,
+                (string) $this->_owApp->selectedModel
+            );
+        } else {
+            $source = $exporter->serializeQueryResultToString(
+                 clone $this->_session->instances->getResourceQuery(),
+                 (string) $this->_owApp->selectedModel
+             );
+        }
 	        
         $this->view->source = $source;
         
