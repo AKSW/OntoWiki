@@ -1008,7 +1008,7 @@ class ModelController extends OntoWiki_Controller_Base
 									$result = 'no result';
 								}
 				} catch (Exception $e) {
-					//$this->view->error = $e->getMessage();
+					$this->view->error = $e->getMessage();
 					$header = '';
 					$result = '';
                                         $this->view->time = 0;
