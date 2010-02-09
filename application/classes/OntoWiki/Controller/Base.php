@@ -124,6 +124,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
          * has been initialized.
          */
         $event = new Erfurt_Event('onAfterInitController');
+        $event->response = $this->_response;
         $eventResult = $event->trigger();
     }
     

@@ -5,9 +5,16 @@ class PingbackPlugin extends OntoWiki_Plugin
 {
 	protected $debug = true;
 
-    public function onAfterInitController(){
-		$url = preg_replace('/extensions.plugins.pingback.*/', '', $this->_pluginUrlBase);
-		header("X-Pingback: ".$url."index.php/pingback/ping");
+    public function onAfterInitController($event)
+    {
+        if ($event->response === null) {
+            return;
+        }
+        $response = $event->response;
+        
+        $owApp = OntoWiki::getInstance(); 
+        $url = $owApp->config->urlBase . 'pingback/ping/';
+        $response->setHeader('X-Pingback', $url, true);
 	}
 	
 	public function onAddStatement(){
