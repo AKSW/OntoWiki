@@ -3,8 +3,6 @@ require_once 'OntoWiki/Plugin.php';
 
 class PingbackPlugin extends OntoWiki_Plugin
 {
-	protected $debug = true;
-
     public function onAfterInitController($event)
     {
         if ($event->response === null) {
@@ -17,186 +15,187 @@ class PingbackPlugin extends OntoWiki_Plugin
         $response->setHeader('X-Pingback', $url, true);
 	}
 	
-	public function onAddStatement(){
-		$this->errorlog();
-        $this->errorlog("graphUri: ".$event->graphUri); 
-        $this->errorlog($event->statement, true);
+	public function onAddStatement()
+	{
+        $this->_logInfo('Graph URI - '. $event->graphUri); 
+        $this->_logInfo($event->statement);
 		
-		$this->errorlog("onAddStatement called");
-		
-		// check if linked data is enabled
-		$owApp = OntoWiki::getInstance(); 
-		$pluginManager = $owApp->erfurt->getPluginManager(false);
-		if(!$pluginManager->isPluginEnabled('linkeddata')){
-			$this->errorlog("plugin linkeddata disabled, pingbacks are not allowed");  
-			return;
+		if (!$this->_check()) {
+		    return;
 		}
 		
-		$this->checkAndPingback($event->statement['subject'], $event->statement['predicate'], $event->statement['object']);
+		
+		$this->_checkAndPingback($event->statement['subject'], $event->statement['predicate'], $event->statement['object']);
 	}
 	
 	public function onAddMultipleStatements($event){
-		$this->errorlog();
-		$this->errorlog("graphUri: ".$event->graphUri); 
-        $this->errorlog($event->statements, true);
 		
-		$this->errorlog("onAddMultipleStatements called");
+		$this->_logInfo('Graph URI - '. $event->graphUri); 
+        $this->_logInfo($event->statements);
 		
-		// check if linked data is enabled
-		$owApp = OntoWiki::getInstance(); 
-		$pluginManager = $owApp->erfurt->getPluginManager(false);
-		if(!$pluginManager->isPluginEnabled('linkeddata')){
-			$this->errorlog("plugin linkeddata disabled, pingbacks are not allowed");  
-			return;
+	    if (!$this->_check()) {
+		    return;
 		}
 		
-		// parse SOP array
+		// Parse SPO array.
 		foreach ($event->statements as $subject => $predicatesArray) {
             foreach ($predicatesArray as $predicate => $objectsArray) {
                 foreach ($objectsArray as $object) { 
-					$this->checkAndPingback($subject, $predicate, $object);
+					$this->_checkAndPingback($subject, $predicate, $object);
 				}
 			}
 		}
 	}
 	
-	protected function errorlog($msg, $array = false) {
-		if(!$this->debug) return;
-	
-		$filename = 'ping_plug.log';
-		if($msg == null && !$array){
-			$handle = fopen($filename, "w+");
-			fwrite($handle, "");
-			fclose($handle);
-			return;
-		}
-		$handle = fopen($filename, "a+");
-		if(!$array){
-			$writestring = "Pingback_plugin: ".$msg."\n";
-		}else{
-			$writestring = "Pingback_plugin: ".print_r($msg,true)."\n";
-		}
-		fwrite($handle, $writestring);
-		fclose($handle);
-		//$query = "INSERT INTO bloglogs (date, message) VALUES (NOW(), '".addslashes($msg)."')";
-		//@mysql_query($query);
+	protected function _check()
+	{
+	    // Check, whether linked data plugin is enabled.
+    	$owApp = OntoWiki::getInstance(); 
+    	$pluginManager = $owApp->erfurt->getPluginManager(false);
+    	if (!$pluginManager->isPluginEnabled('linkeddata')) {
+    		$this->_logInfo('Linked Data plugin disabled, Pingbacks are not allowed.');  
+    		return false;
+    	}
+    	
+    	return true;
 	}
 	
-	protected function checkAndPingback($subject, $predicate, $object){
+	protected function _checkAndPingback($subject, $predicate, $object)
+	{
+	    $owApp   = OntoWiki::getInstance(); 
+	    $base    = $owApp->config->urlBase;
+	    $baseLen = strlen($base);
+	    
+	    // Subject needs to be a linked data resource.
+	    if (substr($subject, 0, $baseLen) !== $base) {
+	        $this->_logInfo('Subject is not in OntoWiki namespace.');
+	        return false;
+	    }
+	    
+		// If predicate is not in confiugured allowed predicates, return.
 		$predicatesAllowed = $this->_privateConfig->predicates->toArray();
-		$this->errorlog("predicates: ".print_r($predicatesAllowed,true));
-		
-		$url = preg_replace('/extensions.plugins.pingback.*/', '', $this->_pluginUrlBase);
-		//$this->errorlog($url);
-		//$this->errorlog($subject." - ".$predicate." - ".$object);
-		
-		// check if subject is in OW namespace
-		if(strstr($subject, $url) === null){
-			$this->errorlog("subject is not in OW namespace");
-			return;
+		$this->_logInfo('Allowed predicates -' . print_r($predicatesAllowed, true));
+		if (!in_array($predicate, $predicatesAllowed)) {
+			$this->_logInfo('Predicate is not in allowed list.');
+			return false;
 		}
 		
-		// if predicate isn't allowed, end
-		if(!in_array($predicate, $predicatesAllowed)){
-			$this->errorlog("predicates is not in allowed list");
-			return;
+		// Object needs to be a dereferencable URI!
+		if ((substr($object['value'], 0, 7) !== 'http://') && (substr($object['value'], 0, 8) !== 'https://')) {
+			$this->_logInfo('Object is not a dereferencable URI.');	
+			return false;
 		}
 		
-		// object check
-		//if ($object['type'] !== 'uri') { 
-		if(strstr($object['value'], "http://") === null){
-			$this->errorlog("object is not link");	
-			return;
-		}
-		
-		// check if object is in OW namespace
-		if(strstr($object['value'], $url) === null){
-			$this->errorlog("object is in OW namespace");
-			return;
-		}else{
-			$this->errorlog("Ping to: ".$object['value']);
-			$this->send_pingback($subject, $object['value']);
+		// Check, whether object is in OW namespace... If yes, return, since we do not pingback URIs in the environment.
+		if (substr($object['value'], 0, $baseLen) === $base) {
+		    	$this->_logInfo('Object is in OW namespace.');
+    			return false;
+		} else {
+			$this->_logInfo('Ping to: ' . $object['value']);
+			$this->_sendPingback($subject, $object['value'], $predicate);
 		}
 	}
 	
-	protected function send_pingback($sourceURI, $targetURI){
-		$this->errorlog($sourceURI." = ".$targetURI);
-		
-		$sourceURI = $this->get_final_url($sourceURI);
-		$this->errorlog("redir to: ".$sourceURI);
+	protected function _discoverPingbackServer($targetUri)
+	{
+	    // 1. Retrieve HTTP-Header and check for X-Pingback
+	    $headers = get_headers($targetUri, 1);
+	    if (is_array($headers)) {
+	        if (strstr('200', $headers[0])) {
+	            if (isset($headers['X-Pingback'])) {
+    	            return $headers['X-Pingback'];
+    	        }
+	        } else if (strstr('303', $headers[0])) {
+	            if (isset($headers['Location'])) {
+	                return $this->_discoverPingbackServer($headers['Location']);
+	            }
+	        }
+	    } else {
+	        return null;
+	    }
+	    
+	    // 2. Check for (X)HTML Link element, if target has content type text/html
+	    if (isset($headers['Content-Type']) && ($headers['Content-Type'] === 'text/html')) {
+	        // TODO Fetch only the first X bytes...???
+	        require_once 'Zend/Http/Client.php';
+            $client = new Zend_Http_Client($uri, array(
+                'maxredirects'  => 10,
+                'timeout'       => 30
+            ));
+
+            $client->setHeaders('Accept', 'text/html');
+            $response = $client->request();
+            if ($response->getStatus() === '200') {
+                $htmlDoc = new DOMDocument();
+                $result = @$htmlDoc->loadHtml($response->getBody());
+                $relElements = $htmlDoc->getElementsByTagName('link');
+
+                foreach ($relElements as $relElem) {
+                    $rel  = $relElem->getAttribute('rel');
+                    if (strtolower($rel) === 'pingback') {
+                        return $relElem->getAttribute('href');
+                    }
+                }
+            }
+	    }
+	    
+	    // 3. Check RDF/XML ?!
+	    // TODO
+	    return null;
+	    
+	}
 	
-        $target = file_get_contents($targetURI);
-        // HTTP headers are now in $http_response_header, see docs of HTTP wrapper
-
-        foreach ($http_response_header as $header)
-                if (preg_match("/^X-Pingback:\s*([^\s]+)\s*$/", $header, $matches))
-                        $serverURI = $matches[1];
-
-        if (!$serverURI) {
-                $target = html_entity_decode($target);
-                if (preg_match("/<link rel=\"pingback\" href=\"([^\"]+)\" ?\/?>/", $target, $matches))
-                        $serverURI = $matches[1];
-        }
+	protected function _logError($msg) 
+	{
+	    $owApp = OntoWiki::getInstance(); 
+	    $logger = $owApp->logger;
+	    
+	    if (is_array($msg)) {
+	        $logger->debug('Pingback Plugin Error: ' . print_r($msg, true));
+	    } else {
+	        $logger->debug('Pingback Plugin Error: ' . $msg);
+	    }
+	}
+	
+	protected function _logInfo($msg) 
+	{
+	    $owApp = OntoWiki::getInstance(); 
+	    $logger = $owApp->logger;
+	    
+	    if (is_array($msg)) {
+	        $logger->debug('Pingback Plugin Info: ' . print_r($msg, true));
+	    } else {
+	        $logger->debug('Pingback Plugin Info: ' . $msg);
+	    }
+	}
+	
+	protected function _sendPingback($sourceUri, $targetUri, $relationUri = null) 
+	{
+		$pingbackServiceUrl = $this->_discoverPingbackServer($targetUri);
+		if ($pingbackServiceUrl === null) {
+		    return false;
+		}
 		
-		$this->errorlog($serverURI);
-		
-        if (!$serverURI)
-                return;
-
         $xml = '<?xml version="1.0"?><methodCall><methodName>pingback.ping</methodName><params>'.
-                '<param><value><string>'.$sourceURI.'</string></value></param>'.
-                '<param><value><string>'.$targetURI.'</string></value></param>'.
-                '</params></methodCall>';
+                '<param><value><string>' . $sourceUri . '</string></value></param>'.
+                '<param><value><string>' . $targetUri . '</string></value></param>';
+                
+        if ($relationUri !== null) {
+            $xml .= '<param><value><string>' . $relationUri . '</string></value></param>';
+        }
+                
+        $xml .= '</params></methodCall>';
 
+        // TODO without curl? with zend?
         $rq = curl_init();
-        curl_setopt($rq, CURLOPT_URL, $serverURI);
+        curl_setopt($rq, CURLOPT_URL, $pingbackServiceUrl);
         curl_setopt($rq, CURLOPT_POST, 1);
         curl_setopt($rq, CURLOPT_POSTFIELDS, $xml);
-		curl_setopt($rq, CURLOPT_FOLLOWLOCATION,false); 
+		curl_setopt($rq, CURLOPT_FOLLOWLOCATION, false); 
         $res = curl_exec($rq);
         curl_close($rq);
+		$this->_logInfo('Result - ' . $res);
 		
-		//$this->errorlog("result: ".$res);
-		echo $res;
-	}
-	
-	
-	protected function get_final_url( $url, $timeout = 5 ){
-		$url = str_replace( "&amp;", "&amp;", urldecode(trim($url)) );
- 
-		$cookie = tempnam ("/tmp", "CURLCOOKIE");
-		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1" );
-		curl_setopt( $ch, CURLOPT_URL, $url );
-		curl_setopt( $ch, CURLOPT_COOKIEJAR, $cookie );
-		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-		curl_setopt( $ch, CURLOPT_ENCODING, "" );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
-		curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $timeout );
-		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
-		curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
-		$content = curl_exec( $ch );
-		$response = curl_getinfo( $ch );
-		curl_close ( $ch );
- 
-		if ($response['http_code'] == 301 || $response['http_code'] == 302){
-			ini_set("user_agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1");
-			$headers = get_headers($response['url']);
- 
-			$location = "";
-			foreach( $headers as $value ){
-				if ( substr( strtolower($value), 0, 9 ) == "location:" )
-					return get_final_url( trim( substr( $value, 9, strlen($value) ) ) );
-			}
-		}
- 
-		if (preg_match("/window\.location\.replace\('(.*)'\)/i", $content, $value) ||
-		preg_match("/window\.location\=\"(.*)\"/i", $content, $value)){
-			return get_final_url ( $value[1] );
-		}else{
-			return $response['url'];
-		}
+		return true;
 	}
 }
-
