@@ -6,3 +6,5 @@ contexts[] = "main.window.properties"
 contexts[] = "main.window.instances"
 contexts[] = "main.window.map"
 
+[private]
+

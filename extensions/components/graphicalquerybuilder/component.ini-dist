@@ -7,3 +7,4 @@ languages  = "languages/"
 action     = "display"
 name       = "Graphical Query Builder"
 
+[private]

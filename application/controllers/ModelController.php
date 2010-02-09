@@ -839,7 +839,7 @@ class ModelController extends OntoWiki_Controller_Base
 		$this->view->formMethod = 'post';
 		$this->view->formName = 'sparqlquery';
 		$this->view->query = $this->_request->getParam('query', '');
-        $this->view->urlBase = $this->_config->urlBase;
+                $this->view->urlBase = $this->_config->urlBase;
                 
 		// set URIs
 		if ($this->_owApp->selectedModel) {
@@ -950,7 +950,8 @@ class ModelController extends OntoWiki_Controller_Base
 				$result = null;
 				try {
 					$start = microtime(true);
-					
+
+                                        //this switch is for the target selection module
                                         if($this->_request->getParam('target') == 'all'){
                                             //query all models
                                             $result = $store->sparqlQuery($query, array (
@@ -963,6 +964,7 @@ class ModelController extends OntoWiki_Controller_Base
                                             ));
                                         }
 
+                                        //this is for the "output to file option
                                         if(($format == 'json' || $format == 'xml') && $this->_request->getParam('result_outputfile') == 'true'){
                                             $this->_helper->viewRenderer->setNoRender();
                                             $this->_helper->layout()->disableLayout();
@@ -1006,9 +1008,10 @@ class ModelController extends OntoWiki_Controller_Base
 									$result = 'no result';
 								}
 				} catch (Exception $e) {
-					$this->view->error = $e->getMessage();
+					//$this->view->error = $e->getMessage();
 					$header = '';
 					$result = '';
+                                        $this->view->time = 0;
 				}
 
 				$this->view->data = $result;
