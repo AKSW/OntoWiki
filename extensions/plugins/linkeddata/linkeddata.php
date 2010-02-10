@@ -138,63 +138,62 @@ class LinkeddataPlugin extends OntoWiki_Plugin
     public function onRouteShutdown($event)
     {
         $owApp = OntoWiki::getInstance();
-        if (($owApp->selectedModel === null) && ($owApp->selectedResource === null)) {
-            $requestUri = $owApp->config->urlBase . ltrim($event->request->getPathInfo(), '/');
+        $requestUri = $owApp->config->urlBase . ltrim($event->request->getPathInfo(), '/');
             
-            $viewPos = strrpos($requestUri, '/view/');
-            if ($viewPos !== false) {
-                $uri = substr($requestUri, 0, $viewPos) . '/id/' . substr($requestUri, $viewPos+6);
+        $viewPos = strrpos($requestUri, '/view/');
+        if ($viewPos !== false) {
+            $uri = substr($requestUri, 0, $viewPos) . '/id/' . substr($requestUri, $viewPos+6);
                 
-                $store = Erfurt_App::getInstance()->getStore();
-                $result = $store->getGraphsUsingResource($uri, false);
+            $store = Erfurt_App::getInstance()->getStore();
+            $result = $store->getGraphsUsingResource($uri, false);
                 
-                if ($result) {                
-                    // get source graph
-                    $allowedGraph = null;
-                    $ac = Erfurt_App::getInstance()->getAc();
-                    foreach ($result as $g) {
-                        if ($ac->isModelAllowed('view', $g)) {
-                            $allowedGraph = $g;
-                            break;
-                        }
+            if ($result) {                
+                // get source graph
+                $allowedGraph = null;
+                $ac = Erfurt_App::getInstance()->getAc();
+                foreach ($result as $g) {
+                    if ($ac->isModelAllowed('view', $g)) {
+                        $allowedGraph = $g;
+                        break;
                     }
-                    
-                    if ($allowedGraph !== null) {
-                        $owApp->selectedModel = $allowedGraph;
-                    }
-                    
-                    $owApp->selectedResource = $uri;
                 }
+                
+                $graph = null;
+                if ($allowedGraph !== null) {
+                    $graph = $store->getModel($allowedGraph);
+                    $owApp->selectedModel = $graph;
+                }
+                    
+                $resource = new OntoWiki_Resource($uri, $graph);
+                $owApp->selectedResource = $resource;
             }
-            $dataPos = strrpos($requestUri, '/data/');
-            if ($dataPos !== false) {
-                $uri = substr($requestUri, 0, $dataPos) . '/id/' . substr($requestUri, $dataPos+6);
+        }
+        $dataPos = strrpos($requestUri, '/data/');
+        if ($dataPos !== false) {
+            $uri = substr($requestUri, 0, $dataPos) . '/id/' . substr($requestUri, $dataPos+6);
                 
-                $store = Erfurt_App::getInstance()->getStore();
-                $result = $store->getGraphsUsingResource($uri, false);
+            $store = Erfurt_App::getInstance()->getStore();
+            $result = $store->getGraphsUsingResource($uri, false);
                 
-                if ($result) {                
-                    // get source graph
-                    $allowedGraph = null;
-                    $ac = Erfurt_App::getInstance()->getAc();
-                    foreach ($result as $g) {
-                        if ($ac->isModelAllowed('view', $g)) {
-                            $allowedGraph = $g;
-                            break;
-                        }
+            if ($result) {                
+                // get source graph
+                $allowedGraph = null;
+                $ac = Erfurt_App::getInstance()->getAc();
+                foreach ($result as $g) {
+                    if ($ac->isModelAllowed('view', $g)) {
+                        $allowedGraph = $g;
+                        break;
                     }
-                    
-                    $graph = null;
-                    if ($allowedGraph !== null) {
-                        $graph = $store->getModel($allowedGraph);
-                        $owApp->selectedModel = $graph;
-                        $event->request->m = $allowedGraph;
-                    }
-                    
-                    $resource = new OntoWiki_Resource($uri, $graph);
-                    $owApp->selectedResource = $resource;
-                    $event->r = $uri;
                 }
+                    
+                $graph = null;
+                if ($allowedGraph !== null) {
+                    $graph = $store->getModel($allowedGraph);
+                    $owApp->selectedModel = $graph;
+                }
+                    
+                $resource = new OntoWiki_Resource($uri, $graph);
+                $owApp->selectedResource = $resource;
             }
         }
     }
