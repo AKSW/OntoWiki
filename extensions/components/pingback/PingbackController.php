@@ -25,11 +25,10 @@ class PingbackController extends OntoWiki_Controller_Component
 	 *
 	 * @param string      $sourceUri
 	 * @param string      $targetUri
-	 * @param string/null $relationUri
 	 *
 	 * @return int
 	 */
-	public function ping($sourceUri, $targetUri, $relationUri = null) 
+	public function ping($sourceUri, $targetUri) 
 	{	
 		$this->_logInfo('Method ping was called.');
 
@@ -65,10 +64,12 @@ class PingbackController extends OntoWiki_Controller_Component
                 }
                 
                 if (!$success) {
+                    $this->_logError('0x0011');
                     return 0x0011;
                 }
             }
         } else {
+            $this->_logError('0x0010');
             return 0x0010;
         }
 		
@@ -81,10 +82,12 @@ class PingbackController extends OntoWiki_Controller_Component
 		$query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
         $result = $store->sparqlQuery($query);
 	    if (!$result) {
+	        $this->_logError('0x0020');
 	        return 0x0020;
 	    } 
         // Next step is to check, whether the pingback statement already exists and if not to add it.
 		if ($this->_pingbackExists($sourceUri, $targetUri, $relationUri)) {
+		    $this->_logError('0x0030');
 		    return 0x0030;
 		}
 		
@@ -92,10 +95,8 @@ class PingbackController extends OntoWiki_Controller_Component
    
 		// pingback done
 		$error = "Thanks! Pingback from ".$sourceURI." to ".$targetURI." registered";
-		$this->errorlog($error);
-
-		throw new Zend_XmlRpc_Server_Exception($error);
-		return 0;
+		
+		$this->_logInfo('Pingback registered.');
 	}
 	
 	protected function _addPingback($sourceUri, $targetUri, $relationUri) 
