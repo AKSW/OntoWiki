@@ -46,6 +46,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		    $client->setHeaders('Accept', 'text/html');
 		}
 		
+		
 		try {
 		    $response = $client->request();
 		} catch (Exception $e) {
@@ -85,7 +86,7 @@ class PingbackController extends OntoWiki_Controller_Component
         $store = Erfurt_App::getInstance()->getStore();
         $sparql = 'ASK WHERE { <' . $targetUri . '> ?p ?o . }';
         require_once 'Erfurt/Sparql/SimpleQuery.php';
-		$query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
+		$query = Erfurt_Sparql_SimpleQuery::initWithString($sparql);
 		try {
 		    $result = $store->sparqlQuery($query);
 		} catch (Excpetion $e) {
