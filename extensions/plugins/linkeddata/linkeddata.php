@@ -184,11 +184,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                         }
                     }
                     
+                    $graph = null;
                     if ($allowedGraph !== null) {
-                        $owApp->selectedModel = $allowedGraph;
+                        $graph = $store->getModel($allowedGraph);
+                        $owApp->selectedModel = $graph;
                     }
                     
-                    $owApp->selectedResource = $uri;
+                    $resource = new OntoWiki_Resource($uri, $graph);
+                    $owApp->selectedResource = $resource;
                 }
             }
         }
