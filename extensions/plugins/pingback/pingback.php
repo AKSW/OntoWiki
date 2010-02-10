@@ -15,6 +15,18 @@ class PingbackPlugin extends OntoWiki_Plugin
         $response->setHeader('X-Pingback', $url, true);
 	}
 	
+	public function onAfterInitController($event)
+	{
+	    if ($event->response === null) {
+            return;
+        }
+        $response = $event->response;
+        
+        $owApp = OntoWiki::getInstance(); 
+        $url = $owApp->config->urlBase . 'pingback/ping/';
+        $response->setHeader('X-Pingback', $url, true);
+	}
+	
 	public function onAddStatement()
 	{
         $this->_logInfo('Graph URI - '. $event->graphUri); 

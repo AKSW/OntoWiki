@@ -6,9 +6,10 @@ author      = ""
 
 [events]
 1 = beforeLinkedDataRedirect
-2 = onAddStatement
-3 = onAddMultipleStatements
-4 = onDisplayObjectPropertyValue 
+2 = onAfterInitController
+3 = onAddStatement
+4 = onAddMultipleStatements
+5 = onDisplayObjectPropertyValue 
 ;onDisplayObjectPropertyValue
 
 [private]
