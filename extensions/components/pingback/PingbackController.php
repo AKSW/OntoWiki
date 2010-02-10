@@ -34,7 +34,7 @@ class PingbackController extends OntoWiki_Controller_Component
 
 		// 1. Try to dereference the source URI.
 		require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client($uri, array(
+        $client = new Zend_Http_Client($sourceUri, array(
             'maxredirects'  => 10,
             'timeout'       => 30
         ));
@@ -46,7 +46,12 @@ class PingbackController extends OntoWiki_Controller_Component
 		    $client->setHeaders('Accept', 'text/html');
 		}
 		
-        $response = $client->request();
+		try {
+		    $response = $client->request();
+		} catch (Exception $e) {
+		    $this->_logError('Error:' . $e->getMessage());
+		    return 0;
+		}
         if ($response->getStatus() === 200) {
             if ($relationUri !== null) {
                 // TODO handle rdf/xml
@@ -81,7 +86,12 @@ class PingbackController extends OntoWiki_Controller_Component
         $sparql = 'ASK WHERE { <' . $targetUri . '> ?p ?o . }';
         require_once 'Erfurt/Sparql/SimpleQuery.php';
 		$query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
-        $result = $store->sparqlQuery($query);
+		try {
+		    $result = $store->sparqlQuery($query);
+		} catch (Excpetion $e) {
+		    $this->_logError('Error:' . $e->getMessage());
+		}
+        
 	    if (!$result) {
 	        $this->_logError('0x0020');
 	        return 0x0020;
@@ -92,7 +102,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		    return 0x0030;
 		}
 		
-		$this->_addPingback($sourceUri, $targetUri, $relationUri);
+		$this->_addPingback($sourceUri, $targetUri);
    
 		// pingback done
 		//$error = "Thanks! Pingback from ".$sourceURI." to ".$targetURI." registered";
