@@ -114,6 +114,11 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 
                 $request->setDispatched(true);
                 
+                // give plugins a chance to do something...
+                $event = new Erfurt_Event('beforeLinkedDataRedirect');
+                $event->response = $response;
+                $event->trigger();
+                
                 // set redirect and send immediately
                 $response->setRedirect((string)$url, 303)
                          ->sendResponse();

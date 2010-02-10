@@ -5,7 +5,7 @@ author      = ""
 ; url         = 
 
 [events]
-1 = onAfterInitController
+1 = beforeLinkedDataRedirect
 2 = onAddStatement
 3 = onAddMultipleStatements
 4 = onDisplayObjectPropertyValue 
