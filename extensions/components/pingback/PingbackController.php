@@ -39,6 +39,7 @@ class PingbackController extends OntoWiki_Controller_Component
             'timeout'       => 30
         ));
 		// If a relation URI is given, we try application/rdf+xml first, if not we use text/html
+		$relationUri = null;
 		if ($relationUri !== null) {
 		    $client->setHeaders('Accept', 'application/rdf+xml');
 		} else {
@@ -46,7 +47,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		}
 		
         $response = $client->request();
-        if ($response->getStatus() === '200') {
+        if ($response->getStatus() === 200) {
             if ($relationUri !== null) {
                 // TODO handle rdf/xml
             } else {
@@ -94,12 +95,12 @@ class PingbackController extends OntoWiki_Controller_Component
 		$this->_addPingback($sourceUri, $targetUri, $relationUri);
    
 		// pingback done
-		$error = "Thanks! Pingback from ".$sourceURI." to ".$targetURI." registered";
+		//$error = "Thanks! Pingback from ".$sourceURI." to ".$targetURI." registered";
 		
 		$this->_logInfo('Pingback registered.');
 	}
 	
-	protected function _addPingback($sourceUri, $targetUri, $relationUri) 
+	protected function _addPingback($sourceUri, $targetUri, $relationUri = null) 
 	{
 		$store = Erfurt_App::getInstance()->getStore();
 		$model = $store->getModel($this->_privateConfig->pingback_model);
@@ -109,7 +110,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		    // Use default...
 		    $model->addStatement(
     			$sourceUri,
-    			'http://rdfs.org/sioc/ns#reply_of',
+    			'http://rdfs.org/sioc/ns#links_to',
     			array('value' => $targetUri, 'type' => 'uri')
     		);
 		} else {
@@ -155,7 +156,7 @@ class PingbackController extends OntoWiki_Controller_Component
 
 		// Check if it already was pinged.
 		if ($relationUri === null) {
-		    $relationUri = 'http://rdfs.org/sioc/ns#reply_of';
+		    $relationUri = 'http://rdfs.org/sioc/ns#links_to';
 		    
 		    $sparql = 'SELECT ?pingback
     			WHERE {
