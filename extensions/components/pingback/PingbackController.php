@@ -91,11 +91,11 @@ class PingbackController extends OntoWiki_Controller_Component
 		    }
 	    }
 	    
-	    $versioning->startAction(
+	    $versioning->startAction(array(
             'type' => '9000',
             'modeluri' => $this->_targetGraph,
             'resource' => $sourceUri
-        );
+        ));
         
 	    // 3. If still nothing was found, try to find a link in the html
 		if (count($foundPingbackTriples) === 0) {
