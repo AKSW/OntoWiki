@@ -8,4 +8,9 @@ name       = "PingbackServer"
 
 [private]
 ; model to write pingbacks
-pingback_model = "http://example.org/GR/"
+;pingback_model = "http://example.org/GR/"
+
+generic_relation = "http://rdfs.org/sioc/ns#links_to"
+
+rdfa.enabled = yes
+rdfa.service = "http://www.w3.org/2007/08/pyRdfa/extract?format=pretty-xml&warnings=false&parser=lax&space-preserve=true&uri="
