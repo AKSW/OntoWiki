@@ -2013,6 +2013,8 @@ body.javascript-on tbody.closed tr.grouptitle th a.toggle:active {
     clear: both;
 }
 
+.ui-draggable { position:relative; z-index:998; }
+
 /* 6. Specials -------------------------------------------------------------- */
 
 ul.hierarchy li > a, 
