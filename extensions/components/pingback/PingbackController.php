@@ -367,30 +367,12 @@ class PingbackController extends OntoWiki_Controller_Component
         $store = Erfurt_App::getInstance()->getStore();
 		$model = $store->getModel($this->_targetGraph, false);
 
-		// Check if it already was pinged.
-		if ($relationUri === null) {
-		    $relationUri = 'http://rdfs.org/sioc/ns#links_to';
-		    
-		    $sparql = 'SELECT ?pingback
-    			WHERE {
-    				?pingback <' . $relationUri . '> <' . $targetUri . '>.
-    			}
-    			LIMIT 1';
-		} else {
-		    $sparql = 'SELECT ?pingback
-    			WHERE {
-    				<' . $targetUri . '> <' . $relationUri . '> ?pingback.
-    			}
-    			LIMIT 1';
-		}
-	
+        $sparql = 'ASK WHERE { <' . $s . '> <' . $p . '> <' . $o . '> .}';
+        	
 		require_once 'Erfurt/Sparql/SimpleQuery.php';
 		$query = Erfurt_Sparql_SimpleQuery::initWithString($sparql);
 		$result = $model->sparqlQuery($query);
-		if ($result[0]['pingback'] === $sourceUri) {
-			return true;
-		}
 		
-        return false;
+		return (boolean)$result;
     }
 }
