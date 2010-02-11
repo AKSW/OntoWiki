@@ -318,9 +318,30 @@ class LinkeddataWrapper extends Erfurt_Wrapper
             Erfurt_Wrapper::RESULT_HAS_NS
         );
         $fullResult['status_description'] = "Linked Data found for URI $uri";
-        $fullResult['add'] = $result;
-        $fullResult['ns']  = $ns;
         
+        $fullResult['ns']  = $ns;
+
+        //remove blanknodes (bn as object)
+        foreach($result as $rkey => $resource){
+            foreach($resource as $pkey => $property){
+                foreach($property as $vkey => $value){
+                    if(($value['type'] == 'uri' && substr($value['value'], 0, 2) == '_:') || $value['type'] == 'bnode'){
+                        unset($result[$rkey][$pkey][$vkey]);
+                        if(empty($result[$rkey][$pkey])){ //if this was the last value if this property - delete the property
+                            unset($result[$rkey][$pkey]);
+                        }
+                        /*
+                        if(empty($result[$rkey][$pkey])){ // if this was the last property of this resource - delete the resource
+                            unset($result[$rkey]);
+                        }*/
+                    }
+                }
+            }
+        }
+
+        $fullResult['add'] = $result;
+        //print_r($result);
+
         return $fullResult;
     }
     
