@@ -388,7 +388,7 @@ class PingbackController extends OntoWiki_Controller_Component
         }
         
         $store = Erfurt_App::getInstance()->getStore();
-        $sparql = 'ASK FROM <' . $this->_targetGraph . '> WHERE { <' . $s . '> <' . $p . '> <' . $o . '> .}';
+        $sparql = 'SELECT ?s FROM <' . $this->_targetGraph . '> WHERE { ?s <' . $p . '> <' . $o . '> . FILTER(sameTerm(?s, <' . $s . '>))} LIMIT 1';
         	
 		require_once 'Erfurt/Sparql/SimpleQuery.php';
 		$query = Erfurt_Sparql_SimpleQuery::initWithString($sparql);
