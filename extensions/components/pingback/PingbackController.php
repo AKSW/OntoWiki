@@ -62,7 +62,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		}
 		if ($response->getStatus() === 200) {
 	        $data = $response->getBody();
-            $result = $this->_getPingbackTriplesFromRdfXmlString($data);
+            $result = $this->_getPingbackTriplesFromRdfXmlString($data, $sourceUri, $targetUri);
             if (is_array($result)) {
                 $foundPingbackTriples = $result;
             }
@@ -84,7 +84,7 @@ class PingbackController extends OntoWiki_Controller_Component
     		}
     		if ($response->getStatus() === 200) {
 		        $data = $response->getBody();
-                $result = $this->_getPingbackTriplesFromRdfXmlString($data);
+                $result = $this->_getPingbackTriplesFromRdfXmlString($data, $sourceUri, $targetUri);
                 if ($result) {
                     $foundPingbackTriples = $result;
                 }
@@ -317,7 +317,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	    }
 	}
 	
-	protected function _getPingbackTriplesFromRdfXmlString($rdfXml)
+	protected function _getPingbackTriplesFromRdfXmlString($rdfXml, $sourceUri, $targetUri)
 	{
 	    $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('rdfxml');
 	    try {
