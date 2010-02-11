@@ -150,8 +150,20 @@ class PingbackController extends OntoWiki_Controller_Component
                     if (!$contained && ($this->_targetGraph !== null)) {
                         // Remove it...
                         $store = Erfurt_App::getInstance()->getStore();
-                		$model = $store->getModel($this->_targetGraph, false);
-                		$model->deleteStatement($payload);
+                        
+                        $s = $sourceUri; 
+                        $p = null;
+                        $o = null;
+                        foreach($payload[$sourceUri] as $pArray) {
+                            foreach ($pArray as $p1 => $oArray) {
+                                $p = $p1;
+                                $o = $oArray[0];
+                                break;
+                            }
+                        }
+                        
+                        
+                		$store->deleteMatchingStatement($this->_targetGraph, $s, $p, $o, array('use_ac' => false));
                 		$removed = true;
                     }
                 }
@@ -207,8 +219,18 @@ class PingbackController extends OntoWiki_Controller_Component
                 if (!$contained && ($this->_targetGraph !== null)) {
                     // Remove it...
                     $store = Erfurt_App::getInstance()->getStore();
-            		$model = $store->getModel($this->_targetGraph, false);
-            		$model->deleteStatement($payload);
+            		$s = $sourceUri; 
+                    $p = null;
+                    $o = null;
+                    foreach($payload[$sourceUri] as $pArray) {
+                        foreach ($pArray as $p1 => $oArray) {
+                            $p = $p1;
+                            $o = $oArray[0];
+                            break;
+                        }
+                    }
+                    
+            		$store->deleteMatchingStatement($this->_targetGraph, $s, $p, $o, array('use_ac' => false));
             		$removed = true;
                 }
             }
@@ -231,12 +253,13 @@ class PingbackController extends OntoWiki_Controller_Component
 	    }
 	    
 		$store = Erfurt_App::getInstance()->getStore();
-		$model = $store->getModel($this->_targetGraph, false);
 		
-		$model->addStatement(
+		$store->addStatement(
+		    $this->_targetGraph,
 			$s,
 		    $p,
-			array('value' => $o, 'type' => 'uri')
+			array('value' => $o, 'type' => 'uri'),
+			false
 		);
 		
 		return true;
