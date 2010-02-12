@@ -598,6 +598,7 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function preferencesAction()
     {
         $this->view->placeholder('main.window.title')->set('User Preferences');
+        $this->addModuleContext('main.window.preferences');
         
         $user = $this->_owApp->getUser();
         
@@ -654,7 +655,7 @@ class ApplicationController extends OntoWiki_Controller_Base
         $this->view->submitText    = 'Save Changes';
 
         $toolbar = $this->_owApp->toolbar;
-		$toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save Changes'))
+		$toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save Changes', 'id' => 'registeruser'))
 		        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
 		$this->view->placeholder('main.window.toolbar')->set($toolbar);
 
