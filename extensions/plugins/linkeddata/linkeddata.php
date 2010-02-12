@@ -185,6 +185,18 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         return $this->_getFirstReadableGraphForUri($event->uri);
     }
     
+    public function onNeedsLinkedDataUri($event)
+    {
+        if ($this->_isLinkedDataUri($event->uri)) {
+            $g = $this->_getFirstReadableGraphForUri($event->uri);
+            if ($g !== false) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     /**
      * Matches the request's accept header againest supported mime types
      * and returns the supported type with highest priority found.
@@ -227,6 +239,18 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 return false;
             }
         } catch (Excpetion $e) {
+            return false;
+        }
+    }
+    
+    private function _isLinkedDataUri($uri)
+    {
+        $owApp = OntoWiki::getInstance(); 
+        $owBase = $owApp->config->urlBase;
+        
+        if (substr($uri, 0, strlen($owBase)) === $owBase) {
+            return true;
+        } else {
             return false;
         }
     }
