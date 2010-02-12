@@ -29,22 +29,23 @@ class PingbackPlugin extends OntoWiki_Plugin
 	
 	public function onAddStatement()
 	{
-        $this->_logInfo('Graph URI - '. $event->graphUri); 
         $this->_logInfo($event->statement);
 		
+		// Check the environement... e.g. Linked Data plugin needs to be enabled.
 		if (!$this->_check()) {
 		    return;
 		}
 		
-		
-		$this->_checkAndPingback($event->statement['subject'], $event->statement['predicate'], $event->statement['object']);
+		$s = $event->statement['subject'];
+		$o = $event->statement['object'];
+		$this->_checkAndPingback($s, $o);
 	}
 	
-	public function onAddMultipleStatements($event){
-		
-		$this->_logInfo('Graph URI - '. $event->graphUri); 
+	public function onAddMultipleStatements($event)
+	{
         $this->_logInfo($event->statements);
 		
+		// Check the environement... e.g. Linked Data plugin needs to be enabled.
 	    if (!$this->_check()) {
 		    return;
 		}
@@ -53,11 +54,30 @@ class PingbackPlugin extends OntoWiki_Plugin
 		foreach ($event->statements as $subject => $predicatesArray) {
             foreach ($predicatesArray as $predicate => $objectsArray) {
                 foreach ($objectsArray as $object) { 
-					$this->_checkAndPingback($subject, $predicate, $object);
+					$this->_checkAndPingback($subject, $object);
 				}
 			}
 		}
 	}
+	
+	public function onDeleteMultipleStatements($event)
+	{
+        $this->_logInfo($event->statements);
+		
+		// Check the environement... e.g. Linked Data plugin needs to be enabled.
+	    if (!$this->_check()) {
+		    return;
+		}
+		
+		// Parse SPO array.
+		foreach ($event->statements as $subject => $predicatesArray) {
+            foreach ($predicatesArray as $predicate => $objectsArray) {
+                foreach ($objectsArray as $object) { 
+					$this->_checkAndPingback($subject, $object);
+				}
+			}
+		}
+	} 
 	
 	protected function _check()
 	{
@@ -72,70 +92,65 @@ class PingbackPlugin extends OntoWiki_Plugin
     	return true;
 	}
 	
-	protected function _checkAndPingback($subject, $predicate, $object)
+	protected function _checkAndPingback($subject, $object)
 	{
 	    $owApp   = OntoWiki::getInstance(); 
 	    $base    = $owApp->config->urlBase;
 	    $baseLen = strlen($base);
 	    
-	    // Subject needs to be a linked data resource.
-	    if (substr($subject, 0, $baseLen) !== $base) {
-	        $this->_logInfo('Subject is not in OntoWiki namespace.');
-	        return false;
-	    }
+	    // Source URI (subject) needs to be a (internal) Linked Data resource
+		if (!$this->_isLinkedDataUri($subject)) {
+		    $this->_logInfo('Subject is not a Linked Data resource.');
+		    return;
+		}
 	    
-		// If predicate is not in confiugured allowed predicates, return.
-		$predicatesAllowed = $this->_privateConfig->predicates->toArray();
-		$this->_logInfo('Allowed predicates -' . print_r($predicatesAllowed, true));
-		if (!in_array($predicate, $predicatesAllowed)) {
-			$this->_logInfo('Predicate is not in allowed list.');
-			return false;
-		}
-		
-		// Object needs to be a dereferencable URI!
-		if ((substr($object['value'], 0, 7) !== 'http://') && (substr($object['value'], 0, 8) !== 'https://')) {
-			$this->_logInfo('Object is not a dereferencable URI.');	
-			return false;
-		}
-		
-		// Check, whether object is in OW namespace... If yes, return, since we do not pingback URIs in the environment.
-		if (substr($object['value'], 0, $baseLen) === $base) {
-		    	$this->_logInfo('Object is in OW namespace.');
-    			return false;
+	    // Object (target) needs to be an external URI 
+		if ($object['type'] !== 'uri') {
+		    $this->_logInfo('Object is not an URI.');	
+		    return;
 		} else {
-			$this->_logInfo('Ping to: ' . $object['value']);
-			$this->_sendPingback($subject, $object['value'], $predicate);
+		    $targetUri = $event->statement['object']['value'];
+		    $owApp = OntoWiki::getInstance();
+		    $owBase = $owApp->config->urlBase;
+		    
+		    // Check, whether URI is external.
+		    if (substr($targetUri, 0, strlen($owBase)) === $owBase) {
+		        $this->_logInfo('Object is not an external URI.');	
+		        return;
+		    }
+		    
+		    // Check, whether URI is derefderencable via HTTP.
+    		if ((substr($object['value'], 0, 7) !== 'http://') && (substr($object['value'], 0, 8) !== 'https://')) {
+    			$this->_logInfo('Object is not a dereferencable URI.');	
+    			return;
+    		}
+		    
 		}
+	    
+	    // All tests passed... send the pingback.
+	    $this->_sendPingback($subject, $object['value']);
 	}
 	
 	protected function _discoverPingbackServer($targetUri)
 	{
 	    // 1. Retrieve HTTP-Header and check for X-Pingback
 	    $headers = get_headers($targetUri, 1);
-	    if (is_array($headers)) {
-	        if (strstr('200', $headers[0])) {
-	            if (isset($headers['X-Pingback'])) {
-    	            return $headers['X-Pingback'];
-    	        }
-	        } else if (strstr('303', $headers[0])) {
-	            if (isset($headers['Location'])) {
-	                return $this->_discoverPingbackServer($headers['Location']);
-	            }
-	        }
-	    } else {
+	    if (!is_array($headers)) {
 	        return null;
 	    }
+	    if (isset($headers['X-Pingback'])) {
+            return $headers['X-Pingback'];
+        }
 	    
 	    // 2. Check for (X)HTML Link element, if target has content type text/html
-	    if (isset($headers['Content-Type']) && ($headers['Content-Type'] === 'text/html')) {
+	    if (isset($headers['Content-Type']) && (strtolower($headers['Content-Type']) === 'text/html')) {
 	        // TODO Fetch only the first X bytes...???
 	        require_once 'Zend/Http/Client.php';
             $client = new Zend_Http_Client($uri, array(
-                'maxredirects'  => 10,
+                'maxredirects'  => 0,
                 'timeout'       => 30
             ));
 
-            $client->setHeaders('Accept', 'text/html');
             $response = $client->request();
             if ($response->getStatus() === '200') {
                 $htmlDoc = new DOMDocument();
@@ -154,7 +169,6 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    // 3. Check RDF/XML ?!
 	    // TODO
 	    return null;
-	    
 	}
 	
 	protected function _logError($msg) 
@@ -181,33 +195,39 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    }
 	}
 	
-	protected function _sendPingback($sourceUri, $targetUri, $relationUri = null) 
+	protected function _sendPingback($sourceUri, $targetUri) 
 	{
 		$pingbackServiceUrl = $this->_discoverPingbackServer($targetUri);
 		if ($pingbackServiceUrl === null) {
-		    return false;
+		    $this->_logInfo('No Pingback server discovered');
+		    return;
 		}
 		
-        $xml = '<?xml version="1.0"?><methodCall><methodName>pingback.ping</methodName><params>'.
-                '<param><value><string>' . $sourceUri . '</string></value></param>'.
-                '<param><value><string>' . $targetUri . '</string></value></param>';
-                
-        if ($relationUri !== null) {
-            $xml .= '<param><value><string>' . $relationUri . '</string></value></param>';
-        }
-                
-        $xml .= '</params></methodCall>';
-
+        $xml = '<?xml version="1.0"?><methodCall><methodName>pingback.ping</methodName><params>' .
+                '<param><value><string>' . $sourceUri . '</string></value></param>' .
+                '<param><value><string>' . $targetUri . '</string></value></param>' .
+                '</params></methodCall>';
+                        
         // TODO without curl? with zend?
         $rq = curl_init();
         curl_setopt($rq, CURLOPT_URL, $pingbackServiceUrl);
         curl_setopt($rq, CURLOPT_POST, 1);
         curl_setopt($rq, CURLOPT_POSTFIELDS, $xml);
 		curl_setopt($rq, CURLOPT_FOLLOWLOCATION, false); 
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($rq);
         curl_close($rq);
-		$this->_logInfo('Result - ' . $res);
+		$this->_logInfo('Pingback Result - ' . $res);
 		
 		return true;
+	}
+	
+	private function _isLinkedDataUri($uri)
+	{
+	    $event = new Erfurt_Event('onNeedsLinkedDataUri');
+	    $event->uri = $uri;
+	    
+	    $result = (bool)$event->trigger();
+	    return $result;
 	}
 }

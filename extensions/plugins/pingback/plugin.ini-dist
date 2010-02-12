@@ -9,10 +9,6 @@ author      = ""
 2 = onAfterInitController
 3 = onAddStatement
 4 = onAddMultipleStatements
-5 = onDisplayObjectPropertyValue 
-;onDisplayObjectPropertyValue
+5 = onDeleteMultipleStatements
 
 [private]
-;properties[] = "http://purl.org/ontology/mo/image"
-predicates[] = "http://rdfs.org/sioc/ns#has_reply"
-predicates[] = "http://rdfs.org/sioc/ns#reply_of"
