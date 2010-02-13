@@ -157,6 +157,7 @@ RDFauthorPropertyRow.prototype.onSubmit = function () {
     
     for (var i = 0; i < this.widgetCount; i++) {
         var widgetInstance = this.widgets[i];
+        
         if (widgetInstance) {
             submitOk = widgetInstance.onSubmit() && submitOk;
         }

@@ -143,7 +143,7 @@ LiteralEdit.prototype.onRemove = function() {
     this.remove = true;
 };
 
-LiteralEdit.prototype.onSubmit = function() {
+LiteralEdit.prototype.onSubmit = function() {    
     var dataBank = RDFauthor.getDatabank(this.graph);
     
     // get new values

@@ -27,6 +27,7 @@ RDFauthor = {
     tripleInfo: {}, 
     elementInfo: {}, 
     originalDatabanks: {}, 
+    hiddenTriples: {}, 
     protectedTriples: {}, 
     // Array of inline views
     inlineViews: {},
@@ -162,6 +163,15 @@ RDFauthor = {
                 this.originalDatabanks[graph] = originalBank;           
             } else {
                 this.originalDatabanks[graph] = $.rdf.databank();
+            }
+            
+            // add protected triples
+            if (this.protectedTriples[graph] instanceof $.rdf.databank) {
+                var instance = this;
+                // add protected triples that are saved anyway
+                this.protectedTriples[graph].triples().each(function() {
+                    instance.databanks[graph].add(this);
+                });
             }
         }
     }, 
@@ -724,7 +734,7 @@ RDFauthor = {
         }
     }, 
     
-    updateSources: function () {        
+    updateSources: function () {
         // send results for all graphs
         var defaultGraph = this.getDefaultGraph();
         var defaultService = this.getDefaultUpdateEndpoint();
@@ -746,14 +756,23 @@ RDFauthor = {
             // only proceed if graph is updateable
             if (typeof updateUri == 'string' && updateUri !== '') {
                 if (this.databanks[graph]) {
-                    if (this.protectedTriples[graph] instanceof $.rdf.databank) {
+                    // add hidden triples
+                    if (this.hiddenTriples[graph] instanceof $.rdf.databank) {
                         // add protected triples that are saved anyway
-                        this.protectedTriples[graph].triples().each(function() {
+                        this.hiddenTriples[graph].triples().each(function() {
                             instance.databanks[graph].add(this);
                         });
                     }
                     
-                    if (sendAlways) {
+                    // add protected triples
+                    // if (this.protectedTriples[graph] instanceof $.rdf.databank) {
+                    //     // add protected triples that are saved anyway
+                    //     this.protectedTriples[graph].triples().each(function() {
+                    //         instance.databanks[graph].add(this);
+                    //     });
+                    // }
+                    
+                    if (sendAlways | true) {
                         // send all triples
                         var added = this.databanks[graph];
                         jsonAdded = $.rdf.dump(added.triples(), {format: 'application/json'});
@@ -803,7 +822,6 @@ RDFauthor = {
     // depending on the current edit mode adds a triple row to the edit view
     // or adds a click event to the element
     makeElementEditable: function (element, triple, graph) {
-        // alert(graph + '\n' + triple);
         var ignore = false;
         
         // check if namespace should be ignored
@@ -908,7 +926,7 @@ RDFauthor = {
         this.tripleInfo = {}; 
         this.elementInfo = {}; 
         this.originalDatabanks = {}; 
-        this.protectedTriples = {}; 
+        this.hiddenTriples = {}; 
         this.inlineViews = {}; 
         this.errors = 0; 
         view = null; 
@@ -1072,13 +1090,14 @@ RDFauthor = {
     
     // Start editing a resource based on a template
     startTemplate: function (template) {
-        // HACK:
+        // HACK:        
         var graph = this.getDefaultGraph();
         
         // TODO: load selection cache
         var predefinedStatements = [];
         var databank = this.getDatabank();
         
+        this.hiddenTriples[graph] = $.rdf.databank();
         this.protectedTriples[graph] = $.rdf.databank();
         
         if (typeof template == 'object') {
@@ -1112,10 +1131,13 @@ RDFauthor = {
                             
                             if ('hidden' in current && current['hidden']) {
                                 // mark it as protected (hidden), since it won't be changed
-                                this.protectedTriples[graph].add(rdfTriple);
+                                this.hiddenTriples[graph].add(rdfTriple);
                             } else {
                                 // add it to databank, so it can be changed
                                 predefinedStatements.push({'s': resource, 'p': property, 'o': object, 't': current.title});
+                                
+                                // and keep for re-entry
+                                this.protectedTriples[graph].add(rdfTriple);
                             }
                             
                             // save title

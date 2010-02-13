@@ -129,7 +129,7 @@ function RDFauthorView(options) {
 
 RDFauthorView.prototype.eventsRegistered = false;
 
-RDFauthorView.prototype.addRow = function (subject, property, title, object, graph) {    
+RDFauthorView.prototype.addRow = function (subject, property, title, object, graph) {
     if (!(subject in this.rows)) {
         this.rows[subject] = {};
     }
@@ -340,6 +340,7 @@ RDFauthorView.prototype.onSubmit = function () {
     for (var subject in this.rows) {
         for (var property in this.rows[subject]) {
             var row = this.rows[subject][property];
+            
             submitOk = row.onSubmit() && submitOk;
         }
     }

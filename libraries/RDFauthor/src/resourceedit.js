@@ -122,7 +122,7 @@ ResourceEdit.prototype.onSubmit = function()
 {
     var dataBank = RDFauthor.getDatabank(this.graph);    
     var newResourceValue = $('#resource-value-' + this.id).val();
-
+    
     var hasChanged = (newResourceValue != this.object) && (newResourceValue != '');
     if (hasChanged || this.remove) {
         // Remove the old triple
@@ -134,6 +134,7 @@ ResourceEdit.prototype.onSubmit = function()
             );
 
             dataBank.remove(oldTriple);
+            alert('Removed: ' + oldTriple);
         }
         
         if (!this.remove) {
@@ -145,7 +146,7 @@ ResourceEdit.prototype.onSubmit = function()
             );
 
             dataBank.add(newTriple);
-        };
+        }
     }
     
     return true;

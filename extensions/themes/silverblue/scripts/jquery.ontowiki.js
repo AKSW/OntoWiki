@@ -586,6 +586,24 @@ function showResourceMenu(event) {
     event.stopPropagation();
 }
 
+/**
+ * Loads RDFauthor if necessary and executes callback afterwards.
+ */
+function loadRDFauthor(callback) {
+    var loaderURI = widgetBase + 'src/loader.js';
+    
+    if ($('head').children('script').children('@src=' + loaderURI).length > 0) {
+        callback();
+    } else {
+        rdfauthor_loaded_callback = callback;
+        // load script
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = loaderURI;
+        document.getElementsByTagName('head')[0].appendChild(s);
+    }
+}
+
 /*
  * get the rdfa init description from the service in class mode and start the
  * RDFauthor window
@@ -601,9 +619,8 @@ function createInstanceFromClassURI(type) {
        uri: type
     }, function(data) {
        // get default resource uri for subjects in added statements (issue 673)
-       for (var subjectUri in data) {
-           // do nothing (key needed for defaultResource in RDFauthor.setOptions() )
-       }
+       // grab first object key
+       for (var subjectUri in data) {break;};
        RDFauthor.setOptions({
            defaultResource: subjectUri, 
            anchorElement: '.innercontent',
@@ -647,39 +664,44 @@ function createInstanceFromURI(resource) {
 
     // remove resource menus
     removeResourceMenus();
+    
+    loadRDFauthor(function() {
+        $.getJSON(serviceUri, {
+           mode: 'clone',
+           uri: resource
+        }, function(data) {
+            // grab first object key
+            for (var subjectUri in data) {break;};
+            RDFauthor.setOptions({
+                defaultResource: subjectUri, 
+                anchorElement: '.innercontent',
+                onSubmitSuccess: function () {
+                   // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
+                   // mainInnerContent.load(document.URL);
 
-    $.getJSON(serviceUri, {
-       mode: 'clone',
-       uri: resource
-    }, function(data) {
-       RDFauthor.setOptions({
-           anchorElement: '.innercontent',
-           onSubmitSuccess: function () {
-               // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-               // mainInnerContent.load(document.URL);
+                   // tell RDFauthor that page content has changed
+                   // RDFauthor.invalidatePage();
 
-               // tell RDFauthor that page content has changed
-               // RDFauthor.invalidatePage();
+                   $('.edit').each(function() {
+                       $(this).fadeOut(effectTime);
+                   });
+                   $('.edit-enable').removeClass('active');
 
-               $('.edit').each(function() {
-                   $(this).fadeOut(effectTime);
-               });
-               $('.edit-enable').removeClass('active');
-
-               // reload whole page
-               window.location.href = window.location.href;
-           },
-           onCancel: function () {
-               $('.edit').each(function() {
-                   $(this).fadeOut(effectTime);
-               });
-               $('.edit-enable').removeClass('active');
-           },
-           saveButtonTitle: 'Create New Resource',
-           cancelButtonTitle: 'Cancel',
-           title: 'Clone Resource ' + resource
-       });
-
-       RDFauthor.startTemplate(data);
-    })
+                   // reload whole page
+                   window.location.href = window.location.href;
+                },
+                onCancel: function () {
+                   $('.edit').each(function() {
+                       $(this).fadeOut(effectTime);
+                   });
+                   $('.edit-enable').removeClass('active');
+                },
+                saveButtonTitle: 'Create New Resource',
+                cancelButtonTitle: 'Cancel',
+                title: 'Clone Resource ' + resource
+                });
+            
+            RDFauthor.startTemplate(data);
+        })
+    });
 }

@@ -159,7 +159,7 @@ $(document).ready(function() {
     
     $('.icon-edit').click(function() {
         var element = this;
-        rdfauthor_loaded_callback = function() {
+        loadRDFauthor(function() {
             RDFauthor.setOptions({
                 anchorElement: '.innercontent', 
                 onSubmitSuccess: function () {
@@ -198,12 +198,7 @@ $(document).ready(function() {
             $('.edit').each(function() {
                 $(this).fadeIn(effectTime);
             });
-        };
-        
-        var s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.src = widgetBase + 'src/loader.js';
-        document.getElementsByTagName('head')[0].appendChild(s);
+        });
     });
     
     // edit mode
@@ -217,7 +212,7 @@ $(document).ready(function() {
             })
             $(this).removeClass('active');
         } else {
-            rdfauthor_loaded_callback = function () {
+            loadRDFauthor(function () {
                 RDFauthor.setOptions({
                     anchorElement: '.innercontent', 
                     onSubmitSuccess: function () {
@@ -256,12 +251,7 @@ $(document).ready(function() {
                     $(this).fadeIn(effectTime);
                 })
                 $(this).addClass('active');
-            };
-            
-            var s = document.createElement('script');
-            s.type = 'text/javascript';
-            s.src = widgetBase + 'src/loader.js';
-            document.getElementsByTagName('head')[0].appendChild(s);
+            });
         }
     });
     
