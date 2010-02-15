@@ -41,8 +41,16 @@ class ShowpropertiesModule extends OntoWiki_Module
     {
         $session = $this->_owApp->session;
         if (isset($session->instances)) {
+            if($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist)
+            {
+            $this->view->properties = $this->filterProperties($session->instances->getAllProperties(false));
+            $this->view->reverseProperties = $this->filterProperties($session->instances->getAllProperties(true));
+            }
+            else
+            {
             $this->view->properties = $session->instances->getAllProperties(false);
             $this->view->reverseProperties = $session->instances->getAllProperties(true);
+            }
             
             return $this->render('showproperties');
         }
@@ -57,6 +65,49 @@ class ShowpropertiesModule extends OntoWiki_Module
         
         return $id;
     }
+
+    
+    private function filterProperties($properties) {
+
+    $uriToFilter = array();
+    $filteredProperties = array();
+
+    if($this->_privateConfig->filterhidden)
+    {
+        $store = $this->_owApp->erfurt->getStore();
+        //query for hidden properties
+        $query = new Erfurt_Sparql_SimpleQuery();
+        $query->setProloguePart('PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
+                                 SELECT ?uri')
+              ->setWherePart('WHERE {?uri sysont:hidden \'true\'.}');
+        $uriToFilter = $store->sparqlQuery($query);
+    }
+
+    if($this->_privateConfig->filterlist)
+    {
+        //get properties to hide from privateconfig
+        $toFilter = $this->_privateConfig->property->toArray();
+        foreach($toFilter as $element)
+        {
+        array_push ($uriToFilter,array('uri' => $element));
+        }
+    }
+
+    foreach($properties as $property) {
+        $toFilter=false;
+        foreach($uriToFilter as $element) {
+            if($element['uri']==$property['uri']) {
+                $toFilter=true;
+                break;
+            }
+        }
+        if(!$toFilter) {
+            array_push ($filteredProperties, $property);
+        }
+    }
+    return $filteredProperties;
+    }
+
 }
 
 
