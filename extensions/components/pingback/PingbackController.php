@@ -25,11 +25,10 @@ class PingbackController extends OntoWiki_Controller_Component
     }
     
     /**
+	 * @param string $sourceUri The source URI
+	 * @param string $targetUri The target URI
 	 *
-	 * @param string $sourceUri
-	 * @param string $targetUri
-	 *
-	 * @return integer
+	 * @return integer An integer (fault) code
 	 */
 	public function ping($sourceUri, $targetUri) 
 	{	
