@@ -8,6 +8,8 @@ class PingbackController extends OntoWiki_Controller_Component
 {
     protected $_targetGraph = null;
     
+    protected $_sourceRdf = null;
+    
 	public function pingAction()
     {
         $this->_logInfo('Pingback Server Init.'); 
@@ -262,6 +264,22 @@ class PingbackController extends OntoWiki_Controller_Component
 			false
 		);
 		
+		if ($this->_sourceRdf !== null) {
+		    foreach ($this->_sourceRdf as $prop => $oArray) {
+		        $titleProps = $this->_privateConfig->title_properties->toArray();
+		        if (in_array($prop, $titleProps)) {
+		            $store->addStatement(
+            		    $this->_targetGraph,
+            			$s,
+            		    $prop,
+            			$oArray[0],
+            			false
+            		);
+            		break; // only one title
+		        }
+		    }
+		}
+		
 		return true;
 	}
 	
@@ -326,6 +344,10 @@ class PingbackController extends OntoWiki_Controller_Component
 	        $this->_logError($e->getMessage());
 	        return false;
 	    }
+        
+        if (isset($result[$sourceUri])) {
+            $this->_sourceRdf = $result[$sourceUri];
+        }
         
         $foundTriples = array();
         foreach ($result as $s => $pArray) {
