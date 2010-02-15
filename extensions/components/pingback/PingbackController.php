@@ -332,19 +332,19 @@ class PingbackController extends OntoWiki_Controller_Component
             foreach ($pArray as $p => $oArray) {
                 foreach ($oArray as $oSpec) {
                     if ($s === $sourceUri) {
-                        if (($o['type'] === 'uri') && ($o['value'] === $targetUri)) {
+                        if (($oSpec['type'] === 'uri') && ($oSpec['value'] === $targetUri)) {
                             $foundTriples[] = array(
                                 's' => $s,
                                 'p' => $p,
-                                'o' => $o['value']
+                                'o' => $oSpec['value']
                             );
                         }
-                    } else if (($o['type'] === 'uri') && ($o === $sourceUri)) {
+                    } else if (($oSpec['type'] === 'uri') && ($oSpec['value'] === $sourceUri)) {
                         // Try to find inverse property for $p
                         $inverseProp = $this->_determineInverseProperty($p);
                         if ($inverseProp !== null) {
                             $foundTriples[] = array(
-                                's' => $o['value'],
+                                's' => $oSpec['value'],
                                 'p' => $inverseProp,
                                 'o' => $s
                             );

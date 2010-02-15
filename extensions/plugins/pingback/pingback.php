@@ -152,7 +152,7 @@ class PingbackPlugin extends OntoWiki_Plugin
             ));
 
             $response = $client->request();
-            if ($response->getStatus() === '200') {
+            if ($response->getStatus() === 200) {
                 $htmlDoc = new DOMDocument();
                 $result = @$htmlDoc->loadHtml($response->getBody());
                 $relElements = $htmlDoc->getElementsByTagName('link');
@@ -175,7 +175,7 @@ class PingbackPlugin extends OntoWiki_Plugin
             ));
             
             $response = $client->request();
-            if ($response->getStatus() === '200') {
+            if ($response->getStatus() === 200) {
                 $rdfString = $response->getBody();
                 
                 $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('rdfxml');
