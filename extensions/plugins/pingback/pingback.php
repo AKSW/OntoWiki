@@ -109,7 +109,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 		    $this->_logInfo('Object is not an URI.');	
 		    return;
 		} else {
-		    $targetUri = $event->statement['object']['value'];
+		    $targetUri = $object;
 		    $owApp = OntoWiki::getInstance();
 		    $owBase = $owApp->config->urlBase;
 		    
