@@ -7,7 +7,6 @@ require_once 'Zend/XmlRpc/Server/Exception.php';
 class PingbackController extends OntoWiki_Controller_Component
 {
     protected $_targetGraph = null;
-    
     protected $_sourceRdf = null;
     
 	public function pingAction()
@@ -27,10 +26,10 @@ class PingbackController extends OntoWiki_Controller_Component
     
     /**
 	 *
-	 * @param string      $sourceUri
-	 * @param string      $targetUri
+	 * @param string $sourceUri
+	 * @param string $targetUri
 	 *
-	 * @return int
+	 * @return integer
 	 */
 	public function ping($sourceUri, $targetUri) 
 	{	
