@@ -337,7 +337,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	{
 	    $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('rdfxml');
 	    try {
-	        $result = $parser->parse($rdfxml, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
+	        $result = $parser->parse($rdfXml, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
 	    } catch (Exception $e) {
 	        $this->_logError($e->getMessage());
 	        return false;
