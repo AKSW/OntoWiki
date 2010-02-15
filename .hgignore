@@ -5,6 +5,7 @@ syntax: glob
 *.log
 config.ini
 nbproject
+ontowiki/src/cache
 ontowiki/src/libraries/Erfurt
 ontowiki/src/libraries/RDFauthor
 ontowiki/src/libraries/Zend
