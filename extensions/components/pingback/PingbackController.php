@@ -9,6 +9,8 @@ class PingbackController extends OntoWiki_Controller_Component
     protected $_targetGraph = null;
     protected $_sourceRdf = null;
     
+    private $_dbChecked = false;
+    
 	public function pingAction()
     {
         $this->_logInfo('Pingback Server Init.'); 
@@ -41,11 +43,6 @@ class PingbackController extends OntoWiki_Controller_Component
         }
 
         $config = $this->_privateConfig;
-        
-        $versioning = Erfurt_App::getInstance()->getVersioning();
-        $versioning->setUserUri($sourceUri);
-        $versioning->setLimit(1000000);
-        
         $foundPingbackTriples = array();
 
 		// 1. Try to dereference the source URI as RDF/XML
@@ -91,6 +88,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		    }
 	    }
 	    
+	    $versioning = Erfurt_App::getInstance()->getVersioning();
 	    $versioning->startAction(array(
             'type' => '9000',
             'modeluri' => $this->_targetGraph,
@@ -170,6 +168,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		
 		$this->_logInfo('Pingback registered.');
 		$versioning->endAction();
+		
 		return 'Pingback has been registered... Keep spinning the Data Web ;-)';
 	}
 	
@@ -180,6 +179,9 @@ class PingbackController extends OntoWiki_Controller_Component
 	    }
 	    
 		$store = Erfurt_App::getInstance()->getStore();
+		
+		$sql = 'INSERT INTO ow_pingback_pingbacks (source, target, relation) VALUES ("' . $s . '", "' . $o . '", "' . $p . '")';
+		$this->_query($sql);
 		
 		$store->addStatement(
 		    $this->_targetGraph,
@@ -217,7 +219,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	        $graph = $event->trigger();
 	        if ($graph) {
 	            $this->_targetGraph = $graph;
-	            // If we get a target graph from linked data plugin, we no that the target uri exists, sinc
+	            // If we get a target graph from linked data plugin, we no that the target uri exists, since
 	            // getGraphsUsingResource ist used by store.
 	            return true;
 	        } else {
@@ -228,63 +230,35 @@ class PingbackController extends OntoWiki_Controller_Component
 	
 	function _deleteInvalidPingbacks($sourceUri, $targetUri, $foundPingbackTriples = array())
 	{
-	    $versioning = Erfurt_App::getInstance()->getVersioning();
-	    $history = $versioning->getHistoryForUser($sourceUri);
+	    $sql = 'SELECT * FROM ow_pingback_pingbacks WHERE source="' . $sourceUri . '" AND target="' . $targetUri . '"';
+	    $result = $this->_query($sql);
+	    
 	    $removed = false;
-        foreach ($history as $hItem) {
-            if ($hItem['resource'] === $sourceUri) {
-                $details = $versioning->getDetailsForAction($hItem['id']);
-                if (!is_array($details)) {
-                    continue;
-                }
-                if (count($details) === 0) {
-                    continue;
-                }
-                
-                $payload = unserialize($payloadResult[0]['statement_hash']);
-                if (!is_array($payload)) {
-                    continue;
-                }
-                if (!isset($payload[$sourceUri])) {
-                    continue;
-                }
-                
-                $contained = false;
-                foreach ($foundPingbackTriples as $triple) {
-                    if (isset($payload[$triple['s']])) {
-                        $pArray = $payload[$triple['s']];
-                        if (isset($pArray[$triple['p']])) {
-                            $oArray = $pArray[$triple['p']];
-                            foreach ($oArray as $oSpec) {
-                                if (($oSpec['type'] === 'uri') && ($oSpec['value'] === $triple['o'])) {
-                                    $contained = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (!$contained && ($this->_targetGraph !== null)) {
-                    // Remove it...
-                    $store = Erfurt_App::getInstance()->getStore();
-            		$s = $sourceUri; 
-                    $p = null;
-                    $o = null;
-                    foreach ($payload[$s] as $pArray) {
-                        foreach ($pArray as $p1 => $oArray) {
-                            $p = $p1;
-                            $o = $oArray[0];
-                            break;
-                        }
-                    }
-                    
-            		$store->deleteMatchingStatements($this->_targetGraph, $s, $p, $o, array('use_ac' => false));
-            		$removed = true;
-                }
-            }
-        }
-        
-        return $removed;
+	    foreach ($result as $row) {
+	        $found = false;
+	        foreach ($foundPingbackTriples as $triple) {
+	            if ($triple['p'] === $row['p']) {
+	                $found = true;
+	                break;
+	            }
+	        }
+	        
+	        if (!$found) {
+	            $sql = 'DELETE FROM ow_pingback_pingbacks WHERE id=' . $row['id'];
+	            $this->_query($sql);
+	            
+	            $oSpec = array(
+	                'value' => $targetUri,
+	                'type'  => 'uri'
+	            );
+	            
+	            $store->deleteMatchingStatements($this->_targetGraph, $sourceUri, $row['relation'], $oSpec, array('use_ac' => false));
+        		$removed = true;
+
+	        }
+	    }
+	    
+	    return $removed;
 	}
 	
 	protected function _determineInverseProperty($propertyUri)
@@ -391,17 +365,51 @@ class PingbackController extends OntoWiki_Controller_Component
 	
 	protected function _pingbackExists($s, $p, $o)
     {
-        if ($this->_targetGraph === null) {
-            return false;
+        $sql = 'SELECT * FROM ow_pingback_pingbacks WHERE source="' . $s . '" AND target="' . $o . '" AND relation="' . $p . '" LIMIT 1';
+        $result = $this->_query($sql);
+        if (is_array($result) && (count($result) === 1)) {
+            return true;
         }
         
-        $store = Erfurt_App::getInstance()->getStore();
-        $sparql = 'SELECT ?s FROM <' . $this->_targetGraph . '> WHERE { ?s <' . $p . '> <' . $o . '> . FILTER(sameTerm(?s, <' . $s . '>))} LIMIT 1';
-        	
-		require_once 'Erfurt/Sparql/SimpleQuery.php';
-		$query = Erfurt_Sparql_SimpleQuery::initWithString($sparql);
-		$result = $store->sparqlQuery($query, array('use_ac' => false));
-		
-		return (boolean)$result;
+        return false;
     }
+    
+    private function _checkDb()
+    {
+        if ($this->_dbChecked) {
+	        return;
+	    }
+	    
+	    $store = Erfurt_App::getInstance()->getStore();
+	    $sql = 'SELECT * FROM ow_pingback_pingbacks LIMIT 1';
+	    $result = $store->sqlQuery($sql);
+	    if ($result === false) {
+	        $this->_createTable();
+	    }
+	    
+	    $this->_dbChecked = true;
+    }
+    
+    private function _createTable()
+    {
+        $store = Erfurt_App::getInstance()->getStore();
+        
+        $sql = 'CREATE TABLE IF NOT EXISTS ow_pingback_pingbacks (
+	        id TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	        source    VARCHAR(255) COLLATE ascii_bin NOT NULL,
+	        target    VARCHAR(255) COLLATE ascii_bin NOT NULL,
+	        relation  VARCHAR(255) COLLATE ascii_bin NOT NULL
+	    );';
+	    
+	    return $store->sqlQuery($sql);
+    }
+    
+    protected function _query($sql)
+    {
+        $this->_checkDb();
+        
+        $store = Erfurt_App::getInstance()->getStore();
+        return $store->sqlQuery($sql);
+    }
+
 }
