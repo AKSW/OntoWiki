@@ -264,44 +264,63 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             break;
                     }
                     
-                    // create the "has more link" (used for area context menu as well)
-                    if (!isset($this->_predicateResults[$graph][$predicateUri]['has_more_link'])) {
-                        $hasMoreUrl = new OntoWiki_Url(array('route' => 'instances', 'action' => 'list'), array());
-                        $filterExp = json_encode(array(
-                            'filter' => array(
-                                array (
-                                    'action' => 'add',
-                                    'mode' => 'box',
-                                    'id' => 'allvalues',
-                                    'property' => $predicateUri,
-                                    'isInverse' => true,
-                                    'propertyLabel' => "value",
-                                    'filter' => 'equals',
-                                    'value1' => $this->_uri,
-                                    'value2' => null,
-                                    'valuetype' => 'uri',
-                                    'literaltype' => null,
-                                    'hidden' => false
-                                )
-                            )
-                        ));
 
-                        $hasMoreUrl->setParam(
-                            'instancesconfig',
-                            $filterExp
-                        )->setParam(
-                            'init',
-                            true
-                        );
-
-                        $this->_predicateResults[$graph][$predicateUri]['has_more_link'] = (string)$hasMoreUrl;
-                    }
 
                     // push it only if it doesn't exceed number of items to display
                     if (count($this->_valueResults[$graph][$predicateUri]) < OW_SHOW_MAX) {
                         array_push($this->_valueResults[$graph][$predicateUri], $value);
                     } else {
-                        $this->_predicateResults[$graph][$predicateUri]['has_more'] = true;                        
+                        // create the "has more link" (used for area context menu as well)
+                        // do it only once per predicate
+                        if (!isset($this->_predicateResults[$graph][$predicateUri]['has_more_link'])) {
+                            //when all values are literal, we dont use a link to the list,but to the query editor
+                            $allValuesAreLiterals = true;
+                            foreach($this->_valueResults[$graph][$predicateUri] as $value){
+                                if(isset($value['uri'])){
+                                    $allValuesAreLiterals = false;
+                                }
+                            }
+                            if(!$allValuesAreLiterals){
+                                $hasMoreUrl = new OntoWiki_Url(array('route' => 'instances', 'action' => 'list'), array());
+                                $filterExp = json_encode(array(
+                                    'filter' => array(
+                                        array (
+                                            'action' => 'add',
+                                            'mode' => 'box',
+                                            'id' => 'allvalues',
+                                            'property' => $predicateUri,
+                                            'isInverse' => true,
+                                            'propertyLabel' => "value",
+                                            'filter' => 'equals',
+                                            'value1' => $this->_uri,
+                                            'value2' => null,
+                                            'valuetype' => 'uri',
+                                            'literaltype' => null,
+                                            'hidden' => false
+                                        )
+                                    )
+                                ));
+
+                                $hasMoreUrl->setParam(
+                                    'instancesconfig',
+                                    $filterExp
+                                )->setParam(
+                                    'init',
+                                    true
+                                );
+                            } else {
+                                $hasMoreUrl = new OntoWiki_Url(array('controller' => 'model', 'action' => 'query'), array());
+                                $hasMoreUrl->setParam(
+                                    'query',
+                                    'SELECT ?value WHERE {<'.$this->_uri.'> <'.$predicateUri.'> ?value}'
+                                )->setParam(
+                                    'immediate',
+                                    true
+                                );
+                            }
+                            $this->_predicateResults[$graph][$predicateUri]['has_more'] = true;
+                            $this->_predicateResults[$graph][$predicateUri]['has_more_link'] = (string)$hasMoreUrl;
+                        }
                     }
                 }
             }

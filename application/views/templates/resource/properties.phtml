@@ -48,7 +48,7 @@
 						<?php if ($hasContexMenu): ?>
 							<div class="contextmenu">
 								<a class="item"
-								   href="<?php echo $currentPredicate['has_more_link'] ?>">
+								   href="<?php echo (isset($currentPredicate['has_more_link']) ? $currentPredicate['has_more_link'] : "") ?>">
 									<span class="icon icon-list" title="Show as List">
 										<span>Show as List</span>
 									</span>
