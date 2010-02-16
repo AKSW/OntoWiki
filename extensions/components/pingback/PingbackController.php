@@ -239,7 +239,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	    foreach ($result as $row) {
 	        $found = false;
 	        foreach ($foundPingbackTriples as $triple) {
-	            if ($triple['p'] === $row['p']) {
+	            if ($triple['p'] === $row['relation']) {
 	                $found = true;
 	                break;
 	            }
