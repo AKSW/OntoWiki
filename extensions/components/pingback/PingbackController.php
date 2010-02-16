@@ -230,6 +230,8 @@ class PingbackController extends OntoWiki_Controller_Component
 	
 	function _deleteInvalidPingbacks($sourceUri, $targetUri, $foundPingbackTriples = array())
 	{
+	    $store = Erfurt_App::getInstance()->getStore();
+	    
 	    $sql = 'SELECT * FROM ow_pingback_pingbacks WHERE source="' . $sourceUri . '" AND target="' . $targetUri . '"';
 	    $result = $this->_query($sql);
 	    
@@ -403,7 +405,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	        relation  VARCHAR(255) COLLATE ascii_bin NOT NULL
 	    );';
 	    
-	    return $store->sqlQuery($sql);
+	    return $this->_query($sql);
     }
     
     protected function _query($sql)
@@ -411,7 +413,14 @@ class PingbackController extends OntoWiki_Controller_Component
         $this->_checkDb();
         
         $store = Erfurt_App::getInstance()->getStore();
-        return $store->sqlQuery($sql);
+        
+        try {
+            $result = $store->sqlQuery($sql);
+        } catch (Exception $e) {
+            return false;
+        }
+        
+        return $result;
     }
 
 }
