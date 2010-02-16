@@ -144,7 +144,7 @@ class PingbackController extends OntoWiki_Controller_Component
             } else {
                 $this->_logInfo('All existing Pingbacks removed.');
                 $versioning->endAction();
-                return;
+                return 'Existing Pingbacks have been removed.';
             }
         }
 		
@@ -169,7 +169,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		$this->_logInfo('Pingback registered.');
 		$versioning->endAction();
 		
-		return 'Pingback has been registered... Keep spinning the Data Web ;-)';
+		return 'Pingback has been registered or updated... Keep spinning the Data Web ;-)';
 	}
 	
 	protected function _addPingback($s, $p, $o) 
