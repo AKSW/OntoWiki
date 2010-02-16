@@ -241,6 +241,13 @@ class PingbackController extends OntoWiki_Controller_Component
                 }
                 
                 $payload = unserialize($payloadResult[0]['statement_hash']);
+                if (!is_array($payload)) {
+                    continue;
+                }
+                if (!isset($payload[$sourceUri])) {
+                    continue;
+                }
+                
                 $contained = false;
                 foreach ($foundPingbackTriples as $triple) {
                     if (isset($payload[$triple['s']])) {
@@ -262,7 +269,7 @@ class PingbackController extends OntoWiki_Controller_Component
             		$s = $sourceUri; 
                     $p = null;
                     $o = null;
-                    foreach($payload[$sourceUri] as $pArray) {
+                    foreach ($payload[$s] as $pArray) {
                         foreach ($pArray as $p1 => $oArray) {
                             $p = $p1;
                             $o = $oArray[0];
@@ -270,7 +277,7 @@ class PingbackController extends OntoWiki_Controller_Component
                         }
                     }
                     
-            		$store->deleteMatchingStatement($this->_targetGraph, $s, $p, $o, array('use_ac' => false));
+            		$store->deleteMatchingStatements($this->_targetGraph, $s, $p, $o, array('use_ac' => false));
             		$removed = true;
                 }
             }
