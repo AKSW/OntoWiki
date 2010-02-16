@@ -139,6 +139,11 @@ class PingbackPlugin extends OntoWiki_Plugin
 	        return null;
 	    }
 	    if (isset($headers['X-Pingback'])) {
+	        if (is_array($headers['X-Pingback'])) {
+	            $this->_logInfo($headers['X-Pingback']);
+	            return $headers['X-Pingback'][0];
+	        } 
+	        
             return $headers['X-Pingback'];
         }
 	    
