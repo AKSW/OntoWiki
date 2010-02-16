@@ -137,37 +137,7 @@ class PingbackController extends OntoWiki_Controller_Component
 		// 4. If still nothing was found, the sourceUri does not contain any link to targetUri
 		if (count($foundPingbackTriples) === 0) {
             // Remove all existing pingback triples from that sourceUri.
-            $removed = false;
-            $history = $versioning->getHistoryForUser($sourceUri);
-            foreach ($history as $hItem) {
-                if ($hItem['resource'] === $sourceUri) {
-                    $details = $versioning->getDetailsForAction($hItem['id']);
-                    if (count($details) === 0) {
-                        continue;
-                    }
-                    $payload = unserialize($payloadResult[0]['statement_hash']);
-                    $contained = false;
-                    if (!$contained && ($this->_targetGraph !== null)) {
-                        // Remove it...
-                        $store = Erfurt_App::getInstance()->getStore();
-                        
-                        $s = $sourceUri; 
-                        $p = null;
-                        $o = null;
-                        foreach($payload[$sourceUri] as $pArray) {
-                            foreach ($pArray as $p1 => $oArray) {
-                                $p = $p1;
-                                $o = $oArray[0];
-                                break;
-                            }
-                        }
-                        
-                        
-                		$store->deleteMatchingStatement($this->_targetGraph, $s, $p, $o, array('use_ac' => false));
-                		$removed = true;
-                    }
-                }
-            }
+            $removed = $this->_deleteInvalidPingbacks($sourceUri, $targetUri);
             
             if (!$removed) {
                 $this->_logError('0x0011');
@@ -178,8 +148,6 @@ class PingbackController extends OntoWiki_Controller_Component
                 $versioning->endAction();
                 return;
             }
-            
-            
         }
 		
 	    // 6. Iterate through pingback triples candidates and add those, wo are not already registered.
@@ -191,50 +159,8 @@ class PingbackController extends OntoWiki_Controller_Component
 		    }
 		}
         
-        $removed = false;
         // Remove all existing pingbacks from that source uri, that were not found this time.
-        $history = $versioning->getHistoryForUser($sourceUri);
-        foreach ($history as $hItem) {
-            if ($hItem['resource'] === $sourceUri) {
-                $details = $versioning->getDetailsForAction($hItem['id']);
-                if (count($details) === 0) {
-                    continue;
-                }
-                $payload = unserialize($payloadResult[0]['statement_hash']);
-                $contained = false;
-                foreach ($foundPingbackTriples as $triple) {
-                    if (isset($payload[$triple['s']])) {
-                        $pArray = $payload[$triple['s']];
-                        if (isset($pArray[$triple['p']])) {
-                            $oArray = $pArray[$triple['p']];
-                            foreach ($oArray as $oSpec) {
-                                if (($oSpec['type'] === 'uri') && ($oSpec['value'] === $triple['o'])) {
-                                    $contained = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (!$contained && ($this->_targetGraph !== null)) {
-                    // Remove it...
-                    $store = Erfurt_App::getInstance()->getStore();
-            		$s = $sourceUri; 
-                    $p = null;
-                    $o = null;
-                    foreach($payload[$sourceUri] as $pArray) {
-                        foreach ($pArray as $p1 => $oArray) {
-                            $p = $p1;
-                            $o = $oArray[0];
-                            break;
-                        }
-                    }
-                    
-            		$store->deleteMatchingStatement($this->_targetGraph, $s, $p, $o, array('use_ac' => false));
-            		$removed = true;
-                }
-            }
-        }
+        $removed = $this->_deleteInvalidPingbacks($sourceUri, $targetUri, $foundPingbackTriples);
         
         if (!$added && !$removed) {
             $this->_logError('0x0030');
@@ -297,6 +223,60 @@ class PingbackController extends OntoWiki_Controller_Component
 	            return false;
 	        }
 	    }
+	}
+	
+	function _deleteInvalidPingbacks($sourceUri, $targetUri, $foundPingbackTriples = array())
+	{
+	    $versioning = Erfurt_App::getInstance()->getVersioning();
+	    $history = $versioning->getHistoryForUser($sourceUri);
+	    $removed = false;
+        foreach ($history as $hItem) {
+            if ($hItem['resource'] === $sourceUri) {
+                $details = $versioning->getDetailsForAction($hItem['id']);
+                if (!is_array($details)) {
+                    continue;
+                }
+                if (count($details) === 0) {
+                    continue;
+                }
+                
+                $payload = unserialize($payloadResult[0]['statement_hash']);
+                $contained = false;
+                foreach ($foundPingbackTriples as $triple) {
+                    if (isset($payload[$triple['s']])) {
+                        $pArray = $payload[$triple['s']];
+                        if (isset($pArray[$triple['p']])) {
+                            $oArray = $pArray[$triple['p']];
+                            foreach ($oArray as $oSpec) {
+                                if (($oSpec['type'] === 'uri') && ($oSpec['value'] === $triple['o'])) {
+                                    $contained = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!$contained && ($this->_targetGraph !== null)) {
+                    // Remove it...
+                    $store = Erfurt_App::getInstance()->getStore();
+            		$s = $sourceUri; 
+                    $p = null;
+                    $o = null;
+                    foreach($payload[$sourceUri] as $pArray) {
+                        foreach ($pArray as $p1 => $oArray) {
+                            $p = $p1;
+                            $o = $oArray[0];
+                            break;
+                        }
+                    }
+                    
+            		$store->deleteMatchingStatement($this->_targetGraph, $s, $p, $o, array('use_ac' => false));
+            		$removed = true;
+                }
+            }
+        }
+        
+        return $removed;
 	}
 	
 	protected function _determineInverseProperty($propertyUri)
