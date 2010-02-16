@@ -382,8 +382,10 @@ class PingbackController extends OntoWiki_Controller_Component
 	    
 	    $store = Erfurt_App::getInstance()->getStore();
 	    $sql = 'SELECT * FROM ow_pingback_pingbacks LIMIT 1';
-	    $result = $store->sqlQuery($sql);
-	    if ($result === false) {
+	    
+	    try {
+	        $result = $store->sqlQuery($sql);
+	    } catch (Exception $e) {
 	        $this->_createTable();
 	    }
 	    
