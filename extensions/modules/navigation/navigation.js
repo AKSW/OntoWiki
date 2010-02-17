@@ -297,7 +297,7 @@ function navigationPrepareList () {
     
     // the links to deeper navigation entries
     $('.navDeeper').click(function(event) {
-        navigationEvent('navigateDeeper', $(this).parent().attr('about'));
+        navigationEvent('navigateDeeper', $(this).attr('about'));
         return false;
     });
 
@@ -310,6 +310,12 @@ function navigationPrepareList () {
     // the link to higher level
     $('.navBack').click(function(event){
         navigationEvent('navigateHigher');
+        return false;
+    })
+
+    // the link to the instance list
+    $('.navList').click(function(event){
+        window.location.href = $(this).parent().attr('href');
         return false;
     })
 }

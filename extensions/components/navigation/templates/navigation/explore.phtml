@@ -49,11 +49,11 @@ $odd = true;
         <ol class="bullets-none separated has-contextmenus-block">
         <?php foreach ($this->entries as $uri => $entry): ?>
             <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
-                <a class="navigation"
+                <a class="navigation navDeeper"
                    href="<?php echo $entry['link'] ?>"
                    about="<?php echo $uri ?>"
                    ><?php echo $entry['title'] ?>
-                   <span class="navDeeper icon icon-arrow-next" title="next level">
+                   <span class="navList icon icon-list" title="next level">
                     <span>[next level]</span>
                    </span>
                 </a>
