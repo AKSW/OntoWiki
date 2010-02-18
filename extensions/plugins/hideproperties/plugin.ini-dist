@@ -6,5 +6,4 @@ author      = "Niederstaetter Michael ,  Maier Christian"
 1 = onPropertiesActionData
 
 [private]
-sort.method     = "rdf"
-sort.property   = "http://ns.ontowiki.net/SysOnt/hidden"
+hide.property   = "http://ns.ontowiki.net/SysOnt/hidden"
