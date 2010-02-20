@@ -5,9 +5,23 @@
 }
 
 #navigation .icon { width:0.7em; }
+#navigation .icon.navList
+{
+    width:1em;
+    position:absolute;
+    right:1.5em;
+    top:50%;
+    margin-top:-0.5em;
+}
 
 #navigation a .icon, #navigation a.icon { opacity:0.4; }
 #navigation a:hover .icon, #navigation a.icon:hover { opacity:0.6; text-decoration:none !important;}
 #navigation a:hover .icon:hover { opacity:1; }
 
+#navigation a span.navDeeperIcon { opacity:0.25; }
+#navigation a span.navDeeperIcon:hover { opacity:1; }
 
+#navigation .has-contextmenus-block li a
+{
+    padding-right:3em;
+}
