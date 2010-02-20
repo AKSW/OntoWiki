@@ -17,7 +17,12 @@ require_once 'OntoWiki/Component/Helper.php';
 class MapHelper extends OntoWiki_Component_Helper
 {
 
-    private $instances = null;
+    /**
+     * Object holding the Instances with direct geo properties (e.g.: geo:long, geo:lat)
+     * and the other one with indirect geo properties (e.g.: foaf:based_near)
+     */
+    private $dirInstances = null;
+    private $indInstances = null;
 
     public function init()
     {
@@ -56,11 +61,8 @@ class MapHelper extends OntoWiki_Component_Helper
         /*
          * don't show on model, application, error, debug, module and index controller
          */
-
         $owApp = OntoWiki::getInstance();
         $session = $owApp->session;
-
-//        $front->getRequest()->controller()i
 
         $front  = Zend_Controller_Front::getInstance();
 
@@ -76,51 +78,68 @@ class MapHelper extends OntoWiki_Component_Helper
             $lat2Var        = new Erfurt_Sparql_Query2_Var('lat2');
             $long2Var       = new Erfurt_Sparql_Query2_Var('long2');
 
-            if($this->instances === null) {    
-                $this->instances = clone $session->instances;
+            if($this->dirInstances === null) {    
+                $this->dirInstances = clone $session->instances;
                 $owApp->logger->debug('MapHelper/shouldShow: clone this->_session->instances');
             } else {
-                $owApp->logger->debug('MapHelper/shouldShow: this->instances already set');
+                $owApp->logger->debug('MapHelper/shouldShow: this->dirInstances already set');
                 // don't load instances again
             }
 
-            $query  = $this->instances->getResourceQuery();
-            $owApp->logger->debug('MapHelper/shouldShow: session query: ' . var_export((string)$query, true));
+            if($this->indInstances === null) {    
+                $this->indInstances = clone $session->instances;
+                $owApp->logger->debug('MapHelper/shouldShow: clone this->_session->instances');
+            } else {
+                $owApp->logger->debug('MapHelper/shouldShow: this->indInstances already set');
+                // don't load instances again
+            }
 
-            $query->setQueryType(Erfurt_Sparql_Query2::typeSelect); /* would like to ask but ask lies */
-            $this->instances->setLimit(1);
-            $this->instances->setOffset(0);
+            $this->dirInstances->setLimit(1);
+            $this->dirInstances->setOffset(0);
+            $this->indInstances->setLimit(1);
+            $this->indInstances->setOffset(0);
 
-            $query->removeAllOptionals()->removeAllProjectionVars();
+            /**
+             * Direct Query, to check for direct geoproperties
+             */
+            $dirQuery  = $this->dirInstances->getResourceQuery();
+            $dirQuery->setQueryType(Erfurt_Sparql_Query2::typeSelect); /* would like to ask but ask lies */
+            $dirQuery->removeAllOptionals()->removeAllProjectionVars();
 
-            $query->addProjectionVar($this->instances->getResourceVar());
-            $query->addProjectionVar($latVar);
-            $query->addProjectionVar($longVar);
-            $query->addProjectionVar($lat2Var);
-            $query->addProjectionVar($long2Var);
+            /**
+             * Indirect Query, to check for indirect geoproperties
+             */
+            $indQuery  = $this->indInstances->getResourceQuery();
+            $indQuery->setQueryType(Erfurt_Sparql_Query2::typeSelect); /* would like to ask but ask lies */
+            $indQuery->removeAllOptionals()->removeAllProjectionVars();
 
-            $queryEu  = new Erfurt_Sparql_Query2_GroupGraphPattern();
-            $queryUsa = new Erfurt_Sparql_Query2_GroupGraphPattern();
+            $dirQuery->addProjectionVar($this->dirInstances->getResourceVar());
+            $dirQuery->addProjectionVar($latVar);
+            $dirQuery->addProjectionVar($longVar);
+
+            $indQuery->addProjectionVar($this->indInstances->getResourceVar());
+            $indQuery->addProjectionVar($lat2Var);
+            $indQuery->addProjectionVar($long2Var);
+
+            $dirQuery->addTriple($this->dirInstances->getResourceVar(), $latProperty, $latVar);
+            $dirQuery->addTriple($this->dirInstances->getResourceVar(), $longProperty, $longVar);
 
             $node     = new Erfurt_Sparql_Query2_Var('node'); // should be $node = new Erfurt_Sparql_Query2_BlankNode('bn'); but i heard this is not supported yet by zendb
-            $queryEu->addTriple($this->instances->getResourceVar(), $latProperty, $latVar);
-            $queryEu->addTriple($this->instances->getResourceVar(), $longProperty, $longVar);
-            $queryUsa->addTriple($this->instances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
-            $queryUsa->addTriple($node, $latProperty, $lat2Var);
-            $queryUsa->addTriple($node, $longProperty, $long2Var);
+            $indQuery->addTriple($this->indInstances->getResourceVar(), new Erfurt_Sparql_Query2_Var('pred') , $node);
+            $indQuery->addTriple($node, $latProperty, $lat2Var);
+            $indQuery->addTriple($node, $longProperty, $long2Var);
 
-            $queryUno = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
-
-            $queryUno->addElement($queryEu)->addElement($queryUsa);
-            $query->addElement($queryUno);
-            $owApp->logger->debug('MapHelper/shouldShow: sent "' . $query . '" to know if SpacialThings are available.');
+            $owApp->logger->debug('MapHelper/shouldShow: sent "' . $dirQuery . '" to know if SpacialThings are available.');
+            $owApp->logger->debug('MapHelper/shouldShow: sent "' . $indQuery . '" to know if SpacialThings are available.');
 
             /* get result of the query */
-            $result   = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
+            $dirResult   = $this->_owApp->erfurt->getStore()->sparqlQuery($dirQuery);
+            $indResult   = $this->_owApp->erfurt->getStore()->sparqlQuery($indQuery);
 
-            $owApp->logger->debug('MapHelper/shouldShow: got respons "' . var_export($result, true) . '".');
+            $owApp->logger->debug('MapHelper/shouldShow: got respons "' . var_export($dirResult, true) . '".');
+            $owApp->logger->debug('MapHelper/shouldShow: got respons "' . var_export($indResult, true) . '".');
 
-            if ($result) {
+            if ($dirResult OR $indResult) {
                 $result = true;
             } else {
                 $result = false;
