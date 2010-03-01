@@ -221,6 +221,15 @@ class OntoWiki_Toolbar
             $class = null;
         }
         
+        // set class
+        if (array_key_exists('+class', $options)) {
+            $class = $class
+                   . ' ' 
+                   . $options['+class'];
+        } else {
+            $class = null;
+        }
+        
         // set id
         if (array_key_exists('id', $options)) {
             $id = 'id="' . $options['id'] . '"';
