@@ -2057,3 +2057,7 @@ a.open:hover {
     background-position: 0 0.4em;
 }
 
+.hidden {
+    display: none;
+}
+

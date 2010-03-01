@@ -206,7 +206,6 @@ $(document).ready(function() {
         if ($(this).hasClass('active')) {
             RDFauthor.cancelEditing();
             
-            
             $('.edit').each(function() {
                 $(this).fadeOut(effectTime);
             })
@@ -366,9 +365,11 @@ $(document).ready(function() {
     // }
     
     // inline widgets
-    $('.inline-edit-local').live('click', function() {
-        // RDFauthor.startInline($(this).closest('.editable').get(0));
-    })
+    // $('.inline-edit-local').live('click', function() {
+    //     RDFauthor.startInline($(this).closest('.editable').get(0));
+    // });
+    
+    $('.hidden').hide();
     
     //-------------------------------------------------------------------------
     //---- liveQuery triggers
@@ -387,7 +388,7 @@ $(document).ready(function() {
         $(this).createResourceMenuToggle();
     });
 
-    // All RDFa elements with @aboutor or @resource attribute are resources
+    // All RDFa elements with @about or @resource attribute are resources
     $('*[about]').livequery(function() {
         $(this).addClass('Resource');
     });
