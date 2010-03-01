@@ -72,19 +72,22 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
             $controllerName = $this->getDefaultControllerName();
             $request->setControllerName($controllerName);
         }
-
+        
+        // Zend 1.10+ changes
         $className = $this->formatControllerName($controllerName);
 
         $controllerDirs      = $this->getControllerDirectory();
-        $this->_curModule    = $this->_defaultModule;
-        $this->_curDirectory = $controllerDirs[$this->_defaultModule];
         $module = $request->getModuleName();
-
         if ($this->isValidModule($module)) {
             $this->_curModule    = $module;
             $this->_curDirectory = $controllerDirs[$module];
+        } elseif ($this->isValidModule($this->_defaultModule)) {
+            $request->setModuleName($this->_defaultModule);
+            $this->_curModule    = $this->_defaultModule;
+            $this->_curDirectory = $controllerDirs[$this->_defaultModule];
         } else {
-            $request->setModuleName($this->_curModule);
+            require_once 'Zend/Controller/Exception.php';
+            throw new Zend_Controller_Exception('No default module defined for this application');
         }
 
         // PATCH
@@ -110,22 +113,21 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
      * @return boolean
      */
     public function isDispatchable(Zend_Controller_Request_Abstract $request)
-    {
+    {        
+        // Zend 1.10+ changes
         $className = $this->getControllerClass($request);
-        if ($className) {
-            if (class_exists($className, false)) {
-                return true;
-            }
-
-            $fileSpec    = $this->classToFilename($className);
-            $dispatchDir = $this->getDispatchDirectory();
-            $test        = $dispatchDir . DIRECTORY_SEPARATOR . $fileSpec;
-            // component controller found
-            if (Zend_Loader::isReadable($test)) {
-                // return that request is dispatchable
-                return true;
-            }
+        if (!$className) {
+            return false;
         }
+
+        if (class_exists($className, false)) {
+            return true;
+        }
+
+        $fileSpec    = $this->classToFilename($className);
+        $dispatchDir = $this->getDispatchDirectory();
+        $test        = $dispatchDir . DIRECTORY_SEPARATOR . $fileSpec;
+        return Zend_Loader::isReadable($test);
         
         /**
          * @trigger onIsDispatchable 
