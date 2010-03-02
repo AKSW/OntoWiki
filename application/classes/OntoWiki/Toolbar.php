@@ -229,7 +229,11 @@ class OntoWiki_Toolbar
                        . $addedClasses;
             }
         } else {
-            $class = null;
+            if (isset($addedClasses)) {
+                $class = $addedClasses;
+            } else {
+                $class = null;
+            }
         }
         
         // set id
