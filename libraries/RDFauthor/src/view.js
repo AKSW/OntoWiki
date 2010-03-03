@@ -23,7 +23,7 @@ function RDFauthorView(options) {
         addPropertyButtonTitle: 'Add Property', 
         showButtons: true, 
         showAddPropertyButton: true, 
-        animationTime: 250,   // ms
+        animationTime: 250, // ms
         id: 'rdfAuthorContainer', 
         rowContainerClass: 'rdfAuthorPropertyRows', 
         inline: false, 

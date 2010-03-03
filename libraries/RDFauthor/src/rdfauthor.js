@@ -177,8 +177,8 @@ RDFauthor = {
     }, 
     
     // fills the current view with property rows out of the databanks
-    createPropertyView: function (subject) {
-        var view = this.getView();
+    createPropertyView: function (subject, forceNew) {
+        var view = this.getView(forceNew);
         view.reset();
         
         // for all graphs
@@ -478,7 +478,7 @@ RDFauthor = {
     }, 
     
     // Creates and returns the RDFauthor view object used by this instance
-    getView: function () {
+    getView: function () {        
         if (null === this.view) {
             if ($('.modal-wrapper').length < 1) {
                 $('body').append('<div class="modal-wrapper" style="display:none"></div>');
@@ -504,8 +504,10 @@ RDFauthor = {
                 }, 
                 container: jModalWrapper
             });
+            
             // init view
             this.view = new RDFauthorView(options);
+            
             RDFauthor.loadStyleSheet(widgetBase + 'libraries/default.css', 'default.css');
             RDFauthor.loadStyleSheet(widgetBase + 'src/rdfauthor.css');
         }
@@ -686,10 +688,16 @@ RDFauthor = {
     
     // method to add a new property that is not contained in the RDFa
     newProperty: function () {
-        var view = this.getView();
-        var widgetInstance = new ResourceEdit(null, null, null, null, {propertyMode: true});
-        view.addWidgetInstance(widgetInstance);
+        // var view = this.getView();
+        // view.onAddProperty();
+        // var widgetInstance = new ResourceEdit(null, null, null, null, {propertyMode: true});
+        // view.addWidgetInstance(widgetInstance);
+        // view.display(this.options.animated);
+        
+        var subject = this.getDefaultResource();        
+        var view = this.createPropertyView(subject, true);
         view.display(this.options.animated);
+        view.onAddProperty();
     }, 
     
     // preforms a SPARQL query to the store accociated with the graph provided
@@ -772,7 +780,7 @@ RDFauthor = {
                     //     });
                     // }
                     
-                    if (sendAlways | true) {
+                    if (sendAlways) {
                         // send all triples
                         var added = this.databanks[graph];
                         jsonAdded = $.rdf.dump(added.triples(), {format: 'application/json'});

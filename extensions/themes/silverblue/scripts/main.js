@@ -155,7 +155,7 @@ $(document).ready(function() {
         // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
         // mainInnerContent.load(document.URL);
         // $('.edit-enable').click();
-    })
+    });
     
     $('.icon-edit').click(function() {
         var element = this;
@@ -203,13 +203,14 @@ $(document).ready(function() {
     
     // edit mode
     $('.edit-enable').click(function() {
-        if ($(this).hasClass('active')) {
-            RDFauthor.cancelEditing();
-            
-            $('.edit').each(function() {
-                $(this).fadeOut(effectTime);
-            })
-            $(this).removeClass('active');
+        var button = this;
+        if ($(button).hasClass('active')) {
+            window.location.href = window.location.href;
+            // RDFauthor.cancelEditing();
+            // $('.edit').each(function() {
+            //     $(this).fadeOut(effectTime);
+            // })
+            // $(button).removeClass('active');
         } else {
             loadRDFauthor(function () {
                 RDFauthor.setOptions({
@@ -229,7 +230,7 @@ $(document).ready(function() {
                         // reload whole page
                         window.location.href = window.location.href;
                     }, 
-                    onCancel: function () {
+                    onCancel: function () {                        
                         $('.edit').each(function() {
                             $(this).fadeOut(effectTime);
                         });
@@ -242,14 +243,15 @@ $(document).ready(function() {
                     'defaultResource': defaultResource
                 });
                 
-                // RDFauthor.startEditing();
-                RDFauthor.startInline('*[about] td:nth-child(2)');
+                RDFauthor.startEditing();
+                // RDFauthor.startInline('*[about] td:nth-child(2)');
                 // RDFauthor.startInline('table tr td');
                 
-                $('.edit').each(function() {
-                    $(this).fadeIn(effectTime);
-                })
-                $(this).addClass('active');
+                // $('.edit').each(function() {
+                //     $(this).fadeIn(effectTime, function() {
+                //         $(button).addClass('active');
+                //     });
+                // })
             });
         }
     });
@@ -280,7 +282,7 @@ $(document).ready(function() {
             cancelButtonTitle: 'Cancel'
         });
         
-        RDFauthor.newProperty();
+        // RDFauthor.newProperty();
     });
     
     $('.tabs').children('li').children('a').click(function() {

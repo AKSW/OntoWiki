@@ -163,6 +163,9 @@ class ResourceController extends OntoWiki_Controller_Base
                     ->appendButton(OntoWiki_Toolbar::DELETE, $params);
             
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
+                    ->prependButton(OntoWiki_Toolbar::ADD, array('name' => 'Add Property', '+class' => 'hidden edit property-add'));
+            
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
                     ->prependButton(OntoWiki_Toolbar::CANCEL, array('+class' => 'hidden'))
                     ->prependButton(OntoWiki_Toolbar::SAVE, array('+class' => 'hidden'));
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
