@@ -129,6 +129,12 @@ LiteralEdit.prototype.makeOptionString = function(options, selected, replaceNS) 
         if (current) {
             // TODO: do something
         }
+        
+        // Firefox hack
+        if (display == '') {
+            display = '[none]';
+        }
+        
         optionString += '<option value="' + options[i] + '"' + (current ? 'selected="selected"' : '') + '>' + display + '</option>';
     }
     

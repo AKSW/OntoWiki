@@ -527,6 +527,15 @@ RDFauthor = {
     
     // returns languages to be used by widgets
     getLiteralLanguages: function () {
+        // return {
+        //     'de': 'de', 
+        //     'en': 'en', 
+        //     'fr': 'fr', 
+        //     'nl': 'nl', 
+        //     'es': 'es', 
+        //     'it': 'it', 
+        //     'cn': 'cn'
+        // }
         return ['de', 'en', 'fr', 'nl', 'es', 'it', 'cn'];
     }, 
     
