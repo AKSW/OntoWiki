@@ -38,8 +38,8 @@ class SindicePlugin extends OntoWiki_Plugin
         $sindiceResult = json_decode($response->getBody(), true);
         $result = array();
 
-        // unfortunatly json_last_error is PHP >= 5.3.0 so this is not perfect
-        // sometimes we should us ---> if (json_last_error() == JSON_ERROR_NONE) {
+        // unfortunatly json_last_error is PHP >= 5.3.0, so this is not perfect
+        // and someday we should us ---> if (json_last_error() == JSON_ERROR_NONE) {
         if ($sindiceResult != null) {
             // TODO Keep order of original sindice result!!!
             foreach ($sindiceResult['entries'] as $row) {
