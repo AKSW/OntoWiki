@@ -30,19 +30,24 @@ class SindicePlugin extends OntoWiki_Plugin
         require_once 'Zend/Http/Client.php';
         $client = new Zend_Http_Client($searchUri, array(
             'maxredirects'  => 2,
-            'timeout'       => 30
+            'timeout'       => 10
         ));
         $client->setHeaders('Accept', 'application/json');
         $response = $client->request();
             
         $sindiceResult = json_decode($response->getBody(), true);
         $result = array();
-// TODO Keep order of original sindice result!!! 
-        foreach ($sindiceResult['entries'] as $row) {
-            $title = implode(' - ', $row['title']);
-            $uri = $row['link'];
-            
-            $result[$uri] = str_replace('|', '&Iota;', $title) . '|' . $uri . '|' . $event->translate->_('Sindice Search');
+
+        // unfortunatly json_last_error is PHP >= 5.3.0 so this is not perfect
+        // sometimes we should us ---> if (json_last_error() == JSON_ERROR_NONE) {
+        if ($sindiceResult != null) {
+            // TODO Keep order of original sindice result!!!
+            foreach ($sindiceResult['entries'] as $row) {
+                $title = implode(' - ', $row['title']);
+                $uri = $row['link'];
+
+                $result[$uri] = str_replace('|', '&Iota;', $title) . '|' . $uri . '|' . $event->translate->_('Sindice Search');
+            }
         }
         
         return $result;
