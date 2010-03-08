@@ -927,91 +927,106 @@ class ServiceController extends Zend_Controller_Action
         }
 
         if (isset($this->_request->mode)) {
-            $workingModus = $this->_request->mode;
+            $workingMode = $this->_request->mode;
         } else {
-            $workingModus = 'resource';
+            $workingMode = 'resource';
         }
 
 
-        $newResourceURI = $model->getBaseUri(). 'newResource/' .md5(date('F j, Y, g:i:s:u a'));
+        $newResourceUri = $model->getBaseUri(). 'newResource/' .md5(date('F j, Y, g:i:s:u a'));
 
-        if ($workingModus == 'class') {
+        if ($workingMode == 'class') {
             $properties = $model->sparqlQuery('SELECT DISTINCT ?uri ?value {
                 ?s ?uri ?value.
                 ?s a <'.$parameter.'>.
-                } LIMIT 20 ');
-        } elseif ($workingModus == 'clone') {
+                } LIMIT 20 ', array('result_format' => 'extended'));
+        } elseif ($workingMode == 'clone') {
             # BUG: more than one values of a property are not supported right now
             # BUG: Literals are not supported right now
             $properties = $model->sparqlQuery('SELECT ?uri ?value {
                 <'.$parameter.'> ?uri ?value.
-                FILTER (isUri(?value))
-                } LIMIT 20 ');
+                #FILTER (isUri(?value))
+                } LIMIT 20 ', array('result_format' => 'extended'));
         } else { // resource
             $properties = $model->sparqlQuery('SELECT DISTINCT ?uri ?value {
                 <'.$parameter.'> ?uri ?value.
-                } LIMIT 20 ');
+                } LIMIT 20 ', array('result_format' => 'extended'));
         }
-
-        $output = (object) array();
+        
+        // empty object to hold data
+        $output        = new stdClass();
+        $newProperties = new stdClass();
+        
+        $properties = $properties['results']['bindings'];
+        
+        // feed title helper w/ URIs
+        $titleHelper = new OntoWiki_Model_TitleHelper($model);
+        $titleHelper->addResources($properties, 'uri');
+        
         if (!empty($properties)) {
-
-            // push all URIs to titleHelper
-            $titleHelper = new OntoWiki_Model_TitleHelper($model);
-            foreach($properties as $property) {
-                 $titleHelper->addResource( $property['uri'] );
-            }
-
-            $newProperties = (object) array();
-            foreach($properties as $property) {
-                $uri = $property['uri'];
-                $value = (object) array();
+            foreach ($properties as $property) {
                 
+                $currentUri   = $property['uri']['value'];
+                $currentValue = $property['value']['value'];
+                $currentType  = $property['value']['type'];
+
+                $value = new stdClass();
+                
+                if ($currentType == 'literal') {
+                    $currentValue = '"' . $currentValue . '"';
+                    
+                    if (isset($property['value']['datatype'])) {
+                        $value->datatype = $property['value']['datatype'];
+                    } else if (isset($property['value']['xml:lang'])) {
+                        $value->lang = $property['value']['xml:lang'];
+                    }
+                }
+
                 // return title from titleHelper
-                $value->title = $titleHelper->getTitle($uri);
-
-                if (($uri == EF_RDF_TYPE) && 
-                  (($workingModus == 'resource') || ($workingModus == 'clone')) ) {
-                    $value->value = $property['value'];
-                    $value->type = 'uri';
+                $value->title = $titleHelper->getTitle($currentUri);
+                
+                if ($currentUri == EF_RDF_TYPE) {
+                    switch ($workingMode) {
+                        case 'resource':
+                            /* fallthrough */
+                        case 'clone':
+                            $value->value  = $currentValue;
+                            break;
+                        case 'class':
+                            $value->value  = $parameter;
+                            break;
+                    }
+                    
+                    $value->type   = $currentType;
                     $value->hidden = true;
-                } elseif (($uri == EF_RDF_TYPE) && ($workingModus == 'class') ) {
-                    $value->value = $parameter;
-                    $value->type = 'uri';
-                    $value->hidden = true;
+                    
+                } else { // $currentUri != EF_RDF_TYPE
+                    if ($workingMode == 'clone') {
+                        $value->value = $currentValue;
+                        $value->type  = $currentType;
+                    }
                 }
-                if (($workingModus == 'clone')&&($uri != EF_RDF_TYPE)) {
-                    $value->type = 'uri';
-                    $value->value = $property['value'];
-                }
-
-                $newProperties->$uri = array ($value);
-            }
-
-            $output->$newResourceURI = $newProperties;
+                
+                $newProperties->$currentUri = array($value);
+            } // foreach
+            
+            $output->$newResourceUri = $newProperties;
         } else {
-            $newProperties = (object) array();
-            if ($workingModus == "class") {
-                $value = (object) array();
-                $uri = EF_RDF_TYPE;
+            if ($workingModus == 'class') {
+                // for classes, add the rdf:type property
+                $value = new stdClass();
                 $value->value = $parameter;
-                $value->type = 'uri';
+                $value->type;
                 $value->hidden = true;
-                $newProperties->$uri = array ($value);
-
-                $value = (object) array();
-                $uri = EF_RDFS_LABEL;
-                $value->type = 'literal';
-                $value->title = "label";
-                $newProperties->$uri = array ($value);
-            } else { // resource
-                $value = (object) array();
-                $uri = EF_RDFS_LABEL;
-                $value->type = 'literal';
-                $value->title = "label";
-                $newProperties->$uri = array ($value);
+                $newProperties->EF_RDF_TYPE = array($value);
             }
-            $output->$newResourceURI = $newProperties;
+            
+            $value = new stdClass();
+            $value->type = 'literal';
+            $value->title = 'label';
+            $newProperties->EF_RDFS_LABEL = array($value);
+            
+            $output->$newResourceUri = $newProperties;
         }
 
         // send the response
@@ -1020,6 +1035,6 @@ class ServiceController extends Zend_Controller_Action
         $response->sendResponse();
         exit;
     }
-
+    
 }
 
