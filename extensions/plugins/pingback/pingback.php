@@ -196,7 +196,7 @@ class PingbackPlugin extends OntoWiki_Plugin
                 $pArray = $result[$targetUri];
                 
                 foreach ($pArray as $p => $oArray) {
-                    if ($p === 'http://purl.net/pingback/service') {
+                    if ($p === 'http://purl.org/net/pingback/service') {
                         return $oArray[0]['value'];
                     }
                 }
