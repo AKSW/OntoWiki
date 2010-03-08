@@ -1013,7 +1013,7 @@ class ServiceController extends Zend_Controller_Action
             
             $output->$newResourceUri = $newProperties;
         } else {
-            if ($workingModus == 'class') {
+            if ($workingMode == 'class') {
                 // for classes, add the rdf:type property
                 $value = new stdClass();
                 $value->value = $parameter;

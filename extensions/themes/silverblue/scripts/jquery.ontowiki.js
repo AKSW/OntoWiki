@@ -614,44 +614,46 @@ function createInstanceFromClassURI(type) {
     // remove resource menus
     removeResourceMenus();
 
-    $.getJSON(serviceUri, {
-       mode: 'class',
-       uri: type
-    }, function(data) {
-       // get default resource uri for subjects in added statements (issue 673)
-       // grab first object key
-       for (var subjectUri in data) {break;};
-       RDFauthor.setOptions({
-           defaultResource: subjectUri, 
-           anchorElement: '.innercontent',
-           onSubmitSuccess: function () {
-               // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-               // mainInnerContent.load(document.URL);
+    loadRDFauthor(function() {
+        $.getJSON(serviceUri, {
+           mode: 'class',
+           uri: type
+        }, function(data) {
+           // get default resource uri for subjects in added statements (issue 673)
+           // grab first object key
+           for (var subjectUri in data) {break;};
+           RDFauthor.setOptions({
+               defaultResource: subjectUri, 
+               anchorElement: '.innercontent',
+               onSubmitSuccess: function () {
+                   // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
+                   // mainInnerContent.load(document.URL);
 
-               // tell RDFauthor that page content has changed
-               // RDFauthor.invalidatePage();
+                   // tell RDFauthor that page content has changed
+                   // RDFauthor.invalidatePage();
 
-               $('.edit').each(function() {
-                   $(this).fadeOut(effectTime);
-               });
-               $('.edit-enable').removeClass('active');
+                   $('.edit').each(function() {
+                       $(this).fadeOut(effectTime);
+                   });
+                   $('.edit-enable').removeClass('active');
 
-               // reload whole page
-               window.location.href = window.location.href;
-           },
-           onCancel: function () {
-               $('.edit').each(function() {
-                   $(this).fadeOut(effectTime);
-               });
-               $('.edit-enable').removeClass('active');
-           },
-           saveButtonTitle: 'Save Changes',
-           cancelButtonTitle: 'Cancel',
-           title: 'Create new ' + type
-       });
+                   // reload whole page
+                   window.location.href = window.location.href;
+               },
+               onCancel: function () {
+                   $('.edit').each(function() {
+                       $(this).fadeOut(effectTime);
+                   });
+                   $('.edit-enable').removeClass('active');
+               },
+               saveButtonTitle: 'Save Changes',
+               cancelButtonTitle: 'Cancel',
+               title: 'Create new ' + type
+           });
 
-       RDFauthor.startTemplate(data);
-    })
+           RDFauthor.startTemplate(data);
+        })
+    });
 }
 
 /*
