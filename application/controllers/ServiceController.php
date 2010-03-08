@@ -972,7 +972,7 @@ class ServiceController extends Zend_Controller_Action
 
                 $value = new stdClass();
                 
-                if ($currentType == 'literal') {                    
+                if ($currentType == 'literal' || $currentType == 'typed-literal') {                    
                     if (isset($property['value']['datatype'])) {
                         $value->datatype = $property['value']['datatype'];
                     } else if (isset($property['value']['xml:lang'])) {
