@@ -5,23 +5,36 @@
 }
 
 #navigation .icon { width:0.7em; }
-#navigation .icon.navList
+
+#navigation .icon.icon-arrow-next
 {
-    width:1em;
+    display:block;
+    font-size:1.5em !important;
+    width:1em; height:1em;
     position:absolute;
-    right:1.5em;
-    top:50%;
-    margin-top:-0.5em;
+    right:0;
+    top:50%; margin-top:-0.5em;
+    /*top:0; height:100%;*/
+    background-color:#999;
+    background-image:url(deeper.png);
+    -moz-border-radius:0.5em; border-radius:0.5em;
 }
+
+/* set contextmenu more left */
+#navigation .has-contextmenus-block li a:hover span.button
+{
+    right:1.75em;
+}
+
 
 #navigation a .icon, #navigation a.icon { opacity:0.4; }
 #navigation a:hover .icon, #navigation a.icon:hover { opacity:0.6; text-decoration:none !important;}
 #navigation a:hover .icon:hover { opacity:1; }
 
-#navigation a span.navDeeperIcon { opacity:0.25; }
+#navigation a span.navDeeperIcon { opacity:0.5; }
 #navigation a span.navDeeperIcon:hover { opacity:1; }
 
 #navigation .has-contextmenus-block li a
 {
-    padding-right:3em;
+    padding-right:1.75em;
 }
