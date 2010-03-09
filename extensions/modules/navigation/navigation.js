@@ -297,7 +297,7 @@ function navigationPrepareList () {
     
     // the links to deeper navigation entries
     $('.navDeeper').click(function(event) {
-        navigationEvent('navigateDeeper', $(this).attr('about'));
+        navigationEvent('navigateDeeper', $(this).parent().attr('about'));
         return false;
     });
 
@@ -315,7 +315,7 @@ function navigationPrepareList () {
 
     // the link to the instance list
     $('.navList').click(function(event){
-        window.location.href = $(this).parent().attr('href');
+        window.location.href = $(this).attr('href');
         return false;
     })
 }
