@@ -167,23 +167,29 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
             $schemaVar      = new Erfurt_Sparql_Query2_Var('schema');
             
             $subjectArray   = array_keys($this->insertData);
-            $subjectUri     = current($subjectArray);
-            $typeArray      = current($this->insertData[$subjectUri][$this->_privateConfig->property->type]);
-            $type           = $typeArray['value'];
             
-            $query->addTriple(
-                new Erfurt_Sparql_Query2_IriRef($type),
-                new Erfurt_Sparql_Query2_IriRef($this->_privateConfig->namingSchemeProperty),
-                $schemaVar
-            );
+            // Test if exists at least one subject and if this first subject has a type statement
+            if ( sizeof($subjectArray) > 0 &&
+                 array_key_exists($this->_privateConfig->property->type,current($subjectArray))
+            ) {
+                $subjectUri     = current($subjectArray);
+                $typeArray      = current($this->insertData[$subjectUri][$this->_privateConfig->property->type]);
+                $type           = $typeArray['value'];
             
-            $query->setDistinct(true);
-            
-            $result = $this->insertModel->sparqlQuery($query);
-            
-            if ( !empty($result['bindings']) ) {
-                $schema = current($result);
-                return explode('/',$schema['schema']['value']);
+                $query->addTriple(
+                    new Erfurt_Sparql_Query2_IriRef($type),
+                    new Erfurt_Sparql_Query2_IriRef($this->_privateConfig->namingSchemeProperty),
+                    $schemaVar
+                );
+                
+                $query->setDistinct(true);
+                
+                $result = $this->insertModel->sparqlQuery($query);
+                
+                if ( !empty($result['bindings']) ) {
+                    $schema = current($result);
+                    return explode('/',$schema['schema']['value']);
+                }
             }
             
         }       
