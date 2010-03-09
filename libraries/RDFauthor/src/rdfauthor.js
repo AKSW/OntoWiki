@@ -1144,6 +1144,17 @@ RDFauthor = {
                             if ('lang' in current) {
                                 objectOptions.lang = current.lang;
                             } else if ('datatype' in current) {
+                                if (!(current.datatype in $.typedValue.types)) {
+                                    // register user-defined datatype
+                                    $.typedValue.types[current.datatype] = {
+                                        regex: /^.*$/, 
+                                        strip: false, 
+                                        value: function(v) {
+                                            return v;
+                                        }
+                                    };
+                                }
+                                
                                 objectOptions.datatype = current.datatype;
                             }
 
