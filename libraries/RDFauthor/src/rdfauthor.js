@@ -894,6 +894,17 @@ RDFauthor = {
                 objectOptions.lang = triple.object.lang;
                 quoteLiteral = false;
             } else if (triple.object.datatype) {
+                if (!(triple.object.datatype.uri in $.typedValue.types)) {
+                    // register user-defined datatype
+                    $.typedValue.types[triple.object.datatype.uri] = {
+                        regex: /^.*$/, 
+                        strip: false, 
+                        value: function(v) {
+                            return v;
+                        }
+                    };
+                }
+                
                 objectOptions.datatype = triple.object.datatype.uri;
                 quoteLiteral = false;
             }
