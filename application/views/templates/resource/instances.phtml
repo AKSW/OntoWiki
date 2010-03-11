@@ -10,7 +10,7 @@
         <?php endforeach; ?>>
         <?php if (!empty($this->propertyInfo)): ?>
             <tr>
-                <th></th><th></th><th></th>
+                <!--th></th--><th></th><th></th>
                 <?php foreach ($this->propertyInfo as $property): ?>
                     <th>
                         <a href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
@@ -22,9 +22,9 @@
         <?php $i = 0 ?>
         <?php foreach ($this->instanceInfo as $instanceUri => $instance): ?>
             <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
-                <td class="selector">
+                <!--td class="selector">
                     <input type="checkbox" id="selector-<?php echo ++$i ?>" name="r[]" value="<?php echo $instanceUri ?>"/>
-                </td>
+                </td-->
                 <td class="enumeration"><label for="selector-<?php echo $i ?>"><?php echo $this->start++ ?>.</label></td>
                 <td>
                     <a class="hasMenu expandable" 
