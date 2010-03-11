@@ -13,7 +13,9 @@
                 <!--th></th--><th></th><th></th>
                 <?php foreach ($this->propertyInfo as $property): ?>
                     <th>
-                        <a href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
+                        <a class="hasMenu Property"
+                            about="<?php echo $property['uri'] ?>"
+                            href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
                         <?php if ($property['inverse']): ?><sup>-1</sup><?php endif; ?>
                     </th>
                 <?php endforeach; ?>
@@ -76,7 +78,8 @@
                                 </ul>
                             <?php else: ?>
                                 <?php if ($this->instanceData[$instanceUri][$property['varName']][0]['url']): ?>
-                                    <a about="<?php echo $instanceUri ?>" 
+                                    <a about="<?php echo $instanceUri ?>"
+                                       class="hasMenu"
                                        rel="<?php echo $this->curie($property['uri']) ?>" 
                                        resource="<?php echo $this->instanceData[$instanceUri][$property['varName']][0]['uri'] ?>"
                                        href="<?php echo $this->instanceData[$instanceUri][$property['varName']][0]['url'] ?>">
