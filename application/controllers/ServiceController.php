@@ -1017,7 +1017,7 @@ class ServiceController extends Zend_Controller_Action
                 // for classes, add the rdf:type property
                 $value = new stdClass();
                 $value->value = $parameter;
-                $value->type;
+                $value->type = 'uri';
                 $value->hidden = true;
                 $newProperties->EF_RDF_TYPE = array($value);
             }
