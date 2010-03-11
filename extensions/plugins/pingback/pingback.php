@@ -148,60 +148,56 @@ class PingbackPlugin extends OntoWiki_Plugin
         }
 	    
 	    // 2. Check for (X)HTML Link element, if target has content type text/html
-	    if (isset($headers['Content-Type']) && (strtolower($headers['Content-Type']) === 'text/html')) {
-	        // TODO Fetch only the first X bytes...???
-	        require_once 'Zend/Http/Client.php';
-            $client = new Zend_Http_Client($uri, array(
-                'maxredirects'  => 0,
-                'timeout'       => 30
-            ));
+	    // TODO Fetch only the first X bytes...???
+        require_once 'Zend/Http/Client.php';
+        $client = new Zend_Http_Client($uri, array(
+            'maxredirects'  => 0,
+            'timeout'       => 30
+        ));
 
-            $response = $client->request();
-            if ($response->getStatus() === 200) {
-                $htmlDoc = new DOMDocument();
-                $result = @$htmlDoc->loadHtml($response->getBody());
-                $relElements = $htmlDoc->getElementsByTagName('link');
+        $response = $client->request();
+        if ($response->getStatus() === 200) {
+            $htmlDoc = new DOMDocument();
+            $result = @$htmlDoc->loadHtml($response->getBody());
+            $relElements = $htmlDoc->getElementsByTagName('link');
 
-                foreach ($relElements as $relElem) {
-                    $rel  = $relElem->getAttribute('rel');
-                    if (strtolower($rel) === 'pingback') {
-                        return $relElem->getAttribute('href');
-                    }
+            foreach ($relElements as $relElem) {
+                $rel  = $relElem->getAttribute('rel');
+                if (strtolower($rel) === 'pingback') {
+                    return $relElem->getAttribute('href');
                 }
             }
-	    }
+        }
 	    
 	    // 3. Check RDF/XML
-	    if (isset($headers['Content-Type']) && (strtolower($headers['Content-Type']) === 'application/rdf+xml')) {
-	        require_once 'Zend/Http/Client.php';
-            $client = new Zend_Http_Client($targetUri, array(
-                'maxredirects'  => 1,
-                'timeout'       => 30
-            ));
+	    require_once 'Zend/Http/Client.php';
+        $client = new Zend_Http_Client($targetUri, array(
+            'maxredirects'  => 1,
+            'timeout'       => 30
+        ));
+        
+        $response = $client->request();
+        if ($response->getStatus() === 200) {
+            $rdfString = $response->getBody();
             
-            $response = $client->request();
-            if ($response->getStatus() === 200) {
-                $rdfString = $response->getBody();
-                
-                $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('rdfxml');
-        	    try {
-        	        $result = $parser->parse($rdfString, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
-        	    } catch (Exception $e) {
-        	        $this->_logError($e->getMessage());
-        	        return null;
-        	    }
-            }
+            $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('rdfxml');
+    	    try {
+    	        $result = $parser->parse($rdfString, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
+    	    } catch (Exception $e) {
+    	        $this->_logError($e->getMessage());
+    	        return null;
+    	    }
+        }
+        
+        if (isset($result[$targetUri])) {
+            $pArray = $result[$targetUri];
             
-            if (isset($result[$targetUri])) {
-                $pArray = $result[$targetUri];
-                
-                foreach ($pArray as $p => $oArray) {
-                    if ($p === 'http://purl.org/net/pingback/service') {
-                        return $oArray[0]['value'];
-                    }
+            foreach ($pArray as $p => $oArray) {
+                if ($p === 'http://purl.org/net/pingback/service') {
+                    return $oArray[0]['value'];
                 }
             }
-	    }
+        }
 	    
 	    return null;
 	}
