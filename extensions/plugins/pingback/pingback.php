@@ -175,7 +175,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    if (isset($headers['Content-Type']) && (strtolower($headers['Content-Type']) === 'application/rdf+xml')) {
 	        require_once 'Zend/Http/Client.php';
             $client = new Zend_Http_Client($targetUri, array(
-                'maxredirects'  => 0,
+                'maxredirects'  => 1,
                 'timeout'       => 30
             ));
             
