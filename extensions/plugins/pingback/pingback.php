@@ -172,7 +172,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    // 3. Check RDF/XML
 	    require_once 'Zend/Http/Client.php';
         $client = new Zend_Http_Client($targetUri, array(
-            'maxredirects'  => 1,
+            'maxredirects'  => 10,
             'timeout'       => 3
         ));
         $client->setHeaders('Accept', 'application/rdf+xml');
