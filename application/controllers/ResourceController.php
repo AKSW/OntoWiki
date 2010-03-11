@@ -232,7 +232,7 @@ class ResourceController extends OntoWiki_Controller_Base
         $actionMenu->setEntry('Toggle show Resource Query',"javascript:showresQuery()");
         $actionMenu->setEntry('Toggle show Value Query', "javascript:showvalQuery()");
         $actions = new OntoWiki_Menu();
-        $actions->setEntry('Action', $actionMenu);
+        $actions->setEntry('View', $actionMenu);
         $this->view->placeholder('main.window.menu')->set($actions->toArray());
 
         if ($instances->hasData()) {
@@ -308,6 +308,9 @@ class ResourceController extends OntoWiki_Controller_Base
             
             // TODO: check acl
             // build toolbar
+            /*
+             * toolbar disabled for 0.9.5 (reactived hopefully later :) )
+
             if ($graph->isEditable()) {
                 $toolbar = $this->_owApp->toolbar;
                 $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
@@ -317,7 +320,7 @@ class ResourceController extends OntoWiki_Controller_Base
                         ->prependButton(OntoWiki_Toolbar::SEPARATOR)
                         ->prependButton(OntoWiki_Toolbar::CANCEL)
                         ->prependButton(OntoWiki_Toolbar::SAVE);
-                $this->view->placeholder('main.window.toolbar')->set($toolbar);
+                //$this->view->placeholder('main.window.toolbar')->set($toolbar);
             }
             
             $url = new OntoWiki_Url(
@@ -332,6 +335,8 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->view->formMethod    = 'post';
             $this->view->formName      = 'instancelist';
             $this->view->formEncoding  = 'multipart/form-data';
+            *
+            */
             
             $url = new OntoWiki_Url();
             $this->view->redirectUrl = (string)$url;
