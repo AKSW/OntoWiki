@@ -188,17 +188,19 @@ class PingbackPlugin extends OntoWiki_Plugin
     	        $this->_logError($e->getMessage());
     	        return null;
     	    }
-        }
-        
-        if (isset($result[$targetUri])) {
-            $pArray = $result[$targetUri];
-            
-            foreach ($pArray as $p => $oArray) {
-                if ($p === 'http://purl.org/net/pingback/service') {
-                    return $oArray[0]['value'];
+    	    
+    	    if (isset($result[$targetUri])) {
+                $pArray = $result[$targetUri];
+
+                foreach ($pArray as $p => $oArray) {
+                    if ($p === 'http://purl.org/net/pingback/service') {
+                        return $oArray[0]['value'];
+                    }
                 }
             }
         }
+        
+        
 	    
 	    return null;
 	}
