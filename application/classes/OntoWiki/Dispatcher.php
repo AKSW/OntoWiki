@@ -116,17 +116,14 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
     {        
         // Zend 1.10+ changes
         $className = $this->getControllerClass($request);
-        if (!$className) {
-            return false;
-        }
 
         if (class_exists($className, false)) {
             return true;
         }
 
-        $fileSpec         = $this->classToFilename($className);
-        $dispatchDir      = $this->getDispatchDirectory();
-        $test             = $dispatchDir . DIRECTORY_SEPARATOR . $fileSpec;
+        $fileSpec    = $this->classToFilename($className);
+        $dispatchDir = $this->getDispatchDirectory();
+        $test        = $dispatchDir . DIRECTORY_SEPARATOR . $fileSpec;
         
         if (Zend_Loader::isReadable($test)) {
             return true;
