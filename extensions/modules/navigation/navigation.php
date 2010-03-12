@@ -51,8 +51,7 @@ class NavigationModule extends OntoWiki_Module
 
         // edit sub menu
         $editMenu = new OntoWiki_Menu();
-        $editMenu->setEntry('Add Element here', "javascript:navigationAddElement()");
-        $editMenu->setEntry('Add Top Element', "javascript:navigationAddTopElement()");
+        $editMenu->setEntry('Add Resource here', "javascript:navigationAddElement()");
 
         // build menu out of sub menus
         $mainMenu = new OntoWiki_Menu();
