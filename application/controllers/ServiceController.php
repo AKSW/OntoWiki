@@ -1019,13 +1019,15 @@ class ServiceController extends Zend_Controller_Action
                 $value->value = $parameter;
                 $value->type = 'uri';
                 $value->hidden = true;
-                $newProperties->EF_RDF_TYPE = array($value);
+                $uri = EF_RDF_TYPE;
+                $newProperties->$uri = array($value);
             }
             
             $value = new stdClass();
             $value->type = 'literal';
             $value->title = 'label';
-            $newProperties->EF_RDFS_LABEL = array($value);
+            $uri = EF_RDFS_LABEL;
+            $newProperties->$uri = array($value);
             
             $output->$newResourceUri = $newProperties;
         }
