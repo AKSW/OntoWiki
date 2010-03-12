@@ -607,8 +607,9 @@ function loadRDFauthor(callback) {
 /*
  * get the rdfa init description from the service in class mode and start the
  * RDFauthor window
+ * dataCallback is called right after the json request to manipulate the requested data
  */
-function createInstanceFromClassURI(type) {
+function createInstanceFromClassURI(type, dataCallback) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
 
     // remove resource menus
@@ -619,9 +620,15 @@ function createInstanceFromClassURI(type) {
            mode: 'class',
            uri: type
         }, function(data) {
+           // if there is a given callback method, start it
+           if (typeof dataCallback != 'undefined') {
+               data = dataCallback(data);
+           }
+
            // get default resource uri for subjects in added statements (issue 673)
            // grab first object key
            for (var subjectUri in data) {break;};
+
            RDFauthor.setOptions({
                defaultResource: subjectUri, 
                anchorElement: '.innercontent',
