@@ -1,8 +1,8 @@
 /**
  * This file is part of the navigation extension for OntoWiki
  *
- * @author     Sebastian Dietzold <sebastian@dietzold.de>
- * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @author     Sebastian Tramp <tramp@informatik.uni-leipzig.de>
+ * @copyright  Copyright (c) 2009-2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  *
  */
@@ -339,4 +339,54 @@ function saveState(){
     );
 
     return ;
+}
+
+/*
+ * Starts RDFauthor with a specific class init depending on position and config
+ */
+function navigationAddElement(){
+    // we use the first configured navigationType to create
+    var classResource = navigationSetup['config']['hierarchyTypes'][0];
+
+    // callback which manipulates the data given from the init json service
+    dataCallback = function(data) {
+        var config = navigationSetup['config']; // configured navigation setup
+        var state = navigationSetup['state']; // current navigation state
+
+        // subjectUri is the main resource
+        for (var newElementUri in data) {break;};
+
+        // check for parent element
+        if (typeof state['parent'] != 'undefined') {
+            var parentUri = state['parent'];
+            var relations = config['hierarchyRelations']; // configured hierarchy relations
+
+            if (typeof relations['in'] != 'undefined') {
+                // check for hierarchy relations (incoming eg. subClassOf)
+                var propertyUri = relations['in'][0]
+
+                // TODO: this should be done by a future RDF/JSON API
+                data[newElementUri][propertyUri] = [ { "type" : "uri" , "value" : parentUri } ];
+            } else if (typeof relations['out'] != 'undefined') {
+                // check for hierarchy relations (outgoing eg. skos:narrower)
+                var propertyUri = relations['out'][0];
+
+                // TODO: this should be done by a future RDF/JSON API
+                var newStatement = {};
+                newStatement[propertyUri] = [{
+                        "hidden": true ,
+                        "type" : "uri" ,
+                        "value" : newElementUri
+                    }];
+                data[parentUri] = newStatement;
+            }
+        }
+
+        // dont forget to return the manipulated data
+        return data;
+    }
+
+    // start RDFauthor
+    createInstanceFromClassURI(classResource, dataCallback);
+    
 }
