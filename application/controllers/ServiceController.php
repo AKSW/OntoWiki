@@ -540,10 +540,10 @@ class ServiceController extends Zend_Controller_Action
 
             $response->setHeader('Content-Type', $type);
             
-            if ($type == 'json' && isset($this->_request->callback)) {
+            if ($typeMapping[$type] == 'json' && isset($this->_request->callback)) {
                 // return jsonp
                 $padding = $this->_request->getParam('callback', '');
-                $response->setBody($padding . $result);
+                $response->setBody($padding . '=' . $result);
             } else {
                 // return normal
                 $response->setBody($result);
