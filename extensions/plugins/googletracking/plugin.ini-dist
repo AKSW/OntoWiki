@@ -1,0 +1,14 @@
+enabled     = yes
+name        = GoogleTracking
+description = "A plug-in that adds a Google Tracking Code to your OntoWiki"
+author      = "Niederstätter Michael"
+
+[events]
+1 = onAfterInitController
+
+[private]
+
+;trackingID = "UA-XXXXXXX-8"
+
+
+
