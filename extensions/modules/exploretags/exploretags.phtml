@@ -8,4 +8,14 @@
 
 # var_dump($this->data);
 ?>
-<div id="exploretags-content" name="exploretags-content">...</div>
+    <script language="Javascript" type="text/javascript">
+    if(navigator.appName == "Microsoft Internet Explorer" ){
+    }
+    else{
+        document.write('<div id="exploretags-content" name="exploretags-content">...</div>')
+    }
+    </script>
+
+<!--[if IE 6]><p class="messagebox info">This function is not supported for IE7 and IE6</p><![endif]-->
+<!--[if IE 7]><p class="messagebox info">This function is not supported for IE7 and IE6</p><![endif]-->
+<!--[if IE 8]><div id="exploretags-content" name="exploretags-content">...</div><![endif]-->
