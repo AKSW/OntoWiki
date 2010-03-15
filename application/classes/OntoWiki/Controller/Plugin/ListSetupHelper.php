@@ -81,9 +81,14 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
             //local function :)
             function _json_decode($string) {
+            
+                /* PHP 5.3 DEPRECATED ; REMOVE IN PHP 6.0 */
                 if (get_magic_quotes_gpc()) {
+                    // add slashes for unicode chars in json
+                    $string = str_replace('\\u','\\\\u',$string);
                     $string = stripslashes($string);
                 }
+                /* ---- */
                 
                 return json_decode($string);
             }
