@@ -24,7 +24,7 @@ function LiteralEdit(graph, subject, predicate, object) {
     }
     
     this.languages.unshift('');
-    this.datatypes.unshift('');
+    // this.datatypes.unshift('');
     
     if (object) {
         this.object   = object.value;
