@@ -277,7 +277,7 @@ RDFauthor = {
         return view;
     }, 
     
-    fetchPredicateInfo: function (predicateUri) {
+    fetchPredicateInfo: function (predicateUri) {        
         var filters = [];
         
         if (arguments.length == 1) {
@@ -592,7 +592,6 @@ RDFauthor = {
         // query predicate info/selection cache
         if ((null === widgetConstructor) && (predicate in this.predicateInfo)) {
             var info = this.predicateInfo[predicate];
-            
             // use rdf:type of property
             if ('types' in info) {
                 var types = $.isArray(info.types) ? info.types : [info.types];
@@ -709,7 +708,7 @@ RDFauthor = {
         view.onAddProperty();
     }, 
     
-    // preforms a SPARQL query to the store accociated with the graph provided
+    // performs a SPARQL query to the store accociated with the graph provided
     // and returns a JSON object to the function supplied as callback parameter
     query: function (graph, query, callbackSuccess, callbackError, async) {
         if (graph) {
@@ -1194,7 +1193,7 @@ RDFauthor = {
             this.fetchPredicateInfo();
             
             var instance = this;
-            window.setTimeout(function() {
+            window.setTimeout(function() {                
                 // databank has been filled, create view
                 var view = instance.createPropertyView();
                 RDFauthor.pageParsed = true;
