@@ -68,21 +68,30 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 $format = $this->_privateConfig->format;
             }
             
-            if (isset($this->_privateConfig->provenance->enabled) && ((boolean)$this->_privateConfig->provenance->enabled)) {
+            if (true === (boolean)$this->_privateConfig->provenance->enabled) {
                 $prov = 1;
             } else {
                 $prov = 0;
+            }
+            
+            // graph URIs export the whole graph
+            if ($graph === $uri) {
+                $controllerName = 'model';
+                $actionName = 'export';
+            } else {
+                $controllerName = 'resource';
+                $actionName = 'export';
             }
          
             // redirect accordingly
             switch ($this->_typeMapping[$type]) {
                 case 'rdf':
                     // set export action
-                    $url = new OntoWiki_Url(array('controller' => 'resource', 'action' => 'export'), array());
+                    $url = new OntoWiki_Url(array('controller' => $controllerName, 'action' => $actionName), array());
                     $url->setParam('r', $uri, true)
                         ->setParam('f', $format)
                         ->setParam('m', $graph)
-                        ->setParam('provenance', 1);
+                        ->setParam('provenance', $prov);
                     break;
                 case 'xhtml':
                 default:
@@ -97,7 +106,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             
             $request->setDispatched(true);
             
-            // give plugins a chance to do something...
+            // give plugins a chance to do something
             $event = new Erfurt_Event('beforeLinkedDataRedirect');
             $event->response = $response;
             $event->trigger();
@@ -228,18 +237,18 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 }
                 
                 if (null === $allowedGraph) {
-                    // We use the first matching graph... The user is redirected and the next request
-                    // has to decide, whether user is allowed to view or not. (Workaround, for there are problems
+                    // We use the first matching graph. The user is redirected and the next request
+                    // has to decide, whether user is allowed to view or not. (Workaround since there are problems
                     // with linkeddata and https).
                     return $result[0];
                 }  else {
                     return $allowedGraph;
                 }
             } else {
-                return false;
+                return null;
             }
         } catch (Excpetion $e) {
-            return false;
+            return null;
         }
     }
     
@@ -250,8 +259,8 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         
         if (substr($uri, 0, strlen($owBase)) === $owBase) {
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
 }
