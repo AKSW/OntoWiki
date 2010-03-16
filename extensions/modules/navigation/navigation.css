@@ -16,9 +16,17 @@
     top:50%; margin-top:-0.5em;
     /*top:0; height:100%;*/
     background-color:#999;
-    background-image:url(deeper.png);
+    background-image:url(icon-next.png);
     -moz-border-radius:0.5em; border-radius:0.5em;
 }
+
+#navigation .icon.icon-arrow-previous { background-image:url(icon-previous.png); width:12px; }
+#navigation .icon.icon-arrow-first { background-image:url(icon-first.png); width:8px; }
+
+#navigation .navRoot.fancybuttons .icon.icon-arrow-previous
+{ background-color:#999; width:1.2em; height:1.2em; -moz-border-radius:0.6em; border-radius:0.6em; position:relative; left:-0.25em; }
+#navigation .navRoot.fancybuttons .icon.icon-arrow-first
+{ background-color:#bbb; width:0.9em; height:0.9em; -moz-border-radius:0.45em; border-radius:0.45em; }
 
 /* set contextmenu more left */
 #navigation .has-contextmenus-block li a:hover span.button

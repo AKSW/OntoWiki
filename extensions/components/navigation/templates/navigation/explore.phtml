@@ -8,13 +8,13 @@ $odd = true;
 <!-- <ol class="bullets-none separated">
     <li> -->
     <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>
-        <h2 class="navRoot">
+        <h2 class="navRoot fancybuttons">
         <?php if (isset($this->rootEntry)):?>
             <a class="navFirst icon icon-arrow-first" title="Go to root level">
                 <span>[Go to root level]</span>
             </a><a class="navBack icon icon-arrow-previous" title="Go to previous level">
                 <span>[Go to previous level]</span>
-            </a>
+            </a><br/>
             <a about="<?php echo $this->rootEntry['uri'] ?>">
                 <?php echo $this->rootEntry['title'] ?>
             </a>
