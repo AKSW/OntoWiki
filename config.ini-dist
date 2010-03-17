@@ -30,7 +30,7 @@ store.zenddb.dbtype     = mysql             ; mysql
 ;store.virtuoso.dsn         = vos505
 ;store.virtuoso.username    = "dba"
 ;store.virtuoso.password    = "dba"
-
+;store.virtuoso.use_persistent_connection = true
 
 
 ;;
