@@ -13,6 +13,8 @@
  */
 class FilesController extends OntoWiki_Controller_Component
 {
+    protected $_configModel;
+    
     /**
      * Default action. Forwards to get action.
      */
@@ -33,7 +35,7 @@ class FilesController extends OntoWiki_Controller_Component
 
                 // remove all statements from sysconfig
                 $store->deleteMatchingStatements(
-                    (string) $this->_owApp->configModel ,
+                    (string) $this->_getConfigModelUri(),
                     $fileUri ,
                     null ,
                     null
@@ -64,7 +66,7 @@ class FilesController extends OntoWiki_Controller_Component
         
         $query = new Erfurt_Sparql_SimpleQuery();
         $query->setProloguePart('SELECT DISTINCT ?mime_type')
-              ->addFrom((string) $this->_owApp->configModel)
+              ->addFrom((string) $this->_getConfigModelUri())
               ->setWherePart('
               WHERE {
                   <' . $fileUri . '> <' . $mimeProperty . '> ?mime_type.
@@ -96,7 +98,7 @@ class FilesController extends OntoWiki_Controller_Component
         
         $query = new Erfurt_Sparql_SimpleQuery();
         $query->setProloguePart('SELECT DISTINCT ?mime_type ?uri')
-              ->addFrom((string) $this->_owApp->configModel)
+              ->addFrom((string) $this->_getConfigModelUri())
               ->setWherePart('
               WHERE {
                   ?uri a <' . $fileClass . '>.
@@ -261,7 +263,7 @@ class FilesController extends OntoWiki_Controller_Component
                     );
                     // add file resource as instance in system model
                     $store->addStatement(
-                        (string) $this->_owApp->configModel ,
+                        (string) $this->_getConfigModelUri(),
                         $fileUri ,
                         EF_RDF_TYPE ,
                         array('value' => $fileClass, 'type' => 'uri'),
@@ -269,7 +271,7 @@ class FilesController extends OntoWiki_Controller_Component
                     );
                     // add file resource mime type
                     $store->addStatement(
-                        (string) $this->_owApp->configModel ,
+                        (string) $this->_getConfigModelUri(),
                         $fileUri ,
                         $mimeProperty ,
                         array('value' => $mimeType, 'type' => 'literal') , 
@@ -277,7 +279,7 @@ class FilesController extends OntoWiki_Controller_Component
                     );
                     // add file resource model
                     $store->addStatement(
-                        (string) $this->_owApp->configModel , 
+                        (string) $this->_getConfigModelUri(), 
                         $fileUri , 
                         $fileModel ,
                         array('value' => (string) $this->_owApp->selectedModel, 'type' => 'uri') ,
@@ -365,6 +367,14 @@ class FilesController extends OntoWiki_Controller_Component
         }
 
     }
-
+    
+    protected function _getConfigModelUri()
+    {
+        if (null === $this->_configModel) {
+            $this->_configModel = Erfurt_App::getInstance()->getConfig()->sysont->modelUri;
+        }
+        
+        return $this->_configModel;
+    }
 }
 
