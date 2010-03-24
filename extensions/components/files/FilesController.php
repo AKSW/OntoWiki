@@ -152,7 +152,7 @@ class FilesController extends OntoWiki_Controller_Component
             );
         }
         
-        if (!$this->_owApp->rewriting) {
+        if (!defined('ONTOWIKI_REWRITE')) {
             $this->_owApp->appendMessage(
                 new OntoWiki_Message('Rewrite mode is off. File URIs may not be accessible.', OntoWiki_Message::WARNING)
             );
