@@ -4,7 +4,7 @@
  *
  * @category   OntoWiki
  * @package    extensions_components_navigation
- * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
+ * @author     Sebastian Tramp <tramp@informatik.uni-leipzig.de>
  * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
@@ -184,7 +184,7 @@ class NavigationController extends OntoWiki_Controller_Component
             // set to limit+1, so we can see if there are more than $limit entries
             $query->setLimit($this->limit + 1);
             
-        }else{
+        } else {
             if ( !isset($setup->config->hideDefaultHierarchy) || $setup->config->hideDefaultHierarchy == false ){
                 $query = $this->_buildQuery($setup, false);
             }else{
@@ -302,8 +302,9 @@ class NavigationController extends OntoWiki_Controller_Component
             
             if($show) $entries[$uri] = $entry;
         }
-        
-        return $entries;
+
+        // return only X = limit entries (todo: this should be limited by query!!!)
+        return array_slice ($entries , 0, $this->limit, true);
     }
     
     protected function _getTitle($uri, $mode, $setup){
@@ -419,7 +420,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 new Erfurt_Sparql_Query2_RDFLiteral($setup->state->searchString)
             )
         );
-        
+
         return $query;
     }
     
