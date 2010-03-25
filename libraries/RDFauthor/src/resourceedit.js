@@ -126,7 +126,7 @@ ResourceEdit.prototype.onSubmit = function()
     var hasChanged = (newResourceValue != this.object) && (newResourceValue != '');
     if (hasChanged || this.remove) {
         // Remove the old triple
-        if (this.object != '') {
+        if (this.object != '' || this.remove) {
             var oldTriple = $.rdf.triple(
                 $.rdf.resource('<' + this.subject + '>'), 
                 $.rdf.resource('<' + this.predicate + '>'), 
@@ -134,7 +134,7 @@ ResourceEdit.prototype.onSubmit = function()
             );
 
             dataBank.remove(oldTriple);
-            alert('Removed: ' + oldTriple);
+            // alert('Removed: ' + oldTriple);
         }
         
         if (!this.remove) {

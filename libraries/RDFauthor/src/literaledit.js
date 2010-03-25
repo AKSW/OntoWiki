@@ -162,7 +162,7 @@ LiteralEdit.prototype.onSubmit = function() {
     if (somethingChanged || this.remove) {
         // remove old triple
         // BUG: this prevents removal of empty literals
-        // if (this.object/* !== ''*/) {
+        if (this.object !== '' || this.remove) {
             var objectOptions = {};
             var object = this.object;
             var quoteLiteral = true;
@@ -192,7 +192,7 @@ LiteralEdit.prototype.onSubmit = function() {
             );
             
             dataBank.remove(oldTriple);
-        // }
+        }
         
         if (!this.remove) {
             // add new triple

@@ -43,7 +43,7 @@ DateEdit.prototype.onSubmit = function () {
     
     if ((newValue != this.object) || this.remove) {
         // remove old triple
-        // if (this.object !== '') {
+        if (this.object !== '' || this.remove) {
             var oldTriple = $.rdf.triple(
                 $.rdf.resource('<' + this.subject + '>'), 
                 $.rdf.resource('<' + this.predicate + '>'), 
@@ -51,7 +51,7 @@ DateEdit.prototype.onSubmit = function () {
             );
 
             dataBank.remove(oldTriple);
-        // }
+        }
         
         if (!this.remove) {
             // add new triple
