@@ -36,6 +36,8 @@ $(document).ready(function() {
     
     if( typeof navigationStateSetup != 'undefined'){
         navigationSetup = navigationStateSetup;
+        // refresh the navigation box (quiet)
+        navigationEvent ('refresh')
     }
 
     /* first start */
@@ -66,7 +68,7 @@ function navigationEvent (navEvent, eventParameter) {
         state['limit'] = limit;
         state['path'] = new Array;
         // pack state and config into setup value for post
-        setup = {'state': state, 'config': config };
+        setup = {'state': state, 'config': config};
     } else {
         setup = navigationSetup;
     }
@@ -83,6 +85,9 @@ function navigationEvent (navEvent, eventParameter) {
             // remove init sign and setup module title
             navigationContainer.removeClass('init-me-please');
             $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
+            break;
+
+        case 'refresh':
             break;
 
         case 'showResourceList':
@@ -209,7 +214,7 @@ function navigationLoad (navEvent, setup) {
 
     // preparation of a callback function
     var cbAfterLoad = function(){
-        $.post(navigationExploreUrl, { setup: $.toJSON(setup) },
+        $.post(navigationExploreUrl, {setup: $.toJSON(setup)},
             function (data) {
                 //alert(data);
                 
@@ -219,6 +224,9 @@ function navigationLoad (navEvent, setup) {
                 navigationInput.removeClass('is-processing');
 
                 switch (navEvent) {
+                    case 'refresh':
+                        // no animation in refresh event (just the is processing)
+                        break;
                     case 'navigateHigher':
                         navigationContainer.css('marginLeft', '-100%');
                         navigationContainer.animate({marginLeft:'0px'},'slow');
@@ -241,6 +249,10 @@ function navigationLoad (navEvent, setup) {
     navigationContainer.css('overflow', 'hidden');
 
     switch (navEvent) {
+        case 'refresh':
+            // no animation in refresh event (just the is processing)
+            cbAfterLoad();
+            break;
         case 'navigateHigher':
             navigationContainer.animate({marginLeft:'100%'},'slow', '', cbAfterLoad);
             break;
@@ -267,7 +279,7 @@ function navigationUpdateLoad (navEvent, setup) {
 
     // preparation of a callback function
     var cbAfterLoad = function(){
-        $.post(navigationExploreUrl, { setup: $.toJSON(setup) },
+        $.post(navigationExploreUrl, {setup: $.toJSON(setup)},
             function (data) {
                 navigationMore.remove();
                 navigationContainer.append(data);
@@ -332,7 +344,7 @@ function saveState(){
     }
 
     // do save
-    $.post(navigationSaveUrl, { view: curView, setup: set },
+    $.post(navigationSaveUrl, {view: curView, setup: set},
         function (data) {
             //alert(data);
         }
@@ -366,7 +378,7 @@ function navigationAddElement(){
                 var propertyUri = relations['in'][0]
 
                 // TODO: this should be done by a future RDF/JSON API
-                data[newElementUri][propertyUri] = [ { "type" : "uri" , "value" : parentUri } ];
+                data[newElementUri][propertyUri] = [ {"type" : "uri" , "value" : parentUri} ];
             } else if (typeof relations['out'] != 'undefined') {
                 // check for hierarchy relations (outgoing eg. skos:narrower)
                 var propertyUri = relations['out'][0];

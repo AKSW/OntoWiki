@@ -35,7 +35,7 @@ class modelJsonrpcWrapper
      * @param string query
      * @return string
      */
-    public function sparql($modelIri, $query = 'SELECT ?resource ?label WHERE {?resource rdfs:label ?label} LIMIT 5')
+    public function sparql($modelIri, $query = 'SELECT DISTINCT ?resource ?label WHERE {?resource rdfs:label ?label} LIMIT 5')
     {
         $model = $this->store->getModel($modelIri);
         $prefixes = $model->getNamespacePrefixes();

@@ -98,10 +98,9 @@ class ApplicationModule extends OntoWiki_Module
     public function getContents()
     {
         $data = array(
-            'actionUrl'      => $this->_config->urlBase . 'list/init/1/',
-            #'user'           => $this->_owApp->user['username'], 
-            'modelSelected'  => isset($this->_owApp->selectedModel), 
-            's'              => $this->_request->getParam('s')
+            'actionUrl'        => $this->_config->urlBase . 'application/search/',
+            'modelSelected'    => isset($this->_owApp->selectedModel), 
+            'searchtextinput' => $this->_request->getParam('searchtext-input')
         );
         
         if (null !== ($logo = $this->_owApp->erfurt->getStore()->getLogoUri())) {

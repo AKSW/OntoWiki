@@ -13,6 +13,12 @@ class metaJsonrpcWrapper
     private $store = null;
     private $erfurt = null;
 
+    private $server = array (
+        'meta' => 'methods to query the json service itself',
+        'store' => 'methods to manipulate and query the store',
+        'model' => 'methods to manipulate and query a specific model',
+    );
+
     public function __construct()
     {
         $this->store = Erfurt_App::getInstance()->getStore();
@@ -25,12 +31,14 @@ class metaJsonrpcWrapper
      */
     public function listServer()
     {
-        $array = array (
-            'meta' => 'meta:methods to query the json service itself',
-            'store' => 'store:methods to manipulate and query the store',
-            'model' => 'model:methods to manipulate and query a specific model',
-        );
-        return $array;
+        $returnArray = array();
+        foreach ($this->server as $server => $description) {
+            $returnArray[] = array (
+                'name' => $server,
+                'description' => $description,
+                );
+        }
+        return $returnArray;
     }
 
     /*
@@ -73,7 +81,10 @@ class metaJsonrpcWrapper
                 $methodDescription = $this->getDocComment($method, $tag = '@desc');
                 // we return only methods with a descriptions
                 if ($methodDescription) {
-                    $returnArray[$methodName] = "$methodName:$methodDescription";
+                    $returnArray[] = array (
+                        'name' => $server .':'. $methodName,
+                        'description' => $methodDescription,
+                        );
                 }
             }
             ksort($returnArray);
@@ -83,4 +94,17 @@ class metaJsonrpcWrapper
         }
     }
 
+    /**
+     * @desc lists all remote procedures from ALL jsonrpc server
+     * @return array
+     */
+    public function listAllProcedures ()
+    {
+        $procedures = array();
+        foreach ($this->server as $server => $desc) {
+            $proceduresOfServer = self::listProcedures ($server);
+            $procedures = array_merge($procedures, $proceduresOfServer);
+        }
+        return $procedures;
+    }
 }

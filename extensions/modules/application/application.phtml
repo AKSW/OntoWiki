@@ -3,16 +3,16 @@
 /**
  * OntoWiki application module template
  *
- * @version $Id: application.phtml 3468 2009-06-29 05:46:15Z pfrischmuth $
+ * @version $Id$
  */
 
 ?>
 
-<form id="applicationsearch" name="search" method="get" action="<?php echo $this->actionUrl ?>">
+<form method="GET" action="<?php echo $this->actionUrl ?>">
 	<?php if ($this->showSearch) : ?>
 	<p class="width98">
 		<label class="display-block" for="searchtext-input"><?php echo $this->_('Search for Resources') ?></label>
-		<input class="text width99 inner-label" type="text" id="searchtext-input" name="s" value="<?php echo $this->s ?>" />
+		<input class="text width99 inner-label" type="text" id="searchtext-input" name="searchtext-input" value="<?php echo $this->searchtextinput ?>" />
 	</p>
 	<?php endif; ?>
 	<p>
