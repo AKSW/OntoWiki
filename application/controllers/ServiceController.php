@@ -537,15 +537,16 @@ class ServiceController extends Zend_Controller_Action
                          ->sendResponse();
                 exit;
             }
-
-            $response->setHeader('Content-Type', $type);
             
             if ($typeMapping[$type] == 'json' && isset($this->_request->callback)) {
                 // return jsonp
+                $response->setHeader('Content-Type', 'application/javascript');
                 $padding = $this->_request->getParam('callback', '');
-                $response->setBody($padding . '=' . $result);
+                $response->setBody($padding . '(' . $result . ')');
             } else {
-                // return normal
+                // set header
+                $response->setHeader('Content-Type', $type);
+                // return normally
                 $response->setBody($result);
             }
             

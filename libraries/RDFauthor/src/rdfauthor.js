@@ -717,7 +717,7 @@ RDFauthor = {
             // parameters
             var endpointParams = {
                 'query': query, 
-                'named-graph-uri': graph
+                'default-graph-uri': graph
             };
 
             // call the JSON service via low-level ajax method
