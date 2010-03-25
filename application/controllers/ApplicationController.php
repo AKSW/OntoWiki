@@ -739,12 +739,12 @@ class ApplicationController extends OntoWiki_Controller_Base
      */
     public function searchAction()
     {
-        // doing time measuring (for debugging)
-        $start = defined('_OWDEBUG') ? microtime(true) : 0 ;
-        
-        $resource   = $this->_request->r;
-        $store      = $this->_erfurt->getStore();
+
+        $title = $this->_owApp->translate->_('Resource Search');
+        $this->view->placeholder('main.window.title')->set($title);
         OntoWiki_Navigation::disableNavigation();
+        
+        $store = $this->_erfurt->getStore();
         
         if (isset($this->_owApp->selectedModel) and null !== $this->_owApp->selectedModel) {
             $modelUri = $this->_owApp->selectedModel->getModelIri();
@@ -752,70 +752,74 @@ class ApplicationController extends OntoWiki_Controller_Base
             $modelUri = null;
         }
         
-        if (isset($this->_request->s)) {
-            $searchText = $this->getParam('s');
+        if ($this->_request->getParam('searchtext-input') !== null) {
+            $searchText = trim($this->getParam('searchtext-input'));
         }
-        
-        $resources = array();
-        
-        if ($searchText == "") {
+
+        $error = false;
+        $errorMsg = '';
+
+        // check for very short searches (that barely make sense)
+        if (strlen($searchText ) < 3) {
+            
+            $error = true;
+            
             $this->_owApp->appendMessage(new OntoWiki_Message(
-                $this->_owApp->translate->_('I can not search if you do not give me a search string ...'),
+                $this->_owApp->translate->_('Too Short or empty. (length < 3 )'),
                 OntoWiki_Message::ERROR
             ));
-            $title = sprintf($this->_owApp->translate->_('Searchresults'));
-            $this->view->placeholder('main.window.title')->set($title);
-        } else {
+            
+            $errorMsg .= $this->_owApp->translate->_(
+    			'The given search string is either empty or too short: ' .
+    			'For searches to make sense they need a minimum of expressiveness.'
+            );
 
-            if ($query = $store->getSearchPattern($searchText,$modelUri)) {
-                $options = array(
-                    /*
-                    // this may be used when the new navigation is available
-                    'rdf_type' => $this->_owApp->selectedClass,
-                    'memberPredicate' => EF_RDF_TYPE, 
-                    'withChilds' => true,
-                     */
-                    'default_query' => $query ,
-                    'limit' => 10,
-                    'withChilds' => false
-                );
-
-                // instantiate model
-                $instances   = new OntoWiki_Model_Instances($this->_erfurt->getStore(), $this->_owApp->selectedModel, $options);
-                $this->_session->instances = $instances;
-                /*
-                $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-
-                foreach ($results as $result) {
-                    $url->setParam('r', $result, true);
-
-                    $resources[] = array(
-                        'link' => (string)$url,
-                        'name' => $result
-                    );
-                }
-                */
+        } 
+        
+        // check if search is already errorenous
+        if (!$error) {
+            
+            // try sparql query pre search check (with limit to 1)
+            $elements = $store->getSearchPattern($searchText,$modelUri);
+            $query = new Erfurt_Sparql_Query2();
+            $query->addElements($elements);
+            $query->setLimit(1);
+            $query->addFrom($modelUri);
+            
+            try {
+                
+                $store->sparqlQuery($query);
+                
+            } catch (Exception $e) {
+                
+                // build error message
+                $this->_owApp->appendMessage(new OntoWiki_Message(
+                    $this->_owApp->translate->_('search failed'),
+                    OntoWiki_Message::ERROR
+                ));
+                
+                $error     = true;
+                $errorMsg .= 'Message details: ';
+                $errorMsg .= str_replace('LIMIT 1', '', $e->getMessage());
                 
             }
-            
-            $this->_redirect('list');
 
         }
         
-        // put a message if debug enabled and start is set
-        if ( $start != 0 && defined('_OWDEBUG') ) {
-            $end = microtime(true);
-            $time_micro = ( $end - $start ) * 1000;
-            $this->_owApp->appendMessage(new OntoWiki_Message(
-                    sprintf (
-                        $this->_owApp->translate->_('Search query took %d ms to complete'),
-                        $time_micro
-                    ),
-                    OntoWiki_Message::INFO
-                ));
+        // if error occured set output for error page
+        if ($error) {
+                
+            $this->view->errorMsg = $errorMsg;
+                
+        } else {
+            // set redirect to effective search controller
+            $url = new OntoWiki_Url( array('controller' => 'list'), array());
+            $url->setParam('s', $searchText);
+            $url->setParam('init', '1');
+            $this->_redirect($url);
+                
         }
-
-        $this->view->data = $resources;
+        
     }
     
     public function testAction()
