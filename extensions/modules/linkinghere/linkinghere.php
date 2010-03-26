@@ -59,7 +59,10 @@ class LinkinghereModule extends OntoWiki_Module
         foreach ($predicates as $predicate) {
             $predicateUri = $predicate['uri'];
 
-            $properties[$predicateUri] = $titleHelper->getTitle($predicateUri, $this->_lang);
+            $url->setParam('r', $predicateUri, true); // create properties url for the relation
+            $properties[$predicateUri]['uri'] = $predicateUri;
+            $properties[$predicateUri]['url'] = (string) $url;
+            $properties[$predicateUri]['title'] = $titleHelper->getTitle($predicateUri, $this->_lang);
 
             $query->resetInstance()
                   ->setProloguePart('SELECT DISTINCT ?uri')
