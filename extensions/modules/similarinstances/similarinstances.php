@@ -10,7 +10,6 @@
  * @author     Norman Heino <norman.heino@gmail.com>
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: similarinstances.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
 class SimilarinstancesModule extends OntoWiki_Module
 {    
@@ -44,7 +43,10 @@ class SimilarinstancesModule extends OntoWiki_Module
             
             if ($instances = $this->_owApp->selectedModel->sparqlQuery($query)) {
                 $results = true;
+                $url->setParam('r', $typeUri, true); // create properties url for the class
                 $typesArr[$typeUri] = array(
+                    'uri'      => $typeUri,
+                    'url'      => (string) $url,
                     'title'    => $titleHelper->getTitle($typeUri, $this->_lang), 
                     'has_more' => false
                 );
@@ -81,7 +83,7 @@ class SimilarinstancesModule extends OntoWiki_Module
                 }
             }
         }
-        
+
         $this->view->types    = $typesArr;
         $this->view->similars = $similars;
         

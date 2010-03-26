@@ -2,8 +2,6 @@
 
 /**
  * OntoWiki similarinstances module template
- *
- * @version $Id: similarinstances.phtml 3392 2009-06-26 12:41:00Z sebastian.dietzold $
  */
 
 ?>
@@ -11,8 +9,12 @@
 	<ul class="bullets-none separated">
 	    <?php foreach ($this->similars as $type => $instances): ?>
 	        <li class="has-contextmenu-area">
-                    <?php echo $this->types[$type]['title'] ?>:
-	            <ul class="inline separated">
+                <strong>
+                    <a class="hasMenu"
+                       about="<?php echo $this->types[$type]['uri'] ?>"
+                       href="<?php echo $this->types[$type]['url'] ?>"><?php echo $this->types[$type]['title'] ?></a>
+                </strong>
+	            <ul class="inline separated" style="padding-left: 0.5em;">
 	                <?php $i = 0; ?>
 	                <?php foreach ($instances as $instance): ?>
 	                    <?php if (++$i == count($instances)): ?>
