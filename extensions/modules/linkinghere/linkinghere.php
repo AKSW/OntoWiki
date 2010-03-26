@@ -75,6 +75,14 @@ class LinkinghereModule extends OntoWiki_Module
             if ($subjects = $this->_owApp->selectedModel->sparqlQuery($query)) {
                 $results = true;
 
+                // has_more is used for the dots
+                if (count($subjects) > OW_SHOW_MAX) {
+                    $properties[$predicateUri]['has_more'] = true;
+                    $subjects = array_splice ( $subjects, 0, OW_SHOW_MAX);
+                } else {
+                    $properties[$predicateUri]['has_more'] = false;
+                }
+
                 $subjectTitleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
                 $subjectTitleHelper->addResources($subjects, 'uri');
 

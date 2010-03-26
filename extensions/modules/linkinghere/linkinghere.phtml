@@ -41,12 +41,15 @@ function buildFilterExp($res, $pred, $label){
 	            <ul class="inline separated"  style="padding-left: 0.5em;">
 	                <?php $i = 0; ?>
 	                <?php foreach ($instances as $instance): ?>
-	                    <?php if (++$i == count($instances)): ?>
+	                    <?php if ((++$i == count($instances)) && ($relation['has_more'] == false)): ?>
 	                        <li class="last-child"><a class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
 	                    <?php else: ?>
-	                        <li><a  class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
+	                        <li><a class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
 	                    <?php endif; ?>
                         <?php endforeach; ?>
+                    <?php if ($relation['has_more'] == true): ?>
+                            <li>&hellip;</li>
+                    <?php endif; ?>
 	            </ul>
                   <div class="contextmenu">
                     <a class="item"
