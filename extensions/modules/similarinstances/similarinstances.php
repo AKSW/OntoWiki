@@ -39,7 +39,7 @@ class SimilarinstancesModule extends OntoWiki_Module
                       FILTER (!sameTerm(?uri, <' . (string) $this->_owApp->selectedResource . '>))
                       FILTER (isURI(?uri))
                   }')
-                  ->setLimit(OW_SHOW_MAX);
+                  ->setLimit(OW_SHOW_MAX + 1);
             
             if ($instances = $this->_owApp->selectedModel->sparqlQuery($query)) {
                 $results = true;
@@ -50,6 +50,12 @@ class SimilarinstancesModule extends OntoWiki_Module
                     'title'    => $titleHelper->getTitle($typeUri, $this->_lang), 
                     'has_more' => false
                 );
+
+                // has_more is used for the dots
+                if (count($instances) > OW_SHOW_MAX) {
+                    $typesArr[$typeUri]['has_more'] = true;
+                    $instances = array_splice ( $instances, 0, OW_SHOW_MAX);
+                }
                 
                 $instTitleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
                 $instTitleHelper->addResources($instances, 'uri');
@@ -60,9 +66,10 @@ class SimilarinstancesModule extends OntoWiki_Module
                     'action' => 'add'
                 );
 
+                // the list url is used for the context menu link
                 $listUrl->setParam('instancesconfig', json_encode($conf), true);
                 $listUrl->setParam('init', true, true);
-                $typesArr[$typeUri]['has_more'] = (string) $listUrl;
+                $typesArr[$typeUri]['listUrl'] = (string) $listUrl;
                 
                 
                 foreach ($instances as $row) {
