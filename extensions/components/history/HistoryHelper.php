@@ -31,7 +31,7 @@ class HistoryHelper extends OntoWiki_Component_Helper
         $router = $front->getRouter();
 
         if ($router->getCurrentRouteName() != 'instances') {
-                OntoWiki_Navigation::register('foafedit', array(
+                OntoWiki_Navigation::register('history', array(
                     'controller' => 'history',     // history controller
                     'action'     => 'list',       // list action
                     'name'       => 'History',
