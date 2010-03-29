@@ -113,11 +113,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 		             OPTIONAL {?query <' . $this->saveQueryCreatorUri . '> ?creator } 
 		             } ORDER BY DESC(?date)';
 
-                echo htmlentities($loadInfoQuery);
-
 		$loadInfoData = $store->sparqlQuery($loadInfoQuery);
-
-                var_dump($loadInfoData);
 
 		//$this->view->getQueriesQuery = $loadInfoQuery;
 		// Assign data to view
