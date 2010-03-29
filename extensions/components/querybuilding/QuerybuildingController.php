@@ -330,19 +330,14 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 	
 	private function insertInitials($db){
 		//add the "Pattern" Class
-		$object['value'] = EF_RDFS_CLASS;
+		$object['value'] = EF_OWL_CLASS;
 		$object['type'] = 'uri';
 		$db->addStatement($this->saveQueryClassUri, EF_RDF_TYPE, $object);
-
-		//domain for the class
-		$object['value'] = $db->getModelIri();
-		$object['type'] = 'uri';
-		$db->addStatement($this->saveQueryClassUri, 'http://www.w3.org/2000/01/rdf-schema#domain', $object);
 
 		//label for the class
 		$object['value'] = "Query";
 		$object['type'] = 'literal';
-		$db->addStatement($this->saveQueryClassUri, 'http://www.w3.org/2000/01/rdf-schema#label', $object);
+		$db->addStatement($this->saveQueryClassUri, EF_RDFS_LABEL, $object);
 	}
 
 	private function createUserQueryDB() {
@@ -357,12 +352,12 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 		// add english label for this db
 		$options['object_type'] = Erfurt_Store :: TYPE_LITERAL;
 		$object['value'] = 'GQB Query DB of ' . $this->userName;
-		$newModel->addStatement($proposedDBname, 'http://www.w3.org/2000/01/rdf-schema#label', $object);
+		$newModel->addStatement($proposedDBname, EF_RDFS_LABEL, $object);
 
 		// german label
 		$options['literal_language'] = 'de';
 		$object['value'] = 'GQB Anfrage-DB von ' . $this->userName;
-		$newModel->addStatement($proposedDBname, 'http://www.w3.org/2000/01/rdf-schema#label', $object);
+		$newModel->addStatement($proposedDBname, EF_RDFS_LABEL, $object);
 
 		// add description of this db
 		$object['value'] = 'Hier werden Sparql-Queries gespeichert, die User ' . $this->userName . ' erstellt und gespeichert hat.';
@@ -371,7 +366,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 		//domain of this db (needed?)
 		$object['value'] = $this->baseQueryDbUri;
 		$options['object_type'] = Erfurt_Store :: TYPE_IRI;
-		$newModel->addStatement($proposedDBname, 'http://www.w3.org/2000/01/rdf-schema#domain', $object);
+		$newModel->addStatement($proposedDBname, EF_RDFS_DOMAIN, $object);
 
 		//add owner/maker of this db (is foaf:maker ok? curi's are not good)
 		$object['value'] = $this->userUri;
