@@ -31,7 +31,9 @@ class DebugController extends OntoWiki_Controller_Base
      */
     public function cleartranslationcacheAction()
     {
-        Zend_Translate::clearCache();
+        if (Zend_Translate::hasCache()) {
+            Zend_Translate::clearCache();
+        }
         
         $this->_redirect($this->_config->urlBase);
     }
