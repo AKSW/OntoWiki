@@ -708,8 +708,9 @@ RDFauthor = {
         view.onAddProperty();
     }, 
     
-    getProperty: function () {
-        
+    // info can be 'type', 'range', 'label'
+    getPredicateInfo: function (propertyURI, info) {
+        return this.predicateInfo[info];
     }, 
     
     // performs a SPARQL query to the store accociated with the graph provided
