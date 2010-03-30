@@ -1,0 +1,17 @@
+;;
+; Basic component configuration
+;;
+templates  = "templates"
+;languages = "languages"
+active     = yes
+action	   = "index"
+name       = "PatternManager"
+
+;;
+; Component's private configuration
+; Anything set below will be available within the component ($this->_privateConfig['key'])
+;;
+[private]
+configModel = "http://localhost/OntoWiki/Config/"
+className   = "http://localhost/OntoWiki/Config/Pattern"
+hasJson     = "http://localhost/OntoWiki/Config/Pattern/hasJson"

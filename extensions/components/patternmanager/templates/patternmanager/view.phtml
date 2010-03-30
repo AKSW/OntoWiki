@@ -1,0 +1,131 @@
+<div id="patternmanager">
+    <a href="javascript:addPMPattern();">add</a>
+    Name for complexpattern: <input type="text" class="text" name="label" id="label" value="<?php echo $this->patternName; ?>"/>
+    <div style="display:none;" id="subpattern">
+        <a href="javascript:hidePMPattern();">hide</a>
+        <a href="javascript:showPMPattern();">show</a>
+        <a href="javascript:delPMPattern();">del</a>
+        <!-- Name for subpattern: <input type="text" class="text" name="patternname-" id="patternname-"/> -->
+        <table>
+            <thead>
+            <tr>
+            <th style="width:70%">Variablename</th>
+            <th style="width:20%">Variabletype</th>
+            <th style="width:10%;"><a href="javascript:addPMvar();">add</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+                <input class="text width95" type="text" name="varname-" id="varname-"/>
+            </td>
+            <td>
+                <select  name="vartype-" id="vartype-" size="1">
+                    <option>RESOURCE</option>
+                    <option>LITERAL</option>
+                    <option>TEMP</option>
+                    <!--
+                    <option>vv</option>
+                    <option>vvv</option>
+                    -->
+                </select>
+                <!--<input type="text" class="text" name="vartype-" id="vartype-"/>-->
+            </td>
+            <td>
+                <a href="javascript:delPMvar();">del</a>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+            <th style="width:90%">Selectquery</th>
+            <th style="width:10%"><a href="javascript:addPMselect();">add</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+                <input class="text width99" type="text" name="selectpattern-" id="selectpattern-"/>
+            </td>
+            <td>
+                <a href="javascript:delPMselect();">del</a>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+            <th style="width:90%">Inserttriples</th>
+            <th style="width:10%"><a href="javascript:addPMinsert();">add</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+                <input class="text width99" type="text" name="insertpattern-" id="insertpattern-"/>
+            </td>
+            <td>
+                <a href="javascript:delPMinsert();">del</a>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+            <th style="width:90%">Deletetriples</th>
+            <th style="width:10%"><a href="javascript:addPMdelete();">add</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+                <input class="text width99" type="text" name="deletepattern-" id="deletepattern-"/>
+            </td>
+            <td>
+                <a href="javascript:delPMdelete();">del</a>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        
+</div>
+
+<?php if ( !empty($this->loadPattern) && is_string($this->loadPattern) )  { ?>
+
+<script type="text/javascript">
+var jsonpattern = $.secureEvalJSON(<?php echo '\'' . $this->loadPattern . '\''; ?>);
+for (key in jsonpattern) {
+    addPMPattern();
+    i = parseInt(key) + 1;
+    current = jsonpattern[key];
+    for (t in current) {
+        if (t == 'V') {
+            delPMvar(i,1);
+            for (v in current[t]) {
+                addPMvar(i,null,v,current[t][v]);
+            }
+        } else if (t == 'S') {
+            delPMselect(i,1);
+            for (v in current[t]) {
+                addPMselect(i,null,current[t][v]);
+            }
+        } else if (t == 'U') {
+            delPMinsert(i,1);
+            delPMdelete(i,1);
+            for (addData in current[t]['INSERT']) {
+                addPMinsert(i, null, current[t]['INSERT'][addData]);
+            }
+            for (delData in current[t]['DELETE']) {
+                addPMdelete(i, null, current[t]['DELETE'][delData]);
+            }
+        }
+    }
+}
+</script>
+
+<?php } ?>
