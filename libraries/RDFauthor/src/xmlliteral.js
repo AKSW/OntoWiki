@@ -100,7 +100,7 @@ XmlLiteralEdit.prototype.onSubmit = function () {
         }
         
         // nothing to save in remove mode
-        if (!this.remove) {
+        if ((this.subject !== '') && !this.remove) {
             // add new triple
             var newTriple = $.rdf.triple(
                 $.rdf.resource('<' + this.subject + '>'), 
@@ -109,7 +109,7 @@ XmlLiteralEdit.prototype.onSubmit = function () {
             );
 
             dataBank.add(newTriple);
-        }        
+        }
     }
     
     return true;

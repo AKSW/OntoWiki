@@ -708,6 +708,10 @@ RDFauthor = {
         view.onAddProperty();
     }, 
     
+    getProperty: function () {
+        
+    }, 
+    
     // performs a SPARQL query to the store accociated with the graph provided
     // and returns a JSON object to the function supplied as callback parameter
     query: function (graph, query, callbackSuccess, callbackError, async) {
