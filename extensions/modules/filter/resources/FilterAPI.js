@@ -64,7 +64,7 @@ function FilterAPI(){
                             "valuetype": typeof valuetype != 'undefined' ? valuetype : null,
                             "literaltype" : typeof literaltype != 'undefined' ? literaltype : null,
                             "hidden" : typeof hidden != 'undefined' ? hidden : false,
-                            "negate" : typeof negate != 'undefined' ? negate : false,
+                            "negate" : typeof negate != 'undefined' ? negate : false
                         }
                     ]
             };

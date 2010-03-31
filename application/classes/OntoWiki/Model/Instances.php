@@ -330,17 +330,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                             }
                         } else {
                             //no language tags
-                            if(!is_numeric($value1)){
-                                $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1);
-                            } else {
-                                $value1_obj = new Erfurt_Sparql_Query2_NumericLiteral($value1);
-                            }
+                            $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1);
                             if (!empty($value2)){
-                                if(!is_numeric($value2)){
-                                    $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value2);
-                                } else {
-                                    $value1_obj = new Erfurt_Sparql_Query2_NumericLiteral($value2);
-                                }
+                                $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral($value2);
                             }
                         }
                 break;
@@ -1136,7 +1128,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             )
         );
         $query->addProjectionVar($valueVar);
-        
         $results = $this->_model->sparqlQuery(
             $query,
             array('result_format' => 'extended')
