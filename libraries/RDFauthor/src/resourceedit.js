@@ -174,10 +174,8 @@ ResourceEdit.search = function(terms, callbackFunction, propertiesOnly, graph, p
         
         var classHint = RDFauthor.getPredicateInfo(predicate, 'ranges');
         if (classHint != undefined) {
-            url = url + '&class=' + encodeURIComponent($.toJSON(classHint));
+            url = url + '&classes=' + encodeURIComponent($.toJSON(classHint));
         }
-        
-        alert(url);
         
         $.getJSON(url + '&callback=?', 
             function(data) {
