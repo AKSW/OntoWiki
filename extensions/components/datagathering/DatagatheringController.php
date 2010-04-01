@@ -524,7 +524,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         // create different source description strings
         if (count($classes) > 0) {
-            $sourceString = $translate->_('Local Search') . ' ('.$translate->_('class restricted').')';
+            $sourceString = $translate->_('Local Search') . ' ('.$translate->_('recommended').')';
         } else {
             $sourceString = $translate->_('Local Search');
         }
