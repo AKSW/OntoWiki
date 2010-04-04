@@ -316,8 +316,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 }
             }
         }
-        
-        
+
+        // 5. if the user input was an URI, give this URI as result back too
+        if (Zend_Uri::check($termsArray[0]) == true) {
+            $translate = $this->_owApp->translate;
+            $result = array(
+                $termsArray[0] => $termsArray[0] .'|'.$termsArray[0].'|'.$translate->_('your manual input')
+            ) + $result;
+        }
+
         $body = json_encode(implode(PHP_EOL, $result));
         
         if (isset($this->_request->callback)) {
