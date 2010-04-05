@@ -145,8 +145,11 @@ class ResourceController extends OntoWiki_Controller_Base
             }
         }
         
-        // show only if not forwarded
-        if ($this->_request->getParam('action') == 'properties' && $graph->isEditable()) {
+        // show only if not forwarded and if model is writeable
+        // TODO: why is isEditable not false here?
+        if ($this->_request->getParam('action') == 'properties' && $graph->isEditable() &&
+                $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)
+                ) {
             // TODO: check acl
             $toolbar = $this->_owApp->toolbar;
             $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties'));
