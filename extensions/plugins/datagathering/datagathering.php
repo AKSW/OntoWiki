@@ -94,10 +94,12 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         $menu     = $event->menu;
         $resource = $event->resource;
         $model    = $event->model;
+        $owApp    = OntoWiki::getInstance();
         
         // We only add entries to the menu, if all params are given and the 
         // model is editable.
-        if ((null === $resource) || (null === $model) || !$model->isEditable()) {
+        if ((null === $resource) || (null === $model) || !$model->isEditable()
+                || !$owApp->erfurt->getAc()->isModelAllowed('edit', $owApp->selectedModel)) {
             return;
         }
         
