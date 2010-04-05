@@ -25,10 +25,14 @@ class NavigationModule extends OntoWiki_Module
      * @return string
      */
     public function getMenu() {
-        // navigation type submenu 
-        $typeMenu = new OntoWiki_Menu();
-        foreach ($this->_privateConfig->config as $key => $config) {
-            $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+        // build main menu (out of sub menus below)
+        $mainMenu = new OntoWiki_Menu();
+
+        // edit sub menu
+        if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) {
+            $editMenu = new OntoWiki_Menu();
+            $editMenu->setEntry('Add Resource here', "javascript:navigationAddElement()");
+            $mainMenu->setEntry('Edit', $editMenu);
         }
 
         // count sub menu
@@ -37,7 +41,7 @@ class NavigationModule extends OntoWiki_Module
             ->setEntry('20', "javascript:navigationEvent('setLimit', 20)")
             ->setEntry('30', "javascript:navigationEvent('setLimit', 30)");
 
-        // edit sub menu
+        // toggle sub menu
         $toggleMenu = new OntoWiki_Menu();
         $toggleMenu->setEntry('Hidden Elements', "javascript:navigationEvent('toggleHidden')");
         $toggleMenu->setEntry('Empty Elements', "javascript:navigationEvent('toggleEmpty')");
@@ -48,15 +52,13 @@ class NavigationModule extends OntoWiki_Module
         $viewMenu->setEntry('Number of Elements', $countMenu);
         $viewMenu->setEntry('Toggle Elements', $toggleMenu);
         $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')");
-
-        // edit sub menu
-        $editMenu = new OntoWiki_Menu();
-        $editMenu->setEntry('Add Resource here', "javascript:navigationAddElement()");
-
-        // build menu out of sub menus
-        $mainMenu = new OntoWiki_Menu();
-        $mainMenu->setEntry('Edit', $editMenu);
         $mainMenu->setEntry('View', $viewMenu);
+
+        // navigation type submenu
+        $typeMenu = new OntoWiki_Menu();
+        foreach ($this->_privateConfig->config as $key => $config) {
+            $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+        }
         $mainMenu->setEntry('Type', $typeMenu);
 
         return $mainMenu;
