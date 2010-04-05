@@ -31,5 +31,16 @@ class BookmarkletModule extends OntoWiki_Module
         
         return $this->render('bookmarklet');
     }
+
+    public function shouldShow(){
+        // do not show if model is not writeable
+        if ( (isset($this->_owApp->selectedModel)) &&
+                ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
