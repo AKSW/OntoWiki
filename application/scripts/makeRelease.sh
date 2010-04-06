@@ -28,8 +28,12 @@ then
   hg clone $OWHG $releaseTemp || exit
 else
   echo "Try to update $releaseTemp (or exit on failure)"
-  hg pull -u $releaseTemp || exit
+  hg pull $releaseTemp || exit
 fi
+
+cd $releaseTemp
+echo "update to OntoWiki-$parameter"
+hg update OntoWiki-$parameter || exit
 
 echo "Create the ZIP directory $releaseDir" 
 cp -R $releaseTemp/ontowiki/src $releaseDir || exit
