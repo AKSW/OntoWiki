@@ -849,8 +849,11 @@ class ModelController extends OntoWiki_Controller_Base
 		if ($this->_owApp->selectedResource) {
 			$this->view->resourceUri = $this->_owApp->selectedResource;
 		}
-                $this->view->writeable = $this->_owApp->selectedModel->isEditable();
 
+                // is/was affected by http://code.google.com/p/ontowiki/issues/detail?id=774
+                // so we use the long way for now
+                // $this->view->writeable = $this->_owApp->selectedModel->isEditable();
+                $this->view->writeable = $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel);
 
 		// build toolbar
 		$toolbar = $this->_owApp->toolbar;
