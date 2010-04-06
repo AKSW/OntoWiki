@@ -339,7 +339,8 @@ RDFauthor = {
                     if (range) {
                         // add or set new range
                         if (info['ranges']) {
-                            if (0 <= $.inArray(range, info['ranges'])) {
+                            if (-1 === $.inArray(range, info['ranges'])) {
+                                // not found, add new range
                                 info['ranges'].push(range);
                             }
                         } else {
