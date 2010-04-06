@@ -196,7 +196,7 @@ class ResourceController extends OntoWiki_Controller_Base
         $start = microtime(true);
         $instances = $this->_session->instances;
         if(!($instances instanceof OntoWiki_Model_Instances)){
-            throw new OntoWiki_Exception("something went wrong with list creation");
+            throw new OntoWiki_Exception("Something went wrong with list creation. Probably your session timed out. <a href='".$this->_config->urlBase."'>Start again</a>");
             exit;
         } else {
             $instances->updateValueQuery();
