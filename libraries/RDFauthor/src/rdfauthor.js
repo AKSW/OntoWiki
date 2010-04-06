@@ -306,9 +306,9 @@ RDFauthor = {
             
             // query graph
             var instance = this;
-            this.query(this.getDefaultGraph(), query, function(json) {
+            this.query(this.getDefaultGraph(), query, function(json) {                
                 // hack for old Erfurt format
-                var bindings = ('results' in json) ? json['results']['bindings'] : json['bindings'];
+                var bindings = (json['results']) ? json['results']['bindings'] : json['bindings'];
                 
                 for (i in bindings) {
                     // load predicate
@@ -325,8 +325,9 @@ RDFauthor = {
                     var type = bindings[i]['type'] ? bindings[i]['type']['value'] : null;
                     if (type) {
                         // add or set new type
-                        if ('types' in info) {
-                            if (0 <= $.inArray(type, info['types'])) {
+                        if (info['types']) {
+                            if (-1 === $.inArray(type, info['types'])) {
+                                // not found, add new type
                                 info['types'].push(type);
                             }
                         } else {
@@ -337,7 +338,7 @@ RDFauthor = {
                     var range = bindings[i]['range'] ? bindings[i]['range']['value'] : null;
                     if (range) {
                         // add or set new range
-                        if ('ranges' in info) {
+                        if (info['ranges']) {
                             if (0 <= $.inArray(range, info['ranges'])) {
                                 info['ranges'].push(range);
                             }

@@ -234,7 +234,7 @@ RDFauthorView.prototype.display = function (animated) {
         initRows();
     } else {
         $('#' + this.id).fadeIn(this.options.animationTime, initRows);
-    }    
+    }
 };
 
 RDFauthorView.prototype.getPropertySelector = function () {
