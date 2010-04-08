@@ -35,10 +35,7 @@ class BookmarkletModule extends OntoWiki_Module
     public function shouldShow(){
         // do not show if model is not writeable
 
-        // hi phil, das klappt nicht:
-        //if ( $this->_owApp->selectedModel->isEditable() ) {
-        // aber das
-        if ( $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) {
+        if ( $this->_owApp->selectedModel->isEditable() ) {
             return true;
         } else {
             return false;
