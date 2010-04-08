@@ -538,7 +538,7 @@ RDFauthor = {
         //     'it': 'it', 
         //     'cn': 'cn'
         // }
-        return ['de', 'en', 'fr', 'nl', 'es', 'it', 'cn'];
+        return ['de', 'en', 'fr', 'nl', 'es', 'it', 'cn', 'ru', 'ka'];
     }, 
     
     // returns the SPARQL service URI for a given triple
