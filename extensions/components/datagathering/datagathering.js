@@ -129,13 +129,24 @@ $(document).ready(function()
 
 /**
  * Shows the location bar.
+ *//**
+ * Function that executes a URI search.
  */
+function locationBarUriSearch(term, cb)
+{
+    var searchUrl = urlBase + 'datagathering/search?q=' + term;
+
+    $.getJSON(searchUrl,
+        function(jsonData) {
+            cb(jsonData);
+    });
+}
 function showLocationBar() 
 {    
 	$('a.location_bar').removeClass('show');
 	$('#location_bar_container').show();
 	
-	$('#location_bar_input').autocomplete(function(term, cb) { uriSearch(term, cb); }, {
+	$('#location_bar_input').autocomplete(function(term, cb) { locationBarUriSearch(term, cb); }, {
         minChars: 3,
         delay: 1000,
         max: 100,
