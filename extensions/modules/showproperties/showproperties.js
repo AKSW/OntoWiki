@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    //Set up drag- and dropp-functionality
+    //Set up drag- and drop-functionality
     $('.show-property').draggable({ helper: 'clone' });
 
     // highlight previously selected properties

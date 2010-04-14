@@ -29,7 +29,7 @@ ResourceEdit.prototype.init = function ()
     var instance = this;
 
     if (this.options.propertyMode) {
-        $('#resource-value-' + this.id).autocomplete(function(term, cb) { return ResourceEdit.search(term, cb, true, instance.graph); }, {
+        $('#resource-value-' + this.id).autocomplete(function(term, cb) { return ResourceEdit.search(term, cb, true, instance.graph, instance.predicate); }, {
             minChars: 3,
             delay: 1000,
             max: 20,
@@ -49,7 +49,7 @@ ResourceEdit.prototype.init = function ()
     } else {
         $('#resource-name-' + this.id).autocomplete(
             function(term, cb) {
-                return ResourceEdit.search(term, cb, false, instance.graph);
+                return ResourceEdit.search(term, cb, false, instance.graph, instance.predicate);
             },
             {
                 minChars: 3,
@@ -162,7 +162,7 @@ ResourceEdit.prototype.getValue = function()
     }
 }
 
-ResourceEdit.search = function(terms, callbackFunction, propertiesOnly, graph)
+ResourceEdit.search = function(terms, callbackFunction, propertiesOnly, graph, predicate)
 {
     // Currently RDFauthor has no generic SPARQL service, so we use the OW service if used with OW.
     // Otherwise we currently only support the sindice search.	
@@ -170,6 +170,11 @@ ResourceEdit.search = function(terms, callbackFunction, propertiesOnly, graph)
         var url = urlBase + 'datagathering/search?q=' + encodeURIComponent(terms);
         if (propertiesOnly) {
             url += '&mode=1';
+        }
+        
+        var classHint = RDFauthor.getPredicateInfo(predicate, 'ranges');
+        if (classHint != undefined) {
+            url = url + '&classes=' + encodeURIComponent($.toJSON(classHint));
         }
         
         $.getJSON(url + '&callback=?', 

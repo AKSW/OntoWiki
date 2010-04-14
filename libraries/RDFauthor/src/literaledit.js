@@ -194,7 +194,7 @@ LiteralEdit.prototype.onSubmit = function() {
             dataBank.remove(oldTriple);
         }
         
-        if (!this.remove) {
+        if ((newObjectValue !== '') && !this.remove) {
             // add new triple
             var newObjectOptions = {};
             var newObject = newObjectValue;

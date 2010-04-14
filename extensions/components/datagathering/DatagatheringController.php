@@ -6,7 +6,6 @@
  * @package    OntoWiki_extensions_components_datagathering
  * @copyright Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: DatagatheringController.php 4327 2009-10-21 08:21:36Z christian.wuerker $
  */
 
 require_once 'Erfurt/Wrapper/Registry.php';
@@ -156,6 +155,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
      *         The default value is SEARCH_DEFAULT_LIMIT. The maximum value
      *         is SEARCH_MAX_LIMIT.
      *
+     * classes - an optional paramter which is a json_encoded array of class URIs
+     *
      * This service will output a json encoded string, which represents the
      * result list. Each entry is returned with an title, the URI itself and 
      * the source of that result. The entry components are sepearted by a | and
@@ -176,8 +177,16 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
         $termsArray = explode(' ', $q);
 
-        // Set the search mode.
+        // check for the classes json array
+        $classes = array();
+        if (null !== $this->_request->classes) {
+            $classes = json_decode($this->_request->classes);
+            if (!is_array($classes)) {
+                $classes = array();
+            }
+        }
         
+        // Set the search mode.
         if (null !== $this->_request->mode) {
             if ((int)$this->_request->mode === self::SEARCH_MODE_PROPERTIES) {
                 $mode = self::SEARCH_MODE_PROPERTIES;
@@ -222,10 +231,20 @@ class DatagatheringController extends OntoWiki_Controller_Component
         
         $result = array();
         
-        // 1. Step: Search the local database for URIs
+        // Step 1a: Search the local database for URIs (class restricted)
+        $localWithRestriction = $this->_searchLocal($termsArray, $modelUri, $mode, $limit, $classes);
+        if (count($localWithRestriction) > 0) {
+            $result = $localWithRestriction;
+        }
+        // Step 1b: Search the local database for URIs (NOT class restricted)
         $local = $this->_searchLocal($termsArray, $modelUri, $mode, $limit);
         if (count($local) > 0) {
-            $result = $local; 
+            # put new result values at the end of the result array
+            foreach ($local as $resultKey => $resultValue) {
+                if (!isset($result[$resultKey])) {
+                    $result[$resultKey] = $resultValue;
+                }
+            }
         }
         
         if ($mode === self::SEARCH_MODE_ALL && count($result) < $limit) {
@@ -236,7 +255,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $event = new Erfurt_Event('onDatagatheringComponentSearch');
             $event->translate  = $this->_owApp->translate;
             $event->termsArray = $termsArray;
-            $event->modelUri   = $modelUri; 
+            $event->modelUri   = $modelUri;
+            $event->classes   = $classes;
             $pluginResult = $event->trigger();
 
             if (is_array($pluginResult)) {
@@ -296,8 +316,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 }
             }
         }
-        
-        
+
+        // 5. if the user input was an URI, give this URI as result back too
+        if (Zend_Uri::check($termsArray[0]) == true) {
+            $translate = $this->_owApp->translate;
+            $result = array(
+                $termsArray[0] => $termsArray[0] .'|'.$termsArray[0].'|'.$translate->_('your manual input')
+            ) + $result;
+        }
+
         $body = json_encode(implode(PHP_EOL, $result));
         
         if (isset($this->_request->callback)) {
@@ -312,6 +339,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
         
         // send
         $response = $this->getResponse();
+        // comment from seebi: why this issnt set to application/json? with
+        //$response->setHeader('Content-Type', 'application/json');
         $response->setBody($body);
         $response->sendResponse();        
         
@@ -428,52 +457,46 @@ class DatagatheringController extends OntoWiki_Controller_Component
      * Searches the local database for URIs. If mode is set to properties only,
      * only defined properties and URIs that are used at least once as a
      * property are returned.
+     *
+     * the classes array is used for class restrictions
      * 
      * @param array $termsArray
      * @param string $modelUri
      * @param int $mode
      * @param int $limit
+     * @param array $classes
      * 
      * @return array
      */
-    private function _searchLocal(array $termsArray, $modelUri, $mode, $limit)
+    private function _searchLocal(array $termsArray, $modelUri, $mode, $limit, $classes = array() )
     {
         if ($mode === self::SEARCH_MODE_PROPERTIES) {
             return $this->_searchLocalPropertiesOnly($termsArray, $modelUri, $limit);
         }
         
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
-        $query = new Erfurt_Sparql_SimpleQuery();
-        $query->setProloguePart('SELECT DISTINCT ?uri ?o');
-        
-        if (null !== $modelUri) {
-            $query->addFrom($modelUri);
-        }
-        
-        $where = '{ { ?uri ?p ?o . 
-            FILTER (';
-            
-        $and = array();
-        foreach ($termsArray as $t) {
-            $and[] = 'regex(str(?uri), "^(http(s)?://.*(/|#)' . $t . ').*$|!(http(s)?://).*' . $t . '.*$", "i")'; 
-        }
-        $where .= '(isLiteral(?o) && ';
-        
-        $and2 = array();
-        foreach ($termsArray as $t) {
-            $and2[] = 'regex(str(?o), "' . $t . '", "i")'; 
-        }
-        $where .= implode(' && ', $and2) . ') || (';
-        $where .= implode(' && ', $and) . ')) } UNION {
-            ?s ?p ?uri . 
-            FILTER (isIRI(?uri) && (';
-        $where .= implode(' && ', $and) . ')) } }';
-        
-        $query->setWherePart($where);
-        $query->setOrderClause('?uri');
-        $query->setLimit($limit);
-
         $store = Erfurt_App::getInstance()->getStore();
+
+        // get a store specific text-search query2 object
+        $searchPattern = $store->getSearchPattern(implode(" ", $termsArray), $modelUri);
+        $query = new Erfurt_Sparql_Query2();
+        $query->addElements($searchPattern);
+        $projVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        $query->addProjectionVar($projVar);
+
+        // add class restriction patterns for each class
+        foreach ($classes as $class) {
+            $classPattern = new Erfurt_Sparql_Query2_GroupGraphPattern();
+            $classPattern->addTriple(
+                $projVar,
+                new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
+                new Erfurt_Sparql_Query2_IriRef($class)
+            );
+            $query->addElement($classPattern);
+        }
+
+        $query->setLimit(20);
+        $query->setDistinct(true);
+
         $queryResult = $store->sparqlQuery($query, array('result_format' => 'extended'));
         
         $tempResult = array();
@@ -481,14 +504,14 @@ class DatagatheringController extends OntoWiki_Controller_Component
         foreach ($queryResult['bindings'] as $row) {
             $object = isset($row['o']) ? $row['o']['value'] : null;
             
-            $weight = $this->_getWeight($termsArray, $row['uri']['value'], $object);
+            $weight = $this->_getWeight($termsArray, $row['resourceUri']['value'], $object);
             
-            if (isset($tempResult[$row['uri']['value']])) {
-                if ($weight > $tempResult[$row['uri']['value']]) {
-                    $tempResult[$row['uri']['value']] = $weight;
+            if (isset($tempResult[$row['resourceUri']['value']])) {
+                if ($weight > $tempResult[$row['resourceUri']['value']]) {
+                    $tempResult[$row['resourceUri']['value']] = $weight;
                 }
             } else {
-                $tempResult[$row['uri']['value']] = $weight;
+                $tempResult[$row['resourceUri']['value']] = $weight;
             }
         }
         
@@ -505,15 +528,22 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $titleHelper->addResources(array_keys($tempResult));
         
         $translate = $this->_owApp->translate;
+
+        // create different source description strings
+        if (count($classes) > 0) {
+            $sourceString = $translate->_('Local Search') . ' ('.$translate->_('recommended').')';
+        } else {
+            $sourceString = $translate->_('Local Search');
+        }
+
         $result = array();
         foreach($tempResult as $uri=>$w) {
             $title = $titleHelper->getTitle($uri);
             
             if (null !== $title) {
-                $result[$uri] = str_replace('|', '&Iota;', $title) . '|' . $uri . '|' . $translate->_('Local Search');
+                $result[$uri] = str_replace('|', '&Iota;', $title) . '|' . $uri . '|' . $sourceString;
             } else {
-                $result[$uri] = OntoWiki_Utils::compactUri($uri) . $uri . '|' . 
-                    $translate->_('Local Search');
+                $result[$uri] = OntoWiki_Utils::compactUri($uri) . $uri . '|' . $sourceString;
             }
         }
         

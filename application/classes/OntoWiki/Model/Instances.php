@@ -257,8 +257,8 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         if(isset($this->_shownProperties[$key])){
             $prop =  $this->_shownProperties[$key];
             $this->_valueQuery->removeProjectionVar($prop['var']);
-            $prop['optionalpart']->remove();
-            //$prop['filter']->remove();
+            $prop['optionalpart']->remove($this->_resourceQuery);
+            //$prop['filter']->remove($this->_resourceQuery);
             unset($this->_shownProperties[$key]);
         }
     }
@@ -330,17 +330,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                             }
                         } else {
                             //no language tags
-                            if(!is_numeric($value1)){
-                                $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1);
-                            } else {
-                                $value1_obj = new Erfurt_Sparql_Query2_NumericLiteral($value1);
-                            }
+                            $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1);
                             if (!empty($value2)){
-                                if(!is_numeric($value2)){
-                                    $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value2);
-                                } else {
-                                    $value1_obj = new Erfurt_Sparql_Query2_NumericLiteral($value2);
-                                }
+                                $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral($value2);
                             }
                         }
                 break;
@@ -551,7 +543,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         }
 
         //these filters bring there own triple
-        $this->allTriple->remove();
+        $this->allTriple->remove($this->_resourceQuery);
 
         //save
         $this->_filter[$id] = array(
@@ -587,7 +579,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         if (isset($this->_filter[$id])){
             foreach($this->_filter[$id]['objects'] as $obj){
                 if($obj instanceof Erfurt_Sparql_Query2_ElementHelper){
-                    $obj->remove();
+                    $obj->remove($this->_resourceQuery);
                     //echo "removed: ".$obj;
                 }
             }
@@ -788,7 +780,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         );
         
         //these filters bring there own triple
-        $this->allTriple->remove();
+        $this->allTriple->remove($this->_resourceQuery);
 
         $this->invalidate();
         return $id;
@@ -1136,7 +1128,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             )
         );
         $query->addProjectionVar($valueVar);
-        
         $results = $this->_model->sparqlQuery(
             $query,
             array('result_format' => 'extended')

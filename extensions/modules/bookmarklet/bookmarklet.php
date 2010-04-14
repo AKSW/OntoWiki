@@ -6,8 +6,8 @@
  *
  * @category OntoWiki
  * @package OntoWiki_Extensions_Modules_Bookmarklet
- * @author Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- *  @author Norman Heino <norman.heino@gmail.com>
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @author Sebastian Tramp <tramp@informatik.uni-leipzig.de>
  * @copyright Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
@@ -31,5 +31,16 @@ class BookmarkletModule extends OntoWiki_Module
         
         return $this->render('bookmarklet');
     }
+
+    public function shouldShow(){
+        // do not show if model is not writeable
+
+        if ( $this->_owApp->selectedModel->isEditable() ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 

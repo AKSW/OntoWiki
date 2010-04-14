@@ -790,6 +790,7 @@ class ModelController extends OntoWiki_Controller_Base
         
         $event = new Erfurt_Event('onPropertiesAction');
         $event->uri = (string)$resource;
+        $event->graph = (string)$resource;
         $event->trigger();
 
         $windowTitle = $translate->_('Model info');
@@ -848,6 +849,11 @@ class ModelController extends OntoWiki_Controller_Base
 		if ($this->_owApp->selectedResource) {
 			$this->view->resourceUri = $this->_owApp->selectedResource;
 		}
+
+                // is/was affected by http://code.google.com/p/ontowiki/issues/detail?id=774
+                // so we use the long way for now
+                // $this->view->writeable = $this->_owApp->selectedModel->isEditable();
+                $this->view->writeable = $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel);
 
 		// build toolbar
 		$toolbar = $this->_owApp->toolbar;
@@ -963,7 +969,7 @@ class ModelController extends OntoWiki_Controller_Base
                                                     'result_format' => $format
                                             ));
                                         }
-
+                                        
                                         //this is for the "output to file option
                                         if(($format == 'json' || $format == 'xml') && $this->_request->getParam('result_outputfile') == 'true'){
                                             $this->_helper->viewRenderer->setNoRender();
