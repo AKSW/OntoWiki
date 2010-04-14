@@ -293,11 +293,18 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
     }
     
     /**
-     * 
+     *  This function takes GET/POST Parameters and tries to create a valid 
+     *  evolution pattern from it, which should be made persistent for later
+     *  use.
      */
     public function saveAction() {
+        
+        // load params from request
         $params = $this->_request->getParams();
         
+        // parametername prefixes
+        // all parameters are in form like prefix-i-j where i,j are numeric indices
+        // parameter numeric values should be consecutive integers
         $paramPrefixes = array(
             'varname' ,
             'vartype' ,
@@ -308,10 +315,12 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         $plainData = array();
 
+        // convert parameters into matrix i , prefix , j (index reordering)
         foreach ($params as $name => $value) {
             if (sizeof(explode('-', $name)) > 1) {
                 
                 $parts = explode('-',$name);
+                // only add to matrix if
                 if ( in_array($parts[0],$paramPrefixes) && !empty($parts[1]) ) {
                   switch (sizeof($parts)) {
                       case 2:
@@ -327,29 +336,56 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
                 }
             }
         }
+
+        $orderedData = array();
         
-        $encodedData = array();
-        
+        // traversing data structure to prepare JSON conversion
         foreach ($plainData as $key => $pattern) {
-            $variables = array_combine($plainData[$key]['varname'],$plainData[$key]['vartype']);
-            $selects   = $plainData[$key]['selectpattern'];
-            $updates   = array( 'INSERT' => $plainData[$key]['insertpattern'],'DELETE' => $plainData[$key]['deletepattern']);
+            
+            if ( array_key_exists('varname', $pattern) && array_key_exists('vartype', $pattern) ) {
+                $variables = array_combine($pattern['varname'],$pattern['vartype']);
+            } else {
+                $variables = array();
+            }
+            
+            if ( array_key_exists('selectpattern', $pattern) ) {
+                $selects   = $pattern['selectpattern'];
+            } else {
+                $selects   = array();
+            }
+            
+            $updates = array();
+            
+            if ( array_key_exists('insertpattern', $pattern) ) {
+                $updates['INSERT'] = $pattern['insertpattern'];
+            } else {
+                $updates['INSERT'] = array();
+            }
+            
+            if ( array_key_exists('deletepattern', $pattern) ) {
+                $updates['DELETE'] = $pattern['deletepattern'];
+            } else {
+                $updates['DELETE'] = array();
+            }
             
             // pack it like in formal definition
-            $encodedData[] = array('V' => $variables, 'S' => $selects, 'U' => $updates);
+            $orderedData[] = array('V' => $variables, 'S' => $selects, 'U' => $updates);
         }
 
-        $encodedData = json_encode($encodedData);
+        // encode in json
+        $encodedData = json_encode($orderedData);
         
-        $url = new OntoWiki_Url( array(), array() );
-        $url->setParam('json', $encodedData);
+        //$url = new OntoWiki_Url( array(), array() );
+        //$url->setParam('json', $encodedData);
         
         $configModel = $this->_privateConfig->configModel;
         $className   = $this->_privateConfig->className;
         $hasJson     = $this->_privateConfig->hasJson;
         $instanceUri = $this->_privateConfig->className . '/' . md5($encodedData . time());
+        
         $label = empty($params['label']) ?
-        	'Pattern' . substr( md5($encodedData . time()), 0, 8) : $params['label'];
+            'unnamed Pattern ' . date(DateTime::ISO8601) :
+            $params['label'];
         
         $stmts = array(
             $instanceUri => array (

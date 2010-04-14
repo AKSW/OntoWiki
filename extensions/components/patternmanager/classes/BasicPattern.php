@@ -11,6 +11,10 @@
  */
 
 class BasicPattern {
+    
+    private $_builtinFunctions       = array(
+    	'TEMPURI'
+    );
 
     private $_engine                 = null;
     
@@ -239,8 +243,13 @@ class BasicPattern {
             
             $resultLoop = 0;
             
+            $mode = 0;
+            
             if ( $found && in_array($parts[0], $activeResult['head']['vars']) ) {
                 $resultLoop = $resultLoop | 1;
+            } elseif ( $parts[0] === 'TEMPURI' ) {
+                $resultLoop = $resultLoop | 1;
+                $mode = 1;
             } elseif ( array_key_exists($parts[0], $this->_variables_bound) ) {
                 $parts[0] = $this->_variables_bound[$parts[0]];
             } else {
@@ -249,6 +258,9 @@ class BasicPattern {
             
             if ( $found && in_array($parts[1], $activeResult['head']['vars']) ) {
                 $resultLoop = $resultLoop | 2;
+            } elseif ( $parts[1] === 'TEMPURI' ) {
+                $resultLoop = $resultLoop | 2;
+                
             } elseif ( array_key_exists($parts[1], $this->_variables_bound) ) {
                 $parts[1] = $this->_variables_bound[$parts[1]];
             } else {                
@@ -266,6 +278,9 @@ class BasicPattern {
 
             if ( $found && in_array($parts[2], $activeResult['head']['vars']) ) {
                 $resultLoop = $resultLoop | 4;
+            } elseif ( $parts[2] === 'TEMPURI' ) {
+                $resultLoop = $resultLoop | 4;
+                $mode = 1;
             } elseif ( array_key_exists($parts[2], $this->_variables_bound) ) {
                 $parts[2] = $this->_variables_bound[$parts[2]];
             } else {
