@@ -862,6 +862,18 @@ class ModelController extends OntoWiki_Controller_Base
 		if ($this->_owApp->selectedModel) {
 			$insertMenu = new OntoWiki_Menu();
 			$insertMenu->setEntry('Current Model URI', 'javascript:insertModelUri()');
+                        $ic = '$.toJSON(
+                            { filter :
+                                [
+                                    {
+                                        mode : \'query\',
+                                        action: \'add\',
+                                        query: $(\'.code-input\').val()
+                                    }
+                                 ]
+                             }
+                         )';
+                        $insertMenu->setEntry('Show Result as List', 'javascript:{ this.location.href = urlBase +\'list/init/1/instancesconfig/\' + encodeURIComponent( '.$ic.') ;}');
 
 			if ($this->_owApp->selectedResource) {
 				$insertMenu->setEntry('Current Resource URI', 'javascript:insertResourceUri()');

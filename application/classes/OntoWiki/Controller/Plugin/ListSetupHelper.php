@@ -73,7 +73,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 isset($request->init) // force a rebuild
             ) {
                 // instantiate model
-                $instances   = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
+                $instances = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
             } else {
                 // use the object from the session
                 $instances = $session->instances;
@@ -86,6 +86,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 if (get_magic_quotes_gpc()) {
                     // add slashes for unicode chars in json
                     $string = str_replace('\\u','\\\\u',$string);
+                    //$string = str_replace('\\u000a','', $string);
                     $string = stripslashes($string);
                 }
                 /* ---- */
@@ -184,6 +185,14 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                             } else if($filter->mode == 'cnav') {
                                 $instances->addTripleFilter(
                                     NavigationHelper::getInstancesTriples($filter->uri, $filter->cnav),
+                                    isset($filter->id) ? $filter->id : null
+                                );
+                            } else if($filter->mode == 'query') {
+                                echo $filter->query;
+                                //$query = Erfurt_Sparql_Query2::initFromString($filter->query);
+                                $query = Erfurt_Sparql_Query2::initFromString("SELECT ".PHP_EOL);
+                                $instances->addTripleFilter(
+                                    $query->getWhere()->getElements(),
                                     isset($filter->id) ? $filter->id : null
                                 );
                             }
