@@ -153,8 +153,15 @@ LiteralEdit.prototype.onSubmit = function() {
     var dataBank = RDFauthor.getDatabank(this.graph);
     
     // get new values
-    var newObjectLiteralType = $('input[name=literal-type-' + this.id + ']:checked').eq(0).val();    
+    var newObjectLiteralType = $('input[name=literal-type-' + this.id + ']:checked').eq(0).val();
+    var newObjectLang        = $('#literal-lang-' + this.id + ' option:selected').eq(0).val();
+    var newObjectDatatype    = $('#literal-datatype-' + this.id + ' option:selected').eq(0).val();
     var newObjectValue       = $('#literal-value-' + this.id).val();
+    
+    // Widget added an nothing entered
+    if (newObjectValue == undefined) {
+        return true;
+    }
     
     var somethingChanged = (newObjectValue != this.object) || (newObjectLang != this.language) || (newObjectDatatype != this.datatype);
     
@@ -200,15 +207,12 @@ LiteralEdit.prototype.onSubmit = function() {
             var newObject = newObjectValue;
             var quoteLiteral = true;
             
-            if (newObjectLiteralType == 'plain') {
-                var newObjectLang = $('#literal-lang-' + this.id + ' option:selected').eq(0).val();
-                
+            if (newObjectLiteralType == 'plain') {                
                 if (newObjectLang != '') {
                     quoteLiteral = false;
                     newObjectOptions.lang = newObjectLang;
                 }
             } else {
-                var newObjectDatatype = $('#literal-datatype-' + this.id + ' option:selected').eq(0).val();
                 newObjectOptions.datatype = newObjectDatatype;
                 quoteLiteral = false;
             }
@@ -235,10 +239,10 @@ LiteralEdit.prototype.onSubmit = function() {
             }
         }
         
+        // if we reach here, commit actual changes
         if (oldTriple) {
             dataBank.remove(oldTriple);
         }
-        
         if (newTriple) {
             dataBank.add(newTriple);
         }
