@@ -158,6 +158,9 @@ LiteralEdit.prototype.onSubmit = function() {
     
     var somethingChanged = (newObjectValue != this.object) || (newObjectLang != this.language) || (newObjectDatatype != this.datatype);
     
+    var oldTriple = null;
+    var newTriple = null;
+    
     if (somethingChanged || this.remove) {
         // remove old triple
         // BUG: this prevents removal of empty literals
@@ -184,13 +187,11 @@ LiteralEdit.prototype.onSubmit = function() {
                 object = '"' + object + '"';
             }
             
-            var oldTriple = $.rdf.triple(
+            oldTriple = $.rdf.triple(
                 $.rdf.resource('<' + this.subject + '>'), 
                 $.rdf.resource('<' + this.predicate + '>'), 
                 $.rdf.literal(object, objectOptions)
             );
-            
-            dataBank.remove(oldTriple);
         }
         
         if ((newObjectValue !== '') && !this.remove) {
@@ -223,16 +224,22 @@ LiteralEdit.prototype.onSubmit = function() {
             }
             
             try {
-                var newTriple = $.rdf.triple(
+                newTriple = $.rdf.triple(
                     $.rdf.resource('<' + this.subject + '>'), 
                     $.rdf.resource('<' + this.predicate + '>'), 
                     $.rdf.literal(newObject, newObjectOptions)
                 );
-            } catch (error) {
-                alert('LiteralEdit: ' + error + ' (' + newObjectLiteralType + ')');
+            } catch (e) {
+                alert('Could not save literal for the following reason: \n' + e.message);
                 return false;
             }
-            
+        }
+        
+        if (oldTriple) {
+            dataBank.remove(oldTriple);
+        }
+        
+        if (newTriple) {
             dataBank.add(newTriple);
         }
     }
