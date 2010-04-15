@@ -26,6 +26,7 @@ $includePath  = get_include_path()               . PATH_SEPARATOR;
 $includePath .= _TESTROOT                        . PATH_SEPARATOR;
 $includePath .= _OWROOT . 'application/classes/' . PATH_SEPARATOR;
 $includePath .= _OWROOT . 'libraries/'           . PATH_SEPARATOR;
+$includePath .= _OWROOT . 'libraries/Erfurt/libraries/'           . PATH_SEPARATOR;
 set_include_path($includePath);
 
 // start dummy session before any PHPUnit output
@@ -36,6 +37,7 @@ $session = new Zend_Session_Namespace('OntoWiki_Test');
 require_once 'Zend/Loader/Autoloader.php';
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('OntoWiki_');
+$loader->registerNamespace('Erfurt_');
 
 
 

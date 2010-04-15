@@ -6,6 +6,7 @@
  *
  * @author jonas
  */
+require_once 'Erfurt/Sparql/Parser/Sparql10.php';
 class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_Abstract {
     protected $_isSetup = false;
     
@@ -188,9 +189,13 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                     isset($filter->id) ? $filter->id : null
                                 );
                             } else if($filter->mode == 'query') {
-                                echo $filter->query;
+$qq= "SELECT * WHERE {?s ?p ?o} LIMIT 10";
+// include 'Erfurt/Sparql/Parser/Sparql10.php';
                                 //$query = Erfurt_Sparql_Query2::initFromString($filter->query);
-                                $query = Erfurt_Sparql_Query2::initFromString("SELECT ".PHP_EOL);
+$q= new Erfurt_Sparql_Query2();
+$query = $q->initFromString($qq);
+                                // $query = Erfurt_Sparql_Query2::initFromString($qq);
+var_dump($query);
                                 $instances->addTripleFilter(
                                     $query->getWhere()->getElements(),
                                     isset($filter->id) ? $filter->id : null
