@@ -58,7 +58,7 @@
 							$base = $this->urlBase."graphicalquerybuilder/display?open=true";
 							$base .= "&queryuri=".htmlentities($entry['query']);
 						}
-					$qelink = $this->urlBase."model/query?immediate=1&query=".urlencode($entry['sparql']);
+					$qelink = $this->urlBase."querybuilding/editor?immediate=1&query=".urlencode($entry['sparql']);
                                         ?>
 					<a style="margin:2px;" class="minibutton" href="<?php echo $qelink; ?>">qe</a>
                                         <?php if($entry['generator']=="qb" || $entry['generator']=="gqb"){?>
