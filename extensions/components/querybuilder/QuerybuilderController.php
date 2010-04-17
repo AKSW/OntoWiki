@@ -15,7 +15,8 @@ require_once 'OntoWiki/Navigation.php';
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @version    $$
  */
-class QuerybuilderController extends OntoWiki_Controller_Component {
+class QuerybuilderController extends OntoWiki_Controller_Component
+{
     var $prefixHandler;
     /**
      * init() Method to init() normal and add tabbed Navigation

@@ -51,7 +51,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
             ));
             $tab_exist = true;
         }
-        if($this->_privateConfig->general->enabled->builder) {
+        if(class_exists("QuerybuilderHelper")) {
             OntoWiki_Navigation :: register('querybuilder', array (
                     'controller' => "querybuilder",
                     'action' => "manage",
@@ -61,7 +61,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
             ));
             $tab_exist = true;
         }
-        if($this->_privateConfig->general->enabled->gqb) {
+        if(class_exists("GraphicalquerybuilderHelper")) {
             OntoWiki_Navigation :: register('graphicalquerybuilder', array (
                     'controller' => "graphicalquerybuilder",
                     'action' => "display",
