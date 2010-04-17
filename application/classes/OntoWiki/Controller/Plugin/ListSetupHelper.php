@@ -188,13 +188,14 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                     isset($filter->id) ? $filter->id : null
                                 );
                             } else if($filter->mode == 'query') {
-                                echo $filter->query;
                                 $query = Erfurt_Sparql_Query2::initFromString($filter->query);
                                 $query = Erfurt_Sparql_Query2::initFromString("SELECT * WHERE { ?s ?p ?o}".PHP_EOL);
-                                $instances->addTripleFilter(
-                                    $query->getWhere()->getElements(),
-                                    isset($filter->id) ? $filter->id : null
-                                );
+                                if(!($query instanceof  Exception)){
+                                    $instances->addTripleFilter(
+                                        $query->getWhere()->getElements(),
+                                        isset($filter->id) ? $filter->id : null
+                                    );
+                                } 
                             }
                         } else {
                             $instances->removeFilter($filter->id);

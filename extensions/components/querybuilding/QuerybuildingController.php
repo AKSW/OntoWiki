@@ -89,6 +89,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
         $this->view->formMethod = 'post';
         $this->view->formName = 'sparqlquery';
         $this->view->query = $this->_request->getParam('query', '');
+        
         $this->view->urlBase = $this->_config->urlBase;
 
         // set URIs
@@ -225,7 +226,16 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                 $this->view->header = $header;
             }
         }
-
+        $this->view->headScript()->prependFile($this->_componentUrlBase . 'resources/codemirror/js/codemirror.js');
+        $this->view->headScript()->prependScript('$(document).ready(function(){
+            var editor = CodeMirror.fromTextArea("inputfield", {
+              parserfile: "parsesparql.js",
+              path: "'.$this->_componentUrlBase . 'resources/codemirror/js/",
+              stylesheet: "'.$this->_componentUrlBase . 'resources/codemirror/css/sparqlcolors.css",
+            });
+            $("a.submit").unbind("click");
+            $("a.submit").click(function(){ $("#inputfield").text(editor.getCode()); $(this).parents("form:first").submit(); });
+            });');
         $this->view->prefixes = $prefixes;
         $this->view->placeholder('sparql.result.format')->set($format);
         $this->view->placeholder('sparql.query.target')->set($this->_request->getParam('target', 'this'));
