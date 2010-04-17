@@ -246,9 +246,6 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
      * Action that will take POST-Data to save query and load existing Queries for listing
      */
     public function listqueryAction() {
-        // set the active tab navigation
-        OntoWiki_Navigation :: setActive('listquery', true);
-
         $store = $this->_owApp->erfurt->getStore();
 
         //Loading data for list of saved queries
@@ -260,7 +257,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                      WHERE {
                      ?query a <' . $this->_privateConfig->saving->ClassUri . '> .
                      ?query <' . $this->_privateConfig->saving->DateUri . '> ?date .
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->_privateConfig->saving->ModelUri . '> ?model} .
+                     OPTIONAL {?query <' . $this->_privateConfig->saving->ModelUri . '> ?model} .
                      OPTIONAL {?query <' . $this->_privateConfig->saving->JsonUri . '> ?json }.
                      OPTIONAL {?query <' . $this->_privateConfig->saving->NameUri . '> ?name }.
                      OPTIONAL {?query <' . $this->_privateConfig->saving->DescriptionUri . '> ?desc} .
@@ -270,11 +267,11 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                      OPTIONAL {?query <' . $this->_privateConfig->saving->CreatorUri . '> ?creator }
                      } ORDER BY DESC(?date)';
 
-        echo htmlentities($loadInfoQuery);
+        //echo htmlentities($loadInfoQuery);
 
         $loadInfoData = $store->sparqlQuery($loadInfoQuery);
 
-        var_dump($loadInfoData);
+        //var_dump($loadInfoData);
 
         //$this->view->getQueriesQuery = $loadInfoQuery;
         // Assign data to view
