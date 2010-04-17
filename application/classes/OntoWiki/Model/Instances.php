@@ -117,9 +117,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $this->_resourceQuery->addProjectionVar($this->_resourceVar);
         $this->_resourceQuery
             ->setLimit(10) //per default query only for 10 resources
-            ->setDistinct(true)
-            ->getOrder()
-                ->add($this->_resourceVar);
+            ->setDistinct(true);
+            //->getOrder()
+            //    ->add($this->_resourceVar);
 
         // when resourceVar is the object - prevent literals
         $this->_resourceQuery->addFilter(
