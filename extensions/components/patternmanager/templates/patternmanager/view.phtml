@@ -1,17 +1,22 @@
 <div id="patternmanager">
-    <a href="javascript:addPMPattern();">add</a>
-    Name for complexpattern: <input type="text" class="text" name="label" id="label" value="<?php echo $this->patternName; ?>"/>
+    <a href="javascript:addPMPattern();">add</a> <br/>
+    Name for ComplexPattern: <input type="text" class="text width95" name="label" id="label" value="<?php echo $this->patternName; ?>"/>
+    Description for ComplexPattern: <input type="text" class="text width95" name="desc" id="desc" value="<?php echo 'DESC';//$this->patternName; ?>"/>
     <div style="display:none;" id="subpattern">
         <a href="javascript:hidePMPattern();">hide</a>
         <a href="javascript:showPMPattern();">show</a>
         <a href="javascript:delPMPattern();">del</a>
-        <!-- Name for subpattern: <input type="text" class="text" name="patternname-" id="patternname-"/> -->
+        <div>
+            Name for SubPattern: <input type="text" class="text width95" name="patternlabel-" id="patternlabel-"/>
+        	Description for SubPattern: <input type="text" class="text width95" name="patterndesc-" id="patterndesc-"/>
+        </div>
         <table>
             <thead>
             <tr>
-            <th style="width:70%">Variablename</th>
-            <th style="width:20%">Variabletype</th>
-            <th style="width:10%;"><a href="javascript:addPMvar();">add</a></th>
+            <th>Variablename</th>
+            <th>Variabletype</th>
+            <th>Variabledescription</th>
+            <th style="text-align:right;"><a href="javascript:addPMvar();">add</a></th>
             </tr>
             </thead>
             <tbody>
@@ -32,6 +37,9 @@
                 <!--<input type="text" class="text" name="vartype-" id="vartype-"/>-->
             </td>
             <td>
+                <input class="text width95" type="text" name="vardesc-" id="vardesc-"/>
+            </td>
+            <td style="text-align:right;">
                 <a href="javascript:delPMvar();">del</a>
             </td>
             </tr>
@@ -40,16 +48,16 @@
         <table>
             <thead>
             <tr>
-            <th style="width:90%">Selectquery</th>
-            <th style="width:10%"><a href="javascript:addPMselect();">add</a></th>
+            <th>Selectquery</th>
+            <th  style="text-align:right;"><a href="javascript:addPMselect();">add</a></th>
             </tr>
             </thead>
             <tbody>
             <tr>
             <td>
-                <input class="text width99" type="text" name="selectpattern-" id="selectpattern-"/>
+                <input class="text width95" type="text" name="selectpattern-" id="selectpattern-"/>
             </td>
-            <td>
+            <td  style="text-align:right;">
                 <a href="javascript:delPMselect();">del</a>
             </td>
             </tr>
@@ -58,16 +66,16 @@
         <table>
             <thead>
             <tr>
-            <th style="width:90%">Inserttriples</th>
-            <th style="width:10%"><a href="javascript:addPMinsert();">add</a></th>
+            <th>Inserttriples</th>
+            <th style="text-align:right;"><a href="javascript:addPMinsert();">add</a></th>
             </tr>
             </thead>
             <tbody>
             <tr>
             <td>
-                <input class="text width99" type="text" name="insertpattern-" id="insertpattern-"/>
+                <input class="text width95" type="text" name="insertpattern-" id="insertpattern-"/>
             </td>
-            <td>
+            <td style="text-align:right;">
                 <a href="javascript:delPMinsert();">del</a>
             </td>
             </tr>
@@ -76,16 +84,16 @@
         <table>
             <thead>
             <tr>
-            <th style="width:90%">Deletetriples</th>
-            <th style="width:10%"><a href="javascript:addPMdelete();">add</a></th>
+            <th>Deletetriples</th>
+            <th style="text-align:right;"><a href="javascript:addPMdelete();">add</a></th>
             </tr>
             </thead>
             <tbody>
             <tr>
             <td>
-                <input class="text width99" type="text" name="deletepattern-" id="deletepattern-"/>
+                <input class="text width95" type="text" name="deletepattern-" id="deletepattern-"/>
             </td>
-            <td>
+            <td style="text-align:right;">
                 <a href="javascript:delPMdelete();">del</a>
             </td>
             </tr>

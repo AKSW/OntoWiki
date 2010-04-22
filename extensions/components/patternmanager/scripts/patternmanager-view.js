@@ -32,12 +32,14 @@ function delPMPattern(id) {
 function hidePMPattern(id) {
     
     $('div#patternmanager > div#subpattern-'+id + '> table').hide();
+    $('div#patternmanager > div#subpattern-'+id + '> div:has(>input)').hide();
     
 }
 
 function showPMPattern(id) {
     
     $('div#patternmanager > div#subpattern-'+id + '> table').show();
+    $('div#patternmanager > div#subpattern-'+id + '> div:has(>input)').show();
     
 }
 
@@ -144,7 +146,8 @@ function reindexPM() {
                 $(this).attr('href', currentHref.substr(0,currentHref.indexOf('(')) + '(' + i + ');' );
             });
             
-            $(this).children('input').each( function () {
+            // (re)index input fields for pattern label and pattern description
+            $(this).find('div > input').each( function () {
                 currentName = $(this).attr('name');
                 currentName = currentName.substr(0, currentName.indexOf('-')) + '-' + i;
                 $(this).attr('name', currentName);

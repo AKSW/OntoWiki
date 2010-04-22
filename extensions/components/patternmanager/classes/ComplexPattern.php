@@ -21,6 +21,18 @@ class ComplexPattern {
     private $_subPattern = array();
     
     /**
+     * 
+     * @var string. Label that identifies the pattern
+     */
+    private $_label = '';
+    
+    /**
+     * 
+     * @var string. Textual descriptions that explains what this pattern does
+     */
+    private $_description = '';
+    
+    /**
      * @var Pattern Engine
      */
     private $_engine = null;
@@ -32,6 +44,11 @@ class ComplexPattern {
     
     }
     
+    /**
+     * Parses from JSON to ComplexPattern object
+     * 
+     * @param $json
+     */
     public function parseFromJson($json) {
         
         $data = json_decode($json, true);
@@ -49,6 +66,47 @@ class ComplexPattern {
         
     }
     
+    /**
+     * Sets the label
+     * 
+     * @param $label
+     */
+    public function setLabel($label) {
+        $this->_label = (string) $label;
+    }
+    
+    /**
+     * Returns the label
+     * 
+     * @return string $label
+     */
+    public function getLabel() {
+        return (string) $this->_label;
+    }
+    
+    /**
+     * Sets the description
+     * 
+     * @param $desc
+     */
+    public function setDescription($desc) {
+        $this->_description = (string) $desc;       
+    }
+    
+    /**
+     * Returns the description
+     * 
+     * @return $desc
+     */
+    public function getDescription() {
+        return (string) $this->_description;
+    }
+    
+    /**
+     * Sets the backend and execution engine
+     * 
+     * @param $engine
+     */
     public function setEngine($engine) {
     
         $this->_engine = $engine;
@@ -59,6 +117,11 @@ class ComplexPattern {
         
     }
     
+    /**
+     * 
+     * 
+     * @return $engine
+     */
     public function getEngine() {
         return $this->_engine;
     }
@@ -67,6 +130,21 @@ class ComplexPattern {
     
     }
     
+    /**
+     * Returns array of subpatterns
+     * 
+     * @return array of objects of BasicPattern
+     */
+    public function getElements() {
+        return $this->_subPattern;
+    }
+    
+    /**
+     * 
+     * 
+     * @param $index
+     * @param $element
+     */
     public function setElement($index, $element) {
     
     }
@@ -86,7 +164,7 @@ class ComplexPattern {
                 if ( in_array($set,$result) ) {
                     // existing don't set again
                 } else {
-                    $result[$set['varname']] = $set;
+                    $result[$set['name']] = $set;
                 }
                 
             }

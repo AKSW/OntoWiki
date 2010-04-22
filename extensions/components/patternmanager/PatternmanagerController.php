@@ -306,8 +306,11 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         // all parameters are in form like prefix-i-j where i,j are numeric indices
         // parameter numeric values should be consecutive integers
         $paramPrefixes = array(
+            'patterndesc' ,
+            'patternlabel' ,
             'varname' ,
             'vartype' ,
+            'vardesc' ,
             'selectpattern' ,
             'insertpattern' ,
             'deletepattern'
@@ -338,15 +341,35 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         }
 
         $orderedData = array();
+
+        // init pattern engine
+        $engine = new PatternEngine();
+        $engine->setBackend($this->_erfurt);
+            
+        //init complex pattern instance
+        $complexPattern = new ComplexPattern();
+        $complexPattern->setEngine($engine);
         
         // traversing data structure to prepare JSON conversion
         foreach ($plainData as $key => $pattern) {
             
+            $variables = array();
+            
+            foreach ($pattern['varname'] as $i => $name) {
+                $variables[$name] = array('type' => $pattern['vartype'][$i], 'desc' => $pattern['vardesc'][$i]);
+            }
+            
+            /*
             if ( array_key_exists('varname', $pattern) && array_key_exists('vartype', $pattern) ) {
+                if ( array_key_exists('vardesc', $pattern) ) {
+                    $vardesc = array_combine($pattern['varname'], $pattern['vardesc']);
+                }
                 $variables = array_combine($pattern['varname'],$pattern['vartype']);
             } else {
                 $variables = array();
             }
+            */
+            
             
             if ( array_key_exists('selectpattern', $pattern) ) {
                 $selects   = $pattern['selectpattern'];
@@ -368,9 +391,37 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
                 $updates['DELETE'] = array();
             }
             
+            $basicPattern = new BasicPattern(array(), $selects, $updates);
+            $basicPattern->setLabel($pattern['patternlabel'][0]);
+            $basicPattern->setDescription($pattern['patterndesc'][0]);
+            
+            foreach ($variables as $name => $data) {
+                $basicPattern->addVariable($name, $data['type'], $data['desc']);
+            }
+            
+            $complexPattern->appendElement($basicPattern);
+            
             // pack it like in formal definition
             $orderedData[] = array('V' => $variables, 'S' => $selects, 'U' => $updates);
         }
+        
+        $description = empty($params['desc']) ?
+    		'unspecified Pattern ' . date(DateTime::ISO8601) :
+            $params['desc'];
+        
+        $label = empty($params['label']) ?
+    		' unspecified Pattern ' . date(DateTime::ISO8601) :
+            $params['label'];
+            
+        $complexPattern->setLabel($label);
+        $complexPattern->setDescription($description);
+
+        $engine->saveToStore($complexPattern);
+
+        /* 
+         * OLD JSON SERIALIZATION
+        */
+        /*
 
         // encode in json
         $encodedData = json_encode($orderedData);
@@ -383,9 +434,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $hasJson     = $this->_privateConfig->hasJson;
         $instanceUri = $this->_privateConfig->className . '/' . md5($encodedData . time());
         
-        $label = empty($params['label']) ?
-            'unnamed Pattern ' . date(DateTime::ISO8601) :
-            $params['label'];
+
         
         $stmts = array(
             $instanceUri => array (
@@ -403,6 +452,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         $store = $this->_erfurt->getStore();
         $store->addMultipleStatements( $configModel, $stmts, false);
+        */
     }
     
     /**
@@ -410,6 +460,48 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      * @param string $uri pattern-uri
      */
     private function loadPatternFromUri($uri) {
+        
+'SELECT ?S ?X ?Y WHERE 
+{
+{
+<'. $uri .'> ns0:hasSubPattern ?sp .
+?sp ns0:hasBasicPattern ?sb . 
+?sb ns0:hasUpdateQuery ?K .
+?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
+} 
+UNION
+{
+<'. $uri .'> ns0:hasSubPattern ?sp .
+?sp ns0:hasBasicPattern ?sb . 
+?sb ns0:hasSelectQuery ?K .
+?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
+} 
+UNION
+{
+<'. $uri .'> ns0:hasSubPattern ?sp .
+?sp ns0:hasBasicPattern ?sb . 
+?sb ns0:hasPatternVariable ?K .
+?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
+} 
+UNION
+{
+<'. $uri .'> ns0:hasSubPattern ?sp .
+?sp ns0:hasBasicPattern ?K . 
+?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
+} 
+UNION
+{
+<'. $uri .'> ns0:hasSubPattern ?K . 
+?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
+}
+UNION
+{
+?S ?X ?Y .
+FILTER ( sameTerm(?S,<'. $uri .'>)) .
+}
+
+}
+LIMIT 1001';
         
         $store = $this->_erfurt->getStore();
         
