@@ -600,7 +600,7 @@ class ModelController extends OntoWiki_Controller_Base
                 return;
                 break;
             case 'paste':
-                $file = tempnam('/tmp', 'ow');
+                $file = tempnam(sys_get_temp_dir(), 'ow');
                 $temp = fopen($file, 'wb');
                 fwrite($temp, $this->getParam('paste'));
                 fclose($temp);
