@@ -117,10 +117,6 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
             if ($this->_owApp->selectedResource) {
                 $insertMenu->setEntry('Current Resource URI', 'javascript:insertResourceUri()');
             }
-
-            $insertMenu2 = new OntoWiki_Menu();
-            $ic = '$.toJSON({ filter : [ {mode : \'query\', action: \'add\', query: $(\'.code-input\').val() } ] } )';
-            $insertMenu2->setEntry('Show Result as List', 'javascript:{ window.open( urlBase +\'list/init/1/instancesconfig/\' + encodeURIComponent( '.$ic.'), \'_self\') ;}');
         }
 
         $helpMenu = new OntoWiki_Menu();
@@ -128,7 +124,6 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 
         $menu = new OntoWiki_Menu();
         if (isset ($insertMenu)) {
-            $menu->setEntry('Action', $insertMenu2);
             $menu->setEntry('Insert', $insertMenu);
         }
         $menu->setEntry('Help', $helpMenu);
@@ -145,6 +140,16 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
             $store = $this->_erfurt->getStore();
 
             if (trim($query) != '') {
+                if($format == 'list'){
+                    $url = new OntoWiki_Url(array('controller'=>'list'),array());
+                    $query = str_replace("\r\n", " ", $query);
+                    $url .= '/init/1/instancesconfig/' . urlencode(json_encode(array('filter'=>array( array ('mode' => 'query', 'action' => 'add' , 'query' => $query)))));
+
+                    //redirect
+                    header('Location: ' . $url);
+                    exit;
+                }
+
                 if (stristr($query, 'select') && !stristr($query, 'limit')) {
                     $query .= PHP_EOL . 'LIMIT 20';
                 }
