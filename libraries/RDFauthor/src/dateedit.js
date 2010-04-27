@@ -41,6 +41,11 @@ DateEdit.prototype.onSubmit = function () {
     var dataBank = RDFauthor.getDatabank(this.graph);
     var newValue = $('#date-edit-' + this.id).val();
     
+    // Widget just added and nothing entered
+    if (newValue == undefined) {
+        return true;
+    }
+    
     if ((newValue != this.object) || this.remove) {
         // remove old triple
         if (this.object !== '' || this.remove) {
