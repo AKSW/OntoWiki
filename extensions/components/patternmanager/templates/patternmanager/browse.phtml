@@ -1,0 +1,27 @@
+<div>
+<table class="separated-vertical">
+<?php $odd = true;?>
+<thead>
+    <tr class="<?php echo $odd ? 'even' : 'odd'; $odd = !$odd; ?>">
+        <th>nr</th>
+        <th>label</th>
+        <th>command 1</th>
+        <th>command 2</th>
+    </tr>
+</thead>
+<tbody>
+	<?php
+	    foreach ($this->data as $n => $part) {
+	?>
+	<tr class="<?php echo $odd ? 'even' : 'odd'; $odd = !$odd; ?>">
+	    <td><?php echo 'NR:' . $n;?></td>
+	    <td><?php echo $part['label'];?></td>
+	    <td><a href="<?php echo $part['view_url']; ?>"><?php echo 'view/edit';?></a></td>
+	    <td><a href="<?php echo $part['exec_url']; ?>"><?php echo 'exec';?></a></td>
+	</tr>
+	<?php
+	    }
+	?>
+</tbody>
+</table>
+</div>
