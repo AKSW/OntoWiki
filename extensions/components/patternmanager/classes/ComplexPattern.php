@@ -67,6 +67,38 @@ class ComplexPattern {
     }
     
     /**
+     * Parses to JSON to ComplexPattern object
+     * 
+     * @param $json
+     */
+    public function parseToJson() {
+        
+        $data = array();
+        
+        $this->_subPattern = ksort($this->_subPattern, SORT_NUMERIC);
+        
+        $basicPattern = new BasicPattern();
+        
+        foreach ($this->_subPattern as $i => $basicPattern) {
+            $data['P'][$i] = array(
+            	'V' => array(),
+            	'S' => array(),
+            	'U' => array()
+            );
+            $basicPattern->getLabel();
+            $basicPattern->getVariables(true, true);
+            foreach ($basicPattern->getUpdateQueries() as $pat) {
+                
+            }
+            $basicPattern->getSelectQueries();
+            $data['label'] = $this->getLabel();
+            $data['desc']  = $this->getDescription();
+            
+        }
+        
+    }
+    
+    /**
      * Sets the label
      * 
      * @param $label
@@ -142,11 +174,11 @@ class ComplexPattern {
     /**
      * 
      * 
-     * @param $index
-     * @param $element
+     * @param int $index
+     * @param string $element
      */
     public function setElement($index, $element) {
-    
+        $this->_subPattern[$index] = $element;
     }
     
     public function appendElement($element) {

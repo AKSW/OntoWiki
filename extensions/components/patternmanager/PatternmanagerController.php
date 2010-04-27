@@ -1,6 +1,6 @@
 <?php
 /**
- * Controller for OntoWiki Pattern Manager Module
+ * Controller for OntoWiki Pattern Manager Component
  *
  * @category   OntoWiki
  * @package    extensions_components_patternmanager
@@ -277,6 +277,10 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         $patternUri = $this->_request->getParam('pattern', null);
         
+        $engine = new PatternEngine();
+        $engine->setBackend($this->_erfurt);
+        $engine->loadFromStoreAsRdf($patternUri);
+        
         if ( $patternUri === null ) {
             $data = array();
         } else {
@@ -327,10 +331,10 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
                 if ( in_array($parts[0],$paramPrefixes) && !empty($parts[1]) ) {
                   switch (sizeof($parts)) {
                       case 2:
-                          $plainData[(int)$parts[1]][$parts[0]][] = $value;
+                          $plainData[(int)$parts[1]][$parts[0]][] = trim($value);
                           break;
                       case 3:
-                          $plainData[(int) $parts[1]][$parts[0]][(int) $parts[2]] = $value;
+                          $plainData[(int) $parts[1]][$parts[0]][(int) $parts[2]] = trim($value);
                           break;
                       default :
                           // do nothing
@@ -350,29 +354,26 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $complexPattern = new ComplexPattern();
         $complexPattern->setEngine($engine);
         
+        $error = array();
+        
         // traversing data structure to prepare JSON conversion
-        foreach ($plainData as $key => $pattern) {
-            
-            $variables = array();
+        foreach ($plainData as $pNr => $pattern) {
             
             foreach ($pattern['varname'] as $i => $name) {
-                $variables[$name] = array('type' => $pattern['vartype'][$i], 'desc' => $pattern['vardesc'][$i]);
-            }
-            
-            /*
-            if ( array_key_exists('varname', $pattern) && array_key_exists('vartype', $pattern) ) {
-                if ( array_key_exists('vardesc', $pattern) ) {
-                    $vardesc = array_combine($pattern['varname'], $pattern['vardesc']);
+                $variables[$i] = array('name' => $name , 'type' => $pattern['vartype'][$i], 'desc' => $pattern['vardesc'][$i]);
+                // variable names should only be alphanumeric and extra '-' and '_'
+                if (preg_match('/^([A-Z]|[a-z]|[0-9]|[_-])+$/',$name) === 0 ) {
+                    $error[] = 'varname-' . $pNr . '-' . $i;
                 }
-                $variables = array_combine($pattern['varname'],$pattern['vartype']);
-            } else {
-                $variables = array();
-            }
-            */
-            
+            }            
             
             if ( array_key_exists('selectpattern', $pattern) ) {
-                $selects   = $pattern['selectpattern'];
+                foreach ($pattern['selectpattern'] as $s => $select) {
+                    $selects[$pNr] = $select;
+                    if (preg_match ('/^\{(.+)\}$/',$select) === 0 )  {
+                        $error[] = 'selectpattern-' . $pNr . '-' . $s;
+                    }
+                }
             } else {
                 $selects   = array();
             }
@@ -380,20 +381,56 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $updates = array();
             
             if ( array_key_exists('insertpattern', $pattern) ) {
-                $updates['INSERT'] = $pattern['insertpattern'];
+                foreach ($pattern['insertpattern'] as $n => $pat) {
+                    $updates['INSERT'][$n] = $pattern['insertpattern'][$n];
+                    if (preg_match ('/^(\s*)(\S+)(\s+)(\S+)(\s+)(\S+)(\s*)$/',$pat) === 0) {
+                        $error[] = 'insertpattern-' . $pNr . '-' . $n;
+                    }
+                }
+                
             } else {
                 $updates['INSERT'] = array();
             }
             
             if ( array_key_exists('deletepattern', $pattern) ) {
-                $updates['DELETE'] = $pattern['deletepattern'];
+                foreach ($pattern['deletepattern'] as $n => $pat) {
+                    $updates['DELETE'][$n] = $pattern['deletepattern'][$n];
+                    if (preg_match ('/^(\s*)(\S+)(\s+)(\S+)(\s+)(\S+)(\s*)$/',$pat) === 0) {
+                        $error[] = 'deletepattern-' . $pNr . '-' . $n;
+                    }
+                }
             } else {
                 $updates['DELETE'] = array();
             }
             
-            $basicPattern = new BasicPattern(array(), $selects, $updates);
-            $basicPattern->setLabel($pattern['patternlabel'][0]);
-            $basicPattern->setDescription($pattern['patterndesc'][0]);
+            $basicPattern = new BasicPattern();
+            
+            foreach ($selects as $select) {
+                $basicPattern->addSelectQuery($select);
+            }
+            
+            foreach ($updates['DELETE'] as $update) {
+                $basicPattern->addUpdateQuery($update,'delete');
+            }
+            
+            foreach ($updates['INSERT'] as $update) {
+                $basicPattern->addUpdateQuery($update,'insert');
+            }
+            
+            $description = empty($pattern['patterndesc'][0]) ?
+    			'unspecified Basic Pattern ' . date(DateTime::ISO8601) :
+                $pattern['patterndesc'][0];
+                
+            $label = '';
+            
+            if ( empty($pattern['patternlabel'][0]) ) {
+                $error[] = 'patternlabel-' . $pNr;    
+            } else {
+                $label = $pattern['patternlabel'][0];
+            }
+            
+            $basicPattern->setLabel($label);
+            $basicPattern->setDescription($description);
             
             foreach ($variables as $name => $data) {
                 $basicPattern->addVariable($name, $data['type'], $data['desc']);
@@ -401,23 +438,27 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             
             $complexPattern->appendElement($basicPattern);
             
-            // pack it like in formal definition
-            $orderedData[] = array('V' => $variables, 'S' => $selects, 'U' => $updates);
         }
-        
+
         $description = empty($params['desc']) ?
     		'unspecified Pattern ' . date(DateTime::ISO8601) :
             $params['desc'];
         
         $label = empty($params['label']) ?
-    		' unspecified Pattern ' . date(DateTime::ISO8601) :
+    		'unspecified Pattern ' . date(DateTime::ISO8601) :
             $params['label'];
             
         $complexPattern->setLabel($label);
         $complexPattern->setDescription($description);
-
-        $engine->saveToStore($complexPattern);
-
+        
+        if (empty($error)) {
+            echo 'SAVE';
+            //$engine->saveToStore($complexPattern);
+        } else {
+            $json = $complexPattern->parseToJson();
+            var_dump($json);
+        }
+        exit();
         /* 
          * OLD JSON SERIALIZATION
         */
@@ -460,49 +501,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      * @param string $uri pattern-uri
      */
     private function loadPatternFromUri($uri) {
-        
-'SELECT ?S ?X ?Y WHERE 
-{
-{
-<'. $uri .'> ns0:hasSubPattern ?sp .
-?sp ns0:hasBasicPattern ?sb . 
-?sb ns0:hasUpdateQuery ?K .
-?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
-} 
-UNION
-{
-<'. $uri .'> ns0:hasSubPattern ?sp .
-?sp ns0:hasBasicPattern ?sb . 
-?sb ns0:hasSelectQuery ?K .
-?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
-} 
-UNION
-{
-<'. $uri .'> ns0:hasSubPattern ?sp .
-?sp ns0:hasBasicPattern ?sb . 
-?sb ns0:hasPatternVariable ?K .
-?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
-} 
-UNION
-{
-<'. $uri .'> ns0:hasSubPattern ?sp .
-?sp ns0:hasBasicPattern ?K . 
-?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
-} 
-UNION
-{
-<'. $uri .'> ns0:hasSubPattern ?K . 
-?S ?X ?Y . FILTER ( sameTerm(?S,?K)) .
-}
-UNION
-{
-?S ?X ?Y .
-FILTER ( sameTerm(?S,<'. $uri .'>)) .
-}
 
-}
-LIMIT 1001';
-        
         $store = $this->_erfurt->getStore();
         
         $configModel = $this->_privateConfig->configModel;
@@ -538,6 +537,7 @@ LIMIT 1001';
         }
         
         return $result;
+        
     }
 
 }
