@@ -275,12 +275,28 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         //$this->view->formName      = 'patternmanager-form';
         $this->view->formEncoding  = 'multipart/form-data';
         
-        $patternUri = $this->_request->getParam('pattern', null);
+        $this->view->jsonPattern = '{}';
         
-        $engine = new PatternEngine();
-        $engine->setBackend($this->_erfurt);
-        $engine->loadFromStoreAsRdf($patternUri);
+        $param = $this->_request->getParam('pattern', null);
+        if ( !empty($param) ) {
+            $engine = new PatternEngine();
+            $engine->setBackend($this->_erfurt);
+            $loaded = $engine->loadFromStoreAsRdf($param);
+            $this->view->jsonPattern = $loaded->toArray(true);
+        }
         
+        $param = $this->_request->getParam('json_pattern', null);
+        if ( !empty($param) ) {
+            $this->view->jsonPattern = $param;
+        }
+        
+        $param = $this->_request->getParam('error_pattern', null);
+        if ( !empty($param) ) {
+            $this->view->errorPattern = $param;
+        }
+        
+        
+		/*        
         if ( $patternUri === null ) {
             $data = array();
         } else {
@@ -294,6 +310,8 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $this->view->patternName   = '';
             $this->view->loadPattern   = '{}';
         }
+		*/
+
     }
     
     /**
@@ -359,13 +377,23 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         // traversing data structure to prepare JSON conversion
         foreach ($plainData as $pNr => $pattern) {
             
-            foreach ($pattern['varname'] as $i => $name) {
-                $variables[$i] = array('name' => $name , 'type' => $pattern['vartype'][$i], 'desc' => $pattern['vardesc'][$i]);
-                // variable names should only be alphanumeric and extra '-' and '_'
-                if (preg_match('/^([A-Z]|[a-z]|[0-9]|[_-])+$/',$name) === 0 ) {
-                    $error[] = 'varname-' . $pNr . '-' . $i;
-                }
-            }            
+            $basicPattern = new BasicPattern();
+            
+            $variables = array();
+            
+            if ( array_key_exists('varname', $pattern) ) {
+	            foreach ($pattern['varname'] as $i => $name) {
+	                $variables[$i] = array(
+	                	'name' => $name ,
+	                	'type' => $pattern['vartype'][$i],
+	                	'desc' => $pattern['vardesc'][$i]
+	                );
+	                // variable names should only be alphanumeric and extra '-' and '_'
+	                if (preg_match('/^([A-Z]|[a-z]|[0-9]|[_-])+$/',$name) === 0 ) {
+	                    $error[] = 'varname-' . $pNr . '-' . $i;
+	                }
+	            }
+            }
             
             if ( array_key_exists('selectpattern', $pattern) ) {
                 foreach ($pattern['selectpattern'] as $s => $select) {
@@ -403,8 +431,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
                 $updates['DELETE'] = array();
             }
             
-            $basicPattern = new BasicPattern();
-            
             foreach ($selects as $select) {
                 $basicPattern->addSelectQuery($select);
             }
@@ -432,8 +458,8 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $basicPattern->setLabel($label);
             $basicPattern->setDescription($description);
             
-            foreach ($variables as $name => $data) {
-                $basicPattern->addVariable($name, $data['type'], $data['desc']);
+            foreach ($variables as $var) {
+                $basicPattern->addVariable($var['name'], $var['type'], $var['desc']);
             }
             
             $complexPattern->appendElement($basicPattern);
@@ -452,12 +478,24 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $complexPattern->setDescription($description);
         
         if (empty($error)) {
-            echo 'SAVE';
-            //$engine->saveToStore($complexPattern);
+            $engine->saveToStore($complexPattern);
         } else {
-            $json = $complexPattern->parseToJson();
-            var_dump($json);
+            $json = $complexPattern->toArray(true);
+            
+            $url = new OntoWiki_Url(
+                array(
+                    'controller' => 'patternmanager',
+                	'action' => 'view'
+                ),
+                array()
+            );
+            $url->setParam('action','view');
+            $url->setParam('json_pattern', $json);
+            $url->setParam('error_pattern', json_encode($error));
+            
+            $this->_redirect($url);
         }
+        
         exit();
         /* 
          * OLD JSON SERIALIZATION

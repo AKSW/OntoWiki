@@ -49,11 +49,15 @@ class ComplexPattern {
      * 
      * @param $json
      */
-    public function parseFromJson($json) {
+    public function fromArray($array, $asJson = false) {
         
-        $data = json_decode($json, true);
+        if ($asJson) {
+	        $data = json_decode($array, true);
+        } else {
+	        $data = $array;
+	    }
 
-        foreach ($data as $subpattern) {
+        foreach ($data['subPattern'] as $subpattern) {
             
             $pattern = new BasicPattern(
                 $subpattern['V'],
@@ -71,29 +75,44 @@ class ComplexPattern {
      * 
      * @param $json
      */
-    public function parseToJson() {
+    public function toArray($asJson = false) {
         
         $data = array();
         
-        $this->_subPattern = ksort($this->_subPattern, SORT_NUMERIC);
+        ksort($this->_subPattern, SORT_NUMERIC);
         
         $basicPattern = new BasicPattern();
-        
+
         foreach ($this->_subPattern as $i => $basicPattern) {
-            $data['P'][$i] = array(
+            
+            $data['subPattern'][$i] = array(
             	'V' => array(),
             	'S' => array(),
             	'U' => array()
             );
-            $basicPattern->getLabel();
-            $basicPattern->getVariables(true, true);
-            foreach ($basicPattern->getUpdateQueries() as $pat) {
-                
+
+            foreach ($basicPattern->getVariables(true, true) as $var) {
+                $data['subPattern'][$i]['V'][] = $var;
             }
-            $basicPattern->getSelectQueries();
-            $data['label'] = $this->getLabel();
-            $data['desc']  = $this->getDescription();
+            foreach ($basicPattern->getUpdateQueries() as $pat) {
+                $data['subPattern'][$i]['U'][] = $pat;
+            }
+            foreach($basicPattern->getSelectQueries() as $pat) {
+                $data['subPattern'][$i]['S'][] = $pat;
+            }
             
+            $data['subPattern'][$i]['label'] = $basicPattern->getLabel();
+            $data['subPattern'][$i]['desc']  = $basicPattern->getDescription();
+            
+        }
+        
+        $data['label'] = $this->getLabel();
+        $data['desc'] = $this->getDescription();
+        
+        if ($asJson) {
+            return json_encode($data);
+        } else {
+            return $data;
         }
         
     }

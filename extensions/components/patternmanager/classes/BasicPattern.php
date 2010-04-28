@@ -150,7 +150,7 @@ class BasicPattern {
     public function getVariables($includeBound = true, $noTemp = true) {
         
         $result = array();
-        
+
         foreach ($this->_variables_free as $var => $type) {
             if ( $includeBound && array_key_exists( $var , $this->_variables_bound ) ) {
                 $result[$var] = array(

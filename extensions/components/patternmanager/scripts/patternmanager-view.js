@@ -8,7 +8,7 @@
  * @version    $Id$
  */
 
-function addPMPattern() {
+function addPMPattern(name, desc) {
     
     pattern = $('div#subpattern').clone();
     count = $('div#patternmanager > div').size();
@@ -16,6 +16,9 @@ function addPMPattern() {
     html = '<div id="subpattern-' + count +'">' + pattern.html() + '</div>';
     
     $('div#patternmanager').append(html);
+    
+    $('div#subpattern-' + count + ' input#patternlabel-').val(name);
+    $('div#subpattern-' + count + ' input#patterndesc-').val(desc);
     
     reindexPM();
     
@@ -43,14 +46,15 @@ function showPMPattern(id) {
     
 }
 
-function addPMvar(p,c,varname,vartype) {
+function addPMvar(p,unused,varname,vartype,vardesc) {
     
     input = $('div#subpattern > table').eq(0).find('tbody > tr').clone();
     varcount = $('div#subpattern-' + p + ' > table').eq(0).find('tbody > tr').size();
     
     table = $('div#subpattern-' + p + ' > table:eq(0) > tbody');
     table.append('<tr>' + input.html() + '</tr>');
-    table.find('tr:eq(' + varcount + ') input').val(varname);
+    table.find('tr:eq(' + varcount + ') input:eq(0)').val(varname);
+    table.find('tr:eq(' + varcount + ') input:eq(1)').val(vardesc);
     table.find('tr:eq(' + varcount + ') select > option').each( function (i) {
         if ($(this).text() == vartype) {
             $(this).attr('selected','true');

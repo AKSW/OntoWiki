@@ -188,7 +188,7 @@ class PatternEngine {
         
         // create uri and statements for ComplexPattern
         $cpatternLabel = $pattern->getLabel();
-        $cpatternUri = $this->_serialization_schema['ComplexPattern'] . '/' . urlencode($cpatternLabel);
+        $cpatternUri = $this->_serialization_schema['ComplexPattern'] . '/' . md5($cpatternLabel);
         
         $stmt[ $cpatternUri ][ EF_RDFS_LABEL ][] = array(
         	'type' => 'literal' ,
@@ -212,7 +212,7 @@ class PatternEngine {
             $vars = $basicPattern->getVariables(true, false);
             
             $patternLabel =  $basicPattern->getLabel();
-            $patternUri = $this->_serialization_schema['BasicPattern'] . '/' . urlencode($patternLabel);
+            $patternUri = $this->_serialization_schema['BasicPattern'] . '/' . md5($patternLabel);
             
             $stmt[ $patternUri ][ EF_RDFS_LABEL ][] = array( 
             	'type' => 'literal' ,
@@ -226,7 +226,7 @@ class PatternEngine {
             foreach ($vars as $variable) {
                 
                 $varLabel = $variable['name'];
-                $varUri = $this->_serialization_schema['PatternVariable'] . '/' . $varLabel;
+                $varUri = $this->_serialization_schema['PatternVariable'] . '/' . md5($varLabel);
                 if ( !array_key_exists($varUri, $stmt) ) {
 	                $stmt[ $varUri ][ EF_RDF_TYPE ][] = array(
 	                    'type' => 'uri' ,
@@ -258,8 +258,8 @@ class PatternEngine {
 
             foreach ($select as $query) {
                 
-                $selectLabel = md5($query);
-                $selectUri = $this->_serialization_schema['SelectQuery'] . '/' .  $selectLabel;
+                $selectLabel = $query;
+                $selectUri = $this->_serialization_schema['SelectQuery'] . '/' .  md5($selectLabel);
                 $stmt[ $selectUri ] =
                 array(
                     EF_RDFS_LABEL => array(
@@ -273,16 +273,25 @@ class PatternEngine {
             //get update query for BasicPattern
             $update = $basicPattern->getUpdateQueries();
 
-            // handle insert part
-            foreach ($update['INSERT'] as $insertPattern ) {
-                $parts = explode(' ',$insertPattern);
+            // handle update part
+            foreach ($update as $pattern ) {
+                $parts = explode(' ',$pattern['pattern']);
                 
-                $insertLabel = md5($insertPattern);
-                $insertUri = $this->_serialization_schema['UpdateQuery_Insert'] . '/' . $insertLabel;
+                $insertLabel = $pattern['pattern'] . ' - ' . $pattern['type'];
+                $insertUri = $this->_serialization_schema['UpdateQuery_Insert'] . '/' . md5($insertLabel);
+                if ($pattern['type'] === 'insert') {
+                    $type = $this->_serialization_schema['UpdateQuery_Insert'];
+                } elseif( $pattern['type'] === 'delete' ) {
+                    $type = $this->_serialization_schema['UpdateQuery_Delete'];
+                } else {
+                    // defaulting to thing
+                    $type = EF_OWL_THING;
+                }
+                
                 $stmt[ $insertUri ] =
                 array(
                     EF_RDF_TYPE => array(
-                        array('type' => 'uri', 'value' => $this->_serialization_schema['UpdateQuery_Insert'])
+                        array('type' => 'uri', 'value' => $type)
                     ) ,
                     $this->_serialization_schema['updatePatternSubject'] => array (
                         array('type' => 'literal' , 'value' => $parts[0])
@@ -298,37 +307,14 @@ class PatternEngine {
                     array( 'type' => 'uri' , 'value' => $insertUri);
             }
             
-            // handle delete part
-            foreach ($update['DELETE'] as $deletePattern ) {
-                $parts = explode(' ',$deletePattern);
-                
-                $deleteLabel = md5($deletePattern);
-                $deleteUri = $this->_serialization_schema['UpdateQuery_Delete'] . '/' . $deleteLabel;
-                $stmt[ $deleteUri ] =
-                array(
-                    EF_RDF_TYPE => array(
-                        array('type' => 'uri', 'value' => $this->_serialization_schema['UpdateQuery_Delete'])
-                    ) ,
-                    $this->_serialization_schema['updatePatternSubject'] => array (
-                        array('type' => 'literal' , 'value' => $parts[0])
-                    ) ,
-                    $this->_serialization_schema['updatePatternPredicate'] => array (
-                        array('type' => 'literal' , 'value' => $parts[1])
-                    ) ,
-                    $this->_serialization_schema['updatePatternObject'] => array (
-                        array('type' => 'literal' , 'value' => $parts[2])
-                    ) ,
-                );
-                $stmt[ $patternUri ][ $this->_serialization_schema['hasUpdateQuery'] ][] = 
-                    array( 'type' => 'uri' , 'value' => $deleteUri);
-            }
-            
             $stmt[$patternUri][EF_RDF_TYPE][] = array (
             	'type' => 'uri' ,
             	'value' => $this->_serialization_schema['BasicPattern']
             );
             
-            $subPatternUri = $patternUri . '/' . $i;
+            
+            $subPatternLabel = $i . ' - ' . $patternLabel;
+            $subPatternUri   = $this->_serialization_schema['BasicPattern'] . '/' . md5($subPatternLabel);
             
             $stmt[ $subPatternUri ][ EF_RDF_TYPE ][] =
                 array('type' => 'uri' , 'value' => $this->_serialization_schema['SubPattern']);
@@ -561,7 +547,7 @@ class PatternEngine {
         }
         
         $pdata = resolveRecursive($hash,$resources,$data);
-        
+
         foreach ($pdata[$this->_serialization_schema['hasSubPattern']] as $sp) {
             $i = $sp[$this->_serialization_schema['sequenceId']][0];
             $bp = $sp[$this->_serialization_schema['hasBasicPattern']][0];
@@ -570,7 +556,7 @@ class PatternEngine {
             
             foreach ($bp[$this->_serialization_schema['hasPatternVariable']] as $var) {
                 $name = $var[EF_RDFS_LABEL][0];
-                $desc = $var[EF_RDFS_LABEL][0];
+                $desc = $var[EF_RDFS_COMMENT][0];
                 $type = substr($var[EF_RDF_TYPE][0],strlen($this->_serialization_schema['PatternVariable']) + 1); 
                 $basicPattern->addVariable($name,$type,$desc);
             }
@@ -582,10 +568,10 @@ class PatternEngine {
             foreach ($bp[$this->_serialization_schema['hasUpdateQuery']] as $var) {
                 switch ($var[EF_RDF_TYPE][0]) {
                     case $this->_serialization_schema['UpdateQuery_Insert']:
-                        $type = 'INSERT';
+                        $type = 'insert';
                         break;
                     case $this->_serialization_schema['UpdateQuery_Delete']:
-                        $type = 'DELETE';
+                        $type = 'delete';
                         break;
                     default:
                         break;
@@ -602,7 +588,8 @@ class PatternEngine {
             $complexPattern->setElement((int)$sp[$this->_serialization_schema['sequenceId']][0],$basicPattern);
             
         }
-        var_dump($complexPattern);
+        
+        return $complexPattern;
     }
     
 }
