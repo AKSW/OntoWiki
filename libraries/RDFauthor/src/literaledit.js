@@ -71,8 +71,8 @@ LiteralEdit.prototype.getHtml = function() {
     var html = '\
         ' + (this.isLarge() ? longArea() : shortArea()) + '\
         <div class="container literal-type util ' + this.disclosureId + '" style="display:none">\
-            <label><input type="radio" class="radio" name="literal-type-' + this.id + '"' + (this.datatype ? '' : ' checked="checked"') + ' value="plain" />Plain</label>\
-            <label><input type="radio" class="radio" name="literal-type-' + this.id + '"' + (this.datatype ? ' checked="checked"' : '') + ' value="typed" />Typed</label>\
+            <label><input type="radio" class="radio" name="literal-type-' + this.id + '"' + ((this.datatype != '') ? '' : ' checked="checked"') + ' value="plain" />Plain</label>\
+            <label><input type="radio" class="radio" name="literal-type-' + this.id + '"' + ((this.datatype != '') ? ' checked="checked"' : '') + ' value="typed" />Typed</label>\
         </div>\
         <div class="container util ' + this.disclosureId + '" style="display:none">\
             <div class="literal-lang"' + (this.datatype ? ' style="display:none"' : '') + '>\
@@ -153,11 +153,20 @@ LiteralEdit.prototype.onSubmit = function() {
     var dataBank = RDFauthor.getDatabank(this.graph);
     
     // get new values
-    var newObjectValue    = $('#literal-value-' + this.id).val();
-    var newObjectLang     = $('#literal-lang-' + this.id + ' option:selected').eq(0).val();
-    var newObjectDatatype = $('#literal-datatype-' + this.id + ' option:selected').eq(0).val();
+    var newObjectLiteralType = $('input[name=literal-type-' + this.id + ']:checked').eq(0).val();
+    var newObjectLang        = $('#literal-lang-' + this.id + ' option:selected').eq(0).val();
+    var newObjectDatatype    = $('#literal-datatype-' + this.id + ' option:selected').eq(0).val();
+    var newObjectValue       = $('#literal-value-' + this.id).val();
+    
+    // Widget added an nothing entered
+    if (newObjectValue == undefined) {
+        return true;
+    }
     
     var somethingChanged = (newObjectValue != this.object) || (newObjectLang != this.language) || (newObjectDatatype != this.datatype);
+    
+    var oldTriple = null;
+    var newTriple = null;
     
     if (somethingChanged || this.remove) {
         // remove old triple
@@ -165,13 +174,13 @@ LiteralEdit.prototype.onSubmit = function() {
         if (this.object !== '' || this.remove) {
             var objectOptions = {};
             var object = this.object;
-            var quoteLiteral = true;
+            var quoteLiteral = true;            
             
-            if (this.datatype !== '') {
-                objectOptions.datatype = this.datatype;
-                quoteLiteral = false;
-            } else if (this.language !== '') {
+            if (this.language !== '') {
                 objectOptions.lang = this.language;
+                quoteLiteral = false;
+            } else if (this.datatype !== '') {
+                objectOptions.datatype = this.datatype;
                 quoteLiteral = false;
             }
             
@@ -185,13 +194,11 @@ LiteralEdit.prototype.onSubmit = function() {
                 object = '"' + object + '"';
             }
             
-            var oldTriple = $.rdf.triple(
+            oldTriple = $.rdf.triple(
                 $.rdf.resource('<' + this.subject + '>'), 
                 $.rdf.resource('<' + this.predicate + '>'), 
                 $.rdf.literal(object, objectOptions)
             );
-            
-            dataBank.remove(oldTriple);
         }
         
         if ((newObjectValue !== '') && !this.remove) {
@@ -199,11 +206,13 @@ LiteralEdit.prototype.onSubmit = function() {
             var newObjectOptions = {};
             var newObject = newObjectValue;
             var quoteLiteral = true;
-
-            if (newObjectLang !== '') {
-                newObjectOptions.lang = newObjectLang;
-                quoteLiteral = false;
-            } else if (newObjectDatatype !== '') {
+            
+            if (newObjectLiteralType == 'plain') {                
+                if (newObjectLang != '') {
+                    quoteLiteral = false;
+                    newObjectOptions.lang = newObjectLang;
+                }
+            } else {
                 newObjectOptions.datatype = newObjectDatatype;
                 quoteLiteral = false;
             }
@@ -219,16 +228,22 @@ LiteralEdit.prototype.onSubmit = function() {
             }
             
             try {
-                var newTriple = $.rdf.triple(
+                newTriple = $.rdf.triple(
                     $.rdf.resource('<' + this.subject + '>'), 
                     $.rdf.resource('<' + this.predicate + '>'), 
                     $.rdf.literal(newObject, newObjectOptions)
                 );
-            } catch (error) {
-                alert('LiteralEdit: ' + error);
+            } catch (e) {
+                alert('Could not save literal for the following reason: \n' + e.message);
                 return false;
             }
-            
+        }
+        
+        // if we reach here, commit actual changes
+        if (oldTriple) {
+            dataBank.remove(oldTriple);
+        }
+        if (newTriple) {
             dataBank.add(newTriple);
         }
     }
@@ -241,19 +256,19 @@ RDFauthor.registerWidget({constructorFunction: LiteralEdit, hookName: '__literal
 
 if (!LiteralEdit.prototype.eventsRegistered) {
     $('.literal-type .radio').live('click', function() {
-        var jDatatypeDiv = $(this).parents('.widget').children().find('.literal-datatype');
-        var jLangDiv     = $(this).parents('.widget').children().find('.literal-lang');
+        var jDatatypeSelect = $('#' + $(this).attr('name').replace('literal-type', 'literal-datatype')).eq(0);
+        var jLangSelect     = $('#' + $(this).attr('name').replace('literal-type', 'literal-lang')).eq(0);
         
         if ($(this).val() == 'plain') {
-            jDatatypeDiv.hide();
-            jLangDiv.show();
+            jDatatypeSelect.closest('div').hide();
+            jLangSelect.closest('div').show();
             // clear datatype
-            jDatatypeDiv.find('select').val('');
+            jDatatypeSelect.val('');
         } else {
-            jDatatypeDiv.show();
-            jLangDiv.hide();
+            jDatatypeSelect.closest('div').show();
+            jLangSelect.closest('div').hide();
             // clear lang
-            jLangDiv.find('select').val('');
+            jLangSelect.val('');
         }
     });
     

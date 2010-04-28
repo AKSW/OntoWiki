@@ -123,6 +123,11 @@ ResourceEdit.prototype.onSubmit = function()
     var dataBank = RDFauthor.getDatabank(this.graph);    
     var newResourceValue = $('#resource-value-' + this.id).val();
     
+    // Widget added an nothing entered
+    if (newResourceValue == undefined) {
+        return true;
+    }
+    
     var hasChanged = (newResourceValue != this.object) && (newResourceValue != '');
     if (hasChanged || this.remove) {
         // Remove the old triple
