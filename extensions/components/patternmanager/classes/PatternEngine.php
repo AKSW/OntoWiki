@@ -61,6 +61,32 @@ class PatternEngine {
         
         $this->_versioning = $erfurt->getVersioning();
         
+        if ( $this->_store->isModelAvailable($this->_serialization_schema['ns'],false) ) {
+            // do nothing
+        } else {
+            // disable versioning for import
+            $this->_versioning->enableVersioning(false);
+            // create model
+            $model = $this->_store->getNewModel(
+                $this->_serialization_schema['ns'],
+                '',
+                Erfurt_Store::MODEL_TYPE_OWL,
+                false
+            );
+            // import data
+            $this->_store->importRdf(
+                $this->_serialization_schema['ns'],
+                __DIR__ . '/schema/Model-EvolutionPattern.rdf',
+                'rdf',
+                Erfurt_Syntax_RdfParser::LOCATOR_FILE,
+                false
+            );
+            //set to hidden
+            $model->setOption($erfurt->getConfig()->sysont->properties->hidden);
+            // enable versioning again
+            $this->_versioning->enableVersioning(true);
+        }
+        
     }
     
     /**
@@ -158,6 +184,7 @@ class PatternEngine {
      * @param unknown_type $format
      */
     public function saveToStore($pattern, $format = 'rdf') {
+        
         switch ($format) {
             case 'rdf' :
                 return $this->saveToStoreAsRdf($pattern);
@@ -212,21 +239,22 @@ class PatternEngine {
             $vars = $basicPattern->getVariables(true, false);
             
             $patternLabel =  $basicPattern->getLabel();
-            $patternUri = $this->_serialization_schema['BasicPattern'] . '/' . md5($patternLabel);
+            $patternDesc  = $basicPattern->getDescription();
+            $patternUri = $this->_serialization_schema['BasicPattern'] . '/' . md5($patternLabel . $patternDesc);
             
             $stmt[ $patternUri ][ EF_RDFS_LABEL ][] = array( 
             	'type' => 'literal' ,
-            	'value' => $basicPattern->getLabel()
+            	'value' => $patternLabel
             );
             $stmt[ $patternUri ][ EF_RDFS_COMMENT ][] = array(
             	'type' => 'literal' ,
-            	'value' => $basicPattern->getDescription()
+            	'value' => $patternDesc
             );
 
             foreach ($vars as $variable) {
                 
                 $varLabel = $variable['name'];
-                $varUri = $this->_serialization_schema['PatternVariable'] . '/' . md5($varLabel);
+                $varUri = $this->_serialization_schema['PatternVariable'] . '/' . md5(implode(' ',$variable));
                 if ( !array_key_exists($varUri, $stmt) ) {
 	                $stmt[ $varUri ][ EF_RDF_TYPE ][] = array(
 	                    'type' => 'uri' ,
@@ -547,12 +575,21 @@ class PatternEngine {
         }
         
         $pdata = resolveRecursive($hash,$resources,$data);
-
+        
+        if (!isset($pdata[$this->_serialization_schema['hasSubPattern']])) {
+            $pdata[$this->_serialization_schema['hasSubPattern']] = array();
+        }
+        
         foreach ($pdata[$this->_serialization_schema['hasSubPattern']] as $sp) {
             $i = $sp[$this->_serialization_schema['sequenceId']][0];
             $bp = $sp[$this->_serialization_schema['hasBasicPattern']][0];
             
             $basicPattern = new BasicPattern();
+            
+            // check if there are pattern variables (init empty else)
+            if (!isset($bp[$this->_serialization_schema['hasPatternVariable']])) {
+                $bp[$this->_serialization_schema['hasPatternVariable']] = array();
+            }
             
             foreach ($bp[$this->_serialization_schema['hasPatternVariable']] as $var) {
                 $name = $var[EF_RDFS_LABEL][0];
@@ -561,10 +598,20 @@ class PatternEngine {
                 $basicPattern->addVariable($name,$type,$desc);
             }
             
+            // check if there are pattern select queries (init empty else)
+            if (!isset($bp[$this->_serialization_schema['hasSelectQuery']])) {
+                $bp[$this->_serialization_schema['hasSelectQuery']] = array();
+            }
+
             foreach ($bp[$this->_serialization_schema['hasSelectQuery']] as $var) {
                 $basicPattern->addSelectQuery($var[EF_RDFS_LABEL][0]);
             }
             
+            // check if there are pattern update queries (init empty else)
+            if (!isset($bp[$this->_serialization_schema['hasUpdateQuery']])) {
+                $bp[$this->_serialization_schema['hasUpdateQuery']] = array();
+            }
+
             foreach ($bp[$this->_serialization_schema['hasUpdateQuery']] as $var) {
                 switch ($var[EF_RDF_TYPE][0]) {
                     case $this->_serialization_schema['UpdateQuery_Insert']:

@@ -1,4 +1,4 @@
-<div>
+<div id="patternmanager">
 <table>
 <thead>
 </thead>
@@ -7,8 +7,10 @@
         foreach ($this->variables as $var) {
     ?>
     <tr>
-	    <td><?php echo $var['varname']; ?></td>
-	    <td><input type="text" class="text" name="var[<?php echo $var['varname']; ?>]" id="var[<?php echo $var['varname']; ?>]"/></td>
+	    <td><?php echo $var['name']; ?></td>
+	    <td>
+            <input type="text" class="width95 text pm_var pm_vartype_<?php echo $var['type']; ?>" name="var[<?php echo $var['name']; ?>]" id="var[<?php echo $var['name']; ?>]"/>
+        </td>
 	    <td><?php echo $var['type']; ?></td>
     </tr>
     <?php
