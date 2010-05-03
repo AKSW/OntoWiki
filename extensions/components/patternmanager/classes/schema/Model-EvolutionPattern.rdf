@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Exported with the Erfurt API - http://aksw.org/Projects/Erfurt -->
+
+<!DOCTYPE rdf:RDF [
+  <!ENTITY dct "http://purl.org/dc/terms/">
+  <!ENTITY ns0 "http://ns.ontowiki.net/SysOnt/EvolutionPattern/">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY skos "http://www.w3.org/2004/02/skos/core#">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+
+<rdf:RDF xml:base="&ns0;"
+  xmlns:dct="&dct;"
+  xmlns:ns0="&ns0;"
+  xmlns:owl="&owl;"
+  xmlns:rdf="&rdf;"
+  xmlns:rdfs="&rdfs;"
+  xmlns:skos="&skos;"
+  xmlns:xsd="&xsd;">
+
+
+<!-- Classes -->
+  <owl:Class rdf:about="BasicPattern">
+    <rdfs:label rdf:datatype="&xsd;string">Basic Pattern</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="ComplexPattern">
+    <rdfs:label rdf:datatype="&xsd;string">Complex Pattern</rdfs:label>
+  </owl:Class>
+  
+  <owl:Class rdf:about="UpdateQuery">
+    <rdfs:label rdf:datatype="&xsd;string">Update Query Delete</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="UpdateQuery_Delete">
+    <rdfs:label rdf:datatype="&xsd;string">Update Query Delete</rdfs:label>
+    <rdfs:subClassOf rdf:resource="UpdateQuery" />
+  </owl:Class>
+
+  <owl:Class rdf:about="UpdateQuery_Insert">
+    <rdfs:label rdf:datatype="&xsd;string">Update Query Insert</rdfs:label>
+    <rdfs:subClassOf rdf:resource="UpdateQuery" />
+  </owl:Class>
+
+  <owl:Class rdf:about="SelectQuery">
+    <rdfs:label rdf:datatype="&xsd;string">Select Query</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="PatternVariable">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable</rdfs:label>
+  </owl:Class>
+  
+  <owl:Class rdf:about="PatternVariable_RESOURCE">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable</rdfs:label>
+    <rdfs:subClassOf rdf:resource="Pattern Variable RESOURCE" />
+  </owl:Class>
+  
+  <owl:Class rdf:about="PatternVariable_TEMP">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable</rdfs:label>
+    <rdfs:subClassOf rdf:resource="Pattern Variable TEMP" />
+  </owl:Class>
+  
+  <owl:Class rdf:about="PatternVariable_LITERAL">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable</rdfs:label>
+    <rdfs:subClassOf rdf:resource="Pattern Variable LITERAL" />
+  </owl:Class>
+
+  <owl:Class rdf:about="SubPattern">
+    <rdfs:label rdf:datatype="&xsd;string">Sub Pattern</rdfs:label>
+  </owl:Class>
+
+<!-- Datatype properties -->
+  <owl:DatatypeProperty rdf:about="sequenceId">
+    <rdfs:label rdf:datatype="&xsd;string">Sequence Id</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="updatePatternObject">
+    <rdfs:label rdf:datatype="&xsd;string">Update Pattern Object</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="updatePatternPredicate">
+    <rdfs:label rdf:datatype="&xsd;string">Update Pattern Predicate</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="UpdatePatternSubject">
+    <rdfs:label rdf:datatype="&xsd;string">Update Pattern Subject</rdfs:label>
+  </owl:DatatypeProperty>
+  
+<!-- Object properties -->
+  <owl:ObjectProperty rdf:about="hasBasicPattern">
+    <rdfs:domain rdf:resource="SubPattern" />
+    <rdfs:label rdf:datatype="&xsd;string">has BasicPattern</rdfs:label>
+    <rdfs:range rdf:resource="BasicPattern" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="hasPatternVariable">
+    <rdfs:domain rdf:resource="BasicPattern" />
+    <rdfs:label rdf:datatype="&xsd;string">has PatternVariable</rdfs:label>
+    <rdfs:range rdf:resource="PatternVariable" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="hasSelectQuery">
+    <rdfs:domain rdf:resource="BasicPattern" />
+    <rdfs:label rdf:datatype="&xsd;string">has SelectQuery</rdfs:label>
+    <rdfs:range rdf:resource="SelectQuery" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="hasSubPattern">
+    <rdfs:domain rdf:resource="ComplexPattern" />
+    <rdfs:label rdf:datatype="&xsd;string">has SubPattern</rdfs:label>
+    <rdfs:range rdf:resource="SubPattern" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="hasUpdateQuery">
+    <rdfs:domain rdf:resource="BasicPattern" />
+    <rdfs:label rdf:datatype="&xsd;string">has UpdatePattern</rdfs:label>
+    <rdfs:range rdf:resource="UpdateQuery_Delete" />
+    <rdfs:range rdf:resource="UpdateQuery_Insert" />
+  </owl:ObjectProperty>
+
+<!-- Instances and untyped data -->
+  <rdf:Description rdf:about="&ns0;">
+    <rdfs:label rdf:datatype="&xsd;string">SysOnt Evolution Pattern Ontology</rdfs:label>
+  </rdf:Description>
+
+</rdf:RDF>

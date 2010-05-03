@@ -26,6 +26,10 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         $this->view->placeholder('main.window.title')->set('OntoWiki Evolution Pattern Engine');
         
+        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/jquery.autocomplete.js');
+        
+        //$this->view->headLink()->appendStylesheet($this->_componentUrlBase .'css/jquery.autocomplete.css');
+        
     }
     
     /**
@@ -43,8 +47,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $url = new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'view') );
         $this->view->url['view'] = $url;
         
-        
-        
     }
     
     /**
@@ -52,36 +54,30 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      */
     public function execAction() {
         
+        // javascript functions
+        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/patternmanager-exec.js');
+        
         if (defined('_OWDEBUG')) {
             $start = microtime(true);
         }
-
-        $json = '';
         
-        $data = $this->loadPatternFromUri($this->_request->getParam('pattern'));
+        $patternEngine = new PatternEngine();
+        $patternEngine->setBackend($this->_erfurt);
+        $patternEngine->setDefaultGraph($this->_owApp->selectedModel);
         
-        if ( sizeof($data) > 0 && array_key_exists($this->_privateConfig->hasJson, $data) ) {
-            $json   = current($data[$this->_privateConfig->hasJson]);
-        } else {
-            $json = '{}';
-        }
+        $complexPattern = $patternEngine->loadFromStoreAsRdf($this->_request->getParam('pattern'));
 
-        $complexPattern = new ComplexPattern();
-        $complexPattern->parseFromJson($json);
         $unboundVariables = $complexPattern->getVariables(false);
-        
+
         $var = $this->getParam('var');
 
         if (!empty($var) && is_array($var)) {
             
-            foreach ($var as $name => $value) {
+            foreach ($var as $value) {
                 unset($unboundVariables[$name]);
                 $complexPattern->bindVariable($name,$value);
             }
             
-            $patternEngine = new PatternEngine();
-            $patternEngine->setBackend($this->_erfurt);
-            $patternEngine->setDefaultGraph($this->_owApp->selectedModel);
             $patternEngine->processPattern($complexPattern);
         }
         
@@ -495,8 +491,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             
             $this->_redirect($url);
         }
-        
-        exit();
         /* 
          * OLD JSON SERIALIZATION
         */
@@ -532,6 +526,102 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $store = $this->_erfurt->getStore();
         $store->addMultipleStatements( $configModel, $stmts, false);
         */
+    }
+    
+    /**
+     * 
+     */
+    public function autocompleteAction() {
+        
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout->disableLayout();
+        
+        $model = $this->_owApp->selectedModel;
+
+        $query = $this->_request->getParam('q','');
+        $vartype = $this->_request->getParam('vartype','');
+        $limit = (int) $this->_request->getParam('limit',10);
+        
+        
+        $allowedInputType = array(
+            'RESOURCE' => '/([a-z]|[0-9]|[A-Z])+/',
+            'LITERAL' => '/\S+/'
+        );
+        
+        $sparqlQuery = 'SELECT DISTINCT ?entity ' . PHP_EOL . 'FROM <' . (string) $model . '> WHERE ' . PHP_EOL;
+        
+        $error = false;
+        
+        if ( array_key_exists($vartype,$allowedInputType) ) {
+        
+            if ( !preg_match ($allowedInputType[$vartype], $query) ) {
+                $error = true;
+            } else  {
+                $error = false;
+            }
+            
+        }
+        
+        if (!$error) {
+        
+	        switch ($vartype) {
+	            case '':
+			        $sparqlQuery .=  $sparqlQuery . '{ 
+			        	?entity a ?type .
+			        	FILTER( REGEX(?entity, "' . addcslashes($query,'"') . '","i") )
+				    	} ' . $limit;
+	        	        try {
+				            $res = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery);
+				        } catch (Exception $e) {
+				            $error = true;
+				            $res = array();
+				        }
+			        break;
+	            case 'LITERAL':
+			        $sparqlQuery .=  $sparqlQuery . '{ 
+			        	?s ?p ?entity . 
+			        	FILTER (
+			        		isLiteral(?entity) &&
+			        		REGEX(?entity, "' . addcslashes($query,'"') . '","i")
+			        	)
+			    		} ' . $limit;
+	        	        try {
+				            $res = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery);
+				        } catch (Exception $e) {
+				            $error = true;
+				            $res = array();
+				        }
+			        break;
+	            case 'CLASS' :
+	                break;
+	            case 'PROPERTY':
+	                break;
+	            case 'RESOURCE' :
+	                $res = $model->getNamespaces();
+	                break;
+	                
+	            default:
+	                $res = array();
+	                break;
+	        }
+
+	        print_r($res);
+	        $ret = array();
+	        
+	        foreach ($res as $row) {
+	            if ( is_array($row) ) {
+	                $ret[] = current($row);
+	            } else {
+	                $ret[] = $row;
+	            }
+	        }
+
+	        sort($ret);
+        
+            echo implode(PHP_EOL,$ret);
+            
+        }
+        
     }
     
     /**
