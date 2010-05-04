@@ -789,7 +789,8 @@ class ModelController extends OntoWiki_Controller_Base
         $translate  = $this->_owApp->translate;
         
         $event = new Erfurt_Event('onPropertiesAction');
-        $event->uri = (string)$resource;
+        $event->uri = (string)$graph;
+        $event->graph = (string)$graph;
         $event->trigger();
 
         $windowTitle = $translate->_('Model info');
