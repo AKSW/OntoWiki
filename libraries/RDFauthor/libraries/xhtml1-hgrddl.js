@@ -87,8 +87,4 @@ RDFA = document.RDFA;
 XH.transform(document.getElementsByTagName('body')[0]);
 XH.transform(document.getElementsByTagName('head')[0]);
 
-// added by norman.heino@gmail.com
-// freakin' IE cannot handle this
-if (!$.browser.msie) {
-    RDFA.GRDDL.DONE_LOADING(__RDFA_BASE + 'xhtml1-hgrddl.js');
-}
+RDFA.GRDDL.DONE_LOADING(__RDFA_BASE + 'xhtml1-hgrddl.js');
