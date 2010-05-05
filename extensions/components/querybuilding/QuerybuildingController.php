@@ -91,7 +91,8 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
         $this->view->query = $this->_request->getParam('query', '');
         
         $this->view->urlBase = $this->_config->urlBase;
-
+        $this->view->writeable = $this->_owApp->selectedModel->isEditable();
+        
         // set URIs
         if ($this->_owApp->selectedModel) {
             $this->view->modelUri = $this->_owApp->selectedModel->getModelIri();
