@@ -43,6 +43,13 @@ class SourceController extends OntoWiki_Controller_Component
             $showList = true;
         }
 
+        // do not show edit stuff if model is not writeable
+        if ( $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) {
+            $allowSaving = true;
+        } else {
+            $allowSaving = false;
+        }
+
         if ($allowSaving) {
             // toolbar
             $toolbar = $this->_owApp->toolbar;

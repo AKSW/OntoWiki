@@ -1,5 +1,9 @@
 syntax: glob
 
+.settings
+.project
+.idea
+.buildpath
 .DS_Store
 .htaccess
 *.log

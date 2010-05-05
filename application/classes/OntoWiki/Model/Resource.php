@@ -269,7 +269,8 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                     // push it only if it doesn't exceed number of items to display
                     if (count($this->_valueResults[$graph][$predicateUri]) < OW_SHOW_MAX) {
                         array_push($this->_valueResults[$graph][$predicateUri], $value);
-                    } else {
+                    } else { $this->_predicateResults[$graph][$predicateUri]['has_more'] = true;}
+                    if(count($this->_valueResults[$graph][$predicateUri]) > 1) {
                         // create the "has more link" (used for area context menu as well)
                         // do it only once per predicate
                         if (!isset($this->_predicateResults[$graph][$predicateUri]['has_more_link'])) {
@@ -318,7 +319,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                                     true
                                 );
                             }
-                            $this->_predicateResults[$graph][$predicateUri]['has_more'] = true;
+                            
                             $this->_predicateResults[$graph][$predicateUri]['has_more_link'] = (string)$hasMoreUrl;
                         }
                     }

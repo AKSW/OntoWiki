@@ -16,7 +16,7 @@
 //
 function RDFauthorPropertyRow(container, subject, property, title) {    
     // the subject for this row
-    this.subject  = subject;
+    this.subject = subject;
     
     // the property this row operates on
     this.property = property;

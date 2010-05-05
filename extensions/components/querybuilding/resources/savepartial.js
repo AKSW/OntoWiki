@@ -43,7 +43,8 @@ $(document).ready(function() {
 					qdesc: $('#qdesc').val(),
 					"query": $(".code-input[name=query]").val(),
 					generator: "qe",
-					share: $("#savequerysharecheckbox").is(':checked') ? "true" : "false"
+					//share: $("#savequerysharecheckbox").is(':checked') ? "true" : "false"
+					share: "true"
 				  }),
 			      dataType: "text",
 			      success: function(msg){

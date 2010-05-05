@@ -39,12 +39,12 @@ define('OW_SHOW_MAX', 5);
 // PHP environment settings
 ini_set('max_execution_time', 240);
 
-if ((int)substr(ini_get('memory_limit'), 0, -1) < 256) {
+if ((int) substr(ini_get('memory_limit'), 0, -1) < 256) {
     ini_set('memory_limit', '256M');
 }
 
 // add libraries to include path
-$includePath  = get_include_path() . PATH_SEPARATOR;
+$includePath = get_include_path() . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
 set_include_path($includePath);
 
@@ -59,19 +59,19 @@ date_default_timezone_set(@date_default_timezone_get());
 $rewriteEngineOn = false;
 
 if (function_exists('apache_get_modules')) {
-	if (in_array('mod_rewrite', apache_get_modules())) {
-		// get .htaccess contents
-		$htaccess = @file_get_contents(ONTOWIKI_ROOT . '.htaccess');
-		
-		// check if RewriteEndine is enabled
-		$rewriteEngineOn = preg_match('/.*[^#][\t ]+RewriteEngine[\t ]+On/i', $htaccess);
-		
-		// explicitly request /index.php for non-rewritten requests
-		if (!$rewriteEngineOn and !strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
-			header('Location: ' . rtrim($_SERVER['REQUEST_URI'], '/\\') . '/' . BOOTSTRAP_FILE, true, 302);
-			exit;
-		}
-	}
+    if (in_array('mod_rewrite', apache_get_modules())) {
+        // get .htaccess contents
+        $htaccess = @file_get_contents(ONTOWIKI_ROOT . '.htaccess');
+
+        // check if RewriteEndine is enabled
+        $rewriteEngineOn = preg_match('/.*[^#][\t ]+RewriteEngine[\t ]+On/i', $htaccess);
+
+        // explicitly request /index.php for non-rewritten requests
+        if (!$rewriteEngineOn and ! strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
+            header('Location: ' . rtrim($_SERVER['REQUEST_URI'], '/\\') . '/' . BOOTSTRAP_FILE, true, 302);
+            exit;
+        }
+    }
 }
 
 define('ONTOWIKI_REWRITE', $rewriteEngineOn);
@@ -81,9 +81,9 @@ define('ONTOWIKI_REWRITE', $rewriteEngineOn);
  * Ensure compatibility for PHP <= 5.3
  */
 if (!function_exists('class_alias')) {
-	function class_alias($original, $alias) {
-		eval('abstract class ' . $alias . ' extends ' . $original . ' {}');
-	}
+    function class_alias($original, $alias) {
+        eval('abstract class ' . $alias . ' extends ' . $original . ' {}');
+    }
 }
 
 /** Zend_Application */
@@ -91,8 +91,8 @@ require_once 'Zend/Application.php';
 
 // create application
 $application = new Zend_Application(
-	'default', 
-	ONTOWIKI_ROOT . 'application/config/application.ini'
+                'default',
+                ONTOWIKI_ROOT . 'application/config/application.ini'
 );
 
 /** OntoWiki */
@@ -103,4 +103,4 @@ class_alias('OntoWiki', 'OntoWiki_Application');
 
 // bootstrap and run
 $application->bootstrap()
-			->run();
+        ->run();

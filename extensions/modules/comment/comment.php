@@ -10,7 +10,6 @@
  * @author     Norman Heino <norman.heino@gmail.com>
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: comment.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
 class CommentModule extends OntoWiki_Module
 {
@@ -27,6 +26,16 @@ class CommentModule extends OntoWiki_Module
         $content = $this->render('comment');
 		
 		return $content;
+    }
+    
+    public function shouldShow(){
+        // do not show if model is not writeable
+        if ( (isset($this->_owApp->selectedModel)) &&
+                ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

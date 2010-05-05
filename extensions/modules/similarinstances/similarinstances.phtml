@@ -2,29 +2,35 @@
 
 /**
  * OntoWiki similarinstances module template
- *
- * @version $Id: similarinstances.phtml 3392 2009-06-26 12:41:00Z sebastian.dietzold $
  */
 
 ?>
 <?php if (!empty($this->similars)): ?>
 	<ul class="bullets-none separated">
 	    <?php foreach ($this->similars as $type => $instances): ?>
+            <?php $class = $this->types[$type] ?>
 	        <li class="has-contextmenu-area">
-                    <?php echo $this->types[$type]['title'] ?>:
-	            <ul class="inline separated">
+                <strong>
+                    <a class="hasMenu"
+                       about="<?php echo $class['uri'] ?>"
+                       href="<?php echo $class['url'] ?>"><?php echo $class['title'] ?></a>
+                </strong>
+	            <ul class="inline separated" style="padding-left: 0.5em;">
 	                <?php $i = 0; ?>
 	                <?php foreach ($instances as $instance): ?>
-	                    <?php if (++$i == count($instances)): ?>
+	                    <?php if ((++$i == count($instances)) && ($class['has_more'] == false) ): ?>
 	                        <li class="last-child"><a class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
 	                    <?php else: ?>
 	                        <li><a class="hasMenu" about="<?php echo $instance['uri'] ?>" href="<?php echo $instance['url'] ?>"><?php echo $instance['title'] ?></a></li>
 	                    <?php endif; ?>
                     <?php endforeach; ?>
+                    <?php if ($class['has_more'] == true): ?>
+                            <li>&hellip;</li>
+                    <?php endif; ?>
 	            </ul>
                     <div class="contextmenu">
                         <a class="item"
-                           href="<?php echo $this->types[$type]['has_more'] ?>">
+                           href="<?php echo $class['listUrl'] ?>">
                             <span class="icon icon-list" title="Show as List">
                                 <span>Show as List</span>
                             </span>

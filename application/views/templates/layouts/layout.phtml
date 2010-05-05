@@ -26,6 +26,25 @@
         </script>
     <?php endif; ?>
     
+    <!-- ontowiki stylesheets -->
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
+    <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.css" type="text/css" media="screen" / -->
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
+
+    <?php if (defined('_OWDEBUG')): ?>
+    <!-- developer styles, e.g. for deprecated and legacy gui elements -->
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.dev.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/deprecated.dev.css" type="text/css" media="screen" />
+    <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.dev.css" type="text/css" media="screen" / -->
+    <?php endif; ?>
+    
+    <!-- IE conditional stylesheets -->
+    <!--[if IE 7]><link rel="stylesheet" media="screen" href="<?php echo $this->themeUrlBase ?>styles/default.ie7.css" /><![endif]-->
+    
+    <!-- dynamic styles -->
+    <?php echo $this->headStyle() ?>
+
     <!-- jQuery -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
@@ -47,24 +66,6 @@
     <!-- dynamic js -->
     <?php echo $this->headScript() ?>
     
-    <!-- ontowiki stylesheets -->
-    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
-    <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.css" type="text/css" media="screen" / -->
-    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
-
-    <?php if (defined('_OWDEBUG')): ?>
-    <!-- developer styles, e.g. for deprecated and legacy gui elements -->
-    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.dev.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/deprecated.dev.css" type="text/css" media="screen" />
-    <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.dev.css" type="text/css" media="screen" / -->
-    <?php endif; ?>
-    
-    <!-- IE conditional stylesheets -->
-    <!--[if IE 7]><link rel="stylesheet" media="screen" href="<?php echo $this->themeUrlBase ?>styles/default.ie7.css" /><![endif]-->
-    
-    <!-- dynamic styles -->
-    <?php echo $this->headStyle() ?>
 </head>
 
 <body class="javascript-off">
@@ -109,6 +110,7 @@
                             <form action="<?php echo $this->formActionUrl ?>" 
                                   method="<?php echo $this->formMethod ?>" 
                                   <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?> 
+                                  <?php if ($this->has('formId')) echo 'id="' . $this->formId . '"' ?> 
                                   <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?> 
                                   <?php if ($this->has('formClass')) echo 'class="' . $this->formClass . '"' ?>>
                                   <?php if ($this->has('redirectUrl')): ?>

@@ -600,7 +600,7 @@ class ModelController extends OntoWiki_Controller_Base
                 return;
                 break;
             case 'paste':
-                $file = tempnam('/tmp', 'ow');
+                $file = tempnam(sys_get_temp_dir(), 'ow');
                 $temp = fopen($file, 'wb');
                 fwrite($temp, $this->getParam('paste'));
                 fclose($temp);
@@ -789,8 +789,8 @@ class ModelController extends OntoWiki_Controller_Base
         $translate  = $this->_owApp->translate;
         
         $event = new Erfurt_Event('onPropertiesAction');
-        $event->uri = (string)$graph;
-        $event->graph = (string)$graph;
+        $event->uri = (string)$resource;
+        $event->graph = (string)$resource;
         $event->trigger();
 
         $windowTitle = $translate->_('Model info');

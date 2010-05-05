@@ -234,7 +234,7 @@ RDFauthorView.prototype.display = function (animated) {
         initRows();
     } else {
         $('#' + this.id).fadeIn(this.options.animationTime, initRows);
-    }    
+    }
 };
 
 RDFauthorView.prototype.getPropertySelector = function () {
@@ -256,11 +256,11 @@ RDFauthorView.prototype.getPropertySelector = function () {
                 
                 var id = instance.addRow(subject, propertyUri, propertyTitle, null, graph);
                 var rowTop          = $('#' + id).closest('.property-row').offset().top;
-                var containerTop    = $('.' + this.options.rowContainerClass).offset().top;
-                var containerScroll = $('.' + this.options.rowContainerClass).scrollTop();
+                var containerTop    = $('.' + instance.options.rowContainerClass).offset().top;
+                var containerScroll = $('.' + instance.options.rowContainerClass).scrollTop();
                 
                 var scrollTo = containerScroll - (containerTop - rowTop);
-                $('.' + this.options.rowContainerClass).animate({scrollTop: scrollTo}, instance.options.animationTime);
+                $('.' + instance.options.rowContainerClass).animate({scrollTop: scrollTo}, instance.options.animationTime);
                 
                 // widget should get focus
                 var row = instance.getRowForSubjectAndProperty(subject, propertyUri);

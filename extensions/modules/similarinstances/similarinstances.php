@@ -10,7 +10,6 @@
  * @author     Norman Heino <norman.heino@gmail.com>
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: similarinstances.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
 class SimilarinstancesModule extends OntoWiki_Module
 {    
@@ -40,14 +39,23 @@ class SimilarinstancesModule extends OntoWiki_Module
                       FILTER (!sameTerm(?uri, <' . (string) $this->_owApp->selectedResource . '>))
                       FILTER (isURI(?uri))
                   }')
-                  ->setLimit(OW_SHOW_MAX);
+                  ->setLimit(OW_SHOW_MAX + 1);
             
             if ($instances = $this->_owApp->selectedModel->sparqlQuery($query)) {
                 $results = true;
+                $url->setParam('r', $typeUri, true); // create properties url for the class
                 $typesArr[$typeUri] = array(
+                    'uri'      => $typeUri,
+                    'url'      => (string) $url,
                     'title'    => $titleHelper->getTitle($typeUri, $this->_lang), 
                     'has_more' => false
                 );
+
+                // has_more is used for the dots
+                if (count($instances) > OW_SHOW_MAX) {
+                    $typesArr[$typeUri]['has_more'] = true;
+                    $instances = array_splice ( $instances, 0, OW_SHOW_MAX);
+                }
                 
                 $instTitleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
                 $instTitleHelper->addResources($instances, 'uri');
@@ -58,9 +66,10 @@ class SimilarinstancesModule extends OntoWiki_Module
                     'action' => 'add'
                 );
 
+                // the list url is used for the context menu link
                 $listUrl->setParam('instancesconfig', json_encode($conf), true);
                 $listUrl->setParam('init', true, true);
-                $typesArr[$typeUri]['has_more'] = (string) $listUrl;
+                $typesArr[$typeUri]['listUrl'] = (string) $listUrl;
                 
                 
                 foreach ($instances as $row) {
@@ -81,7 +90,7 @@ class SimilarinstancesModule extends OntoWiki_Module
                 }
             }
         }
-        
+
         $this->view->types    = $typesArr;
         $this->view->similars = $similars;
         

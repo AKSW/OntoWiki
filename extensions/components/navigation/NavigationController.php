@@ -303,8 +303,7 @@ class NavigationController extends OntoWiki_Controller_Component
             if($show) $entries[$uri] = $entry;
         }
 
-        // return only X = limit entries (todo: this should be limited by query!!!)
-        return array_slice ($entries , 0, $this->limit, true);
+        return $entries;
     }
     
     protected function _getTitle($uri, $mode, $setup){

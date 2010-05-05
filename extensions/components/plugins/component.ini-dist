@@ -9,7 +9,7 @@ name       = "Plugin Manager"
 
 ;;
 ; Component's private configuration
-; Anything set below will be available within the component ($this->_privateConfig['key'])
+; Anything set below will be available within the component ($this->_privateConfig->key)
 ;;
 [private]
 
