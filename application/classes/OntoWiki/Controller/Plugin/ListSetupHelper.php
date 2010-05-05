@@ -93,7 +93,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 
                 return json_decode($string);
             }
-
+            //echo $request->instancesconfig; exit;
             //a shortcut for s param
             if(isset($request->s)){
                 if(isset($request->instancesconfig)){
@@ -188,14 +188,19 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                     isset($filter->id) ? $filter->id : null
                                 );
                             } else if($filter->mode == 'query') {
-                                $query = Erfurt_Sparql_Query2::initFromString($filter->query);
-                                
-                                if(!($query instanceof  Exception)){
-                                    $instances->addTripleFilter(
-                                        $query->getWhere()->getElements(),
-                                        isset($filter->id) ? $filter->id : null
-                                    );
-                                } 
+                                //echo htmlentities($filter->query);
+                                try{
+                                    $query = Erfurt_Sparql_Query2::initFromString($filter->query);
+
+                                    if(!($query instanceof  Exception)){
+                                        $instances->addTripleFilter(
+                                            $query->getWhere()->getElements(),
+                                            isset($filter->id) ? $filter->id : null
+                                        );
+                                    }
+                                } catch (Erfurt_Sparql_ParserException $e){
+                                    $ontoWiki->appendMessage("the query could not be parsed");
+                                }
                             }
                         } else {
                             $instances->removeFilter($filter->id);

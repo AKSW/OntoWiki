@@ -143,7 +143,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                 if($format == 'list'){
                     $url = new OntoWiki_Url(array('controller'=>'list'),array());
                     $query = str_replace("\r\n", " ", $query);
-                    $url .= '/init/1/instancesconfig/' . urlencode(json_encode(array('filter'=>array( array ('mode' => 'query', 'action' => 'add' , 'query' => $query)))));
+                    $url .= '?init=1&instancesconfig=' . urlencode(json_encode(array('filter'=>array( array ('mode' => 'query', 'action' => 'add' , 'query' => $query)))));
 
                     //redirect
                     header('Location: ' . $url);
@@ -232,8 +232,8 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
             }
         }
         $this->view->headScript()->prependFile($this->_componentUrlBase . 'resources/codemirror/js/codemirror.js');
-        $this->view->headScript()->prependScript('$(document).ready(function(){
-            var editor = CodeMirror.fromTextArea("inputfield", {
+        $this->view->headScript()->prependScript('var editor; $(document).ready(function(){
+            editor = CodeMirror.fromTextArea("inputfield", {
               parserfile: "parsesparql.js",
               path: "'.$this->_componentUrlBase . 'resources/codemirror/js/",
               stylesheet: "'.$this->_componentUrlBase . 'resources/codemirror/css/sparqlcolors.css",

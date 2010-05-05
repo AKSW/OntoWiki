@@ -64,14 +64,12 @@ if(class_exists("QuerybuildingHelper")){
 <script type="text/javascript">
 // make sure jQuery is included
 if (typeof jQuery != 'undefined') {
-    var queryInput = $('.code-input[name=query]');
-
     function insertModelUri() {
-        queryInput.val(queryInput.val() + '<<?php echo $this->modelUri ?>>');
+        editor.setCode(editor.getCode() + '<<?php echo $this->modelUri ?>>');
     }
 
     function insertResourceUri() {
-        queryInput.val(queryInput.val() + '<<?php echo $this->resourceUri ?>>');
+        editor.setCode(editor.getCode()  + '<<?php echo (isset($this->resourceUri) ? $this->resourceUri : "") ?>>');
     }
 }
 </script>
