@@ -18,26 +18,8 @@ class PatternEngine {
 
     const PROCESS_MODE_FULL   = 3;
     
-    private $_serialization_schema = array(
-        'ns'                     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/' ,
-        'PatternVariable'        => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/PatternVariable' ,
-        'SelectQuery'            => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/SelectQuery' ,
-        'UpdateQuery_Insert'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/UpdateQuery_Insert' ,
-        'UpdateQuery_Delete'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/UpdateQuery_Delete' ,
-        'SubPattern'		     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/SubPattern' ,
-        'ComplexPattern'         => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/ComplexPattern' ,
-        'BasicPattern'           => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/BasicPattern' ,
-        'hasPatternVariable'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasPatternVariable' ,
-        'hasUpdateQuery'         => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasUpdateQuery' ,
-        'hasBasicPattern'        => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasBasicPattern' ,
-        'hasSubPattern'          => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasSubPattern' ,
-        'hasSelectQuery'	     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasSelectQuery' ,
-        'updatePatternObject'    => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternObject' ,
-        'updatePatternPredicate' => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternPredicate' ,
-        'updatePatternSubject'   => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternSubject' ,
-        'sequenceId'			 => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/sequenceId' ,
-    );
-
+    private $_privateConfig;
+    
     private $_store;
     
     private $_graph;
@@ -53,6 +35,14 @@ class PatternEngine {
     
     /**
      * 
+     * @param $config
+     */
+    public function setConfig($config) {
+        $this->_privateConfig = $config;
+    }
+    
+    /**
+     * 
      * @param unknown_type $erfurt
      */
     public function setBackend($erfurt) {
@@ -61,22 +51,22 @@ class PatternEngine {
         
         $this->_versioning = $erfurt->getVersioning();
         
-        if ( $this->_store->isModelAvailable($this->_serialization_schema['ns'],false) ) {
+        if ( $this->_store->isModelAvailable($this->_privateConfig->storeModel,false) ) {
             // do nothing
         } else {
             // disable versioning for import
             $this->_versioning->enableVersioning(false);
             // create model
             $model = $this->_store->getNewModel(
-                $this->_serialization_schema['ns'],
+                $this->_privateConfig->storeModel,
                 '',
                 Erfurt_Store::MODEL_TYPE_OWL,
                 false
             );
             // import data
             $this->_store->importRdf(
-                $this->_serialization_schema['ns'],
-                __DIR__ . '/schema/Model-EvolutionPattern.rdf',
+                $this->_privateConfig->storeModel,
+                dirname(__FILE__) . '/schema/Model-EvolutionPattern.rdf',
                 'rdf',
                 Erfurt_Syntax_RdfParser::LOCATOR_FILE,
                 false
@@ -184,7 +174,6 @@ class PatternEngine {
      * @param unknown_type $format
      */
     public function saveToStore($pattern, $format = 'rdf') {
-        
         switch ($format) {
             case 'rdf' :
                 return $this->saveToStoreAsRdf($pattern);
@@ -199,9 +188,13 @@ class PatternEngine {
      * @param $id
      * @param $format
      */
-    public function loadFromStore($id, $format = 'rdf')
-    {
-        
+    public function loadFromStore($id, $format = 'rdf') {
+        switch ($format) {
+            case 'rdf' :
+                return $this->loadFromStoreAsRdf($id);
+            default :
+                throw new Exception('Format for pattern serialization unsupported');
+        }
     }
 
     /**
@@ -213,9 +206,12 @@ class PatternEngine {
         // create empty statements array
         $stmt = array();
         
+        $schema = $this->_privateConfig->rdf->toArray();
+        
         // create uri and statements for ComplexPattern
         $cpatternLabel = $pattern->getLabel();
-        $cpatternUri = $this->_serialization_schema['ComplexPattern'] . '/' . md5($cpatternLabel);
+        $cpatternDesc  = $pattern->getDescription();
+        $cpatternUri = $schema['ComplexPattern'] . '/' . md5($cpatternLabel);
         
         $stmt[ $cpatternUri ][ EF_RDFS_LABEL ][] = array(
         	'type' => 'literal' ,
@@ -224,12 +220,12 @@ class PatternEngine {
         
         $stmt[ $cpatternUri ][ EF_RDFS_COMMENT ][] = array(
             'type' => 'literal' ,
-            'value' => $pattern->getDescription()
+            'value' => $cpatternDesc
         );
         
         $stmt[ $cpatternUri ][ EF_RDF_TYPE ][] =  array(
         	'type' => 'uri' ,
-        	'value' => $this->_serialization_schema['ComplexPattern']
+        	'value' => $schema['ComplexPattern']
         );
         
         // iterate over subpatterns (which are basic patterns with sequence id)
@@ -240,7 +236,7 @@ class PatternEngine {
             
             $patternLabel =  $basicPattern->getLabel();
             $patternDesc  = $basicPattern->getDescription();
-            $patternUri = $this->_serialization_schema['BasicPattern'] . '/' . md5($patternLabel . $patternDesc);
+            $patternUri = $schema['BasicPattern'] . '/' . md5($basicPattern->toArray(true));
             
             $stmt[ $patternUri ][ EF_RDFS_LABEL ][] = array( 
             	'type' => 'literal' ,
@@ -254,11 +250,11 @@ class PatternEngine {
             foreach ($vars as $variable) {
                 
                 $varLabel = $variable['name'];
-                $varUri = $this->_serialization_schema['PatternVariable'] . '/' . md5(implode(' ',$variable));
+                $varUri = $schema['PatternVariable'] . '/' . md5(implode(' ',$variable));
                 if ( !array_key_exists($varUri, $stmt) ) {
 	                $stmt[ $varUri ][ EF_RDF_TYPE ][] = array(
 	                    'type' => 'uri' ,
-	                    'value' => $this->_serialization_schema['PatternVariable'] . '_' . $variable['type']
+	                    'value' => $schema['PatternVariable'] . '_' . $variable['type']
 	                );
 	                
 	                $stmt[ $varUri ][ EF_RDFS_LABEL ][] = array(
@@ -274,7 +270,7 @@ class PatternEngine {
                     //do nothing
                 }
                 
-                $stmt[$patternUri][$this->_serialization_schema['hasPatternVariable']][] = array(
+                $stmt[$patternUri][$schema['hasPatternVariable']][] = array(
 	                'type' => 'uri' ,
 	                'value' => $varUri
 	            );
@@ -287,14 +283,17 @@ class PatternEngine {
             foreach ($select as $query) {
                 
                 $selectLabel = $query;
-                $selectUri = $this->_serialization_schema['SelectQuery'] . '/' .  md5($selectLabel);
+                $selectUri = $schema['SelectQuery'] . '/' .  md5($selectLabel);
                 $stmt[ $selectUri ] =
                 array(
+                    EF_RDF_TYPE   => array(
+                        array('type' => 'uri', 'value' => $schema['SelectQuery'])
+                    ),
                     EF_RDFS_LABEL => array(
                         array ( 'type' => 'literal' , 'value' => $query)
                     )
                 );
-                $stmt[ $patternUri ][ $this->_serialization_schema['hasSelectQuery'] ][] =
+                $stmt[ $patternUri ][ $schema['hasSelectQuery'] ][] =
                     array( 'type' => 'uri' , 'value' => $selectUri);
             }
             
@@ -306,11 +305,11 @@ class PatternEngine {
                 $parts = explode(' ',$pattern['pattern']);
                 
                 $insertLabel = $pattern['pattern'] . ' - ' . $pattern['type'];
-                $insertUri = $this->_serialization_schema['UpdateQuery_Insert'] . '/' . md5($insertLabel);
+                $insertUri = $schema['UpdateQuery_Insert'] . '/' . md5($insertLabel);
                 if ($pattern['type'] === 'insert') {
-                    $type = $this->_serialization_schema['UpdateQuery_Insert'];
+                    $type = $schema['UpdateQuery_Insert'];
                 } elseif( $pattern['type'] === 'delete' ) {
-                    $type = $this->_serialization_schema['UpdateQuery_Delete'];
+                    $type = $schema['UpdateQuery_Delete'];
                 } else {
                     // defaulting to thing
                     $type = EF_OWL_THING;
@@ -321,40 +320,57 @@ class PatternEngine {
                     EF_RDF_TYPE => array(
                         array('type' => 'uri', 'value' => $type)
                     ) ,
-                    $this->_serialization_schema['updatePatternSubject'] => array (
+                    $schema['updatePatternSubject'] => array (
                         array('type' => 'literal' , 'value' => $parts[0])
                     ) ,
-                    $this->_serialization_schema['updatePatternPredicate'] => array (
+                    $schema['updatePatternPredicate'] => array (
                         array('type' => 'literal' , 'value' => $parts[1])
                     ) ,
-                    $this->_serialization_schema['updatePatternObject'] => array (
+                    $schema['updatePatternObject'] => array (
                         array('type' => 'literal' , 'value' => $parts[2])
                     ) ,
                 );
-                $stmt[ $patternUri ][ $this->_serialization_schema['hasUpdateQuery'] ][] = 
+                $stmt[ $patternUri ][ $schema['hasUpdateQuery'] ][] = 
                     array( 'type' => 'uri' , 'value' => $insertUri);
             }
             
             $stmt[$patternUri][EF_RDF_TYPE][] = array (
             	'type' => 'uri' ,
-            	'value' => $this->_serialization_schema['BasicPattern']
+            	'value' => $schema['BasicPattern']
             );
             
             
             $subPatternLabel = $i . ' - ' . $patternLabel;
-            $subPatternUri   = $this->_serialization_schema['BasicPattern'] . '/' . md5($subPatternLabel);
+            $subPatternUri   = $schema['BasicPattern'] . '/' . md5($subPatternLabel);
             
             $stmt[ $subPatternUri ][ EF_RDF_TYPE ][] =
-                array('type' => 'uri' , 'value' => $this->_serialization_schema['SubPattern']);
-            $stmt[ $subPatternUri ][ $this->_serialization_schema['sequenceId'] ][] =
+                array('type' => 'uri' , 'value' => $schema['SubPattern']);
+            $stmt[ $subPatternUri ][ $schema['sequenceId'] ][] =
                 array('type' => 'literal' , 'value' => $i);
-            $stmt[ $subPatternUri ][ $this->_serialization_schema['hasBasicPattern'] ][] =
+            $stmt[ $subPatternUri ][ $schema['hasBasicPattern'] ][] =
                 array('type' => 'uri' , 'value' => $patternUri);
-            $stmt[ $cpatternUri ][  $this->_serialization_schema['hasSubPattern'] ][] =
+            $stmt[ $cpatternUri ][  $schema['hasSubPattern'] ][] =
                 array('type' => 'uri' , 'value' => $subPatternUri );
         }
         
-        $this->_store->addMultipleStatements( $this->_serialization_schema['ns'], $stmt, false);
+        // check if resources are existing (to prevent adding same statements over and over again)
+        $keys = array_keys($stmt);
+        $filter = '';
+        foreach ($keys as $uri) {
+            $filter .= '  sameTerm(?s,<' . $uri . '>) || ' . PHP_EOL;
+        }
+        $filter = substr($filter,0,strrpos($filter, '|') - 1);
+        $query = 'SELECT DISTINCT ?s ?t FROM <' . $this->_privateConfig->storeModel . '> WHERE {
+        	?s ?p ?o . ?s <' . EF_RDF_TYPE . '> ?t .
+        	FILTER (' . $filter . ') }';
+
+        $data = $this->_store->sparqlQuery($query);
+        
+        foreach ($data as $row) {
+            unset($stmt[$row['s']]);
+        }
+
+        $this->_store->addMultipleStatements( $this->_privateConfig->storeModel, $stmt, false);
     }
     
     /**
@@ -366,10 +382,12 @@ class PatternEngine {
 	    $prefix = '';
 	    $prefixlen = 0;
 	    
+	    $schema = $this->_privateConfig->rdf->toArray();
+	    
         $upart = explode('/',$uri);
         for ($i = 0; $i < sizeof($upart); $i++) {
             $prefix = implode('/',array_slice($upart,0,$i));
-            if ( in_array( $prefix, $this->_serialization_schema ) ) {
+            if ( in_array( $prefix, $schema ) ) {
                 $prefixlen = strlen($prefix);
             }
         }
@@ -385,7 +403,7 @@ class PatternEngine {
         
         $query = new Erfurt_Sparql_Query2();
         
-        $query->addFrom($this->_serialization_schema['ns']);
+        $query->addFrom($this->_privateConfig->storeModel);
         
         $vars = array();
         $vars['S']  = new Erfurt_Sparql_Query2_Var('S');
@@ -409,17 +427,17 @@ class PatternEngine {
         
         $pattern->addTriple(
             $uris['in'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasSubPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasSubPattern']),
             $vars['sp']
         );        
         $pattern->addTriple(
             $vars['sp'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasBasicPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasBasicPattern']),
             $vars['sb']
         );
         $pattern->addTriple(
             $vars['sb'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasUpdateQuery']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasUpdateQuery']),
             $vars['K']
         );
         $pattern->addTriple(
@@ -435,17 +453,17 @@ class PatternEngine {
         
         $pattern->addTriple(
             $uris['in'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasSubPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasSubPattern']),
             $vars['sp']
         );        
         $pattern->addTriple(
             $vars['sp'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasBasicPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasBasicPattern']),
             $vars['sb']
         );
         $pattern->addTriple(
             $vars['sb'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasSelectQuery']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasSelectQuery']),
             $vars['K']
         );
         $pattern->addTriple(
@@ -461,17 +479,17 @@ class PatternEngine {
         
         $pattern->addTriple(
             $uris['in'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasSubPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasSubPattern']),
             $vars['sp']
         );        
         $pattern->addTriple(
             $vars['sp'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasBasicPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasBasicPattern']),
             $vars['sb']
         );
         $pattern->addTriple(
             $vars['sb'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasPatternVariable']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasPatternVariable']),
             $vars['K']
         );
         $pattern->addTriple(
@@ -487,12 +505,12 @@ class PatternEngine {
         
         $pattern->addTriple(
             $uris['in'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasSubPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasSubPattern']),
             $vars['sp']
         );        
         $pattern->addTriple(
             $vars['sp'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasBasicPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasBasicPattern']),
             $vars['K']
         );
         $pattern->addTriple(
@@ -508,7 +526,7 @@ class PatternEngine {
         
         $pattern->addTriple(
             $uris['in'],
-            new Erfurt_Sparql_Query2_IriRef($this->_serialization_schema['hasSubPattern']),
+            new Erfurt_Sparql_Query2_IriRef($schema['hasSubPattern']),
             $vars['K']
         );        
         $pattern->addTriple(
@@ -549,7 +567,7 @@ class PatternEngine {
             
         }
         
-        $hash = array_search($this->_serialization_schema['ComplexPattern'], $types);
+        $hash = array_search($schema['ComplexPattern'], $types);
         
         $complexPattern = new ComplexPattern();
         
@@ -576,67 +594,154 @@ class PatternEngine {
         
         $pdata = resolveRecursive($hash,$resources,$data);
         
-        if (!isset($pdata[$this->_serialization_schema['hasSubPattern']])) {
-            $pdata[$this->_serialization_schema['hasSubPattern']] = array();
+        if (!isset($pdata[$schema['hasSubPattern']])) {
+            $pdata[$schema['hasSubPattern']] = array();
         }
         
-        foreach ($pdata[$this->_serialization_schema['hasSubPattern']] as $sp) {
-            $i = $sp[$this->_serialization_schema['sequenceId']][0];
-            $bp = $sp[$this->_serialization_schema['hasBasicPattern']][0];
+        foreach ($pdata[$schema['hasSubPattern']] as $sp) {
+            $i = $sp[$schema['sequenceId']][0];
+            $bp = $sp[$schema['hasBasicPattern']][0];
             
             $basicPattern = new BasicPattern();
             
             // check if there are pattern variables (init empty else)
-            if (!isset($bp[$this->_serialization_schema['hasPatternVariable']])) {
-                $bp[$this->_serialization_schema['hasPatternVariable']] = array();
+            if (!isset($bp[$schema['hasPatternVariable']])) {
+                $bp[$schema['hasPatternVariable']] = array();
             }
             
-            foreach ($bp[$this->_serialization_schema['hasPatternVariable']] as $var) {
+            foreach ($bp[$schema['hasPatternVariable']] as $var) {
                 $name = $var[EF_RDFS_LABEL][0];
                 $desc = $var[EF_RDFS_COMMENT][0];
-                $type = substr($var[EF_RDF_TYPE][0],strlen($this->_serialization_schema['PatternVariable']) + 1); 
+                $type = substr($var[EF_RDF_TYPE][0],strlen($schema['PatternVariable']) + 1); 
                 $basicPattern->addVariable($name,$type,$desc);
             }
             
             // check if there are pattern select queries (init empty else)
-            if (!isset($bp[$this->_serialization_schema['hasSelectQuery']])) {
-                $bp[$this->_serialization_schema['hasSelectQuery']] = array();
+            if (!isset($bp[$schema['hasSelectQuery']])) {
+                $bp[$schema['hasSelectQuery']] = array();
             }
 
-            foreach ($bp[$this->_serialization_schema['hasSelectQuery']] as $var) {
+            foreach ($bp[$schema['hasSelectQuery']] as $var) {
                 $basicPattern->addSelectQuery($var[EF_RDFS_LABEL][0]);
             }
             
             // check if there are pattern update queries (init empty else)
-            if (!isset($bp[$this->_serialization_schema['hasUpdateQuery']])) {
-                $bp[$this->_serialization_schema['hasUpdateQuery']] = array();
+            if (!isset($bp[$schema['hasUpdateQuery']])) {
+                $bp[$schema['hasUpdateQuery']] = array();
             }
 
-            foreach ($bp[$this->_serialization_schema['hasUpdateQuery']] as $var) {
+            foreach ($bp[$schema['hasUpdateQuery']] as $var) {
                 switch ($var[EF_RDF_TYPE][0]) {
-                    case $this->_serialization_schema['UpdateQuery_Insert']:
+                    case $schema['UpdateQuery_Insert']:
                         $type = 'insert';
                         break;
-                    case $this->_serialization_schema['UpdateQuery_Delete']:
+                    case $schema['UpdateQuery_Delete']:
                         $type = 'delete';
                         break;
                     default:
                         break;
                 }
-                $query  = $var[$this->_serialization_schema['updatePatternSubject']][0] . ' ';
-                $query .= $var[$this->_serialization_schema['updatePatternPredicate']][0] . ' ';
-                $query .= $var[$this->_serialization_schema['updatePatternObject']][0];
+                $query  = $var[$schema['updatePatternSubject']][0] . ' ';
+                $query .= $var[$schema['updatePatternPredicate']][0] . ' ';
+                $query .= $var[$schema['updatePatternObject']][0];
                 $basicPattern->addUpdateQuery($query,$type);
             }
 
             $basicPattern->setLabel($bp[EF_RDFS_LABEL][0]);
             $basicPattern->setDescription($bp[EF_RDFS_COMMENT][0]);
 
-            $complexPattern->setElement((int)$sp[$this->_serialization_schema['sequenceId']][0],$basicPattern);
+            $complexPattern->setElement((int)$sp[$schema['sequenceId']][0],$basicPattern);
             
         }
         
         return $complexPattern;
+    }
+    
+    /**
+     * 
+     * @param $type
+     */
+    public function listFromStore($type = 'rdf') {
+        
+        if ($type === 'rdf') {
+            
+            $schema = $this->_privateConfig->rdf->toArray();
+            
+            if ($this->_store->isModelAvailable($this->_privateConfig->storeModel, false) ) {
+                
+                $model = $this->_privateConfig->storeModel;
+                
+		        $query = new Erfurt_Sparql_Query2();
+		        $query->addFrom($model);
+		        $query->addTriple(
+		            new Erfurt_Sparql_Query2_Var('pattern'),
+		            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
+		            new Erfurt_Sparql_Query2_IriRef($schema['ComplexPattern'])
+		        );
+		        $query->addTriple(
+		            new Erfurt_Sparql_Query2_Var('pattern'),
+		            new Erfurt_Sparql_Query2_IriRef(EF_RDFS_LABEL),
+		            new Erfurt_Sparql_Query2_Var('label')
+		        );
+		        
+		        // TODO Paging
+		        //$query->setLimit($limit + 1);
+		        //$query->setOffset($offset);
+		        
+		        $result  = array();
+		        $count   = 0;
+		        $nrArray = array();
+
+		        foreach ($this->_store->sparqlQuery($query,array(STORE_USE_AC => false)) as $row) {
+		            
+		            if ( !array_key_exists($row['pattern'],$nrArray) ) {
+		                $result[$row['pattern']]['uri'] = $row['pattern'];
+		                $nrArray[$row['pattern']] = $count;
+		            }
+		            
+		            $result[$row['pattern']]['label'] = $row['label'];
+		
+		            $execUrl = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'exec'));
+		            $execUrl->setParam('pattern', $row['pattern']);
+		            $result[$row['pattern']]['exec_url'] = (string) $execUrl;
+		                
+		            $viewUrl = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'view'));
+		            $viewUrl->setParam('pattern', $row['pattern']);
+		            $result[$row['pattern']]['view_url'] = (string) $viewUrl;
+                }
+
+                return $result;
+        
+            }
+            
+        } else {
+            throw new Exception('Format for pattern serialization unsupported');
+        }
+        
+    }
+    
+    /**
+     * 
+     */
+    private function getIdentifiers() {
+        $query = 'SELECT DISTINCT ?s FROM <' . $this->_privateConfig->storeModel . '> WHERE {
+        	?s a ?x . 
+        	FILTER (
+        		!sameTerm(?x,<' . EF_OWL_CLASS . '>) &&
+        		!sameTerm(?x,<' . EF_OWL_DATATYPE_PROPERTY . '>) &&
+        		!sameTerm(?x,<' . EF_OWL_OBJECT_PROPERTY . '>) &&
+        		!sameTerm(?x,<' . EF_OWL_ONTOLOGY . '>)
+        	) }';
+        
+        $info = $this->_store->sparqlQuery($query);
+        
+        $ret = array();
+        
+        foreach ($info as $subject) {
+            $ret[] = $subject;
+        }
+        
+        return $ret;
     }
     
 }

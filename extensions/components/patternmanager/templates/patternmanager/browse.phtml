@@ -2,22 +2,23 @@
 <table class="separated-vertical">
 <?php $odd = true;?>
 <thead>
-    <tr class="<?php echo $odd ? 'even' : 'odd'; $odd = !$odd; ?>">
-        <th>nr</th>
+    <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+        <th>id</th>
         <th>label</th>
-        <th>command 1</th>
-        <th>command 2</th>
+        <th>view pattern</th>
+        <th>execute pattern</th>
     </tr>
 </thead>
 <tbody>
 	<?php
-	    foreach ($this->data as $n => $part) {
+	    $n = 0;
+	    foreach ($this->data as $part) {
 	?>
-	<tr class="<?php echo $odd ? 'even' : 'odd'; $odd = !$odd; ?>">
-	    <td><?php echo 'NR:' . $n;?></td>
+	<tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+	    <td><?php echo sprintf('%04d',++$n);?></td>
 	    <td><?php echo $part['label'];?></td>
-	    <td><a href="<?php echo $part['view_url']; ?>"><?php echo 'view/edit';?></a></td>
-	    <td><a href="<?php echo $part['exec_url']; ?>"><?php echo 'exec';?></a></td>
+	    <td><a href="<?php echo $part['view_url']; ?>"><?php echo 'open in editor';?></a></td>
+	    <td><a href="<?php echo $part['exec_url']; ?>"><?php echo 'open for execution';?></a></td>
 	</tr>
 	<?php
 	    }

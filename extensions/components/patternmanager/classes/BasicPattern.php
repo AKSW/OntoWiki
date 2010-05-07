@@ -16,6 +16,18 @@ class BasicPattern {
     	'TEMPURI'
     );
     
+    private $_varTypes               = array (
+        'RESOURCE',
+        'LITERAL',
+        'TEMP',
+        'GRAPH',
+        'LANG',
+        'DATATYPE',
+        'CLASS',
+        'PROPERTY',
+        'REGEXP'
+    );
+    
     private $_label                  = '';
     
     private $_description            = '';
@@ -192,15 +204,34 @@ class BasicPattern {
         
         $this->_variables_descriptions[$name] = $desc;
         
-        if ($type === 'TEMP') {
-            $this->_variables_temp[] = $name;
+        if ( in_array($type,$this->_varTypes) ) {
+        
+	        if ($type === 'TEMP') {
+	            $this->_variables_temp[] = $name;
+	        } else {
+	            $this->_variables_free[$name] = $type;
+	        }
+        
         } else {
-            $this->_variables_free[$name] = $type;
+            throw new Exception('BasicPattern unkown variable type; Allowed types are: ' . implode(', ',$this->_varTypes));
         }
     
     }
     
-    public function removeVariable() {
+    /**
+     * Remove specific named variable from pattern
+     * @param $name
+     */
+    public function removeVariable($name) {
+        
+        if ( array_key_exists($name, $this->_variables_free) ) {
+            unset($this->_variables_free[$name]);
+            unset($this->_variables_descriptions[$name]);
+        } elseif ( in_array($name, $this->_variables_temp) ) {
+            $id = array_search($name, $this->_variables_temp);
+            unset($this->_variables_temp[$id]);
+            unset($this->_variables_descriptions[$name]);
+        }
     
     }
     
@@ -269,7 +300,7 @@ class BasicPattern {
 	                ' ?' . $var . ' ',
 	                $wherePart
 	            );
-	
+	            
 	        }
 	        
 	        $query .= $wherePart;
@@ -297,7 +328,7 @@ class BasicPattern {
             
         }
         
-        $stmt = array();
+        $stmt = array('insert' => array(), 'delete' => array());
         
         foreach ($this->_updatequery as $qHash => $tPattern) {
             
@@ -342,7 +373,9 @@ class BasicPattern {
             } elseif ( array_key_exists($parts[0], $this->_variables_bound) ) {
                 $parts[0] = $this->_variables_bound[$parts[0]];
             } else {
-                // do nothing
+                if ( $parts[1][0] === '<' && $parts[1][strlen($parts[1]) - 1] === '>') {
+                    $parts[2] = array( 'value' => substr($parts[1], 1, strlen( $parts[1] ) - 2) , 'type' => 'uri' );
+                }
             }
             
             if ( $found && in_array($parts[1], $activeResult['head']['vars']) ) {
@@ -350,15 +383,8 @@ class BasicPattern {
             } elseif ( array_key_exists($parts[1], $this->_variables_bound) ) {
                 $parts[1] = $this->_variables_bound[$parts[1]];
             } else {                
-                switch ($parts[1]) {
-                    case 'a': {
-                        $parts[1] = array( 'value' => EF_RDF_TYPE, 'type' => 'uri' );
-                        break;
-                    }
-                    default: {
-                        $parts[1] = array( 'value' => $parts[1] );
-                        break;
-                    }
+                if ( $parts[1][0] === '<' && $parts[1][strlen($parts[1]) - 1] === '>') {
+                    $parts[1] = array( 'value' => substr($parts[1], 1, strlen( $parts[1] ) - 2) , 'type' => 'uri' );
                 }
             }
 
@@ -369,8 +395,10 @@ class BasicPattern {
             } else {
                 if ( $parts[2][0] === '"' && $parts[2][strlen($parts[2]) - 1] === '"') {
                     $parts[2] = array( 'value' => substr($parts[2], 1, strlen( $parts[2] ) - 2) , 'type' => 'literal' );
+                } elseif ($parts[2][0] === '<' && $parts[2][strlen($parts[2]) - 1] === '>') {
+                    $parts[2] = array( 'value' => substr($parts[2], 1, strlen( $parts[2] ) - 2) , 'type' => 'uri' );
                 } else {
-                    $parts[2] = array( 'value' => $parts[2], 'type' => 'uri' );
+                    // do nothing
                 }
             }
             
@@ -425,6 +453,45 @@ class BasicPattern {
     
     public function execute() {
     
+    }
+    
+    /**
+     * Serialize a BasicPattern to an ordered array (json possible)
+     * 
+     * @param $asJson
+     */
+    public function toArray($asJson = false) {
+        
+            $data = array(
+            	'V'     => array(),
+            	'S'     => array(),
+            	'U'     => array(),
+                'label' => 'empty at ' . time(),
+                'desc'  => 'empty at '  . time()
+            );
+        
+            foreach ($this->getVariables(true, false) as $var) {
+                $data['V'][] = $var;
+            }
+            foreach ($this->getUpdateQueries() as $pat) {
+                $data['U'][] = $pat;
+            }
+            foreach($this->getSelectQueries() as $pat) {
+                $data['S'][] = $pat;
+            }
+            
+            sort($data['V']);
+            sort($data['U']);
+            sort($data['S']);
+            
+            $data['label'] = $this->getLabel();
+            $data['desc']  = $this->getDescription();
+            
+            if ($asJson) {
+                return json_encode($data);
+            } else {
+                return $data;
+            }
     }
 
 }

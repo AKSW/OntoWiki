@@ -85,24 +85,7 @@ class ComplexPattern {
 
         foreach ($this->_subPattern as $i => $basicPattern) {
             
-            $data['subPattern'][$i] = array(
-            	'V' => array(),
-            	'S' => array(),
-            	'U' => array()
-            );
-
-            foreach ($basicPattern->getVariables(true, true) as $var) {
-                $data['subPattern'][$i]['V'][] = $var;
-            }
-            foreach ($basicPattern->getUpdateQueries() as $pat) {
-                $data['subPattern'][$i]['U'][] = $pat;
-            }
-            foreach($basicPattern->getSelectQueries() as $pat) {
-                $data['subPattern'][$i]['S'][] = $pat;
-            }
-            
-            $data['subPattern'][$i]['label'] = $basicPattern->getLabel();
-            $data['subPattern'][$i]['desc']  = $basicPattern->getDescription();
+            $data['subPattern'][$i] = $basicPattern->toArray();
             
         }
         

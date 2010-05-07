@@ -14,6 +14,12 @@ require_once 'classes/ComplexPattern.php';
 require_once 'classes/PatternEngine.php';
 
 class PatternmanagerController extends OntoWiki_Controller_Component {
+    
+    /**
+     * 
+     * @var unknown_type
+     */
+    private $_engine = null;
 
     /**
      * Component global init function
@@ -30,13 +36,17 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         //$this->view->headLink()->appendStylesheet($this->_componentUrlBase .'css/jquery.autocomplete.css');
         
+        $this->_engine = new PatternEngine();
+        $this->_engine->setConfig($this->_privateConfig);
+        $this->_engine->setBackend($this->_erfurt);
+        
     }
     
     /**
      * Shows an index page as entry portal for evolution pattern management
      */
     public function indexAction () {
-
+        
         $this->view->componentUrlBase = $this->_componentUrlBase;
 
         $this->view->url = array();
@@ -61,11 +71,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $start = microtime(true);
         }
         
-        $patternEngine = new PatternEngine();
-        $patternEngine->setBackend($this->_erfurt);
-        $patternEngine->setDefaultGraph($this->_owApp->selectedModel);
+        $this->_engine->setDefaultGraph($this->_owApp->selectedModel);
         
-        $complexPattern = $patternEngine->loadFromStoreAsRdf($this->_request->getParam('pattern'));
+        $complexPattern = $this->_engine->loadFromStoreAsRdf($this->_request->getParam('pattern'));
 
         $unboundVariables = $complexPattern->getVariables(false);
 
@@ -73,12 +81,12 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
         if (!empty($var) && is_array($var)) {
             
-            foreach ($var as $value) {
+            foreach ($var as $name => $value) {
                 unset($unboundVariables[$name]);
                 $complexPattern->bindVariable($name,$value);
             }
             
-            $patternEngine->processPattern($complexPattern);
+            $this->_engine->processPattern($complexPattern);
         }
         
         // measurement for debug
@@ -113,7 +121,14 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      *
      */
     public function browseAction() {
+
+        $this->_engine->setDefaultGraph($this->_owApp->selectedModel);
         
+        $list = $this->_engine->listFromStore();
+        
+        $this->view->data = $list;
+        
+        /*
         $store = $this->_erfurt->getStore();
         
         $configModel = $this->_privateConfig->configModel;
@@ -129,8 +144,8 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         );
         $query->addTriple(
             new Erfurt_Sparql_Query2_Var('pattern'),
-            new Erfurt_Sparql_Query2_Var('P'),
-            new Erfurt_Sparql_Query2_Var('O')
+            new Erfurt_Sparql_Query2_IriRef(EF_RDFS_LABEL),
+            new Erfurt_Sparql_Query2_Var('label')
         );
         
         $result  = array();
@@ -159,88 +174,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         }
         
         $this->view->data = $result;
-        
-        /*
-        $complexPattern = new ComplexPattern();
-        
-        $json = current($result);
-        $json = $json[$hasJson];
-        
-        $complexPattern->parseFromJson($json);
-        
-        var_dump($complexPattern);
-        */
-        
-        /*
-        $pattern1 = new BasicPattern(
-            array(
-                'classA' => 'RESOURCE' ,
-                'classB' => 'RESOURCE' ,
-                'classM' => 'RESOURCE' ,
-                'apred'  => 'TEMP' ,
-                'aobj'   => 'TEMP' ,
-                'bpred'  => 'TEMP' ,
-                'bobj'   => 'TEMP'
-            ),
-            array(
-            	'{ classA a <http://www.w3.org/2002/07/owl#Class> . classA apred aobj . }',
-                '{ classB a <http://www.w3.org/2002/07/owl#Class> . classB bpred bobj . }'
-            ),
-            array(
-                'INSERT'    => array('classM apred aobj','classM bpred bobj'),
-                'DELETE' => array('classA apred aobj','classB bpred bobj')
-            )
-        );
-        
-        $pattern2 = new BasicPattern(
-            array(
-                'classA' => 'RESOURCE' ,
-                'classB' => 'RESOURCE' ,
-                'classM' => 'RESOURCE' ,
-                'instA'  => 'TEMP',
-                'instB'  => 'TEMP'
-            ),
-            array(
-            	'{ instA a classA . }',
-            	'{ instB a classB . }'
-            ),
-            array(
-                'INSERT'    => array('instA a classM','instB a classM'),
-                'DELETE' => array('instA a classA','instB a classB')
-            )
-        );
-        
-        $pattern3 = new BasicPattern(
-            array(
-                'classA' => 'RESOURCE' ,
-                'classB' => 'RESOURCE' ,
-                'classM' => 'RESOURCE' ,
-                'asubj'  => 'TEMP' ,
-                'apred'  => 'TEMP' ,
-                'bsubj'  => 'TEMP' ,
-                'bpred'  => 'TEMP'
-            ),
-            array(
-            	'{ asubj apred classA . }' ,
-                '{ bsubj bpred classB . }'
-            ),
-            array(
-                'INSERT'    => array('asubj apred classM', 'bsubj bpred classM'),
-                'DELETE' => array('asubj apred classA','bsubj bpred classB')
-            )
-        );
-        
-        $patternAll = new ComplexPattern();
-        
-        $patternAll->appendElement($pattern1);
-        $patternAll->appendElement($pattern2);
-        $patternAll->appendElement($pattern3);
-        
-        $patternAll->bindVariable('classA', 'http://local.testcase/class/A/');
-        $patternAll->bindVariable('classB', 'http://local.testcase/class/B/');
-        $patternAll->bindVariable('classM', 'http://local.testcase/class/A-and-B-merged/');
-        
-        $patternEngine->processPattern($patternAll);
         */
         
     }
@@ -275,9 +208,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         $param = $this->_request->getParam('pattern', null);
         if ( !empty($param) ) {
-            $engine = new PatternEngine();
-            $engine->setBackend($this->_erfurt);
-            $loaded = $engine->loadFromStoreAsRdf($param);
+            $loaded = $this->_engine->loadFromStore($param);
             $this->view->jsonPattern = $loaded->toArray(true);
         }
         
@@ -290,23 +221,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         if ( !empty($param) ) {
             $this->view->errorPattern = $param;
         }
-        
-        
-		/*        
-        if ( $patternUri === null ) {
-            $data = array();
-        } else {
-            $data = $this->loadPatternFromUri($patternUri);
-        }
-        
-        if ( sizeof($data) > 0 && array_key_exists($this->_privateConfig->hasJson, $data) ) {
-            $this->view->patternName   = current($data[EF_RDFS_LABEL]);
-            $this->view->loadPattern   = current($data[$this->_privateConfig->hasJson]);
-        } else {
-            $this->view->patternName   = '';
-            $this->view->loadPattern   = '{}';
-        }
-		*/
 
     }
     
@@ -360,13 +274,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
         $orderedData = array();
 
-        // init pattern engine
-        $engine = new PatternEngine();
-        $engine->setBackend($this->_erfurt);
-            
         //init complex pattern instance
         $complexPattern = new ComplexPattern();
-        $complexPattern->setEngine($engine);
+        $complexPattern->setEngine($this->_engine);
         
         $error = array();
         
@@ -446,7 +356,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $label = '';
             
             if ( empty($pattern['patternlabel'][0]) ) {
-                $error[] = 'patternlabel-' . $pNr;    
+                $error[] = 'patternlabel-' . $pNr;
             } else {
                 $label = $pattern['patternlabel'][0];
             }
@@ -474,7 +384,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $complexPattern->setDescription($description);
         
         if (empty($error)) {
-            $engine->saveToStore($complexPattern);
+            $this->_engine->saveToStore($complexPattern);
         } else {
             $json = $complexPattern->toArray(true);
             
@@ -491,41 +401,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             
             $this->_redirect($url);
         }
-        /* 
-         * OLD JSON SERIALIZATION
-        */
-        /*
-
-        // encode in json
-        $encodedData = json_encode($orderedData);
-        
-        //$url = new OntoWiki_Url( array(), array() );
-        //$url->setParam('json', $encodedData);
-        
-        $configModel = $this->_privateConfig->configModel;
-        $className   = $this->_privateConfig->className;
-        $hasJson     = $this->_privateConfig->hasJson;
-        $instanceUri = $this->_privateConfig->className . '/' . md5($encodedData . time());
-        
-
-        
-        $stmts = array(
-            $instanceUri => array (
-                EF_RDF_TYPE => array (
-                    array('value' => $className , 'type' => 'uri')
-                ),
-                $hasJson => array(
-                    array('value' => $encodedData , 'type' => 'literal')
-                ),
-                EF_RDFS_LABEL => array(
-                    array('value' => $label , 'type' => 'literal')
-                )
-            )
-        );
-        
-        $store = $this->_erfurt->getStore();
-        $store->addMultipleStatements( $configModel, $stmts, false);
-        */
     }
     
     /**
@@ -539,18 +414,20 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $model = $this->_owApp->selectedModel;
 
         $query = $this->_request->getParam('q','');
-        $vartype = $this->_request->getParam('vartype','');
+        $vartype = $this->_request->getParam('vartype');
         $limit = (int) $this->_request->getParam('limit',10);
         
         
         $allowedInputType = array(
             'RESOURCE' => '/([a-z]|[0-9]|[A-Z])+/',
-            'LITERAL' => '/\S+/'
+            'LITERAL' => '/\S+/',
+            'BasicPattern' => '/.*/'
         );
         
         $sparqlQuery = 'SELECT DISTINCT ?entity ' . PHP_EOL . 'FROM <' . (string) $model . '> WHERE ' . PHP_EOL;
         
         $error = false;
+        $ret = array();
         
         if ( array_key_exists($vartype,$allowedInputType) ) {
         
@@ -565,18 +442,24 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         if (!$error) {
         
 	        switch ($vartype) {
-	            case '':
-			        $sparqlQuery .=  $sparqlQuery . '{ 
-			        	?entity a ?type .
-			        	FILTER( REGEX(?entity, "' . addcslashes($query,'"') . '","i") )
-				    	} ' . $limit;
+	            case 'BasicPattern':
+	                $sparqlQuery =  'SELECT DISTINCT ?entity ?label FROM <' . $this->_privateConfig->storeModel . '> { 
+			        	?entity a ?t . ?entity <' . EF_RDFS_LABEL . '> ?label .
+			        	FILTER (
+			        		REGEX(?label,"' . addcslashes($query,'"') . '", "i") &&
+			        		REGEX( STR(?t), "' .  addcslashes($vartype,'"') . '", "i")
+			        	)
+			    		} LIMIT ' . $limit;
 	        	        try {
 				            $res = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery);
 				        } catch (Exception $e) {
 				            $error = true;
 				            $res = array();
 				        }
-			        break;
+				        foreach ($res as $row) {
+				            $ret[] = json_encode( array($row['entity'],$row['label']));
+				        }
+	                break;
 	            case 'LITERAL':
 			        $sparqlQuery .=  $sparqlQuery . '{ 
 			        	?s ?p ?entity . 
@@ -584,88 +467,171 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 			        		isLiteral(?entity) &&
 			        		REGEX(?entity, "' . addcslashes($query,'"') . '","i")
 			        	)
-			    		} ' . $limit;
-	        	        try {
-				            $res = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery);
-				        } catch (Exception $e) {
-				            $error = true;
-				            $res = array();
-				        }
+			    		} LIMIT ' . $limit;
+        	        try {
+			            $res = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery);
+			        } catch (Exception $e) {
+			            $error = true;
+			            $res = array();
+			        }
+			        foreach ($res as $value) {
+			            $ret[] = $value['entity'];
+			        }
 			        break;
 	            case 'CLASS' :
 	                break;
 	            case 'PROPERTY':
 	                break;
 	            case 'RESOURCE' :
-	                $res = $model->getNamespaces();
+                    $sparqlQuery =  'SELECT DISTINCT ?entity FROM <' .  (string) $model . '> WHERE { 
+			        	?entity ?p ?o . 
+			        	?entity <' . EF_RDFS_LABEL . '> ?label
+			        	FILTER (
+			        		REGEX( ?label, "' . addcslashes($query,'"') . '","i") ||
+			        		REGEX( STR(?entity), "' . addcslashes($query,'"') . '","i")
+			        	)
+			    		} LIMIT ' . $limit;
+        	        try {
+			            $res = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery);
+			        } catch (Exception $e) {
+			            $error = true;
+			            $res = array();
+			        }
+			        foreach ($res as $value) {
+			            $ret[] = $value['entity'];
+			        }
 	                break;
 	                
 	            default:
-	                $res = array();
 	                break;
 	        }
-
-	        print_r($res);
-	        $ret = array();
-	        
-	        foreach ($res as $row) {
-	            if ( is_array($row) ) {
-	                $ret[] = current($row);
-	            } else {
-	                $ret[] = $row;
-	            }
-	        }
-
-	        sort($ret);
-        
-            echo implode(PHP_EOL,$ret);
             
         }
         
+        echo implode(PHP_EOL, $ret);
     }
     
     /**
-     * 
-     * @param string $uri pattern-uri
+     * load a basic pattern as json
      */
-    private function loadPatternFromUri($uri) {
-
-        $store = $this->_erfurt->getStore();
+    public function loadpatternAction() {
         
-        $configModel = $this->_privateConfig->configModel;
-        $className   = $this->_privateConfig->className;
-        $hasJson     = $this->_privateConfig->hasJson;
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout->disableLayout();
         
-        $query = new Erfurt_Sparql_Query2();
-        $query->addFrom($configModel);
+        $uri = $this->_request->getParam('uri','http:/null/uri');
         
-        $query->addTriple(
-            new Erfurt_Sparql_Query2_IriRef($uri),
-            new Erfurt_Sparql_Query2_Var('P'),
-            new Erfurt_Sparql_Query2_Var('O')
+        $schema = array (
+	    	'PatternVariable'        => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/PatternVariable' ,
+	        'SelectQuery'            => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/SelectQuery' ,
+	        'UpdateQuery_Insert'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/UpdateQuery_Insert' ,
+	        'UpdateQuery_Delete'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/UpdateQuery_Delete' ,
+	        'SubPattern'		     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/SubPattern' ,
+	        'ComplexPattern'         => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/ComplexPattern' ,
+	        'BasicPattern'           => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/BasicPattern' ,
+	        'hasPatternVariable'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasPatternVariable' ,
+	        'hasUpdateQuery'         => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasUpdateQuery' ,
+	        'hasBasicPattern'        => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasBasicPattern' ,
+	        'hasSubPattern'          => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasSubPattern' ,
+	        'hasSelectQuery'	     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasSelectQuery' ,
+	        'updatePatternObject'    => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternObject' ,
+	        'updatePatternPredicate' => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternPredicate' ,
+	        'updatePatternSubject'   => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternSubject' ,
         );
         
-        $result  = array();
-        $count   = 0;
-        $nrArray = array();
+		$sparqlQuery =  'SELECT DISTINCT ?s ?p ?o FROM <' . $this->_privateConfig->storeModel . '> { 
+			{ 
+			<' . $uri . '> a <' . $schema['BasicPattern'] . '> .
+			?s ?p ?o . FILTER (sameTerm(?s,<' . $uri . '>)) .
+    		} UNION {
+    		<' . $uri . '> a <' . $schema['BasicPattern'] . '> .
+    		<' . $uri . '> <' . $schema['hasPatternVariable'] . '> ?s .
+    		?s ?p ?o .
+    		} UNION {
+			<' . $uri . '> a <' . $schema['BasicPattern'] . '> .
+    		<' . $uri . '> <' . $schema['hasSelectQuery'] . '> ?s .
+    		?s ?p ?o .
+    		} UNION {
+			<' . $uri . '> a <' . $schema['BasicPattern'] . '> .
+    		<' . $uri . '> <' . $schema['hasUpdateQuery'] . '> ?s .
+    		?s ?p ?o .
+    		}
+			}';
+		
+        $result = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery, array(STORE_USE_AC => false));
         
-        $data = $store->sparqlQuery($query, array(STORE_RESULTFORMAT => 'extended', STORE_USE_AC => false));
-
-        foreach ($data['bindings'] as $row) {
-            switch ($row['P']['value']) {
-                case $hasJson:
-                    $result[$row['P']['value']][] = $row['O']['value'];
-                    break;
-                case EF_RDFS_LABEL:
-                    $result[$row['P']['value']][] = $row['O']['value'];
-                    break;
-                default:
-                    break;
+        $types = array();
+        $stmt = array();
+        $variable = array();
+        $select = array();
+        $update  = array('insert' => array(), 'delete' => array());
+        
+        foreach ($result as $row) {
+            if ($row['p'] === EF_RDF_TYPE) {
+                $types[$row['s']] = $row['o'];
+            } else {
+	            $stmt[$row['s']][$row['p']][] = $row['o'];
             }
         }
         
-        return $result;
+        $basicPattern = new BasicPattern();
         
+        foreach ($stmt as $s => $data) {
+            if ($types[$s] === $schema['BasicPattern']) {
+                if (array_key_exists(EF_RDFS_LABEL,$data)) {
+                    $basicPattern->setLabel($data[EF_RDFS_LABEL][0]);
+                } else {
+                   $basicPattern->setLabel('');
+                }
+                if (array_key_exists(EF_RDFS_COMMENT,$data)) {
+                    $basicPattern->setDescription($data[EF_RDFS_COMMENT][0]);
+                } else {
+                   $basicPattern->setDescription('');
+                }
+            }
+            if (strpos($types[$s],$schema['PatternVariable']) === 0  ) {
+                $type = substr($types[$s],strlen($schema['PatternVariable']) + 1 );
+                if (array_key_exists(EF_RDFS_LABEL,$data) && array_key_exists(EF_RDFS_LABEL, $data) && $type) {
+                    $basicPattern->addVariable($data[EF_RDFS_LABEL][0], $type, $data[EF_RDFS_COMMENT][0]);
+                }
+            }
+            
+            if ( $types[$s] === $schema['SelectQuery'] ) {
+                if ( array_key_exists(EF_RDFS_LABEL, $data)) {
+                    $basicPattern->addSelectQuery($data[EF_RDFS_LABEL][0]);
+                }
+            }
+            
+            if ( $types[$s] === $schema['UpdateQuery_Insert'] ) {
+                if (
+                    array_key_exists($schema['updatePatternObject'],$data) &&
+                    array_key_exists($schema['updatePatternPredicate'], $data) &&
+                    array_key_exists($schema['updatePatternSubject'], $data)
+                ) {
+                    $pattern = $data[$schema['updatePatternSubject']][0] . ' ' .
+                        $data[$schema['updatePatternPredicate']][0] . ' ' .
+                        $data[$schema['updatePatternObject']][0]; 
+                    $basicPattern->addUpdateQuery($pattern, 'insert');
+                }
+            }
+            
+                    
+            if ( $types[$s] === $schema['UpdateQuery_Delete'] ) {
+                if (
+                    array_key_exists($schema['updatePatternObject'],$data) &&
+                    array_key_exists($schema['updatePatternPredicate'], $data) &&
+                    array_key_exists($schema['updatePatternSubject'], $data)
+                ) {
+                    $pattern = $data[$schema['updatePatternSubject']][0] . ' ' .
+                        $data[$schema['updatePatternPredicate']][0] . ' ' .
+                        $data[$schema['updatePatternObject']][0]; 
+                    $basicPattern->addUpdateQuery($pattern, 'delete');
+                }
+            }
+        }
+        
+        echo $basicPattern->toArray(true);
+
     }
 
 }

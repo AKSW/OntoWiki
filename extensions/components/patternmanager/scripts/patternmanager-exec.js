@@ -18,7 +18,7 @@ $(document).ready(function () {
                 loadingClass : 'is-processing',
                 minChars: 3 ,
                 delay: 1000 ,
-                max: 16 ,
+                max: 10 ,
                 extraParams: {
                     mode : 'exec' ,vartype : vartype }
             }

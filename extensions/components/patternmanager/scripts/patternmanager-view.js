@@ -136,7 +136,69 @@ function delPMdelete(p,c) {
     reindexPM();
 }
 
+function loadPMpattern(uri,id) {
+    
+    $.getJSON(urlBase + 'patternmanager/loadpattern', { uri: uri , type: 'rdf'}, function(data) {
+        current = data;
+        for (j in current['V']) {
+            addPMvar(id,null,current['V'][j]['name'],current['V'][j]['type'],current['V'][j]['desc']);
+        }
+        for (v in current['S']) {
+            addPMselect(id,null,current['S'][v]);
+        }
+        for (pkey in current['U']) {
+            if (current['U'][pkey]['type'] === 'insert' ) {
+                addPMinsert(id, null, current['U'][pkey]['pattern']);
+            } else if ( current['U'][pkey]['type'] === 'delete' ) {
+                addPMdelete(id, null, current['U'][pkey]['pattern']);
+            } else {
+                // do nothing
+            }
+        }
+    });
+}
+
 function reindexPM() {
+
+    $('div#patternmanager input.BasicPattern').each( function (i) {
+        node = $(this);
+        if (i != 0 && !node.hasClass('ac_input')) {
+            node.autocomplete(
+                urlBase + 'patternmanager/autocomplete',
+                {
+                    loadingClass : 'is-processing',
+                    minChars: 3 ,
+                    delay: 1000 ,
+                    max: 10 ,
+                    extraParams: {
+                        mode : 'view', vartype : 'BasicPattern' 
+                    },
+                    formatItem: function(row,pos,max,str) {
+                        data = $.secureEvalJSON(row);
+                        return data[1];
+                    },
+                    formatResult: function(row,pos,max) {
+                        data = $.secureEvalJSON(row);
+                        return data[1];
+                    }
+                }
+            );
+            node.result( function(event, item) {
+                data = $.secureEvalJSON(item);
+                bp = $('div#patternmanager > div#subpattern-' + i);
+                //
+                if ( confirm('Load this pattern? (will overwrite current)') ) {
+                    bp.find('table:eq(0) > tbody > tr').remove();
+                    bp.find('table:eq(1) > tbody > tr').remove();
+                    bp.find('table:eq(2) > tbody > tr').remove();
+                    bp.find('table:eq(3) > tbody > tr').remove();
+                    loadPMpattern(data[0],i);
+                } else {
+                    // do nothing
+                }
+            });
+        }
+    });
     
     $('div#patternmanager > div').each( function (i) {
         
