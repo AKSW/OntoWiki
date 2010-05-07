@@ -37,7 +37,7 @@ $(document).ready(function() {
     if( typeof navigationStateSetup != 'undefined'){
         navigationSetup = navigationStateSetup;
         // refresh the navigation box (quiet)
-        navigationEvent ('refresh')
+        //navigationEvent ('refresh')
     }
 
     /* first start */
@@ -239,6 +239,8 @@ function navigationLoad (navEvent, setup) {
                         navigationContainer.slideDown('fast');
                 }
 
+                saveState();
+
                 navigationPrepareList();
             }
         );
@@ -305,7 +307,7 @@ function navigationUpdateLoad (navEvent, setup) {
  * This function creates navigation events
  */
 function navigationPrepareList () {
-    saveState();
+    //saveState();
     
     // the links to deeper navigation entries
     $('.navDeeper').click(function(event) {
