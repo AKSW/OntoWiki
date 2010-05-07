@@ -267,7 +267,8 @@ class NavigationController extends OntoWiki_Controller_Component
             $uri = $result['resourceUri'];
             $entry = array();
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
-            $entry['link'] = $this->_getListLink($uri, $setup);  
+            $entry['link'] = $this->_getListLink($uri, $setup);
+            $entry['sub'] = $result['subResourceUri'];
             
             // if filtering empty is needed
             $filterEmpty = false;
@@ -354,6 +355,7 @@ class NavigationController extends OntoWiki_Controller_Component
         //$query->setCountStar(true);
         $query->setDistinct(true);
         $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
+        $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('subResourceUri'));
         // set to limit+1, so we can see if there are more than $limit entries
         $query->setLimit($this->limit + 1);
         // set ordering

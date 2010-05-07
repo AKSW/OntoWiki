@@ -95,12 +95,14 @@ class NavigationHelper extends OntoWiki_Component_Helper
     public static function getSearchTriples($setup, $forImplicit = false){
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
         $classVar = new Erfurt_Sparql_Query2_Var('classUri');
+        $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
         $elements = array();
 
         // if deeper query
         if ( isset($setup->state->parent) ) {
             // in relations
             if ( isset($setup->config->hierarchyRelations->in) ){
+                // default stuff
                 if( count($setup->config->hierarchyRelations->in) > 1 ){
                     // init union var
                     $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
@@ -118,7 +120,6 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $union->addElement($u1);
                     }
                     $elements[] = $union;
-                    //$query->addFilter( new Erfurt_Sparql_Query2_bound( new Erfurt_Sparql_Query2_Var('instance') ) );
                 }else{
                     $rel = $setup->config->hierarchyRelations->in;
                     $elements[] = new Erfurt_Sparql_Query2_Triple(
@@ -131,6 +132,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
             // out relations
             if ( isset($setup->config->hierarchyRelations->out) ){
+                // if there's out relations
                 if ( count($setup->config->hierarchyRelations->out) > 1 ){
                     // init union var
                     $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
@@ -150,6 +152,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     $elements[] = $union;
                     //$query->addFilter( new Erfurt_Sparql_Query2_bound( new Erfurt_Sparql_Query2_Var('instance') ) );
                 }else{
+                    // get one relation
                     $rel = $setup->config->hierarchyRelations->out;
                     $elements[] = new Erfurt_Sparql_Query2_Triple(
                         new Erfurt_Sparql_Query2_IriRef($setup->state->parent),
@@ -252,6 +255,41 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 new Erfurt_Sparql_Query2_Var('resourceUri')
             )
         );
+
+        // request sub elements --------------
+        // in relations
+        if ( isset($setup->config->hierarchyRelations->in) ){
+            if( count($setup->config->hierarchyRelations->in) > 1 ){
+                // init union var
+                $unionSub = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                // parse config gile
+                foreach($setup->config->hierarchyRelations->in as $rel){
+                    // sub stuff
+                    $u1 = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                    // add triplen
+                    $u1->addTriple(
+                        $subVar,
+                        new Erfurt_Sparql_Query2_IriRef($rel),
+                        $searchVar
+                    );
+                    // add triplet to union var
+                    $unionSub->addElement($u1);
+                }
+                $elements[] = $unionSub;
+            }else{
+                $rel = $setup->config->hierarchyRelations->in;
+                // add optional sub relation
+                // create optional graph to load sublacsses of selected class
+                $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                $queryOptional->addTriple(
+                    $subVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                    $searchVar
+                );
+                $elements[] = $queryOptional;
+            }
+        }
+        // -----------------------------------
 
         // namespaces to be ignored, rdfs/owl-defined objects
         if ( !isset($setup->state->showHidden) ) {

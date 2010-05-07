@@ -52,7 +52,9 @@ $odd = true;
                    href="<?php echo $entry['link'] ?>"
                    about="<?php echo $uri ?>" title="show list of instances"
                    ><?php echo $entry['title'] ?>
+                   <?php if( strlen($entry['sub']) > 0 ): ?>
                    <span class="navDeeper navDeeperIcon icon icon-arrow-next" title="show deeper level"><span>[show deeper level]</span></span>
+                   <?php endif ?>
                    <!-- span class="navList icon icon-list" title="show list of instances">
                     <span>[show list of instances]</span>
                    </span -->
