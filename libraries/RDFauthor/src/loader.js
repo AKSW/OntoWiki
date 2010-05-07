@@ -22,8 +22,16 @@ var widgetBase = widgetBase || 'http://localhost/ontowiki/libraries/RDFauthor/';
             s.src = urls[i];
 
             if ((i === (max - 1)) && (typeof callback == 'function')) {
-                // works: Safari, Chrome, Firefox
-                s.onload = callback;
+                if ($.browser.msie) {
+                    s.onreadystatechange = function () {
+                        if (this.readyState === 'loaded' || this.readyState === 'complete') {
+                            callback();
+                        }
+                    };
+                } else {
+                    // works: Safari, Chrome, Firefox
+                    s.onload = callback;
+                }
             }
 
             document.getElementsByTagName('head')[0].appendChild(s);

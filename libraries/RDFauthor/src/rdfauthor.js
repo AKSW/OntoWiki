@@ -662,8 +662,19 @@ RDFauthor = {
                 
                 // add onload event only for the last script in the URIs array
                 if ((i === (max - 1)) && (typeof callback == 'function')) {
-                    // works: Safari, Chrome, Firefox
-                    s.onload = callback;
+                    if ((i === (max - 1)) && (typeof callback == 'function')) {
+                        if ($.browser.msie) {
+                            // works for IE
+                            s.onreadystatechange = function () {
+                                if (this.readyState === 'loaded' || this.readyState === 'complete') {
+                                    callback();
+                                }
+                            };
+                        } else {
+                            // works for browsers (Safari, Chrome, Firefox)
+                            s.onload = callback;
+                        }
+                    }
                 }
                 
                 document.getElementsByTagName('head')[0].appendChild(s);
@@ -1012,15 +1023,9 @@ RDFauthor = {
     }, 
     
     // shows the edit view
-    startEditing: function (subject) {        
+    startEditing: function (subject) {
         var instance = this;
         if (!RDFauthor.pageParsed) {
-            try {
-                RDFA.parse();
-            } catch (e) {
-                alert('RDFa parsing error: ' + e);
-            }
-            
             var instance = this;
             RDFA.CALLBACK_DONE_PARSING = function () {
                 // fetch predicate infos
@@ -1034,6 +1039,12 @@ RDFauthor = {
                 view.display(instance.options.animated);
                 RDFauthor.pageParsed = true;
             };
+            
+            try {
+                RDFA.parse();
+            } catch (e) {
+                alert('RDFa parsing error: ' + e);
+            }
         } else {
             var view = this.createPropertyView(subject);
             view.display(instance.options.animated);
