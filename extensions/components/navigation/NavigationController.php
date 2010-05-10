@@ -250,6 +250,7 @@ class NavigationController extends OntoWiki_Controller_Component
             if (isset($results)){
                 foreach ($results as $result) {
                     //$this->_owApp->logger->info('TITLE HELPER: '.$result['resourceUri']);
+                    //$this->_owApp->logger->info('TITLE HELPER: '.$result['subResourceUri']);
                     $this->titleHelper->addResource($result['resourceUri']);
                 }
             }
@@ -266,9 +267,10 @@ class NavigationController extends OntoWiki_Controller_Component
         foreach ($results as $result) {
             $uri = $result['resourceUri'];
             $entry = array();
+            $entry['sub'] = strlen( $result['subResourceUri'] );
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             $entry['link'] = $this->_getListLink($uri, $setup);
-            $entry['sub'] = $result['subResourceUri'];
+            
             
             // if filtering empty is needed
             $filterEmpty = false;
@@ -303,6 +305,8 @@ class NavigationController extends OntoWiki_Controller_Component
             
             if($show) $entries[$uri] = $entry;
         }
+
+        $this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
 
         return $entries;
     }

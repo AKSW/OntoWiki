@@ -289,6 +289,37 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 $elements[] = $queryOptional;
             }
         }
+        if ( isset($setup->config->hierarchyRelations->out) ){
+            if( count($setup->config->hierarchyRelations->out) > 1 ){
+                // init union var
+                $unionSub = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                // parse config gile
+                foreach($setup->config->hierarchyRelations->out as $rel){
+                    // sub stuff
+                    $u1 = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                    // add triplen
+                    $u1->addTriple(
+                        $searchVar,
+                        new Erfurt_Sparql_Query2_IriRef($rel),
+                        $subVar
+                    );
+                    // add triplet to union var
+                    $unionSub->addElement($u1);
+                }
+                $elements[] = $unionSub;
+            }else{
+                $rel = $setup->config->hierarchyRelations->out;
+                // add optional sub relation
+                // create optional graph to load sublacsses of selected class
+                $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                $queryOptional->addTriple(
+                    $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                    $subVar
+                );
+                $elements[] = $queryOptional;
+            }
+        }
         // -----------------------------------
 
         // namespaces to be ignored, rdfs/owl-defined objects
