@@ -132,7 +132,12 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 
         $prefixes = $this->_owApp->selectedModel->getNamespacePrefixes();
 
-        $query = $this->getParam('query');
+        if( isset ($this->_request->queryUri)){
+            $query = $this->getQuery($this->_request->queryUri);
+        }
+        if( empty ($query)){
+            $query = $this->getParam('query');
+        }
 
         $format = $this->_request->getParam('result_format', 'plain');
 
@@ -266,7 +271,6 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                      OPTIONAL {?query <' . $this->_privateConfig->saving->ModelUri . '> ?model} .
                      OPTIONAL {?query <' . $this->_privateConfig->saving->JsonUri . '> ?json }.
                      OPTIONAL {?query <' . $this->_privateConfig->saving->NameUri . '> ?name }.
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->DescriptionUri . '> ?desc} .
                      OPTIONAL {?query <' . $this->_privateConfig->saving->QueryUri . '> ?sparql} .
                      OPTIONAL {?query <' . $this->_privateConfig->saving->GeneratorUri . '> ?generator} .
                      OPTIONAL {?query <' . $this->_privateConfig->saving->NumViewsUri . '> ?num_views }.
@@ -289,7 +293,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Query Building'));
     }
 
-    public function saveQueryAction() {
+    public function savequeryAction() {
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'text/plain');
 
@@ -297,22 +301,11 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
         $storeGraph = $this->_owApp->selectedModel;
         $graphUri = (string) $this->_owApp->selectedModel;
 
-        // stripping automatic escaped chars
-        $params = array ();
-        foreach ($this->_request->getParams() as $key => $param) {
-            if (get_magic_quotes_gpc()) {
-                $params[$key] = stripslashes($param);
-            } else {
-                $params[$key] = $param;
-            }
-        }
         $res = "json or desc missing";
         // checking for post data to save queries
-        if (isset ($params['json']) && isset ($params['qdesc'])) {
-            $qdesc = addslashes(trim($params['qdesc']));
-            $json = addslashes($params['json']);
-
-            if ($params['share'] == "true") {
+        $params = $this->_request->getParams();
+        if (isset($params["json"]) && isset($params["json"])) {
+            if ($this->_request->getParam('share') == "true") {
                 // store in the model itself - everybody can see it
                 $storeGraph = $this->_owApp->selectedModel;
             } else {
@@ -330,21 +323,19 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                 //this is the first query
                 $this->insertInitials($storeGraph);
             }
+            $md5 = md5($this->_request->getParam('json') . $this->_request->getParam('query'));
+            $name = (string) $storeGraph . '#Query-' . $md5;
 
-            // checking whether a query with same dc:title and soic:content (Where-Part) already exists
+            // checking whether a query with same content (Where-Part) already exists (check by md5 sum)
             $existingDataQuery = Erfurt_Sparql_SimpleQuery :: initWithString('SELECT *
-                                 WHERE {
-                                 ?query <' . EF_RDF_TYPE . '> <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->ClassUri) . '> .
-                                 ?query <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->JsonUri) . '> "' . $json . '" .
-                                 ?query <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->DescriptionUri) . '> "' . $qdesc . '" .
-                                 ?query <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->ModelUri) . '> <' . $graphUri . '> .
-                                 }');
+                     WHERE {
+                     <'.$name.'> a <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->ClassUri) . '>
+                     }');
 
             $existingData = $storeGraph->sparqlQuery($existingDataQuery);
 
             if (empty ($existingData)) {
                 //such a query is not saved yet - lets save it
-                $name = (string) $storeGraph . '#Query-' . md5($json . $qdesc);
 
                 $storeGraph->addStatement($name, EF_RDF_TYPE, array (
                         'value' => $this->_privateConfig->saving->ClassUri,
@@ -354,12 +345,8 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                         $this->_privateConfig->saving->ModelUri, array (
                         'value' => (string) $this->_owApp->selectedModel, 'type' => 'uri'
                         ), false);
-                $storeGraph->addStatement($name, $this->_privateConfig->saving->DescriptionUri, array (
-                        'value' => $params['qdesc'],
-                        'type' => 'literal'
-                        ), false);
                 $storeGraph->addStatement($name, $this->_privateConfig->saving->NameUri, array (
-                        'value' => $params['name'],
+                        'value' => $this->_request->getParam('name'),
                         'type' => 'literal'
                         ), false);
                 $storeGraph->addStatement($name, $this->_privateConfig->saving->DateUri, array (
@@ -372,37 +359,37 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                         'type' => 'literal',
                         'datatype' => OntoWiki_Utils :: expandNamespace('xsd:integer')
                         ), false);
-                if($params['generator'] == "gqb" || $params['generator'] == "qb") {
+                if($this->_request->getParam('generator') == "gqb" || $this->_request->getParam('generator') == "qb") {
                     $storeGraph->addStatement($name, $this->_privateConfig->saving->JsonUri, array (
-                            'value' => $params['json'],
+                            'value' => $this->_request->getParam('json'),
                             'type' => 'literal'
                             ), false);
                 }
                 $storeGraph->addStatement($name, $this->_privateConfig->saving->QueryUri, array (
-                        'value' => $params['query'],
+                        'value' => $this->_request->getParam('query'),
                         'type' => 'literal'
                         ), false);
                 $storeGraph->addStatement($name, $this->_privateConfig->saving->GeneratorUri, array (
-                        'value' => $params['generator'],
+                        'value' => $this->_request->getParam('generator'),
                         'type' => 'literal'
                         ), false);
-                if($params['generator'] == "gqb") {
+                if($this->_request->getParam('generator') == "gqb") {
                     $storeGraph->addStatement($name, $this->_privateConfig->saving->IdUri, array (
-                            'value' => $params['id'],
+                            'value' => $this->_request->getParam('id'),
                             'type' => 'literal'
                             ), false);
                     $storeGraph->addStatement($name, $this->_privateConfig->saving->SelClassUri, array (
-                            'value' => $params['type'],
+                            'value' => $this->_request->getParam('type'),
                             'type' => 'uri'
                             ), false);
                     $storeGraph->addStatement($name, $this->_privateConfig->saving->SelClassLabelUri, array (
-                            'value' => $params['typelabel'],
+                            'value' => $this->_request->getParam('typelabel'),
                             'type' => 'literal'
                             ), false);
                 } else {
                     //TODO gqb uses id - qb not... needed?
                     $storeGraph->addStatement($name, $this->_privateConfig->saving->IdUri, array (
-                            'value' => md5($json . $qdesc),
+                            'value' => $md5,
                             'type' => 'literal'
                             ), false);
                 }
@@ -416,7 +403,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 
                 $res = 'All OK';
             } else {
-                $res = 'Save failed. (Query with same title and patterns exists)';
+                $res = 'Save failed. (Query with same pattern exists)';
             }
         }
         $response->setBody($res);
@@ -546,4 +533,14 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
         return $newModel;
     }
 
+    protected function getQuery($uri){
+        $queryString = Erfurt_Sparql_SimpleQuery :: initWithString('SELECT *
+             WHERE {
+             <'.$uri.'> <' . $this->_privateConfig->saving->QueryUri . '> ?query
+             }');
+            $queryData =$this->_erfurt->getStore()->sparqlQuery($queryString);
+         if(isset($queryData[0])){
+             return $queryData[0]["query"];
+         }
+    }
 }
