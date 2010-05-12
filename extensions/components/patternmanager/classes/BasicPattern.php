@@ -12,20 +12,16 @@
 
 class BasicPattern {
     
-    private $_builtinFunctions       = array(
-    	'TEMPURI'
-    );
-    
     private $_varTypes               = array (
-        'RESOURCE',
-        'LITERAL',
-        'TEMP',
-        'GRAPH',
-        'LANG',
-        'DATATYPE',
-        'CLASS',
-        'PROPERTY',
-        'REGEXP'
+        'RESOURCE'   => 'uri',
+        'LITERAL'    => 'literal',
+        'TEMP'       => 'temp',
+        'GRAPH'      => false,
+        'LANG'       => false,
+        'DATATYPE'   => false,
+        'CLASS'      => 'uri',
+        'PROPERTY'   => 'uri',
+        'REGEXP'     => false
     );
     
     private $_label                  = '';
@@ -108,15 +104,15 @@ class BasicPattern {
      * 
      * @param $query
      */
-    public function addSelectQuery($query) {
-        $this->_selectquery[] = $query;
+    public function setSelectQuery($query) {
+        $this->_selectquery = $query;
     }
     
     /**
      * 
      * @return array of select queries
      */
-    public function getSelectQueries() {
+    public function getSelectQuery() {
         return $this->_selectquery;
     }
     
@@ -204,7 +200,7 @@ class BasicPattern {
         
         $this->_variables_descriptions[$name] = $desc;
         
-        if ( in_array($type,$this->_varTypes) ) {
+        if ( array_key_exists($type,$this->_varTypes) ) {
         
 	        if ($type === 'TEMP') {
 	            $this->_variables_temp[] = $name;
@@ -238,7 +234,7 @@ class BasicPattern {
     public function bindVariable($name, $value) {
     
         if ( array_key_exists($name, $this->_variables_free) ) {
-            $this->_variables_bound[$name] = array('value' => $value , 'type' => $this->_variables_free[$name]);
+            $this->_variables_bound[$name] = array('value' => $value , 'type' => $this->_varTypes[$this->_variables_free[$name]]);
         } else {
             throw new RuntimeException('Unknown Variable to bind in BasicPattern.');
         }
@@ -257,59 +253,57 @@ class BasicPattern {
     
     public function executeSelect() {
         
-	    foreach ($this->_selectquery as $wherePart) {
+	    $wherePart = $this->_selectquery;
 	    
-	        $query = 'SELECT * ';
+        $query = 'SELECT * ';
 	        
-	        /*
-	        foreach ($this->_variables_temp as $var) {
-	            $query .= '?' . $var . ' ';
-	        }
-	        */
-	        
-	        $wherePart = ' WHERE ' . $wherePart;
-	        
-	        foreach ($this->_variables_bound as $var => $value) {
-	            
-	            $valueStr = '';
-	            
-	            switch ($value['type']) {
-	                case 'RESOURCE' :
-	                    $valueStr .= '<' . $value['value'] . '>';
-	                    break;
-	                case 'LITERAL' :
-	                    $valueStr .= '"' . $value['value'] . '"';
-	                    break;
-	                default :
-	                    $valueStr .= '<' . $value['value'] .'>';
-	                    break;
-	            }
-	        
-	            $wherePart = str_replace(
-	                ' ' . $var . ' ',
-	                ' ' . $valueStr . ' ',
-	                $wherePart
-	            );
-	
-	        }
-	        
-	        foreach ($this->_variables_temp as $var) {
-	        
-	            $wherePart = str_replace(
-	                ' ' . $var . ' ',
-	                ' ?' . $var . ' ',
-	                $wherePart
-	            );
-	            
-	        }
-	        
-	        $query .= $wherePart;
-
-	        $result = $this->_engine->queryGraph($query);
-
-	        $this->_intermediate_result[] = $result;
-	        
+        /*
+        foreach ($this->_variables_temp as $var) {
+            $query .= '?' . $var . ' ';
         }
+        */
+        
+        $wherePart = ' WHERE ' . $wherePart;
+        
+        foreach ($this->_variables_bound as $var => $value) {
+            
+            $valueStr = '';
+            
+            switch ($value['type']) {
+                case 'RESOURCE' :
+                    $valueStr .= '<' . $value['value'] . '>';
+                    break;
+                case 'LITERAL' :
+                    $valueStr .= '"' . $value['value'] . '"';
+                    break;
+                default :
+                    $valueStr .= '<' . $value['value'] .'>';
+                    break;
+            }
+        
+            $wherePart = str_replace(
+                '%' . $var . '%',
+                ' ' . $valueStr . ' ',
+                $wherePart
+            );
+
+        }
+        
+        foreach ($this->_variables_temp as $var) {
+        
+            $wherePart = str_replace(
+                '%' . $var . '%',
+                ' ?' . $var . ' ',
+                $wherePart
+            );
+            
+        }
+        
+        $query .= $wherePart;
+
+        $result = $this->_engine->queryGraph($query);
+
+        $this->_intermediate_result = $result;
 	        
 	    return true;
     
@@ -332,122 +326,82 @@ class BasicPattern {
         
         foreach ($this->_updatequery as $qHash => $tPattern) {
             
-            $type = $tPattern['type'];
+            $type  = $tPattern['type'];
             
-            $parts = explode(' ', $tPattern['pattern']);
-
-            $found = false;
+            $parts = $this->parsePattern($tPattern['pattern']);
+                        
+            $mask = 0;
             
-            $activeResult = array();
-            
-            foreach ($this->_intermediate_result as $result) {
+            if ($this->checkTemp($parts[0])) {
+                $mask = $mask | 1;
+            }
                 
-                if ( 
-                    ( in_array($parts[0] , $result['head']['vars']) ||
-                      in_array($parts[1] , $result['head']['vars']) ||
-                      in_array($parts[2] , $result['head']['vars']) )
-                    &&
-                    $found
-                ) {
-                    throw new RuntimeException('found cross result set update pattern');
-                    return false;
-                } elseif (
-                    in_array($parts[0] , $result['head']['vars']) ||
-                    in_array($parts[1] , $result['head']['vars']) ||
-                    in_array($parts[2] , $result['head']['vars'])
-                ) {
-                    $found = true;
-                    $activeResult = $result;
-                } else {
-                    // do nothing
-                }
-                
+            if ($this->checkTemp($parts[1])) {
+                $mask = $mask | 2;
             }
             
-            $resultLoop = 0;
-            
-            $mode = 0;
-            
-            if ( $found && in_array($parts[0], $activeResult['head']['vars']) ) {
-                $resultLoop = $resultLoop | 1;
-            } elseif ( array_key_exists($parts[0], $this->_variables_bound) ) {
-                $parts[0] = $this->_variables_bound[$parts[0]];
-            } else {
-                if ( $parts[1][0] === '<' && $parts[1][strlen($parts[1]) - 1] === '>') {
-                    $parts[2] = array( 'value' => substr($parts[1], 1, strlen( $parts[1] ) - 2) , 'type' => 'uri' );
-                }
+            if ($this->checkTemp($parts[2])) {
+                $mask = $mask | 4;
             }
             
-            if ( $found && in_array($parts[1], $activeResult['head']['vars']) ) {
-                $resultLoop = $resultLoop | 2;
-            } elseif ( array_key_exists($parts[1], $this->_variables_bound) ) {
-                $parts[1] = $this->_variables_bound[$parts[1]];
-            } else {                
-                if ( $parts[1][0] === '<' && $parts[1][strlen($parts[1]) - 1] === '>') {
-                    $parts[1] = array( 'value' => substr($parts[1], 1, strlen( $parts[1] ) - 2) , 'type' => 'uri' );
-                }
-            }
+            for ($i = 0; $i <sizeof($parts); $i++) {
 
-            if ( $found && in_array($parts[2], $activeResult['head']['vars']) ) {
-                $resultLoop = $resultLoop | 4;
-            } elseif ( array_key_exists($parts[2], $this->_variables_bound) ) {
-                $parts[2] = $this->_variables_bound[$parts[2]];
-            } else {
-                if ( $parts[2][0] === '"' && $parts[2][strlen($parts[2]) - 1] === '"') {
-                    $parts[2] = array( 'value' => substr($parts[2], 1, strlen( $parts[2] ) - 2) , 'type' => 'literal' );
-                } elseif ($parts[2][0] === '<' && $parts[2][strlen($parts[2]) - 1] === '>') {
-                    $parts[2] = array( 'value' => substr($parts[2], 1, strlen( $parts[2] ) - 2) , 'type' => 'uri' );
-                } else {
-                    // do nothing
-                }
             }
             
-            switch ($resultLoop) {
-                case 0:
-                    $stmt[$type][ $parts[0]['value'] ][ $parts[1]['value'] ][] = $parts[2];
-                    break;
-                case 1:
-                    foreach ($activeResult['results']['bindings'] as $row) {
+            $func = new PatternFunction();
+            
+            if ($mask) {
+                foreach ($this->_intermediate_result['results']['bindings'] as $row) {
+                    
+                    if ($mask & 1) {
+                        
+                        if ($parts[0]['type'] === 'function') {
+                            $subject = $func->executeFunction($parts[0],$row, true);
+                        } else {
+                            $subject = $row[$parts[0]['value']]['value'];
+                        }
+                        
+                    } else {
+                        if ($parts[0]['type'] === 'function') { 
+                            $subject = $func->executeFunction($parts[0],null,true);
+                        } else {
+                            $subject = $parts[0]['value'];
+                        }
+                    }
+                    
+                    if ($mask & 2) {
+                        
+                        if ($parts[1]['type'] === 'function') {
+                            $predicate = $func->executeFunction($parts[1],$row, true);
+                        } else {
+                            $predicate = $row[$parts[1]['value']]['value'];
+                        }
+                        
+                    } else {
+                        $predicate = $parts[1]['value'];
+                    }
+                    
+                    if ($mask & 4) {
+                        
+                        if ($parts[2]['type'] === 'function') {
+                            $object = $func->executeFunction($parts[2],$row);
+                        } else {
+                            $object = $row[$parts[2]['value']];
+                        }
+                        
+                    } else {
                         $object = $parts[2];
-                        $stmt[$type][ $row[$parts[0]]['value'] ][ $parts[1]['value'] ][] = $object;
                     }
-                    break;
-                case 2:
-                    foreach ($activeResult['results']['bindings'] as $row) {
-                        $stmt[$type][ $parts[0]['value'] ][ $row[$parts[1]]['value'] ][] = $parts[2];
-                    }
-                    break;
-                case 3:
-                    foreach ($activeResult['results']['bindings'] as $row) {
-                        $stmt[$type][ $row[$parts[0]]['value'] ][ $row[$parts[1]]['value'] ][] = $parts[2];
-                    }
-                    break;
-                case 4:
-                    foreach ($activeResult['results']['bindings'] as $row) {
-                        $subject = $parts[0]['value'];
-                        $stmt[$type][ $subject ][ $parts[1]['value'] ][] = $row[$parts[2]];
-                    }
-                    break;
-                case 5:
-                    foreach ($activeResult['results']['bindings'] as $row) {
-                        $stmt[$type][ $row[$parts[0]]['value'] ][ $parts[1]['value'] ][] = $row[$parts[2]];
-                    }
-                    break;
-                case 6:
-                    foreach ($activeResult['results']['bindings'] as $row) {
-                        $stmt[$type][ $parts[0]['value'] ][ $row[$parts[1]]['value'] ][] = $row[$parts[2]];
-                    }
-                    break;
-                case 7:
-                    foreach ($activeResult['results']['bindings'] as $row) {
-                        $stmt[$type][ $row[$parts[0]]['value'] ][ $row[$parts[1]]['value'] ][] = $row[$parts[2]];
-                    }
-                    break;
+
+                    $stmt[$type][$subject][$predicate][] = $object;
+                }
+            } else {
+                $stmt[$type][$parts[0]['value']][$parts[1]['value']][] = $parts[2];
             }
-            
+  
         }
-        
-        return $this->_engine->updateGraph($stmt['insert'],$stmt['delete']);
+        var_dump($stmt);
+        //return $this->_engine->updateGraph($stmt['insert'],$stmt['delete']);
         
     }
     
@@ -476,9 +430,7 @@ class BasicPattern {
             foreach ($this->getUpdateQueries() as $pat) {
                 $data['U'][] = $pat;
             }
-            foreach($this->getSelectQueries() as $pat) {
-                $data['S'][] = $pat;
-            }
+            $data['S'][] = $this->getSelectQuery();
             
             sort($data['V']);
             sort($data['U']);
@@ -492,6 +444,165 @@ class BasicPattern {
             } else {
                 return $data;
             }
+    }
+    
+    /**
+     * 
+     * @param unknown_type $pattern
+     * @return array
+     */
+    private function parsePattern($pattern) {
+        
+        $matches = array();
+        preg_match_all('/\S+/i',$pattern,$matches);
+        $parts = array();
+
+        foreach ($matches[0] as $part) {
+            if ( $part[0] === '"' && $part[strlen($part) - 1] === '"') {
+                $parts[] = array( 'value' => substr($part, 1, strlen( $part ) - 2) , 'type' => 'literal' );
+            } elseif ( $part[0] === '<' && $part[strlen($part) - 1] === '>') {
+                $parts[] = array( 'value' => substr($part, 1, strlen( $part ) - 2) , 'type' => 'uri' );
+            } elseif (preg_match('/^[A-Z]+\(.*\)$/i',$part) ) {
+                $parts[] = $this->builtinFunction($part,$pattern);
+            } elseif ( $part[0] === '%' && $part[strlen($part) - 1] === '%' ) {
+                $current = substr($part, 1, strlen( $part ) - 2);
+                if (in_array($current, $this->_variables_temp)) {
+                    $var = array('value' => $current, 'type' => 'temp');
+                    $parts[] = $var;
+                } elseif (array_key_exists($current,$this->_variables_bound)) {
+                    $parts[] = $this->_variables_bound[$current];
+                } else {
+                    $parts[] = array( 'value' => $current, 'type' => 'variable');
+                }
+            } else {
+                throw new RuntimeException('undefined entity: ' . $current);
+            }
+        }
+        
+        return $parts;
+        
+    }
+    
+    private function builtinFunction($part,$origin) {
+        $found = false;
+        $paramStart = -1;
+        $paramEnd   = -1;
+            
+        $name = '';
+        $value = '';
+  
+        for ($i = 0; $i < strlen($part); $i++) {
+            if ($part[$i] === '(' && $paramStart < 0) {
+                $paramStart = $i;
+
+            }
+            if ($part[strlen($part) - $i - 1] === ')' && $paramEnd < 0) {
+                $paramEnd = strlen($part) - $i - 1;
+            }
+
+        }
+
+        if ($paramStart > 0 && $paramEnd > 0) {
+            
+            $name = strtolower(substr($part,0,$paramStart ));
+            $value = substr($part,$paramStart + 1,$paramEnd - $paramStart - 1);
+        }
+
+        $depth = 0;
+        $escaped = false;
+        $split = array();
+        
+        for ($i = 0; $i < strlen($value); $i++) {
+            
+            if (!$escaped) {
+                if ($value[$i] === '"') {
+                    $escaped = true;
+                }
+            } else {
+                if ( $value[$i] === '"' && $value[$i-1] !== '\\') {
+                    $escaped = false;
+                } else {
+                    continue;
+                }
+            }
+            
+            if ($value[$i] === '(') {
+                $depth++;
+            }
+            if ($value[$i] === ')') {
+                $depth--;
+            }
+            if ( ($depth === 0) && $value[$i] === ',') {
+                $split[] = $i;
+            }
+            
+        }
+        
+        $split[] = strlen($value);
+
+        
+        $func = new PatternFunction();
+        
+        if ( !$func->isFunctionAvailable($name) ) {
+            throw new RuntimeException('BasicPattern invalid builtinFunction name');
+        }
+        
+        $last = -1;
+        $params = array();
+        
+        foreach ($split as $i) {
+            $last ++;
+            $current = substr($value,$last,$i - $last);
+            $last = $i;
+            if ( $current[0] === '"' && $current[strlen($current) - 1] === '"' ) {
+                $params[] = array( 'value' => substr($current, 1, strlen( $current ) - 2) , 'type' => 'literal' );
+            } elseif ( $current[0] === '<' && $current[strlen($current) - 1] === '>') {
+                $params[] = array( 'value' => substr($current, 1, strlen( $current ) - 2) , 'type' => 'uri' );
+            } elseif ( preg_match('/^[A-Z]+\(.*\)$/i',$current) ) {
+                $params[] = $this->builtinFunction($current,$origin);
+            } elseif ( $current[0] === '%' && $current[strlen($current) - 1] === '%' ) {
+                $current = substr($current, 1, strlen( $current ) - 2);
+                if (in_array($current, $this->_variables_temp)) {
+                    $var = array('value' => $current, 'type' => 'temp');
+                    $params[] = $var;
+                } elseif (array_key_exists($current,$this->_variables_bound)) {
+                    $params[] = $this->_variables_bound[$current];
+                } else {
+                    $params[] = array( 'value' => $current, 'type' => 'variable');
+                }
+            } else {
+                throw new RuntimeException('undefined entity: ' . $current);
+            }
+        }
+        
+
+  
+        if ($paramStart === ($paramEnd - 1) ) {
+            return array('type' => 'function', 'name' => $name, 'param' => array());
+        } else {
+            return array('type' => 'function', 'name' => $name, 'param' => $params);
+        }
+  
+    }
+    
+    private function checkTemp($entity) {
+        if ($entity['type'] !== 'temp' && $entity['type'] !== 'function') {
+            return false;
+        } else {
+            if ($entity['type'] === 'temp') {
+                return true;
+            }
+            if ($entity['type'] === 'function') {
+                foreach ($entity['param'] as $param) {
+                    if ($this->checkTemp($param)) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+        }
+
     }
 
 }

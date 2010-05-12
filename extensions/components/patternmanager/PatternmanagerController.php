@@ -12,6 +12,7 @@
 require_once 'classes/BasicPattern.php';
 require_once 'classes/ComplexPattern.php';
 require_once 'classes/PatternEngine.php';
+require_once 'classes/PatternFunction.php';
 
 class PatternmanagerController extends OntoWiki_Controller_Component {
     
@@ -338,7 +339,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             }
             
             foreach ($selects as $select) {
-                $basicPattern->addSelectQuery($select);
+                $basicPattern->setSelectQuery($select);
             }
             
             foreach ($updates['DELETE'] as $update) {
@@ -598,7 +599,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             
             if ( $types[$s] === $schema['SelectQuery'] ) {
                 if ( array_key_exists(EF_RDFS_LABEL, $data)) {
-                    $basicPattern->addSelectQuery($data[EF_RDFS_LABEL][0]);
+                    $basicPattern->setSelectQuery($data[EF_RDFS_LABEL][0]);
                 }
             }
             

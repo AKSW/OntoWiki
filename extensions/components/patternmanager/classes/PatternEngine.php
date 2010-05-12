@@ -278,7 +278,8 @@ class PatternEngine {
             }
             
             // get selection query for BasicPattern
-            $select = $basicPattern->getSelectQueries();
+            $select = array();
+            $select[] = $basicPattern->getSelectQuery();
 
             foreach ($select as $query) {
                 
@@ -556,6 +557,10 @@ class PatternEngine {
 
         $info = $this->_store->sparqlQuery($query);
         
+        if (empty($info)) {
+            throw new RuntimeException('no data found for ComplexPattern');
+        }
+        
         foreach ($info as $result) {
             
             if ($result['P'] === EF_RDF_TYPE) {
@@ -566,7 +571,7 @@ class PatternEngine {
             $resources[md5($result['S'])] = $result['S'];
             
         }
-        
+
         $hash = array_search($schema['ComplexPattern'], $types);
         
         $complexPattern = new ComplexPattern();
@@ -622,7 +627,7 @@ class PatternEngine {
             }
 
             foreach ($bp[$schema['hasSelectQuery']] as $var) {
-                $basicPattern->addSelectQuery($var[EF_RDFS_LABEL][0]);
+                $basicPattern->setSelectQuery($var[EF_RDFS_LABEL][0]);
             }
             
             // check if there are pattern update queries (init empty else)
