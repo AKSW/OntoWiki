@@ -872,6 +872,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
      */ 
     public function configAction()
     {
+        if (!(boolean)$this->_privateConfig->sync->enabled) {
+            $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
+            echo '400 Bad Request';
+            exit;
+        }
+        
         OntoWiki_Navigation::disableNavigation();
         
         // Get Request: Show the user the existing data or give him default values.
@@ -1055,6 +1061,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
      */
     public function syncAction()
     {
+        if (!(boolean)$this->_privateConfig->sync->enabled) {
+            $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
+            echo '400 Bad Request';
+            exit;
+        }
+        
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
@@ -1147,6 +1159,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
      */
     public function modifiedAction()
     {
+        if (!(boolean)$this->_privateConfig->sync->enabled) {
+            $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
+            echo '400 Bad Request';
+            exit;
+        }
+        
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
