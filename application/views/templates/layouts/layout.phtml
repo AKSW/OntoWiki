@@ -110,6 +110,7 @@
                             <form action="<?php echo $this->formActionUrl ?>" 
                                   method="<?php echo $this->formMethod ?>" 
                                   <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?> 
+                                  <?php if ($this->has('formId')) echo 'id="' . $this->formId . '"' ?> 
                                   <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?> 
                                   <?php if ($this->has('formClass')) echo 'class="' . $this->formClass . '"' ?>>
                                   <?php if ($this->has('redirectUrl')): ?>
