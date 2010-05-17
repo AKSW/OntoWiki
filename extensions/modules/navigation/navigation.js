@@ -180,6 +180,8 @@ function navigationEvent (navEvent, eventParameter) {
                     setup['state']['showImplicit'] = setup['config']['showImplicitElements'];
                     if(setup['state']['showImplicit'] == true){
                         $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
+                    }else{
+                        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
                     }
                 } else {
                     setup['state']['showImplicit'] = true;
