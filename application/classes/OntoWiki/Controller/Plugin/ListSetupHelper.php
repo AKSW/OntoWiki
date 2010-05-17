@@ -73,7 +73,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 isset($request->init) // force a rebuild
             ) {
                 // instantiate model
-                $instances   = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
+                $instances = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
             } else {
                 // use the object from the session
                 $instances = $session->instances;
@@ -86,13 +86,14 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 if (get_magic_quotes_gpc()) {
                     // add slashes for unicode chars in json
                     $string = str_replace('\\u','\\\\u',$string);
+                    //$string = str_replace('\\u000a','', $string);
                     $string = stripslashes($string);
                 }
                 /* ---- */
                 
                 return json_decode($string);
             }
-
+            //echo $request->instancesconfig; exit;
             //a shortcut for s param
             if(isset($request->s)){
                 if(isset($request->instancesconfig)){
@@ -186,6 +187,18 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                     NavigationHelper::getInstancesTriples($filter->uri, $filter->cnav),
                                     isset($filter->id) ? $filter->id : null
                                 );
+                            } else if($filter->mode == 'query') {
+                                try{
+                                    $query = Erfurt_Sparql_Query2::initFromString($filter->query);
+                                    if(!($query instanceof  Exception)){
+                                        $instances->addTripleFilter(
+                                            $query->getWhere()->getElements(),
+                                            isset($filter->id) ? $filter->id : null
+                                        );
+                                    }
+                                } catch (Erfurt_Sparql_ParserException $e){
+                                    $ontoWiki->appendMessage("the query could not be parsed");
+                                }
                             }
                         } else {
                             $instances->removeFilter($filter->id);

@@ -64,8 +64,8 @@ class GraphicalquerybuilderController extends OntoWiki_Controller_Component {
 			));
 		}
 		OntoWiki_Navigation :: register('queryeditor', array (
-			'controller' => "model",
-			'action' => "query",
+			'controller' => "querybuilding",
+			'action' => "editor",
 			'name' => "Query Editor",
 			'position' => 1,
 			'active' => true

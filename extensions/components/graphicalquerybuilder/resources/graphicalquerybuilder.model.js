@@ -236,20 +236,24 @@ GQBrdfClass.prototype.sortPropArrayByOrder = function(arrayToSort) {
  */
 GQBrdfClass.prototype.findAnyPropertyByUri = function(uri) {
 	for (var i = 0; i < this.properties.length; i++) {
-		if (this.properties[i].uri == uri)
-			return this.properties[i];
+		if (this.properties[i].uri == uri){
+                        return this.properties[i];
+                }
 	}
 	for (var i = 0; i < this.nonModelConformProperties.length; i++) {
-		if (this.nonModelConformProperties[i].uri == uri)
-			return this.nonModelConformProperties[i];
+		if (this.nonModelConformProperties[i].uri == uri){
+                        return this.nonModelConformProperties[i];
+                }
 	}
 	for (var i = 0; i < this.outgoingLinks.length; i++) {
-		if (this.outgoingLinks[i].uri == uri)
-			return this.outgoingLinks[i];
+		if (this.outgoingLinks[i].uri == uri){
+                        return this.outgoingLinks[i];
+                }
 	}
 	for (var i = 0; i < this.nonModelConformLinks.length; i++) {
-		if (this.nonModelConformLinks[i].uri == uri)
-			return this.nonModelConformLinks[i];
+		if (this.nonModelConformLinks[i].uri == uri){
+                        return this.nonModelConformLinks[i];
+                }
 	}
 	return null;
 };
