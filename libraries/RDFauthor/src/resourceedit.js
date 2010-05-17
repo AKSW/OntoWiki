@@ -49,7 +49,13 @@ ResourceEdit.prototype.init = function ()
     } else {
         $('#resource-name-' + this.id).autocomplete(
             function(term, cb) {
-                return ResourceEdit.search(term, cb, false, instance.graph, instance.predicate);
+                var ret = ResourceEdit.search(term, cb, false, instance.graph, instance.predicate);
+                
+                if (undefined === ret) {
+                    $('#resource-value-' + this.id).val($('#resource-name-' + this.id).val());
+                }
+                
+                return ret;
             },
             {
                 minChars: 3,
@@ -124,7 +130,7 @@ ResourceEdit.prototype.onSubmit = function()
     var newResourceValue = $('#resource-value-' + this.id).val();
     
     // Widget added an nothing entered
-    if (newResourceValue == undefined) {
+    if (this.object == '' && newResourceValue == undefined) {
         return true;
     }
     

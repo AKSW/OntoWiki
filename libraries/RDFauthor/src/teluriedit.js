@@ -71,7 +71,7 @@ TelURIEdit.prototype.onSubmit = function()
     var newResourceValue = TelURIEdit.label2uri( $('#phone-value-' + this.id).val() );
     
     // Widget just added and nothing entered
-    if (newResourceValue == undefined) {
+    if (this.object == '' && newResourceValue == undefined) {
         return true;
     }
 
