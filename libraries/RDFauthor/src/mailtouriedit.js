@@ -72,7 +72,7 @@ MailURIEdit.prototype.onSubmit = function()
     var newResourceValue = MailURIEdit.label2uri( $('#mail-value-' + this.id).val() );
     
     // Widget just added and nothing entered
-    if (newResourceValue == undefined) {
+    if (this.object == '' && newResourceValue == undefined) {
         return true;
     }
 
