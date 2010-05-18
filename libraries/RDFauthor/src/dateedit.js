@@ -42,7 +42,7 @@ DateEdit.prototype.onSubmit = function () {
     var newValue = $('#date-edit-' + this.id).val();
     
     // Widget just added and nothing entered
-    if (newValue == undefined) {
+    if (this.object == '' && newValue == undefined) {
         return true;
     }
     
