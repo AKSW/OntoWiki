@@ -29,4 +29,5 @@ rdf.hasSelectQuery         = "http://ns.ontowiki.net/SysOnt/EvolutionPattern/has
 rdf.updatePatternObject    = "http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternObject"
 rdf.updatePatternPredicate = "http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternPredicate"
 rdf.updatePatternSubject   = "http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternSubject"
+rdf.updatePatternGraph     = "http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternGraph"
 rdf.sequenceId             = "http://ns.ontowiki.net/SysOnt/EvolutionPattern/sequenceId"

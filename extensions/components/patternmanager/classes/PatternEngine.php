@@ -22,7 +22,7 @@ class PatternEngine {
     
     private $_store;
     
-    private $_graph;
+    private $_defaultGraph;
     
     private $_versioning;
     
@@ -94,7 +94,7 @@ class PatternEngine {
      */
     public function setDefaultGraph($graph) {
     
-        $this->_graph = (string) $graph;
+        $this->_defaultGraph = (string) $graph;
         
     }
     
@@ -103,7 +103,7 @@ class PatternEngine {
      */
     public function getDefaultGraph() {
     
-        return $this->_graph;
+        return $this->_defaultGraph;
         
     }
     
@@ -123,7 +123,7 @@ class PatternEngine {
         }
         
         $vSpec = array(
-        	'modeluri'      => $this->_graph,
+        	'modeluri'      => $this->_defaultGraph,
             'type'          => 3000,
             'resourceuri'   => '*'
         );
@@ -144,9 +144,13 @@ class PatternEngine {
      */
     public function queryGraph($selectQuery) {
 
-        // add from for query (dirrrty)
-        $selectQuery = str_replace('WHERE','FROM <' . $this->_graph . '> WHERE', $selectQuery);
-        
+        if (preg_match('/^\s*SELECT\s+(\S+\s+)*(FROM\s+\S+)+\s+WHERE\s+{.*}\s*$/i',$selectQuery) === 0 ) {
+            // add from for query (dirrrty)
+            $selectQuery = str_replace('WHERE','FROM <' . $this->_defaultGraph . '> WHERE', $selectQuery);
+        } else {
+            // do nothing
+        }
+
         $result = $this->_store->sparqlQuery($selectQuery, array('result_format' => 'extended'));
         
         return $result;
@@ -158,13 +162,29 @@ class PatternEngine {
      * @param $insert
      * @param $delete
      */
-    public function updateGraph($insert, $delete) {
+    public function updateGraph($insert, $delete, $graph = null) {
 
-        $result = $this->_store->addMultipleStatements($this->_graph, $insert);
+        if ($graph !== null) {
+            if (!$this->_store->isModelAvailable($graph)) {
+                throw new RuntimeException('Evolution on unavailable graph');
+                return false;
+            } else {
+                $graph = (string) $graph;
+            }
+        } else {
+            if ($this->_defaultGraph === null) {
+                throw new RuntimeException('No default graph defined for evolution');
+                return false;
+            } else {
+                $graph = $this->defaultGraph;
+            }
+        }
+
+        $resultInsert = $this->_store->addMultipleStatements($graph, $insert);
         
-        $result = $this->_store->deleteMultipleStatements($this->_graph, $delete);
+        $resultDelete = $this->_store->deleteMultipleStatements($graph, $delete);
         
-        return true;
+        return (boolean) ($resultInsert && $resultDelete);
         
     }
     
@@ -303,7 +323,11 @@ class PatternEngine {
 
             // handle update part
             foreach ($update as $pattern ) {
-                $parts = explode(' ',$pattern['pattern']);
+                
+                $parts = array();
+                preg_match_all('/\S+/i',$pattern['pattern'],$parts);
+                
+                $parts = $parts[0];
                 
                 $insertLabel = $pattern['pattern'] . ' - ' . $pattern['type'];
                 $insertUri = $schema['UpdateQuery_Insert'] . '/' . md5($insertLabel);
@@ -331,6 +355,15 @@ class PatternEngine {
                         array('type' => 'literal' , 'value' => $parts[2])
                     ) ,
                 );
+                
+                if (sizeof($parts) == 4 ) {
+                    $stmt[ $insertUri ][ $schema['updatePatternGraph'] ][] =
+                        array(
+                        	'type' => 'literal' ,
+                        	'value' => $parts[3]
+                        );
+                }
+                
                 $stmt[ $patternUri ][ $schema['hasUpdateQuery'] ][] = 
                     array( 'type' => 'uri' , 'value' => $insertUri);
             }
@@ -646,9 +679,14 @@ class PatternEngine {
                     default:
                         break;
                 }
-                $query  = $var[$schema['updatePatternSubject']][0] . ' ';
-                $query .= $var[$schema['updatePatternPredicate']][0] . ' ';
-                $query .= $var[$schema['updatePatternObject']][0];
+                $query  = current($var[$schema['updatePatternSubject']]);
+                $query .= ' ' . current($var[$schema['updatePatternPredicate']]);
+                $query .= ' ' . current($var[$schema['updatePatternObject']]);
+                
+                if (array_key_exists($schema['updatePatternGraph'],$var)) {
+                    $query .= ' ' . current($var[$schema['updatePatternGraph']]);
+                }
+                
                 $basicPattern->addUpdateQuery($query,$type);
             }
 

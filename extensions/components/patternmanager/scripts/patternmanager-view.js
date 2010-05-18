@@ -84,6 +84,7 @@ function addPMselect(p, c, select) {
     table = $('div#subpattern-' + p + ' > table:eq(1) > tbody');
     table.append('<tr>' + input.html() + '</tr>');
     table.find('tr:eq(' + varcount + ') input').val(select);
+    $('div#subpattern-' + p + ' > table:eq(1) > thead a').hide();
     
     reindexPM();
     
@@ -92,6 +93,7 @@ function addPMselect(p, c, select) {
 function delPMselect(p,c) {
     
     $('div#subpattern-' + p + ' > table').eq(1).find('tbody > tr').eq(c - 1).remove();
+    $('div#subpattern-' + p + ' > table:eq(1) > thead a').show();
     
     reindexPM();
 }
@@ -140,6 +142,9 @@ function loadPMpattern(uri,id) {
     
     $.getJSON(urlBase + 'patternmanager/loadpattern', { uri: uri , type: 'rdf'}, function(data) {
         current = data;
+
+        $('div#subpattern-' + id + ' input#patternlabel-' + id).val(data.label);
+        $('div#subpattern-' + id + ' input#patterndesc-' + id).val(data.desc);
         for (j in current['V']) {
             addPMvar(id,null,current['V'][j]['name'],current['V'][j]['type'],current['V'][j]['desc']);
         }
@@ -174,17 +179,17 @@ function reindexPM() {
                         mode : 'view', vartype : 'BasicPattern' 
                     },
                     formatItem: function(row,pos,max,str) {
-                        data = $.secureEvalJSON(row);
+                        data = $.secureEvalJSON(row[0]);
                         return data[1];
                     },
                     formatResult: function(row,pos,max) {
-                        data = $.secureEvalJSON(row);
+                        data = $.secureEvalJSON(row[0]);
                         return data[1];
                     }
                 }
             );
             node.result( function(event, item) {
-                data = $.secureEvalJSON(item);
+                data = $.secureEvalJSON(item[0]);
                 bp = $('div#patternmanager > div#subpattern-' + i);
                 //
                 if ( confirm('Load this pattern? (will overwrite current)') ) {

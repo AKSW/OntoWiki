@@ -67,4 +67,12 @@ class PatternFunction {
         
         return $ret;
     }
+    
+    private function callGetprefixeduri ($options) {
+        $prefix = $options[0];
+        $matches = array();
+        preg_match_all('/([A-Z]|[a-z]|[0-9]|%|[-_])+$/',$options[1],$matches,PREG_PATTERN_ORDER);
+
+        return array( 'value' => $prefix . $matches[0][0] );
+    }
 }

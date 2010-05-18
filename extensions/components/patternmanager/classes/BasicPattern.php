@@ -256,20 +256,27 @@ class BasicPattern {
 	    $wherePart = $this->_selectquery;
 	    
         $query = 'SELECT * ';
-	        
+
         /*
         foreach ($this->_variables_temp as $var) {
             $query .= '?' . $var . ' ';
         }
         */
         
-        $wherePart = ' WHERE ' . $wherePart;
+        if (preg_match('/s*(FROM\s+\S+\s+)*WHERE\s+\{.*\}/i',$wherePart) !== 0) {
+            // do nothing
+        } else {
+            $wherePart = ' WHERE ' . $wherePart;
+        }
         
         foreach ($this->_variables_bound as $var => $value) {
             
             $valueStr = '';
             
             switch ($value['type']) {
+                case 'GRAPH' :
+                    $valueStr .= '<' . $value['value'] . '>';
+                    break;
                 case 'RESOURCE' :
                     $valueStr .= '<' . $value['value'] . '>';
                     break;
@@ -310,21 +317,23 @@ class BasicPattern {
     }
     
     /**
-     * Executes data update operations for this pattern by using calling the engine with updateGraph($ins, $del)
+     * Executes data update operations for this pattern by using calling the engine
+     * with updateGraph($insert, $delete, $graph (optional))
      * 
      * @see PatternEngine::updateGraph()
      */
     public function executeUpdate() {
+              
+        // assume boolean true return
+        $return = true;
 
         if ( empty($this->_intermediate_result) && !$this->executeSelect() ) {
-            
             return false;
-            
         }
         
-        $stmt = array('insert' => array(), 'delete' => array());
-        
         foreach ($this->_updatequery as $qHash => $tPattern) {
+            
+            $stmt = array('insert' => array(), 'delete' => array());
             
             $type  = $tPattern['type'];
             
@@ -344,8 +353,10 @@ class BasicPattern {
                 $mask = $mask | 4;
             }
             
-            for ($i = 0; $i <sizeof($parts); $i++) {
-
+            if (sizeof($parts) == 4) {
+                $graph = $parts[3]['value'];
+            } else {
+                $graph = null;
             }
             
             $func = new PatternFunction();
@@ -398,10 +409,17 @@ class BasicPattern {
             } else {
                 $stmt[$type][$parts[0]['value']][$parts[1]['value']][] = $parts[2];
             }
+            
+            $result = $this->_engine->updateGraph($stmt['insert'],$stmt['delete'],$graph);
+            
+            // set return to false if any non positive results occured
+            if ($result != true) {
+                $return = false;
+            }
   
         }
-        var_dump($stmt);
-        //return $this->_engine->updateGraph($stmt['insert'],$stmt['delete']);
+
+        return $return;
         
     }
     

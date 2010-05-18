@@ -129,54 +129,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         $this->view->data = $list;
         
-        /*
-        $store = $this->_erfurt->getStore();
-        
-        $configModel = $this->_privateConfig->configModel;
-        $className   = $this->_privateConfig->className;
-        $hasJson     = $this->_privateConfig->hasJson;
-        
-        $query = new Erfurt_Sparql_Query2();
-        $query->addFrom($configModel);
-        $query->addTriple(
-            new Erfurt_Sparql_Query2_Var('pattern'),
-            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
-            new Erfurt_Sparql_Query2_IriRef($className)
-        );
-        $query->addTriple(
-            new Erfurt_Sparql_Query2_Var('pattern'),
-            new Erfurt_Sparql_Query2_IriRef(EF_RDFS_LABEL),
-            new Erfurt_Sparql_Query2_Var('label')
-        );
-        
-        $result  = array();
-        $count   = 0;
-        $nrArray = array();
-        
-        foreach ($store->sparqlQuery($query,array(STORE_USE_AC => false)) as $row) {
-            
-            if ( !array_key_exists($row['pattern'],$nrArray) ) {
-                $result[++$count]['uri'] = $row['pattern'];
-                $nrArray[$row['pattern']] = $count;
-            }
-            
-            if ( $row['P'] === EF_RDFS_LABEL ) {
-                $result[$nrArray[$row['pattern']]]['label'] = $row['O'];
-            }
-
-            $execUrl = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'exec'));
-            $execUrl->setParam('pattern', $row['pattern']);
-            $result[$nrArray[$row['pattern']]]['exec_url'] = $execUrl;
-                
-            $viewUrl = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'view'));
-            $viewUrl->setParam('pattern', $row['pattern']);
-            $result[$nrArray[$row['pattern']]]['view_url'] = $viewUrl;
-
-        }
-        
-        $this->view->data = $result;
-        */
-        
     }
     
     /**
@@ -195,7 +147,10 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         );
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
         
-        $url = new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'save'));
+        $url = new OntoWiki_Url(
+            array('controller' => 'patternmanager', 'action' => 'save'),
+            array()
+        );
 
         //$this->view->placeholder('main.window.title')->set($windowTitle);
 
@@ -305,7 +260,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             if ( array_key_exists('selectpattern', $pattern) ) {
                 foreach ($pattern['selectpattern'] as $s => $select) {
                     $selects[$pNr] = $select;
-                    if (preg_match ('/^\{(.+)\}$/',$select) === 0 )  {
+                    if (preg_match ('/^(((\s*FROM\s+\S+)+\s+WHERE\s+)|(\s*WHERE\s+)|\s*)\{.+\}$/',$select) === 0 )  {
                         $error[] = 'selectpattern-' . $pNr . '-' . $s;
                     }
                 }
@@ -318,7 +273,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             if ( array_key_exists('insertpattern', $pattern) ) {
                 foreach ($pattern['insertpattern'] as $n => $pat) {
                     $updates['INSERT'][$n] = $pattern['insertpattern'][$n];
-                    if (preg_match ('/^(\s*)(\S+)(\s+)(\S+)(\s+)(\S+)(\s*)$/',$pat) === 0) {
+                    if (preg_match ('/^\s*\S+\s+\S+\s+\S+((\s*)|(\s+\S+\S*))$/',$pat) === 0) {
                         $error[] = 'insertpattern-' . $pNr . '-' . $n;
                     }
                 }
@@ -330,7 +285,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             if ( array_key_exists('deletepattern', $pattern) ) {
                 foreach ($pattern['deletepattern'] as $n => $pat) {
                     $updates['DELETE'][$n] = $pattern['deletepattern'][$n];
-                    if (preg_match ('/^(\s*)(\S+)(\s+)(\S+)(\s+)(\S+)(\s*)$/',$pat) === 0) {
+                    if (preg_match ('/^\s*\S+\s+\S+\s+\S+((\s*)|(\s+\S+\S*))$/',$pat) === 0) {
                         $error[] = 'deletepattern-' . $pNr . '-' . $n;
                     }
                 }
@@ -383,7 +338,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             
         $complexPattern->setLabel($label);
         $complexPattern->setDescription($description);
-        
+
         if (empty($error)) {
             $this->_engine->saveToStore($complexPattern);
         } else {
@@ -399,7 +354,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $url->setParam('action','view');
             $url->setParam('json_pattern', $json);
             $url->setParam('error_pattern', json_encode($error));
-            
             $this->_redirect($url);
         }
     }
@@ -462,7 +416,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 				        }
 	                break;
 	            case 'LITERAL':
-			        $sparqlQuery .=  $sparqlQuery . '{ 
+			        $sparqlQuery =  'SELECT DISTINCT ?entity WHERE { 
 			        	?s ?p ?entity . 
 			        	FILTER (
 			        		isLiteral(?entity) &&
@@ -502,7 +456,14 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 			            $ret[] = $value['entity'];
 			        }
 	                break;
-	                
+	            case 'GRAPH':
+	                $models = array_keys($this->_erfurt->getStore()->getAvailableModels());
+	                for ($i = 0; $i < sizeof($models) && sizeof($ret) < $limit; $i++) {
+	                    if (preg_match('/' . $query . '/i',$models[$i]) !== 0 ) {
+	                        $ret[] = $models[$i];
+	                    }
+	                }
+	                break;
 	            default:
 	                break;
 	        }
