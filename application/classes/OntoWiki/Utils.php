@@ -162,7 +162,7 @@ class OntoWiki_Utils
 				}
 			}
 		} else {
-			throw new Excepton('Error while converting time string.');
+			throw new Exception('Error while converting time string.');
 		}
 		
 		// show e.g. 'moments ago' if time is less than one minute

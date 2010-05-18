@@ -108,7 +108,12 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
         $wrapperRegistry   = Erfurt_App::getInstance()->getWrapperRegistry();
         $activeWrapperList = $wrapperRegistry->listActiveWrapper();
-        $syncConfigList    = $this->_listSyncConfigs();
+        
+        if ((boolean)$this->_privateConfig->sync->enabled) {
+            $syncConfigList = $this->_listSyncConfigs();
+        } else {
+            $syncConfigList = array(); 
+        }
         
         $uri      = (string)$resource;
         $modelUri = (string)$model;
@@ -163,19 +168,21 @@ class DatagatheringPlugin extends OntoWiki_Plugin
             }
             
             // Configure for sync entry.
-            $configUrl = $owApp->config->urlBase . 'datagathering/config?uri=' . urlencode($uri) .
-                '&wrapper=' . urlencode($wrapperName);
-                
-            if ($event->isModel) {
-                $configUrl .= '&m=' . urlencode($uri);
-            }
-            
-            $message = $translate->_('Configure Sync with %1$s');
-            
-            $menu->appendEntry(
-                sprintf($message, $wrapperInstance->getName()), 
-                $configUrl
-            );
+            if ((boolean)$this->_privateConfig->sync->enabled) {
+                $configUrl = $owApp->config->urlBase . 'datagathering/config?uri=' . urlencode($uri) .
+                    '&wrapper=' . urlencode($wrapperName);
+
+                if ($event->isModel) {
+                    $configUrl .= '&m=' . urlencode($uri);
+                }
+
+                $message = $translate->_('Configure Sync with %1$s');
+
+                $menu->appendEntry(
+                    sprintf($message, $wrapperInstance->getName()), 
+                    $configUrl
+                );
+            }    
         }
         
         return true;
@@ -209,7 +216,11 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         $uri      = $event->uri;
         $modelUri = $event->graph;
         
-        $syncConfig = $this->_getSyncConfig($uri, 'linkeddata', $modelUri);
+        if ((boolean)$this->_privateConfig->sync->enabled) {
+            $syncConfig = $this->_getSyncConfig($uri, 'linkeddata', $modelUri);
+        } else {
+            $syncConfig = false;
+        }
         if ($syncConfig === false || $syncConfig['checkHasChanged'] === false) {
             return false;
         }
