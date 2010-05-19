@@ -256,11 +256,11 @@ RDFauthorView.prototype.getPropertySelector = function () {
                 
                 var id = instance.addRow(subject, propertyUri, propertyTitle, null, graph);
                 var rowTop          = $('#' + id).closest('.property-row').offset().top;
-                var containerTop    = $('.' + this.options.rowContainerClass).offset().top;
-                var containerScroll = $('.' + this.options.rowContainerClass).scrollTop();
+                var containerTop    = $('.' + instance.options.rowContainerClass).offset().top;
+                var containerScroll = $('.' + instance.options.rowContainerClass).scrollTop();
                 
                 var scrollTo = containerScroll - (containerTop - rowTop);
-                $('.' + this.options.rowContainerClass).animate({scrollTop: scrollTo}, instance.options.animationTime);
+                $('.' + instance.options.rowContainerClass).animate({scrollTop: scrollTo}, instance.options.animationTime);
                 
                 // widget should get focus
                 var row = instance.getRowForSubjectAndProperty(subject, propertyUri);
@@ -361,9 +361,11 @@ RDFauthorView.prototype.reposition = function () {
         y: window.innerHeight / 2
     };
     
+    var jView = $('#' + this.id);
+    
     var viewOffset = {
-        x: $('#' + this.id).width() / 2, 
-        y: $('#' + this.id).height() / 2
+        x: jView.width() / 2, 
+        y: jView.height() / 2
     };
     
     // 10 % of window size above center
@@ -372,14 +374,18 @@ RDFauthorView.prototype.reposition = function () {
         y: -(window.innerHeight * 0.1)
     };
     
-    var width = $('#' + this.id).width();
+    var width = jView.width();
     
-    // position
-    $('#' + this.id)
-        // .css('top', Math.max(Math.floor(center.y - viewOffset.y + relocation.y), 0) + 'px')
-        // .css('position', 'absolute')
-        .css('top', '175px')
-        .css('left', Math.max(Math.floor(center.x - width / 2), 0) + 'px');
+    
+    if (!$.browser.msie) {
+        // position
+        jView
+            // .css('top', Math.max(Math.floor(center.y - viewOffset.y + relocation.y), 0) + 'px')
+            // .css('position', 'absolute')
+            .css('top', '175px')
+            .css('left', Math.max(Math.floor(center.x - width / 2), 0) + 'px');
+    }
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////

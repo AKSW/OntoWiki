@@ -70,6 +70,11 @@ MailURIEdit.prototype.onSubmit = function()
 {
     var dataBank = RDFauthor.getDatabank(this.graph);    
     var newResourceValue = MailURIEdit.label2uri( $('#mail-value-' + this.id).val() );
+    
+    // Widget just added and nothing entered
+    if (this.object == '' && newResourceValue == undefined) {
+        return true;
+    }
 
     var hasChanged = (newResourceValue != this.object) && (newResourceValue != '');
     if (hasChanged || this.remove) {

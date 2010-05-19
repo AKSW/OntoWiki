@@ -69,6 +69,11 @@ TelURIEdit.prototype.onSubmit = function()
 {
     var dataBank = RDFauthor.getDatabank(this.graph);    
     var newResourceValue = TelURIEdit.label2uri( $('#phone-value-' + this.id).val() );
+    
+    // Widget just added and nothing entered
+    if (this.object == '' && newResourceValue == undefined) {
+        return true;
+    }
 
     var hasChanged = (newResourceValue != this.object) && (newResourceValue != '');
     if (hasChanged || this.remove) {
