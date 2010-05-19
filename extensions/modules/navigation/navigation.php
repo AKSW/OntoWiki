@@ -43,9 +43,24 @@ class NavigationModule extends OntoWiki_Module
 
         // toggle sub menu
         $toggleMenu = new OntoWiki_Menu();
-        $toggleMenu->setEntry('Hidden Elements', "javascript:navigationEvent('toggleHidden')");
-        $toggleMenu->setEntry('Empty Elements', "javascript:navigationEvent('toggleEmpty')");
-        $toggleMenu->setEntry('Implicit Elements', "javascript:navigationEvent('toggleImplicit')");
+        // hidden elements
+        if( isset($this->_privateConfig->config->showHidden) && $this->_privateConfig->config->showHidden == true){
+            $toggleMenu->setEntry('Hide Hidden Elements', "javascript:navigationEvent('toggleHidden')");
+        }else{
+            $toggleMenu->setEntry('Show Hidden Elements', "javascript:navigationEvent('toggleHidden')");
+        }
+        // empty elements
+        if( isset($this->_privateConfig->config->showEmptyElements) && $this->_privateConfig->config->showEmptyElements == true){
+            $toggleMenu->setEntry('Hide Empty Elements', "javascript:navigationEvent('toggleEmpty')");
+        }else{
+            $toggleMenu->setEntry('Show Empty Elements', "javascript:navigationEvent('toggleEmpty')");
+        }
+        // implicit
+        if( isset($this->_privateConfig->config->showImplicitElements) && $this->_privateConfig->config->showImplicitElements == true){
+            $toggleMenu->setEntry('Hide Implicit Elements', "javascript:navigationEvent('toggleImplicit')");
+        }else{
+            $toggleMenu->setEntry('Show Implicit Elements', "javascript:navigationEvent('toggleImplicit')");
+        }
 
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
