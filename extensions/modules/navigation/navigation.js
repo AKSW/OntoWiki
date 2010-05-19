@@ -37,7 +37,7 @@ $(document).ready(function() {
     if( typeof navigationStateSetup != 'undefined'){
         navigationSetup = navigationStateSetup;
         // refresh the navigation box (quiet)
-        navigationEvent ('refresh')
+        //navigationEvent ('refresh')
     }
 
     /* first start */
@@ -145,8 +145,10 @@ function navigationEvent (navEvent, eventParameter) {
         case 'toggleHidden':
             if ( typeof setup['state']['showHidden'] != 'undefined' ) {
                 delete(setup['state']['showHidden']);
+                $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Show Hidden Elements");
             } else {
                 setup['state']['showHidden'] = true;
+                $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Hide Hidden Elements");
             }
             break;
 
@@ -155,13 +157,19 @@ function navigationEvent (navEvent, eventParameter) {
             if ( typeof setup['state']['showEmpty'] == 'undefined' ) {
                 if ( typeof setup['config']['showEmptyElements'] != 'undefined' ) {
                     setup['state']['showEmpty'] = setup['config']['showEmptyElements'];
+                    if(setup['state']['showEmpty'] == true){
+                        $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
+                    }
                 } else {
-                    setup['state']['showEmpty'] = true
+                    setup['state']['showEmpty'] = true;
+                    $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
                 }
             } else if (setup['state']['showEmpty'] == false) {
                 setup['state']['showEmpty'] = true;
+                $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
             } else {
                 setup['state']['showEmpty'] = false;
+                $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Show Empty Elements");
             }
             break;
 
@@ -170,13 +178,21 @@ function navigationEvent (navEvent, eventParameter) {
             if ( typeof setup['state']['showImplicit'] == 'undefined' ) {
                 if ( typeof setup['config']['showImplicitElements'] != 'undefined' ) {
                     setup['state']['showImplicit'] = setup['config']['showImplicitElements'];
+                    if(setup['state']['showImplicit'] == true){
+                        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
+                    }else{
+                        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
+                    }
                 } else {
-                    setup['state']['showImplicit'] = true
+                    setup['state']['showImplicit'] = true;
+                    $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
                 }
             } else if (setup['state']['showImplicit'] == false) {
                 setup['state']['showImplicit'] = true;
+                $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
             } else {
                 setup['state']['showImplicit'] = false;
+                $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
             }
             break;
         case 'more':
@@ -238,6 +254,8 @@ function navigationLoad (navEvent, setup) {
                     default:
                         navigationContainer.slideDown('fast');
                 }
+
+                saveState();
 
                 navigationPrepareList();
             }
@@ -305,7 +323,7 @@ function navigationUpdateLoad (navEvent, setup) {
  * This function creates navigation events
  */
 function navigationPrepareList () {
-    saveState();
+    //saveState();
     
     // the links to deeper navigation entries
     $('.navDeeper').click(function(event) {
