@@ -50,9 +50,6 @@ $(document).ready(function() {
 function navigationEvent (navEvent, eventParameter) {
     var setup, navType;
 
-    console.log(navEvent);
-    console.log(navigationSetup);
-
     /* init config when not existing or resetted by user */
     if ( ( typeof navigationSetup == 'undefined' ) || (navEvent == 'reset') || (navEvent == 'setType') ) {
         // set the default or setType config
