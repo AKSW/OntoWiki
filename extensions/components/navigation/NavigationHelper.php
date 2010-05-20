@@ -95,7 +95,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
     public static function getSearchTriples($setup, $forImplicit = false){
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
         $classVar = new Erfurt_Sparql_Query2_Var('classUri');
-        $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
+        //$subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
         $elements = array();
 
         // if deeper query
@@ -165,12 +165,12 @@ class NavigationHelper extends OntoWiki_Component_Helper
         } else { // if default request
             if(!$forImplicit){
                 // set hierarchy types
-                //$elements[] = new Erfurt_Sparql_Query2_Triple(
-                //    $searchVar,
-                //    new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
-                //    $classVar
-                //);
-                $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                $elements[] = new Erfurt_Sparql_Query2_Triple(
+                    $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
+                    $classVar
+                );
+                /*$u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
                 // add triplen
                 $u1->addTriple( $searchVar,
                     new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
@@ -249,7 +249,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     }
                 }
 
-                $elements[] = $mainUnion;
+                $elements[] = $mainUnion;*/
                 // -----------------------------------
 
                 // create filter for types
@@ -340,7 +340,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
         // request sub elements --------------
         // in relations
-        if ( isset($setup->config->hierarchyRelations->in) ){
+        /*if ( isset($setup->config->hierarchyRelations->in) ){
             if( count($setup->config->hierarchyRelations->in) > 1 ){
                 // init union var
                 $unionSub = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
@@ -401,7 +401,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 );
                 $elements[] = $queryOptional;
             }
-        }
+        }*/
         // -----------------------------------
 
 

@@ -243,7 +243,6 @@ function navigationLoad (navEvent, setup) {
         $.post(navigationExploreUrl, {setup: $.toJSON(setup)},
             function (data) {
                 //alert(data);
-                
                 navigationContainer.empty();
                 navigationContainer.append(data);
                 // remove the processing status
@@ -261,8 +260,8 @@ function navigationLoad (navEvent, setup) {
                         navigationContainer.css('marginLeft', '100%');
                         navigationContainer.animate({marginLeft:'0px'},'slow');
                         break;
-                    default:
-                        navigationContainer.slideDown('fast');
+                    //default:
+                        //navigationContainer.slideDown('fast');
                 }
 
                 saveState();
@@ -288,7 +287,8 @@ function navigationLoad (navEvent, setup) {
             navigationContainer.animate({marginLeft:'-100%'},'slow', '', cbAfterLoad);
             break;
         default:
-            navigationContainer.slideUp('fast', cbAfterLoad);
+            //navigationContainer.slideUp('fast', cbAfterLoad);
+            cbAfterLoad();
     }
 
     return ;
@@ -312,7 +312,7 @@ function navigationUpdateLoad (navEvent, setup) {
                 navigationMore.remove();
                 navigationContainer.append(data);
                 // remove the processing status
-                //navigationMore.removeClass('is-processing');
+                navigationMore.removeClass('is-processing');
 
                 navigationPrepareList();
             }
@@ -348,14 +348,6 @@ function navigationPrepareToggles(){
         $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
     } else {
         $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
-    }
-}
-
-function navigationPrepareBox(){
-    if(navigationSetup['state']['lastEvent'] == 'refresh'){
-        navigationEvent('refresh');
-    }else{
-        navigationPrepareList ();
     }
 }
 
@@ -457,8 +449,6 @@ function navigationAddElement(){
         // dont forget to return the manipulated data
         return data;
     }
-
-    navigationEvent('refresh');
 
     // start RDFauthor
     createInstanceFromClassURI(classResource, dataCallback);
