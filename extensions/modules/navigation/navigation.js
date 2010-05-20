@@ -49,7 +49,10 @@ $(document).ready(function() {
  */
 function navigationEvent (navEvent, eventParameter) {
     var setup, navType;
-    
+
+    console.log(navEvent);
+    console.log(navigationSetup);
+
     /* init config when not existing or resetted by user */
     if ( ( typeof navigationSetup == 'undefined' ) || (navEvent == 'reset') || (navEvent == 'setType') ) {
         // set the default or setType config
@@ -330,10 +333,6 @@ function navigationUpdateLoad (navEvent, setup) {
 }
 
 function navigationPrepareToggles(){
-    console.log("preparing toggles");
-    console.log(navigationSetup);
-    console.log(navigationSetup['state']['showEmpty'])
-
     if (navigationSetup['state']['showHidden'] == true ) {
         $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Hide Hidden Elements");
     } else {
@@ -352,6 +351,14 @@ function navigationPrepareToggles(){
         $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
     } else {
         $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
+    }
+}
+
+function navigationPrepareBox(){
+    if(navigationSetup['state']['lastEvent'] == 'refresh'){
+        navigationEvent('refresh');
+    }else{
+        navigationPrepareList ();
     }
 }
 
@@ -453,6 +460,8 @@ function navigationAddElement(){
         // dont forget to return the manipulated data
         return data;
     }
+
+    navigationEvent('refresh');
 
     // start RDFauthor
     createInstanceFromClassURI(classResource, dataCallback);

@@ -104,7 +104,7 @@ class NavigationModule extends OntoWiki_Module
             $this->view->stateView = $stateSession->view;
             // set js actions
             $this->view->inlineScript()->prependScript(
-                '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
+                '$(document).ready(function() { navigationPrepareBox(); } );'.PHP_EOL
             );
         }else{
             // init view from scratch
