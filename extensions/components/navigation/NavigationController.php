@@ -267,7 +267,11 @@ class NavigationController extends OntoWiki_Controller_Component
         foreach ($results as $result) {
             $uri = $result['resourceUri'];
             $entry = array();
-            $entry['sub'] = strlen( $result['subResourceUri'] );
+            if( isset($result['subResourceUri']) ){
+                $entry['sub'] = strlen( $result['subResourceUri'] );
+            }else{
+                $entry['sub'] = -1;
+            }
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             $entry['link'] = $this->_getListLink($uri, $setup);
             
