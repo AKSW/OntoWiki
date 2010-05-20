@@ -49,7 +49,7 @@ $(document).ready(function() {
  */
 function navigationEvent (navEvent, eventParameter) {
     var setup, navType;
-    
+
     /* init config when not existing or resetted by user */
     if ( ( typeof navigationSetup == 'undefined' ) || (navEvent == 'reset') || (navEvent == 'setType') ) {
         // set the default or setType config
@@ -81,6 +81,16 @@ function navigationEvent (navEvent, eventParameter) {
     switch (navEvent) {
         case 'init':
         case 'reset':
+            // save hidden, implicit and empty to state
+            if(setup['config']['showEmptyElements'] == '1'){
+                setup['state']['showEmpty'] = true;
+            }
+            if(setup['config']['showImplicitElements'] == '1'){
+                setup['state']['showImplicit'] = true;
+            }
+            if(setup['config']['showHiddenElements'] == '1'){
+                setup['state']['showHidden'] = true;
+            }
         case 'setType':
             // remove init sign and setup module title
             navigationContainer.removeClass('init-me-please');
@@ -233,7 +243,6 @@ function navigationLoad (navEvent, setup) {
         $.post(navigationExploreUrl, {setup: $.toJSON(setup)},
             function (data) {
                 //alert(data);
-                
                 navigationContainer.empty();
                 navigationContainer.append(data);
                 // remove the processing status
@@ -251,8 +260,8 @@ function navigationLoad (navEvent, setup) {
                         navigationContainer.css('marginLeft', '100%');
                         navigationContainer.animate({marginLeft:'0px'},'slow');
                         break;
-                    default:
-                        navigationContainer.slideDown('fast');
+                    //default:
+                        //navigationContainer.slideDown('fast');
                 }
 
                 saveState();
@@ -278,7 +287,8 @@ function navigationLoad (navEvent, setup) {
             navigationContainer.animate({marginLeft:'-100%'},'slow', '', cbAfterLoad);
             break;
         default:
-            navigationContainer.slideUp('fast', cbAfterLoad);
+            //navigationContainer.slideUp('fast', cbAfterLoad);
+            cbAfterLoad();
     }
 
     return ;
@@ -302,7 +312,7 @@ function navigationUpdateLoad (navEvent, setup) {
                 navigationMore.remove();
                 navigationContainer.append(data);
                 // remove the processing status
-                //navigationMore.removeClass('is-processing');
+                navigationMore.removeClass('is-processing');
 
                 navigationPrepareList();
             }
@@ -317,6 +327,28 @@ function navigationUpdateLoad (navEvent, setup) {
     cbAfterLoad();
 
     return ;
+}
+
+function navigationPrepareToggles(){
+    if (navigationSetup['state']['showHidden'] == true ) {
+        $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Hide Hidden Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Show Hidden Elements");
+    }
+
+    // if no state is set, use default value from config
+    if (navigationSetup['state']['showEmpty'] == true) {
+        $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Show Empty Elements");
+    }
+
+    // if no state is set, use default value from config
+    if (navigationSetup['state']['showImplicit'] == true) {
+        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
+    }
 }
 
 /*
@@ -348,6 +380,8 @@ function navigationPrepareList () {
         window.location.href = $(this).attr('href');
         return false;
     })
+
+    navigationPrepareToggles();
 }
 
 /*

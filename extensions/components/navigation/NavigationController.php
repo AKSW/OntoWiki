@@ -153,9 +153,9 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function _queryNavigationEntries($setup) {
-        $this->_owApp->logger->info(
+        /*$this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Input: ' .PHP_EOL . print_r($setup,true)
-        );
+        );*/
         
         if( $setup->state->lastEvent == "search" ){
             // search request
@@ -195,9 +195,9 @@ class NavigationController extends OntoWiki_Controller_Component
         if($query == null) return;
         
         // error logging
-        $this->_owApp->logger->info(
+        /*$this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
-        );
+        );*/
         
         $results = $this->model->sparqlQuery($query);
 
@@ -233,9 +233,9 @@ class NavigationController extends OntoWiki_Controller_Component
         }
             
         // log results
-        $this->_owApp->logger->info(
+        /*$this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Result: '  . PHP_EOL . print_r($results,true)
-        );
+        );*/
     
         if ( isset($setup->config->titleMode) ){
             $mode = $setup->config->titleMode;
@@ -266,11 +266,24 @@ class NavigationController extends OntoWiki_Controller_Component
 
         foreach ($results as $result) {
             $uri = $result['resourceUri'];
-            $entry = array();
-            $entry['sub'] = strlen( $result['subResourceUri'] );
+            $entry = array();            
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             $entry['link'] = $this->_getListLink($uri, $setup);
-            
+
+            // chech for subresources
+            $checkSubs = false;
+            if(isset($setup->config->checkSub) && $setup->config->checkSub == true ){
+                $checkSubs = true;
+            }
+            if($checkSubs){
+                $query = $this->_buildSubCheckQuery($uri, $setup);
+
+                $results = $this->model->sparqlQuery($query);
+
+                $entry['sub'] = count($results);
+            }else{
+                $entry['sub'] = 1;
+            }
             
             // if filtering empty is needed
             $filterEmpty = false;
@@ -306,7 +319,7 @@ class NavigationController extends OntoWiki_Controller_Component
             if($show) $entries[$uri] = $entry;
         }
 
-        $this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
+        //$this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
 
         return $entries;
     }
@@ -442,8 +455,102 @@ class NavigationController extends OntoWiki_Controller_Component
         $query->addElements(NavigationHelper::getInstancesTriples($uri, $setup));
         //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
         
-        $this->_owApp->logger->info("data: ".print_r($query,true));
+        //$this->_owApp->logger->info("data: ".print_r($query,true));
         
+        return $query;
+    }
+
+    protected function _buildSubCheckQuery($uri, $setup){
+        $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
+        $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        $classVar = new Erfurt_Sparql_Query2_Var('classUri');
+        $query = new Erfurt_Sparql_Query2();
+        $query->addProjectionVar($subVar);
+        $query->setDistinct();
+
+        //$this->_owApp->logger->info("data: ".print_r($query,true));
+        $elements = array();
+        
+        if ( isset($setup->config->hierarchyRelations->in) ){
+            if( count($setup->config->hierarchyRelations->in) > 1 ){
+                // init union var
+                $unionSub = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                // parse config gile
+                foreach($setup->config->hierarchyRelations->in as $rel){
+                    // sub stuff
+                    $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                    // add triplen
+                    $u1->addTriple(
+                        $subVar,
+                        new Erfurt_Sparql_Query2_IriRef($rel),
+                        $searchVar
+                    );
+                    // add triplet to union var
+                    $unionSub->addElement($u1);
+                }
+                $elements[] = $unionSub;
+            }else{
+                $rel = $setup->config->hierarchyRelations->in;
+                // add optional sub relation
+                // create optional graph to load sublacsses of selected class
+                $queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                $queryOptional->addTriple(
+                    $subVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                    $searchVar
+                );
+                $elements[] = $queryOptional;
+            }
+        }
+        if ( isset($setup->config->hierarchyRelations->out) ){
+            if( count($setup->config->hierarchyRelations->out) > 1 ){
+                // init union var
+                $unionSub = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // parse config gile
+                foreach($setup->config->hierarchyRelations->out as $rel){
+                    // sub stuff
+                    $u1 = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                    // add triplen
+                    $u1->addTriple(
+                        $searchVar,
+                        new Erfurt_Sparql_Query2_IriRef($rel),
+                        $subVar
+                    );
+                    // add triplet to union var
+                    $unionSub->addElement($u1);
+                }
+                $elements[] = $unionSub;
+            }else{
+                $rel = $setup->config->hierarchyRelations->out;
+                // add optional sub relation
+                // create optional graph to load sublacsses of selected class
+                $queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                $queryOptional->addTriple(
+                    $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                    $subVar
+                );
+                $elements[] = $queryOptional;
+            }
+        }
+        //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
+
+        $elements[] = new Erfurt_Sparql_Query2_Triple(
+            $searchVar,
+            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
+            $classVar
+        );
+
+        // add filter
+        $elements[] = new Erfurt_Sparql_Query2_Filter(
+            new Erfurt_Sparql_Query2_sameTerm($searchVar, new Erfurt_Sparql_Query2_IriRef($uri))
+        );
+
+        $query->addElements($elements);
+        $query->setLimit(1);
+
+        //$this->_owApp->logger->info("data: ".print_r($query,true));
+
         return $query;
     }
 
