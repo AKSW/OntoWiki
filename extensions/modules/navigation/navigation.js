@@ -81,6 +81,16 @@ function navigationEvent (navEvent, eventParameter) {
     switch (navEvent) {
         case 'init':
         case 'reset':
+            // save hidden, implicit and empty to state
+            if(setup['config']['showEmptyElements'] == '1'){
+                setup['state']['showEmpty'] = true;
+            }
+            if(setup['config']['showImplicitElements'] == '1'){
+                setup['state']['showImplicit'] = true;
+            }
+            if(setup['config']['showHiddenElements'] == '1'){
+                setup['state']['showHidden'] = true;
+            }
         case 'setType':
             // remove init sign and setup module title
             navigationContainer.removeClass('init-me-please');
@@ -319,6 +329,32 @@ function navigationUpdateLoad (navEvent, setup) {
     return ;
 }
 
+function navigationPrepareToggles(){
+    console.log("preparing toggles");
+    console.log(navigationSetup);
+    console.log(navigationSetup['state']['showEmpty'])
+
+    if (navigationSetup['state']['showHidden'] == true ) {
+        $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Hide Hidden Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Show Hidden Elements");
+    }
+
+    // if no state is set, use default value from config
+    if (navigationSetup['state']['showEmpty'] == true) {
+        $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Show Empty Elements");
+    }
+
+    // if no state is set, use default value from config
+    if (navigationSetup['state']['showImplicit'] == true) {
+        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
+    }
+}
+
 /*
  * This function creates navigation events
  */
@@ -348,6 +384,8 @@ function navigationPrepareList () {
         window.location.href = $(this).attr('href');
         return false;
     })
+
+    navigationPrepareToggles();
 }
 
 /*
