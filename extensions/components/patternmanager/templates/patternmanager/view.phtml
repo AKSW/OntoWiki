@@ -136,9 +136,7 @@ for (key in jsonPattern['subPattern']) {
             }
         } else if (t == 'S') {
             delPMselect(i,1);
-            for (v in current[t]) {
-                addPMselect(i,null,current[t][v]);
-            }
+            addPMselect(i,null,current[t]);
         } else if (t == 'U') {
             delPMinsert(i,1);
             delPMdelete(i,1);

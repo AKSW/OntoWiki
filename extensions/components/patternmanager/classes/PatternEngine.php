@@ -176,7 +176,7 @@ class PatternEngine {
                 throw new RuntimeException('No default graph defined for evolution');
                 return false;
             } else {
-                $graph = $this->defaultGraph;
+                $graph = $this->_defaultGraph;
             }
         }
 
@@ -298,12 +298,11 @@ class PatternEngine {
             }
             
             // get selection query for BasicPattern
-            $select = array();
-            $select[] = $basicPattern->getSelectQuery();
+            $select = $basicPattern->getSelectQuery();
 
-            foreach ($select as $query) {
+            if (!empty($select)) {
                 
-                $selectLabel = $query;
+                $selectLabel = $select;
                 $selectUri = $schema['SelectQuery'] . '/' .  md5($selectLabel);
                 $stmt[ $selectUri ] =
                 array(
@@ -311,7 +310,7 @@ class PatternEngine {
                         array('type' => 'uri', 'value' => $schema['SelectQuery'])
                     ),
                     EF_RDFS_LABEL => array(
-                        array ( 'type' => 'literal' , 'value' => $query)
+                        array ( 'type' => 'literal' , 'value' => $select)
                     )
                 );
                 $stmt[ $patternUri ][ $schema['hasSelectQuery'] ][] =

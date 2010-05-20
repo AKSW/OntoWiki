@@ -255,6 +255,11 @@ class BasicPattern {
         
 	    $wherePart = $this->_selectquery;
 	    
+	    if ( empty($wherePart) ) {
+	        $this->_intermediate_result = array();
+	        return true;
+	    }
+	    
         $query = 'SELECT * ';
 
         /*
@@ -436,7 +441,7 @@ class BasicPattern {
         
             $data = array(
             	'V'     => array(),
-            	'S'     => array(),
+            	'S'     => null,
             	'U'     => array(),
                 'label' => 'empty at ' . time(),
                 'desc'  => 'empty at '  . time()
@@ -448,11 +453,11 @@ class BasicPattern {
             foreach ($this->getUpdateQueries() as $pat) {
                 $data['U'][] = $pat;
             }
-            $data['S'][] = $this->getSelectQuery();
+            $data['S'] = $this->getSelectQuery();
             
             sort($data['V']);
             sort($data['U']);
-            sort($data['S']);
+            //sort($data['S']);
             
             $data['label'] = $this->getLabel();
             $data['desc']  = $this->getDescription();

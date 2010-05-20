@@ -86,8 +86,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
                 unset($unboundVariables[$name]);
                 $complexPattern->bindVariable($name,$value);
             }
-            
+
             $this->_engine->processPattern($complexPattern);
+            
         }
         
         // measurement for debug

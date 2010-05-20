@@ -148,8 +148,11 @@ function loadPMpattern(uri,id) {
         for (j in current['V']) {
             addPMvar(id,null,current['V'][j]['name'],current['V'][j]['type'],current['V'][j]['desc']);
         }
-        for (v in current['S']) {
-            addPMselect(id,null,current['S'][v]);
+        
+        if (current['S'].length > 0) {
+            addPMselect(id,null,current['S']);
+        } else {
+            delPMselect(id,null);
         }
         for (pkey in current['U']) {
             if (current['U'][pkey]['type'] === 'insert' ) {
