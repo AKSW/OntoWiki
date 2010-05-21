@@ -264,7 +264,7 @@ function navigationLoad (navEvent, setup) {
                         //navigationContainer.slideDown('fast');
                 }
 
-                saveState();
+                //saveState();
 
                 navigationPrepareList();
             }
@@ -386,10 +386,11 @@ function navigationPrepareList () {
 
 /*
  * This function saves current navigation state
- */
+ 
 function saveState(){
-    var curView = $("#navigation-content").html();
-    var set = $.toJSON(navSetup);
+    return;
+    var curView = "";//$("#navigation-content").html();
+    var set = $.toJSON(navSetup);    
     // if setup is not set - do not save anything
     if( (set.length < 3) || ( typeof set == 'undefined' ) ){ 
         return;
@@ -403,7 +404,7 @@ function saveState(){
     );
 
     return ;
-}
+}*/
 
 /*
  * Starts RDFauthor with a specific class init depending on position and config

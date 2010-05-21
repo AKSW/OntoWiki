@@ -122,32 +122,45 @@ class NavigationController extends OntoWiki_Controller_Component
 
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
-        
+
+        $this->savestateServer($this->view, $this->setup);
+
         return;
     }
-    
-    public function savestateAction(){
-		OntoWiki_Navigation::disableNavigation();
 
-		// tells the OntoWiki to not apply the template to this action
-		// because i think this action doesn't need to return anything formated
+    protected function savestateServer($view, $setup){
+        $setup = json_encode($setup);
+        $replaceFrom = array("\\'", '\\"');
+        $replaceTo = array("'", '"');
+        $setup = str_replace($replaceFrom, $replaceTo, $setup);
+
+        $this->stateSession->view = $view->render("navigation/explore.phtml");
+        $this->stateSession->setup = $setup;
+        $this->stateSession->model = (string)$this->model;
+    }
+
+    /*public function savestateAction(){
+        /*OntoWiki_Navigation::disableNavigation();
+
+        // tells the OntoWiki to not apply the template to this action
+        // because i think this action doesn't need to return anything formated
         $this->_helper->viewRenderer->setNoRender();
-		$this->_helper->layout->disableLayout();
+        $this->_helper->layout->disableLayout();
 
-        $view = $this->_request->view;
+        //$view = $this->_request->view;
         $setup = $this->_request->setup;
         
         $replaceFrom = array("\\'", '\\"');
         $replaceTo = array("'", '"');
-		$view = str_replace($replaceFrom, $replaceTo, $view);
-		$setup = str_replace($replaceFrom, $replaceTo, $setup);
-		// replaces urlencoded '~' (%7E) back to '~', this is neccesarry, when ontowiki runs in userdir on apache
-		$view = preg_replace('/(http[s]{0,1}:\/\/){1}([A-Za-z0-9@:\.]*)\/%7E([A-Za-z0-9]*)/i', '${1}${2}/~${3}', $view);
+        //$view = str_replace($replaceFrom, $replaceTo, $view);
+        $setup = str_replace($replaceFrom, $replaceTo, $setup);
+        // replaces urlencoded '~' (%7E) back to '~', this is neccesarry, when ontowiki runs in userdir on apache
+        //$view = preg_replace('/(http[s]{0,1}:\/\/){1}([A-Za-z0-9@:\.]*)\/%7E([A-Za-z0-9]*)/i', '${1}${2}/~${3}', $view);
         
-        $this->stateSession->view = $view;
+        //$this->stateSession->view = $view;
         $this->stateSession->setup = $setup;
         $this->stateSession->model = (string)$this->model;
-    }
+    }*/
 
     /*
      * Queries all navigation entries according to a given setup
