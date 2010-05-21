@@ -370,7 +370,7 @@ class NavigationController extends OntoWiki_Controller_Component
             //$query->setCountStar(true);
             $query->setDistinct(true);
             $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
-            $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('subResourceUri'));
+            //$query->addProjectionVar(new Erfurt_Sparql_Query2_Var('subResourceUri'));
             // set to limit+1, so we can see if there are more than $limit entries
             $query->setLimit($this->limit + 1);
         }
