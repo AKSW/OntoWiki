@@ -15,7 +15,7 @@ $odd = true;
             </a><a class="navBack icon icon-arrow-previous" title="Go to previous level">
                 <span>[Go to previous level]</span>
             </a><br/>
-            <a class="hasMenu" about="<?php echo $this->rootEntry['uri'] ?>">
+            <a class="hasMenu" href="<?php echo $this->rootEntry['uri'] ?>">
                 <?php echo $this->rootEntry['title'] ?>
             </a>
         <?php else: ?>
@@ -33,7 +33,7 @@ $odd = true;
         <?php endif ?>
         </h2>
     <?php endif ?>
-</h2>
+<!-- </h2> -->
 
     <?php if (!empty($this->messages)): ?>
         <?php foreach ($this->messages as $message): ?>

@@ -36,12 +36,7 @@ $(document).ready(function() {
     
     if( typeof navigationStateSetup != 'undefined'){
         navigationSetup = navigationStateSetup;
-        // refresh the navigation box (quiet)
-        //navigationEvent ('refresh')
     }
-
-    /* first start */
-    //navigationEvent('init');
 });
 
 /**
@@ -72,8 +67,6 @@ function navigationEvent (navEvent, eventParameter) {
     } else {
         setup = navigationSetup;
     }
-    
-    //alert(setup['state']);
     
     // delete old search string
     delete(setup['state']['searchString']);
@@ -260,11 +253,7 @@ function navigationLoad (navEvent, setup) {
                         navigationContainer.css('marginLeft', '100%');
                         navigationContainer.animate({marginLeft:'0px'},'slow');
                         break;
-                    //default:
-                        //navigationContainer.slideDown('fast');
                 }
-
-                saveState();
 
                 navigationPrepareList();
             }
@@ -382,27 +371,6 @@ function navigationPrepareList () {
     })
 
     navigationPrepareToggles();
-}
-
-/*
- * This function saves current navigation state
- */
-function saveState(){
-    var curView = $("#navigation-content").html();
-    var set = $.toJSON(navSetup);
-    // if setup is not set - do not save anything
-    if( (set.length < 3) || ( typeof set == 'undefined' ) ){ 
-        return;
-    }
-
-    // do save
-    $.post(navigationSaveUrl, {view: curView, setup: set},
-        function (data) {
-            //alert(data);
-        }
-    );
-
-    return ;
 }
 
 /*
