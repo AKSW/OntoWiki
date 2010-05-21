@@ -100,7 +100,7 @@ class NavigationController extends OntoWiki_Controller_Component
         // the root entry (parent of the shown elements)
         if ( isset($this->setup->state->parent) ) {
             $this->view->rootEntry = array();
-            $this->view->rootEntry['uri'] = $this->setup->state->parent;
+            $this->view->rootEntry['uri'] = $this->_getListLink($this->setup->state->parent, $this->setup);
             $this->view->rootEntry['title'] = $this->_getTitle(
                 $this->setup->state->parent,
                 isset($this->setup->config->titleMode) ? $this->setup->config->titleMode : null,
