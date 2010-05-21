@@ -271,7 +271,11 @@ class NavigationController extends OntoWiki_Controller_Component
             if($checkSubs){
                 $query = $this->_buildSubCheckQuery($uri, $setup);
 
+                $this->_owApp->logger->info("check query: ".$query->__toString());
+
                 $results = $this->model->sparqlQuery($query);
+
+                $this->_owApp->logger->info("check query results: ".print_r($results,true));
 
                 $entry['sub'] = count($results);
             }else{
@@ -462,7 +466,7 @@ class NavigationController extends OntoWiki_Controller_Component
     protected function _buildSubCheckQuery($uri, $setup){
         $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        $classVar = new Erfurt_Sparql_Query2_Var('classUri');
+        //$classVar = new Erfurt_Sparql_Query2_Var('classUri');
         $query = new Erfurt_Sparql_Query2();
         $query->addProjectionVar($subVar);
         $query->setDistinct();
@@ -492,13 +496,18 @@ class NavigationController extends OntoWiki_Controller_Component
                 $rel = $setup->config->hierarchyRelations->in;
                 // add optional sub relation
                 // create optional graph to load sublacsses of selected class
-                $queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                /*$queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
                 $queryOptional->addTriple(
                     $subVar,
                     new Erfurt_Sparql_Query2_IriRef($rel[0]),
                     $searchVar
                 );
-                $elements[] = $queryOptional;
+                $elements[] = $queryOptional;*/
+                $elements[] = new Erfurt_Sparql_Query2_Triple(
+                    $subVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                    $searchVar
+                );
             }
         }
         if ( isset($setup->config->hierarchyRelations->out) ){
@@ -523,22 +532,27 @@ class NavigationController extends OntoWiki_Controller_Component
                 $rel = $setup->config->hierarchyRelations->out;
                 // add optional sub relation
                 // create optional graph to load sublacsses of selected class
-                $queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                /*$queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
                 $queryOptional->addTriple(
                     $searchVar,
                     new Erfurt_Sparql_Query2_IriRef($rel[0]),
                     $subVar
                 );
-                $elements[] = $queryOptional;
+                $elements[] = $queryOptional;*/
+                $elements[] = new Erfurt_Sparql_Query2_Triple(
+                    $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                    $subVar
+                );
             }
         }
         //$query->addFilter( new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri)) );
 
-        $elements[] = new Erfurt_Sparql_Query2_Triple(
+        /*$elements[] = new Erfurt_Sparql_Query2_Triple(
             $searchVar,
             new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
             $classVar
-        );
+        );*/
 
         // add filter
         $elements[] = new Erfurt_Sparql_Query2_Filter(
