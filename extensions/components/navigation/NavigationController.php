@@ -185,8 +185,11 @@ class NavigationController extends OntoWiki_Controller_Component
             $query->setLimit($this->limit + 1);
             
         } else {
-            if ( !isset($setup->config->hideDefaultHierarchy) || $setup->config->hideDefaultHierarchy == false ){
+            if ( ( !isset($setup->config->hideDefaultHierarchy) || $setup->config->hideDefaultHierarchy == false )
+                    && !isset($setup->config->query->top) ){
                 $query = $this->_buildQuery($setup, false);
+            }else if( isset($setup->config->query->top) ){
+                $query = Erfurt_Sparql_SimpleQuery::initWithString($setup->config->query->top);
             }else{
                 $query = null;
             }
@@ -195,9 +198,9 @@ class NavigationController extends OntoWiki_Controller_Component
         if($query == null) return;
         
         // error logging
-        /*$this->_owApp->logger->info(
+        $this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
-        );*/
+        );
         
         $results = $this->model->sparqlQuery($query);
 
@@ -367,22 +370,28 @@ class NavigationController extends OntoWiki_Controller_Component
     }
    
     protected function _buildQuery($setup, $forImplicit = false){
-        $query = new Erfurt_Sparql_Query2();
-        $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
-        //$query->setCountStar(true);
-        $query->setDistinct(true);
-        $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
-        $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('subResourceUri'));
-        // set to limit+1, so we can see if there are more than $limit entries
-        $query->setLimit($this->limit + 1);
+        if( isset($setup->config->query->deeper) && isset($setup->state->parent) ){
+            //$replace = ;
+            $query_string = str_replace("%resource%", $setup->state->parent, $setup->config->query->deeper);
+            $query = Erfurt_Sparql_SimpleQuery::initWithString($query_string);
+        }else{
+            $query = new Erfurt_Sparql_Query2();
+            $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
+            //$query->setCountStar(true);
+            $query->setDistinct(true);
+            $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
+            $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('subResourceUri'));
+            // set to limit+1, so we can see if there are more than $limit entries
+            $query->setLimit($this->limit + 1);
+        }
         // set ordering
         if( isset($setup->config->ordering->relation) ){
-            $query->getOrder()->add( 
+            $query->getOrder()->add(
                 new Erfurt_Sparql_Query2_IriRef($setup->config->ordering->relation),
                 $setup->config->ordering->modifier
             );
         }
-        
+
         if( isset($setup->state->offset) && $setup->state->lastEvent == 'more' ){
             $query->setOffset($setup->state->offset);
         }
