@@ -50,9 +50,12 @@ $odd = true;
             <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
                 <a class="navigation navList"
                    href="<?php echo $entry['link'] ?>"
-                   about="<?php echo $uri ?>" title="show list of instances"
-                   ><?php echo $entry['title'] ?>
+                   about="<?php echo $uri ?>" title="show list of instances">
+                   <?php echo $entry['title'] ?>
+
+                   <?php if( $entry['sub'] > 0 ): ?>
                    <span class="navDeeper navDeeperIcon icon icon-arrow-next" title="show deeper level"><span>[show deeper level]</span></span>
+                   <?php endif ?>
                    <!-- span class="navList icon icon-list" title="show list of instances">
                     <span>[show list of instances]</span>
                    </span -->

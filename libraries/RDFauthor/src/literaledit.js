@@ -159,7 +159,7 @@ LiteralEdit.prototype.onSubmit = function() {
     var newObjectValue       = $('#literal-value-' + this.id).val();
     
     // Widget added an nothing entered
-    if (newObjectValue == undefined) {
+    if (this.object == '' && newObjectValue == undefined) {
         return true;
     }
     
