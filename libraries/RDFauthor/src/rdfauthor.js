@@ -599,7 +599,7 @@ RDFauthor = {
                 var types = $.isArray(info.types) ? info.types : [info.types];
                 
                 if (0 <= ($.inArray(this.owlNs + 'DatatypeProperty', types))
-                    || 0 <= $.inArray(this.owlNs + 'AnnotationProperty', types)) {
+                    /*|| 0 <= $.inArray(this.owlNs + 'AnnotationProperty', types)*/) {
                     widgetConstructor = this.widgetRegistry.__literal[''];
                 } else if (0 <= $.inArray(this.owlNs + 'ObjectProperty', types)) {
                     widgetConstructor = this.widgetRegistry.__object[''];
@@ -610,8 +610,12 @@ RDFauthor = {
             if ('ranges' in info) {
                 var ranges = $.isArray(info.ranges) ? info.ranges : [info.ranges];
                 
-                if (0 <= $.inArray(this.rdfNs + 'Literal', ranges)) {
+                if (0 <= $.inArray(this.rdfsNs + 'Literal', ranges)) {
                     widgetConstructor = this.widgetRegistry.__literal[''];
+                }
+                
+                if (0 <= $.inArray(this.rdfsNs + 'Resource', ranges)) {
+                    widgetConstructor = this.widgetRegistry.__object[''];
                 }
             }
             
