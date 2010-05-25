@@ -10,14 +10,14 @@ function DateEdit(graph, subject, predicate, object) {
 
 DateEdit.prototype.datatype = 'http://www.w3.org/2001/XMLSchema#date';
 
-DateEdit.prototype.init = function () {
-    // RDFauthor.loadStyleSheet(widgetBase + 'src/dateedit.css');
-    
+DateEdit.prototype.init = function () {    
     $('#date-edit-' + this.id).datepicker({
         dateFormat: $.datepicker.ISO_8601, 
         // showOn: 'both', 
         firstDay: 1
     });
+    
+    $('#ui-datepicker-div').css('z-index', 10000);
 };
 
 DateEdit.prototype.getHtml = function() {
