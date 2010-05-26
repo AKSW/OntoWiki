@@ -202,8 +202,9 @@ function navigationEvent (navEvent, eventParameter) {
             if( setup['state']['offset'] !== undefined  ){
                 setup['state']['offset'] = setup['state']['offset']*2;
             }else{
-                setup['state']['offset'] = setup['state']['limit']; 
+                setup['state']['offset'] = parseInt(setup['state']['limit']) + 10;
             }
+            setup['state']['limit'] = setup['state']['offset'];
             break;
 
         default:
@@ -214,11 +215,7 @@ function navigationEvent (navEvent, eventParameter) {
     setup['state']['lastEvent'] = navEvent;
     navigationSetup = setup;
     navSetup = setup;
-    if( navEvent == 'more' ){
-        navigationUpdateLoad (navEvent, setup);
-    }else{
-        navigationLoad (navEvent, setup);
-    }
+    navigationLoad (navEvent, setup);
     return; 
 }
 
@@ -242,6 +239,10 @@ function navigationLoad (navEvent, setup) {
                 navigationInput.removeClass('is-processing');
 
                 switch (navEvent) {
+                    case 'more':
+                        navigationMore.remove();
+                        // remove the processing status
+                        navigationMore.removeClass('is-processing');
                     case 'refresh':
                         // no animation in refresh event (just the is processing)
                         break;
@@ -265,6 +266,10 @@ function navigationLoad (navEvent, setup) {
     navigationContainer.css('overflow', 'hidden');
 
     switch (navEvent) {
+        case 'more':
+            navigationMore = $("#naviganion-more");
+            navigationMore.html('&nbsp;&nbsp;&nbsp;&nbsp;');
+            navigationMore.addClass('is-processing');
         case 'refresh':
             // no animation in refresh event (just the is processing)
             cbAfterLoad();
@@ -279,41 +284,6 @@ function navigationLoad (navEvent, setup) {
             //navigationContainer.slideUp('fast', cbAfterLoad);
             cbAfterLoad();
     }
-
-    return ;
-}
-
-/**
- * update the navigation
- */
-function navigationUpdateLoad (navEvent, setup) {
-    if (typeof setup == 'undefined') {
-        alert('error: No navigation setup given, but navigationLoad requested');
-        return;
-    }
-    
-    navigationMore = $("#naviganion-more");
-
-    // preparation of a callback function
-    var cbAfterLoad = function(){
-        $.post(navigationExploreUrl, {setup: $.toJSON(setup)},
-            function (data) {
-                navigationMore.remove();
-                navigationContainer.append(data);
-                // remove the processing status
-                navigationMore.removeClass('is-processing');
-
-                navigationPrepareList();
-            }
-        );
-    }
-
-    // first we set the processing status
-    navigationMore.html('&nbsp;&nbsp;&nbsp;&nbsp;');
-    navigationMore.addClass('is-processing');
-    //navigationContainer.css('overflow', 'hidden');
-    
-    cbAfterLoad();
 
     return ;
 }
