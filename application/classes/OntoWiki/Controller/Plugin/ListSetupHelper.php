@@ -157,18 +157,22 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
                 if (isset($config->filter)) {
                     foreach ($config->filter as $filter) {
+                        // set default value for action and mode if they're not assigned
+                        if(!isset($filter->action)) $filter->action = 'add';
+                        if(!isset($filter->mode)) $filter->mode = 'box';
+
                         if ($filter->action == 'add') {
                             if($filter->mode == 'box'){
                                 $instances->addFilter(
                                     $filter->property,
-                                    $filter->isInverse,
-                                    $filter->propertyLabel,
+                                    isset($filter->isInverse) ? $filter->isInverse : false,
+                                    isset($filter->propertyLabel) ? $filter->propertyLabel : 'defaultLabel',
                                     $filter->filter,
-                                    $filter->value1,
-                                    $filter->value2,
-                                    $filter->valuetype,
-                                    $filter->literaltype,
-                                    $filter->hidden,
+                                    isset($filter->value1) ? $filter->value1 : null,
+                                    isset($filter->value2) ? $filter->value2 : null,
+                                    isset($filter->valuetype) ? $filter->valuetype : 'literal',
+                                    isset($filter->literaltype) ? $filter->literaltype : null,
+                                    isset($filter->hidden) ? $filter->hidden : false,
                                     isset($filter->id) ? $filter->id : null,
                                     isset($filter->negate) ? $filter->negate : false
                                 );

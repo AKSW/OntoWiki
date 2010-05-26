@@ -621,33 +621,18 @@ class NavigationController extends OntoWiki_Controller_Component
                 if(isset($setup->config->instanceRelation->out)){
                     foreach($setup->config->instanceRelation->out as $out){
                         $conf['filter'][] = array(
-                            /*'mode' => 'box',
-                            'action' => 'add',
-                            'id' => 'box1',
-                            'filter' => 'equals',
-                            'propertyLabel' => 'test',
-                            'isInverse' => 'false',
-                            'value1' => '',
-                            'value2' => '',
-                            'valuetype' => '',
-                            'literaltype' => '',
-                            'hidden' => 'false',
-                            'negate' => '',
-                            'property' => $out,
-                            'value' => $uri*/
-
-                            'action' => 'add',
-                            'mode' => 'box',
-                            'id' => 'inrelations',
+                            //'action' => 'add',
+                            //'mode' => 'box',
+                            //'id' => 'inrelations',
                             'property' => $uri,
-                            'isInverse' => false,
-                            'propertyLabel' => 'out',
+                            //'isInverse' => false,
+                            //'propertyLabel' => 'out',
                             'filter' => 'bound',
-                            'value1' => null, //$uri,
-                            'value2' => null,
-                            'valuetype' => 'uri',
-                            'literaltype' => null,
-                            'hidden' => false
+                            //'value1' => null, //$uri,
+                            //'value2' => null,
+                            //'valuetype' => 'uri',
+                            //'literaltype' => null,
+                            //'hidden' => false
                         );
                     }
                 }
