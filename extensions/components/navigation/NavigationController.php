@@ -607,8 +607,9 @@ class NavigationController extends OntoWiki_Controller_Component
         $return .= "?init";
         $conf = array();
         // there is a shortcut for rdfs classes
-        if ( !empty($setup->config->instanceRelation->out) && !empty($setup->config->instanceRelation->in) ) {
-            if( ( $setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
+        if ( isset($setup->config->instanceRelation->out) || isset($setup->config->instanceRelation->in) ) {
+            if( isset($setup->config->instanceRelation->out) &&
+                    ($setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
                     ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ){
                 $conf['filter'][] = array(
                     'mode' => 'rdfsclass',
@@ -616,26 +617,53 @@ class NavigationController extends OntoWiki_Controller_Component
                     'action' => 'add'
                 );
             }else{
-                foreach($setup->config->instanceRelation->out as $out){
-                    $conf['filter'][] = array(
-                        'mode' => 'box',
-                        'action' => 'add',
-                        'id' => 'box1',
-                        'property' => $out,
-                        'value' => $uri
-                    );
+                if(isset($setup->config->instanceRelation->out)){
+                    foreach($setup->config->instanceRelation->out as $out){
+                        $conf['filter'][] = array(
+                            /*'mode' => 'box',
+                            'action' => 'add',
+                            'id' => 'box1',
+                            'filter' => 'equals',
+                            'propertyLabel' => 'test',
+                            'isInverse' => 'false',
+                            'value1' => '',
+                            'value2' => '',
+                            'valuetype' => '',
+                            'literaltype' => '',
+                            'hidden' => 'false',
+                            'negate' => '',
+                            'property' => $out,
+                            'value' => $uri*/
+
+                            'action' => 'add',
+                            'mode' => 'box',
+                            'id' => 'inrelations',
+                            'property' => $uri,
+                            'isInverse' => false,
+                            'propertyLabel' => 'out',
+                            'filter' => 'bound',
+                            'value1' => null, //$uri,
+                            'value2' => null,
+                            'valuetype' => 'uri',
+                            'literaltype' => null,
+                            'hidden' => false
+                        );
+                    }
                 }
-                foreach($setup->config->hierarchyRelations->in as $in){
-                    $conf['filter'][] = array(
-                        'mode' => 'box',
-                        'action' => 'add',
-                        'id' => 'box2',
-                        'property' => $uri,
-                        'value' => $in
-                    );
-                }
+                /*if(isset($setup->config->instanceRelation->in)){
+                    foreach($setup->config->hierarchyRelations->in as $in){
+                        $conf['filter'][] = array(
+                            'mode' => 'box',
+                            'action' => 'add',
+                            'id' => 'box2',
+                            'filter' => 'equals',
+                            'isInverse' => 'false',
+                            'property' => $uri,
+                            'value' => $in
+                        );
+                    }
+                }*/
             }
-            return $return . "&instancesconfig=".urlencode(json_encode($conf));
         } else {
             $conf['filter'][] = array(
                 'mode' => 'cnav',
@@ -643,8 +671,11 @@ class NavigationController extends OntoWiki_Controller_Component
                 'uri'  => $uri,
                 'action' => 'add'
             );
-            return $return . "&instancesconfig=" . urlencode(json_encode($conf));
         }
+
+        $this->_owApp->logger->info("conf: ".print_r($conf,true));
+
+        return $return . "&instancesconfig=".urlencode(json_encode($conf));
     }
 
 }
