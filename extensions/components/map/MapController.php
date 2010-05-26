@@ -122,6 +122,11 @@ class MapController extends OntoWiki_Controller_Component
         if($this->resources) {
 
             foreach ($this->resources as $r) {
+            	
+            	/**
+            	 * for single instances
+            	 * @var String contains the uri of the current property
+            	 */
                 $uri = isset($r[$this->resourceVar]) ? $r[$this->resourceVar] : $this->resource;
 
                 if (empty ($r['lat']) || empty ($r['long'])) {
@@ -221,7 +226,7 @@ class MapController extends OntoWiki_Controller_Component
             }
 
             $query          = $this->instances->getResourceQuery();
-            $this->_owApp->logger->debug('MapComponent/_getResources: session query: ' . var_export((string)$query, true));
+            //$this->_owApp->logger->debug('MapComponent/_getResources: session query: ' . var_export((string)$query, true));
 
             $query->removeAllOptionals()->removeAllProjectionVars();
 
@@ -244,19 +249,20 @@ class MapController extends OntoWiki_Controller_Component
             $queryIndire = clone $query;
             $queryDirect->addElement($queryOptionalCoke);
             $queryIndire->addElement($queryOptionalPepsi);
-            $this->_owApp->logger->debug('MapComponent/_getResources sent "' . $query . '" to get markers.');
+            $this->_owApp->logger->debug('MapComponent/_getResources sent directQuery: "' . $queryDirect . '" to get markers.');
+            $this->_owApp->logger->debug('MapComponent/_getResources sent indirectQuery: "' . $queryIndire . '" to get markers.');
 
             /* get result of the query */
-            $resourcesInd    = $this->_owApp->erfurt->getStore()->sparqlQuery($queryIndire);
             $resourcesDir    = $this->_owApp->erfurt->getStore()->sparqlQuery($queryDirect);
+            $resourcesInd    = $this->_owApp->erfurt->getStore()->sparqlQuery($queryIndire);
 
             $this->resourceVar  = $this->instances->getResourceVar()->getName();
 
             /**
              * merge theses two results
              */
-            $this->cpVarToKey($resourcesInd, $this->resourceVar);
-            $this->cpVarToKey($resourcesDir, $this->resourceVar);
+            //$resourcesDir = $this->cpVarToKey($resourcesDir, $this->resourceVar);
+            //$resourcesInd = $this->cpVarToKey($resourcesInd, $this->resourceVar);
             
             $this->resources = array_merge_recursive($resourcesDir, $resourcesInd);
 
@@ -266,11 +272,31 @@ class MapController extends OntoWiki_Controller_Component
 
         } else if ($this->_request->single_instance == 'on') {
             //$query = new Erfurt_Sparql_SimpleQuery();
-            $queryString = 'SELECT ?lat ?long ?lat2 ?long2 WHERE { OPTIONAL { <' . $this->resource . '> <' . $latProperty . '> ?lat; <' . $longProperty . '> ?long.  } OPTIONAL { <' . $this->resource . '> ?p ?node.  ?node <' . $latProperty . '> ?lat2; <' . $longProperty . '> ?long2.  } }';
-            $query = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
-            $this->_owApp->logger->debug('MapComponent/_getResources query "' . $queryString . '".');
-            $this->resources = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
+            $directQueryString = '
+            SELECT ?lat ?long
+            WHERE {
+            	<' . $this->resource . '> <' . $latProperty . '> ?lat;
+            							  <' . $longProperty . '> ?long.
+        	}';
+            $indireQueryString = '
+            SELECT ?lat ?long
+            WHERE {
+            	<' . $this->resource . '> ?p ?node.
+            	?node <' . $latProperty . '> ?lat;
+            		  <' . $longProperty . '> ?long.
+        	}';
+            $this->_owApp->logger->debug('MapComponent/_getResources direct query "' . $directQueryString . '".');
+            $this->_owApp->logger->debug('MapComponent/_getResources indirect query "' . $indireQueryString . '".');
+            $queryDirect = Erfurt_Sparql_SimpleQuery::initWithString($directQueryString);
+            $queryIndire = Erfurt_Sparql_SimpleQuery::initWithString($indireQueryString);
 
+            /* get result of the query */
+            $this->resources   = $this->_owApp->erfurt->getStore()->sparqlQuery($queryDirect);
+            
+            if (empty($this->resources[0]['lat']) OR empty($this->resources[0]['long'])) {
+            	$this->resources = $this->_owApp->erfurt->getStore()->sparqlQuery($queryIndire);
+            }
+            
         } else {
             $this->_owApp->logger->debug('MapComponent/_getResources request single_instace contains neither "on" nor "off".');
         }
@@ -333,6 +359,31 @@ class MapController extends OntoWiki_Controller_Component
         return $return;
     }
 
+    /**
+     * Copies a uri from its value field in the resultset to the key of the array-element.
+     * The $key identifies the key to the uri.
+     * $array = array(
+     * 	0 => array(
+     * 		'resourceUri' => 'http://comiles.eu/~natanael/foaf.rdf#me',
+     * 		'long' => '12.3456',
+     * 		'lat' => '12.3456'
+     * 	)
+     * );
+     * $key = 'resourceUri';
+     * 
+     * will become
+     * 
+     * $array = array(
+     * 	'http://comiles.eu/~natanael/foaf.rdf#me' => array(
+     * 		'resourceUri' => 'http://comiles.eu/~natanael/foaf.rdf#me',
+     * 		'long' => '12.3456',
+     * 		'lat' => '12.3456'
+     * 	)
+     * );
+     * 
+     * @param array $array The Resultset, which is returned by a sparqlquery
+     * @param String $key of the array element holding the URI
+     */
     private function cpVarToKey($array, $key){
         for($i = 0; $i < count($array); $i++) {
             if(isset($array[$array[$i][$key]])) {
