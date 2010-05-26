@@ -590,7 +590,7 @@ class ModelController extends OntoWiki_Controller_Base
     private function _handleImport($postData, $createGraph = false)
     {        
         $newModelUri = trim($postData['modelUri']);
-        $newBaseUri  = trim($postData['baseUri']);
+        $newBaseUri  = isset($postData['baseUri']) ? trim($postData['baseUri']) : null;
         
         switch ($postData['activeForm']) {
             case 'empty':
