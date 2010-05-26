@@ -328,8 +328,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // get title
         if ($mode == "titleHelper") {
-            $lang = $this->_config->languages->locale;
-            $name = $this->titleHelper->getTitle($uri, $lang);
+            $name = $this->titleHelper->getTitle($uri, OntoWiki::getInstance()->language);
         } elseif($mode == "baseName"){
             if (strrpos($uri, '#') > 0) {
                 $name = substr($uri, strrpos($uri, '#')+1);
