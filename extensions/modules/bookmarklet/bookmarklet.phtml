@@ -18,15 +18,16 @@
 <script type="text/javascript" charset="utf-8">
     var saveTitle = 'Save to OntoWiki';
     var windowTitle = 'Extract Triples to OntoWiki at <?php echo $this->ontoWikiUrl ?>';
-    var bmWidgetBase = document.location.href.replace('tests/bookmarklet.html', '');
+    // var bmWidgetBase = document.location.href.replace('tests/bookmarklet.html', '');
+    var bmWidgetBase = '<?php echo $this->rdfAuthorBase ?>';
     var href = '\
         href="javascript:void((function() {\
+        widgetBase = \'' + bmWidgetBase + '\';\
         if (!document.getElementById(\'RDFauthorScript\')) {\
-            bmWidgetBase = widgetBase || \'<?php echo $this->rdfAuthorBase ?>\';\
             var s = document.createElement(\'script\');\
             s.type = \'text/javascript\';\
             s.id = \'RDFauthorScript\';\
-            s.src = bmWidgetBase + \'src/loader.js\';\
+            s.src = widgetBase + \'src/loader.js\';\
             document.getElementsByTagName(\'head\')[0].appendChild(s);\
         }\
         rdfauthor_loaded_callback = function() {\
@@ -36,7 +37,8 @@
                 title: windowTitle,\
                 showAddPropertyButton: false,\
                 defaultGraph: \'<?php echo $this->defaultGraph ?>\',\
-                defaultUpdateEndpoint: \'<?php echo $this->defaultUpdateService ?>\'\
+                defaultUpdateEndpoint: \'<?php echo $this->defaultUpdateService ?>\',\
+                defaultQueryEndpoint: \'<?php echo $this->defaultQueryService ?>\'\
             });\
             RDFauthor.startEditing();\
         };\
