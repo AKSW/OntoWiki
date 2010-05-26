@@ -523,8 +523,11 @@ class ServiceController extends Zend_Controller_Action
                 // 
             }
             
-            // set default to xml
-            if (!isset($typeMapping[$type])) {
+            if (isset($this->_request->callback)) {
+                // JSONp
+                $type = 'application/sparql-results+json';
+            } else {
+                // dafault: XML
                 $type = 'application/sparql-results+xml';
             }
 
@@ -538,7 +541,7 @@ class ServiceController extends Zend_Controller_Action
                 exit;
             }
             
-            if ($typeMapping[$type] == 'json' && isset($this->_request->callback)) {
+            if (/* $typeMapping[$type] == 'json' && */isset($this->_request->callback)) {
                 // return jsonp
                 $response->setHeader('Content-Type', 'application/javascript');
                 $padding = $this->_request->getParam('callback', '');
