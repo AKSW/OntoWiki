@@ -139,6 +139,7 @@
 <!-- Instances and untyped data -->
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/09f0eb54926bee1812479049033310d3">
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/830e87dff8a05b5ac3a2f88af0af388c" />
+
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/ee4f90db3e3b274a180709c0d61ba7a3" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/ad06188c4f69fefa3a4f14e696a43610" />
     <rdfs:comment>unspecified Basic Pattern 2010-05-20T18:59:25+0200</rdfs:comment>
@@ -148,6 +149,7 @@
   <evopat:SubPattern rdf:about="&evopat;BasicPattern/0a9a76eff86b08317fc3f74316b6928c"
     evopat:sequenceId="0">
     <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/62d5308137d956480e4a9d24f3fa4fd0" />
+
   </evopat:SubPattern>
 
   <evopat:SubPattern rdf:about="&evopat;BasicPattern/0ba455b006ddb8621d646cf191d012a0"
@@ -168,6 +170,7 @@
     <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/822b378767011d56614fbb94f244c41a" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/b3b4399b01cdb6434df69e421fae7e0a" />
     <rdfs:comment>delete only if subclass axioms existing from class One to class Two or vice versa</rdfs:comment>
+
     <rdfs:label>Delete triple for rdf:subClassOf between two classes</rdfs:label>
   </evopat:BasicPattern>
 
@@ -179,6 +182,7 @@
   <evopat:SubPattern rdf:about="&evopat;BasicPattern/628f83f53a610eee3c4de1c0a254534e"
     evopat:sequenceId="1">
     <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/adb0ecbe6f8e059568cd0b572543b3e4" />
+
   </evopat:SubPattern>
 
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/62d5308137d956480e4a9d24f3fa4fd0">
@@ -188,6 +192,7 @@
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/5d05a596c298fbf5e1f4ccfa6f7dad3e" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/b5e0040aebdb61c1cb5a407a9d7dc753" />
     <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/af96588f23ee984bbfdd75987a296d9c" />
+
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/372c9ee6d0b4772b0ae2f566d1b8ef5c" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/8f70ddc287879166b2df37ac7cefa8a6" />
     <rdfs:comment>takes as input two graphs and copies all triples into added graph</rdfs:comment>
@@ -197,11 +202,17 @@
   <evopat:SubPattern rdf:about="&evopat;BasicPattern/68f53e647b5debfe9ddb7f1c96842b95"
     evopat:sequenceId="0">
     <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/c7e846c788a6193ac848215eea1af486" />
+
   </evopat:SubPattern>
 
   <evopat:SubPattern rdf:about="&evopat;BasicPattern/883daf8180e85733136ccd5beda97380"
     evopat:sequenceId="0">
     <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/4e361bf9a8eb3542be0126e330cc8269" />
+  </evopat:SubPattern>
+
+  <evopat:SubPattern rdf:about="&evopat;BasicPattern/9b1602e0be701697f9a2d3c9b275497e"
+    evopat:sequenceId="0">
+    <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/e98be98dcf6968ff1db95d8df722ba1d" />
   </evopat:SubPattern>
 
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/a249d306d0c9b469c075c77e0ba35bfd">
@@ -221,6 +232,7 @@
     <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/6b43a2cbb061dc72f0a70f59378aa77a" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/48dfbd466cf79e1375e8b1182e85902f" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/8f70ddc287879166b2df37ac7cefa8a6" />
+
     <rdfs:comment>takes as input two graphs and copies all triples into added graph</rdfs:comment>
     <rdfs:label>Copy triples from Graph B to merged Graph</rdfs:label>
   </evopat:BasicPattern>
@@ -229,11 +241,27 @@
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/4e2c814d6f24f1f843568ba09c973946" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/ab512411e98e0012f428b2461d3cbbfc" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/c6075163247cff660359eb0cb412b8e0" />
+
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/f61806b2d326ad5e408629956f6f1d02" />
     <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/cae903a4d1c31f4a2cb1f3d47fce2cfb" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/957f7dfede817ef81f5349fe553aad0e" />
     <rdfs:comment>delete only if disjointness axioms existing from class One to class Two or vice versa or both</rdfs:comment>
     <rdfs:label>Delete triple for disjointness between two classes</rdfs:label>
+  </evopat:BasicPattern>
+
+  <evopat:BasicPattern rdf:about="&evopat;BasicPattern/e98be98dcf6968ff1db95d8df722ba1d"
+    rdfs:label="Move resource between two graphs">
+
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/1f1aca155b701181322c13b5d964ecc3" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/5109f958fdf0cefe16d4ad7a2457948d" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/c75b942fbc09fb61d9dc41737c9e0cca" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/de0d3e867c056ad1177b83d664e6adcb" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/ef091de4b841b179cad293f2db98cd3b" />
+    <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/b58ac025de2c2706ff95135102a3544f" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/0b07dd34e5239a1cfcfb5e600f3fd289" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/93474db164c328b12c3c66ac75eb45e9" />
+    <rdfs:comment>copies all triples (predicates and objects) for a given to an other graph deleting from original one.</rdfs:comment>
+
   </evopat:BasicPattern>
 
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/f191d06d319ba182553c36485a60a29b">
@@ -243,6 +271,7 @@
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/f61806b2d326ad5e408629956f6f1d02" />
     <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/8b399b13640f8fdf0a97d9e3cfc67746" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/4c04eb527825958df5be567a912f164e" />
+
     <rdfs:comment>delete only if equivalence axioms existing from class One to class Two or vice versa or both</rdfs:comment>
     <rdfs:label>Delete triple for equivalence between two classes</rdfs:label>
   </evopat:BasicPattern>
@@ -253,6 +282,7 @@
   </evopat:SubPattern>
 
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/f8d1849c21237107c204a5c48404f191">
+
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/74789db8d4a2fb21e4750df1d1e66b78" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/ad9e2928d010e4131de714dcfaadb70c" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/9a6266fb673ff18a7e07833fa3fecd30" />
@@ -262,6 +292,7 @@
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/479b25c696f7eea16341b41041e1dd10"
     rdfs:comment="Adds owl:disjointWith for two classes">
+
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/0ba455b006ddb8621d646cf191d012a0" />
     <rdfs:label>Add class axiom owl:disjointWith for two classes</rdfs:label>
   </evopat:ComplexPattern>
@@ -281,6 +312,7 @@
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/89239dda179c7e93415ea9ad6c1ea1f0">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/4876f82bf35a61ef099d9c8d4aa6b54a" />
+
     <rdfs:comment>Adds owl:equivalentClass for two classes</rdfs:comment>
     <rdfs:label>Add class axiom owl:owl:equivalentClass for two classes</rdfs:label>
   </evopat:ComplexPattern>
@@ -300,7 +332,14 @@
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/b1d304abe75b3a4440d637a00ebcf1a6">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/f76ce568bc1be3d3f660752ec7839ad2" />
     <rdfs:comment>Removes owl:equivalentClass for two classes</rdfs:comment>
+
     <rdfs:label>Delete class axiom owl:equivalentClass for two classes</rdfs:label>
+  </evopat:ComplexPattern>
+
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/c3c3c7adf8a2ff6070e2766795b291cd"
+    rdfs:label="Move resource between two graphs">
+    <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/9b1602e0be701697f9a2d3c9b275497e" />
+    <rdfs:comment>Moves resource from A to B with related values (means predicates and objects for fixed subject)</rdfs:comment>
   </evopat:ComplexPattern>
 
   <evopat:PatternVariable_GRAPH rdf:about="&evopat;PatternVariable/0843715ccefdf61356e03a2cd0bef25c"
@@ -310,6 +349,10 @@
   <evopat:PatternVariable_GRAPH rdf:about="&evopat;PatternVariable/0f263ef6045b4bfdc71d9af7b8e6f9b2"
     rdfs:comment="the graph to merge into"
     rdfs:label="mergedGraph" />
+
+  <evopat:PatternVariable_GRAPH rdf:about="&evopat;PatternVariable/1f1aca155b701181322c13b5d964ecc3"
+    rdfs:comment="target graph"
+    rdfs:label="target" />
 
   <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/2f9b43cc058fc204391703e6d819bf5e"
     rdfs:label="p">
@@ -331,6 +374,10 @@
   <evopat:PatternVariable_CLASS rdf:about="&evopat;PatternVariable/4e2c814d6f24f1f843568ba09c973946"
     rdfs:comment="classname One"
     rdfs:label="classOne" />
+
+  <evopat:PatternVariable_GRAPH rdf:about="&evopat;PatternVariable/5109f958fdf0cefe16d4ad7a2457948d"
+    rdfs:comment="source graph"
+    rdfs:label="source" />
 
   <evopat:PatternVariable_CLASS rdf:about="&evopat;PatternVariable/5ac4c6f0762c53bfb5368683606e9b97"
     rdfs:comment=""
@@ -368,9 +415,21 @@
     rdfs:comment="temp to store one class"
     rdfs:label="tempA" />
 
+  <evopat:PatternVariable_RESOURCE rdf:about="&evopat;PatternVariable/c75b942fbc09fb61d9dc41737c9e0cca"
+    rdfs:comment="the resource to move"
+    rdfs:label="resourceMove" />
+
+  <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/de0d3e867c056ad1177b83d664e6adcb"
+    rdfs:comment=""
+    rdfs:label="p" />
+
   <evopat:PatternVariable_CLASS rdf:about="&evopat;PatternVariable/ee4f90db3e3b274a180709c0d61ba7a3"
     rdfs:comment=""
     rdfs:label="eqClassOne" />
+
+  <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/ef091de4b841b179cad293f2db98cd3b"
+    rdfs:comment=""
+    rdfs:label="o" />
 
   <evopat:PatternVariable_CLASS rdf:about="&evopat;PatternVariable/f61806b2d326ad5e408629956f6f1d02"
     rdfs:comment="classname Two"
@@ -384,11 +443,13 @@
     rdfs:label="FROM %graphB% WHERE {%S% %P% %O%}" />
 
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/822b378767011d56614fbb94f244c41a">
+
     <rdfs:label>{ %tempA% &lt;http://www.w3.org/2000/01/rdf-schema#subClassOf&gt; %tempB% . FILTER ( ( sameTerm(%tempA%,%classOne%) &amp;&amp; sameTerm(%tempB%,%classTwo%) ) || ( sameTerm(%tempA%,%classTwo%) &amp;&amp; sameTerm(%tempB%,%classOne%) ) ) }</rdfs:label>
   </evopat:SelectQuery>
 
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/8b399b13640f8fdf0a97d9e3cfc67746">
     <rdfs:label>{ %tempA% &lt;http://www.w3.org/2002/07/owl#equivalentClass&gt; %tempB% . FILTER ( ( sameTerm(%tempA%,%classOne%) &amp;&amp; sameTerm(%tempB%,%classTwo%) ) || ( sameTerm(%tempA%,%classTwo%) &amp;&amp; sameTerm(%tempB%,%classOne%) ) ) }</rdfs:label>
+
   </evopat:SelectQuery>
 
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/8d819ea449244282fc2d8ba2fbe835e2"
@@ -397,9 +458,19 @@
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/af96588f23ee984bbfdd75987a296d9c"
     rdfs:label="FROM %graphA% WHERE {%S% %P% %O%}" />
 
+  <evopat:SelectQuery rdf:about="&evopat;SelectQuery/b58ac025de2c2706ff95135102a3544f">
+    <rdfs:label>FROM %source% WHERE {%resourceMove% %p% %o% . }</rdfs:label>
+  </evopat:SelectQuery>
+
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/cae903a4d1c31f4a2cb1f3d47fce2cfb">
     <rdfs:label>{ %tempA% &lt;http://www.w3.org/2002/07/owl#disjointWith&gt; %tempB% . FILTER ( ( sameTerm(%tempA%,%classOne%) &amp;&amp; sameTerm(%tempB%,%classTwo%) ) || ( sameTerm(%tempA%,%classTwo%) &amp;&amp; sameTerm(%tempB%,%classOne%) ) ) }</rdfs:label>
   </evopat:SelectQuery>
+
+  <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/0b07dd34e5239a1cfcfb5e600f3fd289"
+    evopat:updatePatternGraph="%source%"
+    evopat:updatePatternObject="%o%"
+    evopat:updatePatternPredicate="%p%"
+    evopat:updatePatternSubject="%resourceMove%" />
 
   <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/1cecdad62e2f7c67f9fa0f745cf203bc"
     evopat:updatePatternObject="%disjointTwo%"
@@ -436,9 +507,16 @@
     evopat:updatePatternPredicate="%P%"
     evopat:updatePatternSubject="%S%" />
 
+  <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/93474db164c328b12c3c66ac75eb45e9"
+    evopat:updatePatternGraph="%target%"
+    evopat:updatePatternObject="%o%"
+    evopat:updatePatternPredicate="%p%"
+    evopat:updatePatternSubject="%resourceMove%" />
+
   <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/957f7dfede817ef81f5349fe553aad0e"
     evopat:updatePatternObject="%tempB%"
     evopat:updatePatternSubject="%tempA%">
+
     <evopat:updatePatternPredicate>&lt;http://www.w3.org/2002/07/owl#disjointWith&gt;</evopat:updatePatternPredicate>
   </evopat:UpdateQuery_Delete>
 
@@ -452,6 +530,7 @@
     evopat:updatePatternObject="%eqClassTwo%"
     evopat:updatePatternSubject="%eqClassOne%">
     <evopat:updatePatternPredicate>&lt;http://www.w3.org/2002/07/owl#equivalentClass&gt;</evopat:updatePatternPredicate>
+
   </evopat:UpdateQuery_Insert>
 
   <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/b3b4399b01cdb6434df69e421fae7e0a"
