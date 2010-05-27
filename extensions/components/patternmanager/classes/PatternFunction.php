@@ -13,13 +13,12 @@
 class PatternFunction {
     
     public function executeFunction ($data, $bind, $asString = false) {
-        
         $funcOptions = array();
         foreach ($data['param'] as $param) {
             if ($param['type'] === 'function') {
-                $options[] = $this->executeFunc($param, $bind, true);
+                $options[] = $this->executeFunction($param, $bind, true);
             } elseif ( $param['type'] === 'temp') {
-                $options[] = $bind[$param['value']];
+                $options[] = $bind[$param['value']]['value'];
             } else {
                 $options[] = $param['value'];
             }
@@ -41,6 +40,11 @@ class PatternFunction {
     
     public function isFunctionAvailable($funcName) {
         return is_callable( array($this,'call' . $funcName));
+    }
+    
+    private function callGetnamespace($options = array()) {
+        $data = array('value' => 'http://fancy-ns.com/' , 'type' => 'uri');
+        return $data;
     }
     
     private function callGettempuri($options = array()) {

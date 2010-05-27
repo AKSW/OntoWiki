@@ -498,7 +498,7 @@ class BasicPattern {
                     $parts[] = array( 'value' => $current, 'type' => 'variable');
                 }
             } else {
-                throw new RuntimeException('undefined entity: ' . $current);
+                throw new RuntimeException('undefined entity: ' . $part);
             }
         }
         
@@ -567,7 +567,7 @@ class BasicPattern {
         $func = new PatternFunction();
         
         if ( !$func->isFunctionAvailable($name) ) {
-            throw new RuntimeException('BasicPattern invalid builtinFunction name');
+            throw new RuntimeException('BasicPattern invalid builtinFunction name ' . $name);
         }
         
         $last = -1;

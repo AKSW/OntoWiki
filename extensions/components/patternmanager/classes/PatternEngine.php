@@ -71,8 +71,11 @@ class PatternEngine {
                 Erfurt_Syntax_RdfParser::LOCATOR_FILE,
                 false
             );
+            //set editable
+            $model->setEditable(true);
             //set to hidden
-            $model->setOption($erfurt->getConfig()->sysont->properties->hidden);
+            $hidden[] = array('value' => 'true', 'type'=> 'literal');
+            $model->setOption($erfurt->getConfig()->sysont->properties->hidden, $hidden);
             // enable versioning again
             $this->_versioning->enableVersioning(true);
         }
