@@ -68,6 +68,14 @@ RDFauthorPropertySelector.prototype.init = function () {
     
     $('#property-value-' + this.id).keypress(function(e) {
         if (e.which == 13 /* return */) {
+            instance.currentUri   = $(this).val();
+            
+            if (String(instance.currentUri).lastIndexOf('#') > -1) {
+                instance.currentTitle = String(instance.currentUri).substr(String(instance.currentUri).lastIndexOf('#') + 1);
+            } else {
+                instance.currentTitle = String(instance.currentUri).substr(String(instance.currentUri).lastIndexOf('/') + 1);
+            }
+            
             instance.options.callback();
         }
     });
