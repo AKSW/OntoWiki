@@ -608,57 +608,63 @@ class NavigationController extends OntoWiki_Controller_Component
         $return .= "?init";
         $conf = array();
         // there is a shortcut for rdfs classes
-        if ( isset($setup->config->instanceRelation->out) || isset($setup->config->instanceRelation->in) ) {
-            if( isset($setup->config->instanceRelation->out) &&
-                    ($setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
-                    ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ){
+        if( isset($setup->config->list->config) ){
+            $conf_string = str_replace("|", '"', $setup->config->list->config);
+            $conf_string = str_replace("%resource%", $uri, $conf_string);
+            $filter_conf = json_decode($conf_string);
+            $conf = $filter_conf;
+        }else{
+            if ( isset($setup->config->instanceRelation->out) || isset($setup->config->instanceRelation->in) ) {
+                if( isset($setup->config->instanceRelation->out) &&
+                        ($setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
+                        ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ){
+                    $conf['filter'][] = array(
+                        'mode' => 'rdfsclass',
+                        'rdfsclass' => $uri,
+                        'action' => 'add'
+                    );
+                }else{
+                    if(isset($setup->config->instanceRelation->out)){
+                        foreach($setup->config->instanceRelation->out as $out){
+                            $conf['filter'][] = array(
+                                //'action' => 'add',
+                                //'mode' => 'box',
+                                //'id' => 'inrelations',
+                                'property' => $uri,
+                                //'isInverse' => false,
+                                //'propertyLabel' => 'out',
+                                'filter' => 'bound',
+                                //'value1' => null, //$uri,
+                                //'value2' => null,
+                                //'valuetype' => 'uri',
+                                //'literaltype' => null,
+                                //'hidden' => false
+                            );
+                        }
+                    }
+                    /*if(isset($setup->config->instanceRelation->in)){
+                        foreach($setup->config->hierarchyRelations->in as $in){
+                            $conf['filter'][] = array(
+                                'mode' => 'box',
+                                'action' => 'add',
+                                'id' => 'box2',
+                                'filter' => 'equals',
+                                'isInverse' => 'false',
+                                'property' => $uri,
+                                'value' => $in
+                            );
+                        }
+                    }*/
+                }
+            } else {
                 $conf['filter'][] = array(
-                    'mode' => 'rdfsclass',
-                    'rdfsclass' => $uri,
+                    'mode' => 'cnav',
+                    'cnav' => $setup,
+                    'uri'  => $uri,
                     'action' => 'add'
                 );
-            }else{
-                if(isset($setup->config->instanceRelation->out)){
-                    foreach($setup->config->instanceRelation->out as $out){
-                        $conf['filter'][] = array(
-                            //'action' => 'add',
-                            //'mode' => 'box',
-                            //'id' => 'inrelations',
-                            'property' => $uri,
-                            //'isInverse' => false,
-                            //'propertyLabel' => 'out',
-                            'filter' => 'bound',
-                            //'value1' => null, //$uri,
-                            //'value2' => null,
-                            //'valuetype' => 'uri',
-                            //'literaltype' => null,
-                            //'hidden' => false
-                        );
-                    }
-                }
-                /*if(isset($setup->config->instanceRelation->in)){
-                    foreach($setup->config->hierarchyRelations->in as $in){
-                        $conf['filter'][] = array(
-                            'mode' => 'box',
-                            'action' => 'add',
-                            'id' => 'box2',
-                            'filter' => 'equals',
-                            'isInverse' => 'false',
-                            'property' => $uri,
-                            'value' => $in
-                        );
-                    }
-                }*/
             }
-        } else {
-            $conf['filter'][] = array(
-                'mode' => 'cnav',
-                'cnav' => $setup,
-                'uri'  => $uri,
-                'action' => 'add'
-            );
         }
-
         //$this->_owApp->logger->info("conf: ".print_r($conf,true));
 
         return $return . "&instancesconfig=".urlencode(json_encode($conf));
