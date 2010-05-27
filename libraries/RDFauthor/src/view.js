@@ -242,7 +242,7 @@ RDFauthorView.prototype.getPropertySelector = function () {
         var instance  = this;
         
         var graph   = RDFauthor.getDefaultGraph();
-        var subject = RDFauthor.getDefaultResource();
+        var subject = RDFauthor.getDefaultResource() ? RDFauthor.getDefaultResource() : this.getPrimarySubject();
         
         var selectorOptions = {
             container: '.' + this.options.rowContainerClass, 
@@ -292,6 +292,15 @@ RDFauthorView.prototype.getRow = function (id) {
 RDFauthorView.prototype.getRowForSubjectAndProperty = function (subject, property) {
     return this.rows[subject][property];
 };
+
+RDFauthorView.prototype.getPrimarySubject = function () {
+    // return first subject
+    for (var subject in this.rows) {
+        return subject;
+    }
+    
+    return null;
+}
 
 RDFauthorView.prototype.hide = function (animated, callback) {
     if (!animated) {
