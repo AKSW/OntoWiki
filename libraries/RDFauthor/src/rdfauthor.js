@@ -367,7 +367,7 @@ RDFauthor = {
     
     // returns the default graph that receives newly added statements
     getDefaultGraph: function () {
-        if (null === this.defaultGraph) {
+        if (!this.defaultGraph) {
             var defaultGraph = null;
             var defaultQueryEndpoint = null;
             var defaultUpdateEndpoint = null;
@@ -376,11 +376,16 @@ RDFauthor = {
                 // get default graph from options
                 defaultGraph          = this.options.defaultGraph;
                 defaultUpdateEndpoint = this.getDefaultUpdateEndpoint();
-            } else {
+            } else if ($('link[rel$=defaultGraph]').length > 0) {
                 // try RDFa
                 defaultGraph          = $('link[rel$=defaultGraph]').attr('href');
                 defaultQueryEndpoint  = $('link[about=' + defaultGraph + '][rel$=queryEndpoint]').attr('href');
                 defaultUpdateEndpoint = $('link[about=' + defaultGraph + '][rel$=updateEndpoint]').attr('href');
+            } else {
+                // get primary graph
+                for (var graph in this.databanks) {
+                    return graph;
+                }
             }
             
             if (defaultGraph) {
@@ -408,7 +413,7 @@ RDFauthor = {
     getDefaultResource: function () {
         if (this.options.defaultResource) {
             return this.options.defaultResource;
-        }
+        }        
         
         return null;
     }, 
@@ -557,7 +562,11 @@ RDFauthor = {
             }
         }
         
-        return this.graphInfo[graph].queryEndpoint;
+        if (this.graphInfo[graph]) {
+            return this.graphInfo[graph].queryEndpoint;
+        }
+        
+        return null;
     }, 
     
     // returns a new widget instance that has been registered for hook
@@ -739,9 +748,9 @@ RDFauthor = {
     // performs a SPARQL query to the store accociated with the graph provided
     // and returns a JSON object to the function supplied as callback parameter
     query: function (graph, query, callbackSuccess, callbackError, async) {
-        if (graph) {
-            var endpoint = this.getServiceUriForGraph(graph);
-
+        var endpoint = this.getServiceUriForGraph(graph);
+        
+        if (endpoint) {
             // parameters
             var endpointParams = {
                 'query': query, 
@@ -867,7 +876,7 @@ RDFauthor = {
     // or adds a click event to the element
     makeElementEditable: function (element, triple, graph) {
         if (graph instanceof RDFBlankNode) {
-            graph = this.getDefaultGraph();
+            graph = '';
         }
         
         var ignore = false;
@@ -1310,8 +1319,6 @@ RDFauthor.loadScript([
     widgetBase + 'src/propertyselector.js'
 ], function() {
     RDFauthor.loadScript([
-        // RDFa parser
-        widgetBase + 'libraries/rdfa.js', 
         // rdfquery libs
         widgetBase + 'libraries/jquery.rdfquery.core.js', 
         // widgets
@@ -1321,7 +1328,9 @@ RDFauthor.loadScript([
         widgetBase + 'src/resourceedit.js', 
         widgetBase + 'src/metaedit.js',
         widgetBase + 'src/teluriedit.js',
-        widgetBase + 'src/mailtouriedit.js'
+        widgetBase + 'src/mailtouriedit.js', 
+        // RDFa parser
+        widgetBase + 'libraries/rdfa.js'
     ], function() {
         if (typeof rdfauthor_loaded_callback === 'function') {
             rdfauthor_loaded_callback();

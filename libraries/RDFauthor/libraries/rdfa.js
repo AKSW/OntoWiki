@@ -1745,7 +1745,8 @@ RDFA.traverse = function (element, subject, namespaces, oldLang, base, hanging, 
             if (datatype == '')
               datatype = null;
           } else {
-            content = element.innerHTML;
+            // content = element.innerHTML;
+            content = element.textContent;
             if (content != element.textContent)
               datatype = "rdf:XMLLiteral";
           }
