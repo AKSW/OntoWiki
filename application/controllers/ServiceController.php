@@ -523,10 +523,10 @@ class ServiceController extends Zend_Controller_Action
                 // 
             }
             
-            if (isset($this->_request->callback)) {
+            if (empty($type) && isset($this->_request->callback)) {
                 // JSONp
                 $type = 'application/sparql-results+json';
-            } else {
+            } else if (empty($type)) {
                 // dafault: XML
                 $type = 'application/sparql-results+xml';
             }
