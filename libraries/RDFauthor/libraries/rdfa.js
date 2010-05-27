@@ -1298,8 +1298,10 @@ RDFA.getNodeAttributeValue = function(element, attr) {
         return null;
 
     if (element.getAttribute) {
-        if (element.getAttribute(attr))
-            return(element.getAttribute(attr));
+        var value = element.getAttribute(attr);
+        if (value || value == '') {
+            return value;
+        }
     }
 
     if (element.attributes == undefined)
@@ -1571,12 +1573,15 @@ RDFA.clear_hanging = function(hanging) {
 //
 // 2010-04-07 NH
 // added graph parameter
-RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, graph) {
+RDFA.traverse = function (element, subject, namespaces, oldLang, base, hanging, graph) {
     // are there namespaces declared
     namespaces = RDFA.add_namespaces(element,namespaces);
     
     // replace the lang if it's non null
-    lang = RDFA.getNodeAttributeValue(element, 'xml:lang') || lang;
+    var lang = RDFA.getNodeAttributeValue(element, 'xml:lang');
+    if (undefined === lang) {
+        lang = oldLang;
+    }
     
     // 2010-04-07 NH
     // check for named graph attribute
