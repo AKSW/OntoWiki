@@ -9,6 +9,10 @@
 var widgetBase = widgetBase || 'http://localhost/ontowiki/libraries/RDFauthor/';
 
 (function() {
+    window.onerror = function (msg, url, line) {
+        alert(line);
+    };
+    
     var loadScripts = function(urls, callback) {
         // make sure array
         if (urls.constructor !== Array) {
@@ -22,7 +26,7 @@ var widgetBase = widgetBase || 'http://localhost/ontowiki/libraries/RDFauthor/';
             s.src = urls[i];
 
             if ((i === (max - 1)) && (typeof callback == 'function')) {
-                if ($.browser.msie) {
+                if (s.onreadystatechange) {
                     s.onreadystatechange = function () {
                         if (this.readyState === 'loaded' || this.readyState === 'complete') {
                             callback();

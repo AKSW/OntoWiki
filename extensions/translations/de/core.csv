@@ -50,11 +50,18 @@ Login;Anmeldung
 No matches.;Keine Entsprechungen.
 Predicates;Prädikate
 Similar Instances;"Ähnliche Instanzen"
-Instances Linking Here;Hierher verweisende Instanzen
+Instances Linking Here;Verlinkte Ressourcen
 Usage as Property;Auftreten als Prädikat
 Not implemented yet.;Noch nicht implementiert.
+Latest Changes;Aktuelle Änderungen
+Latest Discussions;Aktuelle Diskussionen
+Comments, Descriptions and Notes;Kurzbeschreibung
+Search for Resources;Suche nach Ressourcen
+Source;Quellcode
+by;von
 Objects;Objekte
 Subjects;Subjekte
+
 
 # Komponenten
 # TODO: sollten Komponenten ihre Übersetzung selbst verwalten?
@@ -69,7 +76,8 @@ User;Benutzer
 Register New User;Neuen Benutzer registrieren
 Preferences;Einstellungen
 Logout;Abmelden
-View;Darstellung
+View;Ansicht
+Edit;Bearbeiten
 Extras;Extras
 SPARQL Query Editor;SPARQL-Anfrage-Editor
 File Resource Manager;Dateiressourcen-Manager
@@ -137,6 +145,7 @@ Export Knowledge Base as RDF/JSON;Wissensbasis als RDF/JSON exportieren
 Export Knowledge Base as RDF/N3;Wissensbasis als RDF/N3 exportieren
 Export Knowledge Base as RDF/JSON (Talis);Wissensbasis als RDF/JSON (Talis) exportieren
 Export Knowledge Base as Turtle;Wissensbasis als Turtle exportieren
+Export Knowledge Base as Notation 3;Wissensbasis als N3 exportieren
 Delete Knowledge Base;Wissensbasis löschen
 
 # Wochentage
@@ -182,3 +191,21 @@ SPARQL Query Results XML Format
 Render Ressources as OntoWiki Links
 Create New Knowledge Base
 FOAFSSL;FOAF+SSL
+
+# explore tags module
+Explore Tags;Schlagwörter / Tag-Wolken
+Reset Explore Tags Box;Modul zurücksetzen
+Reset selected tags;Tag-Auswahl zurücksetzen
+Number of showed tags;Anzahl Tags
+Sort;Sortierung
+by name; nach Name
+by frequency;nach Anzahl
+
+# navigation module
+Number of Elements;Anzahl Ressourcen
+Toggle Elements;Spezielle Elemente
+Reset Navigation;Navigation zurücksetzen
+Add Resource here;Ressource hier anlegen
+Hide Hidden Elements;Versteckte Ressourcen einblenden
+Hide Hidden Elements;Versteckte Ressourcen ausblenden
+

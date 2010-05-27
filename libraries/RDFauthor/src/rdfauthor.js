@@ -550,8 +550,14 @@ RDFauthor = {
     
     // returns the SPARQL service URI for a given graph
     getServiceUriForGraph: function (graph) {
-        var queryEndpoint = this.graphInfo[graph].queryEndpoint;
-        return queryEndpoint;
+        var queryEndpoint;
+        if (graph == this.getDefaultGraph()) {
+            if (this.options.defaultQueryEndpoint) {
+                return this.options.defaultQueryEndpoint;
+            }
+        }
+        
+        return this.graphInfo[graph].queryEndpoint;
     }, 
     
     // returns a new widget instance that has been registered for hook
@@ -741,7 +747,7 @@ RDFauthor = {
                 'query': query, 
                 'default-graph-uri': graph
             };
-
+            
             // call the JSON service via low-level ajax method
             $.ajax({
                 'dataType': 'jsonp', 
@@ -860,6 +866,10 @@ RDFauthor = {
     // depending on the current edit mode adds a triple row to the edit view
     // or adds a click event to the element
     makeElementEditable: function (element, triple, graph) {
+        if (graph instanceof RDFBlankNode) {
+            graph = this.getDefaultGraph();
+        }
+        
         var ignore = false;
         
         // check if namespace should be ignored
