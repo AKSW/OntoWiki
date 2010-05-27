@@ -65,6 +65,12 @@ RDFauthorPropertySelector.prototype.init = function () {
         instance.currentTitle = data[0];
         instance.options.callback();
     });
+    
+    $('#property-value-' + this.id).keypress(function(e) {
+        if (e.which == 13 /* return */) {
+            instance.options.callback();
+        }
+    });
 };
 
 RDFauthorPropertySelector.prototype.dismiss = function (animated) {
