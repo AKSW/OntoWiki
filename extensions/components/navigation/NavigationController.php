@@ -613,6 +613,13 @@ class NavigationController extends OntoWiki_Controller_Component
             $conf_string = str_replace("%resource%", $uri, $conf_string);
             $filter_conf = json_decode($conf_string);
             $conf = $filter_conf;
+        }else if( isset($setup->config->list->query) ){
+            $config_query = str_replace("%resource%", $uri,$setup->config->list->query);
+
+            $conf['filter'][] = array(
+                'mode' => 'query',
+                'query' => $config_query
+            );
         }else{
             if ( isset($setup->config->instanceRelation->out) || isset($setup->config->instanceRelation->in) ) {
                 if( isset($setup->config->instanceRelation->out) &&
