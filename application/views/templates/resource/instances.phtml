@@ -1,7 +1,7 @@
 
 <div id="permalink" class="messagebox" style="display:none"><?php echo $this->permalink; ?></div>
-<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($this->resourceQuery); ?><br><a href="<?php echo $this->urlBase; ?>model/query/?query=<?php echo urlencode($this->resourceQuery)?>">Open in editor</a></div>
-<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($this->valueQuery); ?><br><a href="<?php echo $this->urlBase; ?>model/query/?query=<?php echo urlencode($this->valueQuery)?>">Open in editor</a></div>
+<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($this->resourceQuery); ?><br><a href="<?php echo $this->urlBase; ?>querybuilding/editor/?query=<?php echo urlencode($this->resourceQuery)?>">Open in editor</a></div>
+<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($this->valueQuery); ?><br><a href="<?php echo $this->urlBase; ?>querybuilding/editor/?query=<?php echo urlencode($this->valueQuery)?>">Open in editor</a></div>
 
 <?php $odd = true; if ($this->has('instanceInfo')): ?>
     <table class="separated-vertical"

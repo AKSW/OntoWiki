@@ -1,5 +1,6 @@
 $(document).ready(function() {
-	$("#savequerybutton").click(function(){
+	$("#savequerybutton").unbind("click");
+        $("#savequerybutton").click(function(){
 		var box = $("#savebox");
 		if(box.hasClass("querybuilder")){
 			$.get(urlBase+"querybuilder/updatesparql", {json: $('#hidden_json').val() , limit: $("#limit").val()}, function(query){
@@ -26,7 +27,7 @@ $(document).ready(function() {
 			});
 						
 		} else if(box.hasClass("graphicalquerybuilder")){
-			if (!GQB.view.selectedViewClass) { alert(GQB.translate("noPatternSelMsg")); return; }
+			if (!GQB.view.selectedViewClass) {alert(GQB.translate("noPatternSelMsg"));return;}
 			var modelPattern = GQB.view.selectedViewClass.parentViewPattern.modelPattern;
 			if (!modelPattern) return;  // sollte nicht passieren, ist schwerer Fehler
 			modelPattern.name = $('#qname').val();
@@ -40,13 +41,15 @@ $(document).ready(function() {
 			      data: ({
 					json: "",
 					name: $('#qname').val(),
-					qdesc: $('#qdesc').val(),
-					"query": $(".code-input[name=query]").val(),
+					"query": editor.getCode(),
 					generator: "qe",
 					//share: $("#savequerysharecheckbox").is(':checked') ? "true" : "false"
 					share: "true"
 				  }),
 			      dataType: "text",
+                              error: function(xmlHttpObj, type, error){
+                                  alert ("error");
+                              },
 			      success: function(msg){
 			         //TODO check for status
 					 if (msg != "All OK") {
@@ -68,5 +71,5 @@ $(document).ready(function() {
 		
 	
 	});
-	$(".inner-label").innerLabel();
+	$('#qname').innerLabel();
 });

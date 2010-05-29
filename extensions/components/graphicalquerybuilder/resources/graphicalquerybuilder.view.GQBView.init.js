@@ -120,10 +120,10 @@ GQBView.prototype.initCanvas = function() {
  */
 GQBView.prototype.initMouseMoveAndDropHandlers = function() {
     $(".navigation.Resource").livequery(
-        function(){ $(this).draggable({
+        function(){$(this).draggable({
             appendTo: 'body',
             iframeFix: false,
-            cursorAt: { right: 0 },
+            cursorAt: {right: 0},
             zIndex: 1000,
             ghosting: true,
             revert: true,
@@ -317,7 +317,7 @@ GQBView.prototype.initMouseMoveAndDropHandlers = function() {
 				// we need to get the saved query from the DB, and for that we need it's "saveId",
 				// which is stored in the html attribute "modelId":
 				var savedpattern = GQB.view.findModelObjectById($(ui.draggable).attr("modelId"));
-				if ((!savedpattern.saveId && savedpattern.saveId != 0) || !savedpattern.type) { alert("saveId oder type undefiniert! ("+$(ui.draggable).attr("modelId")+")"); return; }
+				if ((!savedpattern.saveId && savedpattern.saveId != 0) || !savedpattern.type) {alert("saveId oder type undefiniert! ("+$(ui.draggable).attr("modelId")+")");return;}
 				var sp_id = savedpattern.saveId;
 				// this sparql query gets the desired saved query from the DB:
 				var getSavedQuery = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> \
@@ -348,7 +348,7 @@ GQBView.prototype.initMouseMoveAndDropHandlers = function() {
 				GQB.view.findViewClassById(dummyStartClass.id).wait();  // show spinner
 
 				// send the query:
-				$.ajaxSetup({ 'beforeSend': function(xhr) {xhr.setRequestHeader("Accept", "application/sparql-results+json")} }) 
+				$.ajaxSetup({'beforeSend': function(xhr) {xhr.setRequestHeader("Accept", "application/sparql-results+json")}}) 
 				jQuery.post(
 					endpoint, 
 					{
@@ -414,8 +414,9 @@ GQBView.prototype.initMouseMoveAndDropHandlers = function() {
 			var draggedClass = GQB.model.findRDFClassByUri($(ui.draggable).attr("about"));
 			if (!draggedClass) {
 				//not found - ontowiki tree does some strange things
-				alert("not found: "+draggedClass);
+				//alert("not found: "+draggedClass);
 				draggedClass = new GQBrdfClass($(ui.draggable).attr("about"), $.trim($(ui.draggable).html().split("<")[0]), GQB.currLang);
+                                GQB.model.classes.push(draggedClass);
 			}
 			
 			

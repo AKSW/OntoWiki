@@ -75,7 +75,7 @@ function GQBClass(rdfType){
  * Determines if this GQBClass object is ready (has all properties and links).
  * @return true if ready, otherwise false.
  */
-GQBClass.prototype.isReady = function() { return this.type.ready; }
+GQBClass.prototype.isReady = function() {return this.type.ready;}
 
 /** 
  * Merges the properties of the passed class into this class.
@@ -403,7 +403,7 @@ GQBClass.prototype.getConformPropsAndNonConformLinksAndProps = function(){
 				FILTER(sameTerm(?type, <"+this.type.uri+">) || sameTerm(?type, <";
 
 	// the returned URI should be a property of one of the parent classes:
-	var parUris = []; for(var i=0; i < this.type.parents.length; i++) parUris[i] = this.type.parents[i].uri;
+	var parUris = [];for(var i=0; i < this.type.parents.length; i++) parUris[i] = this.type.parents[i].uri;
 	getPropertiesQuery += parUris.join(">) || sameTerm(?type, <");
 	getPropertiesQuery += ">))}";
 	// this line causes problems in mySql if ?order is optional:
@@ -426,7 +426,7 @@ GQBClass.prototype.getConformPropsAndNonConformLinksAndProps = function(){
 		url: queryUrl,
 		data: {},
 		dataType: "sparql-json",
-		accepts: { "sparql-json" : "application/sparql-results+json" },
+		accepts: {"sparql-json" : "application/sparql-results+json"},
 		success: function (strResult) {
 			var jsonResult = eval("("+strResult+")");
 			var modelconformPropsUris = new Array();
@@ -458,7 +458,7 @@ GQBClass.prototype.getConformPropsAndNonConformLinksAndProps = function(){
 						foundProp.addLabel(label,lang);
 					} else {
 						modelconformPropsUris.push(jsonResult.bindings[i].property.value);
-						myType.properties.push(new GQBProperty(uri, label, lang, exrange, order));
+						myType.properties.push(new GQBProperty(uri, label, lang, (jsonResult.bindings[i].range ? jsonResult.bindings[i].range.value : "not found"), order));
 					}
 				}
 			} else { 
@@ -484,33 +484,31 @@ GQBClass.prototype.getConformPropsAndNonConformLinksAndProps = function(){
  * Gets all properties of this GQBClass's RDF class, which are not model conform.
  * A list of all properties which are model conform must be provided, so that the
  * non model conform properties may be identified.
- * Links (owl#ObjectProperties) are identified by their range, which begins with "http".
+ * Links (owl#ObjectProperties) are identified by their range that is a class
  * @param classes An array of URIs containing all parent RDF classes to this GQBClass's RDF type
  *                as well as the URI of its own type.
  * @param modelconformPropsUris A list of model conform URIs.
  */
 GQBClass.prototype.getNonConformProps = function(modelconformPropsUris){
 	var model = GQB.model.graphs[0];
-	var getNonModelConformPropertiesQuery = 
-			"PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> \
-			PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\
-			SELECT DISTINCT ?uri ?label ?order ?range\
-			FROM <"+model+">\
-			WHERE {\
-				?instance ?uri ?o.\
-				?instance a ?type.\
-				?uri rdfs:label ?label.\
-				?uri rdfs:range ?range.\
-				OPTIONAL {?uri <http://ns.ontowiki.net/SysOnt/order> ?order}\
-				FILTER(!sameTerm(?uri, rdf:type) && !sameTerm(?uri, <";
+	var getNonModelConformPropertiesQuery = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n\
+SELECT DISTINCT ?uri ?label ?range \n\
+FROM <"+model+"> \n\
+WHERE { \n\
+    ?instance ?uri ?o . \n\
+    ?instance a ?type . \n\
+    OPTIONAL {?o rdf:type ?range } . \n\
+    OPTIONAL {?uri rdfs:label ?label} .\n\
+    FILTER(!sameTerm(?uri, rdf:type) && !sameTerm(?uri, <";
 
 	// the returned URI should not be model conform:
 	getNonModelConformPropertiesQuery += modelconformPropsUris.join(">) && !sameTerm(?uri, <");
 	getNonModelConformPropertiesQuery += ">))";
 
 	// the returned URI should be a property of one of the parent classes:
-	var parUris = []; for(var i=0; i < this.type.parents.length; i++) parUris[i] = this.type.parents[i].uri;
-	getNonModelConformPropertiesQuery += "FILTER(sameTerm(?type, <"+this.type.uri+">) || sameTerm(?type, <";
+	var parUris = [];for(var i=0; i < this.type.parents.length; i++) parUris[i] = this.type.parents[i].uri;
+	getNonModelConformPropertiesQuery += " FILTER(sameTerm(?type, <"+this.type.uri+">) || sameTerm(?type, <";
 	getNonModelConformPropertiesQuery += parUris.join(">) || sameTerm(?type, <");
 	getNonModelConformPropertiesQuery += ">))}";
 	// this line causes problems in mySql if ?order is optional:
@@ -533,33 +531,28 @@ GQBClass.prototype.getNonConformProps = function(modelconformPropsUris){
 		url: queryUrl,
 		data: {},
 		dataType: "sparql-json",
-		accepts: { "sparql-json" : "application/sparql-results+json" },
+		accepts: {"sparql-json" : "application/sparql-results+json"},
 		success: function (strResult) {
 			var jsonResult = eval("("+strResult+")");
+                        $.dump(jsonResult);
 			if (jsonResult.bindings.length > 0) {
-				var rangeclass;
 				var uri;
 				var label;
 				var lang;
 				var order;
 				var exrange;
-
-				for (var i=0; i < jsonResult.bindings.length; i++) {
+                                for (var i=0; i < jsonResult.bindings.length; i++) {
 					exrange = "";
 					uri = jsonResult.bindings[i].uri.value;
-					label = jsonResult.bindings[i].label.value;
+                                        var extracted_label = jsonResult.bindings[i].uri.value.split('/\/#/');
+                                        label = jsonResult.bindings[i].label ? jsonResult.bindings[i].label.value : extracted_label[extracted_label.length -1];
 					if (jsonResult.bindings[i].range) { 
 						exrange = jsonResult.bindings[i].range.value.split("#").pop();
 						if ( exrange == "date" || exrange == "gDay" || exrange == "gYearMonth" || exrange == "gMonth" || exrange == "gMonthDay" ) continue;
-					} 
-					if (exrange.substr(0,4) == "http") {
-						rangeclass = GQB.model.findRDFClassByUri(jsonResult.bindings[i].range.value);
-						if(rangeclass)
-							exrange = rangeclass.uri;
 					}
 					lang = " ";
 					for (var j = 0; j < GQB.supportedLangs.length; j++) {
-						if (jsonResult.bindings[i].label["xml:lang"] == GQB.supportedLangs[j]) {
+						if (jsonResult.bindings[i].label && jsonResult.bindings[i].label["xml:lang"] == GQB.supportedLangs[j]) {
 							lang = GQB.supportedLangs[j];
 							break;
 						}
@@ -570,9 +563,9 @@ GQBClass.prototype.getNonConformProps = function(modelconformPropsUris){
 					if (foundProp) {
 						foundProp.addLabel(label,lang);
 					} else {
-						var newProp = new GQBProperty(uri, label, lang, exrange, order);
-						if (exrange.substr(0,4) == "http") {
-							myType.outgoingLinks.push(newProp);
+                                                var newProp = new GQBProperty(uri, label, lang, (jsonResult.bindings[i].range ? jsonResult.bindings[i].range.value : ""), order);
+						if (jsonResult.bindings[i].range) {
+                                                        myType.outgoingLinks.push(newProp);
 							myType.nonModelConformLinks.push(newProp);
 						} else {
 							myType.properties.push(newProp);
@@ -611,14 +604,14 @@ GQBClass.prototype.getConformLinks = function(){
 					?property a <http://www.w3.org/2002/07/owl#ObjectProperty> . \
 					?property rdfs:domain ?type . \
 					?property rdfs:label ?label . \
-					?property rdfs:range ?range . \
+					{?x ?property ?class . ?class a ?range} UNION { ?property rdfs:range ?range }. \
 					OPTIONAL { \
 						?property <http://ns.ontowiki.net/SysOnt/order> ?order \
 					} \
 					FILTER(sameTerm(?type, <"+this.type.uri+">) || sameTerm(?type, <";
 
 	// the returned URI should be a property of one of the parent classes:
-	var parUris = []; for(var i=0; i < this.type.parents.length; i++) parUris[i] = this.type.parents[i].uri;
+	var parUris = [];for(var i=0; i < this.type.parents.length; i++) parUris[i] = this.type.parents[i].uri;
 	getLinksQuery += parUris.join(">) || sameTerm(?type, <");
 	getLinksQuery += ">))}";
 	// this line causes problems in mySql if ?order is optional:
@@ -640,7 +633,7 @@ GQBClass.prototype.getConformLinks = function(){
 		url: queryUrl,
 		data: {},
 		dataType: "sparql-json",
-		accepts: { "sparql-json" : "application/sparql-results+json" },
+		accepts: {"sparql-json" : "application/sparql-results+json"},
 		success: function (strResult) {
 			var jsonResult = eval("("+strResult+")");
 			if (jsonResult.bindings.length > 0) {
@@ -654,12 +647,7 @@ GQBClass.prototype.getConformLinks = function(){
 				for (var i=0; i < jsonResult.bindings.length; i++) { 
 					uri = jsonResult.bindings[i].property.value;
 					label = jsonResult.bindings[i].label.value;
-					rangeclass = GQB.model.findRDFClassByUri(jsonResult.bindings[i].range.value);
-					if(rangeclass){
-						exrange = rangeclass.uri;
-					}else{
-						exrange = "not found";
-					}
+					
 					lang = " ";
 					for (var j = 0; j < GQB.supportedLangs.length; j++) {
 						if (jsonResult.bindings[i].label["xml:lang"] == GQB.supportedLangs[j]) {
@@ -673,7 +661,7 @@ GQBClass.prototype.getConformLinks = function(){
 					if (foundProp) {
 						foundProp.addLabel(label,lang);
 					} else {
-						myType.outgoingLinks.push(new GQBProperty(uri, label, lang, exrange, order));
+						myType.outgoingLinks.push(new GQBProperty(uri, label, lang, (jsonResult.bindings[i].range ? jsonResult.bindings[i].range.value : "unknown"), order));
 					}
 				}
 			}
