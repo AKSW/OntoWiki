@@ -27,7 +27,8 @@
 //  See also http://www.w3.org/2000/10/swap/uripath.py
 //
 
-// for IE :\
+// 2010-04-07 NH
+// for IE
 if (!('indexOf' in Array.prototype)) {
     Array.prototype.indexOf = function(obj) {
         for (var i = 0; i < this.length; i++) {
@@ -665,6 +666,8 @@ function RDFIndexedFormula(features) {
     this.predicateIndex = [];  // Array of statements with this X as subject
     this.objectIndex = [];  // Array of statements with this X as object
     this.namespaces = {} // Dictionary of namespace prefixes
+    // 2010-04-07 NH
+    // would cause problem w/ sameAs etc.
     // if (typeof features == 'undefined') features = ["sameAs", "InverseFunctionalProperty", "FunctionalProperty"];
     if (typeof features == 'undefined') features = [];
 //    this.features = features
@@ -683,7 +686,7 @@ function RDFIndexedFormula(features) {
     //If the predicate is #type, use handleRDFType to create a typeCallback on the object
     this.propertyAction[
     '<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'] = handleRDFType;
-    
+
     // Assumption: these terms are not redirected @@fixme
     if (features.indexOf("sameAs") >=0)
         this.propertyAction['<http://www.w3.org/2002/07/owl#sameAs>'] =
@@ -882,7 +885,6 @@ function RDFMakeTerm(formula,val) {
         throw 'Internal: No redirection index for formula: '+ formula+', term: '+val;
     }
     OY_VAL = val;
-    
     var y = formula.redirection[val.hashString()];
     if (typeof y == 'undefined') return val;
 //    tabulator.log.debug(" redirecting "+val+" to "+y)
@@ -891,12 +893,6 @@ function RDFMakeTerm(formula,val) {
 
 // add a triple to the store
 RDFIndexedFormula.prototype.add = function(subj, pred, obj, why) {
-    
-    if (!pred) {
-        // ignore illegal triple
-        return;
-    }
-    
     var action, st, hashS, hashP, hashO;
 
     if (typeof obj == 'undefined') {
@@ -1201,8 +1197,11 @@ if (typeof(RDFA) == 'undefined') {
 
 RDFA.reset = function() {
    // reset the triple container
-   RDFA.triplestore = new RDFIndexedFormula(); // TODO: doesn't work in IE
+   // 2010-04-07 NH
+   // TODO: doesn't work in IE
+   RDFA.triplestore = new RDFIndexedFormula();
    RDFA.bnode_counter = 0;
+   RDFNextId = 0;
    RDFA.elements_by_subject = new Object();
    RDFA.elements = new Array();
    RDFA.warnings = new Array();
@@ -1267,10 +1266,13 @@ RDFA.CURIE.parse = function(str, namespaces) {
     if (prefix == '_') {
       return new RDFBlankNode(suffix);
     }
-    else if (namespaces[prefix] == null)
+    else if (namespaces[prefix] == null) {
+      // add a warning
+      RDFA.warnings.push("prefix " + prefix + " used without declaration");
       return null;
-    else
+    } else {
       return namespaces[prefix](suffix);
+    }
 };
 
 // 2007-11-25 JT
@@ -1296,8 +1298,10 @@ RDFA.getNodeAttributeValue = function(element, attr) {
         return null;
 
     if (element.getAttribute) {
-        if (element.getAttribute(attr))
-            return(element.getAttribute(attr));
+        var value = element.getAttribute(attr);
+        if (value || value == '') {
+            return value;
+        }
     }
 
     if (element.attributes == undefined)
@@ -1309,6 +1313,8 @@ RDFA.getNodeAttributeValue = function(element, attr) {
     return element.attributes[attr].value;
 };
 
+// 2010-04-07 NH
+// namespace-aware node attribute values
 RDFA.getNodeAttributeValueNS = function (element, attr, namespace, currentNamespaces) {
     // Safari, Chrome, FF, Opera
     if (element.getAttributeNS) {
@@ -1380,9 +1386,7 @@ RDFA.GRDDL = new Object();
 RDFA.GRDDL.CALLBACKS = new Array();
 
 RDFA.GRDDL.DONE_LOADING = function(url) {
-    if (typeof RDFA.GRDDL.CALLBACKS[url] == 'function') {
-        RDFA.GRDDL.CALLBACKS[url]();
-    }
+    RDFA.GRDDL.CALLBACKS[url]();
 };
 
 RDFA.GRDDL.load = function(doc, url, callback)
@@ -1438,6 +1442,11 @@ RDFA.add_triple = function (base, subject, predicate, object, literal_p, literal
   // changed the test here, since an empty string is a valid (and meaningful)
   // URI
   if (subject == null) {
+    return null;
+  }
+  
+  if (predicate == null) {
+    // likely a bad CURIE
     return null;
   }
   
@@ -1523,28 +1532,31 @@ RDFA.complete_hanging = function(hanging, new_object) {
   // nothing hanging?
   if (hanging == null) {
     return {
-      'hanging_result' : null,
-      'new_subject' : null
+      'hanging_result': null,
+      'new_subject': null, 
+      'new_triple': null
     };
   }
 
   // link to the bnode if there's no new object
   if (!new_object)
     new_object = hanging.bnode;
-    
+  
+  var triple;
   // go through the rels
   for (var i=0; i<hanging.rels.length; i++) {
-    var triple = RDFA.add_triple(hanging.base, hanging.subject, RDFA.CURIE.parse(hanging.rels[i],hanging.namespaces), new_object, false);    
+    triple = RDFA.add_triple(hanging.base, hanging.subject, RDFA.CURIE.parse(hanging.rels[i],hanging.namespaces), new_object, false);    
   }
 
   // go through the revs
   for (var i=0; i<hanging.revs.length; i++) {
-    var triple = RDFA.add_triple(hanging.base, new_object, RDFA.CURIE.parse(hanging.revs[i],hanging.namespaces), hanging.subject, false);    
+    triple = RDFA.add_triple(hanging.base, new_object, RDFA.CURIE.parse(hanging.revs[i],hanging.namespaces), hanging.subject, false);    
   }
   
   return {
     'hanging_result' : null,
-    'new_subject' : new_object
+    'new_subject' : new_object, 
+    'new_triple': triple
   }
 };
 
@@ -1559,15 +1571,25 @@ RDFA.clear_hanging = function(hanging) {
 //
 // the namespaces is an associative array where the default namespace is namespaces['']
 //
-RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, graph) {
+// 2010-04-07 NH
+// added graph parameter
+RDFA.traverse = function (element, subject, namespaces, oldLang, base, hanging, graph) {
     // are there namespaces declared
     namespaces = RDFA.add_namespaces(element,namespaces);
     
     // replace the lang if it's non null
-    lang = RDFA.getNodeAttributeValue(element, 'xml:lang') || lang;
+    var lang = RDFA.getNodeAttributeValue(element, 'xml:lang');
+    if (undefined === lang) {
+        lang = oldLang;
+    }
     
+    // 2010-04-07 NH
     // check for named graph attribute
-    graph = RDFA.getNodeAttributeValueNS(element, 'from', 'http://ns.aksw.org/update/', namespaces) || graph;
+    var newGraph;
+    if (undefined !== RDFA.NAMED_GRAPH_ATTRIBUTE) {
+        var namedGraphs = RDFA.NAMED_GRAPH_ATTRIBUTE;
+        newGraph = RDFA.getNodeAttributeValueNS(element, namedGraphs.attribute, namedGraphs.ns, namespaces) || graph;
+    }
 
     // special case the BODY
     if (element.nodeName == 'body')
@@ -1581,7 +1603,7 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
     var attrs = {};
     for (var i=0; i < attr_names.length; i++)
       attrs[attr_names[i]] = RDFA.getNodeAttributeValue(element, attr_names[i]);
-    
+
     // do we explicitly override it?
     var explicit_subject = null;
     
@@ -1620,6 +1642,12 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
       // @resource is a CURIEorURI
       explicit_object = RDFA.CURIEorURI.parse(attrs['resource'], namespaces);
     }
+    
+    // 2010-04-08 NH
+    // if the current element defines a new property, the graph must be changed immediately
+    if (attrs['rel'] != null || attrs['rev'] != null || attrs['property']) {
+        graph = newGraph;
+    }
  
     // if there's only an explicit object but no explicit subject and rel/rev
 	  // that explicit object becomes effectively an explicit subject
@@ -1640,17 +1668,26 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
        	explicit_subject = (explicit_subject == null ?  new RDFBlankNode() : explicit_subject);
 
         var triple = RDFA.add_triple(base, explicit_subject, RDFA.CURIE.parse("rdf:type",namespaces), rdf_type, false);
+        // 2010-04-07 NH
+        // added graph parameter
         RDFA.CALLBACK_NEW_TRIPLE_WITH_LITERAL_OBJECT(element_to_callback, triple, graph);
     }
 
     // Now we handle the hanging stuff
-    if (explicit_subject) {
+    // Ben: bug fix for @about="" (2008-11-03)
+    if (explicit_subject != null) {
         subject = explicit_subject;
         RDFA.associateElementAndSubject(element, RDFA.triplestore.sym(explicit_subject), namespaces);
           
         // complete hanging if necessary
         var hanging_result = RDFA.complete_hanging(hanging, explicit_subject);
         hanging = hanging_result.new_hanging;
+        
+        // 2010-04-08 NH
+        // completed hanging triples would not call callback
+        if (hanging_result.new_triple) {
+            RDFA.CALLBACK_NEW_TRIPLE_WITH_URI_OBJECT(element_to_callback, hanging_result.new_triple, graph);
+        }
     } else {
       // no explicit subject, but we may need to complete the hanging triple if we declare new predicates
       // if we have @rel, @rev, @property, we behave in the same way, by attempting to complete the hanging
@@ -1660,6 +1697,11 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
         if (hanging_result.new_subject) {
           subject = hanging_result.new_subject;
         }
+        // 2010-04-08 NH
+        // completed hanging triples would not call callback
+        if (hanging_result.new_triple) {
+            RDFA.CALLBACK_NEW_TRIPLE_WITH_URI_OBJECT(element_to_callback, hanging_result.new_triple, graph);
+        }
       }      
     }
 
@@ -1667,6 +1709,8 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
     RDFA.each_prefixed_attr_value(attrs['rel'], function(rel_value) {
       if (explicit_object != null) {
         var triple = RDFA.add_triple(base, subject, RDFA.CURIE.parse(rel_value,namespaces), explicit_object, false);
+        // 2010-04-07 NH
+        // added graph parameter
         RDFA.CALLBACK_NEW_TRIPLE_WITH_URI_OBJECT(element_to_callback, triple, graph);
       } else {
         // we hang
@@ -1678,6 +1722,8 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
     RDFA.each_prefixed_attr_value(attrs['rev'], function(rev_value) {
       if (explicit_object != null) {
         var triple = RDFA.add_triple(base, explicit_object, RDFA.CURIE.parse(rev_value,namespaces), subject, false);
+        // 2010-04-07 NH
+        // added graph parameter
         RDFA.CALLBACK_NEW_TRIPLE_WITH_URI_OBJECT(element_to_callback, triple, graph);
       } else {
         // we hang
@@ -1699,7 +1745,8 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
             if (datatype == '')
               datatype = null;
           } else {
-            content = element.innerHTML;
+            // content = element.innerHTML;
+            content = element.textContent;
             if (content != element.textContent)
               datatype = "rdf:XMLLiteral";
           }
@@ -1714,6 +1761,8 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
         RDFA.each_prefixed_attr_value(attrs['property'], function(prop_value) {
           var property = RDFA.CURIE.parse(prop_value, namespaces);
           var triple = RDFA.add_triple(base, subject, property, content, true, datatype, lang);
+          // 2010-04-07 NH
+          // added graph parameter
           RDFA.CALLBACK_NEW_TRIPLE_WITH_LITERAL_OBJECT(element_to_callback, triple, graph);                    
         });
     }
@@ -1727,6 +1776,11 @@ RDFA.traverse = function (element, subject, namespaces, lang, base, hanging, gra
     // recurse down the children
     var children = element.childNodes;
     for (var i=0; i < children.length; i++) {
+        // 2010-04-08 NH
+        // children get the new graph
+        graph = newGraph;
+        // 2010-04-07 NH
+        // added graph parameter
         RDFA.traverse(children[i], subject, namespaces, lang, base, hanging, graph);
     }
 };
@@ -1762,9 +1816,14 @@ RDFA.parse = function(parse_document, base) {
     
     // do the profiles, and then traverse
     RDFA.GRDDL.runProfiles(parse_document, function() {
+        // 2010-04-07 NH
+        // init graph w/ new blank node
+        var graph = new RDFBlankNode();
         // 2008-01-18 JT
         // the <base> provides the initial subject if it's given
-        RDFA.traverse(parse_document, RDFA.BASE, namespaces, null, RDFA.BASE, null, null);
+        // 2010-04-07 NH
+        // added graph parameter
+        RDFA.traverse(parse_document, RDFA.BASE, namespaces, null, RDFA.BASE, null, graph);
 
         RDFA.CALLBACK_DONE_PARSING();
     });

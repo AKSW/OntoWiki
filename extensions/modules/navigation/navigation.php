@@ -43,8 +43,11 @@ class NavigationModule extends OntoWiki_Module
 
         // toggle sub menu
         $toggleMenu = new OntoWiki_Menu();
+        // hidden elements
         $toggleMenu->setEntry('Hidden Elements', "javascript:navigationEvent('toggleHidden')");
+        // empty elements
         $toggleMenu->setEntry('Empty Elements', "javascript:navigationEvent('toggleEmpty')");
+        // implicit
         $toggleMenu->setEntry('Implicit Elements', "javascript:navigationEvent('toggleImplicit')");
 
         // view sub menu
@@ -103,12 +106,12 @@ class NavigationModule extends OntoWiki_Module
             $this->view->inlineScript()->prependScript(
                 '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
             );
-        }else{
-            // init view from scratch
-            $this->view->inlineScript()->prependScript(
-                '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
-            );
         }
+        
+        // init view from scratch
+        $this->view->inlineScript()->prependScript(
+            '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
+        );
 
         $data['session'] = $this->session->navigation;
         $content = $this->render('navigation', $data, 'data'); // 

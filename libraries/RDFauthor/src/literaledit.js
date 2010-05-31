@@ -158,8 +158,8 @@ LiteralEdit.prototype.onSubmit = function() {
     var newObjectDatatype    = $('#literal-datatype-' + this.id + ' option:selected').eq(0).val();
     var newObjectValue       = $('#literal-value-' + this.id).val();
     
-    // Widget added an nothing entered
-    if (this.object == '' && newObjectValue == undefined) {
+    // Widget added an nothing entered and not removing
+    if (this.object == '' && newObjectValue == undefined && !this.remove) {
         return true;
     }
     

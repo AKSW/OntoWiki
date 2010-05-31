@@ -36,12 +36,7 @@ $(document).ready(function() {
     
     if( typeof navigationStateSetup != 'undefined'){
         navigationSetup = navigationStateSetup;
-        // refresh the navigation box (quiet)
-        navigationEvent ('refresh')
     }
-
-    /* first start */
-    //navigationEvent('init');
 });
 
 /**
@@ -49,7 +44,7 @@ $(document).ready(function() {
  */
 function navigationEvent (navEvent, eventParameter) {
     var setup, navType;
-    
+
     /* init config when not existing or resetted by user */
     if ( ( typeof navigationSetup == 'undefined' ) || (navEvent == 'reset') || (navEvent == 'setType') ) {
         // set the default or setType config
@@ -73,14 +68,22 @@ function navigationEvent (navEvent, eventParameter) {
         setup = navigationSetup;
     }
     
-    //alert(setup['state']);
-    
     // delete old search string
     delete(setup['state']['searchString']);
 
     switch (navEvent) {
         case 'init':
         case 'reset':
+            // save hidden, implicit and empty to state
+            if(setup['config']['showEmptyElements'] == '1'){
+                setup['state']['showEmpty'] = true;
+            }
+            if(setup['config']['showImplicitElements'] == '1'){
+                setup['state']['showImplicit'] = true;
+            }
+            if(setup['config']['showHiddenElements'] == '1'){
+                setup['state']['showHidden'] = true;
+            }
         case 'setType':
             // remove init sign and setup module title
             navigationContainer.removeClass('init-me-please');
@@ -145,8 +148,10 @@ function navigationEvent (navEvent, eventParameter) {
         case 'toggleHidden':
             if ( typeof setup['state']['showHidden'] != 'undefined' ) {
                 delete(setup['state']['showHidden']);
+                $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Show Hidden Elements");
             } else {
                 setup['state']['showHidden'] = true;
+                $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Hide Hidden Elements");
             }
             break;
 
@@ -155,13 +160,19 @@ function navigationEvent (navEvent, eventParameter) {
             if ( typeof setup['state']['showEmpty'] == 'undefined' ) {
                 if ( typeof setup['config']['showEmptyElements'] != 'undefined' ) {
                     setup['state']['showEmpty'] = setup['config']['showEmptyElements'];
+                    if(setup['state']['showEmpty'] == true){
+                        $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
+                    }
                 } else {
-                    setup['state']['showEmpty'] = true
+                    setup['state']['showEmpty'] = true;
+                    $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
                 }
             } else if (setup['state']['showEmpty'] == false) {
                 setup['state']['showEmpty'] = true;
+                $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
             } else {
                 setup['state']['showEmpty'] = false;
+                $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Show Empty Elements");
             }
             break;
 
@@ -170,21 +181,30 @@ function navigationEvent (navEvent, eventParameter) {
             if ( typeof setup['state']['showImplicit'] == 'undefined' ) {
                 if ( typeof setup['config']['showImplicitElements'] != 'undefined' ) {
                     setup['state']['showImplicit'] = setup['config']['showImplicitElements'];
+                    if(setup['state']['showImplicit'] == true){
+                        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
+                    }else{
+                        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
+                    }
                 } else {
-                    setup['state']['showImplicit'] = true
+                    setup['state']['showImplicit'] = true;
+                    $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
                 }
             } else if (setup['state']['showImplicit'] == false) {
                 setup['state']['showImplicit'] = true;
+                $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
             } else {
                 setup['state']['showImplicit'] = false;
+                $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
             }
             break;
         case 'more':
             if( setup['state']['offset'] !== undefined  ){
                 setup['state']['offset'] = setup['state']['offset']*2;
             }else{
-                setup['state']['offset'] = setup['state']['limit']; 
+                setup['state']['offset'] = parseInt(setup['state']['limit']) + 10;
             }
+            setup['state']['limit'] = setup['state']['offset'];
             break;
 
         default:
@@ -195,11 +215,7 @@ function navigationEvent (navEvent, eventParameter) {
     setup['state']['lastEvent'] = navEvent;
     navigationSetup = setup;
     navSetup = setup;
-    if( navEvent == 'more' ){
-        navigationUpdateLoad (navEvent, setup);
-    }else{
-        navigationLoad (navEvent, setup);
-    }
+    navigationLoad (navEvent, setup);
     return; 
 }
 
@@ -217,13 +233,16 @@ function navigationLoad (navEvent, setup) {
         $.post(navigationExploreUrl, {setup: $.toJSON(setup)},
             function (data) {
                 //alert(data);
-                
                 navigationContainer.empty();
                 navigationContainer.append(data);
                 // remove the processing status
                 navigationInput.removeClass('is-processing');
 
                 switch (navEvent) {
+                    case 'more':
+                        navigationMore.remove();
+                        // remove the processing status
+                        navigationMore.removeClass('is-processing');
                     case 'refresh':
                         // no animation in refresh event (just the is processing)
                         break;
@@ -235,8 +254,6 @@ function navigationLoad (navEvent, setup) {
                         navigationContainer.css('marginLeft', '100%');
                         navigationContainer.animate({marginLeft:'0px'},'slow');
                         break;
-                    default:
-                        navigationContainer.slideDown('fast');
                 }
 
                 navigationPrepareList();
@@ -249,6 +266,10 @@ function navigationLoad (navEvent, setup) {
     navigationContainer.css('overflow', 'hidden');
 
     switch (navEvent) {
+        case 'more':
+            navigationMore = $("#naviganion-more");
+            navigationMore.html('&nbsp;&nbsp;&nbsp;&nbsp;');
+            navigationMore.addClass('is-processing');
         case 'refresh':
             // no animation in refresh event (just the is processing)
             cbAfterLoad();
@@ -260,52 +281,40 @@ function navigationLoad (navEvent, setup) {
             navigationContainer.animate({marginLeft:'-100%'},'slow', '', cbAfterLoad);
             break;
         default:
-            navigationContainer.slideUp('fast', cbAfterLoad);
+            //navigationContainer.slideUp('fast', cbAfterLoad);
+            cbAfterLoad();
     }
 
     return ;
 }
 
-/**
- * update the navigation
- */
-function navigationUpdateLoad (navEvent, setup) {
-    if (typeof setup == 'undefined') {
-        alert('error: No navigation setup given, but navigationLoad requested');
-        return;
-    }
-    
-    navigationMore = $("#naviganion-more");
-
-    // preparation of a callback function
-    var cbAfterLoad = function(){
-        $.post(navigationExploreUrl, {setup: $.toJSON(setup)},
-            function (data) {
-                navigationMore.remove();
-                navigationContainer.append(data);
-                // remove the processing status
-                //navigationMore.removeClass('is-processing');
-
-                navigationPrepareList();
-            }
-        );
+function navigationPrepareToggles(){
+    if (navigationSetup['state']['showHidden'] == true ) {
+        $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Hide Hidden Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleHidden\')']").text("Show Hidden Elements");
     }
 
-    // first we set the processing status
-    navigationMore.html('&nbsp;&nbsp;&nbsp;&nbsp;');
-    navigationMore.addClass('is-processing');
-    //navigationContainer.css('overflow', 'hidden');
-    
-    cbAfterLoad();
+    // if no state is set, use default value from config
+    if (navigationSetup['state']['showEmpty'] == true) {
+        $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Hide Empty Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleEmpty\')']").text("Show Empty Elements");
+    }
 
-    return ;
+    // if no state is set, use default value from config
+    if (navigationSetup['state']['showImplicit'] == true) {
+        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Hide Implicit Elements");
+    } else {
+        $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
+    }
 }
 
 /*
  * This function creates navigation events
  */
 function navigationPrepareList () {
-    saveState();
+    //saveState();
     
     // the links to deeper navigation entries
     $('.navDeeper').click(function(event) {
@@ -330,27 +339,8 @@ function navigationPrepareList () {
         window.location.href = $(this).attr('href');
         return false;
     })
-}
 
-/*
- * This function saves current navigation state
- */
-function saveState(){
-    var curView = $("#navigation-content").html();
-    var set = $.toJSON(navSetup);
-    // if setup is not set - do not save anything
-    if( (set.length < 3) || ( typeof set == 'undefined' ) ){ 
-        return;
-    }
-
-    // do save
-    $.post(navigationSaveUrl, {view: curView, setup: set},
-        function (data) {
-            //alert(data);
-        }
-    );
-
-    return ;
+    navigationPrepareToggles();
 }
 
 /*

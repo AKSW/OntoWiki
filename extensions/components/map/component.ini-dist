@@ -23,7 +23,8 @@ show.tab = "never"
 ;default.layer		= "Google Streets"
 ;default.layer		= "Google Hybrid"
 ;default.layer		= "Google Satellite"
-default.layer		= "Google Physical"
+;default.layer		= "Google Physical"
+default.layer		= "OpenStreetMap"
 
 default.latitude	= 51.33742874440594
 default.longitude	= 12.383565902709961

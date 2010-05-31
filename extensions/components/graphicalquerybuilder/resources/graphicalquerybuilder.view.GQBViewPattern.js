@@ -478,11 +478,11 @@ GQBViewClass.prototype.initAtPos = function(_x, _y, label) {
 	// create Raphael objects (Box, label, trash icon)
 	this.raphLabel = GQB.view.raphaelCanvas.text(this.x+(label.length*4)+2, this.y+16, label); 
 	this.raphBox = GQB.view.raphaelCanvas.rect(this.x, this.y, this.width, this.height, 10); 
-	this.raphTrashIcon = GQB.view.raphaelCanvas.image(urlBase.substr(0,urlBase.length-10)+"extensions/components/graphicalquerybuilder/resources/images/canvas-btn-close.png", this.x-1, this.y-1, 13, 13);
+	this.raphTrashIcon = GQB.view.raphaelCanvas.image(urlBase+"extensions/components/graphicalquerybuilder/resources/images/canvas-btn-close.png", this.x-1, this.y-1, 13, 13);
 	this.raphTrashIcon.node.setAttribute("class", "trashicon");
 	this.raphBox.attr({fill: GQB.view.box_color, stroke: GQB.view.box_color, "fill-opacity": 0, "stroke-width": 2});
 	this.raphBox.node.style.cursor = "move";
-	this.raphSpinnerIcon = GQB.view.raphaelCanvas.image(urlBase.substr(0,urlBase.length-10)+"extensions/components/graphicalquerybuilder/resources/images/spinner.gif", this.x+this.width/2-8, this.y+this.height/2-8, 16, 16);
+	this.raphSpinnerIcon = GQB.view.raphaelCanvas.image(urlBase+"extensions/components/graphicalquerybuilder/resources/images/spinner.gif", this.x+this.width/2-8, this.y+this.height/2-8, 16, 16);
 	this.raphSpinnerIcon.hide();
 
 	// store a reference to the GQBViewClass in the raphBox and raphTrashIcon for use in the mouse handlers:
@@ -626,7 +626,7 @@ GQBViewClass.prototype.setLabel = function(newLabel) {
 GQBViewClass.prototype.addBlackBoxIcon = function() {
 	if (this.raphBlackBoxIcon) return; // already have one
 
-	this.raphBlackBoxIcon = GQB.view.raphaelCanvas.image(urlBase.substr(0,urlBase.length-10)+"extensions/components/graphicalquerybuilder/resources/images/canvas-btn-open.png", this.x+this.width-15, this.y-1, 13, 13);
+	this.raphBlackBoxIcon = GQB.view.raphaelCanvas.image(urlBase+"extensions/components/graphicalquerybuilder/resources/images/canvas-btn-open.png", this.x+this.width-15, this.y-1, 13, 13);
 	this.raphBlackBoxIcon.parentViewPattern = this.parentViewPattern;
 	this.raphBlackBoxIcon.mousedown(function(){ this.parentViewPattern.toggleBlackBox(); });
 	this.raphObjSet.push(this.raphBlackBoxIcon);

@@ -984,7 +984,7 @@ GQBView.prototype.displayResultsByRow = function(rowStart,rowEnd) {
 				"<td style=\"border-width: 0px; padding: 0px; vertical-align:middle;\">"+
 				"<span class=\"gqbcolumnheader\" colId=\""+c+"\" style=\"background: #EFEFEF;\">"+this.resultColumns[c][0].substring(0,1).toUpperCase()+this.resultColumns[c][0].substring(1)+"</span>&nbsp;&nbsp;"+
 				"</td><td style=\"border-width: 0px; padding: 0px; vertical-align:middle;\">"+
-				"<div style='width: 38px; float: right;' class='gqb-button-sort'><a cIdx="+c+" class=\"gqb-button-sortdesc\"><img src='"+urlBase.substr(0,urlBase.length-10)+"extensions/components/graphicalquerybuilder/resources/images/icon-downarrow.png' title='"+GQB.translate("sortColDescMsg")+"' /></a>&nbsp;<a cIdx="+c+" class=\"gqb-button-sortasc\"><img src='../../../extensions/components/graphicalquerybuilder/resources/images/icon-uparrow.png' title='"+GQB.translate("sortColAscMsg")+"' /></a></div>"+
+				"<div style='width: 38px; float: right;' class='gqb-button-sort'><a cIdx="+c+" class=\"gqb-button-sortdesc\"><img src='"+urlBase+"extensions/components/graphicalquerybuilder/resources/images/icon-downarrow.png' title='"+GQB.translate("sortColDescMsg")+"' /></a>&nbsp;<a cIdx="+c+" class=\"gqb-button-sortasc\"><img src='../../../extensions/components/graphicalquerybuilder/resources/images/icon-uparrow.png' title='"+GQB.translate("sortColAscMsg")+"' /></a></div>"+
 				"</td>"+
 				((c < this.resultColumns.length - 1) ? "<td style=\"border-width: 0px; padding: 0px; vertical-align:middle;\"><a cIdx="+c+" class=\"gqb-button-movecolright\"><img src=\"../../../extensions/components/graphicalquerybuilder/resources/images/toggle-rt.gif\" title='"+GQB.translate("moveColRightLabel")+"'></a></td>" : "")+
 				"</tr></table>"));

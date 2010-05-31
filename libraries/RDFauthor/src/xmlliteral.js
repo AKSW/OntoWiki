@@ -22,6 +22,7 @@ function XmlLiteralEdit(graph, subject, predicate, object) {
     this.subject   = subject;
     this.predicate = predicate;
     this.object    = object ? object.value : '';
+    this.remove    = false;
 }
 
 // 

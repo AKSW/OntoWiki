@@ -28,25 +28,25 @@ ResourceEdit.prototype.init = function ()
 {
     var instance = this;
 
-    if (this.options.propertyMode) {
-        $('#resource-value-' + this.id).autocomplete(function(term, cb) { return ResourceEdit.search(term, cb, true, instance.graph, instance.predicate); }, {
-            minChars: 3,
-            delay: 1000,
-            max: 20,
-            formatItem: function(data, i, n, term) {
-                return '<div style="overflow:hidden">\
-                    <span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
-                    <br />\
-                    <span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
-                    </div>';
-            }
-        });
-        
-        $('#resource-value-' + this.id).result(function(e, data, formated) {
-            $(this).attr('value', data[1]);
-            instance.label = data[0];
-        });
-    } else {
+    // if (this.options.propertyMode) {
+    //     $('#resource-value-' + this.id).autocomplete(function(term, cb) { return ResourceEdit.search(term, cb, true, instance.graph, instance.predicate); }, {
+    //         minChars: 3,
+    //         delay: 1000,
+    //         max: 20,
+    //         formatItem: function(data, i, n, term) {
+    //             return '<div style="overflow:hidden">\
+    //                 <span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
+    //                 <br />\
+    //                 <span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
+    //                 </div>';
+    //         }
+    //     });
+    //     
+    //     $('#resource-value-' + this.id).result(function(e, data, formated) {
+    //         $(this).attr('value', data[1]);
+    //         instance.label = data[0];
+    //     });
+    // } else {
         $('#resource-name-' + this.id).autocomplete(
             function(term, cb) {
                 var ret = ResourceEdit.search(term, cb, false, instance.graph, instance.predicate);
@@ -77,7 +77,7 @@ ResourceEdit.prototype.init = function ()
             $(this).attr('title', data[1]);
             $(this).prev().attr('value', data[1]);
         });
-    }
+    // }
 }
 
 ResourceEdit.prototype.focus = function() {
@@ -128,6 +128,11 @@ ResourceEdit.prototype.onSubmit = function()
 {
     var dataBank = RDFauthor.getDatabank(this.graph);    
     var newResourceValue = $('#resource-value-' + this.id).val();
+    
+    if (!newResourceValue) {
+        // try name
+        newResourceValue = $('#resource-name-' + this.id).val();
+    }
     
     // Widget added an nothing entered
     if (this.object == '' && newResourceValue == undefined) {

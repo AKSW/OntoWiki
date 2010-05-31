@@ -125,7 +125,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $this->_resourceQuery->addFilter(
             new Erfurt_Sparql_Query2_ConditionalAndExpression(
                 array(
-                    new Erfurt_Sparql_Query2_isUri($this->_resourceVar),
+                    //new Erfurt_Sparql_Query2_isUri($this->_resourceVar),
                     
                     new Erfurt_Sparql_Query2_UnaryExpressionNot(
                         new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
@@ -1038,6 +1038,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     
     public function getAllProperties ($inverse = false)
     {
+        if(empty($this->_resources)){
+            return array();
+        }
         //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
         $query = clone $this->_resourceQuery;
         $query

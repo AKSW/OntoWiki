@@ -71,7 +71,7 @@ class ResourceController extends OntoWiki_Controller_Base
         // Give plugins a chance to add entries to the menu
         $this->view->placeholder('main.window.menu')->set($menu->toArray(false, true));
         
-        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace((string)$resource);
+        $title = $resource->getTitle($this->_config->languages->locale) ? $resource->getTitle($this->_config->languages->locale) : OntoWiki_Utils::contractNamespace((string)$resource);
         $windowTitle = sprintf($translate->_('Properties of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
         
