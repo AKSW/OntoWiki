@@ -76,9 +76,9 @@ class NavigationController extends OntoWiki_Controller_Component
         
         $this->view->entries = $this->_queryNavigationEntries($this->setup);
         
-        if( $this->setup->state->lastEvent == 'more' ){
+        /*if( $this->setup->state->lastEvent == 'more' ){
             $this->view->showRoot = false;
-        }
+        }*/
         
         // set view variable for the show more button
         if ( (count($this->view->entries) > $this->limit) && $this->setup->state->lastEvent != "search") {
@@ -377,7 +377,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
             //$query->addProjectionVar(new Erfurt_Sparql_Query2_Var('subResourceUri'));
             // set to limit+1, so we can see if there are more than $limit entries
-            $query->setLimit($this->limit + 1);
+            //$query->setLimit($this->limit + 1);
         }
         // set ordering
         if( isset($setup->config->ordering->relation) ){
@@ -388,7 +388,9 @@ class NavigationController extends OntoWiki_Controller_Component
         }
 
         if( isset($setup->state->offset) && $setup->state->lastEvent == 'more' ){
-            $query->setOffset($setup->state->offset);
+            $query->setLimit($this->limit + $setup->state->offset + 1);
+        }else{
+            $query->setLimit($this->limit + 1);
         }
         
         return $query;
