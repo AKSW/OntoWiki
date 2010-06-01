@@ -143,7 +143,8 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
             }
         
         }
-        
+
+        // TODO: fix baseURIs which are not ending with # or /
         $createdUri = $this->insertModel->getBaseUri() . implode('/',$uriParts);
         
         $count = $this->countUriPattern($createdUri);
