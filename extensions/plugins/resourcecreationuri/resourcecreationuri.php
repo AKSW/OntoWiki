@@ -144,8 +144,14 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
         
         }
 
-        // TODO: fix baseURIs which are not ending with # or /
-        $createdUri = $this->insertModel->getBaseUri() . implode('/',$uriParts);
+        $baseUri = $this->insertModel->getBaseUri();
+        $baseUriLastCharacter = $baseUri[ strlen($baseUri) - 1];
+        if ( ($baseUriLastCharacter == '/') || ($baseUriLastCharacter == '#') ) {
+            $createdUri = $baseUri . implode('/',$uriParts) . 'no';
+        } else {
+            // avoid ugly glued uris without separator
+            $createdUri = $baseUri . '/' . implode('/',$uriParts) . 'yes';
+        }
         
         $count = $this->countUriPattern($createdUri);
 
