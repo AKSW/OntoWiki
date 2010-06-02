@@ -88,7 +88,7 @@ class DllearnerController extends OntoWiki_Controller_Component {
             $createGraph = false;
             
             require_once 'Erfurt/Syntax/RdfParser.php';
-            $file = tempnam('/tmp', 'ow');
+            $file = tempnam(sys_get_temp_dir(), 'ow');
             $temp = fopen($file, 'wb');
             fwrite($temp, $sol);
             fclose($temp);
