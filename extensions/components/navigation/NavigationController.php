@@ -221,10 +221,24 @@ class NavigationController extends OntoWiki_Controller_Component
             'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
         );
 
-        // get results of query
-        $results = $this->model->sparqlQuery($query);
+        // get extended results
+        $all_results = $this->model->sparqlQuery($query, array('result_format' => 'extended'));
 
-        // check if we need to show implicit elements
+        // create res array
+        $results = array();
+
+        // parse to needed format
+        foreach($all_results['results']['bindings'] as $res){
+            if($res['resourceUri']['type'] != 'bnode'){
+                $results[]['resourceUri'] = $res['resourceUri']['value'];
+            }else{
+                $results[]['resourceUri'] = $this->_getSubclass(
+                        str_replace("_:", "", $res['resourceUri']['value']),
+                        $setup);
+            }
+        }
+
+        // if we need to show implicit elements
         $showImplicit = false;
         if( !isset($setup->config->rootElement) ){
             if(!isset($setup->state->showImplicit)){
@@ -244,17 +258,23 @@ class NavigationController extends OntoWiki_Controller_Component
             // new query for regular event
             if($setup->state->lastEvent != "search"){
                 $query = $this->_buildQuery($setup, true);
-                $results_implicit = $this->model->sparqlQuery($query);
+                $results_implicit = $this->model->sparqlQuery($query, array('result_format' => 'extended'));
             }else{
                 // new query for search
                 $query = $this->_buildStringSearchQuery($setup);
-                $results_implicit = $this->model->sparqlQuery($query);
+                $results_implicit = $this->model->sparqlQuery($query, array('result_format' => 'extended'));
             }
             
             // append implicit classes to results
-            foreach($results_implicit as $res){
-                if( !in_array($res, $results) ){
-                    $results[] = $res;
+            foreach($results_implicit['results']['bindings'] as $res){
+                if( !in_array($res['resourceUri']['value'], $results) ){
+                    if($res['resourceUri']['type'] != 'bnode'){
+                        $results[]['resourceUri'] = $res['resourceUri']['value'];
+                    }else{
+                        $results[]['resourceUri'] = $this->_getSubclass(
+                                str_replace("_:", "", $res['resourceUri']['value']),
+                                $setup);
+                    }
                 }
             }
         }
@@ -302,7 +322,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
             // assing resource URI
             $uri = $result['resourceUri'];
-            // get resource title
+            $entry = array();            
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             // get resource ling
             $entry['link'] = $this->_getListLink($uri, $setup);
@@ -364,9 +384,78 @@ class NavigationController extends OntoWiki_Controller_Component
         return $entries;
     }
 
-    /*
-     * Gets title for given $uri based on $mode and $setup
-     */
+    protected function _getSubclass($node, $setup){
+        $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
+        $searchVar = new Erfurt_Sparql_Query2_BlankNode($node);
+        $query = new Erfurt_Sparql_Query2();
+        $query->addProjectionVar($subVar);
+        $query->setDistinct();
+
+        $elements = array();
+
+        if ( isset($setup->config->hierarchyRelations->in) ){
+            if( count($setup->config->hierarchyRelations->in) > 1 ){
+                // init union var
+                $unionSub = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                // parse config gile
+                foreach($setup->config->hierarchyRelations->in as $rel){
+                    // sub stuff
+                    $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                    // add triplen
+                    $u1->addTriple(
+                        $subVar,
+                        new Erfurt_Sparql_Query2_IriRef($rel),
+                        $searchVar
+                    );
+                    // add triplet to union var
+                    $unionSub->addElement($u1);
+                }
+                $elements[] = $unionSub;
+            }else{
+                $rel = $setup->config->hierarchyRelations->in;
+                // add optional sub relation
+                $elements[] = new Erfurt_Sparql_Query2_Triple(
+                    $subVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                    $searchVar
+                );
+            }
+        }
+        if ( isset($setup->config->hierarchyRelations->out) ){
+            if( count($setup->config->hierarchyRelations->out) > 1 ){
+                // init union var
+                $unionSub = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // parse config gile
+                foreach($setup->config->hierarchyRelations->out as $rel){
+                    // sub stuff
+                    $u1 = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                    // add triplen
+                    $u1->addTriple(
+                        $searchVar,
+                        new Erfurt_Sparql_Query2_IriRef($rel),
+                        $subVar
+                    );
+                    // add triplet to union var
+                    $unionSub->addElement($u1);
+                }
+                $elements[] = $unionSub;
+            }else{
+                $rel = $setup->config->hierarchyRelations->out;
+                // add optional sub relation
+                $elements[] = new Erfurt_Sparql_Query2_Triple(
+                    $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                    $subVar
+                );
+            }
+        }
+        $query->addElements($elements);
+
+        $result = $this->model->sparqlQuery($query);
+        
+        return $result[0]['subResourceUri'];
+    }
+
     protected function _getTitle($uri, $mode, $setup){
         $name = '';
         // set default mode if none is set
@@ -419,6 +508,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
             //$query->addProjectionVar(new Erfurt_Sparql_Query2_Var('subResourceUri'));
             // set to limit+1, so we can see if there are more than $limit entries
+            //$query->setLimit($this->limit + 1);
         }
         // set ordering
         if( isset($setup->config->ordering->relation) ){
