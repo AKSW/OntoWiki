@@ -147,10 +147,10 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
         $baseUri = $this->insertModel->getBaseUri();
         $baseUriLastCharacter = $baseUri[ strlen($baseUri) - 1];
         if ( ($baseUriLastCharacter == '/') || ($baseUriLastCharacter == '#') ) {
-            $createdUri = $baseUri . implode('/',$uriParts) . 'no';
+            $createdUri = $baseUri . implode('/',$uriParts);
         } else {
             // avoid ugly glued uris without separator
-            $createdUri = $baseUri . '/' . implode('/',$uriParts) . 'yes';
+            $createdUri = $baseUri . '/' . implode('/',$uriParts);
         }
         
         $count = $this->countUriPattern($createdUri);
