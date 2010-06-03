@@ -712,48 +712,14 @@ class NavigationController extends OntoWiki_Controller_Component
                 'query' => $config_query
             );
         }else{
-            if ( isset($setup->config->instanceRelation->out) || isset($setup->config->instanceRelation->in) ) {
-                if( isset($setup->config->instanceRelation->out) &&
-                        ($setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
-                        ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ){
-                    $conf['filter'][] = array(
-                        'mode' => 'rdfsclass',
-                        'rdfsclass' => $uri,
-                        'action' => 'add'
-                    );
-                }else{
-                    if(isset($setup->config->instanceRelation->out)){
-                        foreach($setup->config->instanceRelation->out as $out){
-                            $conf['filter'][] = array(
-                                //'action' => 'add',
-                                //'mode' => 'box',
-                                //'id' => 'inrelations',
-                                'property' => $uri,
-                                //'isInverse' => false,
-                                //'propertyLabel' => 'out',
-                                'filter' => 'bound',
-                                //'value1' => null, //$uri,
-                                //'value2' => null,
-                                //'valuetype' => 'uri',
-                                //'literaltype' => null,
-                                //'hidden' => false
-                            );
-                        }
-                    }
-                    /*if(isset($setup->config->instanceRelation->in)){
-                        foreach($setup->config->hierarchyRelations->in as $in){
-                            $conf['filter'][] = array(
-                                'mode' => 'box',
-                                'action' => 'add',
-                                'id' => 'box2',
-                                'filter' => 'equals',
-                                'isInverse' => 'false',
-                                'property' => $uri,
-                                'value' => $in
-                            );
-                        }
-                    }*/
-                }
+            if ( isset($setup->config->instanceRelation->out) && isset($setup->config->instanceRelation->in) &&
+                 ($setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
+                    ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF ) ) {
+                $conf['filter'][] = array(
+                    'mode' => 'rdfsclass',
+                    'rdfsclass' => $uri,
+                    'action' => 'add'
+                );
             } else {
                 $conf['filter'][] = array(
                     'mode' => 'cnav',
