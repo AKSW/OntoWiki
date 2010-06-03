@@ -51,7 +51,8 @@ class PingbackPlugin extends OntoWiki_Plugin
 		}
 		
 		// Parse SPO array.
-		foreach ($event->statements as $subject => $predicatesArray) {
+		$statements = $event->statements;
+		foreach ($statements as $subject => $predicatesArray) {
             foreach ($predicatesArray as $predicate => $objectsArray) {
                 foreach ($objectsArray as $object) { 
 					$this->_checkAndPingback($subject, $object);
