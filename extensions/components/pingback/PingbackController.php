@@ -15,15 +15,21 @@ class PingbackController extends OntoWiki_Controller_Component
     {
         $this->_logInfo('Pingback Server Init.'); 
 		
-		// Create XML RPC Server
-		$server = new Zend_XmlRpc_Server();
-		$server->setClass($this, 'pingback');
-		
-		// Let the server handle the RPC calls.
-		$response = $this->getResponse();
-        $response->setBody($server->handle());
-        $response->sendResponse();
-		exit;
+		if (isset($_POST['source']) && isset($_POST['target']) ) {
+		    // Simplified Semantic Pingback
+		    echo $this->ping($_POST['source'], $_POST['target']);
+		    exit;
+		} else {
+		    // Create XML RPC Server
+    		$server = new Zend_XmlRpc_Server();
+    		$server->setClass($this, 'pingback');
+
+    		// Let the server handle the RPC calls.
+    		$response = $this->getResponse();
+            $response->setBody($server->handle());
+            $response->sendResponse();
+    		exit;
+		}
     }
     
     /**
