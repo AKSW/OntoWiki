@@ -1038,7 +1038,8 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     
     public function getAllProperties ($inverse = false)
     {
-        if(empty($this->_resources)){
+        if(empty($this->_resources) && $_resourcesUptodate){
+            echo "no resources -> no properties";
             return array();
         }
         //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
@@ -1049,7 +1050,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             ->setLimit(0)
             ->setOffset(0);
 
-        $predVar = new Erfurt_Sparql_Query2_Var('p');
+        $predVar = new Erfurt_Sparql_Query2_Var('pred');
         if(!$inverse){
             $query->addTriple(
                 $this->_resourceVar,
@@ -1070,7 +1071,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                 ->clear()
                 ->add($predVar);
 
-        
         $results = $this->_model->sparqlQuery(
             $query,
             array('result_format' => 'extended')
@@ -1079,7 +1079,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         $properties = array();
         foreach ($results['bindings'] as $row) {
-            $properties[] = array('uri' => $row['p']['value']);
+            $properties[] = array('uri' => $row['pred']['value']);
         }
 
         return $this->convertProperties($properties);
