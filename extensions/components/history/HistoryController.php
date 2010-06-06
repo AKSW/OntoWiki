@@ -28,7 +28,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $limit       = 20;
 
         // redirecting to home if no model/resource is selected
-        if (empty($model) || (empty($this->_owApp->selectedResource) && empty($params['r']))) {
+        if (empty($model) || (empty($this->_owApp->selectedResource) && empty($params['r']) && $this->_owApp->lastRoute !== 'instances')) {
             $this->_abort('No model/resource selected.', OntoWiki_Message::ERROR);
         }
 
@@ -38,10 +38,6 @@ class HistoryController extends OntoWiki_Controller_Component
         } else {
             $page = 1;
         }
-
-        // setting default title
-        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
-        $windowTitle = sprintf($translate->_('Versions for %1$s'), $title);
 
         // enabling versioning
         $versioning = $this->_erfurt->getVersioning();
@@ -53,38 +49,28 @@ class HistoryController extends OntoWiki_Controller_Component
 
         // setting if class or instances
         if ($this->_owApp->lastRoute === 'instances') {
-            // loading some more required classes
-            // getting transitive closure for types
-            $types   = array_keys(
-                $store->getTransitiveClosure(
-                    $model->getModelIri(),
-                    EF_RDFS_SUBCLASSOF,
-                    array((string) $resource),
-                    true
-                )
-            );
-            $types[] = $this->_owApp->selectedClass;
+            // setting default title
+            $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
+            $windowTitle = $translate->_('Versions for elements of the list');
 
-            // adding title indicating versions of instances are shown
-            $windowTitle .= ' - ' . $translate->_('Instances');
-    
-            // query to get all instances for transitive closure of a type
-            // (see above for transitive closure)
-            $query = Erfurt_Sparql_SimpleQuery::initWithString(
-                'SELECT * 
-                 WHERE {
-                    ?resourceUri a ?type.
-                    FILTER (sameTerm(?type, <' . implode('>) || sameTerm(?type, <', $types) . '>))
-                 }'
-            );
-
-            $instanceList = $model->sparqlQuery($query);
-
-            $resources = array();
-            foreach ($instanceList as $instance) {
-                $resources[] = $instance['resourceUri'];
+            $instances = $this->_session->instances;
+            if(!($instances instanceof OntoWiki_Model_Instances)){
+                throw new OntoWiki_Exception("Something went wrong with list creation. Probably your session timed out. <a href='".$this->_config->urlBase."'>Start again</a>");
+                exit;
             }
 
+            $query = $instances->getResourceQuery();
+            $query->setLimit(0);
+            $query->setOffset(0);
+
+            $results = $model->sparqlQuery($query);
+            $resourceVar = $instances->getResourceVar()->getName();
+
+            $resources = array();
+            foreach ($results as $result) {
+                $resources[] = $result[$resourceVar];
+            }
+            
             $historyArray = $versioning->getHistoryForResourceList(
                 $resources,
                 (string) $this->_owApp->selectedModel,
@@ -92,6 +78,10 @@ class HistoryController extends OntoWiki_Controller_Component
             );
             
         } else {
+            // setting default title
+            $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
+            $windowTitle = sprintf($translate->_('Versions for %1$s'), $title);
+
             $historyArray = $versioning->getHistoryForResource(
                 (string)$resource,
                 (string)$this->_owApp->selectedModel,

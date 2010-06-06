@@ -26,9 +26,24 @@ class CommunityController extends OntoWiki_Controller_Component {
         $dateProperty    = $this->_privateConfig->date->property;
 
         // get all resource comments
+        $elements = "";
+        $resourceObject = '<' . $resource . '> ';
+        $singleResource = false;
+        if($this->_owApp->lastRoute === 'instances'){
+            $instances = $this->_session->instances;
+            if(!($instances instanceof OntoWiki_Model_Instances)){
+                throw new OntoWiki_Exception("Something went wrong with list creation. Probably your session timed out. <a href='".$this->_config->urlBase."'>Start again</a>");
+                exit;
+            }
+            $query = $instances->getResourceQuery();
+            $resourceObject = $instances->getResourceVar()->getSparql();
+            $elements = $query->getWhere()->getSparql();
+            $singleResource = true;
+        }
         $commentSparql = 'SELECT DISTINCT ?author ?comment ?content ?date ?alabel
             WHERE {
-                ?comment <' . $aboutProperty . '> <' . $resource . '>.
+                '.$elements.'
+                ?comment <' . $aboutProperty . '> '. $resourceObject . ' .
                 ?comment a <' . $commentType . '>.
                 ?comment <' . $creatorProperty . '> ?author.
                 OPTIONAL {?author <' . EF_RDFS_LABEL . '> ?alabel}
