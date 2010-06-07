@@ -75,6 +75,14 @@ $(document).ready(function() {
         setSectionRatio(sectionRatio);
     }
     
+    $('.resource-list').selectable({
+        filter: 'tr', 
+        selected: function(event, ui) {
+            var selectedURI = $(ui.selected).find('*[about]').attr('about');
+            $('body').trigger('ontowiki.resource.selected', [selectedURI]);
+        }
+    });
+    
     // inner labels
     $('input.inner-label').innerLabel().blur();
     
