@@ -73,6 +73,7 @@ function navigationEvent (navEvent, eventParameter) {
 
     switch (navEvent) {
         case 'init':
+            // save hidden, implicit and empty to state
             if(typeof navigationStateSetup != 'undefined'){
                 if(typeof navigationStateSetup['state']['showEmpty'] != 'undefined'){
                     setup['state']['showEmpty'] = navigationStateSetup['state']['showEmpty'];
@@ -83,13 +84,22 @@ function navigationEvent (navEvent, eventParameter) {
                 if(typeof navigationStateSetup['state']['showHidden'] != 'undefined'){
                     setup['state']['showHidden'] = navigationStateSetup['state']['showHidden'];
                 }
+            }else{
+                if(setup['config']['showEmptyElements'] == '1'){
+                    setup['state']['showEmpty'] = true;
+                }
+                if(setup['config']['showImplicitElements'] == '1'){
+                    setup['state']['showImplicit'] = true;
+                }
+                if(setup['config']['showHiddenElements'] == '1'){
+                    setup['state']['showHidden'] = true;
+                }
             }
             // remove init sign and setup module title
             navigationContainer.removeClass('init-me-please');
             $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
             break;
         case 'reset':
-            // save hidden, implicit and empty to state
             if(setup['config']['showEmptyElements'] == '1'){
                 setup['state']['showEmpty'] = true;
             }
