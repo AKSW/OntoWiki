@@ -168,9 +168,9 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function _queryNavigationEntries($setup) {
-        /*$this->_owApp->logger->info(
+        $this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Input: ' .PHP_EOL . print_r($setup,true)
-        );*/
+        );
         // if user searched for something
         if( $setup->state->lastEvent == "search" ){
             // search request

@@ -67,12 +67,25 @@ function navigationEvent (navEvent, eventParameter) {
     } else {
         setup = navigationSetup;
     }
-    
+
     // delete old search string
     delete(setup['state']['searchString']);
 
     switch (navEvent) {
         case 'init':
+            if(typeof navigationStateSetup['state']['showEmpty'] != 'undefined'){
+                setup['state']['showEmpty'] = navigationStateSetup['state']['showEmpty'];
+            }
+            if(typeof navigationStateSetup['state']['showImplicit'] != 'undefined'){
+                setup['state']['showImplicit'] = navigationStateSetup['state']['showImplicit'];
+            }
+            if(typeof navigationStateSetup['state']['showHidden'] != 'undefined'){
+                setup['state']['showHidden'] = navigationStateSetup['state']['showHidden'];
+            }
+            // remove init sign and setup module title
+            navigationContainer.removeClass('init-me-please');
+            $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
+            break;
         case 'reset':
             // save hidden, implicit and empty to state
             if(setup['config']['showEmptyElements'] == '1'){
