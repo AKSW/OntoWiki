@@ -73,14 +73,16 @@ function navigationEvent (navEvent, eventParameter) {
 
     switch (navEvent) {
         case 'init':
-            if(typeof navigationStateSetup['state']['showEmpty'] != 'undefined'){
-                setup['state']['showEmpty'] = navigationStateSetup['state']['showEmpty'];
-            }
-            if(typeof navigationStateSetup['state']['showImplicit'] != 'undefined'){
-                setup['state']['showImplicit'] = navigationStateSetup['state']['showImplicit'];
-            }
-            if(typeof navigationStateSetup['state']['showHidden'] != 'undefined'){
-                setup['state']['showHidden'] = navigationStateSetup['state']['showHidden'];
+            if(typeof navigationStateSetup != 'undefined'){
+                if(typeof navigationStateSetup['state']['showEmpty'] != 'undefined'){
+                    setup['state']['showEmpty'] = navigationStateSetup['state']['showEmpty'];
+                }
+                if(typeof navigationStateSetup['state']['showImplicit'] != 'undefined'){
+                    setup['state']['showImplicit'] = navigationStateSetup['state']['showImplicit'];
+                }
+                if(typeof navigationStateSetup['state']['showHidden'] != 'undefined'){
+                    setup['state']['showHidden'] = navigationStateSetup['state']['showHidden'];
+                }
             }
             // remove init sign and setup module title
             navigationContainer.removeClass('init-me-please');
