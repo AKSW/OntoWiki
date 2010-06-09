@@ -77,6 +77,7 @@ $(document).ready(function() {
     
     $('.resource-list').selectable({
         filter: 'tr', 
+        cancel: 'a', 
         selected: function(event, ui) {
             var selectedURI = $(ui.selected).find('*[about]').attr('about');
             $('body').trigger('ontowiki.resource.selected', [selectedURI]);
