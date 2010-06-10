@@ -51,7 +51,8 @@ class PingbackPlugin extends OntoWiki_Plugin
 		}
 		
 		// Parse SPO array.
-		foreach ($event->statements as $subject => $predicatesArray) {
+		$statements = $event->statements;
+		foreach ($statements as $subject => $predicatesArray) {
             foreach ($predicatesArray as $predicate => $objectsArray) {
                 foreach ($objectsArray as $object) { 
 					$this->_checkAndPingback($subject, $object);
@@ -78,6 +79,24 @@ class PingbackPlugin extends OntoWiki_Plugin
 			}
 		}
 	} 
+	
+	public function beforeExportResource($event)
+	{
+	    $r = $event->resource;
+	    $additional = array();
+	    
+	    $owApp = OntoWiki::getInstance(); 
+        $url = $owApp->config->urlBase . 'pingback/ping/';
+        
+        $additional[$r] = array();
+        $additional[$r]['http://purl.org/net/pingback/to'] = array();
+        $additional[$r]['http://purl.org/net/pingback/to'][] = array(
+            'value' => $url,
+            'type'  => 'uri'
+        );
+        
+        return $additional;
+	}
 	
 	protected function _check()
 	{

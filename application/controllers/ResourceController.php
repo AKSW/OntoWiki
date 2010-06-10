@@ -615,7 +615,17 @@ class ResourceController extends OntoWiki_Controller_Base
                 $s = '_:node'.$bNodeCounter++;     
             }
         }
-            
+        
+        // Event
+        $event = new Erfurt_Event('beforeExportResource');
+        $event->resource = $resource;
+        $event->modelUri = $modelUri;
+        $additional2 = $event->trigger();
+        
+        if (is_array($additional2)) {
+            $additional = array_merge($additional, $additional2);
+        }
+                
         $response = $this->getResponse();
         $response->setHeader('Content-Type', $contentType, true);
         $response->setHeader('Content-Disposition', ('filename="'.$filename.'"'));

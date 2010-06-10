@@ -10,5 +10,6 @@ author      = ""
 3 = onAddStatement
 4 = onAddMultipleStatements
 5 = onDeleteMultipleStatements
+6 = beforeExportResource
 
 [private]
