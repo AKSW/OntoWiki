@@ -42,11 +42,11 @@ cp -R $releaseTemp/RDFauthor/ $releaseDir/libraries
 
 echo "Delete unwanted files and directories in $releaseTemp" 
 #rm -rf `find $releaseDir -name '.svn'`
-#cd $releaseDir/extensions/components && rm -rf calendar containermanager foafedit plugins querybuilding repositoryservices tagging filter graphicalquerybuilder querybuilder repository syncml
-#cd $releaseDir/extensions/modules && rm -rf containermanager exploretags filter keyboard tagcloud
-#cd $releaseDir/extensions/plugins && rm -rf dllearner breadcrumbs sortproperties
-#cd $releaseDir/extensions/themes && rm -rf flatcarbon
-#cd $releaseDir/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php
+cd $releaseTemp/extensions/components && rm -rf calendar graphicalquerybuilder querybuilder repositoryservices artistedit dllearner foafedit querybuilding containermanager easyinference  freebedit simplesparqlresultview cacheconfiguration dashboard geocoder plugins repository skos
+cd $releaseTemp//extensions/modules && rm -rf containermanager dllearner easyinference keyboard rating savedqueries skosrelations tabs tagcloud
+cd $releaseTemp/extensions/plugins && rm -rf 
+#cd $releaseTemp/extensions/themes && rm -rf flatcarbon
+#cd $releaseTemp/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php
 
 echo "Create and copy additional files and directories in $releaseTemp" 
 cp -R $releaseTemp/ontowiki/CHANGELOG $releaseDir || exit
