@@ -42,9 +42,9 @@ cp -R $releaseTemp/RDFauthor/ $releaseDir/libraries
 
 echo "Delete unwanted files and directories in $releaseTemp" 
 #rm -rf `find $releaseDir -name '.svn'`
-cd $releaseTemp/extensions/components && rm -rf calendar graphicalquerybuilder querybuilder repositoryservices artistedit dllearner foafedit querybuilding containermanager easyinference  freebedit simplesparqlresultview cacheconfiguration dashboard geocoder plugins repository skos
-cd $releaseTemp//extensions/modules && rm -rf containermanager dllearner easyinference keyboard rating savedqueries skosrelations tabs tagcloud
-cd $releaseTemp/extensions/plugins && rm -rf 
+cd $releaseTemp/extensions/components && rm -rf calendar graphicalquerybuilder querybuilder repositoryservices artistedit dllearner foafedit querybuilding containermanager easyinference freebedit cacheconfiguration dashboard plugins repository skos
+cd $releaseTemp//extensions/modules && rm -rf containermanager dllearner easyinference keyboard rating skosrelations tabs tagcloud
+cd $releaseTemp/extensions/plugins && rm -rf breadcrumbs easyinference isressourceeditingallowed sendmail
 #cd $releaseTemp/extensions/themes && rm -rf flatcarbon
 #cd $releaseTemp/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php
 
