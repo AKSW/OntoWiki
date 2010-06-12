@@ -55,6 +55,7 @@ cp -R $releaseTemp/ontowiki/LICENSE $releaseDir || exit
 cp -R $releaseTemp/ontowiki/TODO $releaseDir || exit
 mkdir $releaseDir/cache $releaseDir/logs $releaseDir/uploads 
 chmod 777 $releaseDir/cache $releaseDir/logs $releaseDir/uploads
+mv $releaseDir/htaccess-dist $releaseDir/.htaccess
 
 echo "Download and unpack a Zend Framework"
 cd $releaseDir/libraries
