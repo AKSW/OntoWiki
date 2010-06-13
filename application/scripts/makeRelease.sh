@@ -46,7 +46,7 @@ cd $releaseDir/extensions/components && rm -rf calendar graphicalquerybuilder qu
 cd $releaseDir//extensions/modules && rm -rf containermanager dllearner easyinference keyboard rating skosrelations tabs tagcloud
 cd $releaseDir/extensions/plugins && rm -rf breadcrumbs easyinference isressourceeditingallowed sendmail
 #cd $releaseDir/extensions/themes && rm -rf flatcarbon
-#cd $releaseDir/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php
+cd $releaseDir/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php
 
 echo "Create and copy additional files and directories in $releaseTemp" 
 cp -R $releaseTemp/ontowiki/CHANGELOG $releaseDir || exit
@@ -67,6 +67,9 @@ rm -rf ZendFramework-1.9.4-minimal
 
 echo "Create the ZIP ~/$releaseDirBase.zip"
 cd $releaseDir/.. && zip -q -9 -r ~/$releaseDirBase.zip $releaseDirBase
+
+echo "Create the 7zip ~/$releaseDirBase.7z"
+cd $releaseDir/.. && 7zr a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on ~/$releaseDirBase.7z $releaseDirBase >/dev/null
 
 echo "Create the ZIP ~/$releaseDirBase-without-Zend.zip"
 rm -rf $releaseDir/libraries/Zend/ && cd $releaseDir/.. && zip -q -9 -r ~/$releaseDirBase-without-Zend.zip $releaseDirBase
