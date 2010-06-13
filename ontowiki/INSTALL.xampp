@@ -2,7 +2,11 @@ This installation guide is for MySQL backend users on XAMPP.
 
 We assume, you have already configured XAMPP by calling http://localhost
 from you browser and that you have copied the contents of the release archive 
-to your web directory (e.g. to C:\xampp\htdocs\ontowiki-0.9).
+to your web directory (e.g. to C:\xampp\htdocs\ontowiki\).
+
+NOTE: If your XAMPP comes with its own Zend copy, you need to remove the
+directory libraries\Zend from your OntoWiki sources (you can download a OntoWiki
+version without Zend too)
 
 1. From the XAMPP Control Panel start Admin for MySql (this is phpMyAdmin)
 
@@ -18,10 +22,7 @@ to your web directory (e.g. to C:\xampp\htdocs\ontowiki-0.9).
    In most cases, only need to change the following values:
    store.zenddb.dbname, store.zenddb.username, store.zenddb.password.
 
-7. OPTIONAL: Copy the htaccess-dist to .htaccess (only useful, if your
-   web server supports mod_rewrite).
-
-8. Start your OntoWiki installation in your browser (e.g. http://localhost/<ontowiki>, 
+7. Start your OntoWiki installation in your browser (e.g. http://localhost/<ontowiki>/, 
    where <ontowiki> is the name of the directory in htdocs). All tables will be
    created automatically. Hopefully, you will see a starting screen
    containing a news area and a login window.
