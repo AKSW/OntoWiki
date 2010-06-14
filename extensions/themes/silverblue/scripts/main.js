@@ -75,14 +75,28 @@ $(document).ready(function() {
         setSectionRatio(sectionRatio);
     }
     
-    $('.resource-list').selectable({
+    /* list selection */
+    var selectCallback = function(event, ui) {
+        var selectedURI = $(ui.selected).find('*[about]').attr('about');
+        $('body').trigger('ontowiki.resource.selected', [selectedURI]);
+    }
+    
+    var selectableOptions = {
         filter: 'tr',
         cancel: 'span, a', /* these are excluded from resource selection */
-        selected: function(event, ui) {
-            var selectedURI = $(ui.selected).find('*[about]').attr('about');
-            $('body').trigger('ontowiki.resource.selected', [selectedURI]);
+        selected: selectCallback
+    };
+    
+    $('.resource-list').live('click', function(e) {
+        if (!$(this).hasClass('ui-selectable')) {
+            $(this).selectable(selectableOptions);
+            var tr = $(e.target).closest('tr');
+            selectCallback(e, {selected: tr});
         }
     });
+    /* end: list selection */
+    
+    $('.resource-list').selectable(selectableOptions);
     
     // inner labels
     $('input.inner-label').innerLabel().blur();
