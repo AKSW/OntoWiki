@@ -145,13 +145,14 @@ class ResourceController extends OntoWiki_Controller_Base
             }
         }
         
+        $toolbar = $this->_owApp->toolbar;
+        
         // show only if not forwarded and if model is writeable
         // TODO: why is isEditable not false here?
         if ($this->_request->getParam('action') == 'properties' && $graph->isEditable() &&
                 $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)
                 ) {
             // TODO: check acl
-            $toolbar = $this->_owApp->toolbar;
             $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties'));
             $toolbar->appendButton(OntoWiki_Toolbar::EDITADD, array(
                 'name' => 'Clone Resource',
@@ -171,8 +172,17 @@ class ResourceController extends OntoWiki_Controller_Base
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
                     ->prependButton(OntoWiki_Toolbar::CANCEL, array('+class' => 'hidden'))
                     ->prependButton(OntoWiki_Toolbar::SAVE, array('+class' => 'hidden'));
-            $this->view->placeholder('main.window.toolbar')->set($toolbar);
         }
+        
+        // let plug-ins add buttons
+        $toolbarEvent = new Erfurt_Event('onCreateToolbar');
+        $toolbarEvent->resource = (string)$resource;
+        $toolbarEvent->graph    = (string)$graph;
+        $toolbarEvent->toolbar  = $toolbar;
+        $toolbar = $toolbarEvent->trigger();
+        
+        // add toolbar
+        $this->view->placeholder('main.window.toolbar')->set($toolbar);
         
         $this->addModuleContext('main.window.properties');
         
