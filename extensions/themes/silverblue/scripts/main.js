@@ -76,27 +76,44 @@ $(document).ready(function() {
     }
     
     /* list selection */
-    var selectCallback = function(event, ui) {
-        var selectedURI = $(ui.selected).find('*[about]').attr('about');
-        $('body').trigger('ontowiki.resource.selected', [selectedURI]);
-    }
-    
-    var selectableOptions = {
-        filter: 'tr',
-        cancel: 'span, a', /* these are excluded from resource selection */
-        selected: selectCallback
-    };
-    
-    $('.resource-list').live('click', function(e) {
-        if (!$(this).hasClass('ui-selectable')) {
-            $(this).selectable(selectableOptions);
-            var tr = $(e.target).closest('tr');
-            selectCallback(e, {selected: tr});
+    $('.resource-list tr').live('click', function(e) {
+        if (typeof OntoWiki.selectedResources == 'undefined') {
+            OntoWiki.selectedResources = [];
         }
+        
+        var selectee     = $(e.target).closest('tr');
+        var selectionURI = selectee.find('*[about]').eq(0).attr('about');
+        
+        if (!selectee.hasClass('list-selected')) {
+            // add resource
+            selectee.addClass('list-selected');
+            OntoWiki.selectedResources.push(selectionURI);
+            // event for most recent selection
+            $('body').trigger('ontowiki.resource.selected', [selectionURI]);
+        } else {
+            // remove resource
+            selectee.removeClass('list-selected');
+            var pos = $.inArray(selectionURI, this.selectionArray);
+            OntoWiki.selectedResources.splice(pos, 1);
+            // event for most recent unselection
+            $('body').trigger('ontowiki.resource.unselected', [selectionURI]);
+        }
+        
+        // event for all selected
+        $('body').trigger('ontowiki.selection.changed', this.selectionArray);
     });
-    /* end: list selection */
     
-    $('.resource-list').selectable(selectableOptions);
+    $('body').bind('ontowiki.resource-list.reloaded', function() {
+        // synchronize selection with list style
+        $('.resource-list tr').each(function() {
+            var resourceURI = $(this).find('*[about]').eq(0).attr('about');
+            if ($.inArray(resourceURI, OntoWiki.selectedResources) > -1) {
+                $(this).addClass('list-selected');
+            }
+        })
+    })
+    
+    /* end: list selection */
     
     // inner labels
     $('input.inner-label').innerLabel().blur();
