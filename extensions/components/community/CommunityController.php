@@ -28,7 +28,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         // get all resource comments
         $elements = "";
         $resourceObject = '<' . $resource . '> ';
-        $singleResource = false;
+        $singleResource = true;
         if($this->_owApp->lastRoute === 'instances'){
             $instances = $this->_session->instances;
             if(!($instances instanceof OntoWiki_Model_Instances)){
@@ -37,26 +37,40 @@ class CommunityController extends OntoWiki_Controller_Component {
             }
             $query = $instances->getResourceQuery();
             $resourceObject = $instances->getResourceVar()->getSparql();
+            $resVarName = $instances->getResourceVar()->getName();
             $elements = $query->getWhere()->getSparql();
-            $singleResource = true;
+            $singleResource = false;
+            $commentSparql = 'SELECT DISTINCT '.$resourceObject.' ?author ?comment ?content ?date ?alabel
+                WHERE {
+                    '.$elements.'
+                    ?comment <' . $aboutProperty . '> '. $resourceObject . ' .
+                    ?comment a <' . $commentType . '>.
+                    ?comment <' . $creatorProperty . '> ?author.
+                    OPTIONAL {?author <' . EF_RDFS_LABEL . '> ?alabel}
+                    OPTIONAL {?author <http://xmlns.com/foaf/0.1/nick> ?anick}
+                    ?comment <' . $contentProperty . '> ?content.
+                    ?comment <' . $dateProperty . '> ?date.
+                }
+                ORDER BY ASC(?date)
+                LIMIT 10';
+        } else {
+            $commentSparql = 'SELECT DISTINCT ?author ?comment ?content ?date ?alabel
+                WHERE {
+                    ?comment <' . $aboutProperty . '> '. $resourceObject . ' .
+                    ?comment a <' . $commentType . '>.
+                    ?comment <' . $creatorProperty . '> ?author.
+                    OPTIONAL {?author <' . EF_RDFS_LABEL . '> ?alabel}
+                    OPTIONAL {?author <http://xmlns.com/foaf/0.1/nick> ?anick}
+                    ?comment <' . $contentProperty . '> ?content.
+                    ?comment <' . $dateProperty . '> ?date.
+                }
+                ORDER BY ASC(?date)
+                LIMIT 10';
         }
-        $commentSparql = 'SELECT DISTINCT ?author ?comment ?content ?date ?alabel
-            WHERE {
-                '.$elements.'
-                ?comment <' . $aboutProperty . '> '. $resourceObject . ' .
-                ?comment a <' . $commentType . '>.
-                ?comment <' . $creatorProperty . '> ?author.
-                OPTIONAL {?author <' . EF_RDFS_LABEL . '> ?alabel}
-                OPTIONAL {?author <http://xmlns.com/foaf/0.1/nick> ?anick}
-                ?comment <' . $contentProperty . '> ?content.
-                ?comment <' . $dateProperty . '> ?date.
-            }
-            ORDER BY ASC(?date)
-            LIMIT 10';
-
-        // var_dump($commentSparql);
+        
         $query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
-
+        
+        $titleHelper = new OntoWiki_Model_TitleHelper();
         $comments = array();
         if ($result = $this->_owApp->selectedModel->sparqlQuery($query)) {
             foreach ($result as $row) {
@@ -69,11 +83,17 @@ class CommunityController extends OntoWiki_Controller_Component {
                     }
 
                 $row['date'] = OntoWiki_Utils::dateDifference($row['date'], null, 3);
-
+                if(!$singleResource){
+                    $row['resource'] = $row[$resVarName];
+                    $row['url'] = $this->_config->urlBase . "view?r=" . urlencode($row[$resVarName]);
+                    $titleHelper->addResource($row[$resVarName]);
+                }
                 $comments[] = $row;
             }
-        }
+        } 
+        $this->view->titles = $titleHelper;
         $this->view->comments = $comments;
+        $this->view->singleResource = $singleResource;
     }
 
     public function commentAction() {
