@@ -47,6 +47,7 @@ class HistoryController extends OntoWiki_Controller_Component
             $this->_abort('Versioning/History is currently disabled', null, false);
         }
 
+        $singleResource = true;
         // setting if class or instances
         if ($this->_owApp->lastRoute === 'instances') {
             // setting default title
@@ -76,7 +77,7 @@ class HistoryController extends OntoWiki_Controller_Component
                 (string) $this->_owApp->selectedModel,
                 $page
             );
-            
+            $singleResource = false;
         } else {
             // setting default title
             $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
@@ -98,11 +99,14 @@ class HistoryController extends OntoWiki_Controller_Component
 
         $idArray = array();
         $userArray = $this->_erfurt->getUsers();
-        
+        $titleHelper = new OntoWiki_Model_TitleHelper();
         // Load IDs for rollback and Username Labels for view
-        foreach ($historyArray as $entry) {
+        foreach ($historyArray as $key => $entry) {
             $idArray[] = (int) $entry['id'];
-
+            if(!$singleResource){
+                $historyArray[$key]['url'] = $this->_config->urlBase . "view?r=" . urlencode($entry['resource']);
+                $titleHelper->addResource($entry['resource']);
+            }
             if ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->anonymousUser) {
                 $userArray[$entry['useruri']] = 'Anonymous';
             } elseif ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->superAdmin) {
@@ -118,6 +122,8 @@ class HistoryController extends OntoWiki_Controller_Component
         $this->view->userArray = $userArray;
         $this->view->idArray = $idArray;
         $this->view->historyArray = $historyArray;
+        $this->view->singleResource = $singleResource;
+        $this->view->titleHelper = $titleHelper;
 
         if (empty($historyArray))  {
             $this->_owApp->appendMessage(

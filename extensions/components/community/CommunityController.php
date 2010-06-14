@@ -15,9 +15,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         $resource    = $this->_owApp->selectedResource;
         $translate   = $this->_owApp->translate;
 
-        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
-        $windowTitle = sprintf($translate->_('Discussion about %1$s'), $title);
-        $this->view->placeholder('main.window.title')->set($windowTitle);
+        
 
         $aboutProperty   = $this->_privateConfig->about->property;
         $creatorProperty = $this->_privateConfig->creator->property;
@@ -25,9 +23,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         $contentProperty = $this->_privateConfig->content->property;
         $dateProperty    = $this->_privateConfig->date->property;
 
-        // get all resource comments
-        $elements = "";
-        $resourceObject = '<' . $resource . '> ';
+        // get all resource comments       
         $singleResource = true;
         if($this->_owApp->lastRoute === 'instances'){
             $instances = $this->_session->instances;
@@ -53,7 +49,9 @@ class CommunityController extends OntoWiki_Controller_Component {
                 }
                 ORDER BY ASC(?date)
                 LIMIT 10';
+            $title = "elements of the list";
         } else {
+            $resourceObject = '<' . $resource . '> ';
             $commentSparql = 'SELECT DISTINCT ?author ?comment ?content ?date ?alabel
                 WHERE {
                     ?comment <' . $aboutProperty . '> '. $resourceObject . ' .
@@ -66,7 +64,11 @@ class CommunityController extends OntoWiki_Controller_Component {
                 }
                 ORDER BY ASC(?date)
                 LIMIT 10';
+            $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
         }
+
+        $windowTitle = sprintf($translate->_('Discussion about %1$s'), $title);
+        $this->view->placeholder('main.window.title')->set($windowTitle);
         
         $query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
         
