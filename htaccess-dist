@@ -18,4 +18,8 @@
 </IfModule>
 
 # if you allow short open tags, xml templates will crash
-php_flag short_open_tag 0
+# please refer http://code.google.com/p/ontowiki/wiki/RecommendedPHPSettings
+# for recommended PHP settings
+# maybe php_flag is not allowed in your environment,
+# but if you allow short open tags, xml templates will crash
+#php_flag short_open_tag 0
