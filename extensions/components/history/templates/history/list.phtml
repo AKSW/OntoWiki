@@ -6,6 +6,7 @@
     <tr class="odd">
         <th><?php echo $this->_('select'); ?>          </th>
         <th><?php echo $this->_('ID'); ?>              </th>
+        <?php if(!$this->singleResource){?><th><?php echo $this->_('resource'); ?> </th><?php } ?>
         <th><?php echo $this->_('user'); ?>            </th>
         <th><?php echo $this->_('timestamp'); ?>       </th>
         <th><?php echo $this->_('action-type'); ?>     </th>
@@ -20,7 +21,7 @@
             <input
                 <?php if (!$this->rollbackAllowed) echo 'disabled'; ?> 
                 type="radio"
-                id="actionid-<?php echo $actionID = current($abschnitt) ?>"
+                id="actionid-<?php echo $abschnitt['id']; ?>"
                 name="actionid"
                 <?php 
                     $chunk = array_chunk($this->idArray,$i++ + 1); 
@@ -29,15 +30,16 @@
                 value="<?php echo $idString; ?>"/>
         </td>
         <td class="enumeration">
-            <label for="actionid-<?php echo current($abschnitt) ?>"><?php echo current($abschnitt) ?></label>
+            <label for="actionid-<?php echo $abschnitt['id']; ?>"><?php echo $abschnitt['id']; ?></label>
         </td>
-        <td><?php echo $this->userArray[next($abschnitt)]; ?></td>
+        <?php if(!$this->singleResource){?><td><a href="<?php echo $abschnitt['url']; ?>"><?php echo $this->titleHelper->getTitle($abschnitt['resource']); ?></a></td><?php } ?>
+        <td><?php echo $this->userArray[$abschnitt['useruri']]; ?></td>
         <td>
-            <?php $timestamp = date('c', (int) next($abschnitt)); ?>
+            <?php $timestamp = date('c', (int) $abschnitt['tstamp']); ?>
             <?php echo OntoWiki_Utils::dateDifference($timestamp) . ' ('.substr($timestamp,0,strlen($timestamp) - 6).')'; ?>
         </td>
-        <td class="history-detail"><a><?php echo $this->_('HISTORY_ACTIONTYPE_' . next($abschnitt)); ?></a>
-            <div style="display:none;" class="is-processing"><?php echo $actionID; ?></div>
+        <td class="history-detail"><a><?php echo $this->_('HISTORY_ACTIONTYPE_' . $abschnitt['action_type']); ?></a>
+            <div style="display:none;" class="is-processing"><?php echo $abschnitt['id']; ?></div>
         </td>
     </tr>
     <?php endforeach; ?>

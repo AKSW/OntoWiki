@@ -89,6 +89,8 @@ class OntoWiki_Toolbar
      *         - name:      the button's name
      *         - class:     the button's css class(es)
      *         - id:        the button's css id
+     *         - url:       the URL to be fetched when the button has been clicked.
+     *         - title:     value for the HTML title attribute (displayed as a tooltip in most browsers).
      *         - image:     the button's theme image name (w/o icon- and .png, eg. 'edit' for 'icon-edit.png')
      *         - image_url: the complete URL of the button's image. Use this to define custom images that are
      *                      stored anywhere on the web.
@@ -125,12 +127,14 @@ class OntoWiki_Toolbar
      * @param  array $options If $type is a custom type, providing $options is mandatory. 
      *         For default buttons $options is optional but you can overwrite the behaviour 
      *         of default buttons by providing $options. The following keys are regognized:
-     *         name      – the button's name
-     *         class     – the button's css class(es)
-     *         id        – the button's css id
-     *         image     – the button's theme image name (w/o icon- and .png, eg. 'edit' for 'icon-edit.png')
-     *         image_url – the complete URL of the button's image. Use this to define custom images that are
-     *                     stored anywhere on the web.
+     *         - name:      the button's name
+     *         - class:     the button's css class(es)
+     *         - id:        the button's css id
+     *         - url:       the URL to be fetched when the button has been clicked.
+     *         - title:     value for the HTML title attribute (displayed as a tooltip in most browsers).
+     *         - image:     the button's theme image name (w/o icon- and .png, eg. 'edit' for 'icon-edit.png')
+     *         - image_url: the complete URL of the button's image. Use this to define custom images that are
+     *                      stored anywhere on the web.
      * @return OntoWiki_Toolbar
      */
     public function prependButton($type, array $options = array())
@@ -249,6 +253,12 @@ class OntoWiki_Toolbar
             $href = null;
         }
         
+        if (array_key_exists('title', $options)) {
+            $title = 'title="' . $options['title'] . '"';
+        } else {
+            $title = null;
+        }
+        
         // set image
         if (array_key_exists('image_url', $options)) {
             $image = $options['image_url'];
@@ -259,10 +269,11 @@ class OntoWiki_Toolbar
         }
         
         // construct button link
-        $button = sprintf('<a class="button %s" %s %s><img src="%s"/><span>&nbsp;%s</span></a>', 
+        $button = sprintf('<a class="button %s" %s %s %s><img src="%s"/><span>&nbsp;%s</span></a>', 
                           $class, 
                           $id, 
-                          $href, 
+                          $href,
+                          $title,  
                           $image, 
                           $label);
         
