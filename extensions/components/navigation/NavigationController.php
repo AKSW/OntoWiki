@@ -706,6 +706,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $conf = $filter_conf;
         }else if( isset($setup->config->list->query) ){
             $config_query = str_replace("%resource%", $uri,$setup->config->list->query);
+            $config_query = str_replace("\n", " ",$config_query);
 
             $conf['filter'][] = array(
                 'mode' => 'query',
