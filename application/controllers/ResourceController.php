@@ -179,7 +179,11 @@ class ResourceController extends OntoWiki_Controller_Base
         $toolbarEvent->resource = (string)$resource;
         $toolbarEvent->graph    = (string)$graph;
         $toolbarEvent->toolbar  = $toolbar;
-        $toolbar = $toolbarEvent->trigger();
+        $eventResult = $toolbarEvent->trigger();
+        
+        if ($eventResult instanceof OntoWiki_Toolbar) {
+            $toolbar = $eventResult;
+        }
         
         // add toolbar
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
