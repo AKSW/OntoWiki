@@ -705,7 +705,15 @@ class NavigationController extends OntoWiki_Controller_Component
             $filter_conf = json_decode($conf_string);
             $conf = $filter_conf;
         }else if( isset($setup->config->list->query) ){
-            $config_query = str_replace("%resource%", $uri,$setup->config->list->query);
+            // show properties
+            if( isset($setup->config->list->shownProperties) ){
+                $conf_string = str_replace("|", '"', $setup->config->list->shownProperties);
+                $conf_string = str_replace("%resource%", $uri, $conf_string);
+                $conf['shownProperties'][] = json_decode($conf_string);
+            }
+
+            // query
+            $config_query = str_replace("%resource%",$uri,$setup->config->list->query);
             $config_query = str_replace("\n", " ",$config_query);
 
             $conf['filter'][] = array(
