@@ -48,7 +48,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
      * Array of predicates to be ignored
      * @var array
      */
-    protected $_ignoredPredicates = array(EF_RDF_TYPE);
+    protected $_ignoredPredicates = array();
     
     /**
      * Constructor
@@ -59,6 +59,13 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
         $this->_uri = (string)$uri;
         
         $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
+
+        //TODO fix query
+        $queryHidden = 'PREFIX sysont: <http://ns.ontowiki.net/SysOnt/> SELECT ?p WHERE {?p sysont:hidden ?o }';
+        $res = $store->sparqlQuery($queryHidden, array("result_format" => STORE_RESULTFORMAT_EXTENDED));
+        foreach($res['bindings'] as $b){
+            $this->_ignoredPredicates[] = $b['p']['value'];
+        }
     }
     
     /**

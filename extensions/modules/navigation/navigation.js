@@ -67,14 +67,39 @@ function navigationEvent (navEvent, eventParameter) {
     } else {
         setup = navigationSetup;
     }
-    
+
     // delete old search string
     delete(setup['state']['searchString']);
 
     switch (navEvent) {
         case 'init':
-        case 'reset':
             // save hidden, implicit and empty to state
+            if(typeof navigationStateSetup != 'undefined'){
+                if(typeof navigationStateSetup['state']['showEmpty'] != 'undefined'){
+                    setup['state']['showEmpty'] = navigationStateSetup['state']['showEmpty'];
+                }
+                if(typeof navigationStateSetup['state']['showImplicit'] != 'undefined'){
+                    setup['state']['showImplicit'] = navigationStateSetup['state']['showImplicit'];
+                }
+                if(typeof navigationStateSetup['state']['showHidden'] != 'undefined'){
+                    setup['state']['showHidden'] = navigationStateSetup['state']['showHidden'];
+                }
+            }else{
+                if(setup['config']['showEmptyElements'] == '1'){
+                    setup['state']['showEmpty'] = true;
+                }
+                if(setup['config']['showImplicitElements'] == '1'){
+                    setup['state']['showImplicit'] = true;
+                }
+                if(setup['config']['showHiddenElements'] == '1'){
+                    setup['state']['showHidden'] = true;
+                }
+            }
+            // remove init sign and setup module title
+            navigationContainer.removeClass('init-me-please');
+            $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
+            break;
+        case 'reset':
             if(setup['config']['showEmptyElements'] == '1'){
                 setup['state']['showEmpty'] = true;
             }
@@ -202,8 +227,9 @@ function navigationEvent (navEvent, eventParameter) {
             if( setup['state']['offset'] !== undefined  ){
                 setup['state']['offset'] = setup['state']['offset']*2;
             }else{
-                setup['state']['offset'] = setup['state']['limit']; 
+                setup['state']['offset'] = parseInt(setup['state']['limit']) + 10;
             }
+            setup['state']['limit'] = setup['state']['offset'];
             break;
 
         default:
@@ -214,11 +240,7 @@ function navigationEvent (navEvent, eventParameter) {
     setup['state']['lastEvent'] = navEvent;
     navigationSetup = setup;
     navSetup = setup;
-    if( navEvent == 'more' ){
-        navigationUpdateLoad (navEvent, setup);
-    }else{
-        navigationLoad (navEvent, setup);
-    }
+    navigationLoad (navEvent, setup);
     return; 
 }
 
@@ -242,6 +264,10 @@ function navigationLoad (navEvent, setup) {
                 navigationInput.removeClass('is-processing');
 
                 switch (navEvent) {
+                    case 'more':
+                        navigationMore.remove();
+                        // remove the processing status
+                        navigationMore.removeClass('is-processing');
                     case 'refresh':
                         // no animation in refresh event (just the is processing)
                         break;
@@ -265,6 +291,10 @@ function navigationLoad (navEvent, setup) {
     navigationContainer.css('overflow', 'hidden');
 
     switch (navEvent) {
+        case 'more':
+            navigationMore = $("#naviganion-more");
+            navigationMore.html('&nbsp;&nbsp;&nbsp;&nbsp;');
+            navigationMore.addClass('is-processing');
         case 'refresh':
             // no animation in refresh event (just the is processing)
             cbAfterLoad();
@@ -279,41 +309,6 @@ function navigationLoad (navEvent, setup) {
             //navigationContainer.slideUp('fast', cbAfterLoad);
             cbAfterLoad();
     }
-
-    return ;
-}
-
-/**
- * update the navigation
- */
-function navigationUpdateLoad (navEvent, setup) {
-    if (typeof setup == 'undefined') {
-        alert('error: No navigation setup given, but navigationLoad requested');
-        return;
-    }
-    
-    navigationMore = $("#naviganion-more");
-
-    // preparation of a callback function
-    var cbAfterLoad = function(){
-        $.post(navigationExploreUrl, {setup: $.toJSON(setup)},
-            function (data) {
-                navigationMore.remove();
-                navigationContainer.append(data);
-                // remove the processing status
-                navigationMore.removeClass('is-processing');
-
-                navigationPrepareList();
-            }
-        );
-    }
-
-    // first we set the processing status
-    navigationMore.html('&nbsp;&nbsp;&nbsp;&nbsp;');
-    navigationMore.addClass('is-processing');
-    //navigationContainer.css('overflow', 'hidden');
-    
-    cbAfterLoad();
 
     return ;
 }

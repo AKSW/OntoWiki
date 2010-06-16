@@ -24,6 +24,7 @@ class BookmarkletModule extends OntoWiki_Module
         $this->view->rdfAuthorBase = $this->_config->libraryUrlBase . 'RDFauthor/';
         $this->view->defaultGraph = (string)OntoWiki::getInstance()->selectedModel;
         $this->view->defaultUpdateService = $this->_config->urlBase . 'update/';
+        $this->view->defaultQueryService = $this->_config->urlBase . 'sparql/';
         $this->view->ontoWikiUrl = $this->_config->urlBase;
         
         $frontController = Zend_Controller_Front::getInstance();
