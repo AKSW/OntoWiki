@@ -30,13 +30,11 @@ class CommunityHelper extends OntoWiki_Component_Helper
         $front  = Zend_Controller_Front::getInstance();
         $router = $front->getRouter();
 
-        if ($router->getCurrentRouteName() != 'instances') {
-                OntoWiki_Navigation::register('community', array(
-                    'controller' => 'community',     // history controller
-                    'action'     => 'list',       // list action
-                    'name'       => 'Community',
-                    'priority'   => 50));
-        }
+        OntoWiki_Navigation::register('community', array(
+            'controller' => 'community',     // history controller
+            'action'     => 'list',       // list action
+            'name'       => 'Community',
+            'priority'   => 50));
     }
 }
 

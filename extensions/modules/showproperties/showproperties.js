@@ -49,6 +49,7 @@ $(document).ready(function() {
         mainInnerContent.addClass('is-processing');
         mainInnerContent.load(reloadUrl+"", {"instancesconfig": serialized}, function(){
             mainInnerContent.removeClass('is-processing');
+            $('body').trigger('ontowiki.resource-list.reloaded');
         })
       };
 

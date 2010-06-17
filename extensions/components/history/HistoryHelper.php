@@ -30,13 +30,11 @@ class HistoryHelper extends OntoWiki_Component_Helper
         $front  = Zend_Controller_Front::getInstance();
         $router = $front->getRouter();
 
-        if ($router->getCurrentRouteName() != 'instances') {
-                OntoWiki_Navigation::register('history', array(
-                    'controller' => 'history',     // history controller
-                    'action'     => 'list',       // list action
-                    'name'       => 'History',
-                    'priority'   => 30));
-        }
+        OntoWiki_Navigation::register('history', array(
+            'controller' => 'history',     // history controller
+            'action'     => 'list',       // list action
+            'name'       => 'History',
+            'priority'   => 30));
     }
 }
 
