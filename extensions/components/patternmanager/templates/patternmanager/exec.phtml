@@ -1,0 +1,30 @@
+<div id="patternmanager">
+<table>
+<thead>
+</thead>
+<tbody>
+    <?php 
+        foreach ($this->variables as $var) {
+    ?>
+    <tr>
+	    <td><?php echo $var['name']; ?></td>
+	    <td>
+            <input type="text" class="width95 text pm_var" name="var[<?php echo $var['name']; ?>]" id="var[<?php echo $var['name']; ?>]"/>
+        </td>
+	    <td><?php echo $var['type']; ?></td>
+    </tr>
+    <?php
+        }
+    ?>
+</tbody>
+</table>
+<?php
+    if ( defined('_OWDEBUG') ) {
+?>
+<p class="messagebox warning">
+    execution took: <?php echo $this->microtime; ?>
+</p>
+<?php 
+    }
+?>
+</div>
