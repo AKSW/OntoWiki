@@ -437,6 +437,23 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            case 'CLASS' :
 	                break;
 	            case 'PROPERTY':
+                    $sparqlQuery =  'SELECT DISTINCT ?entity FROM <' .  (string) $model . '> WHERE { 
+			        	?x ?entity ?o .
+			        	OPTIONAL { ?entity <' . EF_RDFS_LABEL . '> ?label . }
+			        	FILTER (
+			        		REGEX( ?label, "' . addcslashes($query,'"') . '","i") ||
+			        		REGEX( STR(?entity), "' . addcslashes($query,'"') . '","i")
+			        	)
+			    		} LIMIT ' . $limit;
+        	        try {
+			            $res = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery);
+			        } catch (Exception $e) {
+			            $error = true;
+			            $res = array();
+			        }
+			        foreach ($res as $value) {
+			            $ret[] = $value['entity'];
+			        }
 	                break;
 	            case 'RESOURCE' :
                     $sparqlQuery =  'SELECT DISTINCT ?entity FROM <' .  (string) $model . '> WHERE { 
