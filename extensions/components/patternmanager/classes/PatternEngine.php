@@ -183,9 +183,24 @@ class PatternEngine {
             }
         }
 
-        $resultInsert = $this->_store->addMultipleStatements($graph, $insert);
+        if (sizeof($insert) > 50 ) {
+            for ($i = 0; ($i*50) < sizeof($insert) ; $i++) {
+                $part = array_slice($insert , $i*50 , 50 ,true);
+                $resultInsert = $this->_store->addMultipleStatements($graph, $part);
+            }
+        } else {
+            $resultInsert = $this->_store->addMultipleStatements($graph, $insert);
+        }
         
-        $resultDelete = $this->_store->deleteMultipleStatements($graph, $delete);
+        if (sizeof($delete) > 50) {
+            for ($i = 0; ($i*50) < sizeof($delete) ; $i++) {
+                $part = array_slice($delete , $i*50 , 50 ,true);
+                $resultDelete = $this->_store->deleteMultipleStatements($graph, $part);
+            }
+        } else {
+            $resultDelete = $this->_store->deleteMultipleStatements($graph, $delete);
+        }
+
         
         return (boolean) ($resultInsert && $resultDelete);
         

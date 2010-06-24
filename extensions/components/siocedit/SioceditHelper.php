@@ -27,7 +27,7 @@ class SioceditHelper extends OntoWiki_Component_Helper
         $owApp = OntoWiki::getInstance();    
              
         // we need a graph to work with
-        if ($owApp->selectedModel) {
+        if ($owApp->selectedModel && $owApp->selectedResource) {
         
             // generate uri array
             $siocNS = $this->_privateConfig->ns;
@@ -43,8 +43,8 @@ class SioceditHelper extends OntoWiki_Component_Helper
             $resource = (string)$owApp->selectedResource;
             
             // build SPARQL query for getting class (rdf:type) of current resource
-            $query->setProloguePart('SELECT DISTINCT ?t')
-                  ->setWherePart('WHERE {<' . $resource . '> a ?t.}');
+            $query->setProloguePart('SELECT DISTINCT ?siocType')
+                  ->setWherePart('WHERE {<' . $resource . '> a ?siocType.}');
             
             // query the store
             $result = $owApp->selectedModel->sparqlQuery($query);
@@ -52,7 +52,7 @@ class SioceditHelper extends OntoWiki_Component_Helper
             // check for uri of type available
             if (!empty($result)) {
                 $row = reset($result);
-                $uri = $row['t'];
+                $uri = $row['siocType'];
             } else {
                 $uri = false;
             }
