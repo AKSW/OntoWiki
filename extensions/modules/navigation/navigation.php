@@ -58,11 +58,11 @@ class NavigationModule extends OntoWiki_Module
         $mainMenu->setEntry('View', $viewMenu);
 
         // navigation type submenu
-        $sortMenu = new OntoWiki_Menu();
+        /*$sortMenu = new OntoWiki_Menu();
         foreach ($this->_privateConfig->sorting as $key => $config) {
             $sortMenu->setEntry($config->name, "javascript:navigationEvent('setSort', '$config->type')");
         }
-        $mainMenu->setEntry('Sort', $sortMenu);
+        $mainMenu->setEntry('Sort', $sortMenu);*/
 
         // navigation type submenu
         $typeMenu = new OntoWiki_Menu();

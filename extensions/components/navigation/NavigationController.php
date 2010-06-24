@@ -217,9 +217,9 @@ class NavigationController extends OntoWiki_Controller_Component
         if($query == null) return;
         
         // error logging
-        $this->_owApp->logger->info(
+        /*$this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
-        );
+        );*/
 
         // get extended results
         $all_results = $this->model->sparqlQuery($query, array('result_format' => 'extended'));
@@ -281,7 +281,7 @@ class NavigationController extends OntoWiki_Controller_Component
             
         // log results
         /*$this->_owApp->logger->info(
-            'NavigationController _queryNavigationEntries Result: '  . PHP_EOL . print_r($results,true)
+            'NavigationController _queryNavigationEntries Result: '  . PHP_EOL . print_r($all_results,true)
         );*/
 
         // set titleMode from config or set it to null if config is not assigned
@@ -510,8 +510,10 @@ class NavigationController extends OntoWiki_Controller_Component
             // set to limit+1, so we can see if there are more than $limit entries
             //$query->setLimit($this->limit + 1);
         }
-        // set ordering
-        if( isset($setup->config->ordering->relation) ){
+        // sorting
+        if( isset($setup->state->sorting) ){
+            $query->getOrder()->add(new Erfurt_Sparql_Query2_Var('sortRes'), "ASC");
+        } else if( isset($setup->config->ordering->relation) ){ // set ordering
             $query->getOrder()->add(
                 new Erfurt_Sparql_Query2_IriRef($setup->config->ordering->relation),
                 $setup->config->ordering->modifier
