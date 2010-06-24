@@ -408,6 +408,16 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 );
             }
         }
+
+        // sorting
+        if( isset($setup->state->sorting) ){
+            $sortRel = new Erfurt_Sparql_Query2_IriRef($setup->state->sorting);
+            $sortVar = new Erfurt_Sparql_Query2_Var('sort');
+
+            $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+            $queryOptional->addTriple($searchVar, $sortRel, $sortVar);
+            $elements[] = $queryOptional;
+        }
         
         return $elements;
     }

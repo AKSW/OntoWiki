@@ -71,6 +71,7 @@ function navigationEvent (navEvent, eventParameter) {
     // delete old search string
     delete(setup['state']['searchString']);
 
+    // nav event
     switch (navEvent) {
         case 'init':
             // save hidden, implicit and empty to state
@@ -231,12 +232,14 @@ function navigationEvent (navEvent, eventParameter) {
             }
             setup['state']['limit'] = setup['state']['offset'];
             break;
-
+        case 'setSort':
+            setup['state']['sorting'] = eventParameter;
+            break;
         default:
             alert('error: unknown navigation event: '+navEvent);
             return;
     }
-    
+
     setup['state']['lastEvent'] = navEvent;
     navigationSetup = setup;
     navSetup = setup;
