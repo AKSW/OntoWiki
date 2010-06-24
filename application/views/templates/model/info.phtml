@@ -4,7 +4,7 @@
 <?php if ($this->has('infoPredicates')): ?>
     <?php foreach ($this->infoPredicates as $uri => $predicate): ?>
         <?php foreach ($this->values[$uri] as $entry): ?>
-            <p class="messagebox info"><?php echo $entry['object'] ?></p>
+            <p class="messagebox info"><?php echo trim($entry['object']) ?></p>
         <?php endforeach; ?>
     <?php endforeach; ?>
 <?php else: ?>

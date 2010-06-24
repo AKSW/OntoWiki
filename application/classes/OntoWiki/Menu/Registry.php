@@ -122,7 +122,7 @@ class OntoWiki_Menu_Registry
         $extrasMenu = new OntoWiki_Menu();
         if ($owApp->selectedModel) {
             // only visible, if model is selected  
-            $extrasMenu->setEntry('SPARQL Query Editor', $owApp->config->urlBase . 'model/query');
+            $extrasMenu->setEntry('SPARQL Query Editor', $owApp->config->urlBase . 'querybuilding/editor');
         }
         $extrasMenu->setEntry('News', $owApp->config->urlBase . 'index/news');
         

@@ -26,7 +26,6 @@
     <table class="separated-vertical">
         <thead><tr>
             <th><?php echo $this->_('name'); ?></th>
-            <th><?php echo $this->_('description'); ?></th>
             <th><?php echo $this->_('creator'); ?></th>
             <th><?php echo $this->_('date'); ?></th>
             <th><?php echo $this->_('open'); ?></th>
@@ -39,7 +38,6 @@
             <?php $evenOdd = ($evenOdd === 'even') ? 'odd' : 'even'; ?>  
             <tr class="<?php echo $evenOdd; ?>">
                 <td><?php echo $entry['name']; ?></td>
-                <td><?php echo $entry['desc']; ?></td>
                 <td><?php echo OntoWiki_Utils::getUriLocalPart($entry['creator']); ?></td>
                 <td><?php 
 	                if (($timestamp = strtotime($entry['date'])) === false) {
@@ -58,7 +56,7 @@
 							$base = $this->urlBase."graphicalquerybuilder/display?open=true";
 							$base .= "&queryuri=".htmlentities($entry['query']);
 						}
-					$qelink = $this->urlBase."model/query?immediate=1&query=".urlencode($entry['sparql']);
+					$qelink = $this->urlBase."querybuilding/editor?immediate=1&queryUri=".urlencode($entry['query']);
                                         ?>
 					<a style="margin:2px;" class="minibutton" href="<?php echo $qelink; ?>">qe</a>
                                         <?php if($entry['generator']=="qb" || $entry['generator']=="gqb"){?>

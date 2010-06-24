@@ -58,9 +58,22 @@ class NavigationModule extends OntoWiki_Module
         $mainMenu->setEntry('View', $viewMenu);
 
         // navigation type submenu
+        /*$sortMenu = new OntoWiki_Menu();
+        foreach ($this->_privateConfig->sorting as $key => $config) {
+            $sortMenu->setEntry($config->name, "javascript:navigationEvent('setSort', '$config->type')");
+        }
+        $mainMenu->setEntry('Sort', $sortMenu);*/
+
+        // navigation type submenu
         $typeMenu = new OntoWiki_Menu();
         foreach ($this->_privateConfig->config as $key => $config) {
-            $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+            if($this->_privateConfig->defaults->checkTypes){
+                if( $this->checkConfig($config) > 0 ){
+                    $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+                }
+            }else{
+                $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+            }
         }
         $mainMenu->setEntry('Type', $typeMenu);
 
@@ -124,6 +137,36 @@ class NavigationModule extends OntoWiki_Module
         } else {
             return false;
         }
+    }
+
+    private function checkConfig($config){
+        $resVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        $typeVar = new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE);
+
+        $query = new Erfurt_Sparql_Query2();
+        $query->addProjectionVar($resVar)->setDistinct(true);
+
+        $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+        foreach ($config->hierarchyTypes as $type) {
+            $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+            $u1->addTriple( $resVar,
+                $typeVar,
+                new Erfurt_Sparql_Query2_IriRef($type)
+            );
+            $union->addElement($u1);
+        }
+        $query->addElement($union);
+        $query->setLimit(1);
+
+        $all_results = $this->_owApp->selectedModel->sparqlQuery($query);
+        /*$this->_owApp->logger->info(
+            'Navigation Query: ' .PHP_EOL . $query->__toString()
+        );
+        $this->_owApp->logger->info(
+            'Navigation Query Results: ' .PHP_EOL . print_r($all_results)
+        );*/
+
+        return count($all_results);
     }
 }
 
