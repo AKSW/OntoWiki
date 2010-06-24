@@ -1038,6 +1038,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     
     public function getAllProperties ($inverse = false)
     {
+        if(empty($this->_resources)){
+            return array();
+        }
         //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
         $query = clone $this->_resourceQuery;
         $query

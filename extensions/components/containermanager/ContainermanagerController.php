@@ -384,7 +384,7 @@ class ContainermanagerController extends OntoWiki_Controller_Component
                 $this->_redirect($this->_config->urlBase);
             }
         } else {
-            $this->redirect((string)$redirect);
+            $this->_redirect((string)$redirect);
         }
 
         return true;

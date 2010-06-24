@@ -418,7 +418,7 @@ div.versatile.centered
     background-color: #f6f6f6;
 }
 
-.marked, .selected, tr.marked td {
+.marked, tr.list-selected td, .selected, tr.marked td {
     background-color: #dee8ee !important;
     border-color: #cdd7dd !important;
 }
@@ -1784,8 +1784,9 @@ a.hasMenu span.toggle {
     /* border: solid 1px #999; */
     right: -0.625em;
     top: 0;
-    background: url(./../images/icons/context.png) no-repeat center rgba(85, 85, 85, 0.5);
-    /*background: url(./../images/button-drop-down.png) no-repeat center #555;*/
+    /*background: url(./../images/icons/context.png) no-repeat center rgba(85, 85, 85, 0.5);*/
+    background: url(./../images/icons/context.png) no-repeat center #999;
+    background-color:rgba(85, 85, 85, 0.5);
     opacity:0.75;
     border-radius:0.2em;
     -moz-border-radius:0.2em;
@@ -1855,6 +1856,7 @@ a.hasMenu:hover span.toggle {
     line-height:1;
     display:inline-block; height:1em;
     padding:0.25em;
+    background-color:#999;
     background-color:rgba(85, 85, 85, 0.5); /* #555 */
     opacity:0.75;
     border-radius:0.25em;

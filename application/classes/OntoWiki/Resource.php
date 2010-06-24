@@ -39,13 +39,13 @@ class OntoWiki_Resource extends Erfurt_Rdfs_Resource
      *
      * @return string|null
      */
-    public function getTitle()
+    public function getTitle($lang = null)
     {
         if (null === $this->_title) {
             require_once 'OntoWiki/Model/TitleHelper.php';
             $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
             $titleHelper->addResource($this->getUri());
-            $this->_title = $titleHelper->getTitle($this->getUri());
+            $this->_title = $titleHelper->getTitle($this->getUri(), $lang);
         }
         
         return $this->_title;

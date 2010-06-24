@@ -16,3 +16,10 @@
     # Set RewriteBase only if your OntoWiki folder is not located in your web server's root dir.
     #RewriteBase /path/to/ontowiki
 </IfModule>
+
+# if you allow short open tags, xml templates will crash
+# please refer http://code.google.com/p/ontowiki/wiki/RecommendedPHPSettings
+# for recommended PHP settings
+# maybe php_flag is not allowed in your environment,
+# but if you allow short open tags, xml templates will crash
+#php_flag short_open_tag 0

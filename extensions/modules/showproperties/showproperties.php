@@ -20,8 +20,8 @@ class ShowpropertiesModule extends OntoWiki_Module
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'showproperties.js');
         
         $session = $this->_owApp->session;
-        
-        $allShownProperties =  $this->_owApp->session->instances->getShownPropertiesPlain();
+
+        $allShownProperties =  $session->instances->getShownPropertiesPlain();
         $shownProperties = array();
         $shownInverseProperties = array();
         foreach ($allShownProperties as $prop) {

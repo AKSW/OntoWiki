@@ -65,6 +65,20 @@ RDFauthorPropertySelector.prototype.init = function () {
         instance.currentTitle = data[0];
         instance.options.callback();
     });
+    
+    $('#property-value-' + this.id).keypress(function(e) {
+        if (e.which == 13 /* return */) {
+            instance.currentUri   = $(this).val();
+            
+            if (String(instance.currentUri).lastIndexOf('#') > -1) {
+                instance.currentTitle = String(instance.currentUri).substr(String(instance.currentUri).lastIndexOf('#') + 1);
+            } else {
+                instance.currentTitle = String(instance.currentUri).substr(String(instance.currentUri).lastIndexOf('/') + 1);
+            }
+            
+            instance.options.callback();
+        }
+    });
 };
 
 RDFauthorPropertySelector.prototype.dismiss = function (animated) {

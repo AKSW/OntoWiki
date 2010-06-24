@@ -71,7 +71,7 @@ class ResourceController extends OntoWiki_Controller_Base
         // Give plugins a chance to add entries to the menu
         $this->view->placeholder('main.window.menu')->set($menu->toArray(false, true));
         
-        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace((string)$resource);
+        $title = $resource->getTitle($this->_config->languages->locale) ? $resource->getTitle($this->_config->languages->locale) : OntoWiki_Utils::contractNamespace((string)$resource);
         $windowTitle = sprintf($translate->_('Properties of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
         
@@ -145,13 +145,14 @@ class ResourceController extends OntoWiki_Controller_Base
             }
         }
         
+        $toolbar = $this->_owApp->toolbar;
+        
         // show only if not forwarded and if model is writeable
         // TODO: why is isEditable not false here?
         if ($this->_request->getParam('action') == 'properties' && $graph->isEditable() &&
                 $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)
                 ) {
             // TODO: check acl
-            $toolbar = $this->_owApp->toolbar;
             $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties'));
             $toolbar->appendButton(OntoWiki_Toolbar::EDITADD, array(
                 'name' => 'Clone Resource',
@@ -171,8 +172,21 @@ class ResourceController extends OntoWiki_Controller_Base
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
                     ->prependButton(OntoWiki_Toolbar::CANCEL, array('+class' => 'hidden'))
                     ->prependButton(OntoWiki_Toolbar::SAVE, array('+class' => 'hidden'));
-            $this->view->placeholder('main.window.toolbar')->set($toolbar);
         }
+        
+        // let plug-ins add buttons
+        $toolbarEvent = new Erfurt_Event('onCreateToolbar');
+        $toolbarEvent->resource = (string)$resource;
+        $toolbarEvent->graph    = (string)$graph;
+        $toolbarEvent->toolbar  = $toolbar;
+        $eventResult = $toolbarEvent->trigger();
+        
+        if ($eventResult instanceof OntoWiki_Toolbar) {
+            $toolbar = $eventResult;
+        }
+        
+        // add toolbar
+        $this->view->placeholder('main.window.toolbar')->set($toolbar);
         
         $this->addModuleContext('main.window.properties');
         
@@ -195,8 +209,8 @@ class ResourceController extends OntoWiki_Controller_Base
 
         $start = microtime(true);
         $instances = $this->_session->instances;
-        if(!($instances instanceof OntoWiki_Model_Instances)){
-            throw new OntoWiki_Exception("Something went wrong with list creation. Probably your session timed out. <a href='".$this->_config->urlBase."'>Start again</a>");
+        if (!($instances instanceof OntoWiki_Model_Instances)) {
+            throw new OntoWiki_Exception("Something went wrong with list creation. Probably your session timed out. <a href='" . $this->_config->urlBase . "'>Start again</a>");
             exit;
         } else {
             $instances->updateValueQuery();
@@ -615,7 +629,17 @@ class ResourceController extends OntoWiki_Controller_Base
                 $s = '_:node'.$bNodeCounter++;     
             }
         }
-            
+        
+        // Event
+        $event = new Erfurt_Event('beforeExportResource');
+        $event->resource = $resource;
+        $event->modelUri = $modelUri;
+        $additional2 = $event->trigger();
+        
+        if (is_array($additional2)) {
+            $additional = array_merge($additional, $additional2);
+        }
+                
         $response = $this->getResponse();
         $response->setHeader('Content-Type', $contentType, true);
         $response->setHeader('Content-Disposition', ('filename="'.$filename.'"'));

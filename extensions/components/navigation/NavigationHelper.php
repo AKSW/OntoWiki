@@ -207,7 +207,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         // parse config gile
                         foreach($setup->config->hierarchyRelations->in as $rel){
                             // sub stuff
-                            $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();//Erfurt_Sparql_Query2_OptionalGraphPattern();
+                            $u1 = new Erfurt_Sparql_Query2_OptionalGraphPattern();//Erfurt_Sparql_Query2_GroupGraphPattern();//Erfurt_Sparql_Query2_OptionalGraphPattern();
                             // add triplen
                             $u1->addTriple(
                                 $subVar,
@@ -223,7 +223,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $rel = $setup->config->hierarchyRelations->in;
                         // add optional sub relation
                         // create optional graph to load sublacsses of selected class
-                        $queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();//Erfurt_Sparql_Query2_OptionalGraphPattern();
+                        $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();//Erfurt_Sparql_Query2_GroupGraphPattern();//Erfurt_Sparql_Query2_OptionalGraphPattern();
                         $queryOptional->addTriple(
                             $subVar,
                             new Erfurt_Sparql_Query2_IriRef($rel[0]),
@@ -240,7 +240,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         // parse config gile
                         foreach($setup->config->hierarchyRelations->out as $rel){
                             // sub stuff
-                            $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();// Erfurt_Sparql_Query2_OptionalGraphPattern();
+                            $u1 = new Erfurt_Sparql_Query2_OptionalGraphPattern();//Erfurt_Sparql_Query2_GroupGraphPattern();// Erfurt_Sparql_Query2_OptionalGraphPattern();
                             // add triplen
                             $u1->addTriple(
                                 $searchVar,
