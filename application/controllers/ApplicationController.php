@@ -500,6 +500,9 @@ class ApplicationController extends OntoWiki_Controller_Base
                         } else {
                             $label = '';
                         }
+                    } else {
+                        $email = '';
+                        $label = '';
                     }
                     
                     $this->view->webid = $webId;
@@ -507,9 +510,17 @@ class ApplicationController extends OntoWiki_Controller_Base
                         $this->view->checked = true;
                     }
                     
-                    $this->view->email = $email;
-                    $this->view->label = $label;
-
+                    if (null !== $email) {
+                        $this->view->email = $email;
+                    } else {
+                        $this->view->email = '';
+                    }
+                    if (null !== $label) {
+                        $this->view->label = $label;
+                    } else {
+                        $this->view->label = '';
+                    }
+                    
                     $toolbar = $this->_owApp->toolbar;
             		$toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Register'));
             		$this->view->placeholder('main.window.toolbar')->set($toolbar);

@@ -260,9 +260,37 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                         if (isset($data[$uri][$exception])) {
                             if (!isset($result[$uri])) {
                                 $result[$uri] = array();
-                            } 
-
-                            $result[$uri][$exception] = $data[$uri][$exception];
+                            }
+                            if (!isset($result[$uri][$exception])) {
+                                $result[$uri][$exception] = array();
+                            }
+                            
+                            foreach ($data[$uri][$exception] as $o) {
+                                if ($o['type'] === 'literal') {
+                                    if (isset($presets[$presetMatch]['lang'])) {
+                                        foreach ($presets[$presetMatch]['lang'] as $lang) {
+                                            if (isset($o['lang']) && $o['lang'] === $lang) {
+                                                $result[$uri][$exception][] = $o;
+                                            }
+                                        }
+                                    } else {
+                                        $result[$uri][$exception][] = $o;
+                                    }
+                                } else {
+                                    $result[$uri][$exception][] = $o;
+                                }
+                            }
+                            
+                            if (isset($presets[$presetMatch]['lang'])) {
+                                if (count($result[$uri][$exception]) === 0) {
+                                    foreach ($data[$uri][$exception] as $o) {
+                                        if (!isset($o['lang'])) {
+                                            $result[$uri][$exception][] = $o;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }   

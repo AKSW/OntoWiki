@@ -4,7 +4,7 @@
 parameter="$1"
 if [ "$parameter" == "" ]
 then
-        echo "No Version Parameter or Timestamp!"
+        echo "No Version Parameter (e.g. 0.9.5)!"
         exit 1;
 fi
 
@@ -42,11 +42,11 @@ cp -R $releaseTemp/RDFauthor/ $releaseDir/libraries
 
 echo "Delete unwanted files and directories in $releaseTemp" 
 #rm -rf `find $releaseDir -name '.svn'`
-#cd $releaseDir/extensions/components && rm -rf calendar containermanager foafedit plugins querybuilding repositoryservices tagging filter graphicalquerybuilder querybuilder repository syncml
-#cd $releaseDir/extensions/modules && rm -rf containermanager exploretags filter keyboard tagcloud
-#cd $releaseDir/extensions/plugins && rm -rf dllearner breadcrumbs sortproperties
+cd $releaseDir/extensions/components && rm -rf calendar graphicalquerybuilder querybuilder repositoryservices artistedit dllearner foafedit querybuilding containermanager easyinference freebedit cacheconfiguration dashboard plugins repository skos
+cd $releaseDir//extensions/modules && rm -rf containermanager dllearner easyinference keyboard rating skosrelations tabs tagcloud
+cd $releaseDir/extensions/plugins && rm -rf breadcrumbs easyinference isressourceeditingallowed sendmail
 #cd $releaseDir/extensions/themes && rm -rf flatcarbon
-#cd $releaseDir/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php
+cd $releaseDir/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php
 
 echo "Create and copy additional files and directories in $releaseTemp" 
 cp -R $releaseTemp/ontowiki/CHANGELOG $releaseDir || exit
@@ -55,6 +55,7 @@ cp -R $releaseTemp/ontowiki/LICENSE $releaseDir || exit
 cp -R $releaseTemp/ontowiki/TODO $releaseDir || exit
 mkdir $releaseDir/cache $releaseDir/logs $releaseDir/uploads 
 chmod 777 $releaseDir/cache $releaseDir/logs $releaseDir/uploads
+mv $releaseDir/htaccess-dist $releaseDir/.htaccess
 
 echo "Download and unpack a Zend Framework"
 cd $releaseDir/libraries
@@ -66,6 +67,12 @@ rm -rf ZendFramework-1.9.4-minimal
 
 echo "Create the ZIP ~/$releaseDirBase.zip"
 cd $releaseDir/.. && zip -q -9 -r ~/$releaseDirBase.zip $releaseDirBase
+
+echo "Create the 7zip ~/$releaseDirBase.7z"
+cd $releaseDir/.. && 7zr a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on ~/$releaseDirBase.7z $releaseDirBase >/dev/null
+
+echo "Create the ZIP ~/$releaseDirBase-without-Zend.zip"
+rm -rf $releaseDir/libraries/Zend/ && cd $releaseDir/.. && zip -q -9 -r ~/$releaseDirBase-without-Zend.zip $releaseDirBase
 
 echo "Delete the release temp and release dir"
 rm -rf $releaseDir

@@ -14,10 +14,7 @@ have copied the content of the release archive to your webdirectory.
    in most cases, you have to change only these values
    store.zenddb.dbname, store.zenddb.username, store.zenddb.password
 
-4. OPTIONAL: copy the htaccess-dist to .htaccess (only useful, if your
-   webserver support mod_rewrite)
-
-5. Start your OntoWiki Installation in your browser. All tables are
+4. Start your OntoWiki Installation in your browser. All tables are
    created automatically and hopefully, you will see a starting screen
    containing a news area and a login window.
 
