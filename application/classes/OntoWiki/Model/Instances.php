@@ -64,6 +64,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_values;
     protected $_valuesUptodate = false;
+
+    protected $_valueQueryUptodate = false;
     
     /**
      * all resources
@@ -103,7 +105,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     /**
      * Constructor
      */
-public function __construct (Erfurt_Store $store, $graph, $options = array())
+public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $options = array())
     {
         parent::__construct($store, $graph);
         
@@ -188,7 +190,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      * @param $propertyName Name to be used for the variable
      * @return OntoWiki_Model_ResourceList
      */
-    public function addShownProperty ($propertyUri, $propertyName = null, $inverse = false, $datatype = null)
+    public function addShownProperty ($propertyUri, $propertyName = null, $inverse = false, $datatype = null, $hidden = false)
     {
         if (in_array($propertyUri, $this->_ignoredShownProperties)) {
             return $this; //no action
@@ -237,7 +239,8 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             'varName' => $ret['var']->getName(),
             'var' => $ret['var'],
             'optionalpart' => $ret['optional'],
-            'filter' => $ret['filter']
+            'filter' => $ret['filter'],
+            'hidden' => $hidden
         );
         $this->_valuesUptodate = false; // getValues will not use the cache next time
         $this->_resultsUptodate = false;
@@ -269,6 +272,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      */
     public function getResults ()
     {
+        $this->updateValueQuery();
         //echo htmlentities($this->_valueQuery);
         if (!$this->_resultsUptodate) {
             $this->_results = $this->_model->sparqlQuery(
@@ -566,7 +570,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
         $this->invalidate();
-        $this->updateValueQuery();
         return $id;
     }
 
@@ -613,6 +616,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      * @return int id
      */
     public function addTypeFilter($type, $id = null, $option = array()){
+        
         if($id == null){
             $id = "type" . count($this->_filter);
         } else {
@@ -895,14 +899,18 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     {
         if ($this->_valuesUptodate) {
             return $this->_values;
-        } 
+        } else $this->updateValueQuery();
+        
         if (empty($this->_resources)) {
             return array();
         }
         //echo htmlentities($this->_valueQuery);
+
         $this->getResults();
 
+        //print_r($this->_results);
         $result = $this->_results['bindings'];
+        
         
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
 
@@ -1371,6 +1379,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $this->_resultsUptodate = false;
         $this->_valuesUptodate = false;
         $this->_allPropertiesUptodate  = false;
+        $this->_valueQueryUptodate = false;
         return $this;
     }
 
@@ -1381,9 +1390,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      */
     public function updateValueQuery ()
     {
-        if($this->_resourcesUptodate){
+        if($this->_valueQueryUptodate){
             return $this;
-        }
+        } 
         
         $resources = $this->getShownResources();
         //echo 'resources: <pre>'; print_r($resources); echo '</pre>';
@@ -1408,6 +1417,8 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                 new Erfurt_Sparql_Query2_BooleanLiteral(false) :
                 new Erfurt_Sparql_Query2_ConditionalOrExpression($resources)
         );
+
+        $this->_valueQueryUptodate = true;
 
         //echo 'updated value query: <pre>';
         //echo htmlentities($this->_valueQuery);

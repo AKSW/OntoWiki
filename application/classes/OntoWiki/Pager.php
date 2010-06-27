@@ -56,7 +56,7 @@ class OntoWiki_Pager
      * @param $count the total number of items
      * @param $limit the number of items per page
      */
-    public static function get($count, $limit = null, $itemsOnPage = null, $page = null)
+    public static function get($count, $limit = null, $itemsOnPage = null, $page = null, $listName=null)
     {
         if (null != $limit) {
             self::$_options['default_limit'] = $limit;
@@ -69,8 +69,9 @@ class OntoWiki_Pager
         
         // get URL with params p (page number) and limit (not used atm)
         self::$_url = new OntoWiki_Url(array(), array('p', 'limit'));
-        
-        $limit = isset(self::$_url->limit) 
+        self::$_url->setParam("list", $listName);
+
+        $limit = isset(self::$_url->limit)
                ? self::$_url->limit 
                : self::$_options['default_limit'];
 

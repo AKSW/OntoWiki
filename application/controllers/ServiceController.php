@@ -98,9 +98,6 @@ class ServiceController extends Zend_Controller_Action
                     ' . implode(PHP_EOL, $nsFilter) . '
                 }'
             );
-            
-            // var_dump((string)$query);
-            // var_dump($store->sparqlQuery($query));
         }
     }
 

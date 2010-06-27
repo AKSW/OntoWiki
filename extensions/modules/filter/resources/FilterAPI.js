@@ -70,16 +70,16 @@ function FilterAPI(){
             };
 
             var dataserialized = $.toJSON(data);
-            
+            var url = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized)+"&list="+listName;
             if(dontReload == true){
                 $.ajax(
                   {
-                      url: this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized),
-                      type : "POST"
+                      "url": url,
+                      "type" : "POST"
                   }
                 );
             } else {
-                window.location = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized);
+                window.location = url;
             }
             
 	};

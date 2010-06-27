@@ -16,12 +16,21 @@ class ShowpropertiesModule extends OntoWiki_Module
 {
     public function init()
     {
-        // load js
-        $this->view->headScript()->appendFile($this->view->moduleUrl . 'showproperties.js');
         
-        $session = $this->_owApp->session;
+    }
+    
+    public function getContents()
+    {
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $instances = $listHelper->getLastList();
+        
+        if(!($instances instanceof OntoWiki_Model_Instances)){
+            return "Error: List not found";
+        }
 
-        $allShownProperties =  $session->instances->getShownPropertiesPlain();
+        $this->view->headScript()->appendFile($this->view->moduleUrl . 'showproperties.js');
+
+        $allShownProperties =  $instances->getShownPropertiesPlain();
         $shownProperties = array();
         $shownInverseProperties = array();
         foreach ($allShownProperties as $prop) {
@@ -35,27 +44,20 @@ class ShowpropertiesModule extends OntoWiki_Module
            'var shownProperties = ' . json_encode($shownProperties).';
             var shownInverseProperties = ' . json_encode($shownInverseProperties) . ';'
         );
-    }
-    
-    public function getContents()
-    {
-        $session = $this->_owApp->session;
-        if (isset($session->instances)) {
-            if($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist)
-            {
-            $this->view->properties = $this->filterProperties($session->instances->getAllProperties(false));
-            $this->view->reverseProperties = $this->filterProperties($session->instances->getAllProperties(true));
-            }
-            else
-            {
-            $this->view->properties = $session->instances->getAllProperties(false);
-            $this->view->reverseProperties = $session->instances->getAllProperties(true);
-            }
-            
-            return $this->render('showproperties');
+
+
+        if($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist)
+        {
+            $this->view->properties = $this->filterProperties($instances->getAllProperties(false));
+            $this->view->reverseProperties = $this->filterProperties($instances->getAllProperties(true));
         }
-        
-        return 'No instances object';
+        else
+        {
+            $this->view->properties = $instances->getAllProperties(false);
+            $this->view->reverseProperties = $instances->getAllProperties(true);
+        }
+            
+        return $this->render('showproperties');
     }
     
     public function getStateId()
