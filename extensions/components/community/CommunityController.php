@@ -15,7 +15,8 @@ class CommunityController extends OntoWiki_Controller_Component {
         $resource    = $this->_owApp->selectedResource;
         $translate   = $this->_owApp->translate;
 
-        
+        $store = $this->_owApp->erfurt->getStore();
+        $graph = $this->_owApp->selectedModel;
 
         $aboutProperty   = $this->_privateConfig->about->property;
         $creatorProperty = $this->_privateConfig->creator->property;
@@ -23,78 +24,93 @@ class CommunityController extends OntoWiki_Controller_Component {
         $contentProperty = $this->_privateConfig->content->property;
         $dateProperty    = $this->_privateConfig->date->property;
 
-        // get all resource comments       
+        // get all resource comments
+        //Loading data for list of saved queries
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $listName = "community";
+        if($listHelper->listExists($listName)){
+            $list = $listHelper->getList($listName);
+            $listHelper->addList($listName, $list, $this->view);
+        } else {
+            $list = new OntoWiki_Model_Instances($store, $graph, array());
+
+            $list->addTypeFilter($commentType, 'searchcomments');
+
+            $list->addShownProperty($creatorProperty, "creator", false, null, false);
+            $list->addShownProperty($contentProperty, "content", false, null, false);
+            $list->addShownProperty($dateProperty, "date", false, null, false);
+            $list->setLimit(10);
+            
+            
+            if($this->_owApp->lastRoute === 'instances'){
+                $instances = $listHelper->getList('instances');
+                $query = $instances->getResourceQuery();
+                $resourceVar = $instances->getResourceVar();
+                
+                //$resourceVar->setName('listresource'); //does not work as there sadly is no single var object, but multiple with same name
+                $vars = $query->getWhere()->getVars();
+                foreach($vars as $var){
+                    if($var->getName() == $resourceVar->getName()){
+                        $var->setName('listresource');
+                    }
+                }
+                $elements = $query->getWhere()->getElements();
+                //link old list to elements of the community-list
+                $elements[] = new Erfurt_Sparql_Query2_Triple(
+                        $list->getResourceVar(),
+                        new Erfurt_Sparql_Query2_IriRef($aboutProperty),
+                        $resourceVar
+                );
+                $list->addTripleFilter($elements, "listfilter");
+                
+            } else {
+                $list->addTripleFilter(array(
+                    new Erfurt_Sparql_Query2_Triple(
+                            $list->getResourceVar(),
+                            new Erfurt_Sparql_Query2_IriRef($aboutProperty),
+                            new Erfurt_Sparql_Query2_IriRef((string)$resource)
+                    )));
+                
+            }
+
+            $listHelper->addListPermanently($listName, $list, $this->view);
+        }
         $singleResource = true;
         if($this->_owApp->lastRoute === 'instances'){
-            $instances = $this->_session->instances;
-            if(!($instances instanceof OntoWiki_Model_Instances)){
-                throw new OntoWiki_Exception("Something went wrong with list creation. Probably your session timed out. <a href='".$this->_config->urlBase."'>Start again</a>");
-                exit;
-            }
-            $query = $instances->getResourceQuery();
-            $resourceObject = $instances->getResourceVar()->getSparql();
-            $resVarName = $instances->getResourceVar()->getName();
-            $elements = $query->getWhere()->getSparql();
+            $windowTitle = $translate->_('Discussion about elements of the list');
             $singleResource = false;
-            $commentSparql = 'SELECT DISTINCT '.$resourceObject.' ?author ?comment ?content ?date ?alabel
-                WHERE {
-                    '.$elements.'
-                    ?comment <' . $aboutProperty . '> '. $resourceObject . ' .
-                    ?comment a <' . $commentType . '>.
-                    ?comment <' . $creatorProperty . '> ?author.
-                    OPTIONAL {?author <' . EF_RDFS_LABEL . '> ?alabel}
-                    OPTIONAL {?author <http://xmlns.com/foaf/0.1/nick> ?anick}
-                    ?comment <' . $contentProperty . '> ?content.
-                    ?comment <' . $dateProperty . '> ?date.
-                }
-                ORDER BY ASC(?date)
-                LIMIT 10';
-            $title = "elements of the list";
         } else {
-            $resourceObject = '<' . $resource . '> ';
-            $commentSparql = 'SELECT DISTINCT ?author ?comment ?content ?date ?alabel
-                WHERE {
-                    ?comment <' . $aboutProperty . '> '. $resourceObject . ' .
-                    ?comment a <' . $commentType . '>.
-                    ?comment <' . $creatorProperty . '> ?author.
-                    OPTIONAL {?author <' . EF_RDFS_LABEL . '> ?alabel}
-                    OPTIONAL {?author <http://xmlns.com/foaf/0.1/nick> ?anick}
-                    ?comment <' . $contentProperty . '> ?content.
-                    ?comment <' . $dateProperty . '> ?date.
-                }
-                ORDER BY ASC(?date)
-                LIMIT 10';
             $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
+            $windowTitle = sprintf($translate->_('Discussion about %1$s'), $title);
+            $this->addModuleContext('main.window.community');
         }
-
-        $windowTitle = sprintf($translate->_('Discussion about %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
         
-        $query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
-        
-        $titleHelper = new OntoWiki_Model_TitleHelper();
-        $comments = array();
-        if ($result = $this->_owApp->selectedModel->sparqlQuery($query)) {
-            foreach ($result as $row) {
-                if (!empty($row['anick'])) {
-                    $row['author'] = $row['anick'];
-                } else if (!empty($row['alabel'])) {
-                        $row['author'] = $row['alabel'];
-                    } else {
-                        $row['author'] = OntoWiki_Utils::getUriLocalPart($row['author']);
-                    }
-
-                $row['date'] = OntoWiki_Utils::dateDifference($row['date'], null, 3);
-                if(!$singleResource){
-                    $row['resource'] = $row[$resVarName];
-                    $row['url'] = $this->_config->urlBase . "view?r=" . urlencode($row[$resVarName]);
-                    $titleHelper->addResource($row[$resVarName]);
-                }
-                $comments[] = $row;
-            }
-        } 
-        $this->view->titles = $titleHelper;
-        $this->view->comments = $comments;
+//        $query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
+//
+//        $titleHelper = new OntoWiki_Model_TitleHelper();
+//        $comments = array();
+//        if ($result = $this->_owApp->selectedModel->sparqlQuery($query)) {
+//            foreach ($result as $row) {
+//                if (!empty($row['anick'])) {
+//                    $row['author'] = $row['anick'];
+//                } else if (!empty($row['alabel'])) {
+//                        $row['author'] = $row['alabel'];
+//                    } else {
+//                        $row['author'] = OntoWiki_Utils::getUriLocalPart($row['author']);
+//                    }
+//
+//                $row['date'] = OntoWiki_Utils::dateDifference($row['date'], null, 3);
+//                if(!$singleResource){
+//                    $row['resource'] = $row[$resVarName];
+//                    $row['url'] = $this->_config->urlBase . "view?r=" . urlencode($row[$resVarName]);
+//                    $titleHelper->addResource($row[$resVarName]);
+//                }
+//                $comments[] = $row;
+//            }
+//        }
+//        $this->view->titles = $titleHelper;
+//        $this->view->comments = $comments;
         $this->view->singleResource = $singleResource;
     }
 
