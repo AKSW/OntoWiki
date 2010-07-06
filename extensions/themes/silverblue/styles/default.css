@@ -84,7 +84,7 @@ div.section-sidewindows {
     top: 0;
 }
 
-div.modal-wrapper {
+/*div.modal-wrapper {
     position: absolute;
     top: 0;
     left: 0;
@@ -92,7 +92,7 @@ div.modal-wrapper {
     height: 100%;
     background: url(./../images/layout-background-black-20.png) fixed repeat transparent;
     z-index: 10000;
-}
+}*/
 
 /* -- 1.2. Windows ---------------------------------------------------------- */
 
