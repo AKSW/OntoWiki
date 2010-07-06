@@ -23,7 +23,11 @@ class CommunityController extends OntoWiki_Controller_Component {
         $commentType     = $this->_privateConfig->comment->type;
         $contentProperty = $this->_privateConfig->content->property;
         $dateProperty    = $this->_privateConfig->date->property;
-
+        $start_time = microtime(true);
+        $triples = Erfurt_Sparql_Parser_Sparql10::initFromString('{?s ?p ?o OPTIONAL {?o ?x ?y}}', 'triplesBlock');
+        $time_end = microtime(true);
+$zeitmessung = $time_end - $start_time;
+echo $zeitmessung;
         // get all resource comments
         //Loading data for list of saved queries
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
@@ -40,7 +44,6 @@ class CommunityController extends OntoWiki_Controller_Component {
             $list->addShownProperty($contentProperty, "content", false, null, false);
             $list->addShownProperty($dateProperty, "date", false, null, false);
             $list->setLimit(10);
-            
             
             if($this->_owApp->lastRoute === 'instances'){
                 $instances = $listHelper->getList('instances');
@@ -135,8 +138,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         $content         = $this->getParam('c');
 
         if (!empty($content)) {
-
-        // make URI
+            // make URI
             $commentUri = $this->_owApp->selectedModel->createResourceUri('Comment');
 
             // preparing versioning

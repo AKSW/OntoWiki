@@ -57,7 +57,7 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
                 )
              )
         );
-
+        $this->_owApp->session->lastList = $listName;
         $this->getActionController()->addModuleContext('main.window.list');
     }
 

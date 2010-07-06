@@ -23,7 +23,6 @@ class ShowpropertiesModule extends OntoWiki_Module
     {
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $instances = $listHelper->getLastList();
-        
         if(!($instances instanceof OntoWiki_Model_Instances)){
             return "Error: List not found";
         }
