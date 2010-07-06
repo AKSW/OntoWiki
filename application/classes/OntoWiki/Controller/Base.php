@@ -107,9 +107,9 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             'var urlBase = "' . $this->_config->urlBase . '";' . PHP_EOL . 
             'var themeUrlBase = "' . $this->_config->themeUrlBase . '";' . PHP_EOL . 
             'var _OWSESSION = "' . _OWSESSION . '";' . PHP_EOL . 
-            'var widgetBase = "' . $this->_config->staticUrlBase . 'libraries/RDFauthor/";' . PHP_EOL . 
-            'var defaultGraph = "' . (string)$this->_owApp->selectedModel . '";' . PHP_EOL . 
-            'var defaultResource = "' . (string)$this->_owApp->selectedResource . '";';
+            'var RDFAUTHOR_BASE = "' . $this->_config->staticUrlBase . 'libraries/RDFauthor/";' . PHP_EOL . 
+            'var RDFAUTHOR_DEFAULT_GRAPH = "' . (string)$this->_owApp->selectedModel . '";' . PHP_EOL . 
+            'var RDFAUTHOR_DEFAULT_SUBJECT = "' . (string)$this->_owApp->selectedResource . '";';
         
         // set ratio between left bar and main window
         if (isset($this->_session->sectionRation)) {

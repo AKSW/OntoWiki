@@ -590,12 +590,12 @@ function showResourceMenu(event) {
  * Loads RDFauthor if necessary and executes callback afterwards.
  */
 function loadRDFauthor(callback) {
-    var loaderURI = widgetBase + 'src/loader.js';
+    var loaderURI = RDFAUTHOR_BASE + 'src/rdfauthor.js';
     
     if ($('head').children('script').children('@src=' + loaderURI).length > 0) {
         callback();
     } else {
-        rdfauthor_loaded_callback = callback;
+        RDFAUTHOR_READY_CALLBACK = callback;
         // load script
         var s = document.createElement('script');
         s.type = 'text/javascript';
