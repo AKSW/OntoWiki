@@ -16,7 +16,10 @@ class FilterController extends OntoWiki_Controller_Component
 {
        
     public function getpossiblevaluesAction() {
-        $instances   = $this->_session->instances;
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        if($listHelper->listExists($this->_request->getParam('list'))){
+            $instances   = $listHelper->getList($this->_request->getParam('list'));
+        } else {$this->view->values = array(); return;}
         
         $predicate = $this->_request->getParam('predicate', '');
         $inverse = $this->_request->getParam('inverse', '');

@@ -168,10 +168,18 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         foreach ($this as $key => $val) {
             if (is_object($val)||(is_array($val))) {
                 $this->{$key} = unserialize(serialize($val));
-                //$this->$key= clone($this->$key); 
+                //$this->$key= clone($this->$key);
             }
         }
     }
+    public function  __call($name,  $arguments) {
+        if(strpos("From", $name) > 0){
+            call_user_func(array($this->_valueQuery, $arguments));
+            call_user_func(array($this->_resourceQuery, $arguments));
+        }
+    }
+
+
 
    /**
     * add ?resourceUri ?p ?o to the query

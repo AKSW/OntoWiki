@@ -5,7 +5,7 @@ function FilterAPI(){
 	/*
          * @var
          */
-        this.uri = urlBase+"list/";
+        this.uri = reloadUrl;
         /*
          *@var array
          */

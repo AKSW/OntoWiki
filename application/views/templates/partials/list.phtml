@@ -44,7 +44,7 @@ $this->headScript()->prependScript(
             function showresQuery(){$("#resQuery").slideToggle(400);}
             function showvalQuery(){$("#valQuery").slideToggle(400);}
              var reloadUrl = "'.
-        new OntoWiki_Url(array(), array('p', 'limit')). // url to reload -> without config params
+        new OntoWiki_Url(array()). // url to reload -> without config params
         '";
             var filtersFromSession = ' . $filter_js.';
             var listName = "'.$this->listName.'";'

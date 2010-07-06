@@ -27,7 +27,8 @@ class CommunityController extends OntoWiki_Controller_Component {
         // get all resource comments
         //Loading data for list of saved queries
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
-        $listName = "community";
+        $listName = "community-".$this->_request->getParam('mode');
+        
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
             $listHelper->addList($listName, $list, $this->view);
@@ -41,7 +42,9 @@ class CommunityController extends OntoWiki_Controller_Component {
             $list->addShownProperty($dateProperty, "date", false, null, false);
             $list->setLimit(10);
             
-            if($this->_owApp->lastRoute === 'instances'){
+            if($this->_request->getParam('mode') === 'multi'){
+                $list->addShownProperty($aboutProperty, "about", false, null, false);
+
                 $instances = $listHelper->getList('instances');
                 $query = $instances->getResourceQuery();
                 $resourceVar = $instances->getResourceVar();
@@ -75,7 +78,7 @@ class CommunityController extends OntoWiki_Controller_Component {
             $listHelper->addListPermanently($listName, $list, $this->view);
         }
         $singleResource = true;
-        if($this->_owApp->lastRoute === 'instances'){
+        if($this->_request->getParam('mode') === 'multi'){
             $windowTitle = $translate->_('Discussion about elements of the list');
             $singleResource = false;
         } else {

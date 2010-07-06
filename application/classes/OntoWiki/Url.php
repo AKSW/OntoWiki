@@ -67,10 +67,10 @@ class OntoWiki_Url
         $defaultController = Zend_Controller_Front::getInstance()->getDefaultControllerName();
         $router            = Zend_Controller_Front::getInstance()->getRouter();
         
-        //use defaults
+        //use defaults - current page
         if(!isset($options['route']) && !isset($options['controller']) && !isset($options['action'])){
-            $options['controller'] = $defaultController;
-            $options['action'] = $defaultAction;
+            $options['controller'] = $this->_request->getControllerName();
+            $options['action'] = $this->_request->getActionName();
         }
         
         // keep parameters
