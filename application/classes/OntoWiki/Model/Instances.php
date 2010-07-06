@@ -703,6 +703,9 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         //print_r($this->_filter[$id]);
 
+        //these filters bring there own triple
+        $this->allTriple->remove($this->_resourceQuery);
+
         //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
         $this->invalidate();
         return $id;
@@ -752,6 +755,9 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         //print_r($this->_filter[$id]);
 
+        //these filters bring there own triple
+        $this->allTriple->remove($this->_resourceQuery);
+
         $this->invalidate();
         $this->searchText = $str;
 
@@ -785,6 +791,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         
         //these filters bring there own triple
         $this->allTriple->remove($this->_resourceQuery);
+        
 
         $this->invalidate();
         return $id;
@@ -1046,9 +1053,10 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
     
     public function getAllProperties ($inverse = false)
     {
-        if(empty($this->_resources) && isset($_resourcesUptodate)){
+        if(empty($this->_resources) && $this->_resourcesUptodate){
             return array();
         }
+
         //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
         $query = clone $this->_resourceQuery;
         $query
@@ -1057,16 +1065,16 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             ->setLimit(0)
             ->setOffset(0);
 
-        $predVar = new Erfurt_Sparql_Query2_Var('pred');
+        $predVar = new Erfurt_Sparql_Query2_Var('showPropsPred');
         if(!$inverse){
             $query->addTriple(
                 $this->_resourceVar,
                 $predVar,
-                new Erfurt_Sparql_Query2_Var('o')
+                new Erfurt_Sparql_Query2_Var('showPropsObj')
             );
         } else {
             $query->addTriple(
-                new Erfurt_Sparql_Query2_Var('o'),
+                new Erfurt_Sparql_Query2_Var('showPropsObj'),
                 $predVar,
                 $this->_resourceVar
             );
@@ -1086,7 +1094,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         $properties = array();
         foreach ($results['bindings'] as $row) {
-            $properties[] = array('uri' => $row['pred']['value']);
+            $properties[] = array('uri' => $row['showPropsPred']['value']);
         }
 
         return $this->convertProperties($properties);

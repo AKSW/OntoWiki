@@ -67,6 +67,12 @@ class OntoWiki_Url
         $defaultController = Zend_Controller_Front::getInstance()->getDefaultControllerName();
         $router            = Zend_Controller_Front::getInstance()->getRouter();
         
+        //use defaults
+        if(!isset($options['route']) && !isset($options['controller']) && !isset($options['action'])){
+            $options['controller'] = $defaultController;
+            $options['action'] = $defaultAction;
+        }
+        
         // keep parameters
         if (!$this->_request) {
             $this->_params = array();
@@ -139,7 +145,12 @@ class OntoWiki_Url
      */
     public function __toString()
     {        
-        return $this->_buildQuery();
+        try{
+            return $this->_buildQuery();
+        } catch (Exception $e){
+            echo $e;
+            return "";
+        }
     }
     
     /**

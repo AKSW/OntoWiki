@@ -23,11 +23,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         $commentType     = $this->_privateConfig->comment->type;
         $contentProperty = $this->_privateConfig->content->property;
         $dateProperty    = $this->_privateConfig->date->property;
-        $start_time = microtime(true);
-        $triples = Erfurt_Sparql_Parser_Sparql10::initFromString('{?s ?p ?o OPTIONAL {?o ?x ?y}}', 'triplesBlock');
-        $time_end = microtime(true);
-$zeitmessung = $time_end - $start_time;
-echo $zeitmessung;
+
         // get all resource comments
         //Loading data for list of saved queries
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');

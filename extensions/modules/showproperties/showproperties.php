@@ -14,22 +14,24 @@
  */
 class ShowpropertiesModule extends OntoWiki_Module
 {
+    protected $_instances;
+
     public function init()
     {
-        
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $this->_instances = $listHelper->getLastList();
     }
-    
+
+    public function shouldShow()
+    {
+        return ($this->_instances instanceof OntoWiki_Model_Instances) && $this->_instances->hasData();
+    }
+
     public function getContents()
     {
-        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
-        $instances = $listHelper->getLastList();
-        if(!($instances instanceof OntoWiki_Model_Instances)){
-            return "Error: List not found";
-        }
-
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'showproperties.js');
 
-        $allShownProperties =  $instances->getShownPropertiesPlain();
+        $allShownProperties =  $this->_instances->getShownPropertiesPlain();
         $shownProperties = array();
         $shownInverseProperties = array();
         foreach ($allShownProperties as $prop) {
@@ -47,15 +49,15 @@ class ShowpropertiesModule extends OntoWiki_Module
 
         if($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist)
         {
-            $this->view->properties = $this->filterProperties($instances->getAllProperties(false));
-            $this->view->reverseProperties = $this->filterProperties($instances->getAllProperties(true));
+            $this->view->properties = $this->filterProperties($this->_instances->getAllProperties(false));
+            $this->view->reverseProperties = $this->filterProperties($this->_instances->getAllProperties(true));
         }
         else
         {
-            $this->view->properties = $instances->getAllProperties(false);
-            $this->view->reverseProperties = $instances->getAllProperties(true);
+            $this->view->properties = $this->_instances->getAllProperties(false);
+            $this->view->reverseProperties = $this->_instances->getAllProperties(true);
         }
-            
+        
         return $this->render('showproperties');
     }
     

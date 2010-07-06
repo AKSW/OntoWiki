@@ -233,7 +233,14 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             //redirect normal requests if config-params are given to a param-free uri (so a browser reload by user does nothing unwanted)
             if(!$request->isXmlHttpRequest()){
                 //strip of url parameters that modify the list
-                $url = new OntoWiki_Url(array(), true, array('init', 'instancesconfig', 's', 'p', 'limit', 'class', 'list'));
+                try{
+                    $route = Zend_Controller_Front::getInstance()->getRouter()->getCurrentRouteName();
+                    $hasRoute = true;
+                } catch (Exception $e){
+                    $hasRoute = false;
+                }
+                $where = $hasRoute ? array('route' => $route) : array('controller'=>$request->getControllerName(),'action=>'=>$request->getActionName());
+                $url = new OntoWiki_Url($where, true, array('init', 'instancesconfig', 's', 'p', 'limit', 'class', 'list'));
                 
                 //redirect
                 header('Location: ' . $url);
