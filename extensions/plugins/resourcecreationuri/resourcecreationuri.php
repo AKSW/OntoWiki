@@ -51,33 +51,36 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
      */
     public function onUpdateServiceAction($event)
     {
-    
         // set values from event
         $this->insertModel  = $event->insertModel;
         $this->insertData   = $event->insertData;
         $this->deleteModel  = $event->deleteModel;
         $this->deleteData   = $event->deleteData;
-
-        $subjectArray   = array_keys($this->insertData);
-        $subjectUri     = current($subjectArray);
-        $pattern        = '/^'
-                        // URI Component
-                        . addcslashes($this->insertModel->getBaseUri() . $this->_privateConfig->newResourceUri,'./')
-                        // MD5 Component
-                        . '\/([A-Z]|[0-9]){32,32}'
-                        . '/i';
-                        
-        $nameParts = $this->loadNamingSchema();
         
-        if ( count($event->insertData) == 1 && preg_match($pattern,$subjectUri) ) {
-            $newUri = $this->buildNiceUri($subjectUri, $nameParts);
-            $temp   = array();
-            foreach ($this->insertData[$subjectUri] as $p => $o) {
-                $temp[$newUri][$p] = $o;
+        // SPARQL/Update can be DELETE only
+        // $insertModel is null in this case
+        if ($this->insertModel instanceof Erfurt_Rdf_Model) {
+            $subjectArray   = array_keys($this->insertData);
+            $subjectUri     = current($subjectArray);
+            $pattern        = '/^'
+                            // URI Component
+                            . addcslashes($this->insertModel->getBaseUri() . $this->_privateConfig->newResourceUri,'./')
+                            // MD5 Component
+                            . '\/([A-Z]|[0-9]){32,32}'
+                            . '/i';
+
+            $nameParts = $this->loadNamingSchema();
+
+            if ( count($event->insertData) == 1 && preg_match($pattern,$subjectUri) ) {
+                $newUri = $this->buildNiceUri($subjectUri, $nameParts);
+                $temp   = array();
+                foreach ($this->insertData[$subjectUri] as $p => $o) {
+                    $temp[$newUri][$p] = $o;
+                }
+                $this->insertData = $temp;
+            } else {
+                //do nothing
             }
-            $this->insertData = $temp;
-        } else {
-            //do nothing
         }
         
         //writeback on event
