@@ -1054,9 +1054,9 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         }
 
         foreach($this->getShownResources() as $resource){
-            if(!isset($valueResults[$resource])){
+            if(!isset($valueResults[$resource['value']])){
                 //there are no statements about this resource
-                $valueResults[$resource] = array();
+                $valueResults[$resource['value']] = array();
             }
         }
 
@@ -1275,13 +1275,18 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         
         // add titles
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-        $titleHelper->addResources($resources);
+        $uris = array();
+        foreach ($resources as $resource) {
+            $uris[] = $resource['value'];
+        }
+        $titleHelper->addResources($uris);
 
         $resourceResults = array();
 
-        foreach ($resources as $uri) {
+        foreach ($resources as $resource) {
+            $uri = $resource['value'];
             if (!array_key_exists($uri, $resourceResults)) {
-                $resourceResults[$uri] = array();
+                $resourceResults[$uri] = $resource;
             }
 
             // URL
@@ -1306,8 +1311,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
             $this->_resources = array();
             foreach ($result['bindings'] as $row) {
-                $uri = $row['resourceUri']['value'];
-                $this->_resources[] = $uri;
+                $this->_resources[] = $row['resourceUri'];
             }
             $this->_resourcesUptodate = true;
         } 
@@ -1437,7 +1441,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             $resources[$key] =
                 new Erfurt_Sparql_Query2_SameTerm(
                     $this->_resourceVar,
-                    new Erfurt_Sparql_Query2_IriRef($resource)
+                    new Erfurt_Sparql_Query2_IriRef($resource['value'])
                 );
         }
 
@@ -1447,7 +1451,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             );
             $this->_valueQuery->addElement($this->_valueQueryResourceFilter);
         }
-
+        
         $this->_valueQueryResourceFilter->setConstraint(
             empty($resources) ? 
                 new Erfurt_Sparql_Query2_BooleanLiteral(false) :
