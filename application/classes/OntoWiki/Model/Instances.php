@@ -970,7 +970,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
             $value = null;
             $link  = null;
-            $uri   = null;
 
             foreach ($row as $varName => $data) {
                 if (!isset($valueResults[$resourceUri][$varName])) {
@@ -1017,29 +1016,29 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
                             $propertyUri = $property['uri'];
                         }
                     }
-                    
-                    // set up event
-                    $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
-                    $event->property = $propertyUri;
-                    $event->value    = $object;
-                    $event->setDefault($object);
 
-                    // trigger
                     if ($object !== null) {
+                        // set up event
+                        $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                        $event->property = $propertyUri;
+                        $event->value    = $object;
+                        $event->setDefault($object);
+
+                        // trigger
                         $value = $event->trigger();
                     }
-                    
                 }
                 
                 //check for dulplicate values
                 if(isset($valueResults[$resourceUri][$varName])){
                     foreach($valueResults[$resourceUri][$varName] as $old){
                         if($old['origvalue'] == $data['value'] && $old['type'] == $data['type']){
+                            $link = null;
                             continue 2; // dont add this value
                         }
                     }
                 }
-
+                
                 //add value
                 $valueResults[$resourceUri][$varName][] = array(
                   'value' => $value,
@@ -1051,7 +1050,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
                 $value = null;
                 $link  = null;
-                $uri   = null;
             }
         }
 

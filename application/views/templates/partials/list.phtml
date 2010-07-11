@@ -106,6 +106,7 @@ if ($instances->hasData()) {
         $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
     }
 }
+$url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));$url->setParam('init', true);
 ?>
 <div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
 <div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $config->urlBase; ?>querybuilding/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
@@ -164,35 +165,43 @@ if ($instances->hasData()) {
                         <?php endif; ?>
             <?php endif; ?>
         </td>
-                        <?php foreach ($propertyInfo as $property): if($property['hidden']){continue;} ?>
-        <td>
+                        <?php foreach ($propertyInfo as $property):
+                            if($property['hidden']){continue;} ?>
+        <td> 
                             <?php if (array_key_exists($instanceUri, $instanceData) &&
                         array_key_exists($property['varName'], $instanceData[$instanceUri]) &&
                                         !empty($instanceData[$instanceUri][$property['varName']])): ?>
                                     <?php if (count($instanceData[$instanceUri][$property['varName']]) > 1): ?>
-            <ul class="bullets-none">
+                            <ul class="bullets-none has-contextmenu-area">
                                         <?php $i=0;
-                                        foreach ($instanceData[$instanceUri][$property['varName']] as $property): ?>
-                            <?php if($i==OW_SHOW_MAX): //ignoring OW_SHOW_MAX is probably bad - but the remaining data is hidden with js
-
-                                                    // this is probably not cool but with appendScript this code would not be delivered at an ajax req
-                                                    ?>
-                <script type="text/javascript">$(document).ready(function(){$("<span class=\"all-ommited-symbol\">[...] <a class=\"all-opener\">show</a></span>").insertBefore($(".all-omitted-data").hide()); $(".all-opener").click(function(){$(this).parent().next().show(); $(this).parent().remove();})});</script>
-                <div class="all-omitted-data">
-                                                        <?php endif; ?>
-                                                        <?php if ($property['url']): ?>
+                                        foreach ($instanceData[$instanceUri][$property['varName']] as $value): ?>
+                                                        <?php if($i==OW_SHOW_MAX) {
+                                                            ?>&hellip;
+                                                            <div class="contextmenu">
+                                                                <a class="item"
+                                                                   href="<?php $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'moreValues','action'=>'add','mode'=>'query','query'=> 'SELECT * WHERE {<'.$instanceUri.'> <'.$property['uri'].'> ?resourceUri}')))));
+                                                                    echo $url; ?>">
+                                                                <span class="icon icon-list" title="Show as List">
+                                                                    <span>Show as List</span>
+                                                                 </span>
+                                                                </a>
+                                                            </div>
+                                                            <?php
+                                                            break;
+                                                        } 
+                                                        if (isset($value['url']) && $value['url'] !== null): ?>
                     <li>
-                        <a class="hasMenu" href="<?php echo $property['url'] ?>" resource="<?php echo $property['uri'] ?>"><?php
-                                echo $property['value']
+                        <a class="hasMenu" href="<?php echo $value['url'] ?>" resource="<?php echo $value['uri'] ?>"><?php
+                                echo $value['value']
                                                     ?></a>
                     </li>
                                                 <?php else: ?>
-                    <li content="<?php echo $property['value'] ?>"><?php echo $property['value'] ?></li>
+                    <li content="<?php echo $value['value'] ?>"><?php echo $value['value'] ?></li>
                             <?php endif; ?>
                                         <?php $i++;
-                                        if($i==101) break;
-                        endforeach;
-                        if($i>=OW_SHOW_MAX):?></div><?php endif; ?>
+                                        
+                        endforeach;?>
+                        
             </ul>
                     <?php else: ?>
                         <?php if ($instanceData[$instanceUri][$property['varName']][0]['url']): ?>
