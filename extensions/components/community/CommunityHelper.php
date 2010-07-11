@@ -26,7 +26,11 @@ class CommunityHelper extends OntoWiki_Component_Helper
         // get current request info
         $request  = Zend_Controller_Front::getInstance()->getRequest();
 
-        if(($request->getControllerName() == 'resource' && $request->getActionName() == 'instances') || $request->getParam('mode') == 'multi'){
+        if(($request->getControllerName() == 'resource' 
+                && $request->getActionName() == 'instances')
+          || ($request->getControllerName() == 'resource'
+                  && $request->getActionName() == 'instances'
+                  && $request->getParam('mode') == 'multi')){
             OntoWiki_Navigation::register('community', array(
                 'controller' => 'community',     // history controller
                 'action'     => 'list',       // list action

@@ -101,7 +101,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_valueQuery = null;
     protected $_valueQueryResourceFilter = null;
-    
+
+    protected $_aboutHash;
+
     /**
      * Constructor
      */
@@ -179,6 +181,14 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         }
     }
 
+    public function setAboutHash($hash){
+        $this->_aboutHash = $hash;
+        return $this;
+    }
+
+    public function getAboutHash(){
+        return $this->_aboutHash;
+    }
 
 
    /**

@@ -4,11 +4,13 @@ require_once 'OntoWiki/Controller/Component.php';
 
 /**
  * Controller for OntoWiki Filter Module
+ * the filter module is a gui for list modification which takes place in the ListSetupHelper
+ * this controller is a helper for this module to supply possible values for a property
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_components_filter
- * @author     Denis Hauser <denis.gartner@googlemail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @author     Jonas Brekle <jonas.brekle@gmail.com>
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @version    $$
  */
