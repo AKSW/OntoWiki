@@ -53,7 +53,7 @@ class FoafController extends OntoWiki_Controller_Component
             }
             $this->view->graph = $model;
 
-            $resource = new OntoWiki_Model_Resource($model->getStore(), $model, $about);
+            $resource = new OntoWiki_Model_Resource($model->getStore(), $model, $about, 100);
         $results = $resource->getValues();
         //var_dump($this->_privateConfig);
 
