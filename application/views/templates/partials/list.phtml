@@ -83,7 +83,6 @@ if ($instances->hasData()) {
         
         try {
             $count = $store->countWhereMatches($graph->getModelIri(), $where, 'resourceUri', true);
-            echo htmlentities($where);
         } catch (Erfurt_Store_Exception $e) {
             $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
         }
