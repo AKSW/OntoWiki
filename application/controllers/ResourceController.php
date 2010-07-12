@@ -201,7 +201,7 @@ class ResourceController extends OntoWiki_Controller_Base {
         $navigation  = $this->_owApp->navigation;
         $translate   = $this->_owApp->translate;
 
-        //the instances object is setup in Ontowiki/Controller/Plugin/ListSetupHelper.php
+        //the list is setup in Ontowiki/Controller/Plugin/ListSetupHelper.php
 
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = "instances";
