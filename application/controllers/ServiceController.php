@@ -192,6 +192,11 @@ class ServiceController extends Zend_Controller_Action
                 'View Resource',
                 (string)$url
             );
+
+            $menu->appendEntry(
+                'Go to Resource (external)',
+                (string)$resource
+            );
             
             if ($isModel) {    
                 // add a seperator
@@ -325,7 +330,6 @@ class ServiceController extends Zend_Controller_Action
                      // ->prependEntry('Create Instance', $this->_config->urlBase . 'index/create/?r=')
                      // ->prependEntry('Create Subclass', $this->_config->urlBase . 'index/create/?r=');
                 }
-
             }        
         }
         

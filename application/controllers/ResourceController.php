@@ -209,6 +209,10 @@ class ResourceController extends OntoWiki_Controller_Base {
             $list = $listHelper->getList($listName);
             $listHelper->addList($listName, $list, $this->view);
         } else {
+            if($this->_owApp->selectedModel == null){
+                $this->_owApp->appendMessage(new OntoWiki_Message("your session timed out",  OntoWiki_Message::ERROR));
+                $this->_redirect($this->_config->baseUrl);
+            }
             $list = new OntoWiki_Model_Instances($store, $this->_owApp->selectedModel, array());
             $listHelper->addListPermanently($listName, $list, $this->view);
         }

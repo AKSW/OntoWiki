@@ -181,11 +181,23 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                             <ul class="bullets-none has-contextmenu-area">
                                         <?php $i=0;
                                         foreach ($instanceData[$instanceUri][$property['varName']] as $value): ?>
-                                                        <?php if($i==OW_SHOW_MAX) {
-                                                            ?>&hellip;
+                                                        <?php $i++; if($i==OW_SHOW_MAX+1) {
+                                                            ?>&hellip;<?php 
+                                                            break;
+                                                        }
+                                                        if($i==2){
+                                                        ?>
+
                                                             <div class="contextmenu">
                                                                 <a class="item"
-                                                                   href="<?php $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'moreValues','action'=>'add','mode'=>'query','query'=> 'SELECT * WHERE {<'.$instanceUri.'> <'.$property['uri'].'> ?resourceUri}')))));
+                                                                   href="<?php $url->setParam('instancesconfig', json_encode(array('filter'=>array(array(
+                                                                       'id'=>'moreValues','action'=>'add','mode'=>'box',
+                                                                       'property'=>$property['uri'],
+                                                                       'isInverse'=> !$property['inverse'],
+                                                                       'filter' => 'equals',
+                                                                       'value1' => $instanceUri,
+                                                                       'valuetype'=>'uri'
+                                                                       )))));
                                                                     echo $url; ?>">
                                                                 <span class="icon icon-list" title="Show as List">
                                                                     <span>Show as List</span>
@@ -193,7 +205,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                                                 </a>
                                                             </div>
                                                             <?php
-                                                            break;
+                                                            
                                                         } 
                                                         if (isset($value['url']) && $value['url'] !== null): ?>
                     <li>
@@ -204,7 +216,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                                 <?php else: ?>
                     <li content="<?php echo $value['value'] ?>"><?php echo $value['value'] ?></li>
                             <?php endif; ?>
-                                        <?php $i++;
+                                        <?php 
                                         
                         endforeach;?>
                         
