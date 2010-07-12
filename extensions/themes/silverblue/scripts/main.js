@@ -100,7 +100,7 @@ $(document).ready(function() {
         }
         
         // event for all selected
-        $('body').trigger('ontowiki.selection.changed', OntoWiki.selectedResources);
+        $('body').trigger('ontowiki.selection.changed', [OntoWiki.selectedResources]);
     });
     
     $('body').bind('ontowiki.resource-list.reloaded', function() {
