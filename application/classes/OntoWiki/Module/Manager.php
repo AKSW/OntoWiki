@@ -35,6 +35,8 @@ class OntoWiki_Module_Manager
      * The module config file name
      */
     const MODULE_CONFIG_FILE = 'module.ini';
+
+    const MODULE_PRIVATE_CONFIG_FILE = 'module.private.ini';
     
     /**
      * Postfix for module class names
@@ -113,6 +115,11 @@ class OntoWiki_Module_Manager
                     
                     if (is_readable($moduleConfigFile)) {
                         $config = parse_ini_file($moduleConfigFile, true);
+
+                        $modulePrivateConfigFile = $innerModulePath . self::MODULE_PRIVATE_CONFIG_FILE;
+                        if (is_readable($modulePrivateConfigFile)) {
+                            $config = array_merge($config, parse_ini_file($modulePrivateConfigFile, true));
+                        }
                         
                         if (!array_key_exists('enabled', $config) || !((boolean)$config['enabled'])) {
                             continue;

@@ -38,6 +38,7 @@ class OntoWiki_Component_Manager
      * The component config file
      */
     const COMPONENT_CONFIG_FILE   = 'component.ini';
+    const COMPONENT_PRIVATE_CONFIG_FILE   = 'component.private.ini';
     
     /**
      * Component class name suffix
@@ -365,16 +366,39 @@ class OntoWiki_Component_Manager
         if (!$enabled) {
             return;
         }
+
+        //load private config file
+        if (is_readable($componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE)) {
+            $tempArray2 = parse_ini_file($componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE);
         
+            //overwrites default config
+            $tempArray = array_merge($tempArray, $tempArray2);
+
+        }
         // load private config as Zend_Config
         try {
             $tempArray[$this->_privateSection] = new Zend_Config_Ini(
                 $componentPath . self::COMPONENT_CONFIG_FILE, 
                 $this->_privateSection, 
                 true);
+            
         } catch (Zend_Config_Exception $e) {
             // config error
         }
+        //overwrite with private config section from private config file :)
+            if (is_readable($componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE)) {
+                if(isset($tempArray[$this->_privateSection])){
+                    $tempArray[$this->_privateSection] = $tempArray[$this->_privateSection]->merge(new Zend_Config_Ini(
+                        $componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE,
+                        $this->_privateSection,
+                        true));
+                } else {
+                    $tempArray[$this->_privateSection] = new Zend_Config_Ini(
+                        $componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE,
+                        $this->_privateSection,
+                        true);
+                }
+            }
         
         // normalize paths
         foreach ($this->_pathKeys as $pathKey) {
