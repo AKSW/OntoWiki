@@ -180,7 +180,7 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
             
             // Test if exists at least one subject and if this first subject has a type statement
             if ( sizeof($subjectArray) > 0 &&
-                 array_key_exists($this->_privateConfig->property->type,current($subjectArray))
+                 array_key_exists($this->_privateConfig->property->type, $subjectArray)
             ) {
                 $subjectUri     = current($subjectArray);
                 $typeArray      = current($this->insertData[$subjectUri][$this->_privateConfig->property->type]);
