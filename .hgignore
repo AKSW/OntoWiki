@@ -1,5 +1,7 @@
 syntax: glob
 
+local.ini
+config.ini
 .settings
 .project
 .idea
@@ -7,18 +9,11 @@ syntax: glob
 .DS_Store
 .htaccess
 *.log
-config.ini
 nbproject
 ontowiki/src/cache
 ontowiki/src/libraries/Erfurt
 ontowiki/src/libraries/RDFauthor
 ontowiki/src/libraries/Zend
 erfurt/src/Erfurt/libraries/Zend
-ontowiki/src/extensions/modules/minimap/module.ini
-ontowiki/src/extensions/modules/navigation/module.ini
-ontowiki/src/extensions/components/navigation/component.ini
-ontowiki/src/extensions/components/foafedit/component.ini
-ontowiki/src/extensions/components/map/component.ini
 ontowiki/src/libraries/ZendFramework-1.*
-ontowiki/src/extensions/modules/hierarchy/module.ini
 
