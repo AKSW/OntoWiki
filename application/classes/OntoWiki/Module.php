@@ -122,14 +122,31 @@ abstract class OntoWiki_Module
         if (!in_array($modulesPath, $this->view->getScriptPaths())) {
             $this->view->addScriptPath($modulesPath);
         }
-        
-        $configFile = $modulesPath 
-                    . $name 
-                    . '/module.ini';
-        
+
+
+        // Parse the private config
+        // TODO: this was already done by the Module Manager. Why here again?
+        $configPath = $modulesPath . $name. '/';
+        $configFile =  $configPath . OntoWiki_Module_Manager::MODULE_CONFIG_FILE;
+        $localConfigFile = $configPath . OntoWiki_Module_Manager::MODULE_LOCAL_CONFIG_FILE;
         if (is_readable($configFile)) {
             try {
-                $this->_privateConfig = new Zend_Config_Ini($configFile, 'private');
+                $this->_privateConfig = new Zend_Config_Ini(
+                        $configFile,
+                        OntoWiki_Module_Manager::CONFIG_PRIVATE_SECTION,
+                        array('allowModifications' => true)
+                        );
+
+                // merge the local.ini into the private config
+                if (is_readable($localConfigFile)) {
+                    $this->_privateConfig->merge(
+                            new Zend_Config_Ini(
+                                    $localConfigFile,
+                                    OntoWiki_Module_Manager::CONFIG_PRIVATE_SECTION
+                                    )
+                            );
+                }
+
             } catch (Zend_Config_Exception $e) {
                 // no private config available
             }
