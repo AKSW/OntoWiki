@@ -318,6 +318,14 @@ class OntoWiki_Component_Manager
         // instantiate helper object
         $helperInstance = new $helperSpec['class']($this);
         
+        // register helper events
+        if (isset($helperSpec['events'])) {
+            $dispatcher = Erfurt_Event_Dispatcher::getInstance();
+            foreach ((array) $helperSpec['events'] as $currentEvent) {
+                $dispatcher->register($currentEvent, $helperInstance);
+            }
+        }
+        
         return $helperInstance;
     }
     
@@ -419,12 +427,19 @@ class OntoWiki_Component_Manager
         $helperClassName = ucfirst($componentName) . self::COMPONENT_HELPER_SUFFIX;
         $helperPathName  = $componentPath . $helperClassName . '.php';
         
-        if (is_readable($helperPathName)) {
-            // keep for later
-            $this->_helpers[$componentName] = array(
-                'path'  => $helperPathName, 
-                'class' => $helperClassName
+        if (is_readable($helperPathName)) {    
+            $helperSpec = array(
+                'path'   => $helperPathName, 
+                'class'  => $helperClassName
             );
+            
+            // store events
+            if (array_key_exists('helperEvents', $tempArray)) {
+                $helperSpec['events'] = (array)$tempArray['helperEvents'];
+            }
+            
+            // keep for later
+            $this->_helpers[$componentName] = $helperSpec;
         }
         
         $action = null;
