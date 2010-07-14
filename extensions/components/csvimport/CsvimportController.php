@@ -25,16 +25,119 @@ class CsvimportController extends OntoWiki_Controller_Component
     public function init()
     {
         // init component
+        parent::init();
     }
     
-    public function importAction()
+    public function indexAction()
+    {
+        // TODO: determine next step and forward accordingly
+        $store = $this->_getSessionStore();
+        
+        if (isset($store->nextAction)) {
+            $action = $store->nextAction;
+            unset($store->nextAction);
+            $this->_forward($action, 'csvimport');
+        } else {
+            $this->_forward('upload', 'csvimport');
+        }
+    }
+    
+    public function uploadAction()
     {
         // TODO: show import dialogue and import file
+        $this->view->placeholder('main.window.title')->append('Import CSV Data');
+        OntoWiki_Navigation::disableNavigation();
+        
+        $this->view->formActionUrl = $this->_config->urlBase . 'csvimport';
+        $this->view->formEncoding  = 'multipart/form-data';
+        $this->view->formClass     = 'simple-input input-justify-left';
+        $this->view->formMethod    = 'post';
+        $this->view->formName      = 'import';
+        $this->view->referer       = isset($_SERVER['HTTP_REFERER']) ? urlencode($_SERVER['HTTP_REFERER']) : '';
+        
+        $this->view->modelUri   = (string)$this->_owApp->selectedModel;
+        $this->view->title      = 'Import CSV Data';
+        $model = $this->_owApp->selectedModel;
+        $this->view->modelTitle = $model->getTitle();
+        
+        if ($model->isEditable()) {
+            $toolbar = $this->_owApp->toolbar;
+            $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Import CSV', 'id' => 'import'))
+                    ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
+            $this->view->placeholder('main.window.toolbar')->set($toolbar);
+        } else {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message("No write permissions on model '{$this->view->modelTitle}'", OntoWiki_Message::WARNING)
+            );
+        }
+        
+        if (!$this->_request->isPost()) {
+            // FIX: http://www.webmasterworld.com/macintosh_webmaster/3300569.htm
+            // disable connection keep-alive
+            $response = $this->getResponse();
+            $response->setHeader('Connection', 'close', true);
+            $response->sendHeaders();
+            return;
+        }
+        
+        // evaluate post data
+        $messages = array();
+        $post = $this->_request->getPost();
+        $errorFlag = false;
+        switch (true) {
+            case (empty($_FILES['source']['name'])):
+                $message = 'No file selected. Please try again.';
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message($message, OntoWiki_Message::ERROR)
+                    );
+                    $errorFlag = true;
+                    break;
+            case ($_FILES['source']['error'] == UPLOAD_ERR_INI_SIZE):
+                $message = 'The uploaded files\'s size exceeds the upload_max_filesize directive in php.ini.';
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message($message, OntoWiki_Message::ERROR)
+                    );
+                    $errorFlag = true;
+                    break;
+            case ($_FILES['source']['error'] == UPLOAD_ERR_PARTIAL):
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('The uploaded file was only partially uploaded.', OntoWiki_Message::ERROR)
+                );
+                $errorFlag = true;
+                break;
+            case ($_FILES['source']['error'] >= UPLOAD_ERR_NO_FILE):
+                $message = 'There was an unknown error during file upload. Please check your PHP configuration.';
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message($message, OntoWiki_Message::ERROR)
+                );
+                $errorFlag = true;
+                break;
+        }
+        
+        /* handle upload */
+        $tempFile = $_FILES['source']['tmp_name'];
+        if (is_readable($tempFile)) {
+            $store = $this->_getSessionStore();
+            $store->importedFile = $tempFile;
+            $store->importMode   = $post['importMode'];
+            $store->nextAction   = 'mapping';
+        }
+        
+        $this->_forward();
     }
     
     public function mappingAction()
     {
         // TODO: show table and let user define domain mapping
+        $store = $this->_getSessionStore();
+        var_dump($store->importedFile);
+        exit;
+    }
+    
+    protected function _getSessionStore()
+    {
+        $session = new Zend_Session_Namespace('CSV_IMPORT_SESSION');
+        return $session;
     }
     
     protected function _getColumnMapping()

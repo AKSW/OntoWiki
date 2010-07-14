@@ -21,5 +21,15 @@ class CsvimportHelper extends OntoWiki_Component_Helper
     public function init()
     {
         // TODO: register menu entry
+        $menuRegistry = '';
+    }
+    
+    public function onCreateMenu($event)
+    {
+        if ($event->isModel) {
+            $url = new OntoWiki_Url(array('controller' => 'csvimport'), array());
+            $menu = $event->menu;
+            $menu->appendEntry('Import CSV Data', (string) $url);
+        }
     }
 }
