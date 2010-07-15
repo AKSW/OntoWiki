@@ -32,18 +32,7 @@ class CsvimportController extends OntoWiki_Controller_Component
     
     public function indexAction()
     {
-        $this->_saveData();
-
-        // TODO: determine next step and forward accordingly
-        $store = $this->_getSessionStore();
-        
-        if (isset($store->nextAction)) {
-            $action = $store->nextAction;
-            unset($store->nextAction);
-            $this->_forward($action, 'csvimport');
-        } else {
-            $this->_forward('upload', 'csvimport');
-        }
+        $this->_forward('upload');
     }
     
     public function uploadAction()
@@ -124,10 +113,11 @@ class CsvimportController extends OntoWiki_Controller_Component
             $store = $this->_getSessionStore();
             $store->importedFile = $tempFile;
             $store->importMode   = $post['importMode'];
-            $store->nextAction   = 'mapping';
+            // $store->nextAction   = 'mapping';
         }
         
-        $this->_forward('index');
+        // now we map
+        $this->_forward('mapping');
     }
     
     public function mappingAction()
@@ -159,7 +149,7 @@ class CsvimportController extends OntoWiki_Controller_Component
                 $parser = new CsvParser($store->importedFile);
                 $data   = array_filter($parser->getParsedFile());
                 $this->view->table = $this->view->partial(
-                    'partials/table.phtml',  array(
+                    'partials/table.phtml', array(
                         'data' => $data, 
                         'tableClass' => 'csvimport'
                     )
@@ -169,14 +159,12 @@ class CsvimportController extends OntoWiki_Controller_Component
             $store = $this->_getSessionStore();
             $store->nextAction = 'mapping';
         } else {
-            // $json = $this->_request->getPost('dimensions');
-            $json = $_POST['dimensions'];
-            $data = json_decode($json, true);
+            // $json = $_POST['dimensions'];
+            $data = json_decode($this->_request->dimensions, true);
             $store = $this->_getSessionStore();
             $store->dimensions = $data;
             $this->_createDimensions($data);
             $this->_helper->viewRenderer->setNoRender();
-            unset($store->nextAction);
         }
     }
     
@@ -337,7 +325,8 @@ class CsvimportController extends OntoWiki_Controller_Component
         //echo '</pre>';
     }
 
-    protected function _saveData(){
+    protected function _saveData()
+    {
         require 'CsvParser.php';
         $parser = new CsvParser("test.csv");
         $data = $parser->getParsedFile();
