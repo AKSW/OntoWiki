@@ -1,9 +1,0 @@
-enabled     = on
-name        = Sortproperties
-
-[events]
-1 = onPropertiesActionData
-
-[private]
-sort.method     = "rdf"
-sort.property   = "http://ns.ontowiki.net/SysBase/order"
