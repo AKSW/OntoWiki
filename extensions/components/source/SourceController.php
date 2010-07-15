@@ -78,8 +78,17 @@ class SourceController extends OntoWiki_Controller_Component
                 (string) $this->_owApp->selectedModel
             );
         } else {
+            $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+            $listName = "instances";
+            if($listHelper->listExists($listName)){
+                $list = $listHelper->getList($listName);
+            } else {
+                 $this->_owApp->appendMessage(
+                    new OntoWiki_Message('something went wrong with the list of instances you want to rdf-view', OntoWiki_Message::ERROR)
+            );
+            }
             $source = $exporter->serializeQueryResultToString(
-                 clone $this->_session->instances->getResourceQuery(),
+                 clone $list->getResourceQuery(),
                  (string) $this->_owApp->selectedModel
              );
         }

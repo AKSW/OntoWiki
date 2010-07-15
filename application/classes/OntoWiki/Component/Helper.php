@@ -64,5 +64,9 @@ class OntoWiki_Component_Helper
     public function init()
     {
     }
+
+    public function getPrivateConfig(){
+        return $this->_privateConfig;
+    }
 }
 

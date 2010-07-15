@@ -9,7 +9,7 @@
  */
 
 ?>
-<table class="separated-vertical">
+<table class="separated-vertical <?php echo $this->has('tableClass') ? $this->tableClass : '' ?>">
     <?php if ($this->has('caption')): ?>
         <caption><?php echo $this->caption ?></caption>
     <?php endif; ?>
@@ -22,11 +22,18 @@
         </tr>
     <?php endif; ?>
     
+    <?php $r = 0; ?>
     <?php foreach ($this->data as $row): ?>
-        <tr>
+        <tr<?php echo $this->has('rowClass') ? (' class="' . $this->rowClass . '"') : '' ?>>
+            <?php $c = 0; ?>
             <?php foreach ($row as $field): ?>
-                <td><?php echo $this->escape($field) ?></td>
+                <td<?php echo $this->has('itemClass') ? (' class="' . $this->itemClass . '"') : '' ?>
+                   id="<?php echo sprintf("r%d-c%d", $r, $c) ?>"><?php 
+                    echo $this->escape($field) 
+                ?></td>
+                <?php $c++; ?>
             <?php endforeach; ?>
         </tr>
+        <?php $r++; ?>
     <?php endforeach; ?>
 </table>

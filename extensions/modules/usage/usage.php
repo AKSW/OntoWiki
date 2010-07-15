@@ -28,43 +28,46 @@
 class UsageModule extends OntoWiki_Module
 {
     /** @var array */
-    protected $_instances = null;
+    protected $_subjects = null;
     
     /** @var OntoWiki_Model */
     protected $_model = null;
     
     /** @var array */
     protected $_objects = null;
-    
+
+    protected $subjectQuery= null;
+    protected $objectQuery= null;
+
     /**
      * Constructor
      */
     public function init()
     {
         // instances (subjects)
-        $query1 = new Erfurt_Sparql_SimpleQuery();
-        $query1->setProloguePart('SELECT DISTINCT ?uri')
+        $this->subjectQuery = new Erfurt_Sparql_SimpleQuery();
+        $this->subjectQuery->setProloguePart('SELECT DISTINCT ?resourceUri')
               ->setWherePart('WHERE {
-                    ?uri <' . (string) $this->_owApp->selectedResource . '> ?object.
-                    FILTER (isURI(?uri))
+                    ?resourceUri <' . (string) $this->_owApp->selectedResource . '> ?object.
+                    FILTER (isURI(?resourceUri))
                 }')
             ->setLimit(OW_SHOW_MAX);
-        $this->_instances = $this->_owApp->selectedModel->sparqlQuery($query1);
+        $this->_subjects = $this->_owApp->selectedModel->sparqlQuery($this->subjectQuery);
         
         // objects
-        $query2 = new Erfurt_Sparql_SimpleQuery();
-        $query2->setProloguePart('SELECT DISTINCT ?uri')
+        $this->objectQuery = new Erfurt_Sparql_SimpleQuery();
+        $this->objectQuery->setProloguePart('SELECT DISTINCT ?resourceUri')
               ->setWherePart('WHERE {
-                    ?subject <' . (string) $this->_owApp->selectedResource . '> ?uri.
-                    FILTER (isURI(?uri))
+                    ?subject <' . (string) $this->_owApp->selectedResource . '> ?resourceUri.
+                    FILTER (isURI(?resourceUri))
                 }')
             ->setLimit(OW_SHOW_MAX);
-        $this->_objects = $this->_owApp->selectedModel->sparqlQuery($query2);
+        $this->_objects = $this->_owApp->selectedModel->sparqlQuery($this->objectQuery);
     }
     
     public function shouldShow()
     {
-        if (!empty($this->_instances) || !empty($this->_objects)) {
+        if (!empty($this->_subjects) || !empty($this->_objects)) {
             return true;
         }
         
@@ -74,7 +77,7 @@ class UsageModule extends OntoWiki_Module
     public function getTitle()
     {
         $title = $this->view->_($this->title) . ' (' 
-               . count($this->_instances) . '/' 
+               . count($this->_subjects) . '/'
                . count($this->_objects) . ')';
         
         return $title;
@@ -85,14 +88,14 @@ class UsageModule extends OntoWiki_Module
     {
         $url = new OntoWiki_Url(array('route' => 'properties'));
         
-        if (!empty($this->_instances)) {
+        if (!empty($this->_subjects)) {
             $instances = array();
             
             $instancesTitleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
-            $instancesTitleHelper->addResources($this->_instances, 'uri');
+            $instancesTitleHelper->addResources($this->_subjects, 'resourceUri');
             
-            foreach ($this->_instances as $instance) {
-                $instanceUri = $instance['uri'];
+            foreach ($this->_subjects as $instance) {
+                $instanceUri = $instance['resourceUri'];
                 
                 if (!array_key_exists($instanceUri, $instances)) {
                     // URL
@@ -112,10 +115,10 @@ class UsageModule extends OntoWiki_Module
             $objects = array();
             
             $objectTitleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
-            $objectTitleHelper->addResources($this->_objects, 'uri');
+            $objectTitleHelper->addResources($this->_objects, 'resourceUri');
             
             foreach ($this->_objects as $object) {
-                $objectUri = $object['uri'];
+                $objectUri = $object['resourceUri'];
                 
                 if (!array_key_exists($objectUri, $objects)) {
                     // URL
@@ -130,8 +133,14 @@ class UsageModule extends OntoWiki_Module
             }
             $this->view->objects = $objects;
         }
+        $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));
+        $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'propertyUsage','action'=>'add','mode'=>'query','query'=> (string) $this->subjectQuery)))));
+        $url->setParam('init', true);
+        $this->view->subjectListLink = (string) $url;
+        $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'propertyUsage','action'=>'add','mode'=>'query','query'=> (string) $this->objectQuery)))));
+        $this->view->objectListLink = (string) $url;
         
-        if (empty($this->_instances) and empty($this->_objects)) {
+        if (empty($this->_subjects) and empty($this->_objects)) {
             $this->view->message = 'No matches.';
         }
         

@@ -93,14 +93,14 @@ $(document).ready(function() {
         } else {
             // remove resource
             selectee.removeClass('list-selected');
-            var pos = $.inArray(selectionURI, this.selectionArray);
+            var pos = $.inArray(selectionURI, OntoWiki.selectedResources);
             OntoWiki.selectedResources.splice(pos, 1);
             // event for most recent unselection
             $('body').trigger('ontowiki.resource.unselected', [selectionURI]);
         }
         
         // event for all selected
-        $('body').trigger('ontowiki.selection.changed', this.selectionArray);
+        $('body').trigger('ontowiki.selection.changed', [OntoWiki.selectedResources]);
     });
     
     $('body').bind('ontowiki.resource-list.reloaded', function() {

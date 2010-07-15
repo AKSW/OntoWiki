@@ -28,7 +28,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
         $ontoWiki        = OntoWiki::getInstance();
-
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         // only once and only when possible
         if (!$this->_isSetup &&
             $ontoWiki->selectedModel instanceof Erfurt_Rdf_Model &&
@@ -58,25 +58,25 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
                 //reset config from tag explorer
                 unset($session->cloudproperties);
-
-                //these should be inside $session->instances as well...
-                //TODO: eliminate usage of them, then delete the next 5 lines
-                unset($session->shownProperties);
-                unset($session->shownInverseProperties);
-                unset($session->filter);
-                unset($session->instancelimit);
-                unset($session->instanceoffset);
             }
 
+            $list = $listHelper->getLastList();
 
-            if (!isset($session->instances) || // nothing build yet
+            if ((!isset($request->list) && $list == null) || // nothing build yet
                 isset($request->init) // force a rebuild
             ) {
-                // instantiate model
-                $instances = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
+                // instantiate model, that selects all resources
+                $list = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
             } else {
                 // use the object from the session
-                $instances = $session->instances;
+                if(isset($request->list) && $request->list != $listHelper->getLastListName()) {
+                    if($listHelper->listExists($request->list)){
+                        $list = $listHelper->getList($request->list);
+                        $ontoWiki->appendMessage(new OntoWiki_Message("reuse list"));
+                    } else {
+                        throw new OntoWiki_Exception('your trying to configure a list, but there is no list name specified');
+                    }
+                }
             }
 
             //local function :)
@@ -148,9 +148,9 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 if (isset($config->shownProperties)) {
                     foreach ($config->shownProperties as $prop) {
                         if ($prop->action == 'add') {
-                            $instances->addShownProperty($prop->uri, $prop->label, $prop->inverse);
+                            $list->addShownProperty($prop->uri, $prop->label, $prop->inverse);
                         } else {
-                            $instances->removeShownProperty($prop->uri.'-'.$prop->inverse);
+                            $list->removeShownProperty($prop->uri.'-'.$prop->inverse);
                         }
                     }
                 }
@@ -163,7 +163,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
                         if ($filter->action == 'add') {
                             if($filter->mode == 'box'){
-                                $instances->addFilter(
+                                $list->addFilter(
                                     $filter->property,
                                     isset($filter->isInverse) ? $filter->isInverse : false,
                                     isset($filter->propertyLabel) ? $filter->propertyLabel : 'defaultLabel',
@@ -177,17 +177,17 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                     isset($filter->negate) ? $filter->negate : false
                                 );
                             } else if($filter->mode == 'search'){
-                                $instances->addSearchFilter(
+                                $list->addSearchFilter(
                                     $filter->searchText,
                                     isset($filter->id) ? $filter->id : null
                                 );
                             } else if($filter->mode == 'rdfsclass') {
-                                $instances->addTypeFilter(
+                                $list->addTypeFilter(
                                     $filter->rdfsclass,
                                     isset($filter->id) ? $filter->id : null
                                 );
                             } else if($filter->mode == 'cnav') {
-                                $instances->addTripleFilter(
+                                $list->addTripleFilter(
                                     NavigationHelper::getInstancesTriples($filter->uri, $filter->cnav),
                                     isset($filter->id) ? $filter->id : null
                                 );
@@ -195,7 +195,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                 try{
                                     $query = Erfurt_Sparql_Query2::initFromString($filter->query);
                                     if(!($query instanceof  Exception)){
-                                        $instances->addTripleFilter(
+                                        $list->addTripleFilter(
                                             $query->getWhere()->getElements(),
                                             isset($filter->id) ? $filter->id : null
                                         );
@@ -205,36 +205,35 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                 }
                             }
                         } else {
-                            $instances->removeFilter($filter->id);
+                            $list->removeFilter($filter->id);
                         }
                     }
                 }
             }
 
             if (isset($request->limit)){ // how many results per page
-                $instances->setLimit($request->limit);
+                $list->setLimit($request->limit);
             } else {
-                $instances->setLimit(10);
+                $list->setLimit(10);
             }
             if (isset($request->p)){ // p is the page number
-                $instances->setOffset(
-                    ($request->p * $instances->getLimit()) - $instances->getLimit()
+                $list->setOffset(
+                    ($request->p * $list->getLimit()) - $list->getLimit()
                 );
             } else {
-                $instances->setOffset(0);
+                $list->setOffset(0);
             }
 
-            
-
             //save to session
-            $session->instances = $instances;
-
+            $name = (isset($request->list) ? $request->list : "instances");
+            $listHelper->updateList($name, $list, true);
+            
             // avoid setting up twice
             $this->_isSetup = true;
             //redirect normal requests if config-params are given to a param-free uri (so a browser reload by user does nothing unwanted)
             if(!$request->isXmlHttpRequest()){
                 //strip of url parameters that modify the list
-                $url = new OntoWiki_Url(array(), true, array('init', 'instancesconfig', 's', 'p', 'limit', 'class'));
+                $url = new OntoWiki_Url(array(), null, array('init', 'instancesconfig', 's', 'p', 'limit', 'class', 'list'));
                 
                 //redirect
                 header('Location: ' . $url);
@@ -244,8 +243,9 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
         
         // even if the was no change made to the resource query -> update the value-query
         // because the dataset may have changed since the last request
-        if(isset($ontoWiki->session->instances)){
-            $ontoWiki->session->instances->invalidate();
+        // and controllers using this list then get the newest data
+        foreach($listHelper->getAllLists() as $aList){
+            $aList->invalidate();
         }
     }
 }

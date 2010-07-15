@@ -1,5 +1,0 @@
-enabled    = true
-title      = "Tags"
-caching    = no
-priority   = 3
-contexts[] = "main.sidewindows"

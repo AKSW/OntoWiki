@@ -98,9 +98,6 @@ class ServiceController extends Zend_Controller_Action
                     ' . implode(PHP_EOL, $nsFilter) . '
                 }'
             );
-            
-            // var_dump((string)$query);
-            // var_dump($store->sparqlQuery($query));
         }
     }
 
@@ -194,6 +191,11 @@ class ServiceController extends Zend_Controller_Action
             $menu->prependEntry(
                 'View Resource',
                 (string)$url
+            );
+
+            $menu->appendEntry(
+                'Go to Resource (external)',
+                (string)$resource
             );
             
             if ($isModel) {    
@@ -328,7 +330,6 @@ class ServiceController extends Zend_Controller_Action
                      // ->prependEntry('Create Instance', $this->_config->urlBase . 'index/create/?r=')
                      // ->prependEntry('Create Subclass', $this->_config->urlBase . 'index/create/?r=');
                 }
-
             }        
         }
         
