@@ -184,15 +184,15 @@ class CsvimportController extends OntoWiki_Controller_Component
                             'start' => array('col' => 2, 'row' => 3), 
                             'end'   => array('col' => 2, 'row' => 20)
                         )
-                    )
-                ), 
-                'http://example.com/dimension1/7-12' => array(
-                    'col' => 3, 
-                    'row' => 2, 
-                    'label' => '7-12', 
-                    'items' => array(
-                        'start' => array('col' => 3, 'row' => 3), 
-                        'end'   => array('col' => 3, 'row' => 20)
+                    ),
+                    'http://example.com/dimension1/7-12' => array(
+                        'col' => 3,
+                        'row' => 2,
+                        'label' => '7-12',
+                        'items' => array(
+                            'start' => array('col' => 3, 'row' => 3),
+                            'end'   => array('col' => 3, 'row' => 20)
+                        )
                     )
                 )
             ),  
@@ -213,5 +213,75 @@ class CsvimportController extends OntoWiki_Controller_Component
         );
         
         return $dimensions;
+    }
+
+    protected function _createDimensions($dimensions){
+        $elements = array();
+
+        // relations
+        $type = 'http://www.w3.org/2000/01/rdf-schema#type';
+        $subClassOf = 'http://www.w3.org/2000/01/rdf-schema#subClassOf';
+        $scvDimension = 'http://purl.org/NET/scovo#Dimension';
+        $title = 'http://purl.org/dc/elements/1.1/title';
+
+        foreach($dimensions as $url => $dim){
+            $element = array();
+
+            // class
+            $element[$url] = array(
+                $subClassOf => array(
+                    array(
+                        "type" => "uri",
+                        "value" => $scvDimension
+                        )
+                    )
+                );
+            $elements[] = $element;
+
+            // label
+            $element[$url] = array(
+                $title => array(
+                    array(
+                        "type" => "literal",
+                        "value" => $dim['label']
+                        )
+                    )
+                );
+            $elements[] = $element;
+            
+            // types
+            foreach($dim['elements'] as $eurl => $elem){
+                $element = array();
+                
+                // type of new dimension
+                $element[$eurl] = array(
+                    $type => array(
+                        array(
+                            "type" => "uri",
+                            "value" => $url
+                            )
+                        )
+                    );
+                $elements[] = $element;
+                // label
+                $element[$eurl] = array(
+                    $title => array(
+                        array(
+                            "type" => "literal",
+                            "value" => $elem['label']
+                            )
+                        )
+                    );
+                $elements[] = $element;
+            }
+        }
+
+        foreach($elements as $elem){
+            $this->_owApp->selectedModel->addMultipleStatements($elem);
+        }
+
+        //echo "<pre>";
+        //echo print_r( $elements );
+        //echo "</pre>";
     }
 }
