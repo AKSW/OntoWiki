@@ -26,6 +26,8 @@ class CsvimportController extends OntoWiki_Controller_Component
     {
         // init component
         parent::init();
+        
+        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/csvimport.js');
     }
     
     public function indexAction()
@@ -43,35 +45,35 @@ class CsvimportController extends OntoWiki_Controller_Component
     }
     
     public function uploadAction()
-    {
-        // TODO: show import dialogue and import file
-        $this->view->placeholder('main.window.title')->append('Import CSV Data');
-        OntoWiki_Navigation::disableNavigation();
-        
-        $this->view->formActionUrl = $this->_config->urlBase . 'csvimport';
-        $this->view->formEncoding  = 'multipart/form-data';
-        $this->view->formClass     = 'simple-input input-justify-left';
-        $this->view->formMethod    = 'post';
-        $this->view->formName      = 'import';
-        $this->view->referer       = isset($_SERVER['HTTP_REFERER']) ? urlencode($_SERVER['HTTP_REFERER']) : '';
-        
-        $this->view->modelUri   = (string)$this->_owApp->selectedModel;
-        $this->view->title      = 'Import CSV Data';
-        $model = $this->_owApp->selectedModel;
-        $this->view->modelTitle = $model->getTitle();
-        
-        if ($model->isEditable()) {
-            $toolbar = $this->_owApp->toolbar;
-            $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Import CSV', 'id' => 'import'))
-                    ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
-            $this->view->placeholder('main.window.toolbar')->set($toolbar);
-        } else {
-            $this->_owApp->appendMessage(
-                new OntoWiki_Message("No write permissions on model '{$this->view->modelTitle}'", OntoWiki_Message::WARNING)
-            );
-        }
-        
+    {        
         if (!$this->_request->isPost()) {
+            // TODO: show import dialogue and import file
+            $this->view->placeholder('main.window.title')->append('Import CSV Data');
+            OntoWiki_Navigation::disableNavigation();
+
+            $this->view->formActionUrl = $this->_config->urlBase . 'csvimport';
+            $this->view->formEncoding  = 'multipart/form-data';
+            $this->view->formClass     = 'simple-input input-justify-left';
+            $this->view->formMethod    = 'post';
+            $this->view->formName      = 'import';
+            $this->view->referer       = isset($_SERVER['HTTP_REFERER']) ? urlencode($_SERVER['HTTP_REFERER']) : '';
+
+            $this->view->modelUri   = (string)$this->_owApp->selectedModel;
+            $this->view->title      = 'Import CSV Data';
+            $model = $this->_owApp->selectedModel;
+            $this->view->modelTitle = $model->getTitle();
+
+            if ($model->isEditable()) {
+                $toolbar = $this->_owApp->toolbar;
+                $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Import CSV', 'id' => 'import'))
+                        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
+                $this->view->placeholder('main.window.toolbar')->set($toolbar);
+            } else {
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message("No write permissions on model '{$this->view->modelTitle}'", OntoWiki_Message::WARNING)
+                );
+            }
+            
             // FIX: http://www.webmasterworld.com/macintosh_webmaster/3300569.htm
             // disable connection keep-alive
             $response = $this->getResponse();
@@ -123,15 +125,62 @@ class CsvimportController extends OntoWiki_Controller_Component
             $store->nextAction   = 'mapping';
         }
         
-        $this->_forward();
+        $this->_forward('index');
     }
     
     public function mappingAction()
     {
-        // TODO: show table and let user define domain mapping
-        $store = $this->_getSessionStore();
-        var_dump($store->importedFile);
-        exit;
+        if (!isset($this->_request->dimensions)) {
+            $this->view->placeholder('main.window.title')->append('Import CSV Data');
+            $this->view->actionUrl = $this->_config->urlBase . 'csvimport';
+            OntoWiki_Navigation::disableNavigation();
+
+            $model = $this->_owApp->selectedModel;
+            if ($model->isEditable()) {
+                $toolbar = $this->_owApp->toolbar;
+                $toolbar->appendButton(OntoWiki_Toolbar::ADD, array('name' => 'Add Dimension', 'id' => 'btn-add-dimension'))
+                        ->appendButton(OntoWiki_Toolbar::SEPARATOR)
+                        ->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Extract Triples', 'id' => 'extract'))
+                        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
+                $this->view->placeholder('main.window.toolbar')->set($toolbar);
+            } else {
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message("No write permissions on model '{$this->view->modelTitle}'", OntoWiki_Message::WARNING)
+                );
+            }
+
+            // TODO: show table and let user define domain mapping
+            $store = $this->_getSessionStore();
+
+            if (is_readable($store->importedFile)) {
+                require_once 'CsvParser.php';
+                $parser = new CsvParser($store->importedFile);
+                $data   = array_filter($parser->getParsedFile());
+                $this->view->table = $this->view->partial(
+                    'partials/table.phtml',  array(
+                        'data' => $data, 
+                        'tableClass' => 'csvimport'
+                    )
+                );
+            }
+            
+            $store = $this->_getSessionStore();
+            $store->nextAction = 'mapping';
+        } else {
+            // $json = $this->_request->getPost('dimensions');
+            $json = $_POST['dimensions'];
+            $data = json_decode($json, true);
+            $store = $this->_getSessionStore();
+            $store->dimensions = $data;
+            $this->_createDimensions($data);
+            $this->_helper->viewRenderer->setNoRender();
+            unset($store->nextAction);
+        }
+    }
+    
+    protected function resultsAction()
+    {
+        
     }
     
     protected function _getSessionStore()
@@ -215,7 +264,8 @@ class CsvimportController extends OntoWiki_Controller_Component
         return $dimensions;
     }
 
-    protected function _createDimensions($dimensions){
+    protected function _createDimensions($dimensions)
+    {
         $elements = array();
 
         // relations
@@ -223,16 +273,16 @@ class CsvimportController extends OntoWiki_Controller_Component
         $subClassOf = 'http://www.w3.org/2000/01/rdf-schema#subClassOf';
         $scvDimension = 'http://purl.org/NET/scovo#Dimension';
         $title = 'http://purl.org/dc/elements/1.1/title';
-
-        foreach($dimensions as $url => $dim){
+        
+        foreach ($dimensions as $url => $dim) {
             $element = array();
 
             // class
             $element[$url] = array(
                 $subClassOf => array(
                     array(
-                        "type" => "uri",
-                        "value" => $scvDimension
+                        'type' => 'uri',
+                        'value' => $scvDimension
                         )
                     )
                 );
@@ -242,23 +292,23 @@ class CsvimportController extends OntoWiki_Controller_Component
             $element[$url] = array(
                 $title => array(
                     array(
-                        "type" => "literal",
-                        "value" => $dim['label']
+                        'type' => 'literal',
+                        'value' => $dim['label']
                         )
                     )
                 );
             $elements[] = $element;
             
             // types
-            foreach($dim['elements'] as $eurl => $elem){
+            foreach ($dim['elements'] as $eurl => $elem) {
                 $element = array();
                 
                 // type of new dimension
                 $element[$eurl] = array(
                     $type => array(
                         array(
-                            "type" => "uri",
-                            "value" => $url
+                            'type' => 'uri',
+                            'value' => $url
                             )
                         )
                     );
@@ -267,8 +317,8 @@ class CsvimportController extends OntoWiki_Controller_Component
                 $element[$eurl] = array(
                     $title => array(
                         array(
-                            "type" => "literal",
-                            "value" => $elem['label']
+                            'type' => 'literal',
+                            'value' => $elem['label']
                             )
                         )
                     );
@@ -276,12 +326,12 @@ class CsvimportController extends OntoWiki_Controller_Component
             }
         }
 
-        foreach($elements as $elem){
+        foreach ($elements as $elem) {
             $this->_owApp->selectedModel->addMultipleStatements($elem);
         }
 
-        //echo "<pre>";
+        //echo '<pre>';
         //echo print_r( $elements );
-        //echo "</pre>";
+        //echo '</pre>';
     }
 }

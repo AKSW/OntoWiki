@@ -1,5 +1,5 @@
 <?php
-require_once('lib/IteratorReader.php');
+require_once 'lib/IteratorReader.php';
 
 /**
  *  @category		component
