@@ -1,0 +1,45 @@
+<?php if (!isset($this->errorFlag) || $this->errorFlag === false): ?>
+<fieldset>
+    <legend><?php echo $this->title ?></legend>
+    <div>
+        <?php if ($this->has('modelTitle')): ?>
+            <label><?php echo $this->_('Knowledge Base') ?></label>
+            <input type="text" class="text" value="<?php echo $this->modelTitle ?>" readonly="readonly" />
+            <input type="hidden" name="modelUri" value="<?php echo $this->modelUri ?>" />
+        <?php else: ?>
+            <label for="model-input"><?php echo $this->_('Knowledge Base URI') ?></label>
+            <?php if (!empty($this->modelUri)): ?>
+                <?php // if model URI is set, don't allow it to be changed ?>
+                <input type="text" class="text" id="model-input" name="modelUri" value="<?php echo $this->modelUri ?>" readonly="readonly" />
+            <?php else: ?>
+                <input type="text" class="text" id="model-input" name="modelUri" />
+            <?php endif; ?>
+            <br class="clearall" />
+        <?php endif; ?>
+    </div>
+
+    <!-- file upload -->
+    <fieldset class="activeForm" id="upload">
+        <div>
+            <label class="checkboxradio" for="r02">
+                <input type="radio" class="radio" name="importMode" id="r02" value="column" checked="checked" />
+                <?php echo $this->_('Tabular data (uses property mapping)') ?>
+            </label>
+            <br class="clearall" />
+
+            <label class="checkboxradio" for="r01">
+                <input type="radio" class="radio" name="importMode" id="r01" value="scovo" />
+                <?php echo $this->_('Statistical data (uses SCOVO mapping)') ?>
+            </label>
+            <br class="clearall" />
+        </div>
+        <div>
+            <label for="file-input">
+                <?php echo sprintf($this->_('File (max. %1$sB)'), preg_replace('/([kMG])/', ' $1', ini_get('upload_max_filesize'))) ?>
+            </label>
+            <input type="file" id="file-input" name="source" accept="text/csv text/comma-separated-values" />
+            <br class="clearall" />
+        </div>
+    </fieldset>
+</fieldset>
+<?php endif; ?>
