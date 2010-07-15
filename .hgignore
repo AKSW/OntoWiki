@@ -19,6 +19,6 @@ ontowiki/src/extensions/modules/navigation/module.ini
 ontowiki/src/extensions/components/navigation/component.ini
 ontowiki/src/extensions/components/foafedit/component.ini
 ontowiki/src/extensions/components/map/component.ini
-ontowiki/src/libraries/ZendFramework-1.9.4-minimal
+ontowiki/src/libraries/ZendFramework-1.*
 ontowiki/src/extensions/modules/hierarchy/module.ini
 
