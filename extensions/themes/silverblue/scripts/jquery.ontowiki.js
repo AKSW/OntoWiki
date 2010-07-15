@@ -178,7 +178,8 @@
                 $(this).before('<span class="icon-button expand"></span>');
             }
             $(this).prev().click(function(event) {
-                toggleExpansion(event)
+                toggleExpansion(event);
+                return false; // -> event is not given further
             });
         })
     }

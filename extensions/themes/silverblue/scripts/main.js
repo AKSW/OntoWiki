@@ -76,12 +76,12 @@ $(document).ready(function() {
     }
     
     /* list selection */
-    $('.resource-list tr').live('click', function(e) {
+    $('table.resource-list > tbody > tr').live('click', function(e) {
         if (typeof OntoWiki.selectedResources == 'undefined') {
             OntoWiki.selectedResources = [];
         }
         
-        var selectee     = $(e.target).closest('tr');
+        var selectee     = $(this);
         var selectionURI = selectee.find('*[about]').eq(0).attr('about');
         
         if (!selectee.hasClass('list-selected')) {
