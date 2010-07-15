@@ -32,6 +32,8 @@ class CsvimportController extends OntoWiki_Controller_Component
     
     public function indexAction()
     {
+        $this->_saveData();
+
         // TODO: determine next step and forward accordingly
         $store = $this->_getSessionStore();
         
@@ -333,5 +335,48 @@ class CsvimportController extends OntoWiki_Controller_Component
         //echo '<pre>';
         //echo print_r( $elements );
         //echo '</pre>';
+    }
+
+    protected function _saveData(){
+        require 'CsvParser.php';
+        $parser = new CsvParser("test.csv");
+        $data = $parser->getParsedFile();
+
+        $dimensions = $this->_getDimensions();
+        $dims = array();
+
+        foreach($dimensions as $url => $dim){
+            foreach($dim['elements'] as $eurl => $elem){
+                $dims[] = array(
+                    'uri' => $eurl,
+                    'row' => $elem['row'],
+                    'col' => $elem['col'],
+                    'items' => $elem['items']
+                );
+            }
+        }
+
+        foreach($data as $rowIndex => $rows){
+            foreach($rows as $colIndex => $column){
+                if(strlen($column) > 0){ // filter empty
+                    foreach($dims as $dim){
+                        if(
+                            $colIndex >= $dim['items']['start']['col'] && $colIndex <= $dim['items']['end']['col'] &&
+                            $rowIndex >= $dim['items']['start']['row'] && $rowIndex <= $dim['items']['end']['row']
+                        ){
+                            if($dim['col'] == $colIndex || $dim['row'] == $rowIndex){
+                                echo $dim['uri']." => ";
+                            }
+                        }
+                    }
+                    //echo $rowIndex.":".$colIndex." - ".$column;
+                    //echo "<br/><br/>";
+                }
+            }
+        }
+
+        //echo "<pre>";
+        //print_r( $dims );
+        //echo "</pre>";
     }
 }
