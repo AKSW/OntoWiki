@@ -124,7 +124,7 @@ class CsvimportController extends OntoWiki_Controller_Component
     {
         if (!isset($this->_request->dimensions)) {
             $this->view->placeholder('main.window.title')->append('Import CSV Data');
-            $this->view->actionUrl = $this->_config->urlBase . 'csvimport';
+            $this->view->actionUrl = $this->_config->urlBase . 'csvimport/mapping';
             OntoWiki_Navigation::disableNavigation();
 
             $model = $this->_owApp->selectedModel;
@@ -158,7 +158,6 @@ class CsvimportController extends OntoWiki_Controller_Component
             }
             
             $store = $this->_getSessionStore();
-            $store->nextAction = 'mapping';
         } else {
             // $json = $_POST['dimensions'];
             $data = json_decode($this->_request->dimensions, true);

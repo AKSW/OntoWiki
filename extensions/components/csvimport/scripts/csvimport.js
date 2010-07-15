@@ -116,8 +116,8 @@ $(document).ready(function () {
         }
         
         for (d in dimensions) {
-            for (e in dimensions[d]) {
-                dimensions[d][e]['items'] = datarange;
+            for (e in dimensions[d]['elements']) {
+                dimensions[d]['elements'][e]['items'] = datarange;
             }
         }
         
