@@ -222,6 +222,8 @@ class CsvimportController extends OntoWiki_Controller_Component
     
     protected function _getDimensions()
     {
+        // test 
+        
         $dimensions = array(
             'http://example.com/dimension1' => array(
                 'label' => 'Age', 
