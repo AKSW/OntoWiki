@@ -345,6 +345,9 @@ class CsvimportController extends OntoWiki_Controller_Component
         $dimensions = $this->_getDimensions();
         $dims = array();
 
+        $subDimension = 'http://purl.org/NET/scovo#dimension';
+        $value = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value';
+
         foreach($dimensions as $url => $dim){
             foreach($dim['elements'] as $eurl => $elem){
                 $dims[] = array(
@@ -356,21 +359,48 @@ class CsvimportController extends OntoWiki_Controller_Component
             }
         }
 
-        foreach($data as $rowIndex => $rows){
-            foreach($rows as $colIndex => $column){
-                if(strlen($column) > 0){ // filter empty
+        foreach($data as $rowIndex => $row){
+            // check for null data
+            if(!isset($row) || $row == null) continue;
+
+            // parse row
+            foreach($row as $colIndex => $cell){
+                // filter empty
+                if(strlen($cell) > 0){
+                    // create new item dimensions arr
+                    $itemDims = array();
+
+                    // fill item dimensions from all dims
                     foreach($dims as $dim){
                         if(
                             $colIndex >= $dim['items']['start']['col'] && $colIndex <= $dim['items']['end']['col'] &&
                             $rowIndex >= $dim['items']['start']['row'] && $rowIndex <= $dim['items']['end']['row']
                         ){
                             if($dim['col'] == $colIndex || $dim['row'] == $rowIndex){
-                                echo $dim['uri']." => ";
+                                $itemDims[$subDimension] = array(
+                                        'type' => 'uri',
+                                        'value' => $dim['uri']
+                                    );
                             }
                         }
                     }
-                    //echo $rowIndex.":".$colIndex." - ".$column;
-                    //echo "<br/><br/>";
+
+                    // if there is some dimensions
+                    if(count($itemDims) > 0){
+                        $eurl = "http://example.com/item-c".$colIndex."-r".$rowIndex;
+                        $element[$eurl] = array(
+                            $itemDims,
+                            $value => array(
+                                array(
+                                    'type' => 'literal',
+                                    'value' => $cell
+                                )
+                            )
+                        );
+
+                        // write element
+                        $this->_owApp->selectedModel->addMultipleStatements($element);
+                    }
                 }
             }
         }
