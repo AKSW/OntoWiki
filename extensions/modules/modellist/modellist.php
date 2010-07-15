@@ -13,6 +13,7 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @version    $Id: modellist.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
+
 class ModellistModule extends OntoWiki_Module
 {
     public function init()
@@ -51,6 +52,12 @@ class ModellistModule extends OntoWiki_Module
      */
     public function getMenu()
     {
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile()){
+            return new OntoWiki_Menu();
+        }
+        
+
         if ($this->_erfurt->getAc()->isActionAllowed('ModelManagement')) {
             $editMenu = new OntoWiki_Menu();
             $editMenu->setEntry('Create Knowledge Base', $this->_config->urlBase . 'model/create');
@@ -101,8 +108,14 @@ class ModellistModule extends OntoWiki_Module
          
             $models[] = $temp;
         }
+
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile()){
+            $content = $this->render('modellist_mobile', $models, 'models');
+        }else{
+            $content = $this->render('modellist', $models, 'models');
+        }
         
-        $content = $this->render('modellist', $models, 'models');
         
         return $content;
     }

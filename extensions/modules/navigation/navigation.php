@@ -25,6 +25,11 @@ class NavigationModule extends OntoWiki_Module
      * @return string
      */
     public function getMenu() {
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile()){
+            return new OntoWiki_Menu();
+        }
+
         // build main menu (out of sub menus below)
         $mainMenu = new OntoWiki_Menu();
 
@@ -129,7 +134,14 @@ class NavigationModule extends OntoWiki_Module
         );
 
         $data['session'] = $this->session->navigation;
-        $content = $this->render('navigation', $data, 'data'); // 
+
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile()){
+            $content = $this->render('navigation_mobile', $data, 'data'); //
+        }else{
+            $content = $this->render('navigation', $data, 'data'); //
+        }
+
         return $content;
     }
 	
