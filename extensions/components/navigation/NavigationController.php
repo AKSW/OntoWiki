@@ -653,7 +653,6 @@ class NavigationController extends OntoWiki_Controller_Component
     protected function _buildSubCheckQuery($uri, $setup){
         $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        $classVar = new Erfurt_Sparql_Query2_Var('classUri');
         $query = new Erfurt_Sparql_Query2();
         $query->addProjectionVar($subVar);
         $query->setDistinct();
@@ -723,11 +722,6 @@ class NavigationController extends OntoWiki_Controller_Component
                 $elements[] = $queryOptional;
             }
         }
-        $elements[] = new Erfurt_Sparql_Query2_Triple(
-            $searchVar,
-            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
-            $classVar
-        );
         // add filter
         $elements[] = new Erfurt_Sparql_Query2_Filter(
             new Erfurt_Sparql_Query2_sameTerm($searchVar, new Erfurt_Sparql_Query2_IriRef($uri))
