@@ -275,12 +275,12 @@ function navigationLoad (navEvent, setup) {
                         // no animation in refresh event (just the is processing)
                         break;
                     case 'navigateHigher':
-                        navigationContainer.css('marginLeft', '-100%');
-                        navigationContainer.animate({marginLeft:'0px'},'slow');
+                        //navigationContainer.css('marginLeft', '-100%');
+                        //navigationContainer.animate({marginLeft:'0px'},'slow');
                         break;
                     case 'navigateDeeper':
-                        navigationContainer.css('marginLeft', '100%');
-                        navigationContainer.animate({marginLeft:'0px'},'slow');
+                        //navigationContainer.css('marginLeft', '100%');
+                        //navigationContainer.animate({marginLeft:'0px'},'slow');
                         break;
                 }
 
@@ -303,10 +303,12 @@ function navigationLoad (navEvent, setup) {
             cbAfterLoad();
             break;
         case 'navigateHigher':
-            navigationContainer.animate({marginLeft:'100%'},'slow', '', cbAfterLoad);
+            //navigationContainer.animate({marginLeft:'100%'},'slow', '', cbAfterLoad);
+            cbAfterLoad();
             break;
         case 'navigateDeeper':
-            navigationContainer.animate({marginLeft:'-100%'},'slow', '', cbAfterLoad);
+            //navigationContainer.animate({marginLeft:'-100%'},'slow', '', cbAfterLoad);
+            cbAfterLoad();
             break;
         default:
             //navigationContainer.slideUp('fast', cbAfterLoad);

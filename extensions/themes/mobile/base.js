@@ -21,3 +21,9 @@ function getBase(element){
         jQT.goTo("#nav", "slide");
     })
 }
+
+function onNavigationEntryClick(entry){
+    if($(entry).parent().attr('class') == "arrow"){
+        navigationEvent('navigateDeeper', $(entry).parent().attr('about'));
+    }
+}

@@ -11,10 +11,10 @@ $odd = true;
             <?php if (isset($this->rootEntry)):?>
                 <ul class="individual">
                     <li>
-                        <a class="navFirst icon icon-arrow-first" title="Go to root level">Go to root level</a>
+                        <a class="navFirst icon icon-arrow-first" title="Go to root level">Root</a>
                     </li>
                     <li>
-                        <a class="navBack icon icon-arrow-previous" title="Go to previous level">Go to previous level</a>
+                        <a class="navBack icon icon-arrow-previous" title="Go to previous level">Back</a>
                     </li>
                 </ul>
                 <ul class="plastic">
@@ -49,15 +49,13 @@ $odd = true;
         <?php if ($this->entries) :?>
             <ul class="rounded">
             <?php foreach ($this->entries as $uri => $entry): ?>
-                <li class="
-                        <?php if( $entry['sub'] > 0 ){ echo 'arrow'; } ?>
-                    " about="<?php echo $uri ?>">
+                <li class="<?php if( $entry['sub'] > 0 ){ echo 'arrow'; } ?>" about="<?php echo $uri ?>">
                     <!-- href="<?php echo $entry['link'] ?>" -->
-                    <a>
+                    <a href="#" onclick="onNavigationEntryClick(this);" about="<?php echo $entry['link'] ?>">
                        <?php echo $entry['title'] ?>
                     </a>
                     <?php if( $entry['sub'] > 0 ): ?>
-                        <small class="navDeeper counter">&nbsp;</small>
+                        <!-- <small class="navDeeper counter">&nbsp;</small> -->
                     <?php endif; ?>
                 </li>
             <?php endforeach; ?>
