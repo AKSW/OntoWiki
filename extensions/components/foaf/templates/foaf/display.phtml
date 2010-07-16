@@ -1,5 +1,6 @@
 <?php if(!$this->hasError){ ?>
-<h2><?php
+<div about="<?php echo $this->aboutUri;?>">
+<h2 property="foaf:name"><?php
 if(!$this->has('aboutSurName') || !$this->has('aboutGivenName')){
     echo $this->about;
 } else {
@@ -21,9 +22,9 @@ View full FOAF Profile <a href="<?php echo $this->urlBase;?>view/?r=<?php echo u
             ?><b><?php echo $this->titleHelper->getTitle($property); ?></b><br/><ul class="bullets-none"> <?php
             foreach($values as $value){
                 if(isset($value['url'])){
-                    ?><li><a href="<?php echo $value['url']?>" about="<?php echo $value['uri']?>" class="expandable hasMenu" ><?php echo $this->titleHelper->getTitle($value['uri'])?></a>&nbsp;&nbsp;<a href="<?php echo $value['uri']?>" class="externalLink"> </a></li>
+                    ?><li><a rel="<?php echo $property;?>" href="<?php echo $value['url']?>" about="<?php echo $value['uri']?>" class="expandable hasMenu" ><?php echo $this->titleHelper->getTitle($value['uri'])?></a>&nbsp;&nbsp;<a href="<?php echo $value['uri']?>" class="externalLink"> </a></li>
                 <?php } else {
-                    ?><li><?php echo $value['content']?></li>
+                    ?><li property="<?php echo $property;?>"><?php echo $value['content']?></li>
                 <?php }
             }
             
@@ -73,4 +74,5 @@ View full FOAF Profile <a href="<?php echo $this->urlBase;?>view/?r=<?php echo u
         }
     ?>
     </td></tr></table>
+</div>
 <?php } ?>
