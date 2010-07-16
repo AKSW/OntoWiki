@@ -340,7 +340,7 @@ class CsvimportController extends OntoWiki_Controller_Component
         $predicate = 'http://purl.org/NET/scovo#dimension';
         $value = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value';
         $scovoItem = 'http://purl.org/NET/scovo#Item';
-        $type = 'http://www.w3.org/2000/01/rdf-schema#type';
+        $type = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 
         foreach($dimensions as $url => $dim){
             foreach($dim['elements'] as $eurl => $elem){
