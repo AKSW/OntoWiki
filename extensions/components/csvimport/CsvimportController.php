@@ -267,6 +267,7 @@ class CsvimportController extends OntoWiki_Controller_Component
         $subClassOf = 'http://www.w3.org/2000/01/rdf-schema#subClassOf';
         $scvDimension = 'http://purl.org/NET/scovo#Dimension';
         $title = 'http://purl.org/dc/elements/1.1/title';
+        
         foreach ($dimensions as $url => $dim) {
             $element = array();
 
@@ -382,7 +383,8 @@ class CsvimportController extends OntoWiki_Controller_Component
 
                     // if there is some dimensions
                     if(count($itemDims) > 0){
-                        print_r($itemDims);
+                        //print_r($itemDims);
+                        $element = array();
 
                         $eurl = "http://example.com/item-c".$colIndex."-r".$rowIndex;
                         $element[$eurl] = array_merge(
@@ -400,8 +402,8 @@ class CsvimportController extends OntoWiki_Controller_Component
                         //print_r($element);
                         //echo "---------------------------------------------------------------";
                         // write element
-                        var_dump($element);
-                        die;
+                        //var_dump($element);
+                        //die;
                         $this->_owApp->selectedModel->addMultipleStatements($element);
                     }
                 }
