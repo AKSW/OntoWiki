@@ -148,7 +148,8 @@ class CsvimportController extends OntoWiki_Controller_Component
             if (is_readable($store->importedFile)) {
                 require_once 'CsvParser.php';
                 $parser = new CsvParser($store->importedFile);
-                $data   = array_filter($parser->getParsedFile());
+                $store->parsedData = $parser->getParsedFile();
+                $data   = array_filter($store->parsedData);
                 $this->view->table = $this->view->partial(
                     'partials/table.phtml', array(
                         'data' => $data, 
@@ -334,7 +335,7 @@ class CsvimportController extends OntoWiki_Controller_Component
         $dimensions = $store->dimensions;
         $dims = array();
 
-        $subDimension = 'http://purl.org/NET/scovo#dimension';
+        $predicate = 'http://purl.org/NET/scovo#dimension';
         $value = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value';
 
         foreach($dimensions as $url => $dim){
@@ -347,6 +348,8 @@ class CsvimportController extends OntoWiki_Controller_Component
                 );
             }
         }
+
+        //echo "<pre>";
 
         foreach($data as $rowIndex => $row){
             // check for null data
@@ -366,9 +369,11 @@ class CsvimportController extends OntoWiki_Controller_Component
                             $rowIndex >= $dim['items']['start']['row'] && $rowIndex <= $dim['items']['end']['row']
                         ){
                             if($dim['col'] == $colIndex || $dim['row'] == $rowIndex){
-                                $itemDims[$subDimension] = array(
-                                        'type' => 'uri',
-                                        'value' => $dim['uri']
+                                $itemDims[$predicate] = array(
+                                        array(
+                                            'type' => 'uri',
+                                            'value' => $dim['uri']
+                                            )
                                     );
                             }
                         }
@@ -376,17 +381,23 @@ class CsvimportController extends OntoWiki_Controller_Component
 
                     // if there is some dimensions
                     if(count($itemDims) > 0){
+                        print_r($itemDims);
+
                         $eurl = "http://example.com/item-c".$colIndex."-r".$rowIndex;
-                        $element[$eurl] = array(
+                        $element[$eurl] = array_merge(
                             $itemDims,
-                            $value => array(
-                                array(
-                                    'type' => 'literal',
-                                    'value' => $cell
+                            array(
+                                $value => array(
+                                    array(
+                                        'type' => 'literal',
+                                        'value' => $cell
+                                    )
                                 )
                             )
                         );
 
+                        //print_r($element);
+                        //echo "---------------------------------------------------------------";
                         // write element
                         $this->_owApp->selectedModel->addMultipleStatements($element);
                     }
