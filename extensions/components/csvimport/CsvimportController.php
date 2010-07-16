@@ -161,7 +161,9 @@ class CsvimportController extends OntoWiki_Controller_Component
             $store = $this->_getSessionStore();
         } else {
             // $json = $_POST['dimensions'];
-            $data = json_decode($this->_request->dimensions, true);
+            $json = $this->_request->dimensions;
+            $json = str_replace('\\"', '"', $json);
+            $data = json_decode($json, true);
             $store = $this->_getSessionStore();
             $store->dimensions = $data;
             $this->_createDimensions($data);
@@ -265,7 +267,6 @@ class CsvimportController extends OntoWiki_Controller_Component
         $subClassOf = 'http://www.w3.org/2000/01/rdf-schema#subClassOf';
         $scvDimension = 'http://purl.org/NET/scovo#Dimension';
         $title = 'http://purl.org/dc/elements/1.1/title';
-        
         foreach ($dimensions as $url => $dim) {
             $element = array();
 
@@ -399,6 +400,8 @@ class CsvimportController extends OntoWiki_Controller_Component
                         //print_r($element);
                         //echo "---------------------------------------------------------------";
                         // write element
+                        var_dump($element);
+                        die;
                         $this->_owApp->selectedModel->addMultipleStatements($element);
                     }
                 }
