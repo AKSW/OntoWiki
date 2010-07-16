@@ -164,6 +164,7 @@ class CsvimportController extends OntoWiki_Controller_Component
             $store = $this->_getSessionStore();
             $store->dimensions = $data;
             $this->_createDimensions($data);
+            $this->_saveData();
             $this->_helper->viewRenderer->setNoRender();
         }
     }
@@ -327,11 +328,10 @@ class CsvimportController extends OntoWiki_Controller_Component
 
     protected function _saveData()
     {
-        require 'CsvParser.php';
-        $parser = new CsvParser("test.csv");
-        $data = $parser->getParsedFile();
+        $store = $this->_getSessionStore();
 
-        $dimensions = $this->_getDimensions();
+        $data = $store->parsedData;
+        $dimensions = $store->dimensions;
         $dims = array();
 
         $subDimension = 'http://purl.org/NET/scovo#dimension';
