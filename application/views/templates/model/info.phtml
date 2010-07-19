@@ -10,7 +10,13 @@
 <?php else: ?>
     <p class="messagebox warning"><?php echo $this->_('There are no comments, descriptions or notes on this knowledge base.') ?></p>
 <?php endif; ?>
-
+<h3>Actions</h3>
+<?php
+if($this->has('showFoafLink') && $this->showFoafLink){
+    ?><a href="<?php echo $this->foafLink; ?>">open FOAF viewer</a><br/><?php
+}
+?>
+<a href="<?php echo $this->resourcesUrl; ?>">view all resources</a>
 <!--h3><?php echo $this->_('Statistical Outline') ?></h3>
 <table class="separated-vertical">
     <tr class="odd">
@@ -36,7 +42,6 @@
 </table-->
 
 <?php $odd = true; ?>
-<a href="<?php echo $this->resourcesUrl; ?>">All Resources</a>
 <h3><?php echo $this->_('Properties') ?></h3>
 <?php if ($this->has('predicates')): ?>
 <table class="separated-vertical rdfa" about="<?php echo $this->resourceIri ?>"

@@ -178,7 +178,8 @@
                 $(this).before('<span class="icon-button expand"></span>');
             }
             $(this).prev().click(function(event) {
-                toggleExpansion(event)
+                toggleExpansion(event);
+                return false; // -> event is not given further
             });
         })
     }
@@ -710,6 +711,45 @@ function createInstanceFromURI(resource) {
                 title: 'Clone Resource ' + resource
                 });
             
+            RDFauthor.startTemplate(data);
+        })
+    });
+}
+
+/*
+ * get the rdfauthor init description from the service in and start the RDFauthor window
+ */
+function editResourceFromURI(resource) {
+    var serviceUri = urlBase + 'service/rdfauthorinit';
+
+    // remove resource menus
+    removeResourceMenus();
+
+    loadRDFauthor(function() {
+        $.getJSON(serviceUri, {
+           mode: 'edit',
+           uri: resource
+        }, function(data) {
+            // grab first object key
+            for (var subjectUri in data) {break;};
+            RDFauthor.setOptions({
+                defaultResource: subjectUri,
+                anchorElement: '.innercontent',
+                onSubmitSuccess: function () {
+                   // reload whole page
+                   window.location.href = window.location.href;
+                },
+                onCancel: function () {
+                   $('.edit').each(function() {
+                       $(this).fadeOut(effectTime);
+                   });
+                   $('.edit-enable').removeClass('active');
+                },
+                saveButtonTitle: 'Save Changes',
+                cancelButtonTitle: 'Cancel',
+                title: 'Edit Resource ' + resource
+                });
+
             RDFauthor.startTemplate(data);
         })
     });

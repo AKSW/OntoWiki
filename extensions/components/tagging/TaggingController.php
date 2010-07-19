@@ -510,7 +510,13 @@ class TaggingController extends OntoWiki_Controller_Component
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
 
-        $instances   = $this->session->instances;
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $instances = $listHelper->getLastList();
+
+        if(!($instances instanceof OntoWiki_Model_Instances)){
+            $this->_response->setBody("Error: List not found");
+            return;
+        }
 
         //set default cloudproperty
         if (!is_array($this->session->cloudproperties) || empty($this->session->cloudproperties)) {
@@ -520,7 +526,7 @@ class TaggingController extends OntoWiki_Controller_Component
         //find selected tags by looking into filters
         $selectedTags = array();
         $selectedTagsInverse = array();
-        $filters = $this->session->instances->getFilter();
+        $filters = $instances->getFilter();
 
         if (is_array($filters)) {
             foreach ($filters as $key => $filter) {

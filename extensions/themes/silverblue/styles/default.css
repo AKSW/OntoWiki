@@ -841,6 +841,11 @@ a.clickicon:focus img, a:focus img.clickicon, a.clickicon:hover img, a:hover img
     opacity: 1;
 }
 
+a.externalLink {
+    background: url(./../images/icon-ext-link.png) no-repeat scroll right center transparent;
+    padding: 10px 10px 0 0;
+}
+
 /* -- 2.6. Tables ----------------------------------------------------------- */
 
 table {

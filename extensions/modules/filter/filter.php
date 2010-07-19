@@ -16,7 +16,7 @@ require_once 'OntoWiki/Module.php';
  */
 class FilterModule extends OntoWiki_Module
 {
-    
+    protected $_instances = null;
     public function init()
     {
 
@@ -30,21 +30,27 @@ class FilterModule extends OntoWiki_Module
     
     public function getContents()
     {
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $this->_instances = $listHelper->getLastList();
+
+        if(!($this->_instances instanceof OntoWiki_Model_Instances)){
+            return "Error: List not found";
+        }
+
         $this->store = $this->_owApp->erfurt->getStore();
         $this->model = $this->_owApp->selectedModel;
-        $session  = $this->_owApp->session;
         $this->titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
 
         $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'resources/filter.css');
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/jquery.dump.js');
         
-        $this->view->properties = $session->instances->getAllProperties(false);
-        $this->view->inverseProperties = $session->instances->getAllProperties(true);
+        $this->view->properties = $this->_instances->getAllProperties(false);
+        $this->view->inverseProperties = $this->_instances->getAllProperties(true);
         
         $this->view->actionUrl      = $this->_config->staticUrlBase . 'index.php/list/';
         $this->view->s      = $this->_request->s;
         
-        $this->view->filter = $session->instances->getFilter();
+        $this->view->filter = $this->_instances->getFilter();
         if (is_array( $this->view->filter)) {
             foreach ( $this->view->filter as $key => $filter) {
                 switch($filter['mode']){

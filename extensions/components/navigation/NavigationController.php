@@ -14,6 +14,7 @@ require_once 'Erfurt/Sparql/Query2.php';
 class NavigationController extends OntoWiki_Controller_Component
 {
     private $store;
+    private $cache;
     private $translate;
     private $session;
     private $ac;
@@ -165,12 +166,54 @@ class NavigationController extends OntoWiki_Controller_Component
     }
 
     /*
+        foreach ($uris as $uri ) {
+                #takeTime("PointOfInterest ".$uri." received");
+                if (($pointOfInterest = $this->erfurt->objectCache->load( "poi_".(md5($uri)) ))) {
+                    $this->poiCollection[ $uri ] = $pointOfInterest;
+                } else {
+                    $this->erfurt->queryCache->startTransaction("poi_".(md5($uri)));
+
+                    $pointOfInterest = new Model_Resource_PointOfInterest( $uri ) ;
+                    $this->poiCollection[ $uri ] = $pointOfInterest;
+
+
+                    $this->erfurt->objectCache->save ($pointOfInterest, "poi_".(md5($uri))) ;
+                    $this->erfurt->queryCache->endTransaction("poi_".(md5($uri)));
+                }
+            }
+        }
+        return $this->poiCollection;
+     * $this->erfurt = Model_Backend_Erfurt::getInstance()->getStore()->getCache();
+     *
+     *
+     *
+     *
+     * $setup->state->lastEvent
+     *
+     */
+
+    /*
      * Queries all navigation entries according to a given setup
      */
     protected function _queryNavigationEntries($setup) {
+        $cache = $this->_owApp->erfurt->getCache(); // Object cache
+        $queryCache = $this->_owApp->erfurt->getQueryCache(); // query cache
+        
+        // set cache id
+        $cid = 'nav_'.md5(serialize($setup).$this->model);
+
         /*$this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Input: ' .PHP_EOL . print_r($setup,true)
         );*/
+
+        // try to load results from cache
+        if ( $entries_cached = $cache->load($cid) ) {
+            return $entries_cached;
+        }
+        
+        // start transaction
+        $queryCache->startTransaction($cid);
+
         // if user searched for something
         if( $setup->state->lastEvent == "search" ){
             // search request
@@ -381,6 +424,12 @@ class NavigationController extends OntoWiki_Controller_Component
 
         //$this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
 
+        // save results to cache
+        $cache->save($entries, $cid) ;
+
+        // end cache transaction
+        $queryCache->endTransaction($cid);
+
         return $entries;
     }
 
@@ -458,6 +507,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
     protected function _getTitle($uri, $mode, $setup){
         $name = '';
+        $this->titleHelper = new OntoWiki_Model_TitleHelper($this->model);
         // set default mode if none is set
         if (!isset($mode) || $mode == null) $mode = "baseName";
 
@@ -603,7 +653,6 @@ class NavigationController extends OntoWiki_Controller_Component
     protected function _buildSubCheckQuery($uri, $setup){
         $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        $classVar = new Erfurt_Sparql_Query2_Var('classUri');
         $query = new Erfurt_Sparql_Query2();
         $query->addProjectionVar($subVar);
         $query->setDistinct();
@@ -673,11 +722,6 @@ class NavigationController extends OntoWiki_Controller_Component
                 $elements[] = $queryOptional;
             }
         }
-        $elements[] = new Erfurt_Sparql_Query2_Triple(
-            $searchVar,
-            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
-            $classVar
-        );
         // add filter
         $elements[] = new Erfurt_Sparql_Query2_Filter(
             new Erfurt_Sparql_Query2_sameTerm($searchVar, new Erfurt_Sparql_Query2_IriRef($uri))

@@ -64,6 +64,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_values;
     protected $_valuesUptodate = false;
+
+    protected $_valueQueryUptodate = false;
     
     /**
      * all resources
@@ -99,11 +101,13 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_valueQuery = null;
     protected $_valueQueryResourceFilter = null;
-    
+
+    protected $_aboutHash;
+
     /**
      * Constructor
      */
-public function __construct (Erfurt_Store $store, $graph, $options = array())
+public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $options = array())
     {
         parent::__construct($store, $graph);
         
@@ -166,10 +170,26 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         foreach ($this as $key => $val) {
             if (is_object($val)||(is_array($val))) {
                 $this->{$key} = unserialize(serialize($val));
-                //$this->$key= clone($this->$key); 
+                //$this->$key= clone($this->$key);
             }
         }
     }
+    public function  __call($name,  $arguments) {
+        if(strpos("From", $name) > 0){
+            call_user_func(array($this->_valueQuery, $arguments));
+            call_user_func(array($this->_resourceQuery, $arguments));
+        }
+    }
+
+    public function setAboutHash($hash){
+        $this->_aboutHash = $hash;
+        return $this;
+    }
+
+    public function getAboutHash(){
+        return $this->_aboutHash;
+    }
+
 
    /**
     * add ?resourceUri ?p ?o to the query
@@ -188,7 +208,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      * @param $propertyName Name to be used for the variable
      * @return OntoWiki_Model_ResourceList
      */
-    public function addShownProperty ($propertyUri, $propertyName = null, $inverse = false, $datatype = null)
+    public function addShownProperty ($propertyUri, $propertyName = null, $inverse = false, $datatype = null, $hidden = false)
     {
         if (in_array($propertyUri, $this->_ignoredShownProperties)) {
             return $this; //no action
@@ -237,7 +257,8 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             'varName' => $ret['var']->getName(),
             'var' => $ret['var'],
             'optionalpart' => $ret['optional'],
-            'filter' => $ret['filter']
+            'filter' => $ret['filter'],
+            'hidden' => $hidden
         );
         $this->_valuesUptodate = false; // getValues will not use the cache next time
         $this->_resultsUptodate = false;
@@ -269,6 +290,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      */
     public function getResults ()
     {
+        $this->updateValueQuery();
         //echo htmlentities($this->_valueQuery);
         if (!$this->_resultsUptodate) {
             $this->_results = $this->_model->sparqlQuery(
@@ -566,7 +588,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
         $this->invalidate();
-        $this->updateValueQuery();
         return $id;
     }
 
@@ -613,6 +634,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      * @return int id
      */
     public function addTypeFilter($type, $id = null, $option = array()){
+        
         if($id == null){
             $id = "type" . count($this->_filter);
         } else {
@@ -699,6 +721,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         //print_r($this->_filter[$id]);
 
+        //these filters bring there own triple
+        $this->allTriple->remove($this->_resourceQuery);
+
         //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
         $this->invalidate();
         return $id;
@@ -748,6 +773,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         //print_r($this->_filter[$id]);
 
+        //these filters bring there own triple
+        $this->allTriple->remove($this->_resourceQuery);
+
         $this->invalidate();
         $this->searchText = $str;
 
@@ -781,6 +809,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         
         //these filters bring there own triple
         $this->allTriple->remove($this->_resourceQuery);
+        
 
         $this->invalidate();
         return $id;
@@ -895,14 +924,18 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
     {
         if ($this->_valuesUptodate) {
             return $this->_values;
-        } 
+        } else $this->updateValueQuery();
+        
         if (empty($this->_resources)) {
             return array();
         }
         //echo htmlentities($this->_valueQuery);
+
         $this->getResults();
 
+        //print_r($this->_results);
         $result = $this->_results['bindings'];
+        
         
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
 
@@ -937,7 +970,6 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
             $value = null;
             $link  = null;
-            $uri   = null;
 
             foreach ($row as $varName => $data) {
                 if (!isset($valueResults[$resourceUri][$varName])) {
@@ -984,29 +1016,29 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
                             $propertyUri = $property['uri'];
                         }
                     }
-                    
-                    // set up event
-                    $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
-                    $event->property = $propertyUri;
-                    $event->value    = $object;
-                    $event->setDefault($object);
 
-                    // trigger
                     if ($object !== null) {
+                        // set up event
+                        $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                        $event->property = $propertyUri;
+                        $event->value    = $object;
+                        $event->setDefault($object);
+
+                        // trigger
                         $value = $event->trigger();
                     }
-                    
                 }
                 
                 //check for dulplicate values
                 if(isset($valueResults[$resourceUri][$varName])){
                     foreach($valueResults[$resourceUri][$varName] as $old){
                         if($old['origvalue'] == $data['value'] && $old['type'] == $data['type']){
+                            $link = null;
                             continue 2; // dont add this value
                         }
                     }
                 }
-
+                
                 //add value
                 $valueResults[$resourceUri][$varName][] = array(
                   'value' => $value,
@@ -1018,14 +1050,13 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
                 $value = null;
                 $link  = null;
-                $uri   = null;
             }
         }
 
         foreach($this->getShownResources() as $resource){
-            if(!isset($valueResults[$resource])){
+            if(!isset($valueResults[$resource['value']])){
                 //there are no statements about this resource
-                $valueResults[$resource] = array();
+                $valueResults[$resource['value']] = array();
             }
         }
 
@@ -1035,40 +1066,53 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         return $valueResults;
     }
-    
-    public function getAllProperties ($inverse = false)
-    {
-        if(empty($this->_resources) && isset($_resourcesUptodate)){
-            return array();
-        }
-        //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
+
+    public function getAllPropertiesQuery($inverse = false){
         $query = clone $this->_resourceQuery;
         $query
             ->removeAllProjectionVars()
             ->setDistinct(true)
             ->setLimit(0)
             ->setOffset(0);
-
-        $predVar = new Erfurt_Sparql_Query2_Var('pred');
+        $vars = $query->getWhere()->getVars();
+        $resourceVar = $this->getResourceVar();
+        foreach($vars as $var){
+            if($var->getName() == $resourceVar->getName()){
+                $var->setName('listresource');
+            }
+        }
+        $listResource = new Erfurt_Sparql_Query2_Var('listresource');
+        $predVar = new Erfurt_Sparql_Query2_Var('resourceUri');
         if(!$inverse){
             $query->addTriple(
-                $this->_resourceVar,
+                $listResource,
                 $predVar,
-                new Erfurt_Sparql_Query2_Var('o')
+                new Erfurt_Sparql_Query2_Var('showPropsObj')
             );
         } else {
             $query->addTriple(
-                new Erfurt_Sparql_Query2_Var('o'),
+                new Erfurt_Sparql_Query2_Var('showPropsSubj'),
                 $predVar,
                 $this->_resourceVar
             );
         }
-        
+
         $query
             ->addProjectionVar($predVar)
             ->getOrder()
                 ->clear()
                 ->add($predVar);
+        return $query;
+    }
+
+    public function getAllProperties ($inverse = false)
+    {
+        if(empty($this->_resources) && $this->_resourcesUptodate){
+            return array();
+        }
+
+        //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
+        $query = $this->getAllPropertiesQuery($inverse);
 
         $results = $this->_model->sparqlQuery(
             $query,
@@ -1078,7 +1122,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
         $properties = array();
         foreach ($results['bindings'] as $row) {
-            $properties[] = array('uri' => $row['pred']['value']);
+            $properties[] = array('uri' => $row['resourceUri']['value']);
         }
 
         return $this->convertProperties($properties);
@@ -1231,13 +1275,18 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         
         // add titles
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-        $titleHelper->addResources($resources);
+        $uris = array();
+        foreach ($resources as $resource) {
+            $uris[] = $resource['value'];
+        }
+        $titleHelper->addResources($uris);
 
         $resourceResults = array();
 
-        foreach ($resources as $uri) {
+        foreach ($resources as $resource) {
+            $uri = $resource['value'];
             if (!array_key_exists($uri, $resourceResults)) {
-                $resourceResults[$uri] = array();
+                $resourceResults[$uri] = $resource;
             }
 
             // URL
@@ -1262,8 +1311,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
 
             $this->_resources = array();
             foreach ($result['bindings'] as $row) {
-                $uri = $row['resourceUri']['value'];
-                $this->_resources[] = $uri;
+                $this->_resources[] = $row['resourceUri'];
             }
             $this->_resourcesUptodate = true;
         } 
@@ -1371,6 +1419,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
         $this->_resultsUptodate = false;
         $this->_valuesUptodate = false;
         $this->_allPropertiesUptodate  = false;
+        $this->_valueQueryUptodate = false;
         return $this;
     }
 
@@ -1381,9 +1430,9 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
      */
     public function updateValueQuery ()
     {
-        if($this->_resourcesUptodate){
+        if($this->_valueQueryUptodate){
             return $this;
-        }
+        } 
         
         $resources = $this->getShownResources();
         //echo 'resources: <pre>'; print_r($resources); echo '</pre>';
@@ -1392,7 +1441,7 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             $resources[$key] =
                 new Erfurt_Sparql_Query2_SameTerm(
                     $this->_resourceVar,
-                    new Erfurt_Sparql_Query2_IriRef($resource)
+                    new Erfurt_Sparql_Query2_IriRef($resource['value'])
                 );
         }
 
@@ -1402,12 +1451,14 @@ public function __construct (Erfurt_Store $store, $graph, $options = array())
             );
             $this->_valueQuery->addElement($this->_valueQueryResourceFilter);
         }
-
+        
         $this->_valueQueryResourceFilter->setConstraint(
             empty($resources) ? 
                 new Erfurt_Sparql_Query2_BooleanLiteral(false) :
                 new Erfurt_Sparql_Query2_ConditionalOrExpression($resources)
         );
+
+        $this->_valueQueryUptodate = true;
 
         //echo 'updated value query: <pre>';
         //echo htmlentities($this->_valueQuery);

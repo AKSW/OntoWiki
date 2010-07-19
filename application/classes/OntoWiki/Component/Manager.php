@@ -38,6 +38,7 @@ class OntoWiki_Component_Manager
      * The component config file
      */
     const COMPONENT_CONFIG_FILE   = 'component.ini';
+    const COMPONENT_PRIVATE_CONFIG_FILE   = 'local.ini';
     
     /**
      * Component class name suffix
@@ -342,7 +343,7 @@ class OntoWiki_Component_Manager
     }
     
     /**
-     * Reads a components onfiguration and adds it to the internal registry.
+     * Reads a components configuration and adds it to the internal registry.
      *
      * @param string $componentName the component's (folder) name
      * @param string $componentPath the path to the component folder
@@ -350,28 +351,44 @@ class OntoWiki_Component_Manager
     private function _addComponent($componentName, $componentPath)
     {
         $tempArray = parse_ini_file($componentPath . self::COMPONENT_CONFIG_FILE);
+
+        // overwrites default config with local config
+        if (is_readable($componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE)) {
+            $tempArray = array_merge(
+                    $tempArray,
+                    parse_ini_file($componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE));
+        }
+
+        // check for an enabled component
         $enabled   = false;
-        
         // oldschool key
         if (array_key_exists('active', $tempArray) && (boolean)$tempArray['active']) {
             $enabled = true;
-        }
-        
+        }        
         // new activation key
         if (array_key_exists('enabled', $tempArray) && (boolean)$tempArray['enabled']) {
             $enabled = true;
         }
-        
         if (!$enabled) {
             return;
         }
-        
-        // load private config as Zend_Config
+
+        // load private config as Zend_Config from default ini file
         try {
             $tempArray[$this->_privateSection] = new Zend_Config_Ini(
                 $componentPath . self::COMPONENT_CONFIG_FILE, 
                 $this->_privateSection, 
                 true);
+
+            // overwrite with private config section from local config file
+            if (is_readable($componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE)) {
+                if(isset($tempArray[$this->_privateSection])){
+                    $tempArray[$this->_privateSection] = $tempArray[$this->_privateSection]->merge(new Zend_Config_Ini(
+                        $componentPath . self::COMPONENT_PRIVATE_CONFIG_FILE,
+                        $this->_privateSection,
+                        true));
+                }
+            }            
         } catch (Zend_Config_Exception $e) {
             // config error
         }

@@ -1,6 +1,0 @@
-enabled    = true
-title      = "Easy Inference"
-caching    = yes
-priority   = 30
-contexts[] = "main.window.properties"
-contexts[] = "main.window.modelinfo"

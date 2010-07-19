@@ -67,6 +67,12 @@ class OntoWiki_Url
         $defaultController = Zend_Controller_Front::getInstance()->getDefaultControllerName();
         $router            = Zend_Controller_Front::getInstance()->getRouter();
         
+        //use defaults - current page
+        if(!isset($options['route']) && !isset($options['controller']) && !isset($options['action'])){
+            $options['controller'] = $this->_request->getControllerName();
+            $options['action'] = $this->_request->getActionName();
+        }
+        
         // keep parameters
         if (!$this->_request) {
             $this->_params = array();
@@ -139,7 +145,12 @@ class OntoWiki_Url
      */
     public function __toString()
     {        
-        return $this->_buildQuery();
+        try{
+            return $this->_buildQuery();
+        } catch (Exception $e){
+            echo $e;
+            return "";
+        }
     }
     
     /**
@@ -280,7 +291,7 @@ class OntoWiki_Url
                 $query   = '';
                 $lastKey = '';
                 foreach ($this->_params as $key => $value) {
-                    if (is_string($value)) {
+                    if (is_scalar($value)) {
                         $value   = urlencode($value);
                         $query  .= "$key/$value/";
                         $lastKey = $key;

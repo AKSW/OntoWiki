@@ -156,7 +156,9 @@ class DllearnerController extends OntoWiki_Controller_Component {
                 $newDescription = preg_replace  ('/\)$/', '', $newDescription);
             }
             // ... and replacing URIs with links
-            foreach ($solution['usedURIs'] as $uri) {
+            foreach ($solution['signature'] as $uri) {
+                $uri = str_replace ( '<' , '' , $uri);
+                $uri = str_replace ( '>' , '' , $uri);
                 $uriLink = (string) $linkurl->setParam('r', $uri, true);
                 $uriTitle = $this->titleHelper->getTitle($uri);
                 $uriHtml = '<a about="'.$uri.'" href="'.$uriLink.'" class="Resource hasMenu">'.$uriTitle.'</a>';

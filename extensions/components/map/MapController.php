@@ -15,6 +15,7 @@ class MapController extends OntoWiki_Controller_Component
     private $model;
     private $resource;
     private $store;
+    private $listHelper = null;
 
     private $instances = null;
     private $resources = null;
@@ -91,7 +92,7 @@ class MapController extends OntoWiki_Controller_Component
     {
         require_once $this->_componentRoot . 'classes/Marker.php';
         require_once $this->_componentRoot . 'classes/Clusterer.php';
-        require_once $this->_componentRoot . 'classes/GeoCoder.php';
+//        require_once $this->_componentRoot . 'classes/GeoCoder.php';
         
         // tells the OntoWiki to not apply the template to this action
         $this->_helper->viewRenderer->setNoRender();
@@ -203,16 +204,25 @@ class MapController extends OntoWiki_Controller_Component
             $latVar         = new Erfurt_Sparql_Query2_Var('lat');
             $longVar        = new Erfurt_Sparql_Query2_Var('long');
 
-            //the future is now!
+            //the future was yesterday
             if($this->instances === null) {
-                $this->_owApp->logger->debug('MapComponent/_getResources: memory_get_usage: ' . memory_get_usage());
-                $this->_owApp->logger->debug('MapComponent/_getResources: clone this->_session->instances');
-                $this->_owApp->logger->debug('MapComponent/_getResources: this->_session->instances has a size of ' . strlen(serialize($this->_session->instances)));
-                if(strlen(serialize($this->_session->instances)) < 1024) {
-                    $this->_owApp->logger->debug('MapComponent/_getResources: ' . $this->_session->instances);
+
+                if ($this->listHelper == null) {
+                    // get listHelper
+                    $this->listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
                 }
-                $this->instances = clone $this->_session->instances;
-                $this->_owApp->logger->debug('MapComponent/_getResources: memory_get_usage: ' . memory_get_usage());
+                
+                $listName = "instances";
+                if($this->listHelper->listExists($listName)){
+                    $list = $this->listHelper->getList($listName);
+                    $this->_owApp->logger->debug('MapComponent/_getResources: clone "' . $listName . '"-list from listHelper');
+                    $this->instances = clone $list;
+                } else {
+                    //error
+                    $this->_owApp->logger->error('MapComponent/_getResources: list "' . $listName .'" doesn\'t exist in listHelper');
+                    //$this->instances = new QueryObject();
+                    $this->instances = null;
+                }
             } else {
                 $this->_owApp->logger->debug('MapComponent/_getResources: this->instances already set');
                 // don't load instances again
