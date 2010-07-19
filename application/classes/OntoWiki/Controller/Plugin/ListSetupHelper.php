@@ -234,7 +234,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             if(!$request->isXmlHttpRequest()){
                 //strip of url parameters that modify the list
                 $url = new OntoWiki_Url(array(), null, array('init', 'instancesconfig', 's', 'p', 'limit', 'class', 'list'));
-                
                 //redirect
                 header('Location: ' . $url);
                 exit;

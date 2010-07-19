@@ -33,7 +33,7 @@ $(document).ready(function() {
     // every click fadeout (and remove) all contextmenus
     // every click un-marks all marked elements
     $('html').click(function(){
-        $('.contextmenu-enhanced .contextmenu').fadeOut(effectTime, function(){ $(this).remove(); })
+        $('.contextmenu-enhanced .contextmenu').fadeOut(effectTime, function(){$(this).remove();})
         $('.marked').removeClass('marked');
     });
     
@@ -74,27 +74,67 @@ $(document).ready(function() {
     if (typeof sectionRatio != 'undefined') {
         setSectionRatio(sectionRatio);
     }
-    
+
     /* list selection */
-    $('.resource-list tr').live('click', function(e) {
+    $('table.resource-list > tbody > tr').live('click', function(e) {
+
+        var selectee     = $(this);
+        var selectionURI = $(this).children('td').children('a').attr('about');
+
+        // return if we have no URI (e.g. a Literal list)
+        if (typeof selectionURI == 'undefined') {
+            return false;
+        }
+
+        // return true if user clicked on a link (so the link is fired)
+        if ( $(e.target).is('a') ) {
+            return true;
+        }
+
+        // create array for all selected resources
         if (typeof OntoWiki.selectedResources == 'undefined') {
             OntoWiki.selectedResources = [];
         }
         
-        var selectee     = $(e.target).closest('tr');
-        var selectionURI = selectee.find('*[about]').eq(0).attr('about');
-        
-        if (!selectee.hasClass('list-selected')) {
-            // add resource
+        if (!selectee.hasClass('list-selected')) { // select a resource
+            // TODO: check for macos UI compability
+            if (e.ctrlKey) {
+                // ctrl+click for select multiple resources
+
+            } else if (e.shiftKey) {
+                // shift+click for select multiple resources in a range
+                // not implemented yet
+            } else {
+                // normal click on unselected means deselect all and select this one
+                // deselect all resources
+                $('.list-selected').removeClass('list-selected');
+                // purge the container array
+                OntoWiki.selectedResources = [];
+            }
+
+            // add this resource
             selectee.addClass('list-selected');
             OntoWiki.selectedResources.push(selectionURI);
             // event for most recent selection
             $('body').trigger('ontowiki.resource.selected', [selectionURI]);
-        } else {
-            // remove resource
-            selectee.removeClass('list-selected');
-            var pos = $.inArray(selectionURI, OntoWiki.selectedResources);
-            OntoWiki.selectedResources.splice(pos, 1);
+        } else { // deselect a resource
+            // TODO: check for macos UI compability
+            if (e.ctrlKey) {
+                // ctrl+click on selected means deselect this one
+                selectee.removeClass('list-selected');
+                var pos = $.inArray(selectionURI, OntoWiki.selectedResources);
+                OntoWiki.selectedResources.splice(pos, 1);
+            } else if (e.shiftKey) {
+                // shift+click for select multiple resources in a range
+                // not implemented yet
+            } else {
+                // normal click on selected means deselect all
+                // deselect all resources
+                $('.list-selected').removeClass('list-selected');
+                // purge the container array
+                OntoWiki.selectedResources = [];
+            }
+
             // event for most recent unselection
             $('body').trigger('ontowiki.resource.unselected', [selectionURI]);
         }

@@ -1,8 +1,0 @@
-;;
-; Static module configuration
-;;
-enabled    = yes
-caching    = yes
-title      = "DL-Learner"
-priority   = 50
-contexts[] = "main.sidewindows"

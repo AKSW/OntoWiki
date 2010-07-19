@@ -33,8 +33,8 @@ class HistoryController extends OntoWiki_Controller_Component
         }
 
         // getting page (from and for paging)
-        if (!empty($params['p']) && (int) $params['p'] > 0) {
-            $page = (int) $params['p'];
+        if (!empty($params['page']) && (int) $params['page'] > 0) {
+            $page = (int) $params['page'];
         } else {
             $page = 1;
         }
@@ -54,23 +54,29 @@ class HistoryController extends OntoWiki_Controller_Component
             $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
             $windowTitle = $translate->_('Versions for elements of the list');
 
-            $instances = $this->_session->instances;
-            if(!($instances instanceof OntoWiki_Model_Instances)){
-                throw new OntoWiki_Exception("Something went wrong with list creation. Probably your session timed out. <a href='".$this->_config->urlBase."'>Start again</a>");
-                exit;
+            $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+            $listName = "instances";
+            if($listHelper->listExists($listName)){
+                $list = $listHelper->getList($listName);
+            } else {
+                 $this->_owApp->appendMessage(
+                    new OntoWiki_Message('something went wrong with the list of instances you want to rdf-view', OntoWiki_Message::ERROR)
+            );
             }
 
-            $query = $instances->getResourceQuery();
+            $query = $list->getResourceQuery();
             $query->setLimit(0);
             $query->setOffset(0);
+            //echo htmlentities($query);
 
             $results = $model->sparqlQuery($query);
-            $resourceVar = $instances->getResourceVar()->getName();
+            $resourceVar = $list->getResourceVar()->getName();
 
             $resources = array();
             foreach ($results as $result) {
                 $resources[] = $result[$resourceVar];
             }
+            //var_dump($resources);
             
             $historyArray = $versioning->getHistoryForResourceList(
                 $resources,
@@ -150,6 +156,7 @@ class HistoryController extends OntoWiki_Controller_Component
         // paging
         
         $statusBar = $this->view->placeholder('main.window.statusbar');
+        OntoWiki_Pager::setOptions(array('page_param'=>'page')); // the normal page_param p collides with the generic-list param p
         $statusBar->append(OntoWiki_Pager::get($count,$limit));
 
         // setting view variables
@@ -163,7 +170,6 @@ class HistoryController extends OntoWiki_Controller_Component
         // $this->view->formName      = 'instancelist';
         $this->view->formName      = 'history-rollback';
         $this->view->formEncoding  = 'multipart/form-data';
-
     }
 
     /**
