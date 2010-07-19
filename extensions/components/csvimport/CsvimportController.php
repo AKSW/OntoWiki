@@ -353,8 +353,6 @@ class CsvimportController extends OntoWiki_Controller_Component
             }
         }
 
-        //echo "<pre>";
-
         foreach($data as $rowIndex => $row){
             // check for null data
             if(!isset($row) || $row == null) continue;
@@ -363,22 +361,18 @@ class CsvimportController extends OntoWiki_Controller_Component
             foreach($row as $colIndex => $cell){
                 // filter empty
                 if(strlen($cell) > 0){
-                    // create new item dimensions arr
-                    $itemDims = array();
-
                     // fill item dimensions from all dims
+                    $itemDims = array();
                     foreach($dims as $dim){
                         if(
                             $colIndex >= $dim['items']['start']['col'] && $colIndex <= $dim['items']['end']['col'] &&
                             $rowIndex >= $dim['items']['start']['row'] && $rowIndex <= $dim['items']['end']['row']
                         ){
                             if($dim['col'] == $colIndex || $dim['row'] == $rowIndex){
-                                $itemDims[$predicate] = array(
-                                        array(
+                                $itemDims[$predicate][] = array(
                                             'type' => 'uri',
                                             'value' => $dim['uri']
-                                            )
-                                    );
+                                            );
                             }
                         }
                     }
@@ -389,6 +383,7 @@ class CsvimportController extends OntoWiki_Controller_Component
                         $element = array();
 
                         $eurl = "http://example.com/item-c".$colIndex."-r".$rowIndex;
+
                         $element[$eurl] = array_merge(
                             $itemDims,
                             array(
