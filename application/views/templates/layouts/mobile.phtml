@@ -15,7 +15,7 @@
 
     <!-- jQTouch -->
     <script type="text/javascript" src="extensions/themes/mobile/jqtouch/jquery.1.3.2.min.js" charset="utf-8"></script>
-    <script type="application/x-javascript" src="extensions/themes/mobile/jqtouch/jqtouch.min.js" charset="utf-8"></script>
+    <script type="application/x-javascript" src="extensions/themes/mobile/jqtouch/jqtouch.js" charset="utf-8"></script>
 
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
@@ -27,7 +27,7 @@
 <body>
     <div id="home">
         <div class="toolbar">
-            <a href="#login" class="button leftButton flip">Login</a>
+            <!-- <a href="#innercontent" class="button leftButton flip">Login</a> -->
             <h1>OntoWiki Mobile</h1>
         </div>
         <?php echo $this->modules('main.mobile.baselist') ?>
@@ -44,7 +44,18 @@
             <a href="#nav" class="back">Back</a>
             <h1 id="list-title">title</h1>
         </div>
-        <?php echo $this->modules('main.mobile.list') ?>
+        <div id="navigation-content">
+            <?php echo $this->modules('main.mobile.list') ?>
+        </div>
+    </div>
+    <div id="instance-list">
+        <div class="toolbar">
+            <a href="#nav" class="back">Back</a>
+            <h1 id="instance-title">title</h1>
+        </div>
+        <div id="instance-content">
+            <!-- stuff here -->
+        </div>
     </div>
     <?php echo $this->inlineScript() ?>
 </body>

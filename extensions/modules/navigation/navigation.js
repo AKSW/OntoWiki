@@ -11,6 +11,8 @@
  * The main document.ready assignments and code
  */
 $(document).ready(function() {
+    navClickEvent = new $.Event("navigation.done");
+
     /* some used variables */
     navigationContainer = $('#navigation-content');
     navigationInput = $("#navigation-input");
@@ -338,6 +340,8 @@ function navigationPrepareToggles(){
     } else {
         $("a[href='javascript:navigationEvent(\'toggleImplicit')']").text("Show Implicit Elements");
     }
+
+    $(document).trigger(navClickEvent);
 }
 
 /*

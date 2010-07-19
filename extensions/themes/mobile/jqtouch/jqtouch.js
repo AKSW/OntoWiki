@@ -311,7 +311,7 @@
                 showPageByHref($el.attr('href'), {
                     animation: animation,
                     callback: function(){ 
-                        $el.removeClass('loading'); setTimeout($.fn.unselect, 250, $el);
+                        $el.removeClass('loading');setTimeout($.fn.unselect, 250, $el);
                     },
                     $referrer: $el
                 });
@@ -356,8 +356,8 @@
                     fromPage.removeClass('current');
                 }
 
-                toPage.trigger('pageAnimationEnd', { direction: 'in' });
-    	        fromPage.trigger('pageAnimationEnd', { direction: 'out' });
+                toPage.trigger('pageAnimationEnd', {direction: 'in'});
+    	        fromPage.trigger('pageAnimationEnd', {direction: 'out'});
                 
                 clearInterval(dumbLoop);
                 currentPage = toPage;
@@ -372,8 +372,8 @@
                 tapReady = true;
             }
 
-            fromPage.trigger('pageAnimationStart', { direction: 'out' });
-            toPage.trigger('pageAnimationStart', { direction: 'in' });
+            fromPage.trigger('pageAnimationStart', {direction: 'out'});
+            toPage.trigger('pageAnimationStart', {direction: 'in'});
 
             if ($.support.WebKitAnimationEvent && animation && jQTSettings.useAnimations) {
                 toPage.one('webkitAnimationEnd', callback);
