@@ -1,0 +1,50 @@
+@prefix : <http://lod2.eu/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sioc: <http://rdfs.org/sioc/ns#>.
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix lod2: <http://lod2.eu/schema/> .
+
+<http://lod2.eu/> a owl:Ontology;
+    owl:imports <http://lod2.eu/schema/>;
+    rdfs:label "LOD2 website data";
+    skos:note "This knowledge base consists of all resources which are part of the lod2.eu webpage.".
+
+<http://lod2.eu/ConceptScheme/Navigation> a skos:ConceptScheme; rdfs:label "Navigation".
+
+:Partner a skos:Concept, sioc:Post;
+    skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
+    rdfs:label "Partner".
+
+:AKSW a skos:Concept, foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "AKSW".
+
+:OpenLink a skos:Concept, foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "OpenLink Software Ltd.".
+
+:Stack a skos:Concept, sioc:Post;
+    skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
+    rdfs:label "Technology Stack".
+
+:Tool a skos:Concept, sioc:Post;
+    skos:broader :Stack;
+    rdfs:label "Tool".
+
+:Algorithms a skos:Concept, sioc:Post;
+    skos:broader :Stack;
+    rdfs:label "Algorithm".
+
+:OntoWiki a skos:Concept, doap:Project;
+    skos:broader :Tool;
+    doap:homepage <http://ontowiki.net>;
+    doap:description """...""";
+    lod2:feed <http://aksw.org/feed/>;
+    lod2:partner :AKSW;
+    rdfs:label "OntoWiki".
+

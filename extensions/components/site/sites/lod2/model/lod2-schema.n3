@@ -1,0 +1,23 @@
+@prefix : <http://lod2.eu/schema/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sioc: <http://rdfs.org/sioc/ns#>.
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix lod2: <http://lod2.eu/schema/> .
+
+<http://lod2.eu/schema/> a owl:Ontology;
+    owl:imports <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, <http://www.w3.org/2000/01/rdf-schema#>, <http://www.w3.org/2002/07/owl#>, <http://www.w3.org/2004/02/skos/core#>, <http://xmlns.com/foaf/0.1/>, <http://rdfs.org/sioc/ns#>, <http://usefulinc.com/ns/doap#>;
+    skos:note "This knowledge imports schema resources which are used by the LOD2 website.";
+    rdfs:label "LOD2 vocabulary".
+
+lod2:partner a owl:ObjectProperty;
+    skos:note "This property is used to link a resource to an associated LOD2 partner.";
+    rdfs:label "associated partner".
+
+lod2:feed a owl:ObjectProperty;
+    skos:note "This property is used to link a resource to a machine readable news feed.";
+    rdfs:label "associated rss/atom feed".
