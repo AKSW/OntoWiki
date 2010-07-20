@@ -384,7 +384,6 @@ class CsvimportController extends OntoWiki_Controller_Component
                         $element = array();
 
                         $eurl = $url_base."/".hash("md5", serialize($data))."/c".$colIndex."-r".$rowIndex;
-                        echo ($eurl);
 
                         $element[$eurl] = array_merge(
                             $itemDims,
@@ -409,7 +408,7 @@ class CsvimportController extends OntoWiki_Controller_Component
                         // write element
                         //var_dump($element);
                         //die;
-                        //$this->_owApp->selectedModel->addMultipleStatements($element);
+                        $this->_owApp->selectedModel->addMultipleStatements($element);
                     }
                 }
             }
