@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * OntoWiki window partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $Id: window.phtml 3690 2009-07-16 08:16:06Z pfrischmuth $
+ */
+
+?>
+<div class="module<?php echo ' ' . $this->cssClasses ?>"<?php echo ($this->cssId ? ' id="' . $this->cssId . '"' : '') ?>>
+        
+    <?php if (is_array($this->content)): ?>
+        <?php foreach ($this->content as $key => $value): ?>
+            <div class="content" id="<?php echo $key ?>">
+                <?php echo $value ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="content">
+            <?php echo $this->content ?>
+        </div><!-- .window .content -->
+    <?php endif; ?>
+    
+</div><!-- .module -->

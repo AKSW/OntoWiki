@@ -52,10 +52,12 @@ index.default.action = "lod2"</del>
         <pre>
 require_once ... normal
         </pre>
-    <li>Norm: Wie wird modul-content gerendert (eigener context)</li>
+    <li><del>Norm: Wie wird modul-content gerendert (eigener context)</del></li>
         <pre>
-            echo $this->module('ttt', array('noChrome' => true));<?php echo $this->module('ttt', array('noChrome' => true)) ?>
+echo $this->module('ttt', array('noChrome' => true)); // ein bestimtes Modul oder
+echo $this->modules('sites.lod2', array('noChrome' => true)); // alle Module für Context 'sites.lod2'
         </pre>
+        Beispiel: <?php echo $this->modules('sites.lod2', array('noChrome' => true)) ?>
         TODO: Was ist mit Titel, Menüs, Modulen mit Tabbed Content?
     <li><del>Jonas: Wie werden Bilder aus dem CSS referenziert</del></li>
         <pre>
