@@ -1,0 +1,41 @@
+<?php
+// vim: sw=4:sts=4:expandtab
+/**
+ * OntoWiki jberror module template
+ *
+ * @version $Id$
+ */
+
+?>
+<?php if ( isset($this->message) ): ?>
+	<p class="messagebox info"><?php echo $this->_($this->message); ?></p>
+<?php endif; ?>
+<h1>Jonas Error</h1>
+<?php
+
+/*        if($listHelper->listExists($listName)){
+            $list = $listHelper->getList($listName);
+//            $listHelper->addList($listName, $list, $this->view);
+            
+            $graph = $list->getGraph();
+            $store = $list->getStore();
+
+            $query = clone $list->getResourceQuery();
+
+            $where = 'WHERE ' . $query->getWhere();
+echo "
+<ul>
+<li>GraphURI: " . $graph->getModelIri() . "</li>
+<li>WHERE: " . $where . "</li>
+<li></li>
+</ul>
+";
+
+            $count = $store->countWhereMatches($graph->getModelIri(), $where, 'resourceUri', true);
+
+        } else {
+            echo "<p>Error, geht nicht, instances liste gibt es nicht.</p>";
+        }
+ */
+
+?>
