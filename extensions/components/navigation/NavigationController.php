@@ -260,9 +260,9 @@ class NavigationController extends OntoWiki_Controller_Component
         if($query == null) return;
         
         // error logging
-        /*$this->_owApp->logger->info(
+        $this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
-        );*/
+        );
 
         // get extended results
         $all_results = $this->model->sparqlQuery($query, array('result_format' => 'extended'));
