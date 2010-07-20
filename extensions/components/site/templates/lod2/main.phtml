@@ -30,18 +30,36 @@
 <p class="abstract" property="dc:abstract">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus faucibus ligula a nulla tincidunt hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nec dui eget odio venenatis pharetra nec ac erat. Proin ut libero ut diam condimentum pharetra id vel enim. Suspendisse fringilla ullamcorper nunc, id sollicitudin purus blandit et. Quisque pretium neque quis metus ultricies convallis. Donec a rutrum metus. Integer varius pharetra elit, ut tincidunt elit sodales non. Ut varius ante in libero imperdiet a euismod diam tincidunt. Fusce id ligula neque, vel sollicitudin leo. Proin semper lobortis diam, et facilisis tellus egestas in. Sed eu. </p>
 
 <ul>
-    <li>Linked Data URIs auf den site controller forwarden</li>
-    <li>Wie wird die Startseite erreichbar (also eigentlich das OW basedir)</li>
-    <li>Wie werden die Templates pro Klasse benutzt</li>
+    <li>Norm: Linked Data URIs auf den site controller forwarden?</li>
+    <li><del>Wie wird die Startseite erreichbar (also eigentlich das OW basedir)</del>
+        <pre>
+index.default.controller = "site"
+index.default.action = "lod2"
+        </pre>
+    </li>
+    <li>Seebi: private Config für site modell</li>
+    <li>Seebi: Wie werden die Templates pro Klasse benutzt</li>
     <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
-    <li>Wie wird der TitleHelper zur Verfügung gestellt</li>
-    <li>Wie wird der URI helper zur Verfügung gestellt</li>
-    <li>Selected model pro site aus privateConfig</li>
+    <li>Norm: CBD der selected resource?</li>
+    <li>Norm: titles über TitleHelper aller in der CBD enthaltenen ressource?</li>
     <li>Wie werden zusatz-libs (php) eingebunden (z.B. für feeds)</li>
-    <li>Wie wird modul-content gerendert (eigener context)</li>
-    <li>Wie werden Bilder aus dem CSS referenziert</li>
-    <li>Wie werden Dokumente (z.B. PDFs) benutzt (über files component)</li>
+        <pre>
+require_once ... normal
+        </pre>
+    <li>Norm: Wie wird modul-content gerendert (eigener context)</li>
+        <pre>
+kurzes beispiel bitte hier
+        </pre>
+    <li>Jonas: Wie werden Bilder aus dem CSS referenziert</li>
+        <pre>
+bitte testen
+        </pre>
     <li>...</li>
+</ul>
+
+<ul>Später:
+    <li>Wie wird der URI helper zur Verfügung gestellt</li>
+    <li>Wie werden Dokumente (z.B. PDFs) benutzt (über files component)</li>
 </ul>
 
 </body>
