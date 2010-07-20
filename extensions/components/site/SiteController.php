@@ -86,23 +86,24 @@ class SiteController extends OntoWiki_Controller_Component
      */
     public function __call($method, $args)
     {
-        $this->_site = str_replace  ( 'Action', '', $method);
+        $this->_site  = $this->_request->getActionName();
         $templatePath = $this->_owApp->componentManager->getComponentTemplatePath('site');
-        $mainTemplate = $this->_site.'/'.self::MAIN_TEMPLATE_NAME;
-        if ( is_readable ( $templatePath . $mainTemplate ) ) {
-
-            // TODO@Norm: Should we do something like this? (does it work and how?)
-            $this->addModuleContext('main.site.'.$this->_site);
-
-            // array or object?
-            $siteConfig = array();
-            $siteConfig['id'] = $this->_site;
-            $siteConfig['basepath'] = $templatePath . '/' . $this->_site . '/';
-            $siteConfig['baseuri'] = $this->_componentUrlBase . '/sites/'.  $this->_site . '/';
-
-            $siteConfig['resourceUri'] = $this->_resourceUri;
-            $this->view->siteConfig = $siteConfig;
-
+        $mainTemplate = sprintf('%s/%s', $this->_site, self::MAIN_TEMPLATE_NAME);
+        
+        if (is_readable($templatePath . $mainTemplate)) {
+            $moduleContext = 'site.' . $this->_site;
+            // $this->addModuleContext($moduleContext);
+            
+            $siteConfig = array(
+                'id'          => $this->_site, 
+                'basePath'    => sprintf('%s/sites/%s', $this->_componentRoot, $this->_site), 
+                'baseUri'     => sprintf('%s/sites/%s/', $this->_componentUrlBase, $this->_site), 
+                'resourceUri' => $this->_resourceUri, 
+                'context'     => $moduleContext
+            );
+            
+            // mit assign kann man im Template direkt zugreifen ($this->basePath).
+            $this->view->assign($siteConfig);
             $this->_response->setBody($this->view->render($mainTemplate));
         } else {
             $this->_response->setRawHeader('HTTP/1.0 404 Not Found');

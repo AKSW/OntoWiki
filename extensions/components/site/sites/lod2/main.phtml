@@ -6,14 +6,14 @@
     xmlns:foaf="http://xmlns.com/foaf/0.1/">
 <head>
     <style type="text/css" media="all">
-        @import "<?php echo $this->siteConfig['baseuri']?>css/main.css";
+        @import "<?php echo $this->baseUri ?>css/main.css";
     </style>
     <title>Towards a LOD2 site</title>
 </head>
 
 <body>
 <h1 property="dc:title">Towards a LOD2 site</h1>
-<h2><?php echo $this->siteConfig['resourceUri']?> (selected resource)</h2>
+<h2><?php echo $this->resourceUri ?> (selected resource)</h2>
 
 <p class="author" rel="dc:creator">
   <span about="http://sebastian.tramp.name" typeof="foaf:Person">
@@ -31,14 +31,14 @@
 
 <ul>
     <li><del>Norm: Linked Data URIs auf den site controller forwarden?</del></li>
-        SiteHelper reagiert auf event <code>onShouldLinkedDataRedirect</code>, setzt neuen
+        SiteHelper reagiert auf Event <code>onShouldLinkedDataRedirect</code>, setzt neuen
          Controller/Action und gibt <code>false</code> (= should not redirect) zurück.
     <li><del>Wie wird die Startseite erreichbar (also eigentlich das OW basedir)</del>
         <pre>
 <del>index.default.controller = "site"
 index.default.action = "lod2"</del>
         </pre>
-        SiteHelper reagier auf event <code>onPostBootstrap</code> und injiziert SiteController und aktuell aktive
+        SiteHelper reagiert auf Event <code>onPostBootstrap</code> und injiziert SiteController und aktuell aktive
         Site als Standard-Route in den Router.
     </li>
     <li>Seebi: Test Modell</li>
@@ -54,8 +54,9 @@ require_once ... normal
         </pre>
     <li>Norm: Wie wird modul-content gerendert (eigener context)</li>
         <pre>
-kurzes beispiel bitte hier
+            echo $this->module('ttt', array('noChrome' => true));<?php echo $this->module('ttt', array('noChrome' => true)) ?>
         </pre>
+        TODO: Was ist mit Titel, Menüs, Modulen mit Tabbed Content?
     <li><del>Jonas: Wie werden Bilder aus dem CSS referenziert</del></li>
         <pre>
 bitte testen
