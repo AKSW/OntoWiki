@@ -98,7 +98,7 @@ class SiteController extends OntoWiki_Controller_Component
             $siteConfig = array();
             $siteConfig['id'] = $this->_site;
             $siteConfig['basepath'] = $templatePath . '/' . $this->_site . '/';
-            $siteConfig['baseuri'] = $this->_componentUrlBase . '/templates/'.  $this->_site . '/';
+            $siteConfig['baseuri'] = $this->_componentUrlBase . '/sites/'.  $this->_site . '/';
 
             $siteConfig['resourceUri'] = $this->_resourceUri;
             $this->view->siteConfig = $siteConfig;
