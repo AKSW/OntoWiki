@@ -293,8 +293,12 @@ class OntoWiki_Component_Manager
             foreach ($this->_helpers as $componentName => &$helper) {
                 // only if helper has not been previously loaded
                 if (!array_key_exists('instance', $helper)) {             
-                    $helper['instance'] = $this->_loadHelper($componentName);
+                    $helperInstance = $this->_loadHelper($componentName);
+                } else {
+                    $helperInstance = $this->_helpers[$componentName]['instance'];
                 }
+                
+                $helperInstance->init();
             }
             
             $this->_helpersCalled = true;
@@ -325,6 +329,8 @@ class OntoWiki_Component_Manager
                 $dispatcher->register($currentEvent, $helperInstance);
             }
         }
+        
+        $this->_helpers[$componentName]['instance'] = $helperInstance;
         
         return $helperInstance;
     }
@@ -433,6 +439,11 @@ class OntoWiki_Component_Manager
             
             // keep for later
             $this->_helpers[$componentName] = $helperSpec;
+            
+            // event helpers need to be called early
+            if (!empty($this->_helpers[$componentName]['events'])) {
+                $this->_loadHelper($componentName);
+            }
         }
         
         $action = null;

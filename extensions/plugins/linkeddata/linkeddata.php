@@ -107,18 +107,25 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $request->setDispatched(true);
             
             // give plugins a chance to do something
-            $event = new Erfurt_Event('beforeLinkedDataRedirect');
+            $event = new Erfurt_Event('onBeforeLinkedDataRedirect');
             $event->response = $response;
             $event->trigger();
             
-            // set redirect and send immediately
-            $response->setRedirect((string)$url, 303)
-                     ->sendResponse();
+            // give plugins a chance to handle redirection self
+            $event = new Erfurt_Event('onShouldLinkedDataRedirect');
+            $event->request  = $request;
+            $event->response = $response;
+            $event->setDefault(true);
             
-            // TODO: do it the official Zend way
-            exit;
+            $shouldRedirect = $event->trigger();
+            if ($shouldRedirect) {
+                // set redirect and send immediately
+                $response->setRedirect((string)$url, 303)
+                         ->sendResponse();
+                exit;
+            }
             
-            return false;
+            return !$shouldRedirect; // will default to false
         } catch (Erfurt_Exception $e) {
             // don't handle errors since other plug-ins 
             // could chain this event

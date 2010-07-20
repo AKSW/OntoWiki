@@ -55,7 +55,7 @@ class OntoWiki_Component_Helper
         $this->_privateConfig    = $this->_componentManager->getComponentPrivateConfig($componentName);
         
         // custom initialisation
-        $this->init();
+        // $this->init();
     }
     
     /**
@@ -65,7 +65,8 @@ class OntoWiki_Component_Helper
     {
     }
 
-    public function getPrivateConfig(){
+    public function getPrivateConfig()
+    {
         return $this->_privateConfig;
     }
 }

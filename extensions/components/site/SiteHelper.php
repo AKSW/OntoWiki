@@ -23,4 +23,22 @@ class SiteHelper extends OntoWiki_Component_Helper
     {
         // TODO: do some zend magic so that lod resources can be forwarded to site/xxx
     }
+    
+    public function onPostBootstrap($event)
+    {
+        $router = $event->bootstrap->getResource('Router');
+        if ($router->hasRoute('empty')) {
+            $emptyRoute = new Zend_Controller_Router_Route('', array('controller' => 'site', 'action' => 'lod2'));
+            $router->addRoute('empty', $emptyRoute);
+        }
+    }
+    
+    // http://localhost/OntoWiki/SiteTest/
+    public function onShouldLinkedDataRedirect($event)
+    {
+        $event->request->setControllerName('site');
+        $event->request->setActionName('lod2');
+        $event->request->setDispatched(false);
+        return false;
+    }
 }
