@@ -35,6 +35,7 @@ class CsvParser
         //preventing some limitations
         ini_set("max_execution_time","600");
         ini_set("memory_limit","1536M");
+        ini_set("auto_detect_line_endings",TRUE);
 
         //initialising some class attributes
         $this->csvMap = array();
