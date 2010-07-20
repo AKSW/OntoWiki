@@ -263,10 +263,10 @@ class CsvimportController extends OntoWiki_Controller_Component
         $elements = array();
 
         // relations
-        $type = 'http://www.w3.org/2000/01/rdf-schema#type';
-        $subClassOf = 'http://www.w3.org/2000/01/rdf-schema#subClassOf';
-        $scvDimension = 'http://purl.org/NET/scovo#Dimension';
-        $title = 'http://purl.org/dc/elements/1.1/title';
+        $type = $this->_privateConfig->class->type;//'http://www.w3.org/2000/01/rdf-schema#type';
+        $subClassOf = $this->_privateConfig->class->subClassOf;//'http://www.w3.org/2000/01/rdf-schema#subClassOf';
+        $scvDimension = $this->_privateConfig->scovo->dimension;//'http://purl.org/NET/scovo#Dimension';
+        $title = $this->_privateConfig->item->title; //'http://purl.org/dc/elements/1.1/title';
         
         foreach ($dimensions as $url => $dim) {
             $element = array();
@@ -337,10 +337,11 @@ class CsvimportController extends OntoWiki_Controller_Component
         $dimensions = $store->dimensions;
         $dims = array();
 
-        $predicate = 'http://purl.org/NET/scovo#dimension';
-        $value = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value';
-        $scovoItem = 'http://purl.org/NET/scovo#Item';
-        $type = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+        $predicate = $this->_privateConfig->scovo->hasDimension;//'http://purl.org/NET/scovo#dimension';
+        $value = $this->_privateConfig->class->value; //'http://www.w3.org/1999/02/22-rdf-syntax-ns#value';
+        $scovoItem = $this->_privateConfig->scovo->item; // 'http://purl.org/NET/scovo#Item';
+        $type = $this->_privateConfig->item->type; //'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+        $url_base = $this->_privateConfig->item->base;//"http://example.com/item";
 
         foreach($dimensions as $url => $dim){
             foreach($dim['elements'] as $eurl => $elem){
@@ -382,7 +383,8 @@ class CsvimportController extends OntoWiki_Controller_Component
                         //print_r($itemDims);
                         $element = array();
 
-                        $eurl = "http://example.com/item-c".$colIndex."-r".$rowIndex;
+                        $eurl = $url_base."/".hash("md5", serialize($data))."/c".$colIndex."-r".$rowIndex;
+                        echo ($eurl);
 
                         $element[$eurl] = array_merge(
                             $itemDims,
@@ -407,7 +409,7 @@ class CsvimportController extends OntoWiki_Controller_Component
                         // write element
                         //var_dump($element);
                         //die;
-                        $this->_owApp->selectedModel->addMultipleStatements($element);
+                        //$this->_owApp->selectedModel->addMultipleStatements($element);
                     }
                 }
             }
