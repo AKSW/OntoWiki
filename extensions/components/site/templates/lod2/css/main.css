@@ -1,0 +1,7 @@
+* { line-height: 1.2em; }
+h1 { font-family: Georgia, serif; font-size: 250%; text-align: center; }
+h2 { font-family: Georgia, serif; font-size: 80%; text-align: center; }
+li { margin: 1em 0; }
+body { margin: 4em auto; width: 40em; background: url('layout-background-stripes.png')}
+.author { margin: 3em; text-align: center; }
+.abstract { border-bottom: 1px solid #888; border-top: 1px solid #888; margin: 1em 2em 2em; padding: 1em 0; text-align: justify; }

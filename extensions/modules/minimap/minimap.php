@@ -20,16 +20,16 @@ class MinimapModule extends OntoWiki_Module
 
     public function getContents()
     {        
-        if(isset($this->_owApp->session->instances)) {
+//        if(isset($this->_owApp->session->instances)) {
             if($this->_request->getControllerName() == 'resource' && $this->_request->getActionName() == 'properties') {
                 $this->view->context = 'single_instance';
             }
             return $this->render('minimap');
-        } else {
-            $this->view->message = 'No Instances object in session.';
-            $this->_owApp->logger->debug('minimap: error: this->_session->instances is not set!');
-            return $this->render('error');
-        } 
+//        } else {
+//            $this->view->message = 'No Instances object in session.';
+//            $this->_owApp->logger->debug('minimap: error: this->_session->instances is not set!');
+//            return $this->render('error');
+//        } 
     }
 
     public function shouldShow()
