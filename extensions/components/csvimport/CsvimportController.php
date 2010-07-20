@@ -267,6 +267,7 @@ class CsvimportController extends OntoWiki_Controller_Component
         $subClassOf = $this->_privateConfig->class->subClassOf;//'http://www.w3.org/2000/01/rdf-schema#subClassOf';
         $scvDimension = $this->_privateConfig->scovo->dimension;//'http://purl.org/NET/scovo#Dimension';
         $title = $this->_privateConfig->item->title; //'http://purl.org/dc/elements/1.1/title';
+        $class = $this->_privateConfig->class->rdf;
         
         foreach ($dimensions as $url => $dim) {
             $element = array();
@@ -277,6 +278,17 @@ class CsvimportController extends OntoWiki_Controller_Component
                     array(
                         'type' => 'uri',
                         'value' => $scvDimension
+                        )
+                    )
+                );
+            $elements[] = $element;
+
+            // type
+            $element[$url] = array(
+                $type => array(
+                    array(
+                        'type' => 'uri',
+                        'value' => $class
                         )
                     )
                 );
