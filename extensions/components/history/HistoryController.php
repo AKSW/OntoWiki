@@ -60,7 +60,7 @@ class HistoryController extends OntoWiki_Controller_Component
                 $list = $listHelper->getList($listName);
             } else {
                  $this->_owApp->appendMessage(
-                    new OntoWiki_Message('something went wrong with the list of instances you want to rdf-view', OntoWiki_Message::ERROR)
+                    new OntoWiki_Message('something went wrong with the list of instances', OntoWiki_Message::ERROR)
             );
             }
 
