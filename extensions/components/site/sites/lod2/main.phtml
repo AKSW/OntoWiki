@@ -19,10 +19,10 @@
   <span about="http://sebastian.tramp.name" typeof="foaf:Person">
     <span property="foaf:name">Sebastian Tramp</span> ● AKSW<br />
   </span>
-  <span typeof="foaf:Person">
+  <span about="http://feedface.de/foaf/me" typeof="foaf:Person">
     <span property="foaf:name">Norman Heino</span> ● AKSW<br />
   </span>
-  <span typeof="foaf:Person">
+  <span about="http://www.3feed.de/rdf/foaf.rdf/me" typeof="foaf:Person">
     <span property="foaf:name">Jonas Brekle</span> ● AKSW<br />
   </span>
 </p>
@@ -42,7 +42,12 @@ index.default.action = "lod2"</del>
         Site als Standard-Route in den Router.
     </li>
     <li><del>Seebi: Test Modell</del></li>
-    <li>Seebi: private Config für site modell</li>
+    <li><del>Jonas: private Config für site modell</del>
+test private config:<?php
+foreach($this->privateConfig as $key => $value){
+    echo " ".$key."=".$value;
+}
+?></li>
     <li>Seebi: Wie werden die Templates pro Klasse benutzt</li>
     <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
     <li>Norm: CBD + titles der selected resource über ressource klasse</li>

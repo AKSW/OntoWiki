@@ -95,13 +95,21 @@ class SiteController extends OntoWiki_Controller_Component
             // $this->addModuleContext($moduleContext);
             
             $siteConfig = array(
-                'id'          => $this->_site, 
-                'basePath'    => sprintf('%s/sites/%s', $this->_componentRoot, $this->_site), 
-                'baseUri'     => sprintf('%s/sites/%s/', $this->_componentUrlBase, $this->_site), 
-                'resourceUri' => $this->_resourceUri, 
-                'context'     => $moduleContext
+                'id'          => $this->_site,
+                'basePath'    => sprintf('%s/sites/%s', $this->_componentRoot, $this->_site),
+                'baseUri'     => sprintf('%s/sites/%s/', $this->_componentUrlBase, $this->_site),
+                'resourceUri' => $this->_resourceUri,
+                'context'     => $moduleContext,
+                'privateConfig' => array()
             );
-            
+            $configFileName = $this->_componentRoot.'/sites/'.$this->_site.'/config.ini';
+            if(is_readable($configFileName)){
+                $ini =  parse_ini_file($configFileName, true);
+                if(is_array($ini)){
+                    $siteConfig['privateConfig'] = $ini;
+                } 
+            } 
+
             // mit assign kann man im Template direkt zugreifen ($this->basePath).
             $this->view->assign($siteConfig);
             $this->_response->setBody($this->view->render($mainTemplate));
