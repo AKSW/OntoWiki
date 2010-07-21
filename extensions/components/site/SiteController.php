@@ -72,10 +72,11 @@ class SiteController extends OntoWiki_Controller_Component
 
         // r is automatically used and selected
         if ((!isset($this->_request->r)) && (!$this->_owApp->selectedResource)) {
-            throw new OntoWiki_Exception('No resource pre-selected model and missing parameter r (resource)!');
+            throw new OntoWiki_Exception('No resource pre-selected resource and missing parameter r (resource)!');
             exit;
         } else {
             $this->_resource = $this->_owApp->selectedResource;
+
             $this->_resourceUri = (string) $this->_owApp->selectedResource;
         }
 
@@ -108,7 +109,10 @@ class SiteController extends OntoWiki_Controller_Component
                 if(is_array($ini)){
                     $siteConfig['privateConfig'] = $ini;
                 } 
-            } 
+            }
+
+            $navigation = $this->getSiteModelAsArray();
+            $siteConfig['navi'] = $navigation;
 
             // mit assign kann man im Template direkt zugreifen ($this->basePath).
             $this->view->assign($siteConfig);
@@ -117,5 +121,33 @@ class SiteController extends OntoWiki_Controller_Component
             $this->_response->setRawHeader('HTTP/1.0 404 Not Found');
             $this->_response->setBody($this->view->render('404.phtml'));
         }
+    }
+    protected function getSiteModelAsArray(){
+        $store    = OntoWiki::getInstance()->erfurt->getStore();
+        $model = $this->_owApp->selectedModel;
+        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            SELECT ?topconcept FROM <'.(string)$model.'> WHERE {
+            ?cs a skos:ConceptScheme .
+            ?topconcept skos:topConceptOf ?cs}';
+        $res = $store->sparqlQuery($query);
+        if(isset($res[0])){
+            $topconcept = $res[0]['topconcept'];
+        }
+        $closure = $store->getTransitiveClosure((string)$model, 'http://www.w3.org/2004/02/skos/core#broader', $topconcept, true);
+        $tree = array($topconcept=>array());
+
+        function buildTree(&$tree, $closure){
+            foreach($tree as $treeElement => &$childrenArr){
+                foreach($closure as $closureElement){
+                    if($closureElement['parent'] == $treeElement){
+                        $childrenArr[$closureElement['node']] = array();
+                    }
+                }
+                buildTree($childrenArr,$closure);
+            }
+        }
+        buildTree($tree,$closure);
+        $tree['root']=$topconcept;
+        return $tree;
     }
 }
