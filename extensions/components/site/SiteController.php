@@ -24,6 +24,11 @@ class SiteController extends OntoWiki_Controller_Component
      * The main template filename
      */
     const MAIN_TEMPLATE_NAME = 'main.phtml';
+    
+    /**
+     * Name of per-site config file
+     */
+    const SITE_CONFIG_FILENAME = 'config.ini';
 
     /**
      * The model URI of the selected model or the uri which is given
@@ -49,10 +54,16 @@ class SiteController extends OntoWiki_Controller_Component
 
     /**
      * The site id which is part of the request URI as well as the template structure
-     *      *
+     *
      * @var string|null
      */
     private $_site = null;
+    
+    /**
+     * Site config for the current site.
+     * @var array
+     */
+    protected $_siteConfig = null;
 
 
 	public function init()
@@ -72,53 +83,23 @@ class SiteController extends OntoWiki_Controller_Component
         $mainTemplate = sprintf('%s/%s', $this->_site, self::MAIN_TEMPLATE_NAME);
         
         if (is_readable($templatePath . $mainTemplate)) {
-            
             $moduleContext = 'site.' . $this->_site;
             // $this->addModuleContext($moduleContext);
-
+            
+            $this->_loadModel();
+            $this->_loadResource();
+            
             $siteConfig = array(
                 'id'          => $this->_site,
                 'basePath'    => sprintf('%s/sites/%s', $this->_componentRoot, $this->_site),
                 'baseUri'     => sprintf('%s/sites/%s/', $this->_componentUrlBase, $this->_site),
+                'resourceUri' => $this->_resourceUri,
                 'context'     => $moduleContext,
-                'privateConfig' => array()
+                'site'        => $this->_getSiteConfig(), 
+                'navigation'  => $this->_getSiteNavigationAsArray(), 
+                'description' => $this->_resource->getDescription(), 
+                'descriptionHelper' => $this->_resource->getDescriptionHelper(),
             );
-
-            // load the site config
-            $configFileName = $this->_componentRoot.'/sites/'.$this->_site.'/config.ini';
-            if(is_readable($configFileName)){
-                $ini =  parse_ini_file($configFileName, true);
-                if(is_array($ini)){
-                    $siteConfig['privateConfig'] = $ini;
-                }
-            }
-
-            // m is automatically used and selected
-            if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
-                if (!Zend_Uri::check($siteConfig['privateConfig']['model'])) {
-                    throw new OntoWiki_Exception('No model pre-selected model, no parameter m (model) and no configured site model!');
-                } else {
-                    // setup the model
-                    $this->_modelUri = $siteConfig['privateConfig']['model'];
-                    $store = OntoWiki::getInstance()->erfurt->getStore();
-                    $this->_model = $store->getModel($this->_modelUri);
-                    OntoWiki::getInstance()->selectedModel = $this->_model;
-                }
-            } else {
-                $this->_model = $this->_owApp->selectedModel;
-                $this->_modelUri = (string) $this->_owApp->selectedModel;
-            }
-
-            // r is automatically used and selected, if not then we use the model uri as starting point
-            if ((!isset($this->_request->r)) && (!$this->_owApp->selectedResource)) {
-                OntoWiki::getInstance()->selectedResource = $this->_model->getResource($this->_modelUri);
-            }
-            $this->_resource = $this->_owApp->selectedResource;
-            $this->_resourceUri = (string) $this->_owApp->selectedResource;
-            $siteConfig['resourceUri']  = $this->_resourceUri;
-            
-            $navigation = $this->getSiteNavigationAsArray();
-            $siteConfig['navi'] = $navigation;
 
             // mit assign kann man im Template direkt zugreifen ($this->basePath).
             $this->view->assign($siteConfig);
@@ -128,34 +109,98 @@ class SiteController extends OntoWiki_Controller_Component
             $this->_response->setBody($this->view->render('404.phtml'));
         }
     }
-
     
-    protected function getSiteNavigationAsArray(){
-        $store = OntoWiki::getInstance()->erfurt->getStore();
-        $model = $this->_owApp->selectedModel;
-        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-            SELECT ?topconcept FROM <'.(string)$model.'> WHERE {
-            ?cs a skos:ConceptScheme .
-            ?topconcept skos:topConceptOf ?cs}';
-        $res = $store->sparqlQuery($query);
-        if(isset($res[0])){
-            $topconcept = $res[0]['topconcept'];
+    protected function _loadModel()
+    {
+        $siteConfig = $this->_getSiteConfig();
+        
+        // m is automatically used and selected
+        if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
+            // TODO: what if no site model configured?
+            if (!Zend_Uri::check($siteConfig['site']['model'])) {
+                throw new OntoWiki_Exception('No model pre-selected model, no parameter m (model) and no configured site model!');
+            } else {
+                // setup the model
+                $this->_modelUri = $siteConfig['site']['model'];
+                $store = OntoWiki::getInstance()->erfurt->getStore();
+                $this->_model = $store->getModel($this->_modelUri);
+                OntoWiki::getInstance()->selectedModel = $this->_model;
+            }
+        } else {
+            $this->_model = $this->_owApp->selectedModel;
+            $this->_modelUri = (string) $this->_owApp->selectedModel;
         }
-        $closure = $store->getTransitiveClosure((string)$model, 'http://www.w3.org/2004/02/skos/core#broader', $topconcept, true);
-        $tree = array($topconcept=>array());
-
-        function buildTree(&$tree, $closure){
-            foreach($tree as $treeElement => &$childrenArr){
-                foreach($closure as $closureElement){
-                    if($closureElement['parent'] == $treeElement){
-                        $childrenArr[$closureElement['node']] = array();
-                    }
+    }
+    
+    protected function _loadResource()
+    {
+        // r is automatically used and selected, if not then we use the model uri as starting point
+        if ((!isset($this->_request->r)) && (!$this->_owApp->selectedResource)) {
+            OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($this->_modelUri, $this->_model);
+        }
+        $this->_resource = $this->_owApp->selectedResource;
+        $this->_resourceUri = (string) $this->_owApp->selectedResource;
+    }
+    
+    protected function _getSiteConfig()
+    {
+        if (null === $this->_siteConfig) {
+            $this->_siteConfig = array();
+            
+            // load the site config
+            $configFilePath = sprintf('%s/sites/%s/%s', $this->_componentRoot, $this->_site, self::SITE_CONFIG_FILENAME);
+            if (is_readable($configFilePath)) {
+                if ($config = parse_ini_file($configFilePath, true)) {
+                    $this->_siteConfig = $config;
                 }
-                buildTree($childrenArr,$closure);
             }
         }
-        buildTree($tree,$closure);
-        $tree['root']=$topconcept;
-        return $tree;
+        
+        return $this->_siteConfig;
+    }
+    
+    protected function _getSiteNavigationAsArray()
+    {
+        $store = OntoWiki::getInstance()->erfurt->getStore();
+        $model = $this->_owApp->selectedModel;
+        
+        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            SELECT ?topConcept 
+            FROM <' . (string)$model . '> 
+            WHERE {
+                ?cs a skos:ConceptScheme .
+                ?topConcept skos:topConceptOf ?cs
+            }';
+        
+        if ($result = $store->sparqlQuery($query)) {
+            $first = $current($result);
+            $topConcept = $first['topConcept'];
+            $closure = $store->getTransitiveClosure(
+                (string)$model, 
+                'http://www.w3.org/2004/02/skos/core#broader', 
+                $topConcept, 
+                true);
+            $tree = array(
+                'root' => $topConcept, 
+                $topConcept => _buildTree($tree, $closure)
+            );
+            
+            return $tree;
+        }
+        
+        return array();
+    }
+    
+    protected function _buildTree(&$tree, $closure)
+    {
+        foreach ($tree as $treeElement => &$childrenArr) {
+            foreach ($closure as $closureElement) {
+                if ($closureElement['parent'] == $treeElement) {
+                    $childrenArr[$closureElement['node']] = array();
+                }
+            }
+
+            buildTree($childrenArr, $closure);
+        }
     }
 }
