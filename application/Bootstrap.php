@@ -597,6 +597,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
              ->setEncoding($config->encoding)
              ->setHelperPath(ONTOWIKI_ROOT . 'application/classes/OntoWiki/View/Helper', 'OntoWiki_View_Helper');
         
+        
+        
         // set Zend_View to emit notices in debug mode
         $view->strictVars(defined('_OWDEBUG'));
         

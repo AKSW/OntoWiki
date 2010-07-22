@@ -35,10 +35,11 @@
 class OntoWiki_Component_Manager
 {
     /**
-     * The component config file
+     * The component config files.
+     * Values in private override values in config.
      */
-    const COMPONENT_CONFIG_FILE   = 'component.ini';
-    const COMPONENT_PRIVATE_CONFIG_FILE   = 'local.ini';
+    const COMPONENT_CONFIG_FILE = 'component.ini';
+    const COMPONENT_PRIVATE_CONFIG_FILE = 'local.ini';
     
     /**
      * Component class name suffix
@@ -95,7 +96,8 @@ class OntoWiki_Component_Manager
      */
     private $_pathKeys = array(
         'templates', 
-        'languages'
+        'languages', 
+        'helpers'
     );
     
     /** 
@@ -208,6 +210,28 @@ class OntoWiki_Component_Manager
     public function getComponentPrefix()
     {
         return $this->_componentPrefix;
+    }
+    
+    /**
+     * Returns the helper path for a given component.
+     *
+     * @param  string $componentName
+     * @return string
+     */
+    public function getComponentHelperPath($componentName)
+    {
+        if (!$this->isComponentRegistered($componentName)) {
+            throw new OntoWiki_Component_Exception("Component with key '$componentName' not registered");
+        }
+        
+        if (array_key_exists('helpers', $this->_componentRegistry[$componentName])) {
+            $path = $this->_componentPath 
+                  . $componentName 
+                  . DIRECTORY_SEPARATOR 
+                  . $this->_componentRegistry[$componentName]['helpers'];
+            
+            return $path;
+        }
     }
     
     /**
@@ -476,7 +500,7 @@ class OntoWiki_Component_Manager
     {
 
         // check for valid translation object
-        if ( is_object($this->_translate) ) {
+        if (is_object($this->_translate) ) {
             foreach ($this->_componentRegistry as $component => $settings) {
                 // check if component owns translation
                 if (
@@ -496,7 +520,5 @@ class OntoWiki_Component_Manager
                 }
             }
         }
-    
     }
 }
-

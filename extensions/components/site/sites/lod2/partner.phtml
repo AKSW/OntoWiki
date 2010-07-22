@@ -1,0 +1,7 @@
+<p class="partner">
+    <ul>Properties of <?php echo $this->partner['name'] ?>:
+    <?php foreach ($this->description as $property => $propertyDescription): ?>
+        <li><?php echo $this->helper->getTitle($property) ?></li>
+    <?php endforeach; ?>
+    </ul>
+</p>
