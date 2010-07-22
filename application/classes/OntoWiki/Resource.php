@@ -26,6 +26,12 @@ class OntoWiki_Resource extends Erfurt_Rdfs_Resource
     protected $_title = null;
     
     /**
+     * Title helper for CBD resources.
+     * @var OntoWiki_Model_TitleHelper
+     */
+    protected $_descriptionHelper = null;
+    
+    /**
      * Constructor
      */
     public function __construct($uri, $graph)
@@ -50,7 +56,20 @@ class OntoWiki_Resource extends Erfurt_Rdfs_Resource
         
         return $this->_title;
     }
+    
+    public function getDescriptionHelper()
+    {
+        $this->_descriptionResource($this->getUri());
+        
+        return $this->_descriptionHelper;
+    }
+    
+    protected function _descriptionResource($uri)
+    {
+        if (null === $this->_descriptionHelper) {
+            $this->_descriptionHelper = new OntoWiki_Model_TitleHelper($this->_model);
+        }
+        
+        $this->_descriptionHelper->addResource($uri);
+    }
 }
-
-
-
