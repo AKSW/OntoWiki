@@ -20,7 +20,7 @@
     <span property="foaf:name">Sebastian Tramp</span> ● AKSW<br />
   </span>
   <span about="http://feedface.de/foaf/me" typeof="foaf:Person">
-    <span property="foaf:name">Norman Heino</span> ● AKSW<br />
+    <span property="foaf:name">Norman Heino</span> • AKSW<br />
   </span>
   <span about="http://www.3feed.de/rdf/foaf.rdf/me" typeof="foaf:Person">
     <span property="foaf:name">Jonas Brekle</span> ● AKSW<br />
@@ -42,18 +42,25 @@ index.default.action = "lod2"</del>
         Site als Standard-Route in den Router.
     </li>
     <li><del>Seebi: Test Modell</del></li>
-    <li><del>Jonas: private Config für site modell</del>
-test private config:<?php
-foreach($this->privateConfig as $key => $value){
-    echo " ".$key."=".$value;
-}
-?></li>
+    <li><del>Jonas: site config für Site-Modell</del>
+        Test Site config:
+        <ul>
+        <?php foreach ($this->site as $key => $value): ?>
+            <li><?php echo sprintf('%s = %s', $key, $value) ?></li>
+        <?php endforeach; ?>
+        </ul>
+    </li>
     <li><del>Seebi: site config key model=xxx wird jetzt default-selected</del></li>
     <li>Seebi: Wie werden die Templates pro Klasse benutzt</li>
     <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
     <li>Norm: CBD + titles der selected resource über ressource klasse</li>
+    CBD for current resource:
+    <?php var_dump($this->description) ?>
+    TODO: how to include titles? 1) not use RDF/PHP 2) ???
     <li>Norm: SPARQL API Methode + Listen methode?</li>
-    <li>Norm: titles über TitleHelper aller in der CBD enthaltenen ressource?</li>
+    <li><del>Norm: titles über TitleHelper aller in der CBD enthaltenen ressource?</del></li>
+    <pre><code><?php echo $this->escape('<?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?>')?></code></pre>
+    Beispiel (Code s.&thinsp;o.): <?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?>
     <li>Wie werden zusatz-libs (php) eingebunden (z.B. für feeds)</li>
         <pre>
 require_once ... normal
@@ -77,7 +84,7 @@ bitte testen
     <li>Wie werden Dokumente (z.B. PDFs) benutzt (über files component)</li>
 </ul>
 
-Navigation: <pre><?php var_dump($this->navi); ?></pre>
+Navigation: <pre><?php var_dump($this->navigation); ?></pre>
 
 </body>
 </html>
