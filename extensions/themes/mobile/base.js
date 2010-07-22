@@ -5,34 +5,40 @@
 
 var jQT = new $.jQTouch();
 
-var loader_img = "extensions/themes/mobile/image/spinner.gif";
-var loader_src = '<small id="loader"><img src="'+loader_img+'"></small>';
+var loader_src = '<img id="loader" src="extensions/themes/mobile/image/spinner.gif">'; // <small id="loader"></small>
+var loader_small_src = '<small id="loader"><img src="extensions/themes/mobile/image/spinner.gif"></small>';
+var selected_model = '';
 
 //$("#navigation").bind('pageAnimationEnd', function(e, info){
 //   getBase(e);
 //});
 
 function getBase(element){
-    // select base
-    var url = 'http://localhost/ontowiki/model/select/?m=' + $(element).attr('about');
-    var title = $(element).text();
-    $(element).append(loader_src);
+    if( selected_model != $(element).attr('about') ){
+        // select base
+        selected_model = $(element).attr('about');
+        var url = 'http://localhost/ontowiki/model/select/?m=' + $(element).attr('about');
+        var title = $(element).text();
+        $(element).append(loader_small_src);
 
-    $.get(url, function(){
-        $('#nav-title').text(title);
-        navigationEvent('reset');
+        $.get(url, function(){
+            $('#nav-title').text(title);
+            navigationEvent('reset');
 
-        $(document).bind("navigation.done", function(e, status){
-            $("#loader").remove();
-            $(document).unbind(e);
-            
-            jQT.goTo("#nav", "slide");
-        });
-    })
+            $(document).bind("navigation.done", function(e, status){
+                $("#loader").remove();
+                $(document).unbind(e);
+
+                jQT.goTo("#nav", "slide");
+            });
+        })
+    }else{
+        jQT.goTo("#nav", "slide");
+    }
 }
 
 function onNavigationEntryClick(entry){
-    $(entry).append(loader_src);
+    $(entry).append(loader_small_src);
 
     if($(entry).parent().attr('class') == "arrow"){
         $(document).bind("navigation.done", function(e, status){
@@ -54,4 +60,8 @@ function onNavigationEntryClick(entry){
         })
         //"http://localhost/ontowiki/model/select/?m=http%3A%2F%2Flocalhost%2Fontowiki%2Fclasstree";
     }
+}
+
+function addLoader(entry){
+    $(entry).html(loader_src);
 }

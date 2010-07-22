@@ -91,6 +91,9 @@ class NavigationModule extends OntoWiki_Module
      * Returns the content
      */
     public function getContents() {
+        // get request
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+
         // scripts and css only if module is visible
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'navigation.js');
         $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'navigation.css');
@@ -129,13 +132,15 @@ class NavigationModule extends OntoWiki_Module
         }
         
         // init view from scratch
-        $this->view->inlineScript()->prependScript(
-            '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
-        );
+        if(!$request->isMobile()){
+            $this->view->inlineScript()->prependScript(
+                '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
+            );
+        }
 
         $data['session'] = $this->session->navigation;
 
-        $request = Zend_Controller_Front::getInstance()->getRequest();
+        
         if($request->isMobile()){
             $content = $this->render('navigation_mobile', $data, 'data'); //
         }else{

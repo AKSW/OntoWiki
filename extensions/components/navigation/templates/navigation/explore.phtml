@@ -11,15 +11,15 @@ $odd = true;
             <?php if (isset($this->rootEntry)):?>
                 <ul class="individual">
                     <li>
-                        <a class="navFirst icon icon-arrow-first" title="Go to root level">Root</a>
+                        <a class="navFirst icon icon-arrow-first" onclick="addLoader(this);" title="Go to root level">Root</a>
                     </li>
                     <li>
-                        <a class="navBack icon icon-arrow-previous" title="Go to previous level">Back</a>
+                        <a class="navBack icon icon-arrow-previous" onclick="addLoader(this);" title="Go to previous level">Back</a>
                     </li>
                 </ul>
                 <ul class="plastic">
                     <li>
-                        <a class="hasMenu" href="<?php echo $this->rootEntry['url'] ?>" about="<?php echo $this->rootEntry['uri'] ?>">
+                        <a class="hasMenu" about="<?php echo $this->rootEntry['uri'] ?>">
                             <?php echo $this->rootEntry['title'] ?>
                         </a>
                     </li>
