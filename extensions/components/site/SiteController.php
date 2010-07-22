@@ -99,6 +99,7 @@ class SiteController extends OntoWiki_Controller_Component
                 'navigation'  => $this->_getSiteNavigationAsArray(), 
                 'description' => $this->_resource->getDescription(), 
                 'descriptionHelper' => $this->_resource->getDescriptionHelper(),
+                'store'       => OntoWiki::getInstance()->erfurt->getStore()
             );
 
             // mit assign kann man im Template direkt zugreifen ($this->basePath).
@@ -173,17 +174,17 @@ class SiteController extends OntoWiki_Controller_Component
             }';
         
         if ($result = $store->sparqlQuery($query)) {
-            $first = $current($result);
+            $first = current($result);
             $topConcept = $first['topConcept'];
             $closure = $store->getTransitiveClosure(
                 (string)$model, 
                 'http://www.w3.org/2004/02/skos/core#broader', 
                 $topConcept, 
                 true);
-            $tree = array(
-                'root' => $topConcept, 
-                $topConcept => _buildTree($tree, $closure)
-            );
+            $tree = array($topConcept => array());
+                
+            $this->_buildTree($tree, $closure);
+            $tree['root'] = $topConcept; 
             
             return $tree;
         }
@@ -200,7 +201,7 @@ class SiteController extends OntoWiki_Controller_Component
                 }
             }
 
-            buildTree($childrenArr, $closure);
+            $this->_buildTree($childrenArr, $closure);
         }
     }
 }
