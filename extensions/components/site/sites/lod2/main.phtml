@@ -41,7 +41,7 @@
 ) ?>
 
 <ul>
-    <li>Norm: ViewHelper Directory für components</li>
+    <li><del>Norm: ViewHelper Directory für components</del></li>
     <li><del>Norm: Linked Data URIs auf den site controller forwarden?</del></li>
         SiteHelper reagiert auf Event <code>onShouldLinkedDataRedirect</code>, setzt neuen
          Controller/Action und gibt <code>false</code> (= should not redirect) zurück.
@@ -63,7 +63,11 @@ index.default.action = "lod2"</del>
         </ul>
     </li>
     <li><del>Seebi: site config key model=xxx wird jetzt default-selected</del></li>
-    <li>Seebi: Wie werden die Templates pro Klasse benutzt</li>
+    <li>Seebi: Wie werden die Templates pro Klasse benutzt
+        <ul>
+            <li>Idee: templateHelper bekommt beliebige URI und lädt ein passendes Template. Das kann im einfachsten Fall ein hartgecodetes Mapping der <code>rdf:type</code>s sein.</li>
+        </ul>
+    </li>
     <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
     <li><del>Norm: CBD + titles der selected resource über ressource klasse</del></li>
     CBD for current resource:
