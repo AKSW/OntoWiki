@@ -29,6 +29,17 @@
 
 <p class="abstract" property="dc:abstract">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus faucibus ligula a nulla tincidunt hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nec dui eget odio venenatis pharetra nec ac erat. Proin ut libero ut diam condimentum pharetra id vel enim. Suspendisse fringilla ullamcorper nunc, id sollicitudin purus blandit et. Quisque pretium neque quis metus ultricies convallis. Donec a rutrum metus. Integer varius pharetra elit, ut tincidunt elit sodales non. Ut varius ante in libero imperdiet a euismod diam tincidunt. Fusce id ligula neque, vel sollicitudin leo. Proin semper lobortis diam, et facilisis tellus egestas in. Sed eu. </p>
 
+<?php echo $this->partial(
+    'lod2/partner.phtml', /* template file (relative to component template folder) */
+    array(
+        'partner' => array(
+            'name' => $this->descriptionHelper->getTitle($this->resourceUri), 
+            'uri' => $this->resourceUri), 
+        'description' => $this->description[$this->resourceUri], 
+        'helper' => $this->descriptionHelper
+    ) /* template parameters  */
+) ?>
+
 <ul>
     <li>Norm: ViewHelper Directory für components</li>
     <li><del>Norm: Linked Data URIs auf den site controller forwarden?</del></li>
