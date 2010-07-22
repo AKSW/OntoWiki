@@ -118,11 +118,11 @@ class SiteController extends OntoWiki_Controller_Component
         // m is automatically used and selected
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
             // TODO: what if no site model configured?
-            if (!Zend_Uri::check($siteConfig['site']['model'])) {
+            if (!Zend_Uri::check($siteConfig['model'])) {
                 throw new OntoWiki_Exception('No model pre-selected model, no parameter m (model) and no configured site model!');
             } else {
                 // setup the model
-                $this->_modelUri = $siteConfig['site']['model'];
+                $this->_modelUri = $siteConfig['model'];
                 $store = OntoWiki::getInstance()->erfurt->getStore();
                 $this->_model = $store->getModel($this->_modelUri);
                 OntoWiki::getInstance()->selectedModel = $this->_model;
@@ -181,12 +181,11 @@ class SiteController extends OntoWiki_Controller_Component
                 'http://www.w3.org/2004/02/skos/core#broader', 
                 $topConcept, 
                 true);
-            $tree = array($topConcept => array());
-                
-            $this->_buildTree($tree, $closure);
-            $tree['root'] = $topConcept; 
             
-            return $tree;
+            $tree = array($topConcept => array());
+            $this->_buildTree($tree, $closure);                
+            
+            return array_merge(array('root' => $topConcept), $tree);
         }
         
         return array();
@@ -196,7 +195,7 @@ class SiteController extends OntoWiki_Controller_Component
     {
         foreach ($tree as $treeElement => &$childrenArr) {
             foreach ($closure as $closureElement) {
-                if ($closureElement['parent'] == $treeElement) {
+                if (isset($closureElement['parent']) && $closureElement['parent'] == $treeElement) {
                     $childrenArr[$closureElement['node']] = array();
                 }
             }
