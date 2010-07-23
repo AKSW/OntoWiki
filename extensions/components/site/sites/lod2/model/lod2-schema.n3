@@ -4,6 +4,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix sioc: <http://rdfs.org/sioc/ns#>.
+@prefix sioct: <http://rdfs.org/sioc/types#>.
 @prefix doap: <http://usefulinc.com/ns/doap#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -17,7 +18,3 @@
 lod2:partner a owl:ObjectProperty;
     skos:note "This property is used to link a resource to an associated LOD2 partner.";
     rdfs:label "associated partner".
-
-lod2:feed a owl:ObjectProperty;
-    skos:note "This property is used to link a resource to a machine readable news feed.";
-    rdfs:label "associated rss/atom feed".

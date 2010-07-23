@@ -1,0 +1,31 @@
+<?php
+if (
+    ( isset($this->description['http://rdfs.org/sioc/ns#feed'][0]['value']) ) &&
+    ( Erfurt_Uri::check($this->description['http://rdfs.org/sioc/ns#feed'][0]['value'])) ) :
+
+$feed = Zend_Feed_Reader::import($this->description['http://rdfs.org/sioc/ns#feed'][0]['value']);
+?>
+
+<div class="box">
+    <h2>News</h2>
+    <div class="block">
+        <div class="block" id="accordion">
+            <div id="accordion">
+            <?php $entrycount = 0; foreach ($feed as $entry) : ?>
+                <div class="article <?php if ($entrycount == 0) echo 'first' ?>">
+                    <h3 class="toggler atStart"><?php echo $entry->getTitle() ?></h3>
+                    <div class="element atStart">
+                        <p class="meta">
+                            <?php echo $entry->getDateModified() ?> |                            
+                            <?php $authors = $entry->getAuthors(); echo $authors[0] ?> |
+                            <a href="<?php echo $entry->getLink() ?>">permalink</a>
+                        </p>
+                        <p><?php echo $entry->getDescription() ?></p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

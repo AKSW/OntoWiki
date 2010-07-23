@@ -5,102 +5,182 @@
     xmlns:dc="http://purl.org/dc/terms/"
     xmlns:foaf="http://xmlns.com/foaf/0.1/">
 <head>
-    <style type="text/css" media="all">
-        @import "<?php echo $this->baseUri ?>css/main.css";
-    </style>
-    <title>Towards a LOD2 site</title>
+    <meta name="generator" content="<?php echo $this->generator ?>" />
+    <link rel="alternate" type="application/rdf+xml" href="<?php echo $this->resourceUri ?>.rdf" />
+    <link rel="pingback" href="<?php echo $this->pingbackUri ?>" />
+
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/main.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/reset.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/text.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/grid.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/layout.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/nav.css" media="screen" />
+    <!--[if IE 6]><link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/ie6.css" media="screen" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/ie.css" media="screen" /><![endif]-->
+    <script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery-fluid16.js"></script>
+    <title><?php echo $this->site['name'] ?></title>
 </head>
+</body>
+<?php
+    // this is the standard template data
+    $templateData = array(
+                    'title' => $this->descriptionHelper->getTitle($this->resourceUri),
+                    'uri' => $this->resourceUri,
+                    'description' => $this->description[$this->resourceUri],
+                    'helper' => $this->descriptionHelper
+            );
+?>
+<div class="container_16">
+    <div class="grid_16">
+        <h1 id="branding">
+            <a href="<?php echo $this->site['index'] ?>"><?php echo $this->site['name'] ?></a>
+        </h1>
+    </div>
+    <div class="clear"></div>
+    <div class="grid_16">
+        <ul class="nav main">
+            <?php foreach ($this->navigation as $navurl => $subnavi) : ?>
+            <li>
+                <a href="<?php echo $navurl ?>"><?php echo $this->descriptionHelper->getTitle($navurl) ?></a>
+                <?php if ( (is_array($subnavi)) ):?>
+                <ul>
+                    <?php foreach ($subnavi as $subnavurl => $subsubnavi) : ?>
+                    <li>
+                        <a href="<?php echo $subnavurl ?>"><?php echo $this->descriptionHelper->getTitle($subnavurl) ?></a>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+                <?php endif; ?>
+            </li>
+            <?php endforeach; ?>
 
-<body>
-<h1 property="dc:title">Towards a LOD2 site</h1>
-<h2><?php echo $this->resourceUri ?> (selected resource)</h2>
-
-<p class="author" rel="dc:creator">
-  <span about="http://sebastian.tramp.name" typeof="foaf:Person">
-    <span property="foaf:name">Sebastian Tramp</span> ● AKSW<br />
-  </span>
-  <span about="http://feedface.de/foaf/me" typeof="foaf:Person">
-    <span property="foaf:name">Norman Heino</span> • AKSW<br />
-  </span>
-  <span about="http://www.3feed.de/rdf/foaf.rdf/me" typeof="foaf:Person">
-    <span property="foaf:name">Jonas Brekle</span> ● AKSW<br />
-  </span>
-</p>
-
-<p class="abstract" property="dc:abstract">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus faucibus ligula a nulla tincidunt hendrerit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas nec dui eget odio venenatis pharetra nec ac erat. Proin ut libero ut diam condimentum pharetra id vel enim. Suspendisse fringilla ullamcorper nunc, id sollicitudin purus blandit et. Quisque pretium neque quis metus ultricies convallis. Donec a rutrum metus. Integer varius pharetra elit, ut tincidunt elit sodales non. Ut varius ante in libero imperdiet a euismod diam tincidunt. Fusce id ligula neque, vel sollicitudin leo. Proin semper lobortis diam, et facilisis tellus egestas in. Sed eu. </p>
-
-<?php echo $this->partial(
-    'lod2/partner.phtml', /* template file (relative to component template folder) */
-    array(
-        'partner' => array(
-            'name' => $this->descriptionHelper->getTitle($this->resourceUri), 
-            'uri' => $this->resourceUri), 
-        'description' => $this->description[$this->resourceUri], 
-        'helper' => $this->descriptionHelper
-    ) /* template parameters  */
-) ?>
-
-<ul>
-    <li><del>Norm: ViewHelper Directory für components</del></li>
-    <li><del>Norm: Linked Data URIs auf den site controller forwarden?</del></li>
-        SiteHelper reagiert auf Event <code>onShouldLinkedDataRedirect</code>, setzt neuen
-         Controller/Action und gibt <code>false</code> (= should not redirect) zurück.
-    <li><del>Wie wird die Startseite erreichbar (also eigentlich das OW basedir)</del>
-        <pre>
-<del>index.default.controller = "site"
-index.default.action = "lod2"</del>
-        </pre>
-        SiteHelper reagiert auf Event <code>onPostBootstrap</code> und injiziert SiteController und aktuell aktive
-        Site als Standard-Route in den Router.
-    </li>
-    <li><del>Seebi: Test Modell</del></li>
-    <li><del>Jonas: site config für Site-Modell</del>
-        Test Site config:
-        <ul>
-        <?php foreach ($this->site as $key => $value): ?>
-            <li><?php echo sprintf('%s = %s', $key, $value) ?></li>
-        <?php endforeach; ?>
+            <li class="secondary">
+                <a href="<?php echo $this->wikiBaseUri ?>/index">OntoWiki</a>
+                <ul>
+                    <li><a href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo $this->resourceUri ?>">View / Edit</a></li>
+                    <li><a href="<?php echo $this->wikiBaseUri ?>source/edit?r=<?php echo $this->resourceUri ?>">Source</a></li>
+                </ul>
+            </li>
         </ul>
-    </li>
-    <li><del>Seebi: site config key model=xxx wird jetzt default-selected</del></li>
-    <li>Seebi: Wie werden die Templates pro Klasse benutzt
+
+    </div>
+    <div class="clear"></div>
+    <div class="grid_16">
+        <h2 id="page-heading"></h2>
+    </div>
+
+
+    <div class="grid_11">
+        <?php echo $this->partial( 'lod2/partner.phtml', $templateData) ?>
+
+        <?php echo $this->partial('lod2/feed.phtml', $templateData) ?>
+
+        <div class="box">
+            <h2 id="">TODOs :-(</h2>
         <ul>
-            <li>Idee: templateHelper bekommt beliebige URI und lädt ein passendes Template. Das kann im einfachsten Fall ein hartgecodetes Mapping der <code>rdf:type</code>s sein.</li>
+            <li>Wie wird denn die index-page config umgesetzt? (also link von / auf /index....)
+            <li>Jonas: getNavigation(string $uriOfSKOSContainer) bitte als ViewHelper und in main.html nutzen (bitte nach sysont:order sortieren)</li>
+            <li>Norm: Kann man den modulen den options-array durchreichen? (z.B. um resource uris als links zu nehmen)</li>
+            <li>Norm: linked data scheint nicht mehr zu gehen</li>
+            <li>Norm: /Stack scheint manchmal "Stack" und manchmal "Technology Stack" zu heissen ...</li>
+            <li>Wie werden die Templates pro Klasse benutzt
+                <ul>
+                    <li>Idee: templateHelper bekommt beliebige URI und lädt ein passendes Template. Das kann im einfachsten Fall ein hartgecodetes Mapping der <code>rdf:type</code>s sein.</li>
+                </ul>
+            </li>
+            <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
+            <li>Norm: SPARQL API Methode + Listen methode?</li>
         </ul>
-    </li>
-    <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
-    <li><del>Norm: CBD + titles der selected resource über ressource klasse</del></li>
-    CBD for current resource:
-    <?php var_dump($this->description) ?>
-    TODO: how to include titles? 1) not use RDF/PHP 2) ???
-    <li>Norm: SPARQL API Methode + Listen methode?</li>
-    <li><del>Norm: titles über TitleHelper aller in der CBD enthaltenen ressource?</del></li>
-    <pre><code><?php echo $this->escape('<?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?>')?></code></pre>
-    Beispiel (Code s.&thinsp;o.): <?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?>
-    <li>Wie werden zusatz-libs (php) eingebunden (z.B. für feeds)</li>
-        <pre>
-require_once ... normal
-        </pre>
-    <li><del>Norm: Wie wird modul-content gerendert (eigener context)</del></li>
-        <pre>
-echo $this->module('ttt', array('noChrome' => true)); // ein bestimtes Modul oder
-echo $this->modules('sites.lod2', array('noChrome' => true)); // alle Module für Context 'sites.lod2'
-        </pre>
-        Beispiel: <?php echo $this->modules('sites.lod2', array('noChrome' => true)) ?>
-        TODO: Was ist mit Titel, Menüs, Modulen mit Tabbed Content?
-    <li><del>Jonas: Wie werden Bilder aus dem CSS referenziert</del></li>
-        <pre>
-bitte testen
-        </pre>
-    <li>...</li>
-</ul>
 
-<ul>Später:
-    <li>Wie wird der URI helper zur Verfügung gestellt</li>
-    <li>Wie werden Dokumente (z.B. PDFs) benutzt (über files component)</li>
-</ul>
+        <ul>Später:
+            <li>Wie wird der URI helper zur Verfügung gestellt</li>
+            <li>Wie werden Dokumente (z.B. PDFs) benutzt (über files component)</li>
+        </ul>
 
-Navigation: <pre><?php var_dump($this->navigation); ?></pre>
+        </div>
+
+        <div class="box " style="padding:0;">
+            <h2 style="margin:0">
+                <a href="#" id="toggle-grid">DONE :-)</a>
+            </h2>
+        </div>
+        <div id="grid" class="box">
+            <ul>
+                <li>Norm: ViewHelper Directory für components</li>
+                <li>Norm: Linked Data URIs auf den site controller forwarden?</li>
+                    SiteHelper reagiert auf Event <code>onShouldLinkedDataRedirect</code>, setzt neuen
+                     Controller/Action und gibt <code>false</code> (= should not redirect) zurück.
+                <li>Wie wird die Startseite erreichbar (also eigentlich das OW basedir)
+                    <pre>
+            index.default.controller = "site"
+            index.default.action = "lod2"
+                    </pre>
+                    SiteHelper reagiert auf Event <code>onPostBootstrap</code> und injiziert SiteController und aktuell aktive
+                    Site als Standard-Route in den Router.
+                </li>
+                <li>Seebi: Test Modell</li>
+                <li>Jonas: site config für Site-Modell
+                    Test Site config:
+                    <ul>
+                    <?php foreach ($this->site as $key => $value): ?>
+                        <li><?php echo sprintf('%s = %s', $key, $value) ?></li>
+                    <?php endforeach; ?>
+                    </ul>
+                </li>
+                <li>Seebi: site config key model=xxx wird jetzt default-selected</li>
+                <li>Norm: CBD + titles der selected resource über ressource klasse</li>
+                CBD for current resource:
+                <?php var_dump($this->description) ?>
+                TODO: how to include titles? 1) not use RDF/PHP 2) ???
+                <li>Norm: titles über TitleHelper aller in der CBD enthaltenen ressource?</li>
+                <pre><code><?php echo $this->escape('<?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?>')?></code></pre>
+                Beispiel (Code s.&thinsp;o.): <?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?>
+                <li>Norm: Wie wird modul-content gerendert (eigener context)</li>
+                    <pre>
+            echo $this->module('ttt', array('noChrome' => true)); // ein bestimtes Modul oder
+            echo $this->modules('sites.lod2', array('noChrome' => true)); // alle Module für Context 'sites.lod2'
+                    </pre>
+                    Beispiel: <?php echo $this->modules('sites.lod2', array('noChrome' => true)) ?>
+                    TODO: Was ist mit Titel, Menüs, Modulen mit Tabbed Content?
+                <li>Jonas: Wie werden Bilder aus dem CSS referenziert</li>
+                    <pre>
+            bitte testen
+                    </pre>
+            </ul>
+        </div>
+
+    </div>
+
+
+    <div class="grid_5">
+        <div class="box">
+            <h2>Linking Resources</h2>
+            <?php echo $this->module('linkinghere', array('noChrome' => true)); ?>
+        </div>
+        <div class="box">
+            <h2>Nearby</h2>
+            <?php echo $this->module('similarinstances', array('noChrome' => true)); ?>
+        </div>
+        <div class="box">
+            <h2>Last Changes</h2>
+            <?php echo $this->module('lastchanges', array('noChrome' => true)); ?>
+        </div>
+    </div>
+
+
+    <div class="grid_16" id="site_info">
+        <div class="box">
+            <p>This page is proudly powered by
+                <a href="http://ontowiki.net" title="OntoWiki is a Semantic Data Wiki enabling the collaborative creation and (linked data) publication of RDF knowledge bases."><?php echo $this->generator ?></a>,
+                <a href="http://www.designinfluences.com/fluid960gs/" title="The 960 Grid System is an effort to streamline web development workflow by providing commonly used dimensions, based on a width of 960 pixels.">Fluid 960 Grid System</a> and
+                <a href="jquery.com" title="jQuery is a fast and concise JavaScript Library that simplifies HTML document traversing, event handling, animating, and Ajax interactions for rapid web development.">jQuery</a>.
+
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
 
 </body>
 </html>
