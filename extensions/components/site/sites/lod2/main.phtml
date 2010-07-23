@@ -63,7 +63,7 @@
             <li class="secondary">
                 <a href="<?php echo $this->wikiBaseUri ?>/index">OntoWiki</a>
                 <ul>
-                    <li><a href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo $this->resourceUri ?>">View / Edit</a></li>
+                    <li><a href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo $this->resourceUri ?>">View/Edit</a></li>
                     <li><a href="<?php echo $this->wikiBaseUri ?>source/edit?r=<?php echo $this->resourceUri ?>">Source</a></li>
                 </ul>
             </li>
@@ -85,10 +85,18 @@
             <h2 id="">TODOs :-(</h2>
         <ul>
             <li>Wie wird denn die index-page config umgesetzt? (also link von / auf /index....)
-            <li>Jonas: getNavigation(string $uriOfSKOSContainer) bitte als ViewHelper und in main.html nutzen (bitte nach sysont:order sortieren)</li>
-            <li>Norm: Kann man den modulen den options-array durchreichen? (z.B. um resource uris als links zu nehmen)</li>
+                <ul>
+                    <li>Es gibt eine Route namens "empty", die auf den leeren String (nach der Base-URI) reagiert und einen Default-Controller und eine Default-Action hat.</li>
+                </ul>
+            </li>
+            <li>Jonas: <del>getN</del><ins>n</ins>avigation(string $uriOfSKOSContainer) bitte als ViewHelper und in main.html nutzen (bitte nach sysont:order sortieren)</li>
+            <li>Norm: Kann man den modulen den options-array durchreichen? (z.B. um resource uris als links zu nehmen)
+            <ul>
+                <li>Ja, aber bisher nur Render-Optionen wie CSS-Klasse und -ID. Könnte was an die getContents() durchreichen, aber das Modul müsste dann natürlich auf die exakten Keys reagieren.</li>
+            </ul>
+            </li>
             <li>Norm: linked data scheint nicht mehr zu gehen</li>
-            <li>Norm: /Stack scheint manchmal "Stack" und manchmal "Technology Stack" zu heissen ...</li>
+            <li>Norm: /Stack scheint manchmal "Stack" und manchmal "Technology Stack" zu heißen ...</li>
             <li>Wie werden die Templates pro Klasse benutzt
                 <ul>
                     <li>Idee: templateHelper bekommt beliebige URI und lädt ein passendes Template. Das kann im einfachsten Fall ein hartgecodetes Mapping der <code>rdf:type</code>s sein.</li>
