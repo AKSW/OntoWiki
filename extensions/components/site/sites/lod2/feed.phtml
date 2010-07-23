@@ -1,50 +1,9 @@
 <?php
-if (
-    ( isset($this->description['http://rdfs.org/sioc/ns#feed'][0]['value']) ) &&
-    ( Erfurt_Uri::check($this->description['http://rdfs.org/sioc/ns#feed'][0]['value'])) ) :
-
-    try {
-        // Taken from http://framework.zend.com/manual/en/zend.feed.reader.html
-        // TODO: use the ontowiki cache here
-        // make a news module out of this :-)
-        $frontendOptions = array(
-           'lifetime' => 86400,
-           'automatic_serialization' => true
-        );
-        $backendOptions = array('cache_dir' => '/tmp/');
-        $cache = Zend_Cache::factory(
-            'Core', 'File', $frontendOptions, $backendOptions
-        );
-
-        Zend_Feed_Reader::setCache($cache);
-        Zend_Feed_Reader::useHttpConditionalGet();
-        $feed = Zend_Feed_Reader::import($this->description['http://rdfs.org/sioc/ns#feed'][0]['value']);
-    } catch (Exception $e) {
-        echo $e->getMessage();
-        return;
-    }
+    $content = $this->module('feeds', array('noChrome' => true));
+    if ($content != "") :
 ?>
-
 <div class="box">
-    <h2>News</h2>
-    <div class="block">
-        <div class="block" id="accordion">
-            <div id="accordion">
-            <?php $entrycount = 0; foreach ($feed as $entry) : ?>
-                <div class="article <?php if ($entrycount == 0) echo 'first' ?>">
-                    <h3 class="toggler atStart"><?php echo $entry->getTitle() ?></h3>
-                    <div class="element atStart">
-                        <p class="meta">
-                            <?php echo $entry->getDateModified() ?> |                            
-                            <?php $authors = $entry->getAuthors(); echo $authors[0] ?> |
-                            <a href="<?php echo $entry->getLink() ?>">permalink</a>
-                        </p>
-                        <p><?php echo $entry->getDescription() ?></p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-            </div>
-        </div>
-    </div>
+    <h2>NEWS</h2>
+    <?php echo $content ?>
 </div>
 <?php endif; ?>
