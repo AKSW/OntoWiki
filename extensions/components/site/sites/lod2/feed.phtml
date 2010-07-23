@@ -3,7 +3,26 @@ if (
     ( isset($this->description['http://rdfs.org/sioc/ns#feed'][0]['value']) ) &&
     ( Erfurt_Uri::check($this->description['http://rdfs.org/sioc/ns#feed'][0]['value'])) ) :
 
-$feed = Zend_Feed_Reader::import($this->description['http://rdfs.org/sioc/ns#feed'][0]['value']);
+    try {
+        // Taken from http://framework.zend.com/manual/en/zend.feed.reader.html
+        // TODO: use the ontowiki cache here
+        // make a news module out of this :-)
+        $frontendOptions = array(
+           'lifetime' => 86400,
+           'automatic_serialization' => true
+        );
+        $backendOptions = array('cache_dir' => '/tmp/');
+        $cache = Zend_Cache::factory(
+            'Core', 'File', $frontendOptions, $backendOptions
+        );
+
+        Zend_Feed_Reader::setCache($cache);
+        Zend_Feed_Reader::useHttpConditionalGet();
+        $feed = Zend_Feed_Reader::import($this->description['http://rdfs.org/sioc/ns#feed'][0]['value']);
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        return;
+    }
 ?>
 
 <div class="box">
