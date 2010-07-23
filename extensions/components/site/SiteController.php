@@ -91,6 +91,9 @@ class SiteController extends OntoWiki_Controller_Component
             
             $siteConfig = array(
                 'id'          => $this->_site,
+                'generator'   => 'OntoWiki ' . $this->_config->version->number,
+                'pingbackUri' => $this->_owApp->getUrlBase() . '/pingback/ping',
+                'wikiBaseUri' => $this->_owApp->getUrlBase(),
                 'basePath'    => sprintf('%s/sites/%s', $this->_componentRoot, $this->_site),
                 'baseUri'     => sprintf('%s/sites/%s/', $this->_componentUrlBase, $this->_site),
                 'resourceUri' => $this->_resourceUri,
@@ -118,7 +121,7 @@ class SiteController extends OntoWiki_Controller_Component
         // m is automatically used and selected
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
             // TODO: what if no site model configured?
-            if (!Zend_Uri::check($siteConfig['model'])) {
+            if (!Erfurt_Uri::check($siteConfig['model'])) {
                 throw new OntoWiki_Exception('No model pre-selected model, no parameter m (model) and no configured site model!');
             } else {
                 // setup the model
