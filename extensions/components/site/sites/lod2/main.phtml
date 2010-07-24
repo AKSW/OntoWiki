@@ -145,7 +145,11 @@
                 <li>Norm: CBD + titles der selected resource über ressource klasse</li>
                 CBD for current resource:
                 <?php var_dump($this->description) ?>
-                TODO: how to include titles? 1) not use RDF/PHP 2) ???
+                <p>
+                    <strong>TODO: lieber doch symmetrisch?</strong>
+                    <blockquote cite="http://www.w3.org/DesignIssues/LinkedData.html">The subgraph returned has been referred to as "minimum Spanning Graph (MSG [@@ref] ) or  RDF molecule [@@ref], depending on whether nodes are considered identified if they can be expressed as a path of function, or reverse inverse functional properties. A concise bounded description, which only follows links from subject to object,  does not work.</blockquote>
+                    aus: <a href="http://www.w3.org/DesignIssues/LinkedData.html">Linked Data design issues</a>
+                </p>
                 <li>Norm: titles über TitleHelper aller in der CBD enthaltenen ressource?</li>
                 <pre><code><?php echo $this->escape('<?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?>')?></code></pre>
                 Beispiel (Code s.&thinsp;o.): <?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?>
