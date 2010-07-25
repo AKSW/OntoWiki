@@ -31,9 +31,9 @@
     // this is the standard template data
     $templateData = array(
                     'title' => $this->descriptionHelper->getTitle($this->resourceUri),
-                    'uri' => $this->resourceUri,
+                    'resourceUri' => $this->resourceUri,
                     'description' => $this->description[$this->resourceUri],
-                    'helper' => $this->descriptionHelper
+                    'descriptionHelper' => $this->descriptionHelper
             );
 ?>
 <div class="container_16">
@@ -102,6 +102,7 @@
             <li>Wie werden die Templates pro Klasse benutzt
                 <ul>
                     <li>Idee: templateHelper bekommt beliebige URI und lädt ein passendes Template. Das kann im einfachsten Fall ein hartgecodetes Mapping der <code>rdf:type</code>s sein.</li>
+                    <li>Ne andere möglichkeit hab ich gerade gepusht ... siehe main.phtml</li>
 
                 </ul>
             </li>
