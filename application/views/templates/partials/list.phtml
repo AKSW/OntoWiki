@@ -2,6 +2,13 @@
 
 $instances = $this->instances;
 
+$graph = $this->instances->getGraph();
+$store = $this->instances->getStore();
+
+$config = Erfurt_App::getInstance()->getConfig();
+
+$statusBar = '';
+
 if ($instances->hasData()) {
     $instanceInfo = $instances->getResources();
     $instanceData = $instances->getValues();
@@ -20,6 +27,29 @@ if ($instances->hasData()) {
     } else {
         $page = 1;
     }
+
+    if($graph->getOption($config->sysont->properties->isLarge)) {
+        $statusBar = OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName);
+    } else {
+        $query = clone $instances->getResourceQuery();
+
+        $where = 'WHERE '.$query->getWhere();
+
+        try {
+            $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
+        } catch (Erfurt_Store_Exception $e) {
+            $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
+        }
+        $statusBar = OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName);
+    }
+    $statusBar = str_replace("<ul>",'', $statusBar);
+    $statusBar = str_replace("First",'', $statusBar);
+    $statusBar = str_replace("Previous",'', $statusBar);
+    $statusBar = str_replace("Last",'', $statusBar);
+    $statusBar = str_replace("Next",'', $statusBar);
+    $statusBar = str_replace("<li>",'<p class="pager">', $statusBar);
+    $statusBar = str_replace("</li>",'</p>', $statusBar);
+    $statusBar = preg_replace('/href="(.+?)"/i','about="$1" onclick="pageList(this);"', $statusBar);
 }
 
 $odd = true;
@@ -48,6 +78,9 @@ if ($instances->hasData()):
             </li>
         <?php endforeach; ?>
     </ul>
+
+    <?php echo $statusBar; ?>
+
     <?php else: ?>
         <p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
     <?php endif; ?>

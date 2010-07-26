@@ -27,6 +27,36 @@
             font-size: 18px;
             color: #FFFFFF;
         }
+        .pager{
+            background: #4c4d4e;
+            border: 1px solid #333;
+            font-size: 14px;
+            text-align: center;
+            width: 13%;
+            float: left;
+            -webkit-border-radius: 8px;
+            -webkit-box-sizing: border-box;
+            display: block;
+            margin-right: 5px;
+            padding: 11px 10px 14px 10px;
+            -webkit-box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
+            background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
+        }
+        .pager a{
+            color: #FFFFFF;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .pager a.selected{
+            color: #3e9ac3;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .pager a.disabled{
+            color: #666666;
+            font-weight: bold;
+            text-decoration: none;
+        }
     </style>
 
     <!-- jQTouch -->
@@ -36,9 +66,12 @@
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
 
-    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/base.js"></script>
+    <!-- <script type="text/javascript" src="http://localhost/ontowiki/extensions/components/datagathering/scripts/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="http://localhost/ontowiki/extensions/components/datagathering/datagathering.js"></script> -->
+    <script type="text/javascript" src="extensions/modules/modellist/modellist.js"></script>
+    <script type="text/javascript" src="extensions/modules/navigation/navigation.js"></script>
 
-    <?php echo $this->headScript() ?>
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/base.js"></script>
 </head>
 <body>
     <div id="home">

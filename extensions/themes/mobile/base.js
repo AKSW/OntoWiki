@@ -17,16 +17,18 @@ function getBase(element){
     if( selected_model != $(element).attr('about') ){
         // select base
         selected_model = $(element).attr('about');
-        var url = 'http://localhost/ontowiki/model/select/?m=' + $(element).attr('about');
+        var url = 'http://'+location.host+'/ontowiki/model/select/?m=' + $(element).attr('about');
         var title = $(element).text();
-        $(element).append(loader_small_src);
+        //$(element).append(loader_small_src);
+        $(element).attr("class","loading");
 
-        $.get(url, function(){
+        $.get(url, function(data){
             $('#nav-title').text(title);
             navigationEvent('reset');
 
             $(document).bind("navigation.done", function(e, status){
-                $("#loader").remove();
+                //$("#loader").remove();
+                $(element).attr("class","");
                 $(document).unbind(e);
 
                 jQT.goTo("#nav", "slide");
@@ -38,11 +40,13 @@ function getBase(element){
 }
 
 function onNavigationEntryClick(entry){
-    $(entry).append(loader_small_src);
+    //$(entry).append(loader_small_src);
+    $(entry).attr("class","loading");
 
     if($(entry).parent().attr('class') == "arrow"){
         $(document).bind("navigation.done", function(e, status){
-            $("#loader").remove();
+            //$("#loader").remove();
+            $(entry).attr("class","");
             $(document).unbind(e);
         });
         navigationEvent('navigateDeeper', $(entry).parent().attr('about'));
@@ -53,7 +57,8 @@ function onNavigationEntryClick(entry){
         $.get(url, function(data){
             $("#instance-title").text(title);
             $('#instance-content').html(data);
-            $("#loader").remove();
+            //$("#loader").remove();
+            $(entry).attr("class","");
             //navigationEvent('reset');
 
             jQT.goTo("#instance-list", "slide");
@@ -61,8 +66,13 @@ function onNavigationEntryClick(entry){
     }
 }
 
+function pageList(entry){
+    
+}
+
 function onInstanceClick(entry){
-    $(entry).append(loader_src);
+    //$(entry).append(loader_src);
+    $(entry).attr("class","loading");
 
 
     url = $(entry).attr('about');
@@ -70,12 +80,14 @@ function onInstanceClick(entry){
     $.get(url, function(data){
         $("#properties-title").text(title);
         $('#properties-content').html(data);
-        $("#loader").remove();
+        //$("#loader").remove();
+        $(entry).attr("class","");
 
         jQT.goTo("#properties-list", "slide");
     })
 }
 
 function addLoader(entry){
-    $(entry).html(loader_src);
+    //$(entry).html(loader_src);
+    $(entry).attr("class","loading");
 }
