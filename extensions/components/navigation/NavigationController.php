@@ -552,7 +552,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $query = Erfurt_Sparql_SimpleQuery::initWithString($query_string);
         }else{
             $query = new Erfurt_Sparql_Query2();
-            $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
+            $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit, $this->_config->store->backend));
             //$query->setCountStar(true);
             $query->setDistinct(true);
             $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));

@@ -93,7 +93,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
         return $elements;
     }
 
-    public static function getSearchTriples($setup, $forImplicit = false){
+    public static function getSearchTriples($setup, $forImplicit = false, $backend){
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
         $classVar = new Erfurt_Sparql_Query2_Var('classUri');
         $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
@@ -380,9 +380,15 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
         // dont't show rdfs/owl entities and subtypes in the first level
         if ( !isset($setup->state->parent) && !isset($setup->config->rootElement) ) {
+
+            OntoWiki::getInstance()->logger->info( "BACKEND: ".$backend );
+
             // optional var
-            //if( $this->_config->store->backend == "zend")
-            $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+            if( $backend == "zenddb"){
+                $queryUnion = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+            }else{
+                $queryUnion = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern(); //Erfurt_Sparql_Query2_OptionalGraphPattern();
+            }
             if( isset($setup->config->hierarchyRelations->in) ){
                 if( count($setup->config->hierarchyRelations->in) > 1 ){
                     foreach($setup->config->hierarchyRelations->in as $rel){
@@ -392,16 +398,26 @@ class NavigationHelper extends OntoWiki_Component_Helper
                             new Erfurt_Sparql_Query2_IriRef($rel),
                             new Erfurt_Sparql_Query2_Var('super')
                         );
-                        $queryOptional->addElement($u1);
+                        $queryUnion->addElement($u1);
                     }
                 }else{
                     $rel = $setup->config->hierarchyRelations->in;
                     // add optional sub relation
-                    $queryOptional->addTriple(
-                        $searchVar,
-                        new Erfurt_Sparql_Query2_IriRef($rel[0]),
-                        new Erfurt_Sparql_Query2_Var('super')
-                    );
+                    if( $backend == "zenddb"){
+                        $queryUnion->addTriple(
+                            $searchVar,
+                            new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                            new Erfurt_Sparql_Query2_Var('super')
+                        );
+                    }else{
+                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        $u1->addTriple(
+                            $searchVar,
+                            new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                            new Erfurt_Sparql_Query2_Var('super')
+                        );
+                        $queryUnion->addElement($u1);
+                    }
                 }
                 //$mainUnion->addElement($u1);
                 $superUsed = true;
@@ -415,23 +431,39 @@ class NavigationHelper extends OntoWiki_Component_Helper
                             new Erfurt_Sparql_Query2_IriRef($rel),
                             $searchVar
                         );
-                        $queryOptional->addElement($u1);
+                        $queryUnion->addElement($u1);
                     }
                 }else{
                     $rel = $setup->config->hierarchyRelations->out;
                     // add optional sub relation
-                    $queryOptional->addTriple(
-                        new Erfurt_Sparql_Query2_Var('super'),
-                        new Erfurt_Sparql_Query2_IriRef($rel[0]),
-                        $searchVar
-                    );
+                    if( $backend == "zenddb"){
+                        $queryUnion->addTriple(
+                            new Erfurt_Sparql_Query2_Var('super'),
+                            new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                            $searchVar
+                        );
+                    }else{
+                        $u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        $u1->addTriple(
+                            new Erfurt_Sparql_Query2_Var('super'),
+                            new Erfurt_Sparql_Query2_IriRef($rel[0]),
+                            $searchVar
+                        );
+                        $queryUnion->addElement($u1);
+                    }
                 }
                 //$mainUnion->addElement($u1);
                 $superUsed = true;
             }
             if($superUsed){
-                //$queryOptional->addElement($mainUnion);
-                $elements[] = $queryOptional;
+                if( $backend == "zenddb"){
+                    $elements[] = $queryUnion;
+                }else{
+                    $queryOptional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                    $queryOptional->addElement($queryUnion);
+                    $elements[] = $queryOptional;
+                }
+                
 
                 $filter[] = new Erfurt_Sparql_Query2_Regex(
                                 new Erfurt_Sparql_Query2_Str( new Erfurt_Sparql_Query2_Var('super') ),
