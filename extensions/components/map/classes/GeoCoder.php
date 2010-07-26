@@ -44,15 +44,15 @@ class GeoCoder {
     /**
      * iterates trough all given instances, tries first direct geocoding, if it 
 	 * refuses, it does indirect geocoding
-	 * @param &$marker
+	 * @param $marker
 	 * @return boolean
      */
-	public function geoCode( &$marker ) {
-		if ($this->directGeoCode(&$marker)) {
+	public function geoCode( $marker ) {
+		if ($this->directGeoCode($marker)) {
 			return true;
 		}
 		else {
-			if($this->indirectGeoCode(&$marker)) {
+			if($this->indirectGeoCode($marker)) {
 				return true;
 			}
 			else return false;
@@ -63,11 +63,11 @@ class GeoCoder {
      * GeoCoding with direct given address
 	 * address, place, country, etc.
 	 * If the geoCoding was unsuccessfuly it returns false, else an array of longitude and latitude
-	 * @param &$marker
+	 * @param $marker
 	 * @param $uri
 	 * @return boolean
      */
-    private function directGeoCode( &$marker, $uri = null ) {
+    private function directGeoCode( $marker, $uri = null ) {
 		//TODO test, if the marker has a property like "isin" or something like that
         /**
          * $instance contains string to check if suitable for direct geocoding
@@ -114,12 +114,12 @@ class GeoCoder {
 
     /**
 	 * GeoCoding with indirect attributes of the instance.
-	 * @param &$marker
+	 * @param $marker
 	 * @param $uri
 	 * @param $depth an integer which counts the depth of recursion. (In a realtime context this could be replaced by a timestamp which will be tested if it is older than a max time.)
 	 * @return boolean
      */
-    private function indirectGeoCode( &$marker, $uri = null, $depth = 0 ) {
+    private function indirectGeoCode( $marker, $uri = null, $depth = 0 ) {
 
 		if( $uri == null ) $uri = $marker->getUri();
 		if( $depth < $this->maxIndirectDepth) {

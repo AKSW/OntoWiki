@@ -5,10 +5,8 @@
  *
  * @package    application
  * @subpackage mvc
- * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: ResourceController.php 4308 2009-10-14 15:13:51Z jonas.brekle@gmail.com $
  */
 class ResourceController extends OntoWiki_Controller_Base {
     private function _addLastModifiedHeader() {
@@ -260,6 +258,7 @@ class ResourceController extends OntoWiki_Controller_Base {
 
     /**
      * Deletes one or more resources denoted by param 'r'
+     * TODO: This should be done by a evolution pattern in the future
      */
     public function deleteAction() {
         $this->view->clearModuleCache();
@@ -268,10 +267,17 @@ class ResourceController extends OntoWiki_Controller_Base {
         $this->_helper->layout->disableLayout();
 
         $store     = $this->_erfurt->getStore();
-        $modelIri  = (string)$this->_owApp->selectedModel;
+        $model     = $this->_owApp->selectedModel;
+        $modelIri  = (string) $model;
         $redirect  = $this->_request->getParam('redirect', $this->_config->urlBase);
 
-        $resources = $this->_request->getParam('r', array());
+        if (isset($this->_request->r)) {
+            $resources = $this->_request->getParam('r', array());
+        } else {
+            throw new OntoWiki_Exception('Missing parameter r!');
+            exit;
+        }
+
         if (!is_array($resources)) {
             $resources = array($resources);
         }
@@ -282,6 +288,12 @@ class ResourceController extends OntoWiki_Controller_Base {
         $count = 0;
         if ($this->_erfurt->getAc()->isModelAllowed('edit', $modelIri)) {
             foreach ($resources as $resource) {
+
+                # if we have only a nice uri, fill to full uri
+                if (Zend_Uri::check($resource) == false) {
+                    $resource = $model->getBaseIri() . $resource;
+                }
+
                 // action spec for versioning
                 $actionSpec                 = array();
                 $actionSpec['type']         = 130;

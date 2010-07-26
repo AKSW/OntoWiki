@@ -23,6 +23,7 @@ class MapHelper extends OntoWiki_Component_Helper
      */
     private $dirInstances = null;
     private $indInstances = null;
+    private $listHelper = null;
 
     public function init()
     {
@@ -57,16 +58,27 @@ class MapHelper extends OntoWiki_Component_Helper
 
     public function shouldShow () 
     {
+    	
+    	if($this->listHelper == null) {
+    		$this->listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+    	}
 
         /*
          * don't show on model, application, error, debug, module and index controller
          */
-        $owApp = OntoWiki::getInstance();
+    	/**
+    	 * for debug output
+    	 * @var OntoWiki Instance of the App-Object
+    	 */
+    	$owApp = OntoWiki::getInstance();
+    	/*
         $session = $owApp->session;
-
+        */
         $front  = Zend_Controller_Front::getInstance();
 
-        if (!$front->getRequest()->isXmlHttpRequest() && isset($session->instances)) {
+        $listName = "instances";
+        if (!$front->getRequest()->isXmlHttpRequest() && $this->listHelper->listExists($listName)) {
+            $instances = $this->listHelper->getList($listName);
 
             $latProperties  = $this->_privateConfig->property->latitude->toArray();
             $longProperties = $this->_privateConfig->property->longitude->toArray();
@@ -79,16 +91,14 @@ class MapHelper extends OntoWiki_Component_Helper
             $long2Var       = new Erfurt_Sparql_Query2_Var('long2');
 
             if($this->dirInstances === null) {    
-                $this->dirInstances = clone $session->instances;
-                $owApp->logger->debug('MapHelper/shouldShow: clone this->_session->instances');
+                $this->dirInstances = clone $instances;
             } else {
                 $owApp->logger->debug('MapHelper/shouldShow: this->dirInstances already set');
                 // don't load instances again
             }
 
             if($this->indInstances === null) {    
-                $this->indInstances = clone $session->instances;
-                $owApp->logger->debug('MapHelper/shouldShow: clone this->_session->instances');
+                $this->indInstances = clone $instances;
             } else {
                 $owApp->logger->debug('MapHelper/shouldShow: this->indInstances already set');
                 // don't load instances again
@@ -150,8 +160,8 @@ class MapHelper extends OntoWiki_Component_Helper
         } else {
             if($front->getRequest()->isXmlHttpRequest()) {
                 $owApp->logger->debug('MapHelper/shouldShow: xmlHttpRequest → no map.');
-            } else if(!isset($session->instances)) {
-                $owApp->logger->debug('MapHelper/shouldShow: no instances object set in session → no instances to show → no map.');
+            } else if(!$this->listHelper->listExists($listName)) {
+                $owApp->logger->debug('MapHelper/shouldShow: no instances list found → no instances to show → no map.');
             } else {
                 $owApp->logger->debug('MapHelper/shouldShow: decided to hide the map, but not because of a XmlHttpRequest and not, because there is no valide session.');
             }

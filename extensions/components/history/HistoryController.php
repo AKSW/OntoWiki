@@ -33,8 +33,8 @@ class HistoryController extends OntoWiki_Controller_Component
         }
 
         // getting page (from and for paging)
-        if (!empty($params['p']) && (int) $params['p'] > 0) {
-            $page = (int) $params['p'];
+        if (!empty($params['page']) && (int) $params['page'] > 0) {
+            $page = (int) $params['page'];
         } else {
             $page = 1;
         }
@@ -60,7 +60,7 @@ class HistoryController extends OntoWiki_Controller_Component
                 $list = $listHelper->getList($listName);
             } else {
                  $this->_owApp->appendMessage(
-                    new OntoWiki_Message('something went wrong with the list of instances you want to rdf-view', OntoWiki_Message::ERROR)
+                    new OntoWiki_Message('something went wrong with the list of instances', OntoWiki_Message::ERROR)
             );
             }
 
@@ -156,6 +156,7 @@ class HistoryController extends OntoWiki_Controller_Component
         // paging
         
         $statusBar = $this->view->placeholder('main.window.statusbar');
+        OntoWiki_Pager::setOptions(array('page_param'=>'page')); // the normal page_param p collides with the generic-list param p
         $statusBar->append(OntoWiki_Pager::get($count,$limit));
 
         // setting view variables
@@ -169,7 +170,6 @@ class HistoryController extends OntoWiki_Controller_Component
         // $this->view->formName      = 'instancelist';
         $this->view->formName      = 'history-rollback';
         $this->view->formEncoding  = 'multipart/form-data';
-
     }
 
     /**

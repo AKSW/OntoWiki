@@ -260,9 +260,9 @@ class NavigationController extends OntoWiki_Controller_Component
         if($query == null) return;
         
         // error logging
-        /*$this->_owApp->logger->info(
+        $this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
-        );*/
+        );
 
         // get extended results
         $all_results = $this->model->sparqlQuery($query, array('result_format' => 'extended'));
@@ -552,7 +552,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $query = Erfurt_Sparql_SimpleQuery::initWithString($query_string);
         }else{
             $query = new Erfurt_Sparql_Query2();
-            $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit));
+            $query->addElements(NavigationHelper::getSearchTriples($setup, $forImplicit, $this->_config->store->backend));
             //$query->setCountStar(true);
             $query->setDistinct(true);
             $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));

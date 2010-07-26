@@ -708,13 +708,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
         } else {
             $wrapperName = 'linkeddata';
         }
-        
+       
         try {
             $store = Erfurt_App::getInstance()->getStore();
-            
+       
             $wrapper = $this->_wrapperRegisty->getWrapperInstance($wrapperName);
             $hasData = $wrapper->isAvailable($uri, $this->_graphUri);
-            
+
             $wrapperResult = false;
             if ($hasData) {
                 $wrapperResult = $wrapper->run($uri, $this->_graphUri);

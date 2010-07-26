@@ -33,7 +33,7 @@ $(document).ready(function() {
     // every click fadeout (and remove) all contextmenus
     // every click un-marks all marked elements
     $('html').click(function(){
-        $('.contextmenu-enhanced .contextmenu').fadeOut(effectTime, function(){ $(this).remove(); })
+        $('.contextmenu-enhanced .contextmenu').fadeOut(effectTime, function(){$(this).remove();})
         $('.marked').removeClass('marked');
     });
     
@@ -74,16 +74,27 @@ $(document).ready(function() {
     if (typeof sectionRatio != 'undefined') {
         setSectionRatio(sectionRatio);
     }
-    
+
     /* list selection */
     $('table.resource-list > tbody > tr').live('click', function(e) {
+
+        var selectee     = $(this);
+        var selectionURI = $(this).children('td').children('a').attr('about');
+
+        // return if we have no URI (e.g. a Literal list)
+        if (typeof selectionURI == 'undefined') {
+            return false;
+        }
+
+        // return true if user clicked on a link (so the link is fired)
+        if ( $(e.target).is('a') ) {
+            return true;
+        }
+
         // create array for all selected resources
         if (typeof OntoWiki.selectedResources == 'undefined') {
             OntoWiki.selectedResources = [];
         }
-
-        var selectee     = $(this);
-        var selectionURI = selectee.find('*[about]').eq(0).attr('about');
         
         if (!selectee.hasClass('list-selected')) { // select a resource
             // TODO: check for macos UI compability

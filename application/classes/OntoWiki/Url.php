@@ -291,7 +291,7 @@ class OntoWiki_Url
                 $query   = '';
                 $lastKey = '';
                 foreach ($this->_params as $key => $value) {
-                    if (is_string($value)) {
+                    if (is_scalar($value)) {
                         $value   = urlencode($value);
                         $query  .= "$key/$value/";
                         $lastKey = $key;

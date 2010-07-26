@@ -1,14 +1,12 @@
 <?php
 
 /**
- * OntoWiki index controller.
+ * OntoWiki service controller.
  * 
  * @package    application
  * @subpackage mvc
- * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: ServiceController.php 4287 2009-10-12 14:00:43Z jonas.brekle@gmail.com $
  */
 class ServiceController extends Zend_Controller_Action
 {

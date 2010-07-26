@@ -5,7 +5,11 @@
     Description:
         Purpose of the stylesheet follows.
 */
-
+body     {
+    background: url("./layout-background-stripes.png") repeat !important;
+}
+#application .cmDiv{
+}
 div.window .title {
     -moz-border-radius-topleft: 10px !important;
     -webkit-border-radius-topleft: 10px !important;
@@ -25,6 +29,7 @@ div.window .content {
     -webkit-border-radius-bottomright: 10px !important;
     -khtml-border-radius-bottomright: 10px !important;
     border-radius-bottomright: 10px !important;
+    -moz-box-shadow: 5px 5px 7px #888 !important;
 }
 div.window .statusbar {
     -moz-border-radius-bottomleft: 10px !important;
@@ -41,6 +46,7 @@ div.window {
     -webkit-border-radius: 10px !important;
     -khtml-border-radius: 10px !important;
     border-radius: 10px !important;
+    -moz-box-shadow: 5px 5px 7px #888 !important;
 }
 .contextmenu {
     -moz-border-radius: 10px !important;
