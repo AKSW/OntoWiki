@@ -23,7 +23,7 @@ class SiteController extends OntoWiki_Controller_Component
     /**
      * The main template filename
      */
-    const MAIN_TEMPLATE_NAME = 'main.phtml';
+    const MAIN_TEMPLATE_NAME = 'layout.phtml';
     
     /**
      * Name of per-site config file
