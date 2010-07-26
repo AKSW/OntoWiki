@@ -23,7 +23,8 @@ class SiteHelper extends OntoWiki_Component_Helper
     {
         $router = $event->bootstrap->getResource('Router');
         if ($router->hasRoute('empty')) {
-            //TODO: this should not be the default site but the site which match the model of the selected resource
+            /* TODO: this should not be the default site but the site which 
+               matches the model of the selected resource */
             $site = $this->_privateConfig->defaultsite;
             $emptyRoute = new Zend_Controller_Router_Route(
                     '',
@@ -38,8 +39,17 @@ class SiteHelper extends OntoWiki_Component_Helper
     // http://localhost/OntoWiki/SiteTest/
     public function onShouldLinkedDataRedirect($event)
     {
-        $event->request->setControllerName('site');
-        $event->request->setActionName($this->_privateConfig->defaultsite);
+        if ($event->type === 'html') {
+            $event->request->setControllerName('site');
+            $event->request->setActionName($this->_privateConfig->defaultsite);
+        } else {
+            // export
+            $event->request->setControllerName('resource');
+            $event->request->setActionName('export');
+            $event->request->setParam('f', $event->type);
+            $event->request->setParam('r', $event->uri);
+        }
+        
         $event->request->setDispatched(false);
         return false;
     }

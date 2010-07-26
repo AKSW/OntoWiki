@@ -107,6 +107,8 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $event = new Erfurt_Event('onShouldLinkedDataRedirect');
             $event->request  = $request;
             $event->response = $response;
+            $event->type     = $type;
+            $event->uri      = $uri;
             $event->setDefault(true);
             
             $shouldRedirect = $event->trigger();
