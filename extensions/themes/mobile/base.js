@@ -58,8 +58,22 @@ function onNavigationEntryClick(entry){
 
             jQT.goTo("#instance-list", "slide");
         })
-        //"http://localhost/ontowiki/model/select/?m=http%3A%2F%2Flocalhost%2Fontowiki%2Fclasstree";
     }
+}
+
+function onInstanceClick(entry){
+    $(entry).append(loader_src);
+
+
+    url = $(entry).attr('about');
+    title = $(entry).text();
+    $.get(url, function(data){
+        $("#properties-title").text(title);
+        $('#properties-content').html(data);
+        $("#loader").remove();
+
+        jQT.goTo("#properties-list", "slide");
+    })
 }
 
 function addLoader(entry){
