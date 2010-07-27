@@ -10,3 +10,7 @@ pull:
 update:
 	hg --repository . pull -u
 	hg --repository libraries/Erfurt pull -u
+
+status:
+	hg --repository . status
+	hg --repository libraries/Erfurt status
