@@ -49,7 +49,7 @@ if ($instances->hasData()) {
     $statusBar = str_replace("Next",'', $statusBar);
     $statusBar = str_replace("<li>",'<p class="pager">', $statusBar);
     $statusBar = str_replace("</li>",'</p>', $statusBar);
-    $statusBar = preg_replace('/href="(.+?)"/i','about="$1" onclick="pageList(this);"', $statusBar);
+    $statusBar = preg_replace('/href="(.+?)"/i','href="#" about="$1" onclick="pageList(this);"', $statusBar);
 }
 
 $odd = true;

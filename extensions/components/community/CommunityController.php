@@ -46,6 +46,7 @@ class CommunityController extends OntoWiki_Controller_Component {
                 $list->addShownProperty($aboutProperty, "about", false, null, false);
 
                 $instances = $listHelper->getList('instances');
+                //$list->setAboutHash(md5(var_dump($instances,true)));
                 $query = $instances->getResourceQuery();
                 $resourceVar = $instances->getResourceVar();
                 

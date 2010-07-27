@@ -1,9 +1,0 @@
-enabled    = true
-title      = "Relations"
-caching    = true
-priority   = 10
-contexts[] = "skos.relations"
-
-[private]
-concept 		= "http://www.w3.org/2004/02/skos/core#Concept"
-conceptscheme 	= "http://www.w3.org/2004/02/skos/core#ConceptScheme"

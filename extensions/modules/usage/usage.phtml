@@ -10,9 +10,18 @@
 <?php if (!empty($this->instances) or !empty($this->objects)): ?>
     <ul class="bullets-none separated">
         <?php if (!empty($this->instances)): ?>
-            <li>
+            <li class="has-contextmenu-area">
+                <div class="contextmenu">
+                    <a class="item"
+                       href="<?php echo $this->subjectListLink ?>">
+                            <span class="icon icon-list" title="Show as List">
+                                    <span>Show as List</span>
+                            </span>
+                    </a>
+                </div>
                 <?php echo $this->_('Subjects') ?>
             	<ul class="inline separated">
+                    
             	    <?php $i = 0; ?>
             	    <?php foreach ($this->instances as $instance): ?>
             	        <?php if (++$i == count($this->instances)): ?>
@@ -25,9 +34,25 @@
         	</li>
     	<?php endif; ?>
     	<?php if (!empty($this->objects)): ?>
-        	<li>
-        	    <?php echo $this->_('Objects') ?>
+        	<li class="has-contextmenu-area">
+        	    <div class="contextmenu">
+                        <a class="item"
+                           href="<?php echo $this->objectListLink ?>">
+                                <span class="icon icon-list" title="Show as List">
+                                        <span>Show as List</span>
+                                </span>
+                        </a>
+                    </div>
+                <?php echo $this->_('Objects') ?>
             	<ul class="inline separated">
+                    <div class="contextmenu">
+                        <a class="item"
+                           href="<?php echo $this->subjectListLink ?>">
+                                <span class="icon icon-list" title="Show as List">
+                                        <span>Show as List</span>
+                                </span>
+                        </a>
+                    </div>
             	    <?php $i = 0; ?>
             	    <?php foreach ($this->objects as $object): ?>
             	        <?php if (++$i == count($this->objects)): ?>

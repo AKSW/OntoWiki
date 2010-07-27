@@ -49,16 +49,27 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
      * @var array
      */
     protected $_ignoredPredicates = array();
+
+    /**
+     * Array of predicates to be ignored
+     * @var array
+     */
+    protected $_limit = OW_SHOW_MAX;
+
+
     
     /**
      * Constructor
      */
-    public function __construct(Erfurt_Store $store, $graph, $uri, $options = array())
+    public function __construct(Erfurt_Store $store, $graph, $uri, $limit = false)
     {
         parent::__construct($store, $graph);
         $this->_uri = (string)$uri;
         
         $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
+        if($limit !== false){
+            $this->_limit = $limit;
+        }
 
         //TODO fix query
         $queryHidden = 'PREFIX sysont: <http://ns.ontowiki.net/SysOnt/> SELECT ?p WHERE {?p sysont:hidden ?o }';
@@ -274,7 +285,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
 
 
                     // push it only if it doesn't exceed number of items to display
-                    if (count($this->_valueResults[$graph][$predicateUri]) < OW_SHOW_MAX) {
+                    if (count($this->_valueResults[$graph][$predicateUri]) < $this->_limit) {
                         array_push($this->_valueResults[$graph][$predicateUri], $value);
                     } else { $this->_predicateResults[$graph][$predicateUri]['has_more'] = true;}
                     if(count($this->_valueResults[$graph][$predicateUri]) > 1) {

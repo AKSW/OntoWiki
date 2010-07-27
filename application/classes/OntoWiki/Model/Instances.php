@@ -101,7 +101,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_valueQuery = null;
     protected $_valueQueryResourceFilter = null;
-    
+
+    protected $_aboutHash;
+
     /**
      * Constructor
      */
@@ -179,6 +181,14 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         }
     }
 
+    public function setAboutHash($hash){
+        $this->_aboutHash = $hash;
+        return $this;
+    }
+
+    public function getAboutHash(){
+        return $this->_aboutHash;
+    }
 
 
    /**
@@ -960,7 +970,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
             $value = null;
             $link  = null;
-            $uri   = null;
 
             foreach ($row as $varName => $data) {
                 if (!isset($valueResults[$resourceUri][$varName])) {
@@ -1007,29 +1016,29 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
                             $propertyUri = $property['uri'];
                         }
                     }
-                    
-                    // set up event
-                    $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
-                    $event->property = $propertyUri;
-                    $event->value    = $object;
-                    $event->setDefault($object);
 
-                    // trigger
                     if ($object !== null) {
+                        // set up event
+                        $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                        $event->property = $propertyUri;
+                        $event->value    = $object;
+                        $event->setDefault($object);
+
+                        // trigger
                         $value = $event->trigger();
                     }
-                    
                 }
                 
                 //check for dulplicate values
                 if(isset($valueResults[$resourceUri][$varName])){
                     foreach($valueResults[$resourceUri][$varName] as $old){
                         if($old['origvalue'] == $data['value'] && $old['type'] == $data['type']){
+                            $link = null;
                             continue 2; // dont add this value
                         }
                     }
                 }
-
+                
                 //add value
                 $valueResults[$resourceUri][$varName][] = array(
                   'value' => $value,
@@ -1041,14 +1050,13 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
                 $value = null;
                 $link  = null;
-                $uri   = null;
             }
         }
 
         foreach($this->getShownResources() as $resource){
-            if(!isset($valueResults[$resource])){
+            if(!isset($valueResults[$resource['value']])){
                 //there are no statements about this resource
-                $valueResults[$resource] = array();
+                $valueResults[$resource['value']] = array();
             }
         }
 
@@ -1058,7 +1066,45 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         return $valueResults;
     }
-    
+
+    public function getAllPropertiesQuery($inverse = false){
+        $query = clone $this->_resourceQuery;
+        $query
+            ->removeAllProjectionVars()
+            ->setDistinct(true)
+            ->setLimit(0)
+            ->setOffset(0);
+        $vars = $query->getWhere()->getVars();
+        $resourceVar = $this->getResourceVar();
+        foreach($vars as $var){
+            if($var->getName() == $resourceVar->getName()){
+                $var->setName('listresource');
+            }
+        }
+        $listResource = new Erfurt_Sparql_Query2_Var('listresource');
+        $predVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        if(!$inverse){
+            $query->addTriple(
+                $listResource,
+                $predVar,
+                new Erfurt_Sparql_Query2_Var('showPropsObj')
+            );
+        } else {
+            $query->addTriple(
+                new Erfurt_Sparql_Query2_Var('showPropsSubj'),
+                $predVar,
+                $this->_resourceVar
+            );
+        }
+
+        $query
+            ->addProjectionVar($predVar)
+            ->getOrder()
+                ->clear()
+                ->add($predVar);
+        return $query;
+    }
+
     public function getAllProperties ($inverse = false)
     {
         if(empty($this->_resources) && $this->_resourcesUptodate){
@@ -1066,33 +1112,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         }
 
         //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
-        $query = clone $this->_resourceQuery;
-        $query
-            ->removeAllProjectionVars()
-            ->setDistinct(true)
-            ->setLimit(0)
-            ->setOffset(0);
-
-        $predVar = new Erfurt_Sparql_Query2_Var('showPropsPred');
-        if(!$inverse){
-            $query->addTriple(
-                $this->_resourceVar,
-                $predVar,
-                new Erfurt_Sparql_Query2_Var('showPropsObj')
-            );
-        } else {
-            $query->addTriple(
-                new Erfurt_Sparql_Query2_Var('showPropsObj'),
-                $predVar,
-                $this->_resourceVar
-            );
-        }
-        
-        $query
-            ->addProjectionVar($predVar)
-            ->getOrder()
-                ->clear()
-                ->add($predVar);
+        $query = $this->getAllPropertiesQuery($inverse);
 
         $results = $this->_model->sparqlQuery(
             $query,
@@ -1102,7 +1122,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         $properties = array();
         foreach ($results['bindings'] as $row) {
-            $properties[] = array('uri' => $row['showPropsPred']['value']);
+            $properties[] = array('uri' => $row['resourceUri']['value']);
         }
 
         return $this->convertProperties($properties);
@@ -1255,13 +1275,18 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         
         // add titles
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-        $titleHelper->addResources($resources);
+        $uris = array();
+        foreach ($resources as $resource) {
+            $uris[] = $resource['value'];
+        }
+        $titleHelper->addResources($uris);
 
         $resourceResults = array();
 
-        foreach ($resources as $uri) {
+        foreach ($resources as $resource) {
+            $uri = $resource['value'];
             if (!array_key_exists($uri, $resourceResults)) {
-                $resourceResults[$uri] = array();
+                $resourceResults[$uri] = $resource;
             }
 
             // URL
@@ -1286,8 +1311,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
             $this->_resources = array();
             foreach ($result['bindings'] as $row) {
-                $uri = $row['resourceUri']['value'];
-                $this->_resources[] = $uri;
+                $this->_resources[] = $row['resourceUri'];
             }
             $this->_resourcesUptodate = true;
         } 
@@ -1417,7 +1441,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             $resources[$key] =
                 new Erfurt_Sparql_Query2_SameTerm(
                     $this->_resourceVar,
-                    new Erfurt_Sparql_Query2_IriRef($resource)
+                    new Erfurt_Sparql_Query2_IriRef($resource['value'])
                 );
         }
 
@@ -1427,7 +1451,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             );
             $this->_valueQuery->addElement($this->_valueQueryResourceFilter);
         }
-
+        
         $this->_valueQueryResourceFilter->setConstraint(
             empty($resources) ? 
                 new Erfurt_Sparql_Query2_BooleanLiteral(false) :

@@ -46,6 +46,12 @@ class ShowpropertiesModule extends OntoWiki_Module
             var shownInverseProperties = ' . json_encode($shownInverseProperties) . ';'
         );
 
+        $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));
+        $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'propertyUsage','action'=>'add','mode'=>'query','query'=> (string) $this->_instances->getAllPropertiesQuery(false))))));
+        $url->setParam('init', true);
+        $this->view->propertiesListLink = (string) $url;
+        $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'propertyUsage','action'=>'add','mode'=>'query','query'=> (string) $this->_instances->getAllPropertiesQuery(true))))));
+        $this->view->inversePropertiesListLink = (string) $url;
 
         if($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist)
         {

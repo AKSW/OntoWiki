@@ -1,0 +1,78 @@
+<?php if(!$this->hasError){ ?>
+<div about="<?php echo $this->aboutUri;?>">
+<h2 property="foaf:name"><?php
+if(!$this->has('aboutSurName') || !$this->has('aboutGivenName')){
+    echo $this->about;
+} else {
+    echo  $this->aboutGivenName .($this->has('aboutNickName') ? ' "'.$this->aboutNickName.'"' : '' ). ' '.$this->aboutSurName;
+}
+    ?></h2>
+
+<?php if($this->has('date')){?>
+last modified: <?php echo $this->date; ?>
+<?php }; ?>
+<?php if($this->has('comment')){ ?>
+<p class="messagebox info"><?php echo $this->comment; ?> </p>
+<?php } ?>
+View full FOAF Profile <a href="<?php echo $this->urlBase;?>view/?r=<?php echo urlencode($this->aboutUri);?>">with OntoWiki</a> or <a href="<?php echo $this->urlBase;?>model/export/?m=<?php echo urlencode($this->modelUri);?>&f=rdfxml">as RDF/XML</a><br/>
+<h3>About Me</h3><table><tr><td>
+        <?php $size = count($this->selProps['basic']); $i=0; if($size>0){
+            foreach($this->selProps['basic'] as $property => $values){
+
+            ?><b><?php echo $this->titleHelper->getTitle($property); ?></b><br/><ul class="bullets-none"> <?php
+            foreach($values as $value){
+                if(isset($value['url'])){
+                    ?><li><a rel="<?php echo $property;?>" href="<?php echo $value['url']?>" resource="<?php echo $value['uri']?>" class="expandable hasMenu" ><?php echo $this->titleHelper->getTitle($value['uri'])?></a>&nbsp;&nbsp;<a href="<?php echo $value['uri']?>" class="externalLink"> </a></li>
+                <?php } else {
+                    ?><li property="<?php echo $property;?>" content="<?php echo $value['content']?>"><?php echo $value['content']?></li>
+                <?php }
+            }
+            
+            ?></ul><br/>
+            <?php $i++;
+            if($i == floor($size/2)){
+                ?></td><td><?php
+            }
+        }
+        ?></td></tr></table>
+        <?php } ?>
+        <table><tr>
+                <?php if(count($this->selProps['projects'])>0){ ?>
+                <td><h3>Projects</h3><?php
+        foreach($this->selProps['projects'] as $property => $values){
+            ?><b><?php echo $this->titleHelper->getTitle($property); ?></b><br/><ul class="bullets-none"><?php
+            foreach($values as $value){
+                if(isset($value['url'])){
+                    ?><li><a rel="<?php echo $property;?>" href="<?php echo $value['url']?>" resource="<?php echo $value['uri']?>" class="expandable hasMenu" ><?php echo $this->titleHelper->getTitle($value['uri'])?></a>&nbsp;&nbsp;<a href="<?php echo $value['uri']?>" class="externalLink"> </a></li>
+                <?php } else {
+                    ?><li property="<?php echo $property;?>" content="<?php echo $value['content']?>"><?php echo $value['content']?></li>
+                <?php }
+            }
+            ?></ul><?php
+        }
+       
+        ?>
+                </td>
+                <?php }  if(count($this->selProps['persons'])>0){ ?>
+                <td><h3>People</h3>
+        <?php
+        foreach($this->selProps['persons'] as $property => $values){
+            ?><b><?php echo $this->titleHelper->getTitle($property);
+
+            ?></b><br/><ul class="bullets-none"><?php
+            foreach($values as $value){
+                if(isset($value['url'])){
+                    ?>
+                    <li><a rel="<?php echo $property;?>" href="<?php echo $value['url']?>" resource="<?php echo $value['uri']?>" class="expandable hasMenu" ><?php echo $this->titleHelper->getTitle($value['uri'])?></a>&nbsp;&nbsp;<a href="<?php echo $value['uri']?>" class="externalLink"> </a></li><?php
+                } else {
+                    ?><li property="<?php echo $property;?>" content="<?php echo $value['content']?>"><?php echo $value['content']?></li>
+                    <?php
+                }
+            }
+            ?></ul><?php
+        }
+        }
+    ?>
+    </td></tr></table>
+</div>
+<?php } ?>

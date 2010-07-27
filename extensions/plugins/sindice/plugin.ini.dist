@@ -1,5 +1,0 @@
-enabled = true
-
-[events]
-1 = onDatagatheringComponentSearch
-

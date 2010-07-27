@@ -1,18 +1,20 @@
 <?php
 
-require_once 'OntoWiki/Controller/Component.php';
-require_once 'Zend/Json/Server.php';
-
 /**
  * JSON RPC Server (http://json-rpc.org/) Controller for OntoWiki
  *
  * test it e.g. with:
  * wget -q -O - --post-data='{"method": "count", "params": {"uri": "yourmodeluri"}, "id": 33}' "ONTOWIKI/jsonrpc/request"
  *
+ * Note:
+ *   HISTORY_ACTIONTYPE_80xxx for all actions
+ *   HISTORY_ACTIONTYPE_801xx for all meta actions
+ *   HISTORY_ACTIONTYPE_802xx for all model actions
+ *   HISTORY_ACTIONTYPE_802xx for all store actions
+ *
  * @category   OntoWiki
  * @package    extensions_components_jsonrpc
- * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class JsonrpcController extends OntoWiki_Controller_Component
