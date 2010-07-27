@@ -2,6 +2,7 @@ default:
 	@echo "please use:"
 	@echo "     'make pull' ('hg pull' for all subrepos)"
 	@echo "     'make update' ('hg pull -u' for all subrepos)"
+	@echo "     'make branch-check' ('hg branch' for all subrepos)"
 	@echo "     'make zend' (download and install Zend under libraries)"
 
 pull:
@@ -15,6 +16,10 @@ update:
 status:
 	hg --repository . status
 	hg --repository libraries/Erfurt status
+
+branch-check:
+	hg --repository . branch
+	hg --repository libraries/Erfurt branch
 
 zend:
 	rm -rf libraries/Zend
