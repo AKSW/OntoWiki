@@ -3,7 +3,7 @@ require_once 'OntoWiki/Plugin.php';
 
 class PingbackPlugin extends OntoWiki_Plugin
 {
-    public function beforeLinkedDataRedirect($event)
+    public function onBeforeLinkedDataRedirect($event)
     {
         if ($event->response === null) {
             return;
