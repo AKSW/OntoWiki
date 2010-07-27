@@ -68,9 +68,7 @@ function onNavigationEntryClick(entry){
 
 function pageList(entry){
     url = $(entry).attr('about');
-    title = $(entry).text();
     $.get(url, function(data){
-        $("#instance-title").text(title);
         $('#instance-content').html(data);
     })
 }
