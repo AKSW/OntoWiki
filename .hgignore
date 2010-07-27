@@ -9,6 +9,7 @@ config.ini
 .DS_Store
 .htaccess
 *.log
+config.ini
 nbproject
 cache
 libraries/Zend
