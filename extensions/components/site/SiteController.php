@@ -24,11 +24,6 @@ class SiteController extends OntoWiki_Controller_Component
      * The main template filename
      */
     const MAIN_TEMPLATE_NAME = 'layout.phtml';
-    
-    /**
-     * Name of per-site config file
-     */
-    const SITE_CONFIG_FILENAME = 'config.ini';
 
     /**
      * The model URI of the selected model or the uri which is given
@@ -58,13 +53,6 @@ class SiteController extends OntoWiki_Controller_Component
      * @var string|null
      */
     private $_site = null;
-    
-    /**
-     * Site config for the current site.
-     * @var array
-     */
-    protected $_siteConfig = null;
-
 
 	public function init()
     {
@@ -78,7 +66,7 @@ class SiteController extends OntoWiki_Controller_Component
      */
     public function __call($method, $args)
     {
-        $this->_site  = $this->_request->getActionName();
+        $this->_site  = $this->_privateConfig->defaultSite; // $this->_request->getActionName();
         $templatePath = $this->_owApp->componentManager->getComponentTemplatePath('site');
         $mainTemplate = sprintf('%s/%s', $this->_site, self::MAIN_TEMPLATE_NAME);
         
@@ -148,19 +136,7 @@ class SiteController extends OntoWiki_Controller_Component
     
     protected function _getSiteConfig()
     {
-        if (null === $this->_siteConfig) {
-            $this->_siteConfig = array();
-            
-            // load the site config
-            $configFilePath = sprintf('%s/sites/%s/%s', $this->_componentRoot, $this->_site, self::SITE_CONFIG_FILENAME);
-            if (is_readable($configFilePath)) {
-                if ($config = parse_ini_file($configFilePath, true)) {
-                    $this->_siteConfig = $config;
-                }
-            }
-        }
-        
-        return $this->_siteConfig;
+        return $this->getComponentHelper()->getSiteConfig();
     }
     
     protected function _getSiteNavigationAsArray()

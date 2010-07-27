@@ -348,6 +348,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         $ontoWiki = OntoWiki::getInstance();
         $ontoWiki->language = isset($config->languages->locale) ? $config->languages->locale : null;
+        $ontoWiki->config   = $config;
         
         return $ontoWiki;
     }
