@@ -46,6 +46,7 @@ if ((int) substr(ini_get('memory_limit'), 0, -1) < 256) {
 // add libraries to include path
 $includePath = get_include_path() . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
+$includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
 set_include_path($includePath);
 
 // use default timezone from php.ini or let PHP guess it
