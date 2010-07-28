@@ -68,7 +68,9 @@ class NavigationModule extends OntoWiki_Module
         $typeMenu = new OntoWiki_Menu();
         foreach ($this->_privateConfig->config as $key => $config) {
             if($this->_privateConfig->defaults->checkTypes){
-                if( $this->checkConfig($config) > 0 ){
+                if(isset($config->checkVisibility) && $config->checkVisibility == false){
+                    $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+                }else if( $this->checkConfig($config) > 0 ){
                     $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
                 }
             }else{

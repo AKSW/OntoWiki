@@ -44,11 +44,11 @@ class OntoWiki_Pager
     /**
      * Sets pager options statically.
      *
-     * The following parameters are recognized: default_limit, show_first_last, max_page_links.
-     *
      * @param array $options
      */
-    public static function setOptions(array $options) {}
+    public static function setOptions(array $options) {
+        self::$_options = array_merge(self::$_options,$options);
+    }
     
     /**
      * Returns pagination links for the current URL with $count and $limit items.
@@ -56,7 +56,7 @@ class OntoWiki_Pager
      * @param $count the total number of items
      * @param $limit the number of items per page
      */
-    public static function get($count, $limit = null, $itemsOnPage = null, $page = null)
+    public static function get($count, $limit = null, $itemsOnPage = null, $page = null, $listName=null)
     {
         if (null != $limit) {
             self::$_options['default_limit'] = $limit;
@@ -68,9 +68,10 @@ class OntoWiki_Pager
         }
         
         // get URL with params p (page number) and limit (not used atm)
-        self::$_url = new OntoWiki_Url(array(), array('p', 'limit'));
+        self::$_url = new OntoWiki_Url(array(), array('p', 'limit', 'r', 'm'));
+        self::$_url->setParam("list", $listName);
         
-        $limit = isset(self::$_url->limit) 
+        $limit = isset(self::$_url->limit)
                ? self::$_url->limit 
                : self::$_options['default_limit'];
 
@@ -142,6 +143,7 @@ class OntoWiki_Pager
                 } else {
                     for ($i = max(1 + $offset, $page - $maxLinksAsym); $i <= min(ceil($count / $limit) - $offset, $page + $maxLinksAsym); ++$i) {
                         self::$_url->{self::$_options['page_param']} = $i;
+                        
                         if ($page == $i) {
                             $pagerLinks[] = '<a class="selected minibutton">' . $i . '</a>';
                         } else {

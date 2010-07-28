@@ -1,14 +1,12 @@
 <?php
 
 /**
- * OntoWiki index controller.
+ * OntoWiki service controller.
  * 
  * @package    application
  * @subpackage mvc
- * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: ServiceController.php 4287 2009-10-12 14:00:43Z jonas.brekle@gmail.com $
  */
 class ServiceController extends Zend_Controller_Action
 {
@@ -98,9 +96,6 @@ class ServiceController extends Zend_Controller_Action
                     ' . implode(PHP_EOL, $nsFilter) . '
                 }'
             );
-            
-            // var_dump((string)$query);
-            // var_dump($store->sparqlQuery($query));
         }
     }
 
@@ -161,8 +156,11 @@ class ServiceController extends Zend_Controller_Action
         if (!empty($resource)) {
             $models = array_keys($this->_owApp->erfurt->getStore()->getAvailableModels(true));
             $isModel = in_array($resource, $models);
-            
-            // $menu->prependEntry('Edit Resource', $this->_config->urlBase . 'resource/edit/?r=')
+
+            $menu->prependEntry(
+                'Go to Resource (external)',
+                (string)$resource
+            );
 
             if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) {
                 // Delete resource option
@@ -173,12 +171,11 @@ class ServiceController extends Zend_Controller_Action
                 if ($isModel) {
                     $url->setParam('m',$resource,false);
                 }
-                $url->setParam('r',$resource,true);
-                
-                $menu->prependEntry(
-                    'Delete Resource',
-                    (string)$url
-                );
+                $url->setParam('r',$resource,true);                
+                $menu->prependEntry( 'Delete Resource', (string) $url );
+
+                // edit resource option
+                $menu->prependEntry('Edit Resource', 'javascript:editResourceFromURI(\''.(string) $resource.'\')');
             }
             
             // add resource menu entries
@@ -328,7 +325,6 @@ class ServiceController extends Zend_Controller_Action
                      // ->prependEntry('Create Instance', $this->_config->urlBase . 'index/create/?r=')
                      // ->prependEntry('Create Subclass', $this->_config->urlBase . 'index/create/?r=');
                 }
-
             }        
         }
         
@@ -927,6 +923,7 @@ class ServiceController extends Zend_Controller_Action
      *          class: prop list based on one class' resources
      *          resource: prop list based on one resource
      *          clone: prop list and values based on one resource (with new uri)
+     *          edit: prop list and values based on one resource
      *   uri  - parameter for mode (class uri, resource uri)
      */
     public function rdfauthorinitAction()
@@ -961,8 +958,11 @@ class ServiceController extends Zend_Controller_Action
             $workingMode = 'resource';
         }
 
-
-        $newResourceUri = $model->getBaseUri(). 'newResource/' .md5(date('F j, Y, g:i:s:u a'));
+        if ($workingMode != 'edit') {
+            $resourceUri = $model->getBaseUri(). 'newResource/' .md5(date('F j, Y, g:i:s:u a'));
+        } else {
+            $resourceUri = $parameter;
+        }
 
         if ($workingMode == 'class') {
             $properties = $model->sparqlQuery('SELECT DISTINCT ?uri ?value {
@@ -975,6 +975,10 @@ class ServiceController extends Zend_Controller_Action
             $properties = $model->sparqlQuery('SELECT ?uri ?value {
                 <'.$parameter.'> ?uri ?value.
                 #FILTER (isUri(?value))
+                } LIMIT 20 ', array('result_format' => 'extended'));
+        } elseif ($workingMode == 'edit') {
+            $properties = $model->sparqlQuery('SELECT ?uri ?value {
+                <'.$parameter.'> ?uri ?value.
                 } LIMIT 20 ', array('result_format' => 'extended'));
         } else { // resource
             $properties = $model->sparqlQuery('SELECT DISTINCT ?uri ?value {
@@ -1022,26 +1026,36 @@ class ServiceController extends Zend_Controller_Action
                         case 'clone':
                             $value->value  = $currentValue;
                             break;
+                        case 'edit':
+                            $value->value  = $currentValue;
+                            break;
                         case 'class':
                             $value->value  = $parameter;
                             break;
                     }
                     
                     $value->type   = $currentType;
-                    $value->hidden = true;
+                    #$value->hidden = true;
                     
                 } else { // $currentUri != EF_RDF_TYPE
-                    if ($workingMode == 'clone') {
+                    if ( ($workingMode == 'clone') || ($workingMode == 'edit') ) {
                         $value->value = $currentValue;
                         $value->type  = $currentType;
                     }
                 }
-                
-                $newProperties->$currentUri = array($value);
+
+                // deal with multiple values of a property
+                if (isset($newProperties->$currentUri)) {
+                    $tempProperty = $newProperties->$currentUri;
+                    $tempProperty[] = $value;
+                    $newProperties->$currentUri = $tempProperty;
+                } else {
+                    $newProperties->$currentUri = array($value);
+                }
             } // foreach
-            
-            $output->$newResourceUri = $newProperties;
+            $output->$resourceUri = $newProperties;
         } else {
+            // empty sparql results -> start with a plain resource
             if ($workingMode == 'class') {
                 // for classes, add the rdf:type property
                 $value = new stdClass();
@@ -1058,7 +1072,7 @@ class ServiceController extends Zend_Controller_Action
             $uri = EF_RDFS_LABEL;
             $newProperties->$uri = array($value);
             
-            $output->$newResourceUri = $newProperties;
+            $output->$resourceUri = $newProperties;
         }
 
         // send the response

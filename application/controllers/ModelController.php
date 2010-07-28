@@ -821,6 +821,11 @@ class ModelController extends OntoWiki_Controller_Base
 
                 $infoUris = $this->_config->descriptionHelper->properties;
 
+                if(class_exists('FoafHelper') && strpos($graph->getModelIri(), 'foaf.rdf') !== false){
+                    $this->view->showFoafLink = true;
+                    $this->view->foafLink = $this->_config->urlBase.'foaf/display';
+                }
+
                 $this->view->infoPredicates = array();
                 foreach ($infoUris as $infoUri) {
                     if (array_key_exists($infoUri, $this->view->predicates)) {

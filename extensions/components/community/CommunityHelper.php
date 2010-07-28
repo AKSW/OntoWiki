@@ -23,18 +23,29 @@ class CommunityHelper extends OntoWiki_Component_Helper
 {
     public function init()
     {
-        // get the main application
-        $owApp = OntoWiki::getInstance();
+        // get current request info
+        $request  = Zend_Controller_Front::getInstance()->getRequest();
 
-        // get current route info
-        $front  = Zend_Controller_Front::getInstance();
-        $router = $front->getRouter();
-
-        OntoWiki_Navigation::register('community', array(
-            'controller' => 'community',     // history controller
-            'action'     => 'list',       // list action
-            'name'       => 'Community',
-            'priority'   => 50));
+        if(($request->getControllerName() == 'resource' 
+                && $request->getActionName() == 'instances')
+          || ($request->getControllerName() == 'resource'
+                  && $request->getActionName() == 'instances'
+                  && $request->getParam('mode') == 'multi')){
+            OntoWiki_Navigation::register('community', array(
+                'controller' => 'community',     // history controller
+                'action'     => 'list',       // list action
+                'name'       => 'Community',
+                'mode'       => 'multi',
+                'priority'   => 50));
+        } else {
+            OntoWiki_Navigation::register('community', array(
+                'controller' => 'community',     // history controller
+                'action'     => 'list',       // list action
+                'name'       => 'Community',
+                'mode'       => 'single',
+                'priority'   => 50));
+        }
+        
     }
 }
 

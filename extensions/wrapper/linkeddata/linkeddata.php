@@ -67,6 +67,11 @@ class LinkeddataWrapper extends Erfurt_Wrapper
     public function isAvailable($uri, $graphUri)
     { 
         $uri = urldecode($uri);
+        if ($pos = strrpos($uri, '/')) {
+            $suffix = substr($uri, $pos+1);
+            $uri = substr($uri, 0, $pos);
+            $uri .= '/' . urlencode($suffix);
+        }
         
         // Check whether there is a cache hit...
         $id = $this->_cache->makeId($this, 'isAvailable', array($uri, $graphUri));
@@ -83,7 +88,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $retVal = false;
         $ns = array();
         $data = array();
-        
+
         // Test the URI.
         $this->_url = $uri;
         require_once 'Zend/Http/Client.php';
@@ -185,6 +190,11 @@ class LinkeddataWrapper extends Erfurt_Wrapper
     public function isHandled($uri, $graphUri)
     {
         $uri = urldecode($uri);
+        if ($pos = strrpos($uri, '/')) {
+            $suffix = substr($uri, $pos+1);
+            $uri = substr($uri, 0, $pos);
+            $uri .= '/' . urlencode($suffix);
+        }
         
         if ((substr($uri, 0, 7) !== 'http://')) {
             return false;
@@ -224,6 +234,11 @@ class LinkeddataWrapper extends Erfurt_Wrapper
     public function run($uri, $graphUri)
     {
         $uri = urldecode($uri);
+        if ($pos = strrpos($uri, '/')) {
+            $suffix = substr($uri, $pos+1);
+            $uri = substr($uri, 0, $pos);
+            $uri .= '/' . urlencode($suffix);
+        }
         
         if (null === $this->_cachedData) {
             $isAvailable = $this->isAvailable($uri, $graphUri);

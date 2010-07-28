@@ -69,7 +69,7 @@ class OntoWiki_Model
     /**
      * Constructor
      */
-    public function __construct(Erfurt_Store $store, $graph)
+    public function __construct(Erfurt_Store $store, Erfurt_Rdf_Model $graph)
     {
         // system variables
         $this->_store           = $store;
@@ -91,6 +91,22 @@ class OntoWiki_Model
         
         // $this->_titleProperties = array_flip($this->_config->properties->title->toArray());
         $this->_titleProperties = array_flip($graph->getTitleProperties());
+    }
+
+    /**
+     * get the store that hosts this model
+     * @return Erfurt_Store
+     */
+    public function getStore(){
+        return $this->_store;
+    }
+
+    /**
+     * get the raw model/graph
+     * @return Erfurt_Rdf_Model
+     */
+    public function getGraph(){
+        return $this->_model;
     }
 }
 

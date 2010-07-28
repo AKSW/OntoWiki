@@ -254,43 +254,38 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
 
 
     /**
-     * Action that will take POST-Data to save query and load existing Queries for listing
+	 * Action that will load existing Queries for listing
      */
     public function listqueryAction() {
-        $store = $this->_owApp->erfurt->getStore();
-
-        //Loading data for list of saved queries
-        //(even queries that are not for the selectedModel - do we want this?)
-        //TODO Paging for Queries
-        $loadInfoQuery = 'SELECT *
-                     FROM <'.$this->_owApp->selectedModel.'>
-                     FROM <'.$this->userDbUri.'>
-                     WHERE {
-                     ?query a <' . $this->_privateConfig->saving->ClassUri . '> .
-                     ?query <' . $this->_privateConfig->saving->DateUri . '> ?date .
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->ModelUri . '> ?model} .
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->JsonUri . '> ?json }.
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->NameUri . '> ?name }.
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->QueryUri . '> ?sparql} .
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->GeneratorUri . '> ?generator} .
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->NumViewsUri . '> ?num_views }.
-                     OPTIONAL {?query <' . $this->_privateConfig->saving->CreatorUri . '> ?creator }
-                     } ORDER BY DESC(?date)';
-
-        //echo htmlentities($loadInfoQuery);
-
-        $loadInfoData = $store->sparqlQuery($loadInfoQuery);
-
-        //var_dump($loadInfoData);
-
-        //$this->view->getQueriesQuery = $loadInfoQuery;
-        // Assign data to view
-        $this->view->listData = $loadInfoData;
-
         // set the active tab navigation
         OntoWiki_Navigation :: setActive('listquery', true);
 
-        $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Query Building'));
+        $store = $this->_owApp->erfurt->getStore();
+        $graph = $this->_owApp->selectedModel;
+
+        //Loading data for list of saved queries
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $listName = "queries";
+        if($listHelper->listExists($listName)){
+            $list = $listHelper->getList($listName);
+            $listHelper->addList($listName, $list, $this->view, "listqueryaction.phtml");
+        } else {
+            $list = new OntoWiki_Model_Instances($store, $graph, array());
+
+            $list->addTypeFilter($this->_privateConfig->saving->ClassUri, 'searchqueries');
+
+            $list->addShownProperty($this->_privateConfig->saving->ModelUri, "modelUri", false, null, true);
+            $list->addShownProperty($this->_privateConfig->saving->JsonUri, "json", false, null, true);
+            $list->addShownProperty($this->_privateConfig->saving->DescriptionUri, "description", false, null, false);
+            $list->addShownProperty($this->_privateConfig->saving->QueryUri, "query", false, null, true);
+            $list->addShownProperty($this->_privateConfig->saving->GeneratorUri, "generator", false, null, true);
+            $list->addShownProperty($this->_privateConfig->saving->NumViewsUri, "numViews", false, null, false);
+            $list->addShownProperty($this->_privateConfig->saving->CreatorUri, "creator", false, null, false);
+
+            $listHelper->addListPermanently($listName, $list, $this->view, "listqueryaction.phtml");
+        }
+        $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Saved Queries'));
+        //print_r(OntoWiki::getInstance()->_properties);
     }
 
     public function savequeryAction() {
@@ -316,7 +311,7 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
             // checking whether any queries exist yet in this store
             $existingQueriesQuery = Erfurt_Sparql_SimpleQuery :: initWithString('SELECT *
                                  WHERE {
-                                 ?query <' . EF_RDF_TYPE . '> <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->ClassUri) . '> .
+                                 ?query <' . EF_RDF_TYPE . '> <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->$this->_privateConfig->saving->ClassUri) . '> .
                                  }');
             $existingQueries = $storeGraph->sparqlQuery($existingQueriesQuery);
             if (empty ($existingQueries)) {

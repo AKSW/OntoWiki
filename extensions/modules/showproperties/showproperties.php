@@ -14,14 +14,24 @@
  */
 class ShowpropertiesModule extends OntoWiki_Module
 {
+    protected $_instances;
+
     public function init()
     {
-        // load js
-        $this->view->headScript()->appendFile($this->view->moduleUrl . 'showproperties.js');
-        
-        $session = $this->_owApp->session;
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $this->_instances = $listHelper->getLastList();
+    }
 
-        $allShownProperties =  $session->instances->getShownPropertiesPlain();
+    public function shouldShow()
+    {
+        return ($this->_instances instanceof OntoWiki_Model_Instances) && $this->_instances->hasData();
+    }
+
+    public function getContents()
+    {
+        $this->view->headScript()->appendFile($this->view->moduleUrl . 'showproperties.js');
+
+        $allShownProperties =  $this->_instances->getShownPropertiesPlain();
         $shownProperties = array();
         $shownInverseProperties = array();
         foreach ($allShownProperties as $prop) {
@@ -35,27 +45,26 @@ class ShowpropertiesModule extends OntoWiki_Module
            'var shownProperties = ' . json_encode($shownProperties).';
             var shownInverseProperties = ' . json_encode($shownInverseProperties) . ';'
         );
-    }
-    
-    public function getContents()
-    {
-        $session = $this->_owApp->session;
-        if (isset($session->instances)) {
-            if($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist)
-            {
-            $this->view->properties = $this->filterProperties($session->instances->getAllProperties(false));
-            $this->view->reverseProperties = $this->filterProperties($session->instances->getAllProperties(true));
-            }
-            else
-            {
-            $this->view->properties = $session->instances->getAllProperties(false);
-            $this->view->reverseProperties = $session->instances->getAllProperties(true);
-            }
-            
-            return $this->render('showproperties');
+
+        $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));
+        $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'propertyUsage','action'=>'add','mode'=>'query','query'=> (string) $this->_instances->getAllPropertiesQuery(false))))));
+        $url->setParam('init', true);
+        $this->view->propertiesListLink = (string) $url;
+        $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'propertyUsage','action'=>'add','mode'=>'query','query'=> (string) $this->_instances->getAllPropertiesQuery(true))))));
+        $this->view->inversePropertiesListLink = (string) $url;
+
+        if($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist)
+        {
+            $this->view->properties = $this->filterProperties($this->_instances->getAllProperties(false));
+            $this->view->reverseProperties = $this->filterProperties($this->_instances->getAllProperties(true));
+        }
+        else
+        {
+            $this->view->properties = $this->_instances->getAllProperties(false);
+            $this->view->reverseProperties = $this->_instances->getAllProperties(true);
         }
         
-        return 'No instances object';
+        return $this->render('showproperties');
     }
     
     public function getStateId()

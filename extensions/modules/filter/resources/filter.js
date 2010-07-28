@@ -30,7 +30,7 @@ function updatePossibleValues() {
       $("#addwindow #possiblevalues").addClass("is-processing");
       $("#property option:selected").each(function () {
             var inverse = $(this).hasClass("InverseProperty") ? "true" : "false";
-            $("#possiblevalues").load(urlBase+"filter/getpossiblevalues?predicate="+escape($(this).attr("about"))+"&inverse="+inverse, {}, function(){
+            $("#possiblevalues").load(urlBase+"filter/getpossiblevalues?predicate="+escape($(this).attr("about"))+"&inverse="+inverse+"&list="+listName, {}, function(){
                  $("#addwindow #possiblevalues").removeClass("is-processing");
             });
           });

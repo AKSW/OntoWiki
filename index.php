@@ -46,6 +46,7 @@ if ((int) substr(ini_get('memory_limit'), 0, -1) < 256) {
 // add libraries to include path
 $includePath = get_include_path() . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
+$includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
 set_include_path($includePath);
 
 // use default timezone from php.ini or let PHP guess it
@@ -91,8 +92,8 @@ require_once 'Zend/Application.php';
 
 // create application
 $application = new Zend_Application(
-                'default',
-                ONTOWIKI_ROOT . 'application/config/application.ini'
+    'default',
+    ONTOWIKI_ROOT . 'application/config/application.ini'
 );
 
 /** OntoWiki */
@@ -101,6 +102,11 @@ require_once 'OntoWiki.php';
 // define alias for backward compatiblity
 class_alias('OntoWiki', 'OntoWiki_Application');
 
-// bootstrap and run
-$application->bootstrap()
-        ->run();
+// bootstrap
+$application->bootstrap();
+
+$event = new Erfurt_Event('onPostBootstrap');
+$event->bootstrap = $application->getBootstrap();
+$event->trigger();
+
+$application->run();

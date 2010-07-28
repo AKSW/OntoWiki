@@ -303,12 +303,16 @@ class OntoWiki_Navigation
         if ($hasRoute) {
             $url = new OntoWiki_Url(array('route' => $current['route']), self::$_keepParams);
         } else {
-            $controller = self::$_navigation[$elementKey]['controller'];
-            $action     = self::$_navigation[$elementKey]['action'] ? self::$_navigation[$elementKey]['action'] : null;
+            $controller = $current['controller'];
+            $action     = $current['action'] ? $current['action'] : null;
             
             $url = new OntoWiki_Url(array('controller' => $controller, 'action' => $action), self::$_keepParams);
         }
-        
+        foreach($current as $key => $value){
+            if($key != 'route' && $key != 'controller' && $key != 'action' && $key != 'priority' && $key != 'name'){
+                $url->setParam($key, $value);
+            }
+        }
         return $url;
     }
 }
