@@ -8,6 +8,9 @@
                 <?php echo $this->description['http://rdfs.org/sioc/ns#content'][0]['value']; ?>
             <?php endif ?>
 
+            <p class="meta">
+            <?php echo $this->partial( 'lod2/lastchange.phtml', $this->lastchange($this->resourceUri)); ?>
+            </p>
         </div>
     </div>
 </div>

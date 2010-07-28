@@ -22,6 +22,11 @@
         <label>Deliverable</label>
     </owl:Class>
 
+    <owl:Class rdf:about="http://lod2.eu/schema/Partner">
+        <label>Partner</label>
+        <subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Group"/>
+    </owl:Class>
+
     <owl:Class rdf:about="http://lod2.eu/schema/WorkingPackage">
         <label>Working Package</label>
     </owl:Class>

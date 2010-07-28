@@ -1,0 +1,8 @@
+
+partner:FU-Berlin  a lod2:Partner;
+    skos:broader :Partner;
+    foaf:based_near <http://dbpedia.org/resource/Berlin>;
+    foaf:homepage <http://www.fu-berlin.de/>;
+    rdfs:label "Freie Universität Berlin".
+
+

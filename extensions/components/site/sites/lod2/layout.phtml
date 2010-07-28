@@ -9,6 +9,10 @@
     <link rel="alternate" type="application/rdf+xml" href="<?php echo $this->resourceUri ?>.rdf" />
     <link rel="pingback" href="<?php echo $this->pingbackUri ?>" />
 
+    <link
+        rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/primaryTopic') ?>"
+        href="<?php echo $this->resourceUri?>" />
+
     <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/main.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/reset.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/text.css" media="screen" />
@@ -85,6 +89,7 @@
             <h2 id="">TODOs :-(</h2>
         <ul>
             <li>Jonas: View_Helper navigation(string $uriOfSKOSContainer) bitte komplette Navi ausgeben (nach sysont:order sortieren); ausserdem: /Stack scheint manchmal "Stack" und manchmal "Technology Stack" zu heißen ...</li>
+            <li>Jonas: View_Helper lastchange($resourceUri)</li>
             <li>Norm: Kann man den modulen den options-array durchreichen? (z.B. um resource uris als links zu nehmen)
             <ul>
                 <li>Ja, aber bisher nur Render-Optionen wie CSS-Klasse und -ID. Könnte was an die getContents() durchreichen, aber das Modul müsste dann natürlich auf die exakten Keys reagieren.</li>

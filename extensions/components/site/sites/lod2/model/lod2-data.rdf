@@ -1,6 +1,6 @@
 
 <!-- Processed by Id: cwm.py,v 1.197 2007-12-13 15:38:39 syosi Exp -->
-<!--     using base file:///var/www/ow/tip/extensions/components/site/sites/lod2/model/lod2-data.n3-->
+<!--     using base file:///var/www/ow/tip/extensions/components/site/sites/lod2/model/lod2-data-all.n3-->
 
 
 <rdf:RDF xmlns="http://www.w3.org/2000/01/rdf-schema#"
@@ -19,25 +19,6 @@
         <owl:imports rdf:resource="http://lod2.eu/schema/"/>
         <skos:note>This knowledge base consists of all resources which are part of the lod2.eu webpage.</skos:note>
     </owl:Ontology>
-
-    <foaf:Organization rdf:about="http://lod2.eu/AKSW">
-        <sioc:content>
-&#60;p&#62;The Research Group &#60;strong&#62;Agile Knowledge Engineering and Semantic Web (AKSW)&#60;/strong&#62;
-is hosted by the Chair of &#60;a href="http://bis.informatik.uni-leipzig.de"&#62; Business Information Systems&#60;/a&#62; (BIS)
-of the &#60;a href="http://www.informatik.uni-leipzig.de"&#62; Institute of Computer Science&#60;/a&#62; (IfI) /
-&#60;a href="http://www.uni-leipzig.de"&#62;University of Leipzig&#60;/a&#62; as well as the &#60;a href="http://infai.org"&#62;
-Institute for Applied Informatics&#60;/a&#62; (InfAI).&#60;/p&#62;
-&#60;ul&#62;
-&#60;li&#62;Development of methods, tools and applications for adaptive Knowledge Engineering in the context of the Semantic Web&#60;/li&#62;
-&#60;li&#62;Research of underlying Semantic Web technologies and development of fundamental Semantic Web tools and applications&#60;/li&#62;
-&#60;li&#62;Maturation of strategies for fruitfully combining the Social Web paradigms with semantic knowledge representation techniques&#60;/li&#62;
-&#60;/ul&#62;
-&#60;p&#62;AKSW is committed to the open source, open access and open knowledge movements.&#60;/p&#62;
-</sioc:content>
-        <sioc:feed rdf:resource="http://blog.aksw.org/feed/atom/"/>
-        <label>AKSW</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
 
     <lod2:ActivityCluster rdf:about="http://lod2.eu/ActivityCluster/A1">
         <sioc:content>Fundamental and integration activities will form the ground work which provides the necessary infrastructure and integration methodology. In particular, these types of activities serve the following purposes:
@@ -89,68 +70,106 @@ The integration methodology and infrastructure will ensure that the components a
         <skos:broader rdf:resource="http://lod2.eu/TechnologyStack"/>
     </sioct:WikiArticle>
 
-    <foaf:Organization rdf:about="http://lod2.eu/CentrumWiskundeAndInformatica">
-        <label>Centrum Wiskunde &#38; Informatica</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
-
     <skos:ConceptScheme rdf:about="http://lod2.eu/ConceptScheme/Navigation">
         <label>Navigation</label>
     </skos:ConceptScheme>
 
-    <foaf:Organization rdf:about="http://lod2.eu/DERI">
-        <label>Digital Enterprise Research Institute</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
-
-    <foaf:Organization rdf:about="http://lod2.eu/Exalead">
-        <label>Exalead</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
-
-    <foaf:Organization rdf:about="http://lod2.eu/FU-Berlin">
-        <label>Freie Universität Berlin</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
-
-    <foaf:Organization rdf:about="http://lod2.eu/OKFN">
-        <label>Open Knowledge Foundation</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
-
     <doap:Project rdf:about="http://lod2.eu/OntoWiki">
-        <lod2:partner rdf:resource="http://lod2.eu/AKSW"/>
+        <lod2:partner rdf:resource="http://lod2.eu/Partner/AKSW"/>
         <sioc:feed rdf:resource="http://blog.aksw.org/feed/?cat=5"/>
-        <doap:description>...</doap:description>
+        <doap:description>
+OntoWiki is a tool providing support for agile, distributed knowledge engineering scenarios. It facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.</doap:description>
         <doap:homepage rdf:resource="http://ontowiki.net"/>
         <label>OntoWiki</label>
         <skos:broader rdf:resource="http://lod2.eu/Tool"/>
     </doap:Project>
-
-    <foaf:Organization rdf:about="http://lod2.eu/OpenLink">
-        <label>OpenLink Software Ltd.</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
 
     <sioct:WikiArticle rdf:about="http://lod2.eu/Partner">
         <label>Partner</label>
         <skos:topConceptOf rdf:resource="http://lod2.eu/ConceptScheme/Navigation"/>
     </sioct:WikiArticle>
 
-    <foaf:Organization rdf:about="http://lod2.eu/SemanticWebCompany">
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/AKSW">
+        <sioc:content>
+&#60;p&#62;The Research Group &#60;strong&#62;Agile Knowledge Engineering and Semantic Web (AKSW)&#60;/strong&#62;
+is hosted by the Chair of &#60;a href="http://bis.informatik.uni-leipzig.de"&#62; Business Information Systems&#60;/a&#62; (BIS)
+of the &#60;a href="http://www.informatik.uni-leipzig.de"&#62; Institute of Computer Science&#60;/a&#62; (IfI) /
+&#60;a href="http://www.uni-leipzig.de"&#62;University of Leipzig&#60;/a&#62; as well as the &#60;a href="http://infai.org"&#62;
+Institute for Applied Informatics&#60;/a&#62; (InfAI).&#60;/p&#62;
+&#60;ul&#62;
+&#60;li&#62;Development of methods, tools and applications for adaptive Knowledge Engineering in the context of the Semantic Web&#60;/li&#62;
+&#60;li&#62;Research of underlying Semantic Web technologies and development of fundamental Semantic Web tools and applications&#60;/li&#62;
+&#60;li&#62;Maturation of strategies for fruitfully combining the Social Web paradigms with semantic knowledge representation techniques&#60;/li&#62;
+&#60;/ul&#62;
+&#60;p&#62;AKSW is committed to the open source, open access and open knowledge movements.&#60;/p&#62;
+</sioc:content>
+        <sioc:feed rdf:resource="http://blog.aksw.org/feed/atom/"/>
+        <label>AKSW</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/Leipzig"/>
+        <foaf:homepage rdf:resource="http://aksw.org/"/>
+    </lod2:Partner>
+
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/CentrumWiskundeAndInformatica">
+        <label>Centrum Wiskunde &#38; Informatica</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/Amsterdam"/>
+        <foaf:homepage rdf:resource="http://www.cwi.nl/"/>
+    </lod2:Partner>
+
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/DERI">
+        <label>Digital Enterprise Research Institute</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/Galway"/>
+        <foaf:homepage rdf:resource="http://www.deri.ie/"/>
+    </lod2:Partner>
+
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/Exalead">
+        <label>Exalead</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/Paris"/>
+        <foaf:homepage rdf:resource="http://www.exalead.com/"/>
+    </lod2:Partner>
+
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/FU-Berlin">
+        <label>Freie Universität Berlin</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/Berlin"/>
+        <foaf:homepage rdf:resource="http://www.fu-berlin.de/"/>
+    </lod2:Partner>
+
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/OKFN">
+        <label>Open Knowledge Foundation</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/Cambridge"/>
+        <foaf:homepage rdf:resource="http://www.okfn.org/"/>
+    </lod2:Partner>
+
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/OpenLink">
+        <label>OpenLink Software Ltd.</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/London"/>
+        <foaf:homepage rdf:resource="http://www.openlinksw.com/"/>
+    </lod2:Partner>
+
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/SemanticWebCompany">
         <label>Semantic Web Company</label>
         <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/Vienna"/>
+        <foaf:homepage rdf:resource="http://www.semantic-web.at/"/>
+    </lod2:Partner>
+
+    <lod2:Partner rdf:about="http://lod2.eu/Partner/TenForce">
+        <label>TenForce</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+        <foaf:based_near rdf:resource="http://dbpedia.org/resource/Kampenhout"/>
+        <foaf:homepage rdf:resource="http://www.tenforce.com/"/>
+    </lod2:Partner>
 
     <sioct:WikiArticle rdf:about="http://lod2.eu/TechnologyStack">
         <label>Technology Stack</label>
         <skos:topConceptOf rdf:resource="http://lod2.eu/ConceptScheme/Navigation"/>
     </sioct:WikiArticle>
-
-    <foaf:Organization rdf:about="http://lod2.eu/TenForce">
-        <label>TenForce</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
 
     <sioct:WikiArticle rdf:about="http://lod2.eu/Tool">
         <label>Tool</label>
@@ -171,9 +190,4 @@ We will integrate and syndicate linked data with large-scale, existing applicati
         <sioc:feed rdf:resource="http://blog.aksw.org/feed/atom/"/>
         <label>Welcome</label>
     </sioct:WikiArticle>
-
-    <foaf:Organization rdf:about="http://lod2.eu/WoltersKluwer">
-        <label>Wolters Kluwer Deutschland</label>
-        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
-    </foaf:Organization>
 </rdf:RDF>

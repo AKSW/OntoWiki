@@ -27,6 +27,7 @@ if (isset($this->description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])
         case (isset($types['http://usefulinc.com/ns/doap#Project'])):
             echo $this->partial( 'lod2/types/project.phtml', $templateData);
             break;
+        case (isset($types['http://lod2.eu/schema/Partner'])):
         case (isset($types['http://xmlns.com/foaf/0.1/Organization'])):
             echo $this->partial( 'lod2/types/partner.phtml', $templateData);
             break;

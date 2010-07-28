@@ -1,0 +1,8 @@
+
+partner:SemanticWebCompany  a lod2:Partner;
+    skos:broader :Partner;
+    foaf:based_near <http://dbpedia.org/resource/Vienna>;
+    foaf:homepage <http://www.semantic-web.at/>;
+    rdfs:label "Semantic Web Company".
+
+

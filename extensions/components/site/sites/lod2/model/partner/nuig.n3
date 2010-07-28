@@ -1,0 +1,8 @@
+
+partner:DERI a lod2:Partner;
+    skos:broader :Partner;
+    foaf:based_near <http://dbpedia.org/resource/Galway>;
+    foaf:homepage <http://www.deri.ie/>;
+    rdfs:label "Digital Enterprise Research Institute".
+
+

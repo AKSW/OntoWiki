@@ -15,9 +15,26 @@
     skos:note "This knowledge imports schema resources which are used by the LOD2 website.";
     rdfs:label "LOD2 vocabulary".
 
+###
+# Properties
+###
+
 lod2:partner a owl:ObjectProperty;
     skos:note "This property is used to link a resource to an associated LOD2 partner.";
     rdfs:label "associated partner".
+
+lod2:hasWorkingPackage a owl:ObjectProperty;
+    rdfs:domain lod2:ActivityCluster;
+    rdfs:range lod2:WorkingPackage;
+    rdfs:label "has working package".
+
+###
+# Classes
+###
+
+lod2:Partner a owl:Class;
+    rdfs:subClassOf foaf:Group;
+    rdfs:label "Partner".
 
 lod2:ActivityCluster a owl:Class;
     rdfs:label "Activity Cluster".
@@ -27,10 +44,5 @@ lod2:WorkingPackage a owl:Class;
 
 lod2:Deliverable a owl:Class;
     rdfs:label "Deliverable".
-
-lod2:hasWorkingPackage a owl:ObjectProperty;
-    rdfs:domain lod2:ActivityCluster;
-    rdfs:range lod2:WorkingPackage;
-    rdfs:label "has working package".
 
 
