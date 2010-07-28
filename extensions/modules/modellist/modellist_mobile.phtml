@@ -7,15 +7,15 @@
  */
 ?>
 <?php if (!empty($this->models)): ?>
-    <ol class="bullets-none separated">
+    <ul class="rounded">
     	<?php foreach ($this->models as $modelDetails): ?>
-    		<li>
-    			<a class="Model <?php echo $modelDetails['selected'] ?>" href="<?php echo $modelDetails['url'] ?>" about="<?php echo $modelDetails['graphUri'] ?>">
-    				<?php echo $modelDetails['label'] ?>
-    			</a>
+    		<li class="arrow">
+                    <a href="#" onclick="getBase(this)" about="<?php echo $modelDetails['graphUri'] ?>">
+                        <?php echo $modelDetails['label'] ?>
+                    </a>
     		</li>
     	<?php endforeach; ?>
-    </ol>
+    </ul>
 <?php else: ?>
     <p class="messagebox info"><?php echo $this->_('No knowledge bases found.') ?></p>
 <?php endif; ?>
