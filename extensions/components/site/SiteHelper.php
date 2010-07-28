@@ -30,19 +30,25 @@ class SiteHelper extends OntoWiki_Component_Helper
      */
     protected $_siteConfig = null;
     
+    /**
+     * Current pseudo file extension.
+     * @var string
+     */
+    protected $_currentSuffix = '';
+    
     public function onPostBootstrap($event)
     {
-        $router = $event->bootstrap->getResource('Router');
+        $router     = $event->bootstrap->getResource('Router');
+        $request    = Zend_Controller_Front::getInstance()->getRequest();
+        $controller = $request->getControllerName();
+        $action     = $request->getActionName();
+        
         if ($router->hasRoute('empty')) {
             $emptyRoute = $router->getRoute('empty');
             $defaults   = $emptyRoute->getDefaults();
             
             $defaultController = $defaults['controller'];
             $defaultAction     = $defaults['action'];
-            
-            $request    = Zend_Controller_Front::getInstance()->getRequest();
-            $controller = $request->getControllerName();
-            $action     = $request->getActionName();
             
             // are we currently following the empty route?
             if ($controller === $defaultController && $action === $defaultAction) {
@@ -52,7 +58,7 @@ class SiteHelper extends OntoWiki_Component_Helper
                 
                 if (isset($siteConfig['index'])) {
                     // TODO: detect accept header
-                    $indexResource = $siteConfig['index'] . '.html';
+                    $indexResource = $siteConfig['index'] . $this->getCurrentSuffix();
                     $requestUri    = $this->_config->urlBase
                                    . ltrim($request->getRequestUri(), '/');
 
@@ -80,7 +86,8 @@ class SiteHelper extends OntoWiki_Component_Helper
     {
         if ($event->type === 'html') {
             $event->request->setControllerName('site');
-            $event->request->setActionName($this->_privateConfig->defaultsite);
+            $event->request->setActionName($this->_privateConfig->defaultSite);
+            $this->_currentSuffix = '.html';
         } else {
             // export
             $event->request->setControllerName('resource');
@@ -91,6 +98,33 @@ class SiteHelper extends OntoWiki_Component_Helper
         
         $event->request->setDispatched(false);
         return false;
+    }
+    
+    public function onBuildUrl($event)
+    {
+        $site = $this->getSiteConfig();
+        $graph = isset($site['model']) ? $site['model'] : null;
+        $resource = isset($event->params['r']) ? OntoWiki_Utils::expandNamespace($event->params['r']) : null;
+        
+        // URL for this site?
+        if ($graph === $event->base) {
+            if (false !== strpos($resource, $graph)) {
+                // LD-capable
+                $event->url = $resource 
+                            . $this->getCurrentSuffix();
+                
+                // URL created
+                return true;
+            } else {
+                // classic
+                $event->route      = null;
+                $event->controller = 'site';
+                $event->action     = 'lod2'; // TODO: detect actual site
+                
+                // URL not created, but params changed
+                return false;
+            }
+        }
     }
     
     public function getSiteConfig()
@@ -109,5 +143,10 @@ class SiteHelper extends OntoWiki_Component_Helper
         }
         
         return $this->_siteConfig;
+    }
+    
+    public function getCurrentSuffix()
+    {
+        return $this->_currentSuffix;
     }
 }

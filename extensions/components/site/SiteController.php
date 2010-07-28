@@ -66,7 +66,23 @@ class SiteController extends OntoWiki_Controller_Component
      */
     public function __call($method, $args)
     {
-        $this->_site  = $this->_privateConfig->defaultSite; // $this->_request->getActionName();
+        $action = $this->_request->getActionName();
+        $router = $this->_owApp->getBootstrap()->getResource('Router');
+        
+        if ($router->hasRoute('empty')) {
+            $emptyRoute    = $router->getRoute('empty');
+            $defaults      = $emptyRoute->getDefaults();
+            $defaultAction = $defaults['action'];
+        }
+        
+        if (empty($action) || (isset($defaultAction) && $action === $defaultAction)) {
+            // use default site for empty or default action (index)
+            $this->_site = $this->_privateConfig->defaultSite;
+        } else {
+            // use action as site otherwise
+            $this->_site  = $action;
+        }
+        
         $templatePath = $this->_owApp->componentManager->getComponentTemplatePath('site');
         $mainTemplate = sprintf('%s/%s', $this->_site, self::MAIN_TEMPLATE_NAME);
         
