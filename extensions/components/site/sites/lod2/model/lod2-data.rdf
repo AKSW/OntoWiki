@@ -1,0 +1,179 @@
+
+<!-- Processed by Id: cwm.py,v 1.197 2007-12-13 15:38:39 syosi Exp -->
+<!--     using base file:///var/www/ow/tip/extensions/components/site/sites/lod2/model/lod2-data.n3-->
+
+
+<rdf:RDF xmlns="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:doap="http://usefulinc.com/ns/doap#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:lod2="http://lod2.eu/schema/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:sioc="http://rdfs.org/sioc/ns#"
+    xmlns:sioct="http://rdfs.org/sioc/types#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+
+    <owl:Ontology rdf:about="http://lod2.eu/">
+        <label>LOD2 website data</label>
+        <owl:imports rdf:resource="http://lod2.eu/schema/"/>
+        <skos:note>This knowledge base consists of all resources which are part of the lod2.eu webpage.</skos:note>
+    </owl:Ontology>
+
+    <foaf:Organization rdf:about="http://lod2.eu/AKSW">
+        <sioc:content>
+&#60;p&#62;The Research Group &#60;strong&#62;Agile Knowledge Engineering and Semantic Web (AKSW)&#60;/strong&#62;
+is hosted by the Chair of &#60;a href="http://bis.informatik.uni-leipzig.de"&#62; Business Information Systems&#60;/a&#62; (BIS)
+of the &#60;a href="http://www.informatik.uni-leipzig.de"&#62; Institute of Computer Science&#60;/a&#62; (IfI) /
+&#60;a href="http://www.uni-leipzig.de"&#62;University of Leipzig&#60;/a&#62; as well as the &#60;a href="http://infai.org"&#62;
+Institute for Applied Informatics&#60;/a&#62; (InfAI).&#60;/p&#62;
+&#60;ul&#62;
+&#60;li&#62;Development of methods, tools and applications for adaptive Knowledge Engineering in the context of the Semantic Web&#60;/li&#62;
+&#60;li&#62;Research of underlying Semantic Web technologies and development of fundamental Semantic Web tools and applications&#60;/li&#62;
+&#60;li&#62;Maturation of strategies for fruitfully combining the Social Web paradigms with semantic knowledge representation techniques&#60;/li&#62;
+&#60;/ul&#62;
+&#60;p&#62;AKSW is committed to the open source, open access and open knowledge movements.&#60;/p&#62;
+</sioc:content>
+        <sioc:feed rdf:resource="http://blog.aksw.org/feed/atom/"/>
+        <label>AKSW</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <lod2:ActivityCluster rdf:about="http://lod2.eu/ActivityCluster/A1">
+        <sioc:content>Fundamental and integration activities will form the ground work which provides the necessary infrastructure and integration methodology. In particular, these types of activities serve the following purposes:
+&#60;ol&#62;
+&#60;li&#62;the efficient and uniform use of existing and complementary technology, and,&#60;/li&#62;
+&#60;li&#62;smooth integration of the various modules, components and subsystems.&#60;/li&#62;
+&#60;/ol&#62;
+The integration methodology and infrastructure will ensure that the components are combined in the right way. These activities also provide a basis for the easy development of real-world solutions that integrate the various project outcomes.</sioc:content>
+        <label>A1 - Fundamental and integration activities</label>
+        <skos:broader rdf:resource="http://lod2.eu/ActivityClusters"/>
+    </lod2:ActivityCluster>
+
+    <lod2:ActivityCluster rdf:about="http://lod2.eu/ActivityCluster/A2">
+        <sioc:content>Within this cluster of activities we will develop the technologies necessary to deliver the LOD2 promise – creating an integrated infrastructure for semantic information integration on the Web. In this context, three core challenges need to be addressed:
+&#60;ol&#62;
+&#60;li&#62;ensure the knowledge stores scale with the size of the Data Web,&#60;/li&#62;
+&#60;li&#62;provide means for automatic knowledge extraction, alignment, interlinking and&#60;/li&#62;
+&#60;li&#62;enable social collaboration.&#60;/li&#62;
+&#60;/ol&#62;</sioc:content>
+        <label>A2 - Component activities</label>
+        <skos:broader rdf:resource="http://lod2.eu/ActivityClusters"/>
+    </lod2:ActivityCluster>
+
+    <lod2:ActivityCluster rdf:about="http://lod2.eu/ActivityCluster/A3">
+        <sioc:content>The effective deployment of the LOD2 Stack will be demonstrated within case studies driven by project members representing LOD2 end-user communities and describing real world application scenarios. The use of case studies is twofold. Firstly, they are used to extract requirements, which guide the core R&#38;D process. Secondly, case studies are also used to validate the results and evaluate their applicability and impact. User centric activities will, additionally, validate our technologies viz. provide the evaluation environment. Each case study will incorporate a technology partner who is responsible for supporting the use case partners in deploying and using LOD2 R&#38;D results and for feeding back business requirements to the R&#38;D.</sioc:content>
+        <label>A3 - Use case activities</label>
+        <skos:broader rdf:resource="http://lod2.eu/ActivityClusters"/>
+    </lod2:ActivityCluster>
+
+    <lod2:ActivityCluster rdf:about="http://lod2.eu/ActivityCluster/A4">
+        <sioc:content>A4 - Maximizing real-world impact activities contain specific measures related to the exploitation and dissemination of project results. While user-centric activities represent the customer perspective, this activity takes concrete steps towards successful exploitation from the point of view of the R&#38;D partners. There are two major factors, which determine the impact and thus the exploitation potential of an IP: cost and benefit. Key to exploitation is the project visibility – making prospective users and the prospective community in general aware of the project’s benefits. Within LOD2, we lower the cost of adopting LOD technologies by aligning project outcomes with relevant standardization activities.</sioc:content>
+        <label>A4 - Maximizing real-world impact activities</label>
+        <skos:broader rdf:resource="http://lod2.eu/ActivityClusters"/>
+    </lod2:ActivityCluster>
+
+    <lod2:ActivityCluster rdf:about="http://lod2.eu/ActivityCluster/A5">
+        <sioc:content>A5 - Management activities will ensure that LOD2 runs smoothly in a coherent and cohesive fashion and that all contractual obligations are met.</sioc:content>
+        <label>A5 - Management activities</label>
+        <skos:broader rdf:resource="http://lod2.eu/ActivityClusters"/>
+    </lod2:ActivityCluster>
+
+    <sioct:WikiArticle rdf:about="http://lod2.eu/ActivityClusters">
+        <sioc:content>The work packages of LOD2 fall into five activity clusters ...</sioc:content>
+        <label>Activity Clusters</label>
+    </sioct:WikiArticle>
+
+    <sioct:WikiArticle rdf:about="http://lod2.eu/Algorithms">
+        <label>Algorithm</label>
+        <skos:broader rdf:resource="http://lod2.eu/TechnologyStack"/>
+    </sioct:WikiArticle>
+
+    <foaf:Organization rdf:about="http://lod2.eu/CentrumWiskundeAndInformatica">
+        <label>Centrum Wiskunde &#38; Informatica</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <skos:ConceptScheme rdf:about="http://lod2.eu/ConceptScheme/Navigation">
+        <label>Navigation</label>
+    </skos:ConceptScheme>
+
+    <foaf:Organization rdf:about="http://lod2.eu/DERI">
+        <label>Digital Enterprise Research Institute</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <foaf:Organization rdf:about="http://lod2.eu/Exalead">
+        <label>Exalead</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <foaf:Organization rdf:about="http://lod2.eu/FU-Berlin">
+        <label>Freie Universität Berlin</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <foaf:Organization rdf:about="http://lod2.eu/OKFN">
+        <label>Open Knowledge Foundation</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <doap:Project rdf:about="http://lod2.eu/OntoWiki">
+        <lod2:partner rdf:resource="http://lod2.eu/AKSW"/>
+        <sioc:feed rdf:resource="http://blog.aksw.org/feed/?cat=5"/>
+        <doap:description>...</doap:description>
+        <doap:homepage rdf:resource="http://ontowiki.net"/>
+        <label>OntoWiki</label>
+        <skos:broader rdf:resource="http://lod2.eu/Tool"/>
+    </doap:Project>
+
+    <foaf:Organization rdf:about="http://lod2.eu/OpenLink">
+        <label>OpenLink Software Ltd.</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <sioct:WikiArticle rdf:about="http://lod2.eu/Partner">
+        <label>Partner</label>
+        <skos:topConceptOf rdf:resource="http://lod2.eu/ConceptScheme/Navigation"/>
+    </sioct:WikiArticle>
+
+    <foaf:Organization rdf:about="http://lod2.eu/SemanticWebCompany">
+        <label>Semantic Web Company</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <sioct:WikiArticle rdf:about="http://lod2.eu/TechnologyStack">
+        <label>Technology Stack</label>
+        <skos:topConceptOf rdf:resource="http://lod2.eu/ConceptScheme/Navigation"/>
+    </sioct:WikiArticle>
+
+    <foaf:Organization rdf:about="http://lod2.eu/TenForce">
+        <label>TenForce</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+
+    <sioct:WikiArticle rdf:about="http://lod2.eu/Tool">
+        <label>Tool</label>
+        <skos:broader rdf:resource="http://lod2.eu/TechnologyStack"/>
+    </sioct:WikiArticle>
+
+    <sioct:WikiArticle rdf:about="http://lod2.eu/Welcome">
+        <sioc:content>Over the past 3 years, the semantic web activity has gained momentum with the widespread publishing of structured data as RDF. The Linked Data paradigm has therefore evolved from a practical research idea into a very promising candidate for addressing one of the biggest challenges in the area of intelligent information management: the exploitation of the Web as a platform for data and information integration in addition to document search. To translate this initial success into a world-scale disruptive reality, encompassing the Web 2.0 world and enterprise data alike, the following research challenges need to be addressed: improve coherence and quality of data published on the Web, close the performance gap between relational and RDF data management, establish trust on the Linked Data Web and generally lower the entrance barrier for data publishers and users. With partners among those who initiated and strongly supported the Linked Open Data initiative, the LOD2 project aims at tackling these challenges by developing:
+&#60;ol&#62;
+&#60;li&#62;enterprise-ready tools and methodologies for exposing and managing very large amounts of structured information on the Data Web,&#60;/li&#62;
+&#60;li&#62;a testbed and bootstrap network of high-quality multi-domain, multi-lingual ontologies from sources such as Wikipedia and OpenStreetMap.&#60;/li&#62;
+&#60;li&#62;algorithms based on machine learning for automatically interlinking and fusing data from the Web.&#60;/li&#62;
+&#60;li&#62;standards and methods for reliably tracking provenance, ensuring privacy and data security as well as for assessing the quality of information.&#60;/li&#62;
+&#60;li&#62;adaptive tools for searching, browsing, and authoring of Linked Data.&#60;/li&#62;
+&#60;/ol&#62;
+We will integrate and syndicate linked data with large-scale, existing applications and showcase the benefits in the three application scenarios of media &#38; publishing, corporate data intranets and eGovernment. The resulting tools, methods and data sets have the potential to change the Web as we know it today.
+</sioc:content>
+        <sioc:feed rdf:resource="http://blog.aksw.org/feed/atom/"/>
+        <label>Welcome</label>
+    </sioct:WikiArticle>
+
+    <foaf:Organization rdf:about="http://lod2.eu/WoltersKluwer">
+        <label>Wolters Kluwer Deutschland</label>
+        <skos:broader rdf:resource="http://lod2.eu/Partner"/>
+    </foaf:Organization>
+</rdf:RDF>

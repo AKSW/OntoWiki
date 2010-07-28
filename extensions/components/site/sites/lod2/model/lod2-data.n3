@@ -17,11 +17,11 @@
 
 <http://lod2.eu/ConceptScheme/Navigation> a skos:ConceptScheme; rdfs:label "Navigation".
 
-:Partner a skos:Concept, sioc:Post;
+:Partner a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     rdfs:label "Partner".
 
-:AKSW a skos:Concept, foaf:Organization;
+:AKSW a foaf:Organization;
     skos:broader :Partner;
     sioc:feed <http://blog.aksw.org/feed/atom/>;
     rdfs:label "AKSW";
@@ -39,23 +39,57 @@ Institute for Applied Informatics</a> (InfAI).</p>
 <p>AKSW is committed to the open source, open access and open knowledge movements.</p>
 """.
 
-:OpenLink a skos:Concept, foaf:Organization;
+:CentrumWiskundeAndInformatica a foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "Centrum Wiskunde & Informatica".
+
+:DERI a foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "Digital Enterprise Research Institute".
+
+:FU-Berlin  a foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "Freie Universität Berlin".
+
+:OpenLink a foaf:Organization;
     skos:broader :Partner;
     rdfs:label "OpenLink Software Ltd.".
 
-:Stack a skos:Concept, sioc:Post;
+:SemanticWebCompany  a foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "Semantic Web Company".
+
+:TenForce  a foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "TenForce".
+
+:Exalead a foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "Exalead".
+
+:WoltersKluwer a foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "Wolters Kluwer Deutschland".
+
+:OKFN a foaf:Organization;
+    skos:broader :Partner;
+    rdfs:label "Open Knowledge Foundation".
+
+
+
+:TechnologyStack a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     rdfs:label "Technology Stack".
 
-:Tool a skos:Concept, sioc:Post;
-    skos:broader :Stack;
+:Tool a sioct:WikiArticle;
+    skos:broader :TechnologyStack;
     rdfs:label "Tool".
 
-:Algorithms a skos:Concept, sioc:Post;
-    skos:broader :Stack;
+:Algorithms a sioct:WikiArticle;
+    skos:broader :TechnologyStack;
     rdfs:label "Algorithm".
 
-:OntoWiki a skos:Concept, doap:Project;
+:OntoWiki a doap:Project;
     skos:broader :Tool;
     doap:homepage <http://ontowiki.net>;
     doap:description """...""";
@@ -67,32 +101,54 @@ Institute for Applied Informatics</a> (InfAI).</p>
     rdfs:label "Welcome";
     sioc:feed <http://blog.aksw.org/feed/atom/>;
     sioc:content
-"""
-<p>
-Over the past 3 years, the semantic web activity has gained momentum with the widespread publishing of
-structured data as RDF. The Linked Data paradigm has therefore evolved from a practical research idea into a very
-promising candidate for addressing one of the biggest challenges in the area of intelligent information management:
-the exploitation of the Web as a platform for data and information integration in addition to document search. To
-translate this initial success into a world-scale disruptive reality, encompassing the Web 2.0 world and enterprise
-data alike, the following research challenges need to be addressed: improve coherence and quality of data published
-on the Web, close the performance gap between relational and RDF data management, establish trust on the Linked
-Data Web and generally lower the entrance barrier for data publishers and users. With partners among those who
-initiated and strongly supported the Linked Open Data initiative, the LOD2 project aims at tackling these challenges
-by developing:
-<p>
+"""Over the past 3 years, the semantic web activity has gained momentum with the widespread publishing of structured data as RDF. The Linked Data paradigm has therefore evolved from a practical research idea into a very promising candidate for addressing one of the biggest challenges in the area of intelligent information management: the exploitation of the Web as a platform for data and information integration in addition to document search. To translate this initial success into a world-scale disruptive reality, encompassing the Web 2.0 world and enterprise data alike, the following research challenges need to be addressed: improve coherence and quality of data published on the Web, close the performance gap between relational and RDF data management, establish trust on the Linked Data Web and generally lower the entrance barrier for data publishers and users. With partners among those who initiated and strongly supported the Linked Open Data initiative, the LOD2 project aims at tackling these challenges by developing:
 <ol>
-<li>enterprise-ready tools and methodologies for exposing and managing very large amounts of structured
-information on the Data Web,</li>
-<li>a testbed and bootstrap network of high-quality multi-domain, multi-lingual ontologies from sources such as
-Wikipedia and OpenStreetMap.</li>
+<li>enterprise-ready tools and methodologies for exposing and managing very large amounts of structured information on the Data Web,</li>
+<li>a testbed and bootstrap network of high-quality multi-domain, multi-lingual ontologies from sources such as Wikipedia and OpenStreetMap.</li>
 <li>algorithms based on machine learning for automatically interlinking and fusing data from the Web.</li>
-<li>standards and methods for reliably tracking provenance, ensuring privacy and data security as well as for
-assessing the quality of information.</li>
+<li>standards and methods for reliably tracking provenance, ensuring privacy and data security as well as for assessing the quality of information.</li>
 <li>adaptive tools for searching, browsing, and authoring of Linked Data.</li>
 </ol>
-<p>
-We will integrate and syndicate linked data with large-scale, existing applications and showcase the benefits in the
-three application scenarios of media & publishing, corporate data intranets and eGovernment. The resulting tools,
-methods and data sets have the potential to change the Web as we know it today.
-<p>
+We will integrate and syndicate linked data with large-scale, existing applications and showcase the benefits in the three application scenarios of media & publishing, corporate data intranets and eGovernment. The resulting tools, methods and data sets have the potential to change the Web as we know it today.
 """.
+
+:ActivityClusters a sioct:WikiArticle;
+    rdfs:label "Activity Clusters";
+    sioc:content "The work packages of LOD2 fall into five activity clusters ...".
+
+<http://lod2.eu/ActivityCluster/A1> a lod2:ActivityCluster;
+    skos:broader :ActivityClusters;
+    rdfs:label "A1 - Fundamental and integration activities";
+    sioc:content """Fundamental and integration activities will form the ground work which provides the necessary infrastructure and integration methodology. In particular, these types of activities serve the following purposes:
+<ol>
+<li>the efficient and uniform use of existing and complementary technology, and,</li>
+<li>smooth integration of the various modules, components and subsystems.</li>
+</ol>
+The integration methodology and infrastructure will ensure that the components are combined in the right way. These activities also provide a basis for the easy development of real-world solutions that integrate the various project outcomes.""".
+
+<http://lod2.eu/ActivityCluster/A2> a lod2:ActivityCluster;
+    skos:broader :ActivityClusters;
+    rdfs:label "A2 - Component activities";
+    sioc:content """Within this cluster of activities we will develop the technologies necessary to deliver the LOD2 promise – creating an integrated infrastructure for semantic information integration on the Web. In this context, three core challenges need to be addressed:
+<ol>
+<li>ensure the knowledge stores scale with the size of the Data Web,</li>
+<li>provide means for automatic knowledge extraction, alignment, interlinking and</li>
+<li>enable social collaboration.</li>
+</ol>""".
+
+<http://lod2.eu/ActivityCluster/A3> a lod2:ActivityCluster;
+    skos:broader :ActivityClusters;
+    rdfs:label "A3 - Use case activities";
+    sioc:content """The effective deployment of the LOD2 Stack will be demonstrated within case studies driven by project members representing LOD2 end-user communities and describing real world application scenarios. The use of case studies is twofold. Firstly, they are used to extract requirements, which guide the core R&D process. Secondly, case studies are also used to validate the results and evaluate their applicability and impact. User centric activities will, additionally, validate our technologies viz. provide the evaluation environment. Each case study will incorporate a technology partner who is responsible for supporting the use case partners in deploying and using LOD2 R&D results and for feeding back business requirements to the R&D.""".
+
+<http://lod2.eu/ActivityCluster/A4> a lod2:ActivityCluster;
+    skos:broader :ActivityClusters;
+    rdfs:label "A4 - Maximizing real-world impact activities";
+    sioc:content """A4 - Maximizing real-world impact activities contain specific measures related to the exploitation and dissemination of project results. While user-centric activities represent the customer perspective, this activity takes concrete steps towards successful exploitation from the point of view of the R&D partners. There are two major factors, which determine the impact and thus the exploitation potential of an IP: cost and benefit. Key to exploitation is the project visibility – making prospective users and the prospective community in general aware of the project’s benefits. Within LOD2, we lower the cost of adopting LOD technologies by aligning project outcomes with relevant standardization activities.""".
+
+<http://lod2.eu/ActivityCluster/A5> a lod2:ActivityCluster;
+    skos:broader :ActivityClusters;
+    rdfs:label "A5 - Management activities";
+    sioc:content """A5 - Management activities will ensure that LOD2 runs smoothly in a coherent and cohesive fashion and that all contractual obligations are met.""".
+
+

@@ -11,10 +11,26 @@
 @prefix lod2: <http://lod2.eu/schema/> .
 
 <http://lod2.eu/schema/> a owl:Ontology;
-    owl:imports <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, <http://www.w3.org/2000/01/rdf-schema#>, <http://www.w3.org/2002/07/owl#>, <http://www.w3.org/2004/02/skos/core#>, <http://xmlns.com/foaf/0.1/>, <http://rdfs.org/sioc/ns#>, <http://usefulinc.com/ns/doap#>;
+#    owl:imports <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, <http://www.w3.org/2000/01/rdf-schema#>, <http://www.w3.org/2002/07/owl#>, <http://www.w3.org/2004/02/skos/core#>, <http://xmlns.com/foaf/0.1/>, <http://rdfs.org/sioc/ns#>, <http://usefulinc.com/ns/doap#>;
     skos:note "This knowledge imports schema resources which are used by the LOD2 website.";
     rdfs:label "LOD2 vocabulary".
 
 lod2:partner a owl:ObjectProperty;
     skos:note "This property is used to link a resource to an associated LOD2 partner.";
     rdfs:label "associated partner".
+
+lod2:ActivityCluster a owl:Class;
+    rdfs:label "Activity Cluster".
+
+lod2:WorkingPackage a owl:Class;
+    rdfs:label "Working Package".
+
+lod2:Deliverable a owl:Class;
+    rdfs:label "Deliverable".
+
+lod2:hasWorkingPackage a owl:ObjectProperty;
+    rdfs:domain lod2:ActivityCluster;
+    rdfs:range lod2:WorkingPackage;
+    rdfs:label "has working package".
+
+
