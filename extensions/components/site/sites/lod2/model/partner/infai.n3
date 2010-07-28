@@ -1,11 +1,11 @@
 
 partner:AKSW a lod2:Partner;
-    skos:broader :Partner;
+    skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Leipzig>;
     foaf:homepage <http://aksw.org/>;
     sioc:feed <http://blog.aksw.org/feed/atom/>;
     rdfs:label "AKSW";
-    sioc:content """
+    lod2:content """
 <p>The Research Group <strong>Agile Knowledge Engineering and Semantic Web (AKSW)</strong>
 is hosted by the Chair of <a href="http://bis.informatik.uni-leipzig.de"> Business Information Systems</a> (BIS)
 of the <a href="http://www.informatik.uni-leipzig.de"> Institute of Computer Science</a> (IfI) /

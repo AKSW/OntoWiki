@@ -11,6 +11,8 @@
 @prefix lod2: <http://lod2.eu/schema/> .
 @prefix partner: <http://lod2.eu/Partner/> .
 @prefix cluster: <http://lod2.eu/ActivityCluster/> .
+@prefix pages: <http://lod2.eu/WikiArticle/> .
+@prefix content: <http://purl.org/rss/1.0/modules/content/>.
 
 <http://lod2.eu/> a owl:Ontology;
     owl:imports <http://lod2.eu/schema/>;
@@ -19,24 +21,23 @@
 
 <http://lod2.eu/ConceptScheme/Navigation> a skos:ConceptScheme; rdfs:label "Navigation".
 
-:Partner a sioct:WikiArticle;
+pages:Consortium a sioct:WikiArticle, skos:Concept;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
-    rdfs:label "Partner".
+    rdfs:label "Consortium".
 
-:TechnologyStack a sioct:WikiArticle;
+pages:TechnologyStack a sioct:WikiArticle, skos:Concept;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     rdfs:label "Technology Stack".
 
-:Tool a sioct:WikiArticle;
+pages:Tools a sioct:WikiArticle, skos:Concept;
     skos:broader :TechnologyStack;
     rdfs:label "Tool".
 
-:Algorithms a sioct:WikiArticle;
+pages:Algorithms a sioct:WikiArticle, skos:Concept;
     skos:broader :TechnologyStack;
     rdfs:label "Algorithm".
 
-
-:ActivityClusters a sioct:WikiArticle;
+pages:ActivityClusters a sioct:WikiArticle, skos:Concept;
     rdfs:label "Activity Clusters";
     sioc:content "The work packages of LOD2 fall into five activity clusters ...".
 

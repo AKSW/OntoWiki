@@ -31,6 +31,11 @@
         <label>Working Package</label>
     </owl:Class>
 
+    <owl:DatatypeProperty rdf:about="http://lod2.eu/schema/content">
+        <label>content</label>
+        <subPropertyOf rdf:resource="http://purl.org/rss/1.0/modules/content/encoded"/>
+    </owl:DatatypeProperty>
+
     <owl:ObjectProperty rdf:about="http://lod2.eu/schema/hasWorkingPackage">
         <domain rdf:resource="http://lod2.eu/schema/ActivityCluster"/>
         <label>has working package</label>
@@ -41,4 +46,9 @@
         <label>associated partner</label>
         <skos:note>This property is used to link a resource to an associated LOD2 partner.</skos:note>
     </owl:ObjectProperty>
+
+    <owl:DatatypeProperty rdf:about="http://lod2.eu/schema/roleAbstract">
+        <label>Key tasks / role</label>
+        <subPropertyOf rdf:resource="http://purl.org/rss/1.0/modules/content/encoded"/>
+    </owl:DatatypeProperty>
 </rdf:RDF>
