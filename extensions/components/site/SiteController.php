@@ -87,7 +87,6 @@ class SiteController extends OntoWiki_Controller_Component
                 'resourceUri' => $this->_resourceUri,
                 'context'     => $moduleContext,
                 'site'        => $this->_getSiteConfig(), 
-                'navigation'  => $this->_getSiteNavigationAsArray(), 
                 'description' => $this->_resource->getDescription(), 
                 'descriptionHelper' => $this->_resource->getDescriptionHelper(),
                 'store'       => OntoWiki::getInstance()->erfurt->getStore()
@@ -139,47 +138,4 @@ class SiteController extends OntoWiki_Controller_Component
         return $this->getComponentHelper()->getSiteConfig();
     }
     
-    protected function _getSiteNavigationAsArray()
-    {
-        $store = OntoWiki::getInstance()->erfurt->getStore();
-        $model = $this->_owApp->selectedModel;
-        
-        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-            SELECT ?topConcept 
-            FROM <' . (string)$model . '> 
-            WHERE {
-                ?cs a skos:ConceptScheme .
-                ?topConcept skos:topConceptOf ?cs
-            }';
-        
-        if ($result = $store->sparqlQuery($query)) {
-            $first = current($result);
-            $topConcept = $first['topConcept'];
-            $closure = $store->getTransitiveClosure(
-                (string)$model, 
-                'http://www.w3.org/2004/02/skos/core#broader', 
-                $topConcept, 
-                true);
-            
-            $tree = array($topConcept => array());
-            $this->_buildTree($tree, $closure);                
-            
-            return array_merge(array('root' => $topConcept), $tree);
-        }
-        
-        return array();
-    }
-    
-    protected function _buildTree(&$tree, $closure)
-    {
-        foreach ($tree as $treeElement => &$childrenArr) {
-            foreach ($closure as $closureElement) {
-                if (isset($closureElement['parent']) && $closureElement['parent'] == $treeElement) {
-                    $childrenArr[$closureElement['node']] = array();
-                }
-            }
-
-            $this->_buildTree($childrenArr, $closure);
-        }
-    }
 }
