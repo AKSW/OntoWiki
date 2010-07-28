@@ -1,0 +1,9 @@
+<span rdf:about="<?php echo $this->resourceUri;?>">
+Last modification by
+<a href="<?php echo $this->userHref;?>"><?php echo $this->userTitle;?></a>
+<span
+    property="<?php echo $this->curie('http://rdfs.org/sioc/ns#last_activity_date');?>"
+    content="<?php echo $this->timeIso8601;?>"
+    >
+<?php echo $this->timeDuration;?>.
+</span>
