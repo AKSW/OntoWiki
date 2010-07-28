@@ -66,17 +66,20 @@ function onNavigationEntryClick(entry){
     }
 }
 
-function pageList(entry){
+function pageList(entry, animate){
     url = $(entry).attr('about');
     $.get(url, function(data){
         $('#instance-content').html(data);
+
+        if(animate)
+            jQT.goTo("#instance-list", "slide");
     })
 }
 
-function onInstanceClick(entry){
+function onInstanceClick(entry, animate){
+    if( typeof(animate) == 'undefined' ) animate = true;
     //$(entry).append(loader_src);
     $(entry).attr("class","loading");
-
 
     url = $(entry).attr('about');
     title = $(entry).text();
@@ -86,7 +89,7 @@ function onInstanceClick(entry){
         //$("#loader").remove();
         $(entry).attr("class","");
 
-        jQT.goTo("#properties-list", "slide");
+        if(animate) jQT.goTo("#properties-list", "slide");
     })
 }
 

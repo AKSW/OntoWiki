@@ -16,22 +16,22 @@
                 <?php if (count($this->values[$graph][$uri]) > 1): ?>
                     <?php foreach ($this->values[$graph][$uri] as $entry): ?>
                         <li>
-                                <span resource="<?php echo $entry['uri'] ?>"
-                                   rel="<?php echo $currentPredicate['curi'] ?>"
-                                   ><?php echo $entry['object'] ?></span>
+                                <a rel="<?php echo $currentPredicate['curi'] ?>"
+                                   about="<?php echo $entry['url'] ?>"
+                                   onclick="onInstanceClick(this, false);" href="#"
+                                   ><?php echo $entry['object'] ?></a>
                         </li>
                     <?php endforeach; ?>
+                    <?php if (isset($currentPredicate['has_more']) && $currentPredicate['has_more']): ?>
+                        <li><a href="#" onclick="pageList(this, true);" about="<?php echo $currentPredicate['has_more_link'] ?>">[<?php echo $this->_('more') ?>]</a></li>
+                    <?php endif; ?>
                 <?php else: ?>
                     <?php $entry = current($this->values[$graph][$uri]) ?>
                         <?php if ($entry['url']): ?>
                             <li>
-                                <?php if ($entry['uri']): ?>
-                                        <span rel="<?php echo $currentPredicate['curi'] ?>" resource="<?php echo $entry['uri'] ?>"
-                                           ><?php echo $entry['object'] ?></span>
-                                <?php else: ?>
-                                        <span rel="<?php echo $currentPredicate['curi'] ?>" about="<?php echo $entry['url'] ?>"
-                                           ><?php echo $entry['object'] ?></span>
-                                <?php endif; ?>
+                                <a about="<?php echo $entry['url'] ?>"
+                                   onclick="onInstanceClick(this, false);" href="#"
+                                   ><?php echo $entry['object'] ?></a>
                              </li>
                         <?php else: ?>
                              <li>
