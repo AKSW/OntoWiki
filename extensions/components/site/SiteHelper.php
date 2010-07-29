@@ -25,6 +25,12 @@ class SiteHelper extends OntoWiki_Component_Helper
     const SITE_CONFIG_FILENAME = 'config.ini';
     
     /**
+     * Current site (if in use)
+     * @var string|null
+     */
+    protected $_site = null;
+    
+    /**
      * Site config for the current site.
      * @var array
      */
@@ -87,7 +93,10 @@ class SiteHelper extends OntoWiki_Component_Helper
         if ($event->type === 'html') {
             $event->request->setControllerName('site');
             $event->request->setActionName($this->_privateConfig->defaultSite);
-            $this->_currentSuffix = '.html';
+            
+            if ($event->flag) {
+                $this->_currentSuffix = '.html';
+            }
         } else {
             // export
             $event->request->setControllerName('resource');
@@ -107,7 +116,7 @@ class SiteHelper extends OntoWiki_Component_Helper
         $resource = isset($event->params['r']) ? OntoWiki_Utils::expandNamespace($event->params['r']) : null;
         
         // URL for this site?
-        if ($graph === $event->base) {
+        if (($graph === (string)OntoWiki::getInstance()->selectedModel) && !empty($this->_site)) {            
             if (false !== strpos($resource, $graph)) {
                 // LD-capable
                 $event->url = $resource 
@@ -186,6 +195,11 @@ class SiteHelper extends OntoWiki_Component_Helper
         }
 
         return array();
+    }
+    
+    public function setSite($site)
+    {
+        $this->_site = (string)$site;
     }
 
     protected static function _buildTree(&$tree, $closure, $titleHelper)

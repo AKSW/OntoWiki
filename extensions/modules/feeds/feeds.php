@@ -55,7 +55,6 @@ class FeedsModule extends OntoWiki_Module
                     }
                 }
             }
-
         }
 
         // sort entries according to time (taken from http://devzone.zend.com/article/3208)
