@@ -86,16 +86,17 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                     break;
                 case 'html':
                 default:
-                    // make active graph (session required)
-                    $activeModel = $store->getModel($graph);
-                    OntoWiki::getInstance()->selectedModel    = $activeModel;
-                    OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($uri, $activeModel);
                     // default property view
                     $url = new OntoWiki_Url(array('route' => 'properties'), array());
                     $url->setParam('r', $uri, true)
                         ->setParam('m', $graph);
                     break;
             }
+            
+            // make active graph (session required)
+            $activeModel = $store->getModel($graph);
+            OntoWiki::getInstance()->selectedModel    = $activeModel;
+            OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($uri, $activeModel);
             
             $request->setDispatched(true);
             
