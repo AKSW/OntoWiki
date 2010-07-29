@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
-<html xml:lang="en"
-    xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
     xmlns:dc="http://purl.org/dc/terms/"
     xmlns:foaf="http://xmlns.com/foaf/0.1/">
 <head>
@@ -30,7 +29,7 @@
 
     <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> :: LOD2</title>
 </head>
-</body>
+<body about="<?php echo $this->resourceUri?>">
 <?php
     // this is the standard template data
     $templateData = array(
@@ -82,7 +81,7 @@
 
     <div class="grid_11">
         <?php echo $this->partial('lod2/main.phtml', $templateData) ?>
-
+        <?php echo $this->partial('lod2/query.phtml', $templateData) ?>
         <?php echo $this->partial('lod2/feed.phtml', $templateData) ?>
 
         <div class="box">
