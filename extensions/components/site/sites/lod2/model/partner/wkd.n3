@@ -1,5 +1,5 @@
 
-partner:WKD a lod2:Partner;
+partner:wkd a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Cologne>;
     foaf:homepage <http://www.wolterskluwer.de/>;

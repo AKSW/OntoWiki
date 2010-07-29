@@ -1,5 +1,5 @@
 
-partner:TenForce  a lod2:Partner;
+partner:tenforce  a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Kampenhout>;
     foaf:homepage <http://www.tenforce.com/>;

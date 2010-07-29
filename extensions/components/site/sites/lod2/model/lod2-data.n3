@@ -1,4 +1,5 @@
 @prefix : <http://lod2.eu/> .
+@prefix data: <http://lod2.eu/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -9,10 +10,13 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix lod2: <http://lod2.eu/schema/> .
+@prefix content: <http://purl.org/rss/1.0/modules/content/>.
+@prefix pages: <http://lod2.eu/WikiArticle/> .
 @prefix partner: <http://lod2.eu/Partner/> .
 @prefix cluster: <http://lod2.eu/ActivityCluster/> .
-@prefix pages: <http://lod2.eu/WikiArticle/> .
-@prefix content: <http://purl.org/rss/1.0/modules/content/>.
+@prefix milestones: <http://lod2.eu/Milestone/> .
+@prefix workpackages: <http://lod2.eu/WorkPackage/> .
+@prefix deliverables: <http://lod2.eu/Deliverable/> .
 
 <http://lod2.eu/> a owl:Ontology;
     owl:imports <http://lod2.eu/schema/>;
@@ -29,16 +33,37 @@ pages:TechnologyStack a sioct:WikiArticle, skos:Concept;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     rdfs:label "Technology Stack".
 
-pages:Tools a sioct:WikiArticle, skos:Concept;
-    skos:broader :TechnologyStack;
-    rdfs:label "Tool".
 
-pages:Algorithms a sioct:WikiArticle, skos:Concept;
-    skos:broader :TechnologyStack;
-    rdfs:label "Algorithm".
+pages:Project a sioct:WikiArticle, skos:Concept;
+    skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
+    rdfs:label "Project".
 
 pages:ActivityClusters a sioct:WikiArticle, skos:Concept;
-    rdfs:label "Activity Clusters";
-    sioc:content "The work packages of LOD2 fall into five activity clusters ...".
+    skos:broader pages:Project;
+    rdfs:label "Activity Clusters".
+pages:WorkPackages a sioct:WikiArticle, skos:Concept;
+    skos:broader pages:Project;
+    rdfs:label "Work Packages".
+pages:Milestones a sioct:WikiArticle, skos:Concept;
+    skos:broader pages:Project;
+    rdfs:label "Milestones".
+pages:Deliverables a sioct:WikiArticle, skos:Concept;
+    skos:broader pages:Project;
+    rdfs:label "Deliverables".
 
+
+:Welcome a sioct:WikiArticle;
+    rdfs:label "Welcome";
+    sioc:feed <http://blog.aksw.org/feed/atom/>;
+    sioc:content
+"""Over the past 3 years, the semantic web activity has gained momentum with the widespread publishing of structured data as RDF. The Linked Data paradigm has therefore evolved from a practical research idea into a very promising candidate for addressing one of the biggest challenges in the area of intelligent information management: the exploitation of the Web as a platform for data and information integration in addition to document search. To translate this initial success into a world-scale disruptive reality, encompassing the Web 2.0 world and enterprise data alike, the following research challenges need to be addressed: improve coherence and quality of data published on the Web, close the performance gap between relational and RDF data management, establish trust on the Linked Data Web and generally lower the entrance barrier for data publishers and users. With partners among those who initiated and strongly supported the Linked Open Data initiative, the LOD2 project aims at tackling these challenges by developing:
+<ol>
+<li>enterprise-ready tools and methodologies for exposing and managing very large amounts of structured information on the Data Web,</li>
+<li>a testbed and bootstrap network of high-quality multi-domain, multi-lingual ontologies from sources such as Wikipedia and OpenStreetMap.</li>
+<li>algorithms based on machine learning for automatically interlinking and fusing data from the Web.</li>
+<li>standards and methods for reliably tracking provenance, ensuring privacy and data security as well as for assessing the quality of information.</li>
+<li>adaptive tools for searching, browsing, and authoring of Linked Data.</li>
+</ol>
+We will integrate and syndicate linked data with large-scale, existing applications and showcase the benefits in the three application scenarios of media & publishing, corporate data intranets and eGovernment. The resulting tools, methods and data sets have the potential to change the Web as we know it today.
+""".
 

@@ -1,4 +1,5 @@
-@prefix : <http://lod2.eu/schema/> .
+@prefix : <http://lod2.eu/> .
+@prefix data: <http://lod2.eu/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -8,8 +9,14 @@
 @prefix doap: <http://usefulinc.com/ns/doap#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix content: <http://purl.org/rss/1.0/modules/content/>.
 @prefix lod2: <http://lod2.eu/schema/> .
+@prefix content: <http://purl.org/rss/1.0/modules/content/>.
+@prefix pages: <http://lod2.eu/WikiArticle/> .
+@prefix partner: <http://lod2.eu/Partner/> .
+@prefix cluster: <http://lod2.eu/ActivityCluster/> .
+@prefix milestones: <http://lod2.eu/Milestone/> .
+@prefix workpackages: <http://lod2.eu/WorkPackage/> .
+@prefix deliverables: <http://lod2.eu/Deliverable/> .
 
 <http://lod2.eu/schema/> a owl:Ontology;
 #    owl:imports <http://www.w3.org/1999/02/22-rdf-syntax-ns#>, <http://www.w3.org/2000/01/rdf-schema#>, <http://www.w3.org/2002/07/owl#>, <http://www.w3.org/2004/02/skos/core#>, <http://xmlns.com/foaf/0.1/>, <http://rdfs.org/sioc/ns#>, <http://usefulinc.com/ns/doap#>;
@@ -17,17 +24,24 @@
     rdfs:label "LOD2 vocabulary".
 
 ###
-# Properties
+# Object Properties
 ###
 
 lod2:partner a owl:ObjectProperty;
     skos:note "This property is used to link a resource to an associated LOD2 partner.";
-    rdfs:label "associated partner".
+    rdfs:label "partner".
 
-lod2:hasWorkingPackage a owl:ObjectProperty;
-    rdfs:domain lod2:ActivityCluster;
-    rdfs:range lod2:WorkingPackage;
-    rdfs:label "has working package".
+lod2:leadPartner a owl:ObjectProperty;
+    skos:note "This property is used to link a resource to the leading LOD2 partner.";
+    rdfs:label "leading partner".
+
+lod2:wp a owl:ObjectProperty;
+    skos:note "This property is used to link a resource to an associated LOD2 work package.";
+    rdfs:label "work package".
+
+###
+# Datatype Properties
+###
 
 lod2:content a owl:DatatypeProperty;
     rdfs:label "content";
@@ -48,8 +62,11 @@ lod2:Partner a owl:Class;
 lod2:ActivityCluster a owl:Class;
     rdfs:label "Activity Cluster".
 
-lod2:WorkingPackage a owl:Class;
-    rdfs:label "Working Package".
+lod2:WorkPackage a owl:Class;
+    rdfs:label "Work Package".
+
+lod2:Milestone a owl:Class;
+    rdfs:label "Milestone".
 
 lod2:Deliverable a owl:Class;
     rdfs:label "Deliverable".

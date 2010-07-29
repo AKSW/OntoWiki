@@ -1,45 +1,19 @@
 
-partner:AKSW a lod2:Partner;
+partner:infai a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Leipzig>;
     foaf:homepage <http://aksw.org/>;
     sioc:feed <http://blog.aksw.org/feed/atom/>;
-    rdfs:label "AKSW";
-    lod2:content """
-<p>The Research Group <strong>Agile Knowledge Engineering and Semantic Web (AKSW)</strong>
-is hosted by the Chair of <a href="http://bis.informatik.uni-leipzig.de"> Business Information Systems</a> (BIS)
-of the <a href="http://www.informatik.uni-leipzig.de"> Institute of Computer Science</a> (IfI) /
-<a href="http://www.uni-leipzig.de">University of Leipzig</a> as well as the <a href="http://infai.org">
-Institute for Applied Informatics</a> (InfAI).</p>
-<ul>
-<li>Development of methods, tools and applications for adaptive Knowledge Engineering in the context of the Semantic Web</li>
-<li>Research of underlying Semantic Web technologies and development of fundamental Semantic Web tools and applications</li>
-<li>Maturation of strategies for fruitfully combining the Social Web paradigms with semantic knowledge representation techniques</li>
-</ul>
-<p>AKSW is committed to the open source, open access and open knowledge movements.</p>
-""".
+    rdfs:label "Universität Leipzig";
+    lod2:content """<p>Universität Leipzig is one of the oldest (founded 1409) and largest (30.000 students) universities in Germany and focuses on interdisciplinary research in the life sciences, cognitive sciences and linguistics as well as mathematics and computer science. The Institute for Applied Computer Science (InfAI) at Universität Leipzig hosts world class research groups in service sciences, knowledge engineering and management as well as natural language processing. The approximately 20 researchers of the Agile Knowledge Engineering and Semantic Web (AKSW) research group at InfAI are establishing theoretical results and scalable implementations for the field. Particular emphasis is given to areas such as ontology creation and manipulation, knowledge extraction, ontology learning and information & data integration on the Semantic Web. The implemented tools and services developed by the group enjoy considerable popularity, the open-source semantic web framework OntoWiki for example is downloaded more than 500 times each month and applied in usage scenarios ranging from the authoring of bio-medical ontologies to knowledge management for the enterprise. InfAI is leading several large-scale collaborative research projects on the national and EU levels such as OntoWiki (EU FP7), Internet Media Businesses (EU SMART), PreBIS (German BmbF) and Factory ServNet (Eureka) and participates in many more.</p>""";
+    lod2:roleAbstract """Project coordination; develop knowledge structuring and enrichment algorithms as well as browsing, visualization and authoring interfaces; collaborate with OKFN in order to employ LOD2 results in the GovData.eu use case.""".
 
 :OntoWiki a doap:Project;
-    skos:broader :Tool;
+    skos:broader pages:TechnologyStack;
     doap:homepage <http://ontowiki.net>;
     doap:description """
 OntoWiki is a tool providing support for agile, distributed knowledge engineering scenarios. It facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.""";
     sioc:feed <http://blog.aksw.org/feed/?cat=5>;
     lod2:partner partner:AKSW;
     rdfs:label "OntoWiki".
-
-:Welcome a sioct:WikiArticle;
-    rdfs:label "Welcome";
-    sioc:feed <http://blog.aksw.org/feed/atom/>;
-    sioc:content
-"""Over the past 3 years, the semantic web activity has gained momentum with the widespread publishing of structured data as RDF. The Linked Data paradigm has therefore evolved from a practical research idea into a very promising candidate for addressing one of the biggest challenges in the area of intelligent information management: the exploitation of the Web as a platform for data and information integration in addition to document search. To translate this initial success into a world-scale disruptive reality, encompassing the Web 2.0 world and enterprise data alike, the following research challenges need to be addressed: improve coherence and quality of data published on the Web, close the performance gap between relational and RDF data management, establish trust on the Linked Data Web and generally lower the entrance barrier for data publishers and users. With partners among those who initiated and strongly supported the Linked Open Data initiative, the LOD2 project aims at tackling these challenges by developing:
-<ol>
-<li>enterprise-ready tools and methodologies for exposing and managing very large amounts of structured information on the Data Web,</li>
-<li>a testbed and bootstrap network of high-quality multi-domain, multi-lingual ontologies from sources such as Wikipedia and OpenStreetMap.</li>
-<li>algorithms based on machine learning for automatically interlinking and fusing data from the Web.</li>
-<li>standards and methods for reliably tracking provenance, ensuring privacy and data security as well as for assessing the quality of information.</li>
-<li>adaptive tools for searching, browsing, and authoring of Linked Data.</li>
-</ol>
-We will integrate and syndicate linked data with large-scale, existing applications and showcase the benefits in the three application scenarios of media & publishing, corporate data intranets and eGovernment. The resulting tools, methods and data sets have the potential to change the Web as we know it today.
-""".
 

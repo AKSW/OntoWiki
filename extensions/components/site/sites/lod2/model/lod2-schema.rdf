@@ -22,13 +22,17 @@
         <label>Deliverable</label>
     </owl:Class>
 
+    <owl:Class rdf:about="http://lod2.eu/schema/Milestone">
+        <label>Milestone</label>
+    </owl:Class>
+
     <owl:Class rdf:about="http://lod2.eu/schema/Partner">
         <label>Partner</label>
         <subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Group"/>
     </owl:Class>
 
-    <owl:Class rdf:about="http://lod2.eu/schema/WorkingPackage">
-        <label>Working Package</label>
+    <owl:Class rdf:about="http://lod2.eu/schema/WorkPackage">
+        <label>Work Package</label>
     </owl:Class>
 
     <owl:DatatypeProperty rdf:about="http://lod2.eu/schema/content">
@@ -36,14 +40,13 @@
         <subPropertyOf rdf:resource="http://purl.org/rss/1.0/modules/content/encoded"/>
     </owl:DatatypeProperty>
 
-    <owl:ObjectProperty rdf:about="http://lod2.eu/schema/hasWorkingPackage">
-        <domain rdf:resource="http://lod2.eu/schema/ActivityCluster"/>
-        <label>has working package</label>
-        <range rdf:resource="http://lod2.eu/schema/WorkingPackage"/>
+    <owl:ObjectProperty rdf:about="http://lod2.eu/schema/leadPartner">
+        <label>leading partner</label>
+        <skos:note>This property is used to link a resource to the leading LOD2 partner.</skos:note>
     </owl:ObjectProperty>
 
     <owl:ObjectProperty rdf:about="http://lod2.eu/schema/partner">
-        <label>associated partner</label>
+        <label>partner</label>
         <skos:note>This property is used to link a resource to an associated LOD2 partner.</skos:note>
     </owl:ObjectProperty>
 
@@ -51,4 +54,9 @@
         <label>Key tasks / role</label>
         <subPropertyOf rdf:resource="http://purl.org/rss/1.0/modules/content/encoded"/>
     </owl:DatatypeProperty>
+
+    <owl:ObjectProperty rdf:about="http://lod2.eu/schema/wp">
+        <label>work package</label>
+        <skos:note>This property is used to link a resource to an associated LOD2 work package.</skos:note>
+    </owl:ObjectProperty>
 </rdf:RDF>

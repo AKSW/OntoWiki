@@ -1,7 +1,8 @@
 cluster:A1 a lod2:ActivityCluster;
-    skos:broader :ActivityClusters;
+    skos:broader pages:ActivityClusters;
+    lod2:wp workpackages:wp1, workpackages:wp5, workpackages:wp6;
     rdfs:label "A1 - Fundamental and integration activities";
-    sioc:content """Fundamental and integration activities will form the ground work which provides the necessary infrastructure and integration methodology. In particular, these types of activities serve the following purposes:
+    lod2:content """Fundamental and integration activities will form the ground work which provides the necessary infrastructure and integration methodology. In particular, these types of activities serve the following purposes:
 <ol>
 <li>the efficient and uniform use of existing and complementary technology, and,</li>
 <li>smooth integration of the various modules, components and subsystems.</li>
@@ -9,9 +10,10 @@ cluster:A1 a lod2:ActivityCluster;
 The integration methodology and infrastructure will ensure that the components are combined in the right way. These activities also provide a basis for the easy development of real-world solutions that integrate the various project outcomes.""".
 
 cluster:A2 a lod2:ActivityCluster;
-    skos:broader :ActivityClusters;
+    skos:broader pages:ActivityClusters;
+    lod2:wp workpackages:wp2, workpackages:wp3, workpackages:wp4;
     rdfs:label "A2 - Component activities";
-    sioc:content """Within this cluster of activities we will develop the technologies necessary to deliver the LOD2 promise – creating an integrated infrastructure for semantic information integration on the Web. In this context, three core challenges need to be addressed:
+    lod2:content """Within this cluster of activities we will develop the technologies necessary to deliver the LOD2 promise – creating an integrated infrastructure for semantic information integration on the Web. In this context, three core challenges need to be addressed:
 <ol>
 <li>ensure the knowledge stores scale with the size of the Data Web,</li>
 <li>provide means for automatic knowledge extraction, alignment, interlinking and</li>
@@ -19,19 +21,22 @@ cluster:A2 a lod2:ActivityCluster;
 </ol>""".
 
 cluster:A3 a lod2:ActivityCluster;
-    skos:broader :ActivityClusters;
+    skos:broader pages:ActivityClusters;
+    lod2:wp workpackages:wp7, workpackages:wp8, workpackages:wp9;
     rdfs:label "A3 - Use case activities";
-    sioc:content """The effective deployment of the LOD2 Stack will be demonstrated within case studies driven by project members representing LOD2 end-user communities and describing real world application scenarios. The use of case studies is twofold. Firstly, they are used to extract requirements, which guide the core R&D process. Secondly, case studies are also used to validate the results and evaluate their applicability and impact. User centric activities will, additionally, validate our technologies viz. provide the evaluation environment. Each case study will incorporate a technology partner who is responsible for supporting the use case partners in deploying and using LOD2 R&D results and for feeding back business requirements to the R&D.""".
+    lod2:content """The effective deployment of the LOD2 Stack will be demonstrated within case studies driven by project members representing LOD2 end-user communities and describing real world application scenarios. The use of case studies is twofold. Firstly, they are used to extract requirements, which guide the core R&D process. Secondly, case studies are also used to validate the results and evaluate their applicability and impact. User centric activities will, additionally, validate our technologies viz. provide the evaluation environment. Each case study will incorporate a technology partner who is responsible for supporting the use case partners in deploying and using LOD2 R&D results and for feeding back business requirements to the R&D.""".
 
 cluster:A4 a lod2:ActivityCluster;
-    skos:broader :ActivityClusters;
+    skos:broader pages:ActivityClusters;
+    lod2:wp workpackages:wp10, workpackages:wp11;
     rdfs:label "A4 - Maximizing real-world impact activities";
-    sioc:content """A4 - Maximizing real-world impact activities contain specific measures related to the exploitation and dissemination of project results. While user-centric activities represent the customer perspective, this activity takes concrete steps towards successful exploitation from the point of view of the R&D partners. There are two major factors, which determine the impact and thus the exploitation potential of an IP: cost and benefit. Key to exploitation is the project visibility – making prospective users and the prospective community in general aware of the project’s benefits. Within LOD2, we lower the cost of adopting LOD technologies by aligning project outcomes with relevant standardization activities.""".
+    lod2:content """A4 - Maximizing real-world impact activities contain specific measures related to the exploitation and dissemination of project results. While user-centric activities represent the customer perspective, this activity takes concrete steps towards successful exploitation from the point of view of the R&D partners. There are two major factors, which determine the impact and thus the exploitation potential of an IP: cost and benefit. Key to exploitation is the project visibility – making prospective users and the prospective community in general aware of the project’s benefits. Within LOD2, we lower the cost of adopting LOD technologies by aligning project outcomes with relevant standardization activities.""".
 
 cluster:A5 a lod2:ActivityCluster;
-    skos:broader :ActivityClusters;
+    skos:broader pages:ActivityClusters;
+    lod2:wp workpackages:wp12;
     rdfs:label "A5 - Management activities";
-    sioc:content """A5 - Management activities will ensure that LOD2 runs smoothly in a coherent and cohesive fashion and that all contractual obligations are met.""".
+    lod2:content """A5 - Management activities will ensure that LOD2 runs smoothly in a coherent and cohesive fashion and that all contractual obligations are met.""".
 
 
 

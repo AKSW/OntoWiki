@@ -1,5 +1,5 @@
 
-partner:CentrumWiskundeAndInformatica a lod2:Partner;
+partner:cwi a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Amsterdam>;
     foaf:homepage <http://www.cwi.nl/>;

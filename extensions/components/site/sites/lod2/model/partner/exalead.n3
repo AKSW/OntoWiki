@@ -1,5 +1,5 @@
 
-partner:Exalead a lod2:Partner;
+partner:exalead a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Paris>;
     foaf:homepage <http://www.exalead.com/>;

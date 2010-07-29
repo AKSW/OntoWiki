@@ -1,5 +1,5 @@
 
-partner:FU-Berlin  a lod2:Partner;
+partner:fub  a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Berlin>;
     foaf:homepage <http://www4.wiwiss.fu-berlin.de/bizer/websys/>;
