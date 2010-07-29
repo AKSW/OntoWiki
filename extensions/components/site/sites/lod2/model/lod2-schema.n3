@@ -47,8 +47,8 @@ lod2:content a owl:DatatypeProperty;
     rdfs:label "content";
     rdfs:subPropertyOf content:encoded.
 
-lod2:roleAbstract a owl:DatatypeProperty;
-    rdfs:label "Key tasks / role";
+lod2:abstract a owl:DatatypeProperty;
+    rdfs:label "abstract";
     rdfs:subPropertyOf content:encoded.
 
 ###
