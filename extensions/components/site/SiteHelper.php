@@ -149,4 +149,57 @@ class SiteHelper extends OntoWiki_Component_Helper
     {
         return $this->_currentSuffix;
     }
+
+    public static function skosNavigationAsArray($titleHelper)
+    {
+        $store = OntoWiki::getInstance()->erfurt->getStore();
+        $model = OntoWiki::getInstance()->selectedModel;
+
+        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            SELECT ?topConcept
+            FROM <' . (string)$model . '>
+            WHERE {
+                ?cs a skos:ConceptScheme .
+                ?topConcept skos:topConceptOf ?cs
+            }';
+
+        if ($result = $store->sparqlQuery($query)) {
+            $tree = array();
+            $topConcepts = array();
+            foreach($result as $row){
+                $topConcept = $row['topConcept'];
+                $closure = $store->getTransitiveClosure(
+                    (string)$model,
+                    'http://www.w3.org/2004/02/skos/core#broader',
+                    $topConcept,
+                    true);
+                foreach($closure as $concept){
+                    $titleHelper->addResource($concept);
+                }
+                $conceptTree = array(array($topConcept=>array()));
+                $topConcepts[] = $topConcept;
+                self::_buildTree($conceptTree, $closure,$titleHelper);
+                $tree[$topConcept] = $conceptTree[0];
+            }
+            //echo "<pre>";var_dump($tree);echo "</pre>";
+            return $tree;
+        }
+
+        return array();
+    }
+
+    protected static function _buildTree(&$tree, $closure, $titleHelper)
+    {
+        foreach ($tree as $treeElement => &$childrenArr) {
+            foreach ($closure as $closureElement) {
+                if (isset($closureElement['parent']) && $closureElement['parent'] == $treeElement) {
+                    $titleHelper->addResource($closureElement['node']);
+                    $childrenArr[$closureElement['node']] = array();
+                }
+            }
+
+             self::_buildTree($childrenArr, $closure, $titleHelper);
+        }
+    }
+
 }

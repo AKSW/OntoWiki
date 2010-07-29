@@ -49,7 +49,7 @@
     <div class="clear"></div>
     <div class="grid_16">
         <ul class="nav main">
-            <?php foreach ($this->navigation() as $navurl => $subnavi) : ?>
+            <?php foreach ($this->navigation as $navurl => $subnavi) : ?>
             <li>
                 <a href="<?php echo $navurl ?>"><?php echo $this->descriptionHelper->getTitle($navurl) ?></a>
                 <?php if ( (is_array($subnavi)) ):?>

@@ -105,7 +105,8 @@ class SiteController extends OntoWiki_Controller_Component
                 'site'        => $this->_getSiteConfig(), 
                 'description' => $this->_resource->getDescription(), 
                 'descriptionHelper' => $this->_resource->getDescriptionHelper(),
-                'store'       => OntoWiki::getInstance()->erfurt->getStore()
+                'store'       => OntoWiki::getInstance()->erfurt->getStore(),
+                'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper())
             );
 
             // mit assign kann man im Template direkt zugreifen ($this->basePath).
