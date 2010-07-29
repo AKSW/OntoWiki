@@ -142,7 +142,7 @@ class FeedsModule extends OntoWiki_Module
             // try to load the feed from uri
             $feed = Zend_Feed_Reader::import($url);
             
-        } catch (Zend_Feed_Exception $e) {
+        } catch (Exception $e) {
             // feed import failed
             return;
         }
