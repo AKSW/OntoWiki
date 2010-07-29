@@ -20,14 +20,25 @@ class Site_View_Helper_Lastchange extends Zend_View_Helper_Abstract
     public function lastchange($uri)
     {
         // TODO: fill this value with the erfurt versioning api
+        $versioning = Erfurt_App::getInstance()->getVersioning();
+        $limit = $versioning->getLimit();
+        $versioning->setLimit(1);
+        $history = $versioning->getHistoryForResource($uri, (string)  OntoWiki::getInstance()->selectedModel);
+        
+        $th = new OntoWiki_Model_TitleHelper(OntoWiki::getInstance()->selectedModel);
+        $th->addResource($history[0]['useruri']);
+        $th->addResource($uri);
         $return = array();
+        $userUrl= new OntoWiki_Url(array('route'=>'properties'));
+        $userUrl->setParam('r', $history[0]['useruri']);
         $return['resourceUri'] = $uri;
-        $return['timeStamp'] = time(); //unix timestamp
-        $return['timeIso8601'] = '2010-07-28T07:48Z'; // ISO 8601 format
-        $return['timeDuration'] = 'zzz min. ago'; //see last changes module
-        $return['userTitle'] = 'Seebi'; // use titlehelper
-        $return['userUri'] = 'http://sebastian.tramp.name';
-        $return['userHref'] = 'http://sebastian.tramp.name'; //use URI helper
+        $return['resourceTitle'] = $th->getTitle($uri);
+        $return['timeStamp'] = $history[0]['tstamp']; //unix timestamp
+        $return['timeIso8601'] = date('c',$history[0]['tstamp']); // ISO 8601 format
+        $return['timeDuration'] = OntoWiki_Utils::dateDifference($history[0]['tstamp'], null, 3); // x days ago
+        $return['userTitle'] = $th->getTitle($history[0]['useruri']);
+        $return['userUri'] = $history[0]['useruri'];
+        $return['userHref'] = $userUrl; //use URI helper
 
         return $return;
     }
