@@ -170,27 +170,30 @@ class SiteHelper extends OntoWiki_Component_Helper
             WHERE {
                 ?cs a skos:ConceptScheme .
                 ?topConcept skos:topConceptOf ?cs
-            }';
+            }
+            ORDER BY ';
 
         if ($result = $store->sparqlQuery($query)) {
             $tree = array();
             $topConcepts = array();
             foreach($result as $row){
                 $topConcept = $row['topConcept'];
+                $titleHelper->addResource($topConcept);
                 $closure = $store->getTransitiveClosure(
                     (string)$model,
                     'http://www.w3.org/2004/02/skos/core#broader',
                     $topConcept,
                     true);
                 foreach($closure as $concept){
-                    $titleHelper->addResource($concept);
+                    $titleHelper->addResource($concept['node']);
                 }
                 $conceptTree = array(array($topConcept=>array()));
                 $topConcepts[] = $topConcept;
-                self::_buildTree($conceptTree, $closure,$titleHelper);
-                $tree[$topConcept] = $conceptTree[0];
+                self::_buildTree($conceptTree, $closure);
+                //echo "<pre>"; var_dump($conceptTree); echo "</pre>";
+                $tree[$topConcept] = $conceptTree[0][$topConcept];
             }
-            //echo "<pre>";var_dump($tree);echo "</pre>";
+            //echo "<pre>"; var_dump($tree); echo "</pre>";
             return $tree;
         }
 
@@ -202,17 +205,16 @@ class SiteHelper extends OntoWiki_Component_Helper
         $this->_site = (string)$site;
     }
 
-    protected static function _buildTree(&$tree, $closure, $titleHelper)
+    protected static function _buildTree(&$tree, $closure)
     {
         foreach ($tree as $treeElement => &$childrenArr) {
             foreach ($closure as $closureElement) {
                 if (isset($closureElement['parent']) && $closureElement['parent'] == $treeElement) {
-                    $titleHelper->addResource($closureElement['node']);
                     $childrenArr[$closureElement['node']] = array();
                 }
             }
 
-             self::_buildTree($childrenArr, $closure, $titleHelper);
+             self::_buildTree($childrenArr, $closure);
         }
     }
 

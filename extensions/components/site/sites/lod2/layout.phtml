@@ -38,6 +38,17 @@
                     'description' => $this->description[$this->resourceUri],
                     'descriptionHelper' => $this->descriptionHelper
             );
+    function printNavi($navi, $titleHelper, $depth){
+        if(is_array($navi) && count($navi)>0):?>
+                    <?php foreach ($navi as $navurl => $subnavi) : ?>
+                    <li>
+                        <a href="<?php echo $navurl ?>"><?php for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";} echo $titleHelper->getTitle($navurl) ?></a>
+                        <?php printNavi($subnavi, $titleHelper, $depth+1); ?>
+                    </li>
+                    <?php endforeach; ?>
+       <?php endif; 
+   }
+
 ?>
 <div class="container_16">
     <div class="grid_16">
@@ -51,15 +62,7 @@
             <?php foreach ($this->navigation as $navurl => $subnavi) : ?>
             <li>
                 <a href="<?php echo $navurl ?>"><?php echo $this->descriptionHelper->getTitle($navurl) ?></a>
-                <?php if ( (is_array($subnavi)) ):?>
-                <ul>
-                    <?php foreach ($subnavi as $subnavurl => $subsubnavi) : ?>
-                    <li>
-                        <a href="<?php echo $subnavurl ?>"><?php echo $this->descriptionHelper->getTitle($subnavurl) ?></a>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-                <?php endif; ?>
+                <ul><?php printNavi($subnavi, $this->descriptionHelper, 0); ?> </ul>
             </li>
             <?php endforeach; ?>
 

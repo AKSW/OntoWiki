@@ -98,10 +98,10 @@ class SiteController extends OntoWiki_Controller_Component
             $siteConfig = array(
                 'id'          => $this->_site,
                 'generator'   => 'OntoWiki ' . $this->_config->version->number,
-                'pingbackUri' => $this->_owApp->getUrlBase() . '/pingback/ping',
+                'pingbackUri' => $this->_owApp->getUrlBase() . 'pingback/ping',
                 'wikiBaseUri' => $this->_owApp->getUrlBase(),
-                'basePath'    => sprintf('%s/sites/%s', $this->_componentRoot, $this->_site),
-                'baseUri'     => sprintf('%s/sites/%s/', $this->_componentUrlBase, $this->_site),
+                'basePath'    => sprintf('%ssites/%s', $this->_componentRoot, $this->_site),
+                'baseUri'     => sprintf('%ssites/%s', $this->_componentUrlBase, $this->_site),
                 'resourceUri' => $this->_resourceUri,
                 'context'     => $moduleContext,
                 'site'        => $this->_getSiteConfig(), 
