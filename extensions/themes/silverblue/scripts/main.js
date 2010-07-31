@@ -318,12 +318,10 @@ $(document).ready(function() {
                     }, 
                     saveButtonTitle: 'Save Changes', 
                     cancelButtonTitle: 'Cancel', 
-                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
-                    'defaultGraph': defaultGraph, 
-                    'defaultResource': defaultResource
+                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text()
                 });
                 
-                RDFauthor.startEditing();
+                RDFauthor.start();
                 // RDFauthor.startInline('*[about] td:nth-child(2)');
                 // RDFauthor.startInline('table tr td');
                 
