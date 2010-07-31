@@ -17,3 +17,7 @@ OntoWiki is a tool providing support for agile, distributed knowledge engineerin
     lod2:partner partner:AKSW;
     rdfs:label "OntoWiki".
 
+person:SebastianTramp a foaf:Person;
+    foaf:homepage <http://sebastian.tramp.name>;
+    foaf:name "Sebastian Tramp".
+
