@@ -263,42 +263,42 @@ milestones:m9-3 a lod2:Milestone;
 workpackages:wp1 a lod2:WorkPackage;
     rdfs:label "WP1 - Requirements, Design and LOD2 Stack Prototype";
     lod2:leadPartner partner:swc;
-    lod2:partner partner:infai, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
+    lod2:partner partner:ulei, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
     lod2:startMonth "1";
     lod2:endMonth "12".
 
 workpackages:wp2 a lod2:WorkPackage;
     rdfs:label "WP2 - Storing and Querying Very Large Knowledge bases";
     lod2:leadPartner partner:cwi;
-    lod2:partner partner:infai, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:exalead;
+    lod2:partner partner:ulei, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:exalead;
     lod2:startMonth "1";
     lod2:endMonth "40".
 
 workpackages:wp3 a lod2:WorkPackage;
     rdfs:label "WP3 - Knowledge Base Creation, Enrichment and Repair";
-    lod2:leadPartner partner:infai;
-    lod2:partner partner:infai, partner:nuig, partner:fub, partner:openlink, partner:exalead;
+    lod2:leadPartner partner:ulei;
+    lod2:partner partner:ulei, partner:nuig, partner:fub, partner:openlink, partner:exalead;
     lod2:startMonth "1";
     lod2:endMonth "28".
 
 workpackages:wp4 a lod2:WorkPackage;
     rdfs:label "WP4 - Reuse, Interlinking and Knowledge Fusion";
     lod2:leadPartner partner:fub;
-    lod2:partner partner:infai, partner:nuig, partner:fub, partner:openlink, partner:swc;
+    lod2:partner partner:ulei, partner:nuig, partner:fub, partner:openlink, partner:swc;
     lod2:startMonth "6";
     lod2:endMonth "36".
 
 workpackages:wp5 a lod2:WorkPackage;
     rdfs:label "WP5 - Adaptive Linked Data Visualization, Browsing and Authoring";
     lod2:leadPartner partner:nuig;
-    lod2:partner partner:infai, partner:cwi, partner:nuig, partner:fub, partner:swc;
+    lod2:partner partner:ulei, partner:cwi, partner:nuig, partner:fub, partner:swc;
     lod2:startMonth "6";
     lod2:endMonth "46".
 
 workpackages:wp6 a lod2:WorkPackage;
     rdfs:label "WP6 - Interfaces, Component Integration & LOD2 Stack";
     lod2:leadPartner partner:tenforce;
-    lod2:partner partner:infai, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
+    lod2:partner partner:ulei, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
     lod2:startMonth "13";
     lod2:endMonth "48".
 
@@ -319,28 +319,28 @@ workpackages:wp8 a lod2:WorkPackage;
 workpackages:wp9 a lod2:WorkPackage;
     rdfs:label "WP9 - Use Case 3: LOD2 for Citizen - GovData.eu";
     lod2:leadPartner partner:okfn;
-    lod2:partner partner:infai, partner:fub, partner:tenforce, partner:wkd, partner:okfn;
+    lod2:partner partner:ulei, partner:fub, partner:tenforce, partner:wkd, partner:okfn;
     lod2:startMonth "";
     lod2:endMonth "".
 
 workpackages:wp10 a lod2:WorkPackage;
     rdfs:label "WP10 - Training, Dissemination, Community Building, Fertilization";
     lod2:leadPartner partner:swc;
-    lod2:partner partner:infai, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
+    lod2:partner partner:ulei, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
     lod2:startMonth "1";
     lod2:endMonth "48".
 
 workpackages:wp11 a lod2:WorkPackage;
     rdfs:label "WP11 - Standardization, Exploitation";
     lod2:leadPartner partner:openlink;
-    lod2:partner partner:infai, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
+    lod2:partner partner:ulei, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
     lod2:startMonth "6";
     lod2:endMonth "48".
 
 workpackages:wp12 a lod2:WorkPackage;
     rdfs:label "WP12 - Project Management";
-    lod2:leadPartner partner:infai;
-    lod2:partner partner:infai, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
+    lod2:leadPartner partner:ulei;
+    lod2:partner partner:ulei, partner:cwi, partner:nuig, partner:fub, partner:openlink, partner:swc, partner:tenforce, partner:exalead, partner:wkd, partner:okfn;
     lod2:startMonth "1";
     lod2:endMonth "48".
 
@@ -382,29 +382,6 @@ partner:fub  a lod2:Partner;
 <li>Within WP10 Training, Dissemination, community building, FUB will use its existing community building (initiator of W3C LOD) and outreach capabilities (Linked Data on the Web (LDOW) workshop series, Semantic Web Challenge competition series) to maximize the impact of LOD2.</li>
 </ul>
 """.
-
-
-partner:infai a lod2:Partner;
-    skos:broader pages:Consortium;
-    foaf:based_near <http://dbpedia.org/resource/Leipzig>;
-    foaf:homepage <http://aksw.org/>;
-    sioc:feed <http://blog.aksw.org/feed/atom/>;
-    rdfs:label "Universität Leipzig";
-    lod2:content """<p>Universität Leipzig is one of the oldest (founded 1409) and largest (30.000 students) universities in Germany and focuses on interdisciplinary research in the life sciences, cognitive sciences and linguistics as well as mathematics and computer science. The Institute for Applied Computer Science (InfAI) at Universität Leipzig hosts world class research groups in service sciences, knowledge engineering and management as well as natural language processing. The approximately 20 researchers of the Agile Knowledge Engineering and Semantic Web (AKSW) research group at InfAI are establishing theoretical results and scalable implementations for the field. Particular emphasis is given to areas such as ontology creation and manipulation, knowledge extraction, ontology learning and information & data integration on the Semantic Web. The implemented tools and services developed by the group enjoy considerable popularity, the open-source semantic web framework OntoWiki for example is downloaded more than 500 times each month and applied in usage scenarios ranging from the authoring of bio-medical ontologies to knowledge management for the enterprise. InfAI is leading several large-scale collaborative research projects on the national and EU levels such as OntoWiki (EU FP7), Internet Media Businesses (EU SMART), PreBIS (German BmbF) and Factory ServNet (Eureka) and participates in many more.</p>""";
-    lod2:abstract """Project coordination; develop knowledge structuring and enrichment algorithms as well as browsing, visualization and authoring interfaces; collaborate with OKFN in order to employ LOD2 results in the GovData.eu use case.""".
-
-:OntoWiki a doap:Project;
-    skos:broader pages:TechnologyStack;
-    doap:homepage <http://ontowiki.net>;
-    doap:description """
-OntoWiki is a tool providing support for agile, distributed knowledge engineering scenarios. It facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.""";
-    sioc:feed <http://blog.aksw.org/feed/?cat=5>;
-    lod2:partner partner:AKSW;
-    rdfs:label "OntoWiki".
-
-person:SebastianTramp a foaf:Person;
-    foaf:homepage <http://sebastian.tramp.name>;
-    foaf:name "Sebastian Tramp".
 
 
 partner:nuig a lod2:Partner;
@@ -460,6 +437,29 @@ partner:tenforce  a lod2:Partner;
     lod2:content """
 <p>TenForce is a Belgian software company specialized in delivering pragmatic solutions for complex problems. TenForce has years of international experience in knowledge management combined with an in-depth expertise in emerging technologies. Besides designing, marketing and supporting their in-house product – a web-based management environment for project and operational activities – , they conduct several projects on European scale focusing on modelling complex systems. Delivering services in high-end semantic technology for industrial purposes is their core business: taxonomy management systems, generic portal technology for international publishers or the European Commission. Next to this TenForce has extensive experience in building, integrating and setting up corporate and web-based applications in several industries: telecom, services, banking, manufacturing. Already in 2001 TenForce developed a Thesaurus Management System for Wolters Kluwer Belgium that is still being fine-tuned and maintained today. Since 2007 TenForce has been building a multilingual multipurpose publishing solution for Wolters Kluwer Legal, Tax & Regulatory Europe – based on semantic technology (OWL, RDF). Using the same technologies, TenForce is building a Thesaurus Management System for the Office of Official Publications of the European Commission (OPOCE) since summer 2008. In this project the so-called EUROVOC-thesaurus is made available through an online portal, for which an extension to existing SKOS standards needed to be defined. Another TenForce project on a European scale - called EURES -, scopes to make similar sets of information available through SPARQL end-points and as Linked Open Data, besides the latter web services.</p>""";
     lod2:abstract """TenForce brings in LOD2: (1) thorough expertise in industrial implementation of taxonomies and metadata for automatic categorization and content management, (2) hands-on experience in conducting large-scale projects in this matter, such as portals for Wolters Kluwers Europe and the European Commission, (3) the capacity to deliver product quality thanks to years’ experience in engineering methodologies when building software products.""".
+
+partner:ulei a lod2:Partner;
+    skos:broader pages:Consortium;
+    foaf:based_near <http://dbpedia.org/resource/Leipzig>;
+    foaf:homepage <http://aksw.org/>;
+    sioc:feed <http://blog.aksw.org/feed/atom/>;
+    rdfs:label "Universität Leipzig";
+    lod2:content """<p>Universität Leipzig is one of the oldest (founded 1409) and largest (30.000 students) universities in Germany and focuses on interdisciplinary research in the life sciences, cognitive sciences and linguistics as well as mathematics and computer science. The Institute for Applied Computer Science (InfAI) at Universität Leipzig hosts world class research groups in service sciences, knowledge engineering and management as well as natural language processing. The approximately 20 researchers of the Agile Knowledge Engineering and Semantic Web (AKSW) research group at InfAI are establishing theoretical results and scalable implementations for the field. Particular emphasis is given to areas such as ontology creation and manipulation, knowledge extraction, ontology learning and information & data integration on the Semantic Web. The implemented tools and services developed by the group enjoy considerable popularity, the open-source semantic web framework OntoWiki for example is downloaded more than 500 times each month and applied in usage scenarios ranging from the authoring of bio-medical ontologies to knowledge management for the enterprise. InfAI is leading several large-scale collaborative research projects on the national and EU levels such as OntoWiki (EU FP7), Internet Media Businesses (EU SMART), PreBIS (German BmbF) and Factory ServNet (Eureka) and participates in many more.</p>""";
+    lod2:abstract """Project coordination; develop knowledge structuring and enrichment algorithms as well as browsing, visualization and authoring interfaces; collaborate with OKFN in order to employ LOD2 results in the GovData.eu use case.""".
+
+:OntoWiki a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://ontowiki.net>;
+    doap:description """
+OntoWiki is a tool providing support for agile, distributed knowledge engineering scenarios. It facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.""";
+    sioc:feed <http://blog.aksw.org/feed/?cat=5>;
+    lod2:partner partner:ulei;
+    rdfs:label "OntoWiki".
+
+person:SebastianTramp a foaf:Person;
+    foaf:homepage <http://sebastian.tramp.name>;
+    foaf:name "Sebastian Tramp".
+
 
 partner:wkd a lod2:Partner;
     skos:broader pages:Consortium;

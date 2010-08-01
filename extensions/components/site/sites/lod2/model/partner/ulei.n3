@@ -1,5 +1,5 @@
 
-partner:infai a lod2:Partner;
+partner:ulei a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Leipzig>;
     foaf:homepage <http://aksw.org/>;
@@ -14,7 +14,7 @@ partner:infai a lod2:Partner;
     doap:description """
 OntoWiki is a tool providing support for agile, distributed knowledge engineering scenarios. It facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.""";
     sioc:feed <http://blog.aksw.org/feed/?cat=5>;
-    lod2:partner partner:AKSW;
+    lod2:partner partner:ulei;
     rdfs:label "OntoWiki".
 
 person:SebastianTramp a foaf:Person;
