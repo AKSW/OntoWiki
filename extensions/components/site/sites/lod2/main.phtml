@@ -20,6 +20,9 @@ if (isset($this->description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])
     }
 
     switch ($types) {
+        case (isset($types['http://lod2.eu/schema/WorkPackage'])):
+            echo $this->partial( 'lod2/types/workpackage.phtml', $templateData);
+            break;
         case (isset($types['http://rdfs.org/sioc/types#WikiArticle'])):
         case (isset($types['http://rdfs.org/sioc/ns#Post'])):
             echo $this->partial( 'lod2/types/article.phtml', $templateData);

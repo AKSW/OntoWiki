@@ -38,7 +38,7 @@ if (isset($description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {
         case (isset($types['http://xmlns.com/foaf/0.1/Person'])):
         default:
             // no specific template found
-            echo $this->partial( 'lod2/default-item.phtml', $templateData);
+            echo $this->partial( 'lod2/items/abstract.phtml', $templateData);
             break;
     }
 }

@@ -86,12 +86,11 @@
         <?php echo $this->partial('lod2/main.phtml', $templateData) ?>
         <?php echo $this->partial('lod2/query.phtml', $templateData) ?>
         <?php echo $this->partial('lod2/feed.phtml', $templateData) ?>
+    <div class="clear"></div>
 
         <div class="box">
             <h2 id="">TODOs :-(</h2>
         <ul>
-            <li>Jonas: View_Helper navigation(string $uriOfSKOSContainer) bitte komplette Navi ausgeben (nach sysont:order sortieren); ausserdem: /Stack scheint manchmal "Stack" und manchmal "Technology Stack" zu heißen ...</li>
-            <li>Jonas: View_Helper lastchange($resourceUri)</li>
             <li>Norm: Kann man den modulen den options-array durchreichen? (z.B. um resource uris als links zu nehmen)
             <ul>
                 <li>Ja, aber bisher nur Render-Optionen wie CSS-Klasse und -ID. Könnte was an die getContents() durchreichen, aber das Modul müsste dann natürlich auf die exakten Keys reagieren.</li>
@@ -99,13 +98,9 @@
             </ul>
             </li>
             <li>Norm: linked data scheint nicht mehr zu gehen</li>
-            <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
-            <li>Seebi: Mehr LOD2 Daten ...</li>
         </ul>
 
         <ul>Später:
-            <li>Norm: SPARQL API Methode + Listen methode?</li>
-            <li>Wie wird der URI helper zur Verfügung gestellt</li>
             <li>Wie werden Dokumente (z.B. PDFs) benutzt (über files component)</li>
         </ul>
 
@@ -118,6 +113,12 @@
         </div>
         <div id="grid" class="box">
             <ul>
+                <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
+                <li>Seebi: Mehr LOD2 Daten ...</li>
+                <li>Wie wird der URI helper zur Verfügung gestellt... new OntoWiki_Url</li>
+                <li><del>Norm</del> Seebi: SPARQL API Methode + Listen methode?</li>
+                <li>Jonas: View_Helper navigation(string $uriOfSKOSContainer) bitte komplette Navi ausgeben (nach sysont:order sortieren); ausserdem: /Stack scheint manchmal "Stack" und manchmal "Technology Stack" zu heißen ...</li>
+                <li>Jonas: View_Helper lastchange($resourceUri)</li>
                 <li>Wie werden die Templates pro Klasse benutzt
                     <ul>
                         <li>Idee: templateHelper bekommt beliebige URI und lädt ein passendes Template. Das kann im einfachsten Fall ein hartgecodetes Mapping der <code>rdf:type</code>s sein.</li>
@@ -183,6 +184,10 @@
 
 
     <div class="grid_5">
+        <div class="box">
+            <h2>Minimap</h2>
+            <?php echo $this->module('minimap', array('noChrome' => true)); ?>
+        </div>
         <div class="box">
             <h2>Linking Resources</h2>
             <?php echo $this->module('linkinghere', array('noChrome' => true)); ?>
