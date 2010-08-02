@@ -27,8 +27,7 @@ class SindicePlugin extends OntoWiki_Plugin
         $baseUri   = 'http://api.sindice.com/v2/search?qt=term&page=1&q=';
         $searchUri = $baseUri . implode('+', $event->termsArray); 
 
-        require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client($searchUri, array(
+        $client = Erfurt_App::getInstance()->getHttpClient($searchUri, array(
             'maxredirects'  => 2,
             'timeout'       => 10
         ));

@@ -92,11 +92,11 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         // Test the URI.
         $this->_url = $uri;
         require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client($uri, array(
+        $client = Erfurt_App::getInstance()->getHttpClient($uri, array(
             'maxredirects'  => 0,
             'timeout'       => 30
         ));
-    
+        
         $client->setHeaders('Accept', 'application/rdf+xml');
         $response = $client->request();
         $success = $this->_handleResponse($client, $response, 'application/rdf+xml');
@@ -431,7 +431,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                     return false;
                 }
 
-                $client = new Zend_Http_Client($url, array(
+                $client = Erfurt_App::getInstance()->getHttpClient($url, array(
                     'maxredirects'  => 10,
                     'timeout'       => 30,
                     'sslcert'       => $certFilename
@@ -517,12 +517,11 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $fullNs     = array();
         $fullResult = array();
         
-        require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client(null, array(
+        $client = Erfurt_App::getInstance()->getHttpClient(null, array(
             'maxredirects'  => 0,
             'timeout'       => 30
         ));
-    
+        
         $client->setHeaders('Accept', 'application/rdf+xml');
    
         foreach ($documents as $docUrl) {

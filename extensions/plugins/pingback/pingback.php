@@ -168,8 +168,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    
 	    // 2. Check for (X)HTML Link element, if target has content type text/html
 	    // TODO Fetch only the first X bytes...???
-        require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client($targetUri, array(
+        $client = Erfurt_App::getInstance()->getHttpClient($targetUri, array(
             'maxredirects'  => 0,
             'timeout'       => 3
         ));
@@ -190,7 +189,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    
 	    // 3. Check RDF/XML
 	    require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client($targetUri, array(
+        $client = Erfurt_App::getInstance()->getHttpClient($targetUri, array(
             'maxredirects'  => 10,
             'timeout'       => 3
         ));

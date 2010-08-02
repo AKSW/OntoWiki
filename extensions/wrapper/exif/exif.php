@@ -42,8 +42,7 @@ class ExifWrapper extends Erfurt_Wrapper
     {
         $tmpDir = Erfurt_App::getInstance()->getTmpDir();
         
-        require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client($uri, array(
+       $client = Erfurt_App::getInstance()->getHttpClient($uri, array(
             'maxredirects'  => 0,
             'timeout'       => 30
         ));
