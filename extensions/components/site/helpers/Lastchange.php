@@ -24,6 +24,20 @@ class Site_View_Helper_Lastchange extends Zend_View_Helper_Abstract
         $limit = $versioning->getLimit();
         $versioning->setLimit(1);
         $history = $versioning->getHistoryForResource($uri, (string)  OntoWiki::getInstance()->selectedModel);
+        
+        if (empty($history)) {
+            return array(
+                'resourceUri'   => $uri, 
+                'resourceTitle' => '', 
+                'timeStamp'     => '', 
+                'timeIso8601'   => '', 
+                'timeDuration'  => '', 
+                'userTitle'     => '', 
+                'userUri'       => '', 
+                'userHref'      => ''
+            );
+        }
+        
         $versioning->setLimit($limit);
         $th = new OntoWiki_Model_TitleHelper(OntoWiki::getInstance()->selectedModel);
         $th->addResource($history[0]['useruri']);

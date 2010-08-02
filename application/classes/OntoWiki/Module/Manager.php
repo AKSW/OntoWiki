@@ -35,7 +35,11 @@ class OntoWiki_Module_Manager
      * The module config file name
      */
     const MODULE_CONFIG_FILE = 'module.ini';
-
+    
+    /**
+     * The local module config file name.
+     * Local config files locally override keys in module config file.
+     */
     const MODULE_LOCAL_CONFIG_FILE = 'local.ini';
     
     /**
