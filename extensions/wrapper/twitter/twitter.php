@@ -63,8 +63,7 @@ class TwitterWrapper extends Erfurt_Wrapper
                 $url2 = 'http://twitter.com/friends/ids/' . $name . '.json';
                 
 
-                require_once 'Zend/Http/Client.php';
-                $client = new Zend_Http_Client($url1, array(
+                $client = Erfurt_App::getInstance()->getHttpClient($url1, array(
                     'maxredirects'  => 0,
                     'timeout'       => 30
                 ));
@@ -176,8 +175,7 @@ class TwitterWrapper extends Erfurt_Wrapper
             }
             
             if (isset($data['friends'])) {
-                require_once 'Zend/Http/Client.php';
-                $client = new Zend_Http_Client(null, array(
+                $client = Erfurt_App::getInstance()->getHttpClient(null, array(
                     'maxredirects'  => 0,
                     'timeout'       => 30
                 ));

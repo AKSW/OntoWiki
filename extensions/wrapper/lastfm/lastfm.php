@@ -67,8 +67,7 @@ class LastfmWrapper extends Erfurt_Wrapper
 			};	
 
 			//setup http client
-			require_once 'Zend/Http/Client.php';
-			$client = new Zend_Http_Client($url, array( 'maxredirects' => 5, 'timeout' => 30));
+			$client = Erfurt_App::getInstance()->getHttpClient($url, array( 'maxredirects' => 5, 'timeout' => 30));
 			
 			//send request
 			$response = $client->request();
@@ -154,8 +153,7 @@ class LastfmWrapper extends Erfurt_Wrapper
 				$url2   .= "artist.gettopalbums&artist=" . $name[1];
 				
 				//setup http client
-				require_once 'Zend/Http/Client.php';
-				$client = new Zend_Http_Client($url2, array( 'maxredirects' => 5, 'timeout' => 30));
+				$client = Erfurt_App::getInstance()->getHttpClient($url2, array( 'maxredirects' => 5, 'timeout' => 30));
 				
 				//send request
 				$response = $client->request();

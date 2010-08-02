@@ -35,7 +35,6 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                     $logger = OntoWiki::getInstance()->logger;
                     // authenticate
                     $authResult = $erfurt->authenticate($credentials['username'], $credentials['password']);
-
                     if ($authResult->isValid()) {
                         $logger = OntoWiki::getInstance()->logger;
                         $logger->info("User '$credentials[username]' authenticated via HTTP.");
@@ -45,6 +44,7 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                         $response = $front->getResponse();
                         $response->setRawHeader('HTTP/1.1 401 Unauthorized');
                         $response->sendResponse();
+                        echo 'HTTP/1.1 401 Unauthorized';
                         exit;
                     }
                     break;
