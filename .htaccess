@@ -23,3 +23,10 @@
 # maybe php_flag is not allowed in your environment,
 # but if you allow short open tags, xml templates will crash
 #php_flag short_open_tag 0
+
+
+# Additional Auth
+#AuthName        "OntoWiki"
+#AuthType        Basic
+#AuthUserFile    /etc/.htpasswd
+#Require         valid-user
