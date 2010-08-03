@@ -23,6 +23,18 @@
  */
 class OntoWiki_Component_Helper
 {
+    /** 
+     * The component's file system root directory
+     * @var string 
+     */
+    protected $_componentRoot = null;
+    
+    /** 
+     * The components URL base
+     * @var string 
+     */
+    protected $_componentUrlBase = null;
+    
     /**
      * OntoWiki Application config
      * @var Zend_Config
@@ -47,15 +59,12 @@ class OntoWiki_Component_Helper
      * @param OntoWiki_Component_Manager $componentManager
      */
     public function __construct($componentManager)
-    {
+    {        
         $componentName           = strtolower(str_replace('Helper', '', get_class($this)));
         $this->_owApp            = OntoWiki::getInstance();
         $this->_config           = $this->_owApp->config;
         $this->_componentManager = $componentManager;
         $this->_privateConfig    = $this->_componentManager->getComponentPrivateConfig($componentName);
-        
-        // custom initialisation
-        $this->init();
     }
     
     /**
@@ -65,8 +74,34 @@ class OntoWiki_Component_Helper
     {
     }
 
-    public function getPrivateConfig(){
+    public function getPrivateConfig()
+    {
         return $this->_privateConfig;
+    }
+    
+    public function getComponentRoot()
+    {
+        $componentName = strtolower(str_replace('Helper', '', get_class($this)));
+        
+        // set component root dir
+        $this->_componentRoot = $this->_componentManager->getComponentPath() 
+                              . $componentName 
+                              . '/';
+        
+        return $this->_componentRoot;
+    }
+    
+    public function getComponentUrlBase()
+    {
+        $componentName = strtolower(str_replace('Helper', '', get_class($this)));
+        
+        // set component root url
+        $this->_componentUrlBase = $this->_config->staticUrlBase 
+                                 . $this->_config->extensions->components 
+                                 . $componentName 
+                                 . '/';
+        
+        return $this->_componentUrlBase;
     }
 }
 

@@ -54,3 +54,13 @@ languages.locale = "en"             ; en, de, zh (Chinese)
 mail.hostname           = "hostname.tld"
 mail.localname.recovery = "ontowiki-account-recovery"
 
+;;
+; Proxy configuration
+; You can configure an optional proxy server for connections that OntoWiki internally opens.
+; This is for example useful in situations, where you want to access Linked Data and your OntoWiki sits
+; behind a firewall.
+;;
+;proxy.host = ""
+;proxy.port = 8080
+;proxy.username = ""
+;proxy.password = ""

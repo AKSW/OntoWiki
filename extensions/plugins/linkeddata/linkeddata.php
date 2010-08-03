@@ -20,13 +20,13 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      * @var array
      */
     private $_typeMapping = array(
-        ''                      => 'xhtml', // default is xhtml
-        'text/html'             => 'xhtml', // we only deliver XML-compatible html
-        'application/xhtml+xml' => 'xhtml', 
+        ''                      => 'html', // default is xhtml
+        'text/html'             => 'html', // we only deliver XML-compatible html
+        'application/xhtml+xml' => 'html', 
         'application/rdf+xml'   => 'rdf', 
         'text/n3'               => 'n3', 
         'application/json'      => 'json', 
-        'application/xml'       => 'xhtml'  // TODO: should this be xhtml or rdf?
+        'application/xml'       => 'html'  // TODO: should this be xhtml or rdf?
     );
     
     /**
@@ -48,44 +48,35 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $uri = $event->uri;
       
         try {
+            // content negotiation
+            $flag  = false;
+            $type  = $this->_getTypeForRequest($request, $uri, $flag);
             $graph = $this->_getFirstReadableGraphForUri($uri);
             if (!$graph) {
                 return false;
             }
-            
-            // content negotiation
-            $type = (string)$this->_matchDocumentTypeRequest($event->request, array(
-                'text/html',
-                'application/xhtml+xml',
-                'application/rdf+xml',
-                'text/n3',
-                'application/json',
-                'application/xml'
-            ));
          
             $format = 'rdf';
             if (isset($this->_privateConfig->format)) {
                 $format = $this->_privateConfig->format;
             }
             
-            if (true === (boolean)$this->_privateConfig->provenance->enabled) {
-                $prov = 1;
-            } else {
-                $prov = 0;
-            }
-            
-            // graph URIs export the whole graph
-            if ($graph === $uri) {
-                $controllerName = 'model';
-                $actionName = 'export';
-            } else {
-                $controllerName = 'resource';
-                $actionName = 'export';
-            }
+            $prov = (boolean)$this->_privateConfig->provenance->enabled;
          
             // redirect accordingly
-            switch ($this->_typeMapping[$type]) {
+            switch ($type) {
                 case 'rdf':
+                case 'n3':
+                    $format = $type;
+                    // graph URIs export the whole graph
+                    if ($graph === $uri) {
+                        $controllerName = 'model';
+                        $actionName = 'export';
+                    } else {
+                        $controllerName = 'resource';
+                        $actionName = 'export';
+                    }
+                    
                     // set export action
                     $url = new OntoWiki_Url(array('controller' => $controllerName, 'action' => $actionName), array());
                     $url->setParam('r', $uri, true)
@@ -93,10 +84,8 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                         ->setParam('m', $graph)
                         ->setParam('provenance', $prov);
                     break;
-                case 'xhtml':
+                case 'html':
                 default:
-                    // make active graph (session required)
-                    OntoWiki::getInstance()->selectedModel = $store->getModel($graph);
                     // default property view
                     $url = new OntoWiki_Url(array('route' => 'properties'), array());
                     $url->setParam('r', $uri, true)
@@ -104,21 +93,36 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                     break;
             }
             
+            // make active graph (session required)
+            $activeModel = $store->getModel($graph);
+            OntoWiki::getInstance()->selectedModel    = $activeModel;
+            OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($uri, $activeModel);
+            
             $request->setDispatched(true);
             
             // give plugins a chance to do something
-            $event = new Erfurt_Event('beforeLinkedDataRedirect');
+            $event = new Erfurt_Event('onBeforeLinkedDataRedirect');
             $event->response = $response;
             $event->trigger();
             
-            // set redirect and send immediately
-            $response->setRedirect((string)$url, 303)
-                     ->sendResponse();
+            // give plugins a chance to handle redirection self
+            $event = new Erfurt_Event('onShouldLinkedDataRedirect');
+            $event->request  = $request;
+            $event->response = $response;
+            $event->type     = $type;
+            $event->uri      = $uri;
+            $event->flag     = $flag;
+            $event->setDefault(true);
             
-            // TODO: do it the official Zend way
-            exit;
+            $shouldRedirect = $event->trigger();
+            if ($shouldRedirect) {
+                // set redirect and send immediately
+                $response->setRedirect((string)$url, 303)
+                         ->sendResponse();
+                exit;
+            }
             
-            return false;
+            return !$shouldRedirect; // will default to false
         } catch (Erfurt_Exception $e) {
             // don't handle errors since other plug-ins 
             // could chain this event
@@ -204,6 +208,24 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         }
         
         return false;
+    }
+    
+    protected function _getTypeForRequest($request, &$uri, &$flag)
+    {
+        // check for valid type suffix
+        $parts  = explode('.', $uri);
+        $suffix = $parts[count($parts)-1];
+        if (in_array($suffix, array_values($this->_typeMapping))) {
+            $uri = substr($uri, 0, strlen($uri) - strlen($suffix) - 1);
+            $flag = true; // rewritten flag
+            return $suffix;
+        }
+        
+        // content negotiation
+        $possibleTypes = array_filter(array_keys($this->_typeMapping));
+        if ($type = $this->_matchDocumentTypeRequest($request, $possibleTypes)) {
+            return $this->_typeMapping[$type];
+        }
     }
     
     /**
