@@ -629,22 +629,24 @@ class PatternEngine {
         $complexPattern->setLabel($data[$hash][EF_RDFS_LABEL][0]);
         $complexPattern->setDescription($data[$hash][EF_RDFS_COMMENT][0]);
         
-        function resolveRecursive($hash,$resources,$data) {
-            
-             $ret = array();
-            
-            foreach ($data[$hash] as $p => $x) {
-                foreach ($x as $val) {
-                    if (array_key_exists(md5($val),$resources) ) {
-                        $ret[$p][] = resolveRecursive(md5($val),$resources,$data);
-                    }  else {
-                        $ret[$p][] = $val;
-                    }
-                }
-            }
-            
-            return $ret;
-            
+        if (!function_exists('resolveRecursive')) {
+	        function resolveRecursive($hash,$resources,$data) {
+	            
+	             $ret = array();
+	            
+	            foreach ($data[$hash] as $p => $x) {
+	                foreach ($x as $val) {
+	                    if (array_key_exists(md5($val),$resources) ) {
+	                        $ret[$p][] = resolveRecursive(md5($val),$resources,$data);
+	                    }  else {
+	                        $ret[$p][] = $val;
+	                    }
+	                }
+	            }
+	            
+	            return $ret;
+	            
+	        }
         }
         
         $pdata = resolveRecursive($hash,$resources,$data);

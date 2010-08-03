@@ -48,15 +48,127 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      */
     public function indexAction () {
         
-        $this->view->componentUrlBase = $this->_componentUrlBase;
-
-        $this->view->url = array();
-
         $url = new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'browse') );
         $this->view->url['browse'] = $url;
         
-        $url = new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'view') );
-        $this->view->url['view'] = $url;
+        $this->_redirect($url);
+        
+    }
+    
+    /**
+     *  Launcher action to generate pattern selections for given input parameters and
+     *  guide to pattern execution
+     */
+    public function launcherAction() {
+        
+        $step = $this->_request->getParam('step',0);
+        
+        if ($step === 0 && $this->getParam('pattern_input') !== null) {
+        
+	        $params = $this->getParam('pattern_input');
+	        
+	        $sig = array();
+	        
+	        foreach ($params as $p) {
+	            if (is_string($p)) {
+	                $sig[] = $this->_checkVarType($p);
+	            } else if (is_array($p)) {
+	                if (array_key_exists('value', $p) && array_key_exists('hint', $p)) {
+	                    $sig[] = $this->_checkVarType($p['value'],$p['hint']);
+	                }
+	            } else {
+	                throw new RuntimeException('disallowed parameter in patternmanger launcher input');
+	            }
+	        }
+	        
+	        $filter = '';
+	        $queryextra = '';
+	        
+	        for ($i = 0; $i < sizeof($sig); $i++) {
+	            $queryextra .= PHP_EOL . '?bp evopat:hasPatternVariable ?var' . $i . ' . '
+	                        .  PHP_EOL .'?var' . $i . ' a ?vartype' . $i . ' . ';
+	            
+	            $filter .= 'sameTerm(?vartype' . $i . ', evopat:PatternVariable_' . $sig[$i] . ') && ';
+	            for ($j = $i+1; $j < sizeof($sig); $j++) {
+	                $filter .= '?var' . $i . ' != ?var' . $j . ' && ';
+	            }
+	        }
+	        
+	        $filter .= ' 1';
+	        
+	        
+	        
+	        $query = 'PREFIX evopat: <' . $this->_privateConfig->storeModel . '> 
+	        	SELECT DISTINCT ?cp ?cm  WHERE {
+	        		?cp evopat:hasSubPattern ?sp .
+					?cp <' . EF_RDFS_COMMENT . '>  ?cm .
+					?sp evopat:hasBasicPattern ?bp .
+					' . $queryextra . '
+					FILTER (
+						' . $filter . '
+					)
+				} LIMIT 20';
+
+	        $matches = $this->_erfurt->getStore()->sparqlQuery($query);
+
+	        $perfectMatch = array();
+	        $closeMatch   = array();
+	        
+	        foreach ($matches as $row) {
+	            $pattern = $this->_engine->loadFromStore($row['cp']);
+	            $variables = $pattern->getVariables();
+	            if (sizeof($variables) === sizeof($sig)) {
+	                $perfectMatch[] = $pattern;
+	            } else {
+	                $closeMatch[] = $pattern;
+	            }
+	        }
+	        
+	        var_dump(sizeof($perfectMatch));
+	        var_dump(sizeof($closeMatch));
+	        
+	        
+        }
+    }
+    
+    /**
+     * 
+     * Checking variable type for an explicit value in $val
+     * @param string $val
+     * @param string $hint
+     */
+    private function _checkVarType($val, $hint = null) {
+        $store = $this->_erfurt->getStore();
+        $models = $store->getAvailableModels();
+        if ( array_key_exists($val,$models) ) {
+            return 'GRAPH';
+        } else if (@$dtype) {
+            // DATATYPE
+        } else if (@$langtag) {
+            // LANG
+        } else {
+            if (preg_match('/[a-z]+:\/\/(.*\.)+.+(\/.*)/i',$val)) {
+                $query = 'SELECT * WHERE {<' . $val . '> a ?type . } LIMIT 1';
+                $res = $store->sparqlQuery($query);
+                if (!empty($res)) {
+                    switch ($res[0]['type']) {
+                        case EF_RDFS_CLASS:
+                        case EF_OWL_CLASS:
+                            return 'CLASS';
+                        case EF_OWL_ANNOTATION_PROPERTY:
+                        case EF_OWL_DATATYPE_PROPERTY:
+                        case EF_OWL_OBJECT_PROPERTY:
+                        case EF_OWL_FUNCTIONAL_PROPERTY:
+                        case EF_OWL_INVERSEFUNCTIONAL_PROPERTY:
+                            return 'PROPERTY';
+                    }
+                }
+                return 'RESOURCE';
+            } else {
+                return 'LITERAL';
+            }
+        }
+        
         
     }
     
@@ -109,13 +221,18 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         $url = new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'exec'));
 
-        //$this->view->placeholder('main.window.title')->set($windowTitle);
 
         $this->view->formActionUrl = (string) $url;
         $this->view->formMethod    = 'post';
         //$this->view->formName      = 'instancelist';
         //$this->view->formName      = 'patternmanager-form';
         $this->view->formEncoding  = 'multipart/form-data';
+        
+                $title = 'Evolution Patternmanager > Execution ';
+        //$title = '<a>' . $this->_owApp->translate->_('Evolution Patternmanager') . '</a>' . ' &gt; '
+        //       . '<a>' . $this->_owApp->translate->_('Execution') . '</a>';
+        
+        $this->view->placeholder('main.window.title')->set($title);
 
     }
 
@@ -123,12 +240,32 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      *
      */
     public function browseAction() {
-
-        $this->_engine->setDefaultGraph($this->_owApp->selectedModel);
+    	
+        $store = $this->_owApp->erfurt->getStore();
+        $graph = $store->getModel($this->_privateConfig->storeModel);
         
-        $list = $this->_engine->listFromStore();
+        //Loading data for list of saved queries
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $listName = "patternmanager-list";
         
-        $this->view->data = $list;
+        if($listHelper->listExists($listName)){
+            
+            $list = $listHelper->getList($listName);
+            $listHelper->addList($listName, $list, $this->view, "patternmanager-list.phtml");
+            
+        } else {
+            
+            $list = new OntoWiki_Model_Instances($store, $graph, array());
+            $list->addTypeFilter($this->_privateConfig->rdf->ComplexPattern);
+            $listHelper->addListPermanently($listName, $list, $this->view, "patternmanager-list.phtml");
+            
+        }
+        
+        $title = 'Evolution Patternmanager > Browser ';
+        //$title = '<a>' . $this->_owApp->translate->_('Evolution Patternmanager') . '</a>' . ' &gt; '
+        //       . '<a>' . $this->_owApp->translate->_('Browse') . '</a>';
+        
+        $this->view->placeholder('main.window.title')->set($title);
         
     }
     
@@ -178,6 +315,12 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         if ( !empty($param) ) {
             $this->view->errorPattern = $param;
         }
+        
+        $title = 'Evolution Patternmanager > Edit ';
+        //$title = '<a>' . $this->_owApp->translate->_('Evolution Patternmanager') . '</a>' . ' &gt; '
+        //       . '<a>' . $this->_owApp->translate->_('Edit') . '</a>';
+        
+        $this->view->placeholder('main.window.title')->set($title);
 
     }
     
@@ -357,6 +500,12 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $url->setParam('error_pattern', json_encode($error));
             $this->_redirect($url);
         }
+        
+        $title = 'Evolution Patternmanager > Save ';
+        //$title = '<a>' . $this->_owApp->translate->_('Evolution Patternmanager') . '</a>' . ' &gt; '
+        //       . '<a>' . $this->_owApp->translate->_('Browse') . '</a>';
+        
+        $this->view->placeholder('main.window.title')->set($title);
     }
     
     /**
