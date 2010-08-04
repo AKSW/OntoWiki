@@ -11,10 +11,10 @@ $odd = true;
             <?php if (isset($this->rootEntry)):?>
                 <ul class="individual">
                     <li>
-                        <a class="navFirst icon icon-arrow-first" onclick="addLoader(this);" title="Go to root level">Root</a>
+                        <a class="navFirst icon icon-arrow-first" onclick="addLoader(this);return false;" title="Go to root level">Root</a>
                     </li>
                     <li>
-                        <a class="navBack icon icon-arrow-previous" onclick="addLoader(this);" title="Go to previous level">Back</a>
+                        <a class="navBack icon icon-arrow-previous" onclick="addLoader(this);return false;" title="Go to previous level">Back</a>
                     </li>
                 </ul>
                 <ul class="plastic">
@@ -51,7 +51,7 @@ $odd = true;
             <?php foreach ($this->entries as $uri => $entry): ?>
                 <li class="<?php if( $entry['sub'] > 0 ){ echo 'arrow'; } ?>" about="<?php echo $uri ?>">
                     <!-- href="<?php echo $entry['link'] ?>" -->
-                    <a href="#" onclick="onNavigationEntryClick(this);" about="<?php echo $entry['link'] ?>">
+                    <a href="#" onclick="onNavigationEntryClick(this);return false;" about="<?php echo $entry['link'] ?>">
                        <?php echo $entry['title'] ?>
                     </a>
                     <?php if( $entry['sub'] > 0 ): ?>
@@ -64,7 +64,7 @@ $odd = true;
         <?php if ($this->showMeMore) :?>
         <ul class="individual">
             <li>
-                <a href="javascript:navigationEvent ('more', '')" id="naviganion-more"> Show Me More</a>
+                <a href="javascript:navigationEvent ('more', '');return false;" id="naviganion-more"> Show Me More</a>
             </li>
         </ul>
         <?php endif; ?>

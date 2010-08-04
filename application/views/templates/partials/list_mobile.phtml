@@ -59,7 +59,7 @@ if ($instances->hasData()):
         <?php foreach ($instanceInfo as $instanceUri => $instance): ?>
             <li>
                 <!-- <?php echo  $instanceUri?> -->
-                <a about="<?php echo $instance['url'] ?>" href="#" onclick="onInstanceClick(this);">
+                <a about="<?php echo $instance['url'] ?>" href="#" onclick="onInstanceClick(this); return false;">
                     <?php echo $instance['title'] ?>
                 </a>
                 <?php if (isset($instanceData[$instanceUri]) && isset($instanceData[$instanceUri]['__TYPE'])): ?>

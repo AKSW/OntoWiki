@@ -10,7 +10,7 @@
     <ul class="rounded">
     	<?php foreach ($this->models as $modelDetails): ?>
     		<li class="arrow">
-                    <a href="#" onclick="getBase(this)" about="<?php echo $modelDetails['graphUri'] ?>">
+                    <a href="#" onclick="getBase(this); return false;" about="<?php echo $modelDetails['graphUri'] ?>">
                         <?php echo $modelDetails['label'] ?>
                     </a>
     		</li>

@@ -97,3 +97,43 @@ function addLoader(entry){
     //$(entry).html(loader_src);
     $(entry).attr("class","loading");
 }
+
+function toggleMenu(element){
+    if( $("#menu-form").length == 0 ){
+        var list = document.createElement("ul");
+        list.className = "individual";
+        list.id = "menu-form";
+
+        var li1 = document.createElement("li");
+        var inp = document.createElement("input");
+        inp.id = "search-input";
+        inp.type = "text";
+        inp.placeholder = "Search";
+        li1.appendChild(inp);
+
+        var li2 = document.createElement("li");
+        var btn = document.createElement("a");
+        //btn.href = "#";
+        btn.textContent = "Go";
+        btn.onclick = function(){doSearch( $('#search-input').val() );};
+        li2.appendChild(btn);
+
+        list.appendChild(li1);
+        list.appendChild(li2);
+
+        $(element).parent().after(list);
+    }else{
+        $("#menu-form").remove();
+    }
+}
+
+function doSearch(req, element){
+    $.get(urlBase+"application/search/?searchtext-input="+req, function(data){
+        $.get(urlBase+"resource/instances",function(data){
+            $("#menu-form").remove();
+            $("#searchres-content").html(data);
+            $("#searchres-title").text(req);
+            jQT.goTo("#searchres-list", "slide");
+        });
+    });
+}

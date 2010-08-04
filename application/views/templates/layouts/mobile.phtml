@@ -32,7 +32,7 @@
             border: 1px solid #333;
             font-size: 14px;
             text-align: center;
-            width: 13%;
+            width: 12.5%;
             float: left;
             -webkit-border-radius: 8px;
             -webkit-box-sizing: border-box;
@@ -85,6 +85,7 @@
         <div class="toolbar">
             <a href="#" class="back">Back</a>
             <h1 id="nav-title">title</h1>
+            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
         </div>
         <?php echo $this->modules('main.mobile.navigation') ?>
     </div>
@@ -92,6 +93,7 @@
         <div class="toolbar">
             <a href="#nav" class="back">Back</a>
             <h1 id="list-title">title</h1>
+            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
         </div>
         <div id="navigation-content">
             <?php echo $this->modules('main.mobile.list') ?>
@@ -101,6 +103,7 @@
         <div class="toolbar">
             <a href="#list" class="back">Back</a>
             <h1 id="instance-title">title</h1>
+            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
         </div>
         <div id="instance-content">
             <!-- stuff here -->
@@ -110,8 +113,18 @@
         <div class="toolbar">
             <a href="#instance-list" class="back">Back</a>
             <h1 id="properties-title">title</h1>
+            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
         </div>
         <div id="properties-content">
+            <!-- stuff here -->
+        </div>
+    </div>
+    <div id="searchres-list">
+        <div class="toolbar">
+            <a href="#home" class="back">Back</a>
+            <h1 id="searchres-title">title</h1>
+        </div>
+        <div id="searchres-content">
             <!-- stuff here -->
         </div>
     </div>
