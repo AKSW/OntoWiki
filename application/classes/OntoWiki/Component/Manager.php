@@ -35,10 +35,11 @@
 class OntoWiki_Component_Manager
 {
     /**
-     * The component config file
+     * The component config files.
+     * Values in private override values in config.
      */
-    const COMPONENT_CONFIG_FILE   = 'component.ini';
-    const COMPONENT_PRIVATE_CONFIG_FILE   = 'local.ini';
+    const COMPONENT_CONFIG_FILE = 'component.ini';
+    const COMPONENT_PRIVATE_CONFIG_FILE = 'local.ini';
     
     /**
      * Component class name suffix
@@ -95,7 +96,8 @@ class OntoWiki_Component_Manager
      */
     private $_pathKeys = array(
         'templates', 
-        'languages'
+        'languages', 
+        'helpers'
     );
     
     /** 
@@ -211,6 +213,28 @@ class OntoWiki_Component_Manager
     }
     
     /**
+     * Returns the helper path for a given component.
+     *
+     * @param  string $componentName
+     * @return string
+     */
+    public function getComponentHelperPath($componentName)
+    {
+        if (!$this->isComponentRegistered($componentName)) {
+            throw new OntoWiki_Component_Exception("Component with key '$componentName' not registered");
+        }
+        
+        if (array_key_exists('helpers', $this->_componentRegistry[$componentName])) {
+            $path = $this->_componentPath 
+                  . $componentName 
+                  . DIRECTORY_SEPARATOR 
+                  . $this->_componentRegistry[$componentName]['helpers'];
+            
+            return $path;
+        }
+    }
+    
+    /**
      * Returns the template path for a given component.
      *
      * @param  string $componentName
@@ -293,8 +317,12 @@ class OntoWiki_Component_Manager
             foreach ($this->_helpers as $componentName => &$helper) {
                 // only if helper has not been previously loaded
                 if (!array_key_exists('instance', $helper)) {             
-                    $helper['instance'] = $this->_loadHelper($componentName);
+                    $helperInstance = $this->_loadHelper($componentName);
+                } else {
+                    $helperInstance = $this->_helpers[$componentName]['instance'];
                 }
+                
+                $helperInstance->init();
             }
             
             $this->_helpersCalled = true;
@@ -317,6 +345,16 @@ class OntoWiki_Component_Manager
         require $helperSpec['path'];
         // instantiate helper object
         $helperInstance = new $helperSpec['class']($this);
+        
+        // register helper events
+        if (isset($helperSpec['events'])) {
+            $dispatcher = Erfurt_Event_Dispatcher::getInstance();
+            foreach ((array) $helperSpec['events'] as $currentEvent) {
+                $dispatcher->register($currentEvent, $helperInstance);
+            }
+        }
+        
+        $this->_helpers[$componentName]['instance'] = $helperInstance;
         
         return $helperInstance;
     }
@@ -412,12 +450,24 @@ class OntoWiki_Component_Manager
         $helperClassName = ucfirst($componentName) . self::COMPONENT_HELPER_SUFFIX;
         $helperPathName  = $componentPath . $helperClassName . '.php';
         
-        if (is_readable($helperPathName)) {
-            // keep for later
-            $this->_helpers[$componentName] = array(
-                'path'  => $helperPathName, 
-                'class' => $helperClassName
+        if (is_readable($helperPathName)) {    
+            $helperSpec = array(
+                'path'   => $helperPathName, 
+                'class'  => $helperClassName
             );
+            
+            // store events
+            if (array_key_exists('helperEvents', $tempArray)) {
+                $helperSpec['events'] = (array)$tempArray['helperEvents'];
+            }
+            
+            // keep for later
+            $this->_helpers[$componentName] = $helperSpec;
+            
+            // event helpers need to be called early
+            if (!empty($this->_helpers[$componentName]['events'])) {
+                $this->_loadHelper($componentName);
+            }
         }
         
         $action = null;
@@ -450,7 +500,7 @@ class OntoWiki_Component_Manager
     {
 
         // check for valid translation object
-        if ( is_object($this->_translate) ) {
+        if (is_object($this->_translate) ) {
             foreach ($this->_componentRegistry as $component => $settings) {
                 // check if component owns translation
                 if (
@@ -470,7 +520,5 @@ class OntoWiki_Component_Manager
                 }
             }
         }
-    
     }
 }
-

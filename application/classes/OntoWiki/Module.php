@@ -94,7 +94,7 @@ abstract class OntoWiki_Module
     /**
      * Constructor
      */
-    public function __construct($name, $context)
+    public function __construct($name, $context, $options)
     {
         // init view
         if (null === $this->view) {
@@ -126,7 +126,7 @@ abstract class OntoWiki_Module
 
         // Parse the private config
         // TODO: this was already done by the Module Manager. Why here again?
-        $configPath = $modulesPath . $name. '/';
+        $configPath = $modulesPath . $name . '/';
         $configFile =  $configPath . OntoWiki_Module_Manager::MODULE_CONFIG_FILE;
         $localConfigFile = $configPath . OntoWiki_Module_Manager::MODULE_LOCAL_CONFIG_FILE;
         if (is_readable($configFile)) {
@@ -140,11 +140,20 @@ abstract class OntoWiki_Module
                 // merge the local.ini into the private config
                 if (is_readable($localConfigFile)) {
                     $this->_privateConfig->merge(
-                            new Zend_Config_Ini(
-                                    $localConfigFile,
-                                    OntoWiki_Module_Manager::CONFIG_PRIVATE_SECTION
-                                    )
-                            );
+                        new Zend_Config_Ini(
+                            $localConfigFile, 
+                            OntoWiki_Module_Manager::CONFIG_PRIVATE_SECTION
+                        )
+                    );
+                }
+                
+                if (is_array($options)) {
+                    $this->_privateConfig->merge(
+                        new Zend_Config(
+                            $options, 
+                            array('allowModifications' => true)
+                        )
+                    );
                 }
 
             } catch (Zend_Config_Exception $e) {

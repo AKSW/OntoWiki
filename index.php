@@ -92,8 +92,8 @@ require_once 'Zend/Application.php';
 
 // create application
 $application = new Zend_Application(
-                'default',
-                ONTOWIKI_ROOT . 'application/config/application.ini'
+    'default',
+    ONTOWIKI_ROOT . 'application/config/application.ini'
 );
 
 /** OntoWiki */
@@ -102,6 +102,11 @@ require_once 'OntoWiki.php';
 // define alias for backward compatiblity
 class_alias('OntoWiki', 'OntoWiki_Application');
 
-// bootstrap and run
-$application->bootstrap()
-        ->run();
+// bootstrap
+$application->bootstrap();
+
+$event = new Erfurt_Event('onPostBootstrap');
+$event->bootstrap = $application->getBootstrap();
+$event->trigger();
+
+$application->run();

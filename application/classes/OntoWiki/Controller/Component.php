@@ -59,6 +59,11 @@ class OntoWiki_Controller_Component extends OntoWiki_Controller_Base
             $this->view->addScriptPath($tp);
         }
         
+        // set component specific helper path
+        if ($hp = $cm->getComponentHelperPath($name)) {
+            $this->view->addHelperPath($hp, ucfirst($name) . '_View_Helper_');
+        }
+        
         // set private config
         if ($pc = $cm->getComponentPrivateConfig($name)) {
             $this->_privateConfig = $pc;
