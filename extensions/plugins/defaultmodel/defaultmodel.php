@@ -45,7 +45,9 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
             } else {
                 $owApp->selectedModel = $efStore->getModel($modelUri);
             }
-
+            if($config['setSelectedResource']){
+                $owApp->selectedResource = $owApp->selectedModel;
+            }
         } else {
             // could not determine model so do nothing
         }

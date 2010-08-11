@@ -91,9 +91,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // keep component manager in OntoWiki
         $ontoWiki->componentManager = $componentManager;
 
-        //actionhelper
+        // actionhelper
         Zend_Controller_Action_HelperBroker::addPrefix('OntoWiki_Controller_ActionHelper_');
-        Zend_Controller_Action_HelperBroker::addHelper( new OntoWiki_Controller_ActionHelper_List() );
+        Zend_Controller_Action_HelperBroker::addHelper( new OntoWiki_Controller_ActionHelper_List());
     }
     
     /**
@@ -168,6 +168,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
            $config->log->level = 7;
         }
         
+        
+        
         return $config;
     }
     
@@ -218,7 +220,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         } catch (Exception $e) {
             exit('Unexpected error: ' . $e->getMessage());
         }
-        
         
         // make available
         $ontoWiki->erfurt = $erfurt;
@@ -347,6 +348,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         $ontoWiki = OntoWiki::getInstance();
         $ontoWiki->language = isset($config->languages->locale) ? $config->languages->locale : null;
+        $ontoWiki->config   = $config;
         
         return $ontoWiki;
     }
@@ -602,6 +604,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
              ->addScriptPath($themeTemplatePath)    // theme templates override default ones
              ->setEncoding($config->encoding)
              ->setHelperPath(ONTOWIKI_ROOT . 'application/classes/OntoWiki/View/Helper', 'OntoWiki_View_Helper');
+        
+        
         
         // set Zend_View to emit notices in debug mode
         $view->strictVars(defined('_OWDEBUG'));
