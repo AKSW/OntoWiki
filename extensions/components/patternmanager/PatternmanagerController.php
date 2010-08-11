@@ -13,6 +13,7 @@ require_once 'classes/BasicPattern.php';
 require_once 'classes/ComplexPattern.php';
 require_once 'classes/PatternEngine.php';
 require_once 'classes/PatternFunction.php';
+require_once 'classes/PatternVariable.php';
 
 class PatternmanagerController extends OntoWiki_Controller_Component {
     
@@ -62,14 +63,13 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
     public function launcherAction() {
         
         $step = $this->_request->getParam('step',0);
+        $patternInput = json_decode($this->getParam('pattern_input'));
         
-        if ($step === 0 && $this->getParam('pattern_input') !== null) {
-        
-	        $params = $this->getParam('pattern_input');
+        if ($step === 0 &&  $patternInput !== null) {
 	        
 	        $sig = array();
 	        
-	        foreach ($params as $p) {
+	        foreach ($patternInput as $p) {
 	            if (is_string($p)) {
 	                $sig[] = $this->_checkVarType($p);
 	            } else if (is_array($p)) {
@@ -123,10 +123,14 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	                $closeMatch[] = $pattern;
 	            }
 	        }
-	        
-	        var_dump(sizeof($perfectMatch));
-	        var_dump(sizeof($closeMatch));
-	        
+
+	        $fallbackTable = array(
+	        	PatternVariable::R_CLASS 	=> PatternVariable::RESOURCE,
+	        	PatternVariable::R_PROPERTY 	=> PatternVariable::RESOURCE,
+	            'DATATYPE' 	=> PatternVariable::RESOURCE,
+	        	'LANG'		=> PatternVariable::LITERAL,
+	            'REGEXP'    => PatternVariable::LITERAL
+	        );
 	        
         }
     }
@@ -142,30 +146,30 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $models = $store->getAvailableModels();
         if ( array_key_exists($val,$models) ) {
             return 'GRAPH';
-        } else if (@$dtype) {
-            // DATATYPE
-        } else if (@$langtag) {
-            // LANG
+        } else if (strpos($val,'http://www.w3.org/2001/XMLSchema#') === 0) {
+            return 'DATATYPE';
+        } else if (preg_match('/[a-z]{2}/',$val)) {
+            return 'LANG';
         } else {
-            if (preg_match('/[a-z]+:\/\/(.*\.)+.+(\/.*)/i',$val)) {
+            if ( Erfurt_Uri::check($val) ) {
                 $query = 'SELECT * WHERE {<' . $val . '> a ?type . } LIMIT 1';
                 $res = $store->sparqlQuery($query);
                 if (!empty($res)) {
                     switch ($res[0]['type']) {
                         case EF_RDFS_CLASS:
                         case EF_OWL_CLASS:
-                            return 'CLASS';
+                            return PatternVariable::R_CLASS;
                         case EF_OWL_ANNOTATION_PROPERTY:
                         case EF_OWL_DATATYPE_PROPERTY:
                         case EF_OWL_OBJECT_PROPERTY:
                         case EF_OWL_FUNCTIONAL_PROPERTY:
                         case EF_OWL_INVERSEFUNCTIONAL_PROPERTY:
-                            return 'PROPERTY';
+                            return PatternVariable::R_PROPERTY;
                     }
                 }
-                return 'RESOURCE';
+                return PatternVariable::RESOURCE;
             } else {
-                return 'LITERAL';
+                return PatternVariable::LITERAL;
             }
         }
         
@@ -524,8 +528,8 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         
         $allowedInputType = array(
-            'RESOURCE' => '/([a-z]|[0-9]|[A-Z])+/',
-            'LITERAL' => '/\S+/',
+            PatternVariable::RESOURCE => '/([a-z]|[0-9]|[A-Z])+/',
+            PatternVariable::LITERAL => '/\S+/',
             'BasicPattern' => '/.*/'
         );
         
@@ -565,7 +569,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 				            $ret[] = json_encode( array($row['entity'],$row['label']));
 				        }
 	                break;
-	            case 'LITERAL':
+	            case PatternVariable::LITERAL:
 			        $sparqlQuery =  'SELECT DISTINCT ?entity WHERE { 
 			        	?s ?p ?entity . 
 			        	FILTER (
@@ -583,9 +587,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 			            $ret[] = $value['entity'];
 			        }
 			        break;
-	            case 'CLASS' :
+	            case PatternVariable::R_CLASS:
 	                break;
-	            case 'PROPERTY':
+	            case PatternVariable::R_PROPERTY:
                     $sparqlQuery =  'SELECT DISTINCT ?entity FROM <' .  (string) $model . '> WHERE { 
 			        	?x ?entity ?o .
 			        	OPTIONAL { ?entity <' . EF_RDFS_LABEL . '> ?label . }
@@ -604,7 +608,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 			            $ret[] = $value['entity'];
 			        }
 	                break;
-	            case 'RESOURCE' :
+	            case PatternVariable::RESOURCE :
                     $sparqlQuery =  'SELECT DISTINCT ?entity FROM <' .  (string) $model . '> WHERE { 
 			        	?entity ?p ?o . 
 			        	?entity <' . EF_RDFS_LABEL . '> ?label
