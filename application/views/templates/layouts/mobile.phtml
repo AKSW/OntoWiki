@@ -86,11 +86,13 @@
             <a href="#" class="back">Back</a>
             <h1>Login</h1>
         </div>
-        <ul class="rounded">
+        <!-- <ul class="rounded">
             <li><input type="text" name="login-text" placeholder="Login" id="login-text" /></li>
-            <li><input type="text" name="pass-text" placeholder="Password" id="pass-text" /></li>
+            <li><input type="password" name="pass-text" placeholder="Password" id="pass-text" /></li>
+            <li><input type="checkbox" name="login-save" id="login-save" class="checkbox"> Remember me</li>
         </ul>
-        <a href="#" class="whiteButton" style="margin: 10px">OK</a>
+        <a href="#" class="whiteButton" style="margin: 10px" onclick="doLogin(); return false;">OK</a> -->
+        <?php echo $this->modules('main.mobile.login') ?>
     </div>
     <div id="nav">
         <div class="toolbar">
