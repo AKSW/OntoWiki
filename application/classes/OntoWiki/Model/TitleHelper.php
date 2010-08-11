@@ -110,6 +110,8 @@ class OntoWiki_Model_TitleHelper
      * @var array
      */
     protected $_titleQueryResults = null;
+
+    private static $_instance = null;
     
     // ------------------------------------------------------------------------
     // --- Magic methods ------------------------------------------------------
@@ -142,7 +144,19 @@ class OntoWiki_Model_TitleHelper
     // ------------------------------------------------------------------------
     // --- Public methods -----------------------------------------------------
     // ------------------------------------------------------------------------
-    
+        /**
+     * Singleton instance
+     *
+     * @return OntoWiki_Model_Instance
+     */
+    public static function getInstance()
+    {
+        if (null === self::$_instance) {
+            self::$_instance = new self();
+        }
+
+        return self::$_instance;
+    }
     /**
      * Adds a resource to list of resources for which to query title properties.
      *

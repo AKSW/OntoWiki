@@ -118,6 +118,15 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             );
         }
 
+        if(isset($this->_config->meta)){
+            if(isset($this->_config->meta->Keywords)){
+                $this->view->metaKeywords = $this->_config->meta->Keywords;
+            } 
+            if(isset($this->_config->meta->Description)){
+                $this->view->metaDescription = $this->_config->meta->Description;
+            }
+        } 
+
         /**
          * @trigger onAfterInitController 
          * Triggered after a controller from class OntoWiki_Controller_Base (or derived)
