@@ -111,7 +111,7 @@ function toggleMenu(element){
     }
 }
 
-function doSearch(req, element){
+function doSearch(req){
     $.get(urlBase+"application/search/?searchtext-input="+req, function(data){
         $.get(urlBase+"resource/instances",function(data){
             $("#menu-form").remove();
@@ -120,4 +120,8 @@ function doSearch(req, element){
             jQT.goTo("#searchres-list", "slide");
         });
     });
+}
+
+function doLogin(){
+    $("#login-text").text();
 }
