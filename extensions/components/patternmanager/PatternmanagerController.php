@@ -18,10 +18,17 @@ require_once 'classes/PatternVariable.php';
 class PatternmanagerController extends OntoWiki_Controller_Component {
     
     /**
-     * 
-     * @var unknown_type
+     * Attribute to store reference to Pattern Engine
+     * @var PatternEngine
      */
     private $_engine = null;
+    
+    /**
+     * 
+     * Enter description here ...
+     * @var unknown_type
+     */
+    const MAX_RECOMMEND_PATTERN = 20;
 
     /**
      * Component global init function
@@ -61,35 +68,58 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      *  guide to pattern execution
      */
     public function launcherAction() {
+    	
+		$title = 'Evolution Patternmanager > Launcher ';
+        $this->view->placeholder('main.window.title')->set($title);
         
-        $step = $this->_request->getParam('step',0);
-        $patternInput = json_decode($this->getParam('pattern_input'));
-        
+        $step = (int) $this->_request->getParam('step',0);
+        $this->view->step = $step;
+        $patternInput = json_decode($this->getParam('pattern_input'),true);
+        $patternSelected = $this->getParam('pattern',null);
+
         if ($step === 0 &&  $patternInput !== null) {
+        	
+        	$patternUriArray = array();
+        	
+			$fallbackTable = array(
+	        	PatternVariable::R_CLASS 	=> PatternVariable::RESOURCE,
+        		PatternVariable::R_PROPERTY	=> PatternVariable::RESOURCE,
+	            PatternVariable::DATATYPE 	=> PatternVariable::RESOURCE,
+	        	PatternVariable::LANG		=> PatternVariable::LITERAL,
+	            PatternVariable::REGEXP     => PatternVariable::LITERAL
+	        );
 	        
-	        $sig = array();
+	        $primarySig = array();
+	        $fallbackSig = array();
 	        
-	        foreach ($patternInput as $p) {
+	        foreach ($patternInput as $key => $p) {
 	            if (is_string($p)) {
-	                $sig[] = $this->_checkVarType($p);
+	            	$type = $this->_checkVarType($p);
+	                $primarySig[$key] = $type;
+	                if (array_key_exists($key,$fallbackSig)) {
+	                    $fallbackSig[$key] = $fallbackTable[$type];
+	                }
 	            } else if (is_array($p)) {
 	                if (array_key_exists('value', $p) && array_key_exists('hint', $p)) {
-	                    $sig[] = $this->_checkVarType($p['value'],$p['hint']);
+	                	$type = $this->_checkVarType($p['value'],$p['hint']);
+	                    $primarySig[$key] = $type;
+	                    $fallbackSig[$key] = $fallbackTable[$type];
 	                }
 	            } else {
 	                throw new RuntimeException('disallowed parameter in patternmanger launcher input');
 	            }
 	        }
 	        
+	        // look for patterns for primary signature
 	        $filter = '';
 	        $queryextra = '';
 	        
-	        for ($i = 0; $i < sizeof($sig); $i++) {
+	        for ($i = 0; $i < sizeof($primarySig); $i++) {
 	            $queryextra .= PHP_EOL . '?bp evopat:hasPatternVariable ?var' . $i . ' . '
 	                        .  PHP_EOL .'?var' . $i . ' a ?vartype' . $i . ' . ';
 	            
-	            $filter .= 'sameTerm(?vartype' . $i . ', evopat:PatternVariable_' . $sig[$i] . ') && ';
-	            for ($j = $i+1; $j < sizeof($sig); $j++) {
+	            $filter .= 'sameTerm(?vartype' . $i . ', evopat:PatternVariable_' . $primarySig[$i] . ') && ';
+	            for ($j = $i+1; $j < sizeof($primarySig); $j++) {
 	                $filter .= '?var' . $i . ' != ?var' . $j . ' && ';
 	            }
 	        }
@@ -110,29 +140,160 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 				} LIMIT 20';
 
 	        $matches = $this->_erfurt->getStore()->sparqlQuery($query);
-
-	        $perfectMatch = array();
-	        $closeMatch   = array();
 	        
 	        foreach ($matches as $row) {
-	            $pattern = $this->_engine->loadFromStore($row['cp']);
-	            $variables = $pattern->getVariables();
-	            if (sizeof($variables) === sizeof($sig)) {
-	                $perfectMatch[] = $pattern;
-	            } else {
-	                $closeMatch[] = $pattern;
+	            if ( !in_array($row['cp'], $patternUriArray) ) {
+	            	$patternUriArray[] = $row['cp'];
 	            }
 	        }
-
-	        $fallbackTable = array(
-	        	PatternVariable::R_CLASS 	=> PatternVariable::RESOURCE,
-	        	PatternVariable::R_PROPERTY 	=> PatternVariable::RESOURCE,
-	            'DATATYPE' 	=> PatternVariable::RESOURCE,
-	        	'LANG'		=> PatternVariable::LITERAL,
-	            'REGEXP'    => PatternVariable::LITERAL
-	        );
 	        
+	        $countPrimary = sizeof($patternUriArray);
+	        
+			// look for patterns for fallback signature
+	        $filter = '';
+	        $queryextra = '';
+	        
+	        for ($i = 0; $i < sizeof($fallbackSig); $i++) {
+	            $queryextra .= PHP_EOL . '?bp evopat:hasPatternVariable ?var' . $i . ' . '
+	                        .  PHP_EOL .'?var' . $i . ' a ?vartype' . $i . ' . ';
+	            
+	            $filter .= 'sameTerm(?vartype' . $i . ', evopat:PatternVariable_' . $fallbackSig[$i] . ') && ';
+	            for ($j = $i+1; $j < sizeof($fallbackSig); $j++) {
+	                $filter .= '?var' . $i . ' != ?var' . $j . ' && ';
+	            }
+	        }
+	        
+	        $filter .= ' 1';
+	        
+	        
+	        
+	        $query = 'PREFIX evopat: <' . $this->_privateConfig->storeModel . '> 
+	        	SELECT DISTINCT ?cp ?cm  WHERE {
+	        		?cp evopat:hasSubPattern ?sp .
+					?cp <' . EF_RDFS_COMMENT . '>  ?cm .
+					?sp evopat:hasBasicPattern ?bp .
+					' . $queryextra . '
+					FILTER (
+						' . $filter . '
+					)
+				} LIMIT 20';
+
+	        if (sizeof($fallbackSig) > 0) {
+	            $matches = $this->_erfurt->getStore()->sparqlQuery($query);
+	        } else {
+	            $matches = array();
+	        }
+
+	        foreach ($matches as $row) {
+				if ( !in_array($row['cp'],$patternUriArray) ) {
+	            	$patternUriArray[] = $row['cp'];
+	            }
+	        }
+	        
+	        $patternList = array();
+
+	        for ($i = 0; $i < sizeof($patternUriArray); $i++) {
+	        	$pattern = $this->_engine->loadFromStore($patternUriArray[$i]);
+	        	$patternList[$i]['desc']  = $pattern->getDescription();
+	        	$patternList[$i]['label'] = $pattern->getLabel();
+	        	$patternList[$i]['vars'] = array();
+	        	
+	        	$url = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'launcher'),array());
+	        	$url->setParam('step', '1');
+	        	$url->setParam('pattern', $patternUriArray[$i]);
+	        	$pSig = array();
+	        	
+	        	foreach ($primarySig as $id => $type) {
+	        		foreach ($pattern->getVariables() as $var) {
+	        			if ($var['type'] === $type ||
+	        			   ( sizeof($fallbackSig) > 0 && $var['type'] === $fallbackTable[$type] )
+	        			) {
+	        				if ($var['type'] === $type) {
+	        					$pSig[$patternInput[$id]] = $type;
+	        				} else {
+	        					$pSig[$patternInput[$id]] = $fallbackTable[$type];
+	        				}
+		        			if (!array_key_exists($var['name'],$patternList[$i]['vars']) ) {
+	        					$var['val'][$id] = $patternInput[$id];
+	        					$patternList[$i]['vars'][$var['name']] = $var;
+		        			} else {
+		        				$patternList[$i]['vars'][$var['name']]['val'][$id] = $patternInput[$id];
+		        			}
+	        			}
+	        		}
+	        	}
+	        	$url->setParam('pattern_input', json_encode($pSig));
+	        	$patternList[$i]['launcher_select'] = (string) $url;
+	        }
+	        
+	        $this->view->patternList = $patternList;
+	        
+	        
+        } elseif ($step === 1 && $patternSelected !== null && $patternInput !== null)  {
+        	
+        	$pattern = $this->_engine->loadFromStore($patternSelected);
+        	
+        	$types = array();
+        	foreach ($patternInput as $key => $input) {
+        		$types[$input][] = $key;
+        	}
+
+            foreach ($types as $t => $v) {
+        	    $types[$t] = $this->_permute($v,sizeof($v));        	    
+            }
+            
+            $binding = array();
+            
+            foreach ($pattern->getVariables() as $var) {
+                if (array_key_exists($var['type'],$types)) {
+                    foreach ($types[$var['type']] as $i => $permutation) {
+                        if (!empty($types[$var['type']][$i])) {
+                            $binding[$i][$var['name']] = $var;
+                            $binding[$i][$var['name']]['val'] = array_shift($types[$var['type']][$i]);
+                        }
+                    }
+                }
+            }
+            
+            $execLinks = array();
+            
+            foreach ($binding as $i => $bind) {
+                $binding[$i] = array_merge($pattern->getVariables(),$bind);
+                $url = new Ontowiki_Url(array('controller'=>'patternmanager', 'action' => 'exec'),array('pattern'));
+                $preboundVariables = array();
+                foreach ($bind as $var) {
+                    if (array_key_exists('val',$var)) {
+                        $preboundVariables[$var['name']] = $var['val'];
+                    }
+                }
+                $url->setParam('prebound_variables',json_encode($preboundVariables));
+                $execLinks[$i] = (string) $url;
+            }
+            
+            $this->view->execLinks = $execLinks;
+            $this->view->binding = $binding;
+            $this->view->pattern = $pattern;
+        	
         }
+    }
+    
+    /**
+     * Permutation helping function
+     */
+    private function _permute($arr, $n) {
+	    if ( $n < 2 || !is_array( $arr ) || empty( $arr ) ) {
+	        return array($arr);
+	    }
+	    $result = array();
+	    foreach ( $arr as $k => $value ) {
+	        $copy = $arr;
+	        unset( $copy[$k] );
+	        $sub = $this->_permute( $copy, $n-1 );
+	        foreach ( $sub as $subvalue ) {
+	            $result[] = array_merge(array($value) ,$subvalue);
+	        }
+	    }
+	    return $result;
     }
     
     /**
@@ -147,9 +308,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         if ( array_key_exists($val,$models) ) {
             return 'GRAPH';
         } else if (strpos($val,'http://www.w3.org/2001/XMLSchema#') === 0) {
-            return 'DATATYPE';
-        } else if (preg_match('/[a-z]{2}/',$val)) {
-            return 'LANG';
+            return PatternVariable::DATATYPE;
+        } else if (preg_match('/^[a-z]{2}$/',$val)) {
+            return PatternVariable::LANG;
         } else {
             if ( Erfurt_Uri::check($val) ) {
                 $query = 'SELECT * WHERE {<' . $val . '> a ?type . } LIMIT 1';
@@ -193,7 +354,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $complexPattern = $this->_engine->loadFromStoreAsRdf($this->_request->getParam('pattern'));
 
         $unboundVariables = $complexPattern->getVariables(false);
-
+        
+        $preboundVariables = json_decode($this->_request->getParam('prebound_variables','[]'), true);
+        
         $var = $this->getParam('var');
 
         if (!empty($var) && is_array($var)) {
@@ -205,6 +368,14 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
             $this->_engine->processPattern($complexPattern);
             
+        }
+        
+        foreach ($unboundVariables as $i => $var) {
+            if (array_key_exists($var['name'],$preboundVariables)) {
+                $unboundVariables[$i]['prebound'] = $preboundVariables[$var['name']];
+            } else {
+                $unboundVariables[$i]['prebound'] = false;
+            }
         }
         
         // measurement for debug

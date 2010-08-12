@@ -16,6 +16,13 @@ class PatternVariable {
 	 * Enter description here ...
 	 * @var unknown_type
 	 */
+	const GRAPH			= 'GRAPH';
+	
+	/**
+	 * 
+	 * Enter description here ...
+	 * @var unknown_type
+	 */
 	const R_CLASS	 	= 'CLASS';
 	
 	/**
