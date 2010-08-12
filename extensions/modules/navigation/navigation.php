@@ -151,7 +151,12 @@ class NavigationModule extends OntoWiki_Module
     }
 	
     public function shouldShow(){
-        if (isset($this->_owApp->selectedModel)) {
+        // get request
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+
+        if( $request->isMobile() ){
+            return true;
+        }else if (isset($this->_owApp->selectedModel)) {
             return true;
         } else {
             return false;
