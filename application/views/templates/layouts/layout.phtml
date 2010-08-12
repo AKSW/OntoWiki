@@ -25,6 +25,13 @@
             <?php echo $this->jsonVars ?>
         </script>
     <?php endif; ?>
+
+    <?php if ($this->has('metaDescription')){ ?>
+        <meta name="Description" content="<?php echo $this->metaDescription ?>" />
+    <?php }  ?>
+    <?php if ($this->has('metaKeywords')){ ?>
+        <meta name="Keywords" content="<?php echo $this->metaKeywords ?>" />
+    <?php }  ?>
     
     <!-- ontowiki stylesheets -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
