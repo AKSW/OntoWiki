@@ -76,7 +76,11 @@
 <body>
     <div id="home">
         <div class="toolbar">
-            <a href="#login" class="button leftButton flip">Login</a>
+            <?php if( OntoWiki::getInstance()->erfurt->getAuth()->getIdentity()->isAnonymousUser() ): ?>
+                <a href="#login" class="button leftButton flip">Login</a>
+            <?php else: ?>
+                <a href="http://localhost/ontowiki/application/logout" class="button leftButton">Logout</a>
+            <?php endif; ?>
             <h1>OntoWiki Mobile</h1>
         </div>
         <?php echo $this->modules('main.mobile.baselist') ?>

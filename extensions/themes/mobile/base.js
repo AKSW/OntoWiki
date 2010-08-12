@@ -123,18 +123,7 @@ function doSearch(req){
 }
 
 function doLogin(){
-    var login = $("#login-text").val();
-    var pass = $("#pass-text").val();
-    var save = $("#login-save").val();
-    var url = "http://localhost/ontowiki/application/login";
-    var post_data = {
-        logintype:"locallogin",
-        username:login,
-        password:pass,
-        "login-save":save
-    };
-
-    $.post(url, post_data, function(data){
-        alert(data);
-    })
+    console.log($("#loginform"));
+    $("#loginform").submit();
+    console.log('done');
 }
