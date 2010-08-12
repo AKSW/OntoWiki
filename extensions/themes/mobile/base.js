@@ -13,6 +13,14 @@ var selected_model = '';
 //   getBase(e);
 //});
 
+$(document).ready(function(){
+    // load rdfauthor
+    var rdf_script = document.createElement( 'script' );
+    rdf_script.type = 'text/javascript';
+    rdf_script.src = RDFAUTHOR_BASE+"src/rdfauthor.js";
+    $('body').append( rdf_script );
+});
+
 function getBase(element){
     if( selected_model != $(element).attr('about') ){
         // select base
@@ -100,10 +108,21 @@ function addLoader(entry){
 
 function toggleMenu(element){
     if( $("#menu-form").length == 0 ){
-        var menu = $('<ul class="individual" id="menu-form">\
-                <li><input id="search-input" type="text" placeholder="Search"></li>\
-                <li><a href="#" onclick="doSearch( $(\'#search-input\').val() ); return false;">Go</a></li>\
-            </ul>');
+        var menu_string = '\
+            <div id="menu-form">\
+                <ul class="individual">\
+                    <li><input id="search-input" type="text" placeholder="Search"></li>\
+                    <li><a href="#" onclick="doSearch( $(\'#search-input\').val() ); return false;">Go</a></li>\
+                </ul>';
+
+        if( $("div.current").attr('id') == "properties-list" ){
+            menu_string += '<ul class="rounded">\
+                        <li><a href="#" onclick="openRDFa()">Edit</a></li>\
+                    </ul>';
+        }
+        menu_string += '</div>';
+
+        var menu = $(menu_string);
 
         $(element).parent().after(menu);
     }else{
@@ -123,7 +142,9 @@ function doSearch(req){
 }
 
 function doLogin(){
-    console.log($("#loginform"));
     $("#loginform").submit();
-    console.log('done');
+}
+
+function openRDFa(){
+    RDFauthor.start();
 }
