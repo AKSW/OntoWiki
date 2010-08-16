@@ -357,7 +357,11 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
         $preboundVariables = json_decode($this->_request->getParam('prebound_variables','[]'), true);
 
-        $var = $this->getParam('var');
+		$var = array();
+		if ( $this->getParam('var') ) {
+
+			$var = $this->getParam('var');
+		}
 
         foreach ($var as $name => $value) {
             unset($unboundVariables[$name]);
