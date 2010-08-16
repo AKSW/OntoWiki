@@ -8,6 +8,14 @@
  * @version    $Id$
  */
 
+function copyVariables(selfId, patternId) {
+	if (patternId == null) {
+		
+	} else {
+		
+	}
+}
+
 function addPMPattern(name, desc) {
     
     pattern = $('div#subpattern').clone();

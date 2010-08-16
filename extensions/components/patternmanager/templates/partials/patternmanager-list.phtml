@@ -1,14 +1,19 @@
 <?php
+
 $entry = $this->element['resourceUri'][0]['uri'];
+
 $execPatternUrl = new OntoWiki_Url(
     array('controller' => 'patternmanager', 'action' => 'exec'),
     array()
 );
-        
+$execPatternUrl->setParam('pattern',$entry);
+
 $viewPatternUrl = new OntoWiki_Url(
     array('controller' => 'patternmanager', 'action' => 'view'),
     array()
 );
+$viewPatternUrl->setParam('pattern',$entry);
+
 ?>
-<a class="minibutton" href="<?php echo $viewPatternUrl . '?pattern=' . $entry ?>">view query</a>
-<a class="minibutton" href="<?php echo $execPatternUrl . '?pattern=' . $entry ?>">exec query</a>
+<a class="minibutton" href="<?php echo $viewPatternUrl; ?>"><?php echo $this->_('view pattern'); ?></a>
+<a class="minibutton" href="<?php echo $execPatternUrl; ?>"><?php echo $this->_('execute pattern'); ?></a>

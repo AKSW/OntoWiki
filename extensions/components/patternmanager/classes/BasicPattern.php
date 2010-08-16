@@ -12,7 +12,7 @@
 
 class BasicPattern {
     
-    private $_varTypes               = array (
+    private $_varTypes = array (
         'RESOURCE'   => 'uri',
         'LITERAL'    => 'literal',
         'TEMP'       => 'temp',
@@ -40,10 +40,14 @@ class BasicPattern {
     
     private $_intermediate_result    = array();
     
-    private $_selectquery            = array();
+    private $_selectquery            = null;
     
     private $_updatequery            = array();
 
+    /**
+     * 
+     * Constructor
+     */
     public function __construct() {
 
     }
@@ -453,6 +457,7 @@ class BasicPattern {
             foreach ($this->getUpdateQueries() as $pat) {
                 $data['U'][] = $pat;
             }
+            
             $data['S'] = $this->getSelectQuery();
             
             sort($data['V']);

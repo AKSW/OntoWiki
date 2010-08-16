@@ -4,7 +4,7 @@
 
 <!DOCTYPE rdf:RDF [
   <!ENTITY dct "http://purl.org/dc/terms/">
-  <!ENTITY evopat "http://ns.ontowiki.net/SysOnt/EvolutionPattern/">
+  <!ENTITY evopat "http://ns.ontowiki.net/Evolution/">
   <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
   <!ENTITY owl "http://www.w3.org/2002/07/owl#">
   <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -24,7 +24,7 @@
 
 <!-- Ontology specific informations -->
   <owl:Ontology rdf:about="&evopat;">
-    <rdfs:label rdf:datatype="&xsd;string">SysOnt Evolution Pattern Ontology</rdfs:label>
+    <rdfs:label rdf:datatype="&xsd;string">OntoWiki Evolution Pattern Ontology</rdfs:label>
   </owl:Ontology>
 
 <!-- Classes -->

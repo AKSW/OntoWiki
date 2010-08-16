@@ -6,6 +6,7 @@
         <a href="javascript:hidePMPattern();">hide</a>
         <a href="javascript:showPMPattern();">show</a>
         <a href="javascript:delPMPattern();">del</a>
+        <a href="javascript:copyVariables();">copy vars from ...</a>
         <div>
             Name for SubPattern: <input type="text" class="BasicPattern text width95" name="patternlabel-" id="patternlabel-" value=""/>
         	Description for SubPattern: <input type="text" class="text width95" name="patterndesc-" id="patterndesc-" value=""/>
@@ -128,25 +129,28 @@ for (key in jsonPattern['subPattern']) {
 
     i = parseInt(key) + 1;
     current = jsonPattern['subPattern'][key];
+    
+    delPMvar(i,1);
+    delPMselect(i,1);            
+    delPMinsert(i,1);
+    delPMdelete(i,1);
+    
     for (t in current) {
         if (t == 'V') {
-            delPMvar(i,1);
+            
             for (v in current[t]) {
                 addPMvar(i,null,current[t][v]['name'],current[t][v]['type'],current[t][v]['desc']);
             }
-        } else if (t == 'S') {
-            delPMselect(i,1);
-            addPMselect(i,null,current[t]);
+        } else if (t == 'S' && current[t] != null) {
+            	addPMselect(i,null,current[t]);
         } else if (t == 'U') {
-            delPMinsert(i,1);
-            delPMdelete(i,1);
             for (pkey in current[t]) {
                 if (current[t][pkey]['type'] === 'insert' ) {
                     addPMinsert(i, null, current[t][pkey]['pattern']);
                 } else if ( current[t][pkey]['type'] === 'delete' ) {
                     addPMdelete(i, null, current[t][pkey]['pattern']);
                 } else {
-                    // do nothing
+                    // do nothing (undefined type)
                 }
             }
         }

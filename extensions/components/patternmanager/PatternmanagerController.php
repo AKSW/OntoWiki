@@ -68,6 +68,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      *  guide to pattern execution
      */
     public function launcherAction() {
+        
+        // javascript functions
+        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/patternmanager-launcher.js');
     	
 		$title = 'Evolution Patternmanager > Launcher ';
         $this->view->placeholder('main.window.title')->set($title);
@@ -96,7 +99,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            if (is_string($p)) {
 	            	$type = $this->_checkVarType($p);
 	                $primarySig[$key] = $type;
-	                if (array_key_exists($key,$fallbackSig)) {
+	                if (array_key_exists($type,$fallbackTable)) {
 	                    $fallbackSig[$key] = $fallbackTable[$type];
 	                }
 	            } else if (is_array($p)) {
@@ -125,8 +128,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        }
 	        
 	        $filter .= ' 1';
-	        
-	        
 	        
 	        $query = 'PREFIX evopat: <' . $this->_privateConfig->storeModel . '> 
 	        	SELECT DISTINCT ?cp ?cm  WHERE {
@@ -164,9 +165,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        }
 	        
 	        $filter .= ' 1';
-	        
-	        
-	        
+
 	        $query = 'PREFIX evopat: <' . $this->_privateConfig->storeModel . '> 
 	        	SELECT DISTINCT ?cp ?cm  WHERE {
 	        		?cp evopat:hasSubPattern ?sp .
@@ -273,6 +272,11 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $this->view->execLinks = $execLinks;
             $this->view->binding = $binding;
             $this->view->pattern = $pattern;
+            
+            // redirect directly to execution view if only one single binding is available
+            if (sizeof($binding) == 1) {
+                $this->_redirect(current($execLinks));
+            }
         	
         }
     }
@@ -303,8 +307,14 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      * @param string $hint
      */
     private function _checkVarType($val, $hint = null) {
+        
+        if ($hint !== null) {
+            return $hint;
+        }
+        
         $store = $this->_erfurt->getStore();
         $models = $store->getAvailableModels();
+        
         if ( array_key_exists($val,$models) ) {
             return 'GRAPH';
         } else if (strpos($val,'http://www.w3.org/2001/XMLSchema#') === 0) {
@@ -390,7 +400,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $toolbar = $this->_owApp->toolbar;
         $toolbar->appendButton(
             OntoWiki_Toolbar::SUBMIT,
-            array('name' => $this->_owApp->translate->_('savepattern'))
+            array('name' => $this->_owApp->translate->_('execute pattern'))
         );
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
         
@@ -456,7 +466,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $toolbar = $this->_owApp->toolbar;
         $toolbar->appendButton(
             OntoWiki_Toolbar::SUBMIT,
-            array('name' => $this->_owApp->translate->_('savepattern'))
+            array('name' => $this->_owApp->translate->_('save pattern'))
         );
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
         
@@ -826,21 +836,21 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $uri = $this->_request->getParam('uri','http:/null/uri');
         
         $schema = array (
-	    	'PatternVariable'        => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/PatternVariable' ,
-	        'SelectQuery'            => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/SelectQuery' ,
-	        'UpdateQuery_Insert'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/UpdateQuery_Insert' ,
-	        'UpdateQuery_Delete'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/UpdateQuery_Delete' ,
-	        'SubPattern'		     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/SubPattern' ,
-	        'ComplexPattern'         => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/ComplexPattern' ,
-	        'BasicPattern'           => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/BasicPattern' ,
-	        'hasPatternVariable'     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasPatternVariable' ,
-	        'hasUpdateQuery'         => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasUpdateQuery' ,
-	        'hasBasicPattern'        => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasBasicPattern' ,
-	        'hasSubPattern'          => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasSubPattern' ,
-	        'hasSelectQuery'	     => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/hasSelectQuery' ,
-	        'updatePatternObject'    => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternObject' ,
-	        'updatePatternPredicate' => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternPredicate' ,
-	        'updatePatternSubject'   => 'http://ns.ontowiki.net/SysOnt/EvolutionPattern/updatePatternSubject' ,
+	    	'PatternVariable'        => 'http://ns.ontowiki.net/Evolution/PatternVariable' ,
+	        'SelectQuery'            => 'http://ns.ontowiki.net/Evolution/SelectQuery' ,
+	        'UpdateQuery_Insert'     => 'http://ns.ontowiki.net/Evolution/UpdateQuery_Insert' ,
+	        'UpdateQuery_Delete'     => 'http://ns.ontowiki.net/Evolution/UpdateQuery_Delete' ,
+	        'SubPattern'		     => 'http://ns.ontowiki.net/Evolution/SubPattern' ,
+	        'ComplexPattern'         => 'http://ns.ontowiki.net/Evolution/ComplexPattern' ,
+	        'BasicPattern'           => 'http://ns.ontowiki.net/Evolution/BasicPattern' ,
+	        'hasPatternVariable'     => 'http://ns.ontowiki.net/Evolution/hasPatternVariable' ,
+	        'hasUpdateQuery'         => 'http://ns.ontowiki.net/Evolution/hasUpdateQuery' ,
+	        'hasBasicPattern'        => 'http://ns.ontowiki.net/Evolution/hasBasicPattern' ,
+	        'hasSubPattern'          => 'http://ns.ontowiki.net/Evolution/hasSubPattern' ,
+	        'hasSelectQuery'	     => 'http://ns.ontowiki.net/Evolution/hasSelectQuery' ,
+	        'updatePatternObject'    => 'http://ns.ontowiki.net/Evolution/updatePatternObject' ,
+	        'updatePatternPredicate' => 'http://ns.ontowiki.net/Evolution/updatePatternPredicate' ,
+	        'updatePatternSubject'   => 'http://ns.ontowiki.net/Evolution/updatePatternSubject' ,
         );
         
 		$sparqlQuery =  'SELECT DISTINCT ?s ?p ?o FROM <' . $this->_privateConfig->storeModel . '> { 
