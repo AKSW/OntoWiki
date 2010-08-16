@@ -367,9 +367,15 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         $preboundVariables = json_decode($this->_request->getParam('prebound_variables','[]'), true);
         
-        $var = $this->getParam('var');
+        $var  = $this->getParam('var');
+        
+        if ( empty($var) ) {
+            $var = array();
+        }
+        
+        $mode = $this->getParam('mode');
 
-        if (!empty($var) && is_array($var)) {
+        if ($mode == 1) {
             
             foreach ($var as $name => $value) {
                 unset($unboundVariables[$name]);
@@ -405,6 +411,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
         
         $url = new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'exec'));
+        $url->setParam('mode','1');
 
 
         $this->view->formActionUrl = (string) $url;
