@@ -359,16 +359,12 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
         $var = $this->getParam('var');
 
-        if (!empty($var) && is_array($var)) {
-
-            foreach ($var as $name => $value) {
-                unset($unboundVariables[$name]);
-                $complexPattern->bindVariable($name,$value);
-            }
-
-            $this->_engine->processPattern($complexPattern);
-
+        foreach ($var as $name => $value) {
+            unset($unboundVariables[$name]);
+            $complexPattern->bindVariable($name,$value);
         }
+
+        $this->_engine->processPattern($complexPattern);
 
         foreach ($unboundVariables as $i => $var) {
             if (array_key_exists($var['name'],$preboundVariables)) {

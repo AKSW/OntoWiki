@@ -72,16 +72,13 @@ class evolutionJsonrpcWrapper
 		// bound variables
  		$unboundVariables = $complexPattern->getVariables(false);
 
- 		if (!empty($variables) && is_array($variables)) {
+		foreach ($variables as $name => $value) {
+			unset($unboundVariables[$name]);
+			$complexPattern->bindVariable($name,$value);
+		}
 
-			foreach ($variables as $name => $value) {
-				unset($unboundVariables[$name]);
-				$complexPattern->bindVariable($name,$value);
-			}
-
-			// process the pattern
-			$this->engine->processPattern($complexPattern);
-        }
+		// process the pattern
+		$this->engine->processPattern($complexPattern);
 
 		return "Success";
 	}
