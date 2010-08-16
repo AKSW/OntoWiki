@@ -80,7 +80,7 @@ class evolutionJsonrpcWrapper
 		// process the pattern
 		$this->engine->processPattern($complexPattern);
 
-		return "Success";
+		return true;
 	}
 }
 
