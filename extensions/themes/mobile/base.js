@@ -25,6 +25,10 @@ function getBase(element){
     if( selected_model != $(element).attr('about') ){
         // select base
         selected_model = $(element).attr('about');
+        // set rdfa vars
+        RDFAUTHOR_DEFAULT_GRAPH = selected_model;
+        RDFAUTHOR_DEFAULT_SUBJECT = selected_model;
+        // get
         var url = 'http://'+location.host+'/ontowiki/model/select/?m=' + $(element).attr('about');
         var title = $(element).text();
         //$(element).append(loader_small_src);
@@ -61,6 +65,9 @@ function onNavigationEntryClick(entry){
         //$("#loader").remove();
     }else{
         url = $(entry).attr('about');
+        // set rdfa
+        RDFAUTHOR_DEFAULT_SUBJECT = url;
+        // get
         title = $(entry).text();
         $.get(url, function(data){
             $("#instance-title").text(title);
@@ -146,5 +153,58 @@ function doLogin(){
 }
 
 function openRDFa(){
+    var content = $("#properties-content");
+    var subject = $("ul", content).attr("about");
+   
+    var ispred, predicate, object, stmt;
+    $("li", content).each(function(index){
+        ispred = ( $(this).attr("class") === "sep" );
+        if(ispred){
+            predicate = $(":first-child", this).attr("about");
+            return;
+        }
+        object = $(":first-child", this).attr("content");
+        if( typeof object === "undefined"){
+            object = {value: $(":first-child", this).text()};
+        }else{
+            object = "<"+object+">";
+        }
+        stmt = new Statement({
+            subject: "<"+subject+">",
+            predicate: "<"+predicate+">",
+            object: object
+        },{graph:RDFAUTHOR_DEFAULT_GRAPH});
+        RDFauthor.addStatement(stmt);
+    });
+
+    var options = {
+        title: $("#properties-title").text(),
+        saveButtonTitle: 'Save',
+        cancelButtonTitle: 'Cancel',
+        showButtons: true,
+        useAnimations: false,
+        autoParse: false,
+        container: "#rdfa-content"
+    };
+    RDFauthor.setOptions(options);
+
+    RDFauthor.setInfoForGraph(selected_model, "queryEndpoint", urlBase+"sparql");
+    RDFauthor.setInfoForGraph(selected_model, "updateEndpoint", urlBase+"update");
+
     RDFauthor.start();
+
+    $( RDFauthor.eventTarget() ).bind("rdfauthor.cancel", function(){
+        $( RDFauthor.eventTarget() ).unbind("rdfauthor.cancel");
+        $("#rdfa-back").click();
+    });
+
+    $( RDFauthor.eventTarget() ).bind("rdfauthor.commit", function(){
+        $( RDFauthor.eventTarget() ).unbind("rdfauthor.commit");
+        $("#rdfa-back").click();
+    })
+
+    $("#prop-menu").click();
+    jQT.goTo("#rdfa-list", "slide");
+
+    
 }

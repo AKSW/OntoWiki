@@ -19,6 +19,7 @@
                             <li>
                                     <a rel="<?php echo $currentPredicate['curi'] ?>"
                                        about="<?php echo $entry['url'] ?>"
+                                       content="<?php echo $entry['uri'] ?>"
                                        onclick="onInstanceClick(this, false); return false;" href="#"
                                        ><?php echo $entry['object'] ?></a>
                             </li>
@@ -31,6 +32,7 @@
                             <?php if ($entry['url']): ?>
                                 <li>
                                     <a about="<?php echo $entry['url'] ?>"
+                                       content="<?php echo $entry['uri'] ?>"
                                        onclick="onInstanceClick(this, false); return false;" href="#"
                                        ><?php echo $entry['object'] ?></a>
                                  </li>
@@ -42,9 +44,7 @@
                                                     <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
                                                       datatype="<?php echo $entry['datatype'] ?>"
                                               <?php endif; ?>
-                                              >
-                                              <?php echo $entry['object'] ?>
-                                    </span>
+                                              ><?php echo $entry['object'] ?></span>
                                  </li>
                             <?php endif; ?>
                         <?php endif; ?>
