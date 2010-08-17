@@ -1010,10 +1010,13 @@ class ServiceController extends Zend_Controller_Action
                         $value->datatype = $property['value']['datatype'];
                     } else if (isset($property['value']['xml:lang'])) {
                         $value->lang = $property['value']['xml:lang'];
-                    } else {
+                    }
+                    /* not in RDFauthor 0.8
+                    else {
                         // plain literal --> rdfQuery needs extra quotes
                         $currentValue = '"' . $currentValue . '"';
                     }
+                    */
                 }
 
                 // return title from titleHelper

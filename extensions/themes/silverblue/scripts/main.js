@@ -77,7 +77,6 @@ $(document).ready(function() {
 
     /* list selection */
     $('table.resource-list > tbody > tr').live('click', function(e) {
-
         var selectee     = $(this);
         var selectionURI = $(this).children('td').children('a').attr('about');
 
@@ -306,11 +305,11 @@ $(document).ready(function() {
                             $(this).fadeOut(effectTime);
                         });
                         $('.edit-enable').removeClass('active');
-
+                        
                         // reload whole page
                         window.location.href = window.location.href;
                     }, 
-                    onCancel: function () {                        
+                    onCancel: function () {
                         $('.edit').each(function() {
                             $(this).fadeOut(effectTime);
                         });
@@ -333,6 +332,86 @@ $(document).ready(function() {
             });
         }
     });
+    
+    $('.clone-resource').click(function() {
+        loadRDFauthor(function () {
+            var serviceURI = urlBase + 'service/rdfauthorinit';
+            var prototypeResource = selectedResource.URI;
+
+            $.getJSON(serviceURI, {
+               mode: 'clone',
+               uri: prototypeResource
+            }, function(data) {
+                for (var currentSubject in data) {
+
+                    for (var currentProperty in data[currentSubject]) {
+                        var objects = data[currentSubject][currentProperty];
+
+                        for (var i = 0; i < objects.length; i++) {
+                            var currentObjectSpec = objects[i];
+                            
+                            var newObjectSpec;
+                            if (currentObjectSpec.type == 'uri') {
+                                newObjectSpec = '<' + currentObjectSpec.value + '>';
+                            } else {
+                                newObjectSpec = {
+                                    value: currentObjectSpec.value, 
+                                    options: {}
+                                }
+                                
+                                if (currentObjectSpec.type == 'typed-literal') {
+                                    newObjectSpec.options.datatype = currentObjectSpec.datatype;
+                                } else if (currentObjectSpec.lang) {
+                                    newObjectSpec.options.lang = currentObjectSpec.lang;
+                                }
+                            }
+                            
+                            RDFauthor.addStatement(new Statement({
+                                subject: '<' + currentSubject + '>', 
+                                predicate: '<' + currentProperty + '>', 
+                                object: newObjectSpec
+                            }, {
+                                graph: selectedResource.graphURI, 
+                                title: currentObjectSpec.title, 
+                                protected: true
+                            }));
+                        }
+                    }
+                }
+                
+                RDFauthor.setOptions({
+                    saveButtonTitle: 'Create Resource',
+                    cancelButtonTitle: 'Cancel',
+                    title: 'Create New Resource by Cloning ' + selectedResource.title,  
+                    autoParse: false, 
+                    showPropertyButton: false
+                });
+                RDFauthor.start();
+            });
+        });
+        
+        // // grab first object key
+        // for (var subjectUri in data) {break;};
+        // RDFauthor.setOptions({
+        //     defaultResource: subjectUri,
+        //     anchorElement: '.innercontent',
+        //     onSubmitSuccess: function () {
+        //        // reload whole page
+        //        window.location.href = window.location.href;
+        //     },
+        //     onCancel: function () {
+        //        $('.edit').each(function() {
+        //            $(this).fadeOut(effectTime);
+        //        });
+        //        $('.edit-enable').removeClass('active');
+        //     },
+        //     saveButtonTitle: 'Save Changes',
+        //     cancelButtonTitle: 'Cancel',
+        //     title: 'Edit Resource ' + resource
+        //     });
+        // 
+        // RDFauthor.startTemplate(data);
+    })
     
     // add property
     $('.property-add').click(function() {

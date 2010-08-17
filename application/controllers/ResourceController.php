@@ -66,7 +66,9 @@ class ResourceController extends OntoWiki_Controller_Base {
         // Give plugins a chance to add entries to the menu
         $this->view->placeholder('main.window.menu')->set($menu->toArray(false, true));
 
-        $title = $resource->getTitle($this->_config->languages->locale) ? $resource->getTitle($this->_config->languages->locale) : OntoWiki_Utils::contractNamespace((string)$resource);
+        $title = $resource->getTitle($this->_config->languages->locale) 
+               ? $resource->getTitle($this->_config->languages->locale) 
+               : OntoWiki_Utils::contractNamespace((string)$resource);
         $windowTitle = sprintf($translate->_('Properties of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
 
@@ -132,9 +134,9 @@ class ResourceController extends OntoWiki_Controller_Base {
             foreach ($graphs as $g) {
                 if ($this->_erfurt->getAc()->isModelAllowed('edit', $g)) {
                     $this->view->placeholder('update')->append(array(
-                            'sourceGraph'    => $g,
-                            'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
-                            'updateEndpoint' => $this->_config->urlBase . 'update/'
+                        'sourceGraph'    => $g,
+                        'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
+                        'updateEndpoint' => $this->_config->urlBase . 'update/'
                     ));
                 }
             }
@@ -150,8 +152,8 @@ class ResourceController extends OntoWiki_Controller_Base {
             // TODO: check acl
             $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties'));
             $toolbar->appendButton(OntoWiki_Toolbar::EDITADD, array(
-                    'name' => 'Clone Resource',
-                    'url' => 'javascript:createInstanceFromURI(\''.$this->view->resourceUri.'\');'
+                'name'  => 'Clone Resource',
+                'class' => 'clone-resource'
             ));
             // ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Property', 'class' => 'property-add'));
             $params = array(
