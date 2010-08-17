@@ -342,42 +342,7 @@ $(document).ready(function() {
                mode: 'clone',
                uri: prototypeResource
             }, function(data) {
-                for (var currentSubject in data) {
-
-                    for (var currentProperty in data[currentSubject]) {
-                        var objects = data[currentSubject][currentProperty];
-
-                        for (var i = 0; i < objects.length; i++) {
-                            var currentObjectSpec = objects[i];
-                            
-                            var newObjectSpec;
-                            if (currentObjectSpec.type == 'uri') {
-                                newObjectSpec = '<' + currentObjectSpec.value + '>';
-                            } else {
-                                newObjectSpec = {
-                                    value: currentObjectSpec.value, 
-                                    options: {}
-                                }
-                                
-                                if (currentObjectSpec.type == 'typed-literal') {
-                                    newObjectSpec.options.datatype = currentObjectSpec.datatype;
-                                } else if (currentObjectSpec.lang) {
-                                    newObjectSpec.options.lang = currentObjectSpec.lang;
-                                }
-                            }
-                            
-                            RDFauthor.addStatement(new Statement({
-                                subject: '<' + currentSubject + '>', 
-                                predicate: '<' + currentProperty + '>', 
-                                object: newObjectSpec
-                            }, {
-                                graph: selectedResource.graphURI, 
-                                title: currentObjectSpec.title, 
-                                protected: true
-                            }));
-                        }
-                    }
-                }
+                populateRDFauthor(data);
                 
                 RDFauthor.setOptions({
                     saveButtonTitle: 'Create Resource',
@@ -386,6 +351,7 @@ $(document).ready(function() {
                     autoParse: false, 
                     showPropertyButton: false
                 });
+                
                 RDFauthor.start();
             });
         });
