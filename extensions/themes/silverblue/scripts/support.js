@@ -369,10 +369,12 @@ function populateRDFauthor(data) {
                         options: {}
                     }
                     
-                    if (currentObjectSpec.type == 'typed-literal') {
-                        newObjectSpec.options.datatype = currentObjectSpec.datatype;
-                    } else if (currentObjectSpec.lang) {
-                        newObjectSpec.options.lang = currentObjectSpec.lang;
+                    if (currentObjectSpec.value) {
+                        if (currentObjectSpec.type == 'typed-literal') {
+                            newObjectSpec.options.datatype = currentObjectSpec.datatype;
+                        } else if (currentObjectSpec.lang) {
+                            newObjectSpec.options.lang = currentObjectSpec.lang;
+                        }
                     }
                 }
                 
@@ -437,6 +439,7 @@ function createInstanceFromClassURI(type, dataCallback) {
  * RDFauthor window
  * TODO: merge it with createInstanceFromClassURI!!
  */
+ /*
 function createInstanceFromURI(resource) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
 
@@ -483,10 +486,12 @@ function createInstanceFromURI(resource) {
         })
     });
 }
+*/
 
 /*
  * get the rdfauthor init description from the service in and start the RDFauthor window
  */
+ /*
 function editResourceFromURI(resource) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
 
@@ -522,3 +527,4 @@ function editResourceFromURI(resource) {
         })
     });
 }
+*/
