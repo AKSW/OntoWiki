@@ -30,9 +30,11 @@
 <?php
     if ( defined('_OWDEBUG') ) {
 ?>
+<?php if (!empty($this->microtime)) { ?>
 <p class="messagebox warning">
     execution took: <?php echo $this->microtime; ?>
 </p>
+<?php } ?>
 <?php 
     }
 ?>

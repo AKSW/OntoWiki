@@ -1,3 +1,4 @@
 execute pattern;Pattern ausführen
 save pattern;Pattern speichern
 view pattern;Pattern ansehen
+action %s not allowed;Aktion %s nicht erlaubt.

@@ -1,4 +1,4 @@
-<?php if ( $this->step === 0) {?>
+<?php if ( isset($this->step) && $this->step === 0) {?>
 <table>
 	<thead>
 		<tr>
@@ -34,7 +34,7 @@
 		<?php } ?>
 	</tbody>
 </table>
-<?php } else if ($this->step === 1) {?>
+<?php } else if (isset($this->step) && $this->step === 1) {?>
 	<h3><?php echo $this->pattern->getLabel(); ?></h3>
 	<p><?php echo $this->pattern->getDescription(); ?></p>
 	<table>

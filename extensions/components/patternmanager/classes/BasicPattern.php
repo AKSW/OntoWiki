@@ -412,13 +412,18 @@ class BasicPattern {
                     } else {
                         $object = $parts[2];
                     }
-
-                    $stmt[$type][$subject][$predicate][] = $object;
+                    
+                    if ($type !== null && $subject !== null && $predicate !== null && $object !== null) {
+                        $stmt[$type][$subject][$predicate][] = $object;
+                    } else {
+                        // possible optional (OPTIONAL keyword in SPARQL query) result set
+                        // Don't include into statement updates
+                    }
                 }
             } else {
                 $stmt[$type][$parts[0]['value']][$parts[1]['value']][] = $parts[2];
             }
-            
+
             $result = $this->_engine->updateGraph($stmt['insert'],$stmt['delete'],$graph);
             
             // set return to false if any non positive results occured
@@ -476,8 +481,8 @@ class BasicPattern {
     
     /**
      * 
-     * @param unknown_type $pattern
-     * @return array
+     * @param string $pattern
+     * @return array containing ordered parts of tripel-/quadrupelpattern
      */
     private function parsePattern($pattern) {
         
@@ -613,6 +618,13 @@ class BasicPattern {
   
     }
     
+    /**
+     * 
+     * Checks whether given variable in $entity is temp variable; Or if it's
+     * a builtin function check for temp variables in function tree.
+     * @param array $entity
+     * @return true if variable is used as temp
+     */
     private function checkTemp($entity) {
         if ($entity['type'] !== 'temp' && $entity['type'] !== 'function') {
             return false;

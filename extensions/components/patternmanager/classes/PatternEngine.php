@@ -10,6 +10,12 @@
  * @author     Christoph Rieß <c.riess.dev@googlemail.com>
  */
 
+require_once 'PatternEngineAc.php';
+require_once 'BasicPattern.php';
+require_once 'ComplexPattern.php';
+require_once 'PatternFunction.php';
+require_once 'PatternVariable.php';
+
 class PatternEngine {
 
     const PROCESS_MODE_SELECT = 1;
@@ -26,11 +32,23 @@ class PatternEngine {
     
     private $_versioning;
     
+    private $_ac;
+    
     /**
-     * 
+     * Constructor for PatternEngine Object. Ensures internal consistency.
      */
     public function __construct() {
+        $this->_ac = new PatternEngineAc();
+    }
     
+    /**
+     * 
+     * Returns the pattern engine specific access control object
+     * 
+     * @return PatternEngineAc access control object
+     */
+    public function getAc() {
+        return $this->_ac;
     }
     
     /**
@@ -42,14 +60,18 @@ class PatternEngine {
     }
     
     /**
+     * Sets the Backend used for data storing, data manipulation, versioning, access control
+     * Must be an Erfurt backend @see{Erfurt_App}.
      * 
-     * @param unknown_type $erfurt
+     * @param Erfurt_App $erfurt
      */
     public function setBackend($erfurt) {
     
         $this->_store      = $erfurt->getStore();
         
         $this->_versioning = $erfurt->getVersioning();
+        
+        $this->_ac->setExternalAc($erfurt->getAc());
         
         if ( $this->_store->isModelAvailable($this->_privateConfig->storeModel,false) ) {
             // do nothing
@@ -116,28 +138,35 @@ class PatternEngine {
      * @param $mode
      */
     public function processPattern($pattern, $mode = self::PROCESS_MODE_FULL) {
-    
-        if ($pattern instanceof ComplexPattern) {
-            $pattern->setEngine($this);
-        } elseif ($pattern instanceof BasicPattern) {
-            $pattern->setEngine($this);
+        
+        // check ac if pattern execution access allowed
+        if (!$this->_ac->isActionAllowed(PatternEngineAc::RIGHT_EXEC_STR)) {
+            $place = ' Class: ' . __CLASS__ . ' Method: ' . __METHOD__ . PHP_EOL;
+            $message = ' Action not allowed: ' . PatternEngineAc::RIGHT_EXEC_STR . PHP_EOL;
+            throw new Exception('AC Exception.' . $message . $place);
         } else {
-            throw new Erfurt_Exception('unknown input for processPattern() in PatternEngine.');
+	        if ($pattern instanceof ComplexPattern) {
+	            $pattern->setEngine($this);
+	        } elseif ($pattern instanceof BasicPattern) {
+	            $pattern->setEngine($this);
+	        } else {
+	            throw new Erfurt_Exception('unknown input for processPattern() in PatternEngine.');
+	        }
+	        
+	        $vSpec = array(
+	        	'modeluri'      => $this->_defaultGraph,
+	            'type'          => 3000,
+	            'resourceuri'   => '*'
+	        );
+	
+	        // starting evo pattern action
+	        $this->_versioning->startAction($vSpec);
+	
+	        $pattern->execute();
+	        
+	        // ending evo pattern action
+	        $this->_versioning->endAction();
         }
-        
-        $vSpec = array(
-        	'modeluri'      => $this->_defaultGraph,
-            'type'          => 3000,
-            'resourceuri'   => '*'
-        );
-
-        // starting evo pattern action
-        $this->_versioning->startAction($vSpec);
-
-        $pattern->execute();
-        
-        // ending evo pattern action
-        $this->_versioning->endAction();
 
     }
     
@@ -154,6 +183,7 @@ class PatternEngine {
             // do nothing
         }
 
+        // Execute the query. access control should be provided by erfurt
         $result = $this->_store->sparqlQuery($selectQuery, array('result_format' => 'extended'));
         
         return $result;
@@ -161,6 +191,7 @@ class PatternEngine {
     }
     
     /**
+     * Function to update a specific graph with insert and delete statements
      * 
      * @param $insert
      * @param $delete
@@ -183,6 +214,9 @@ class PatternEngine {
             }
         }
 
+        // all store method access controls should be provided by erfurt
+        
+        // slice inserts bigger than 50 affected resources
         if (sizeof($insert) > 50 ) {
             for ($i = 0; ($i*50) < sizeof($insert) ; $i++) {
                 $part = array_slice($insert , $i*50 , 50 ,true);
@@ -192,6 +226,7 @@ class PatternEngine {
             $resultInsert = $this->_store->addMultipleStatements($graph, $insert);
         }
         
+        // slice deletes bigger than 50 affected resources
         if (sizeof($delete) > 50) {
             for ($i = 0; ($i*50) < sizeof($delete) ; $i++) {
                 $part = array_slice($delete , $i*50 , 50 ,true);
@@ -212,11 +247,19 @@ class PatternEngine {
      * @param unknown_type $format
      */
     public function saveToStore($pattern, $format = 'rdf') {
-        switch ($format) {
-            case 'rdf' :
-                return $this->saveToStoreAsRdf($pattern);
-            default :
-                throw new Exception('Format for pattern serialization unsupported');
+
+        // check ac if writeable access allowed
+        if (!$this->_ac->isActionAllowed(PatternEngineAc::RIGHT_EDIT_STR)) {
+            $place = ' Class: ' . __CLASS__ . ' Method: ' . __METHOD__ . PHP_EOL;
+            $message = ' Action not allowed: ' . PatternEngineAc::RIGHT_EDIT_STR . PHP_EOL;
+            throw new Exception('AC Exception.' . $message . $place);
+        } else {
+            switch ($format) {
+                case 'rdf' :
+                    return $this->saveToStoreAsRdf($pattern);
+	            default :
+	                throw new Exception('Format for pattern serialization unsupported');
+	        }
         }
         
     }
@@ -227,11 +270,19 @@ class PatternEngine {
      * @param $format
      */
     public function loadFromStore($id, $format = 'rdf') {
-        switch ($format) {
-            case 'rdf' :
-                return $this->loadFromStoreAsRdf($id);
-            default :
-                throw new Exception('Format for pattern serialization unsupported');
+        
+        // check ac if readable access allowed
+        if (!$this->_ac->isActionAllowed(PatternEngineAc::RIGHT_VIEW_STR)) {
+            $place = ' Class: ' . __CLASS__ . ' Method: ' . __METHOD__ . PHP_EOL;
+            $message = ' Action not allowed: ' . PatternEngineAc::RIGHT_VIEW_STR . PHP_EOL;
+            throw new Exception('AC Exception.' . $message . $place);
+        } else {
+            switch ($format) {
+	            case 'rdf' :
+	                return $this->loadFromStoreAsRdf($id);
+	            default :
+	                throw new Exception('Format for pattern serialization unsupported');
+	        }
         }
     }
 
@@ -428,7 +479,7 @@ class PatternEngine {
      * 
      * @param $uri
      */
-    public function loadFromStoreAsRdf($uri) {
+    private function loadFromStoreAsRdf($uri) {
 	    
 	    $prefix = '';
 	    $prefixlen = 0;
@@ -725,59 +776,67 @@ class PatternEngine {
      */
     public function listFromStore($type = 'rdf') {
         
-        if ($type === 'rdf') {
-            
-            $schema = $this->_privateConfig->rdf->toArray();
-            
-            if ($this->_store->isModelAvailable($this->_privateConfig->storeModel, false) ) {
-                
-                $model = $this->_privateConfig->storeModel;
-                
-		        $query = new Erfurt_Sparql_Query2();
-		        $query->addFrom($model);
-		        $query->addTriple(
-		            new Erfurt_Sparql_Query2_Var('pattern'),
-		            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
-		            new Erfurt_Sparql_Query2_IriRef($schema['ComplexPattern'])
-		        );
-		        $query->addTriple(
-		            new Erfurt_Sparql_Query2_Var('pattern'),
-		            new Erfurt_Sparql_Query2_IriRef(EF_RDFS_LABEL),
-		            new Erfurt_Sparql_Query2_Var('label')
-		        );
-		        
-		        // TODO Paging
-		        //$query->setLimit($limit + 1);
-		        //$query->setOffset($offset);
-		        
-		        $result  = array();
-		        $count   = 0;
-		        $nrArray = array();
-
-		        foreach ($this->_store->sparqlQuery($query,array(STORE_USE_AC => false)) as $row) {
-		            
-		            if ( !array_key_exists($row['pattern'],$nrArray) ) {
-		                $result[$row['pattern']]['uri'] = $row['pattern'];
-		                $nrArray[$row['pattern']] = $count;
-		            }
-		            
-		            $result[$row['pattern']]['label'] = $row['label'];
-		
-		            $execUrl = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'exec'));
-		            $execUrl->setParam('pattern', $row['pattern']);
-		            $result[$row['pattern']]['exec_url'] = (string) $execUrl;
-		                
-		            $viewUrl = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'view'));
-		            $viewUrl->setParam('pattern', $row['pattern']);
-		            $result[$row['pattern']]['view_url'] = (string) $viewUrl;
-                }
-
-                return $result;
-        
-            }
-            
+        // check ac if readable access allowed
+        if (!$this->_ac->isActionAllowed(PatternEngineAc::RIGHT_VIEW_STR)) {
+            $place = ' Class: ' . __CLASS__ . ' Method: ' . __METHOD__ . PHP_EOL;
+            $message = ' Action not allowed: ' . PatternEngineAc::RIGHT_VIEW_STR . PHP_EOL;
+            throw new Exception('AC Exception.' . $message . $place);
         } else {
-            throw new Exception('Format for pattern serialization unsupported');
+        
+	        if ($type === 'rdf') {
+	            
+	            $schema = $this->_privateConfig->rdf->toArray();
+	            
+	            if ($this->_store->isModelAvailable($this->_privateConfig->storeModel, false) ) {
+	                
+	                $model = $this->_privateConfig->storeModel;
+	                
+			        $query = new Erfurt_Sparql_Query2();
+			        $query->addFrom($model);
+			        $query->addTriple(
+			            new Erfurt_Sparql_Query2_Var('pattern'),
+			            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
+			            new Erfurt_Sparql_Query2_IriRef($schema['ComplexPattern'])
+			        );
+			        $query->addTriple(
+			            new Erfurt_Sparql_Query2_Var('pattern'),
+			            new Erfurt_Sparql_Query2_IriRef(EF_RDFS_LABEL),
+			            new Erfurt_Sparql_Query2_Var('label')
+			        );
+			        
+			        // TODO Paging
+			        //$query->setLimit($limit + 1);
+			        //$query->setOffset($offset);
+			        
+			        $result  = array();
+			        $count   = 0;
+			        $nrArray = array();
+	
+			        foreach ($this->_store->sparqlQuery($query,array(STORE_USE_AC => false)) as $row) {
+			            
+			            if ( !array_key_exists($row['pattern'],$nrArray) ) {
+			                $result[$row['pattern']]['uri'] = $row['pattern'];
+			                $nrArray[$row['pattern']] = $count;
+			            }
+			            
+			            $result[$row['pattern']]['label'] = $row['label'];
+			
+			            $execUrl = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'exec'));
+			            $execUrl->setParam('pattern', $row['pattern']);
+			            $result[$row['pattern']]['exec_url'] = (string) $execUrl;
+			                
+			            $viewUrl = new OntoWiki_Url(array('controller' => 'patternmanager','action' => 'view'));
+			            $viewUrl->setParam('pattern', $row['pattern']);
+			            $result[$row['pattern']]['view_url'] = (string) $viewUrl;
+	                }
+	
+	                return $result;
+	        
+	            }
+	            
+	        } else {
+	            throw new Exception('Format for pattern serialization unsupported');
+	        }
         }
         
     }
