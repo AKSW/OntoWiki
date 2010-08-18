@@ -164,7 +164,7 @@ function openRDFa(){
             return;
         }
         object = $(":first-child", this).attr("content");
-        if( typeof object === "undefined"){
+        if( typeof object === "undefined" || object.length < 1){
             object = {value: $(":first-child", this).text()};
         }else{
             object = "<"+object+">";
