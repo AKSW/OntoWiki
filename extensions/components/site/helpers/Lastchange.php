@@ -49,7 +49,13 @@ class Site_View_Helper_Lastchange extends Zend_View_Helper_Abstract
         $return['resourceTitle'] = $th->getTitle($uri);
         $return['timeStamp'] = $history[0]['tstamp']; //unix timestamp
         $return['timeIso8601'] = date('c',$history[0]['tstamp']); // ISO 8601 format
-        $return['timeDuration'] = OntoWiki_Utils::dateDifference($history[0]['tstamp'], null, 3); // x days ago
+
+        try {
+            $return['timeDuration'] = OntoWiki_Utils::dateDifference($history[0]['tstamp'], null, 3); // x days ago
+        } catch (Exception $e) {
+            $return['timeDuration'] = '';
+        }
+
         $return['userTitle'] = $th->getTitle($history[0]['useruri']);
         $return['userUri'] = $history[0]['useruri'];
         $return['userHref'] = $userUrl; //use URI helper
