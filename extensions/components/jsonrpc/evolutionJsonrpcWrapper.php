@@ -69,6 +69,22 @@ class evolutionJsonrpcWrapper
 		// load pattern from json string
 		$complexPattern->fromArray($pattern, true);
 
+		// check for errors while decoding json pattern
+		switch(json_last_error()) {
+
+			case JSON_ERROR_DEPTH:
+				throw new Erfurt_Exception("JSON error - maximum stack depth exceeded.");
+				break;
+			case JSON_ERROR_CTRL_CHAR:
+				throw new Erfurt_Exception("JSON error - unexpected control character found.");
+				break;
+			case JSON_ERROR_SYNTAX:
+				throw new Erfurt_Exception("JSON error - syntax error, malformed JSON.");
+				break;
+			case JSON_ERROR_NONE:
+				break;
+		}
+
 		// bound variables
  		$unboundVariables = $complexPattern->getVariables(false);
 
