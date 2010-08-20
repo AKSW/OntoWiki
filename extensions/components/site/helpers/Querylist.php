@@ -31,7 +31,7 @@ class Site_View_Helper_Querylist extends Zend_View_Helper_Abstract
             $result = $store->sparqlQuery($query);
         } catch (Exception $e) {
             // executions failed (return nothing)
-            return $return;
+            return $e->getMessage();
         }
  
         foreach($result as $row){
