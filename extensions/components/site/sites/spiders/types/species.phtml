@@ -1,0 +1,83 @@
+<?php
+// this is the standard template data
+$templateData = array(
+    'title' => $this->title,
+    'resourceUri' => $this->resourceUri,
+    'description' => $this->description,
+    'descriptionHelper' => $this->descriptionHelper
+);
+
+$queryObject = new Erfurt_Sparql_SimpleQuery();
+$queryObject->setProloguePart('
+PREFIX faun: <http://purl.org/net/faunistics#>
+PREFIX geof: <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?RecordType ?RecordURI ?RecordLabel ?PublicationUri ?PublicationLabel ?SourceURI ?SourceLabel ?LocationURI ?lat ?long
+    ');
+
+$queryObject->setWherePart('
+WHERE
+{
+  ?RecordURI faun:identifiesAs <'.$this->resourceUri.'>.
+  ?RecordURI a ?RecordType.
+  OPTIONAL {
+    ?RecordURI rdfs:label ?RecordLabel.
+  }
+  ?RecordURI faun:publishedIn ?PublicationUri.
+  ?PublicationUri rdfs:label ?PublicationLabel.
+  OPTIONAL {
+    ?RecordURI faun:citedIn ?SourceURI.
+    ?SourceURI rdfs:label ?SourceLabel.
+  }
+
+  {
+    ?RecordURI faun:recordedAtLocation ?LocationURI .
+  }
+  UNION
+  {
+    ?RecordURI faun:recordedAtLocation ?l1 .
+    ?l1 geof:within ?LocationURI.
+  }
+  UNION
+  {
+    ?RecordURI faun:recordedAtLocation ?l1 .
+    ?l1 geof:within ?l2.
+    ?l2 geof:within ?LocationURI.
+  }
+  OPTIONAL {
+    ?LocationURI geo:lat ?lat.
+    ?LocationURI geo:long ?long.
+  }
+}
+    ');
+
+$queryObject->setLimit('10000');
+
+?>
+<div class="box">
+    <h2>
+        <?php echo $this->title ?>
+    </h2>
+    <div class="block">
+        <p><?php echo $this->partial('spiders/content.phtml', $templateData); ?></p>
+    </div>
+</div>
+<div class="box">
+    <h2>Records</h2>
+    <div class="block">
+        <table class="checklist">
+            <thead>
+            <th>Publication</th>
+            <th>Location</th>
+            <th>Source</th>
+            <th>Record / Label</th>
+            <th>Type</th>
+            <thead>
+            <tbody>
+                <?php echo $this->querylist($queryObject, 'spiders/types/species-row.phtml'); ?>
+            </tbody>
+        </table>
+    </div>
+</div>

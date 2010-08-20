@@ -1,0 +1,19 @@
+<?php
+// this is the standard template data
+$templateData = array(
+                'title' => $this->title,
+                'resourceUri' => $this->resourceUri,
+                'description' => $this->description,
+                'descriptionHelper' => $this->descriptionHelper
+        );
+?>
+<div class="box">
+    <h2>
+        <?php echo $this->title ?>
+    </h2>
+    <div class="block">
+        <div class="article first">
+            <?php echo $this->partial( 'spiders/content.phtml', $templateData); ?>
+        </div>
+    </div>
+</div>
