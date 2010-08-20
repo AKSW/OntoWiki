@@ -25,6 +25,7 @@ class Site_View_Helper_Querylist extends Zend_View_Helper_Abstract
         $owapp = OntoWiki::getInstance();
         $store = $owapp->erfurt->getStore();
         $view  = $owapp->view;
+        $titleHelper = new OntoWiki_Model_TitleHelper($owapp->selectedModel);
         $return = '';
 
         try {
@@ -33,8 +34,19 @@ class Site_View_Helper_Querylist extends Zend_View_Helper_Abstract
             // executions failed (return nothing)
             return $e->getMessage();
         }
- 
+
         foreach($result as $row){
+            foreach($row as $value){
+                if ( Erfurt_Uri::check($value) ) {
+                    $titleHelper->addResource( $value );
+                }
+            }
+        }
+
+        $count = count($result);
+        foreach($result as $row){
+            $row['querylist_rowcount'] = $count;
+            $row['querylist_titleHelper'] = $titleHelper;
             $return .= $view->partial($template, $row);
         }
         return $return;
