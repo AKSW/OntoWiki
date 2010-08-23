@@ -1,12 +1,16 @@
 <div id="patternmanager">
-    <a href="javascript:addPMPattern();">add</a> <br/>
+    <a class="minibutton" href="javascript:addPMPattern();">add</a>
+    <a class="minibutton" href="<?php echo $this->exportUrl;?>">export as json</a> <br/>
+    <!-- <a href="<?php ?>">import from json</a> <br/> -->
+    <p>
     Name for ComplexPattern: <input type="text" class="text width95" name="label" id="label" value="Pattername"/>
     Description for ComplexPattern: <input type="text" class="text width95" name="desc" id="desc" value="Patterndesc"/>
-    <div style="display:none;" id="subpattern">
-        <a href="javascript:hidePMPattern();">hide</a>
-        <a href="javascript:showPMPattern();">show</a>
-        <a href="javascript:delPMPattern();">del</a>
-        <a href="javascript:copyVariables();">copy vars from ...</a>
+    </p>
+    <div style="margin-left:2em; margin-top:1em; display:none;" id="subpattern">
+        <a class="minibutton" href="javascript:hidePMPattern();">hide</a>
+        <a class="minibutton" href="javascript:showPMPattern();">show</a>
+        <a class="minibutton" href="javascript:delPMPattern();">del</a>
+        <a class="minibutton PMcopyVar">copy vars from ... </a>
         <div>
             Name for SubPattern: <input type="text" class="BasicPattern text width95" name="patternlabel-" id="patternlabel-" value=""/>
         	Description for SubPattern: <input type="text" class="text width95" name="patterndesc-" id="patterndesc-" value=""/>
@@ -17,7 +21,7 @@
             <th>Variablename</th>
             <th>Variabletype</th>
             <th>Variabledescription</th>
-            <th style="text-align:right;"><a href="javascript:addPMvar();">add</a></th>
+            <th><a class="minibutton" href="javascript:addPMvar();">add</a></th>
             </tr>
             </thead>
             <tbody>
@@ -45,8 +49,8 @@
             <td>
                 <input class="text width95" type="text" name="vardesc-" id="vardesc-"/>
             </td>
-            <td style="text-align:right;">
-                <a href="javascript:delPMvar();">del</a>
+            <td>
+                <a class="minibutton" href="javascript:delPMvar();">del</a>
             </td>
             </tr>
             </tbody>
@@ -54,8 +58,8 @@
         <table>
             <thead>
             <tr>
-            <th>Selectquery</th>
-            <th  style="text-align:right;"><a style="display:none;" href="javascript:addPMselect();">add</a></th>
+            <th class="width95">Selectquery</th>
+            <th><a class="minibutton" style="display:none;" href="javascript:addPMselect();">add</a></th>
             </tr>
             </thead>
             <tbody>
@@ -63,8 +67,8 @@
             <td>
                 <input class="text width95" type="text" name="selectpattern-" id="selectpattern-"/>
             </td>
-            <td  style="text-align:right;">
-                <a href="javascript:delPMselect();">del</a>
+            <td>
+                <a class="minibutton" href="javascript:delPMselect();">del</a>
             </td>
             </tr>
             </tbody>
@@ -72,8 +76,8 @@
         <table>
             <thead>
             <tr>
-            <th>Inserttriples</th>
-            <th style="text-align:right;"><a href="javascript:addPMinsert();">add</a></th>
+            <th class="width95">Inserttriples</th>
+            <th><a class="minibutton" href="javascript:addPMinsert();">add</a></th>
             </tr>
             </thead>
             <tbody>
@@ -81,8 +85,8 @@
             <td>
                 <input class="text width95" type="text" name="insertpattern-" id="insertpattern-"/>
             </td>
-            <td style="text-align:right;">
-                <a href="javascript:delPMinsert();">del</a>
+            <td>
+                <a class="minibutton" href="javascript:delPMinsert();">del</a>
             </td>
             </tr>
             </tbody>
@@ -90,8 +94,8 @@
         <table>
             <thead>
             <tr>
-            <th>Deletetriples</th>
-            <th style="text-align:right;"><a href="javascript:addPMdelete();">add</a></th>
+            <th class="width95">Deletetriples</th>
+            <th><a class="minibutton" href="javascript:addPMdelete();">add</a></th>
             </tr>
             </thead>
             <tbody>
@@ -99,8 +103,8 @@
             <td>
                 <input class="text width95" type="text" name="deletepattern-" id="deletepattern-"/>
             </td>
-            <td style="text-align:right;">
-                <a href="javascript:delPMdelete();">del</a>
+            <td>
+                <a class="minibutton" href="javascript:delPMdelete();">del</a>
             </td>
             </tr>
             </tbody>
@@ -117,8 +121,8 @@ var jsonPattern = $.secureEvalJSON(<?php echo '\'' . addcslashes($this->jsonPatt
 label = jsonPattern['label'];
 desc = jsonPattern['desc'];
 
-$('div#patternmanager > input#label').val(label);
-$('div#patternmanager > input#desc').val(desc);
+$('div#patternmanager > p > input#label').val(label);
+$('div#patternmanager > p > input#desc').val(desc);
 
 for (key in jsonPattern['subPattern']) {
 

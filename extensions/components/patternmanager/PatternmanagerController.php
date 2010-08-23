@@ -44,7 +44,15 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $this->_engine = new PatternEngine();
         $this->_engine->setConfig($this->_privateConfig);
         $this->_engine->setBackend($this->_erfurt);
-
+        
+        require_once ONTOWIKI_ROOT . $this->_owApp->config->extensions->plugins . 'resourcecreationuri/classes/ResourceUriGenerator.php';
+        
+        $gen = new ResourceUriGenerator();
+        
+        $uri = $gen->generateUri('http://ns.ontowiki.net/SysOnt/EvolutionEngine_View', ResourceUriGenerator::FORMAT_SPARQL);
+        var_dump($uri);
+        exit();
+        
     }
 
     /**
@@ -57,6 +65,36 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
         $this->_redirect($url);
 
+    }
+    
+    /**
+     * Exports pattern in a specific format
+     */
+    public function exportAction() {
+        
+        // for json export no templates and layout
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout->disableLayout();
+        
+        $pattern = $this->getParam('pattern');
+        
+        if (!empty($pattern) && is_string($pattern) && Erfurt_Uri::check($pattern)) {
+            $pattern = $this->_engine->loadFromStore($pattern);
+            
+            $hash = substr(md5($pattern->getLabel().$pattern->getDescription()),0,8);
+            $filename = 'pattern_export_' . date('Y-m-d_H\hi') . '_' . $hash . '.json';   
+            $contentType = 'application/json';
+            $response = $this->getResponse();
+            $response->setHeader('Content-Type', $contentType, true);
+            $response->setHeader('Content-Disposition', ('filename="'.$filename.'"'));
+            
+            echo $pattern->toArray(true);
+            
+        } else {
+            $msg = array('error'=>'invalid input in pattern variable');
+            echo json_encode($msg);
+        }
+        
     }
 
     /**
@@ -492,7 +530,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/patternmanager-view.js');
 	        
             $toolbar = $this->_owApp->toolbar;
-	
+
 	        // button to commit pattern (if action allowed)
 	        if ($this->_engine->getAc()->isActionAllowed(PatternEngineAc::RIGHT_EDIT_STR)) {
 	            		
@@ -539,6 +577,12 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        if ( !empty($param) ) {
 	            $this->view->errorPattern = $param;
 	        }
+	        
+	        $this->view->exportUrl = (string) (new OntoWiki_Url(
+		        array('controller' => 'patternmanager', 'action' => 'export'),
+		        array('pattern')
+		    ));
+		    
         } else {
             $msg_located = $this->view->_('action %s not allowed');
             $msgObject = new OntoWiki_Message(

@@ -14,6 +14,7 @@ class PatternFunction {
     
     public function executeFunction ($data, $bind, $asString = false) {
         $funcOptions = array();
+        $options = array();
         foreach ($data['param'] as $param) {
             if ($param['type'] === 'function') {
                 $options[] = $this->executeFunction($param, $bind, true);
@@ -78,5 +79,9 @@ class PatternFunction {
         preg_match_all('/([A-Z]|[a-z]|[0-9]|%|[-_])+$/',$options[1],$matches,PREG_PATTERN_ORDER);
 
         return array( 'value' => $prefix . $matches[0][0] );
+    }
+    
+    private function callGetsmarturi($options) {
+        
     }
 }

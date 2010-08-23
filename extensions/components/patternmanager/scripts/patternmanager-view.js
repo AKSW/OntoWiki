@@ -8,22 +8,73 @@
  * @version    $Id$
  */
 
-function copyVariables(selfId, patternId) {
-	if (patternId == null) {
+$(document).ready(function () {
+    
+    $('.edit.save').hide();
+    
+    $('.edit-enable').live('click', function (event) {
+        $('.edit-enable').hide();
+        $('.edit.save').show();
+    });
+    
+    $('.PMcopyVar').live('click', function(event) {
+        
+		id = $(this).parent().attr('id');
 		
-	} else {
+		if ($(this).parent().hasClass('contextmenu')) {
+		    
+		    sp = $(this).children('div').text();
+		    self = $(this).parent().find('div:eq(0)').text();
+		    replace = $('#patternmanager > ' + sp + ' > table:eq(0)').clone();
+		    if (confirm ('Confirm action: copy vars')) {
+		        $('#patternmanager > ' + self + ' > table:eq(0)').replaceWith(replace);
+		    } else {
+		        // do nothing
+		    }
+		    
+		    reindexPM();
+		    
+		} else {
 		
-	}
-}
+		    // create menu for selection
+		    
+		    id = id.replace('subpattern-','');
+    		
+		    var other = new Array();
+    		
+		    $('#patternmanager > div').each( function (i) {
+		        if (i != id && i != 0) {
+		            other.push(i);
+	            }
+		    });
+    		
+		    //TODO move this to a menu new service
+    		cwin = '<div class="contextmenu" style="position:absolute; top:' + (event.pageY+10) + 'px; left:' + (event.pageX+5) + 'px;">';
+    		cwin += '<div style="display:none;">#subpattern-' + id + '</div>';
+    		for (i in other) {
+    		    cwin += '<a class="PMcopyVar">from Subpattern ' + other[i] + '<div style="display:none">#subpattern-' + other[i] + '</div></a><br/>';
+    		}
+    		cwin += '</div>';
+    		
+    		if (other.length > 0) {
+    		    $('.contextmenu-enhanced').append(cwin);
+    		}
+		}
+		
+		event.stopPropagation();
+		
+	});
+});
 
 function addPMPattern(name, desc) {
     
-    pattern = $('div#subpattern').clone();
     count = $('div#patternmanager > div').size();
     
-    html = '<div id="subpattern-' + count +'">' + pattern.html() + '</div>';
-    
-    $('div#patternmanager').append(html);
+    pattern = $('div#subpattern').clone();
+    pattern.attr('id','subpattern-' + count);
+    pattern.show();
+
+    $('div#patternmanager').append(pattern);    
     
     $('div#subpattern-' + count + ' input#patternlabel-').val(name);
     $('div#subpattern-' + count + ' input#patterndesc-').val(desc);
@@ -34,7 +85,11 @@ function addPMPattern(name, desc) {
 
 function delPMPattern(id) {
     
-    $('div#patternmanager > div#subpattern-'+id).remove();
+    if (confirm ('Confirm action: del pattern')) {
+        $('div#patternmanager > div#subpattern-'+id).remove();
+    } else {
+        
+    }
     
     reindexPM();
     
@@ -43,6 +98,7 @@ function delPMPattern(id) {
 function hidePMPattern(id) {
     
     $('div#patternmanager > div#subpattern-'+id + '> table').hide();
+
     $('div#patternmanager > div#subpattern-'+id + '> div:has(>input)').hide();
     
 }
@@ -216,6 +272,8 @@ function reindexPM() {
         }
     });
     
+    $('div#patternmanager').addClass('is-processing');
+    
     $('div#patternmanager > div').each( function (i) {
         
         if (i != 0) {
@@ -225,7 +283,11 @@ function reindexPM() {
             
             $(this).children('a').each( function (k) {
                 currentHref = $(this).attr('href');
-                $(this).attr('href', currentHref.substr(0,currentHref.indexOf('(')) + '(' + i + ');' );
+                if (typeof currentHref == 'undefined') {
+                	// do nothing (no href)
+                } else {
+                	$(this).attr('href', currentHref.substr(0,currentHref.indexOf('(')) + '(' + i + ');' );
+                }
             });
             
             // (re)index input fields for pattern label and pattern description
@@ -263,5 +325,7 @@ function reindexPM() {
         }
     
     });
+
+    $('div#patternmanager').removeClass('is-processing');
     
 }
