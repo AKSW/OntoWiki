@@ -1,0 +1,175 @@
+<div id="patternmanager">
+    <a class="minibutton" href="javascript:addPMPattern();">add</a>
+    <a class="minibutton" href="<?php echo $this->exportUrl;?>">export as json</a> <br/>
+    <!-- <a href="<?php ?>">import from json</a> <br/> -->
+    <p>
+    Name for ComplexPattern: <input type="text" class="text width95" name="label" id="label" value="Pattername"/>
+    Description for ComplexPattern: <input type="text" class="text width95" name="desc" id="desc" value="Patterndesc"/>
+    </p>
+    <div style="margin-left:2em; margin-top:1em; display:none;" id="subpattern">
+        <a class="minibutton" href="javascript:hidePMPattern();">hide</a>
+        <a class="minibutton" href="javascript:showPMPattern();">show</a>
+        <a class="minibutton" href="javascript:delPMPattern();">del</a>
+        <a class="minibutton PMcopyVar">copy vars from ... </a>
+        <div>
+            Name for SubPattern: <input type="text" class="BasicPattern text width95" name="patternlabel-" id="patternlabel-" value=""/>
+        	Description for SubPattern: <input type="text" class="text width95" name="patterndesc-" id="patterndesc-" value=""/>
+        </div>
+        <table>
+            <thead>
+            <tr>
+            <th>Variablename</th>
+            <th>Variabletype</th>
+            <th>Variabledescription</th>
+            <th><a class="minibutton" href="javascript:addPMvar();">add</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+                <input class="text width95" type="text" name="varname-" id="varname-"/>
+            </td>
+            <td>
+                <select  name="vartype-" id="vartype-" size="1">
+	               <option>RESOURCE</option>
+        	       <option>LITERAL</option>
+                   <option>TEMP</option>
+                   <option>GRAPH</option>
+                   <option>LANG</option>
+                   <option>DATATYPE</option>
+                   <option>CLASS</option>
+	               <option>PROPERTY</option>
+                    <!--
+                    <option>REGEXP</option>
+                    <option>vvv</option>
+                    -->
+                </select>
+                <!--<input type="text" class="text" name="vartype-" id="vartype-"/>-->
+            </td>
+            <td>
+                <input class="text width95" type="text" name="vardesc-" id="vardesc-"/>
+            </td>
+            <td>
+                <a class="minibutton" href="javascript:delPMvar();">del</a>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+            <th class="width95">Selectquery</th>
+            <th><a class="minibutton" style="display:none;" href="javascript:addPMselect();">add</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+                <input class="text width95" type="text" name="selectpattern-" id="selectpattern-"/>
+            </td>
+            <td>
+                <a class="minibutton" href="javascript:delPMselect();">del</a>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+            <th class="width95">Inserttriples</th>
+            <th><a class="minibutton" href="javascript:addPMinsert();">add</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+                <input class="text width95" type="text" name="insertpattern-" id="insertpattern-"/>
+            </td>
+            <td>
+                <a class="minibutton" href="javascript:delPMinsert();">del</a>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+            <th class="width95">Deletetriples</th>
+            <th><a class="minibutton" href="javascript:addPMdelete();">add</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+                <input class="text width95" type="text" name="deletepattern-" id="deletepattern-"/>
+            </td>
+            <td>
+                <a class="minibutton" href="javascript:delPMdelete();">del</a>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        
+</div>
+
+<?php if ( !empty($this->jsonPattern) && is_string($this->jsonPattern) )  { ?>
+<script type="text/javascript">
+// jQuery Json used here (compatible)
+var jsonPattern = $.secureEvalJSON(<?php echo '\'' . addcslashes($this->jsonPattern,'\'') . '\''; ?>);
+
+label = jsonPattern['label'];
+desc = jsonPattern['desc'];
+
+$('div#patternmanager > p > input#label').val(label);
+$('div#patternmanager > p > input#desc').val(desc);
+
+for (key in jsonPattern['subPattern']) {
+
+    label = jsonPattern['subPattern'][key]['label'];
+    desc  = jsonPattern['subPattern'][key]['desc'];
+    
+    addPMPattern(label,desc);
+
+    i = parseInt(key) + 1;
+    current = jsonPattern['subPattern'][key];
+    
+    delPMvar(i,1);
+    delPMselect(i,1);            
+    delPMinsert(i,1);
+    delPMdelete(i,1);
+    
+    for (t in current) {
+        if (t == 'V') {
+            
+            for (v in current[t]) {
+                addPMvar(i,null,current[t][v]['name'],current[t][v]['type'],current[t][v]['desc']);
+            }
+        } else if (t == 'S' && current[t] != null) {
+            	addPMselect(i,null,current[t]);
+        } else if (t == 'U') {
+            for (pkey in current[t]) {
+                if (current[t][pkey]['type'] === 'insert' ) {
+                    addPMinsert(i, null, current[t][pkey]['pattern']);
+                } else if ( current[t][pkey]['type'] === 'delete' ) {
+                    addPMdelete(i, null, current[t][pkey]['pattern']);
+                } else {
+                    // do nothing (undefined type)
+                }
+            }
+        }
+    }
+}
+</script>
+
+<?php } ?>
+<?php if ( !empty($this->errorPattern) && is_string($this->errorPattern) )  { ?>
+<script type="text/javascript">
+// jQuery Json used here (compatible)
+var errorpattern = $.secureEvalJSON(<?php echo '\'' . $this->errorPattern . '\''; ?>);
+for (i in errorpattern) {
+    $('#' + errorpattern[i]).css('background-color','#FF7070').css('color','#FAFAFA');
+}
+</script>
+
+<?php } ?>

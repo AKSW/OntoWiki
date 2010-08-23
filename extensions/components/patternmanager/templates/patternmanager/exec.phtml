@@ -1,0 +1,41 @@
+<div id="patternmanager">
+<table>
+<thead>
+</thead>
+<tbody>
+    <?php 
+        foreach ($this->variables as $var) {
+    ?>
+    <tr>
+	    <td><?php echo $var['name']; ?></td>
+	    <td>
+            <input 
+            	type="text" 
+            	class="width95 text pm_var" 
+            	name="var[<?php echo $var['name']; ?>]" 
+            	id="var[<?php echo $var['name']; ?>]"
+            	<?php if ($var['prebound'] !== false) {
+            	    echo 'value="'. $var['prebound'] . '"' . PHP_EOL;
+            	    echo 'readonly';
+            	} ?>
+            	/>
+        </td>
+	    <td><?php echo $var['type']; ?></td>
+    </tr>
+    <?php
+        }
+    ?>
+</tbody>
+</table>
+<?php
+    if ( defined('_OWDEBUG') ) {
+?>
+<?php if (!empty($this->microtime)) { ?>
+<p class="messagebox warning">
+    execution took: <?php echo $this->microtime; ?>
+</p>
+<?php } ?>
+<?php 
+    }
+?>
+</div>
