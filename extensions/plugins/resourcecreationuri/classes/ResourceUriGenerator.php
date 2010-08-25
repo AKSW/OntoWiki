@@ -99,10 +99,15 @@ class ResourceUriGenerator {
         }
         
         // check for defaultModel to work on
-        if ($defaultModel === null) {
+        if ($defaultModel === null && $this->_owApp->selectedModel !== null) {
             $this->_model = $this->_owApp->selectedModel;
         } else {
-            $this->_model = $defaultModel;
+            if ($defaultModel !== null) {
+                $this->_model = $defaultModel;
+            } else {
+                $erroruri = is_null($defaultModel) ? 'null' : (string) $defaultModel;
+                throw new InvalidArgumentException('ResourceUriGenerator can\'t load model with URI: ' . $erroruri);
+            }
         }
         
     }
@@ -122,10 +127,13 @@ class ResourceUriGenerator {
     }
     
     /**
+     * Function generates nice URIs by certain rules (naming scheme and available resource data)
+     * Two modes are possible: live from store namingly 'sparql', or with memory model in rdfphp
+     * format to use 'rdfphp'.
      * 
-     * Enter description here ...
-     * @param $format
-     * @param $data
+     * @param string $format (see class constants for possible values) 
+     * @param array $data further data (in rdfphp-mode the insert statements)
+     * @return string generated 'nice' URI
      */
     public function generateUri($resourceUri, $format = self::FORMAT_SPARQL, $data = array()) {
 
@@ -145,7 +153,7 @@ class ResourceUriGenerator {
         
         // check if resources with same prefix exist
         if ( ($count = $this->countUriPattern($return)) > 0) {
-            $return .= $count;
+            $return .= '/' . $count;
         } else {
             // do nothing
         }
@@ -299,6 +307,8 @@ class ResourceUriGenerator {
                 }
             }
         } 
+        
+        $nameParts = $this->loadNamingSchema($uri);
 
         $uriParts = array();
 
@@ -344,13 +354,7 @@ class ResourceUriGenerator {
             $createdUri = $baseUri . '/' . implode('/',$uriParts);
         }
         
-        $count = $this->countUriPattern($createdUri);
-
-        if ($count) {
-            return $createdUri . '_' . $count;
-        } else {
-            return $createdUri;
-        }
+        return $createdUri;
     }
     
     /**
@@ -416,6 +420,8 @@ class ResourceUriGenerator {
     
     /**
      * Method that counts already existing distinct datasets for given uri
+     * 
+     * 
      * @param $uri uri string
      * @return int distinct existing datasets
      */
@@ -453,15 +459,22 @@ class ResourceUriGenerator {
 
         $filter->addElement(
             new Erfurt_Sparql_Query2_Regex(
-                    $subjectVar ,
+                    $subjectVar,
                     new Erfurt_Sparql_Query2_RDFLiteral('^' . $uri),
                     new Erfurt_Sparql_Query2_RDFLiteral('i')
             )
         );
 
         $query->addFilter($filter);
-        $result = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
-        return count($result);
+        
+        $result = $this->_owApp->erfurt->getStore()->countWhereMatches(
+            $this->_model->getModelIri(),
+            $query->getWhere(),
+            's',
+            true
+        );
+        
+        return $result;
     }
     
 }

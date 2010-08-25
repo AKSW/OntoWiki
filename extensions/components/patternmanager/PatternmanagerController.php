@@ -47,12 +47,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         require_once ONTOWIKI_ROOT . $this->_owApp->config->extensions->plugins . 'resourcecreationuri/classes/ResourceUriGenerator.php';
         
-        $gen = new ResourceUriGenerator();
-        
-        $uri = $gen->generateUri('http://ns.ontowiki.net/SysOnt/EvolutionEngine_View', ResourceUriGenerator::FORMAT_SPARQL);
-        var_dump($uri);
-        exit();
-        
     }
 
     /**

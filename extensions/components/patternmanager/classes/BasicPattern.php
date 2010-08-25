@@ -368,7 +368,7 @@ class BasicPattern {
                 $graph = null;
             }
             
-            $func = new PatternFunction();
+            $func = PatternFunction::getInstance();
             
             if ($mask) {
                 foreach ($this->_intermediate_result['results']['bindings'] as $row) {

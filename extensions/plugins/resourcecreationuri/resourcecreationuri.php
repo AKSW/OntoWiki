@@ -59,7 +59,7 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
             $gen = new ResourceUriGenerator($this->insertModel,$this->_pluginRoot . 'plugin.ini');
 
             if ( count($event->insertData) == 1 && preg_match($pattern,$subjectUri) ) {
-                $newUri = $this->buildNiceUri($subjectUri, $nameParts);
+                $newUri = $gen->generateUri($subjectUri, ResourceUriGenerator::FORMAT_RDFPHP, $this->insertData);
                 $temp   = array();
                 foreach ($this->insertData[$subjectUri] as $p => $o) {
                     $temp[$newUri][$p] = $o;
