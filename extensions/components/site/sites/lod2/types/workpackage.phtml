@@ -7,25 +7,22 @@ $templateData = array(
                 'descriptionHelper' => $this->descriptionHelper
         );
 ?>
-<div class="box">
-    <h2>
-        <?php echo $this->title ?>
-    </h2>
-    <div class="block">
-        <div class="article first">
-            <?php echo $this->partial( 'lod2/content.phtml', $templateData); ?>
-            <p class="meta">
-                <?php echo $this->partial( 'lod2/lastchange.phtml', $this->lastchange($this->resourceUri)); ?>
-            </p>
+<?php if ($content = $this->partial( 'lod2/content.phtml', $templateData)): ?>
+
+<div class="maincontent">
+    <div class="section">
+        <h3><?php echo $this->title ?></h3>
+        <div class="section-content">
+            <?php echo $content; ?>
         </div>
     </div>
 </div>
 
-<div class="grid_4">
-    <div class="box">
-        <h2>Milestones</h2>
-        <?php
-            $query = '
+<?php endif; ?>
+
+<?php // MILESTONES
+
+$query = '
 PREFIX lod2: <http://lod2.eu/schema/>.
 SELECT DISTINCT ?resourceUri
 WHERE {
@@ -35,16 +32,23 @@ FILTER (!isBLANK(?resourceUri))
 }
 LIMIT 10
 ​';
-            echo $this->querylist($query, 'lod2/items/li.phtml');
-        ?>
+
+if ($milestones = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c25l">
+    <div class="subcl widget-deeplink">
+        <h3>Milestones</h3>
+         <ul>
+            <?php echo $milestones ?>
+         </ul>
     </div>
 </div>
 
-<div class="grid_4">
-    <div class="box">
-        <h2>Tasks</h2>
-        <?php
-            $query = '
+<?php endif; ?>
+
+<?php // TASKS
+
+$query = '
 PREFIX lod2: <http://lod2.eu/schema/>.
 SELECT DISTINCT ?resourceUri
 WHERE {
@@ -54,16 +58,23 @@ FILTER (!isBLANK(?resourceUri))
 }
 LIMIT 10
 ​';
-            echo $this->querylist($query, 'lod2/items/li.phtml');
-        ?>
+
+if ($tasks = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c25l">
+    <div class="subc widget-deeplink">
+        <h3>Tasks</h3>
+         <ul>
+            <?php echo $tasks ?>
+         </ul>
     </div>
 </div>
 
-<div class="grid_4">
-    <div class="box">
-        <h2>Deliverables</h2>
-        <?php
-            $query = '
+<?php endif; ?>
+
+<?php // DELIVERABLES
+
+$query = '
 PREFIX lod2: <http://lod2.eu/schema/>.
 SELECT DISTINCT ?resourceUri
 WHERE {
@@ -73,16 +84,23 @@ FILTER (!isBLANK(?resourceUri))
 }
 LIMIT 10
 ​';
-            echo $this->querylist($query, 'lod2/items/li.phtml');
-        ?>
+
+if ($deliverables = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c25l">
+    <div class="subc widget-deeplink">
+        <h3>Deliverables</h3>
+         <ul>
+            <?php echo $deliverables ?>
+         </ul>
     </div>
 </div>
 
-<div class="grid_4">
-    <div class="box">
-        <h2>Partner</h2>
-        <?php
-            $query = '
+<?php endif; ?>
+
+<?php // PARTNERS
+
+$query = '
 PREFIX lod2: <http://lod2.eu/schema/>.
 SELECT DISTINCT ?resourceUri
 WHERE {
@@ -92,7 +110,17 @@ FILTER (!isBLANK(?resourceUri))
 }
 LIMIT 10
 ​';
-            echo $this->querylist($query, 'lod2/items/li.phtml');
-        ?>
+
+if ($partners = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c25l">
+    <div class="subcr widget-deeplink">
+        <h3>Partners</h3>
+         <ul>
+            <?php echo $partners ?>
+         </ul>
     </div>
 </div>
+
+<?php endif; ?>
+

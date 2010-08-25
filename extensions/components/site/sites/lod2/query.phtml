@@ -12,10 +12,12 @@ if (isset($this->description['http://lod2.eu/schema/query'])) {
 }
 ?>
 <?php if ($content != "") :?>
-<div class="box">
-    <h2><?php echo $query->getTitle() ?></h2>
-    <ul>
-    <?php echo $content ?>
-    </ul>
+<div class="maincontent">
+    <div class="section">
+        <h3><?php echo $query->getTitle() ?></h3>
+        <!-- ul -->
+        <?php echo $content ?>
+        <!-- /ul -->
+    </div>
 </div>
 <?php endif; ?>

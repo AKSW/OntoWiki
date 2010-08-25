@@ -7,16 +7,18 @@ $templateData = array(
                 'descriptionHelper' => $this->descriptionHelper
         );
 ?>
-<div class="box">
-    <h2>
-        <?php echo $this->title ?>
-    </h2>
-    <div class="block">
-        <div class="article first">
-            <?php echo $this->partial( 'lod2/content.phtml', $templateData); ?>
-            <p class="meta">
-                <?php echo $this->partial( 'lod2/lastchange.phtml', $this->lastchange($this->resourceUri)); ?>
-            </p>
+
+<?php if ($content = $this->partial( 'lod2/content.phtml', $templateData)): ?>
+
+<div class="maincontent">
+    <div class="section">
+        <h3><?php echo $this->title ?></h3>
+        <div class="section-content">
+            <?php echo $content; ?>
         </div>
     </div>
 </div>
+
+<?php endif; ?>
+
+

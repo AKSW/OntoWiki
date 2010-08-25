@@ -1,0 +1,9 @@
+<?php
+    $content = $this->module('feeds', array('noChrome' => true));
+    if ($content != "") :
+?>
+<div class="box">
+    <h2>NEWS</h2>
+    <?php echo $content ?>
+</div>
+<?php endif; ?>
