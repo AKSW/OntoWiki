@@ -1,9 +1,12 @@
 <?php
-    $content = $this->module('feeds', array('noChrome' => true));
+    $content = $this->module('feeds', array('noChrome' => true)); // TODO
     if ($content != "") :
 ?>
-<div class="box">
-    <h2>NEWS</h2>
-    <?php echo $content ?>
+
+<div class="section">
+    <h3>News</h3>
+    <div class="section-content">
+        <?php echo str_replace(array('<h3 ', '</h3>'), array('<h4 ', '</h4>'), $content); // Quick fix, but must improve feeds module! ?>
+    </div>
 </div>
 <?php endif; ?>
