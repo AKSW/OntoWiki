@@ -23,3 +23,6 @@
 # maybe php_flag is not allowed in your environment,
 # but if you allow short open tags, xml templates will crash
 #php_flag short_open_tag 0
+
+# add manifest support
+AddType text/cache-manifest .manifest

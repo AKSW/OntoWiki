@@ -1,0 +1,7 @@
+CACHE MANIFEST
+# rev 1
+#/extensions/themes/mobile/
+FALLBACK:
+/ /offline.html
+NETWORK:
+*
