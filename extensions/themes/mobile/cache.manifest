@@ -1,7 +1,5 @@
 CACHE MANIFEST
-# rev 1
-#/extensions/themes/mobile/
-FALLBACK:
-/ /offline.html
-NETWORK:
-*
+# rev 4
+#NETWORK:
+#*
+/ontowiki/extensions/themes/mobile/jqtouch/jqtouch.min.css
