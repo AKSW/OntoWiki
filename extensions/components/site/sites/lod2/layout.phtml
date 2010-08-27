@@ -12,9 +12,69 @@
         rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/primaryTopic') ?>"
         href="<?php echo $this->resourceUri?>" />
 
-    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/styleimports.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/styleimports.css" media="all" title="Standard" />
 
-    <!--[if IE lte 6]><link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/patches/ie6.css" media="all" /><![endif]-->
+    <style type="text/css" media="all" rel="alternate stylesheet" title="Headline v01.1">
+        @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
+
+        #col1_content h2.hideme
+        {
+            position:static; left:auto; top:auto;
+        }
+    </style>
+
+    <style type="text/css" media="all" rel="alternate stylesheet" title="Headline v01.2">
+        @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
+
+        #col1_content h2.hideme
+        {
+            position:static; left:auto; top:auto;
+            color:#000;
+        }
+    </style>
+
+    <style type="text/css" media="all" rel="alternate stylesheet" title="Headline v02.1">
+        @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
+
+        #col1_content h2.hideme
+        {
+            top:0; left:0;
+            color:#eee;
+            font-weight:bold;
+            font-size:3.5em;
+            height:1em;
+            padding:0.08em 0 0 0;
+            border-style:none;
+            background-color:transparent;
+            text-align:left;
+            overflow:hidden;
+        }
+    </style>
+
+    <style type="text/css" media="all" rel="alternate stylesheet" title="Headline v03.1">
+        @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
+
+        #col1_content h2.hideme
+        {
+            position:static; top:0; left:0;
+            color:#0099cc;
+            font-weight:normal;
+            font-size:2.4em;
+            padding:0.75em 0 0 0;
+            border-style:none;
+            background-color:transparent;
+            text-align:left;
+        }
+
+        .sidecontent .section:first-child h3
+        {
+            padding-top: 5.275em;
+        }
+    </style>
+
+    <!--[if lte IE 6]>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/patches/ie6.css" media="all" />
+    <![endif]-->
 
     <!-- jQuery -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
@@ -64,7 +124,7 @@
                 <!-- li><a href="#">Sitemap</a></li -->
                 <!-- li><a href="#">Contact Us</a></li -->
                 <!-- li><a href="#">Imprint</a></li -->
-                <li><a href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo $this->resourceUri ?>">Log In/Edit</a></li>
+                <li><a rel="nofollow" href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo $this->resourceUri ?>">Log In/Edit</a></li>
             </ul>
         </div> <!-- /#topnav -->
       </div>
@@ -127,7 +187,7 @@
             <?php // NEARBY
             $nearby = trim($this->module('similarinstances', array('noChrome' => true)));
             // TODO: fix the 'no matches' hack to a clean contraint
-            if (strpos($nearby, 'No matches.') === false):
+            if (strpos($nearby, 'No matches.') === false && $this->resourceUri !== 'http://lod2.eu/Welcome'):
             ?>
             <div class="section">
                 <h3>Nearby</h3>
