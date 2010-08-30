@@ -46,6 +46,8 @@ WHERE
     ?l1 geof:within ?l2.
     ?l2 geof:within ?LocationURI.
   }
+  ?LocationURI a faun:Location.
+
   OPTIONAL {
     ?LocationURI geo:lat ?lat.
     ?LocationURI geo:long ?long.
@@ -79,5 +81,8 @@ $queryObject->setLimit('10000');
                 <?php echo $this->querylist($queryObject, 'spiders/types/species-row.phtml'); ?>
             </tbody>
         </table>
+        <p style="display: none">
+            <?php echo htmlentities( (string) $queryObject) ?>
+        </p>
     </div>
 </div>
