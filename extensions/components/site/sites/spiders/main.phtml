@@ -1,0 +1,39 @@
+<?php
+/*
+ * This template does not output anything but a specific partial output
+ */
+
+// this is the standard template data
+$templateData = array(
+                'title' => $this->title,
+                'resourceUri' => $this->resourceUri,
+                'description' => $this->description,
+                'descriptionHelper' => $this->descriptionHelper
+        );
+
+if (isset($this->description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {
+    $types = array ();
+    foreach ($this->description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] as $property) {
+        if ((isset($property['value'])) && (Erfurt_Uri::check($property['value']))) {
+            $types[$property['value']] = true;
+        }
+    }
+
+    switch ($types) {
+        case (isset($types['http://purl.org/net/faunistics#Location'])):
+        case (isset($types['http://purl.org/net/faunistics#Area'])):
+            echo $this->partial( 'spiders/types/checklist.phtml', $templateData);
+            break;
+        case (isset($types['http://purl.org/net/faunistics#Species'])):
+            echo $this->partial( 'spiders/types/species.phtml', $templateData);
+            break;
+        case (isset($types['http://purl.org/net/faunistics#Publication'])):
+            echo $this->partial( 'spiders/types/publication.phtml', $templateData);
+            break;
+        default:
+            // no specific template found
+            echo $this->partial( 'spiders/default.phtml', $templateData);
+            break;
+    }
+}
+?>

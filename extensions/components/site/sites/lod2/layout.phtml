@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
-<html xml:lang="en"
-    xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
     xmlns:dc="http://purl.org/dc/terms/"
     xmlns:foaf="http://xmlns.com/foaf/0.1/">
 <head>
     <meta name="generator" content="<?php echo $this->generator ?>" />
     <link rel="alternate" type="application/rdf+xml" href="<?php echo $this->resourceUri ?>.rdf" />
     <link rel="pingback" href="<?php echo $this->pingbackUri ?>" />
+
+    <link
+        rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/primaryTopic') ?>"
+        href="<?php echo $this->resourceUri?>" />
 
     <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/main.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/reset.css" media="screen" />
@@ -24,9 +27,9 @@
 
     <!--script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery-fluid16.js"></script-->
 
-    <title><?php echo $this->site['name'] ?></title>
+    <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> :: LOD2</title>
 </head>
-</body>
+<body about="<?php echo $this->resourceUri?>">
 <?php
     // this is the standard template data
     $templateData = array(
@@ -35,6 +38,17 @@
                     'description' => $this->description[$this->resourceUri],
                     'descriptionHelper' => $this->descriptionHelper
             );
+    function printNavi($navi, $titleHelper, $depth){
+        if(is_array($navi) && count($navi)>0):?>
+                    <?php foreach ($navi as $navurl => $subnavi) : ?>
+                    <li>
+                        <a href="<?php echo $navurl ?>"><?php for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";} echo $titleHelper->getTitle($navurl) ?></a>
+                        <?php printNavi($subnavi, $titleHelper, $depth+1); ?>
+                    </li>
+                    <?php endforeach; ?>
+       <?php endif; 
+   }
+
 ?>
 <div class="container_16">
     <div class="grid_16">
@@ -48,15 +62,7 @@
             <?php foreach ($this->navigation as $navurl => $subnavi) : ?>
             <li>
                 <a href="<?php echo $navurl ?>"><?php echo $this->descriptionHelper->getTitle($navurl) ?></a>
-                <?php if ( (is_array($subnavi)) ):?>
-                <ul>
-                    <?php foreach ($subnavi as $subnavurl => $subsubnavi) : ?>
-                    <li>
-                        <a href="<?php echo $subnavurl ?>"><?php echo $this->descriptionHelper->getTitle($subnavurl) ?></a>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-                <?php endif; ?>
+                <ul><?php printNavi($subnavi, $this->descriptionHelper, 0); ?> </ul>
             </li>
             <?php endforeach; ?>
 
@@ -78,40 +84,23 @@
 
     <div class="grid_11">
         <?php echo $this->partial('lod2/main.phtml', $templateData) ?>
-
+        <?php echo $this->partial('lod2/query.phtml', $templateData) ?>
         <?php echo $this->partial('lod2/feed.phtml', $templateData) ?>
+    <div class="clear"></div>
 
         <div class="box">
             <h2 id="">TODOs :-(</h2>
         <ul>
-            <li>Wie wird denn die index-page config umgesetzt? (also link von / auf /index....)
-                <ul>
-                    <li>Es gibt eine Route namens "empty", die auf den leeren String (nach der Base-URI) reagiert und einen Default-Controller und eine Default-Action hat.</li>
-                    <li>Wir wollen ja aber zu einer URI redirecten, also z.B. von / auf /Welcome</li>
-                </ul>
-            </li>
-            <li>Jonas: <del>getN</del><ins>n</ins>avigation(string $uriOfSKOSContainer) bitte als ViewHelper und in main.html nutzen (bitte nach sysont:order sortieren)</li>
             <li>Norm: Kann man den modulen den options-array durchreichen? (z.B. um resource uris als links zu nehmen)
             <ul>
                 <li>Ja, aber bisher nur Render-Optionen wie CSS-Klasse und -ID. Könnte was an die getContents() durchreichen, aber das Modul müsste dann natürlich auf die exakten Keys reagieren.</li>
-                <li>ja, das wäre ja ok so. oder es reagiert nicht und gibt den inhalt ohne anpassung aus</li>
+                <li>ja, das wäre notwendig</li>
             </ul>
             </li>
             <li>Norm: linked data scheint nicht mehr zu gehen</li>
-            <li>Norm: /Stack scheint manchmal "Stack" und manchmal "Technology Stack" zu heißen ...</li>
-            <li>Wie werden die Templates pro Klasse benutzt
-                <ul>
-                    <li>Idee: templateHelper bekommt beliebige URI und lädt ein passendes Template. Das kann im einfachsten Fall ein hartgecodetes Mapping der <code>rdf:type</code>s sein.</li>
-                    <li>Ne andere möglichkeit hab ich gerade gepusht ... siehe main.phtml</li>
-
-                </ul>
-            </li>
-            <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
-            <li>Norm: SPARQL API Methode + Listen methode?</li>
         </ul>
 
         <ul>Später:
-            <li>Wie wird der URI helper zur Verfügung gestellt</li>
             <li>Wie werden Dokumente (z.B. PDFs) benutzt (über files component)</li>
         </ul>
 
@@ -124,6 +113,26 @@
         </div>
         <div id="grid" class="box">
             <ul>
+                <li>Welche view-variablen sind notwendig (mal bei Wordpress schauen)</li>
+                <li>Seebi: Mehr LOD2 Daten ...</li>
+                <li>Wie wird der URI helper zur Verfügung gestellt... new OntoWiki_Url</li>
+                <li><del>Norm</del> Seebi: SPARQL API Methode + Listen methode?</li>
+                <li>Jonas: View_Helper navigation(string $uriOfSKOSContainer) bitte komplette Navi ausgeben (nach sysont:order sortieren); ausserdem: /Stack scheint manchmal "Stack" und manchmal "Technology Stack" zu heißen ...</li>
+                <li>Jonas: View_Helper lastchange($resourceUri)</li>
+                <li>Wie werden die Templates pro Klasse benutzt
+                    <ul>
+                        <li>Idee: templateHelper bekommt beliebige URI und lädt ein passendes Template. Das kann im einfachsten Fall ein hartgecodetes Mapping der <code>rdf:type</code>s sein.</li>
+                        <li>Ne andere möglichkeit hab ich gerade gepusht ... siehe main.phtml</li>
+
+                    </ul>
+                </li>
+                <li>Wie wird denn die index-page config umgesetzt? (also link von / auf /index....)
+                    <ul>
+                        <li>Es gibt eine Route namens "empty", die auf den leeren String (nach der Base-URI) reagiert und einen Default-Controller und eine Default-Action hat.</li>
+                        <li>Wir wollen ja aber zu einer URI redirecten, also z.B. von / auf /Welcome</li>
+                        <li>solution: index parameter in site-specific config.ini</li>
+                    </ul>
+                </li>
                 <li>Norm: ViewHelper Directory für components</li>
                 <li>Norm: Linked Data URIs auf den site controller forwarden?</li>
                     SiteHelper reagiert auf Event <code>onShouldLinkedDataRedirect</code>, setzt neuen
@@ -162,7 +171,7 @@
             echo $this->module('ttt', array('noChrome' => true)); // ein bestimtes Modul oder
             echo $this->modules('sites.lod2', array('noChrome' => true)); // alle Module für Context 'sites.lod2'
                     </pre>
-                    Beispiel: <?php echo $this->modules('sites.lod2', array('noChrome' => true)) ?>
+                    Beispiel: <?php echo $this->modules('sites.lod2', array('noChrome' => true, 'foo' => 'ttt')) ?>
                     TODO: Was ist mit Titel, Menüs, Modulen mit Tabbed Content?
                 <li>Jonas: Wie werden Bilder aus dem CSS referenziert</li>
                     <pre>
@@ -175,6 +184,10 @@
 
 
     <div class="grid_5">
+        <div class="box">
+            <h2>Minimap</h2>
+            <?php echo $this->module('minimap', array('noChrome' => true)); ?>
+        </div>
         <div class="box">
             <h2>Linking Resources</h2>
             <?php echo $this->module('linkinghere', array('noChrome' => true)); ?>

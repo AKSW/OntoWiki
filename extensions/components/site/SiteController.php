@@ -66,7 +66,25 @@ class SiteController extends OntoWiki_Controller_Component
      */
     public function __call($method, $args)
     {
-        $this->_site  = $this->_privateConfig->defaultSite; // $this->_request->getActionName();
+        $action = $this->_request->getActionName();
+        $router = $this->_owApp->getBootstrap()->getResource('Router');
+        
+        if ($router->hasRoute('empty')) {
+            $emptyRoute    = $router->getRoute('empty');
+            $defaults      = $emptyRoute->getDefaults();
+            $defaultAction = $defaults['action'];
+        }
+        
+        if (empty($action) || (isset($defaultAction) && $action === $defaultAction)) {
+            // use default site for empty or default action (index)
+            $this->_site = $this->_privateConfig->defaultSite;
+        } else {
+            // use action as site otherwise
+            $this->_site  = $action;
+        }
+        
+        $this->getComponentHelper()->setSite($this->_site);
+        
         $templatePath = $this->_owApp->componentManager->getComponentTemplatePath('site');
         $mainTemplate = sprintf('%s/%s', $this->_site, self::MAIN_TEMPLATE_NAME);
         
@@ -80,17 +98,17 @@ class SiteController extends OntoWiki_Controller_Component
             $siteConfig = array(
                 'id'          => $this->_site,
                 'generator'   => 'OntoWiki ' . $this->_config->version->number,
-                'pingbackUri' => $this->_owApp->getUrlBase() . '/pingback/ping',
+                'pingbackUri' => $this->_owApp->getUrlBase() . 'pingback/ping',
                 'wikiBaseUri' => $this->_owApp->getUrlBase(),
-                'basePath'    => sprintf('%s/sites/%s', $this->_componentRoot, $this->_site),
-                'baseUri'     => sprintf('%s/sites/%s/', $this->_componentUrlBase, $this->_site),
+                'basePath'    => sprintf('%ssites/%s', $this->_componentRoot, $this->_site),
+                'baseUri'     => sprintf('%ssites/%s', $this->_componentUrlBase, $this->_site),
                 'resourceUri' => $this->_resourceUri,
                 'context'     => $moduleContext,
                 'site'        => $this->_getSiteConfig(), 
-                'navigation'  => $this->_getSiteNavigationAsArray(), 
                 'description' => $this->_resource->getDescription(), 
                 'descriptionHelper' => $this->_resource->getDescriptionHelper(),
-                'store'       => OntoWiki::getInstance()->erfurt->getStore()
+                'store'       => OntoWiki::getInstance()->erfurt->getStore(),
+                'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper())
             );
 
             // mit assign kann man im Template direkt zugreifen ($this->basePath).
@@ -139,47 +157,4 @@ class SiteController extends OntoWiki_Controller_Component
         return $this->getComponentHelper()->getSiteConfig();
     }
     
-    protected function _getSiteNavigationAsArray()
-    {
-        $store = OntoWiki::getInstance()->erfurt->getStore();
-        $model = $this->_owApp->selectedModel;
-        
-        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-            SELECT ?topConcept 
-            FROM <' . (string)$model . '> 
-            WHERE {
-                ?cs a skos:ConceptScheme .
-                ?topConcept skos:topConceptOf ?cs
-            }';
-        
-        if ($result = $store->sparqlQuery($query)) {
-            $first = current($result);
-            $topConcept = $first['topConcept'];
-            $closure = $store->getTransitiveClosure(
-                (string)$model, 
-                'http://www.w3.org/2004/02/skos/core#broader', 
-                $topConcept, 
-                true);
-            
-            $tree = array($topConcept => array());
-            $this->_buildTree($tree, $closure);                
-            
-            return array_merge(array('root' => $topConcept), $tree);
-        }
-        
-        return array();
-    }
-    
-    protected function _buildTree(&$tree, $closure)
-    {
-        foreach ($tree as $treeElement => &$childrenArr) {
-            foreach ($closure as $closureElement) {
-                if (isset($closureElement['parent']) && $closureElement['parent'] == $treeElement) {
-                    $childrenArr[$closureElement['node']] = array();
-                }
-            }
-
-            $this->_buildTree($childrenArr, $closure);
-        }
-    }
 }

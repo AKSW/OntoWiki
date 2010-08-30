@@ -20,11 +20,22 @@ if (isset($this->description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])
     }
 
     switch ($types) {
+        case (isset($types['http://lod2.eu/schema/WorkPackage'])):
+            echo $this->partial( 'lod2/types/workpackage.phtml', $templateData);
+            break;
+        case (isset($types['http://rdfs.org/sioc/types#WikiArticle'])):
+        case (isset($types['http://rdfs.org/sioc/ns#Post'])):
+            echo $this->partial( 'lod2/types/article.phtml', $templateData);
+            break;
         case (isset($types['http://usefulinc.com/ns/doap#Project'])):
             echo $this->partial( 'lod2/types/project.phtml', $templateData);
             break;
+        case (isset($types['http://lod2.eu/schema/Partner'])):
         case (isset($types['http://xmlns.com/foaf/0.1/Organization'])):
             echo $this->partial( 'lod2/types/partner.phtml', $templateData);
+            break;
+        case (isset($types['http://xmlns.com/foaf/0.1/Person'])):
+            echo $this->partial( 'lod2/types/person.phtml', $templateData);
             break;
         default:
             // no specific template found
