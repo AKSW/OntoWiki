@@ -107,8 +107,7 @@ class MusicbrainzWrapper extends Erfurt_Wrapper
 			$url1 = 'http://musicbrainz.org/mm-2.1/' . $artist_or_album_or_track . '/' . $mbid;
 		
 			//setup http client
-	        require_once 'Zend/Http/Client.php';
-	        $client = new Zend_Http_Client($url1, array('maxredirects' => 5, 'timeout' => 30));
+	        $client = Erfurt_App::getInstance()->getHttpClient($url1, array('maxredirects' => 5, 'timeout' => 30));
 	            
 			//send request
 			$response = $client->request();
@@ -188,8 +187,7 @@ class MusicbrainzWrapper extends Erfurt_Wrapper
 					$url2 = $url1 . "/3";
 
 					//setup http client
-					require_once 'Zend/Http/Client.php';
-					$client = new Zend_Http_Client($url2, array('maxredirects' => 5, 'timeout' => 30) );
+					$client = Erfurt_App::getInstance()->getHttpClient($url2, array('maxredirects' => 5, 'timeout' => 30) );
 					
 					//send request
 					$response = $client->request();
@@ -270,8 +268,7 @@ class MusicbrainzWrapper extends Erfurt_Wrapper
 					$url2 = $url1 . "/4";
 
 					//setup http client
-					require_once 'Zend/Http/Client.php';
-					$client = new Zend_Http_Client($url2, array('maxredirects' => 5, 'timeout' => 30) );
+					$client = Erfurt_App::getInstance()->getHttpClient($url2, array('maxredirects' => 5, 'timeout' => 30) );
 					
 					//send request
 					$response = $client->request();
@@ -387,8 +384,7 @@ class MusicbrainzWrapper extends Erfurt_Wrapper
 					$url2 = $url1 . "/4";
 
 					//setup http client
-					require_once 'Zend/Http/Client.php';
-					$client = new Zend_Http_Client($url2, array('maxredirects' => 5,'timeout' => 30) );
+					$client = Erfurt_App::getInstance()->getHttpClient($url2, array('maxredirects' => 5,'timeout' => 30) );
 					
 					//send request
 					$response = $client->request();

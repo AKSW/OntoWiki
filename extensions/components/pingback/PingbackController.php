@@ -52,7 +52,7 @@ class PingbackController extends OntoWiki_Controller_Component
         $foundPingbackTriples = array();
 
 		// 1. Try to dereference the source URI as RDF/XML
-        $client = new Zend_Http_Client($sourceUri, array(
+        $client = Erfurt_App::getInstance()->getHttpClient($sourceUri, array(
             'maxredirects'  => 10,
             'timeout'       => 30
         ));
@@ -74,7 +74,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	    // 2. If nothing was found, try to use as RDFa service
 	    if (((boolean)$config->rdfa->enabled) && (count($foundPingbackTriples) === 0)) {
 	        $service = $config->rdfa->service . urlencode($sourceUri);
-	        $client = new Zend_Http_Client($service, array(
+	        $client = Erfurt_App::getInstance()->getHttpClient($service, array(
                 'maxredirects'  => 10,
                 'timeout'       => 30
             ));
@@ -103,7 +103,7 @@ class PingbackController extends OntoWiki_Controller_Component
         
 	    // 3. If still nothing was found, try to find a link in the html
 		if (count($foundPingbackTriples) === 0) {
-		    $client = new Zend_Http_Client($sourceUri, array(
+		    $client = Erfurt_App::getInstance()->getHttpClient($sourceUri, array(
                 'maxredirects'  => 10,
                 'timeout'       => 30
             ));
@@ -271,7 +271,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	
 	protected function _determineInverseProperty($propertyUri)
 	{
-	    $client = new Zend_Http_Client($propertyUri, array(
+	    $client = Erfurt_App::getInstance()->getHttpClient($propertyUri, array(
             'maxredirects'  => 10,
             'timeout'       => 30
         ));
