@@ -1,0 +1,126 @@
+<?php
+// this is the standard template data
+$templateData = array(
+                'title' => $this->title,
+                'resourceUri' => $this->resourceUri,
+                'description' => $this->description,
+                'descriptionHelper' => $this->descriptionHelper
+        );
+?>
+<?php if ($content = $this->partial( 'lod2/content.phtml', $templateData)): ?>
+
+<div class="maincontent">
+    <div class="section">
+        <h3><?php echo $this->title ?></h3>
+        <div class="section-content">
+            <?php echo $content; ?>
+        </div>
+    </div>
+</div>
+
+<?php endif; ?>
+
+<?php // MILESTONES
+
+$query = '
+PREFIX lod2: <http://lod2.eu/schema/>.
+SELECT DISTINCT ?resourceUri
+WHERE {
+?resourceUri lod2:wp <'.$this->resourceUri.'> .
+?resourceUri a lod2:Milestone
+FILTER (!isBLANK(?resourceUri))
+}
+LIMIT 10
+​';
+
+if ($milestones = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c25l">
+    <div class="subcl widget-deeplink">
+        <h3>Milestones</h3>
+         <ul>
+            <?php echo $milestones ?>
+         </ul>
+    </div>
+</div>
+
+<?php endif; ?>
+
+<?php // TASKS
+
+$query = '
+PREFIX lod2: <http://lod2.eu/schema/>.
+SELECT DISTINCT ?resourceUri
+WHERE {
+?resourceUri lod2:wp <'.$this->resourceUri.'> .
+?resourceUri a lod2:Task
+FILTER (!isBLANK(?resourceUri))
+}
+LIMIT 10
+​';
+
+if ($tasks = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c25l">
+    <div class="subc widget-deeplink">
+        <h3>Tasks</h3>
+         <ul>
+            <?php echo $tasks ?>
+         </ul>
+    </div>
+</div>
+
+<?php endif; ?>
+
+<?php // DELIVERABLES
+
+$query = '
+PREFIX lod2: <http://lod2.eu/schema/>.
+SELECT DISTINCT ?resourceUri
+WHERE {
+?resourceUri lod2:wp <'.$this->resourceUri.'> .
+?resourceUri a lod2:Deliverable
+FILTER (!isBLANK(?resourceUri))
+}
+LIMIT 10
+​';
+
+if ($deliverables = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c25l">
+    <div class="subc widget-deeplink">
+        <h3>Deliverables</h3>
+         <ul>
+            <?php echo $deliverables ?>
+         </ul>
+    </div>
+</div>
+
+<?php endif; ?>
+
+<?php // PARTNERS
+
+$query = '
+PREFIX lod2: <http://lod2.eu/schema/>.
+SELECT DISTINCT ?resourceUri
+WHERE {
+<'.$this->resourceUri.'> lod2:partner ?resourceUri.
+?resourceUri a lod2:Partner
+FILTER (!isBLANK(?resourceUri))
+}
+LIMIT 10
+​';
+
+if ($partners = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c25l">
+    <div class="subcr widget-deeplink">
+        <h3>Partners</h3>
+         <ul>
+            <?php echo $partners ?>
+         </ul>
+    </div>
+</div>
+
+<?php endif; ?>
+

@@ -25,8 +25,12 @@
 #php_flag short_open_tag 0
 
 
-# Additional Auth
-#AuthName        "OntoWiki"
-#AuthType        Basic
-#AuthUserFile    /etc/.htpasswd
-#Require         valid-user
+### Additional Auth with external OntoWiki auth-script
+### (more infos at http://code.google.com/p/mod-auth-external/)
+#AuthType Basic
+#AuthName OntoWiki
+#AuthBasicProvider external
+#AuthExternal ontowiki
+#Require valid-user
+### NOTE: This is needed to be included in /etc/apache2/mods-enabled/authnz_external.load or .conf
+#DefineExternalAuth ontowiki pipe /path/to/ontowiki/application/scripts/mod-auth-external/ontowiki.php

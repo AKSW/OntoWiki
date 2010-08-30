@@ -49,7 +49,8 @@ class LinkeddataPlugin extends OntoWiki_Plugin
       
         try {
             // content negotiation
-            $type  = $this->_getTypeForRequest($request, $uri);
+            $flag  = false;
+            $type  = $this->_getTypeForRequest($request, $uri, $flag);
             $graph = $this->_getFirstReadableGraphForUri($uri);
             if (!$graph) {
                 return false;
@@ -85,16 +86,17 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                     break;
                 case 'html':
                 default:
-                    // make active graph (session required)
-                    $activeModel = $store->getModel($graph);
-                    OntoWiki::getInstance()->selectedModel    = $activeModel;
-                    OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($uri, $activeModel);
                     // default property view
                     $url = new OntoWiki_Url(array('route' => 'properties'), array());
                     $url->setParam('r', $uri, true)
                         ->setParam('m', $graph);
                     break;
             }
+            
+            // make active graph (session required)
+            $activeModel = $store->getModel($graph);
+            OntoWiki::getInstance()->selectedModel    = $activeModel;
+            OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($uri, $activeModel);
             
             $request->setDispatched(true);
             
@@ -109,6 +111,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $event->response = $response;
             $event->type     = $type;
             $event->uri      = $uri;
+            $event->flag     = $flag;
             $event->setDefault(true);
             
             $shouldRedirect = $event->trigger();
@@ -207,13 +210,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         return false;
     }
     
-    protected function _getTypeForRequest($request, &$uri)
+    protected function _getTypeForRequest($request, &$uri, &$flag)
     {
         // check for valid type suffix
         $parts  = explode('.', $uri);
         $suffix = $parts[count($parts)-1];
         if (in_array($suffix, array_values($this->_typeMapping))) {
             $uri = substr($uri, 0, strlen($uri) - strlen($suffix) - 1);
+            $flag = true; // rewritten flag
             return $suffix;
         }
         
