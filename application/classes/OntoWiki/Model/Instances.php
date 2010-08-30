@@ -1093,7 +1093,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             $query->addTriple(
                 new Erfurt_Sparql_Query2_Var('showPropsSubj'),
                 $predVar,
-                $this->_resourceVar
+                $listResource
             );
         }
 
