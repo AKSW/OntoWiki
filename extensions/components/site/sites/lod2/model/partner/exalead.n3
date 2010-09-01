@@ -2,6 +2,7 @@
 partner:exalead a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Paris>;
+    foaf:depiction <http://www.exalead.com/software/pics/common/logo.gif>;
     foaf:homepage <http://www.exalead.com/>;
     rdfs:label "Exalead";
     lod2:content """

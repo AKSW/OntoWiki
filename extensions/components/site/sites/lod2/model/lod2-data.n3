@@ -20,6 +20,8 @@
 @prefix milestones: <http://lod2.eu/Milestone/> .
 @prefix workpackages: <http://lod2.eu/WorkPackage/> .
 @prefix deliverables: <http://lod2.eu/Deliverable/> .
+@prefix project: <http://lod2.eu/Project/> .
+@prefix query: <http://lod2.eu/Query/> .
 
 <http://lod2.eu/> a owl:Ontology;
     owl:imports <http://lod2.eu/schema/>;
@@ -31,12 +33,15 @@
 pages:Consortium a sioct:WikiArticle, skos:Concept;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "3"^^xsd:integer;
-    lod2:query <http://lod2.eu/Query/Partner>;
+    lod2:query query:Partner;
     rdfs:label "Consortium".
 
 pages:TechnologyStack a sioct:WikiArticle, skos:Concept;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "2"^^xsd:integer;
+    lod2:query query:TechnologyStack;
+    lod2:content """
+The LOD2 Consortium partners bring the essential know-how and software, which is necessary to build the LOD2 Stack. In particular, we have considered existing state-of-the-art software components developed by the LOD2 members which are briefly introduced in the following paragraphs. This software is freely available under an Open Source GPL license.""";
     rdfs:label "Technology Stack".
 
 
@@ -79,11 +84,17 @@ We will integrate and syndicate linked data with large-scale, existing applicati
 """.
 
 
-<http://lod2.eu/Query/Partner> a sysont:SparqlQuery;
+query:Partner a sysont:SparqlQuery;
     sysont:Model <http://lod2.eu/> ;
     sysont:generator "qe" ;
     sysont:sparql_code """SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lod2.eu/schema/Partner> FILTER (!isBLANK(?resourceUri)) } LIMIT 10""" ;
     dc:created "2010-07-29T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Partner".
+
+query:TechnologyStack a sysont:SparqlQuery ;
+    dc:created "2010-07-29T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Technology Stack Projects" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://usefulinc.com/ns/doap#Project> FILTER (!isBLANK(?resourceUri)) } LIMIT 10" .
 
 

@@ -20,6 +20,8 @@
 @prefix milestones: <http://lod2.eu/Milestone/> .
 @prefix workpackages: <http://lod2.eu/WorkPackage/> .
 @prefix deliverables: <http://lod2.eu/Deliverable/> .
+@prefix project: <http://lod2.eu/Project/> .
+@prefix query: <http://lod2.eu/Query/> .
 
 <http://lod2.eu/> a owl:Ontology;
     owl:imports <http://lod2.eu/schema/>;
@@ -31,12 +33,15 @@
 pages:Consortium a sioct:WikiArticle, skos:Concept;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "3"^^xsd:integer;
-    lod2:query <http://lod2.eu/Query/Partner>;
+    lod2:query query:Partner;
     rdfs:label "Consortium".
 
 pages:TechnologyStack a sioct:WikiArticle, skos:Concept;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "2"^^xsd:integer;
+    lod2:query query:TechnologyStack;
+    lod2:content """
+The LOD2 Consortium partners bring the essential know-how and software, which is necessary to build the LOD2 Stack. In particular, we have considered existing state-of-the-art software components developed by the LOD2 members which are briefly introduced in the following paragraphs. This software is freely available under an Open Source GPL license.""";
     rdfs:label "Technology Stack".
 
 
@@ -79,12 +84,18 @@ We will integrate and syndicate linked data with large-scale, existing applicati
 """.
 
 
-<http://lod2.eu/Query/Partner> a sysont:SparqlQuery;
+query:Partner a sysont:SparqlQuery;
     sysont:Model <http://lod2.eu/> ;
     sysont:generator "qe" ;
     sysont:sparql_code """SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lod2.eu/schema/Partner> FILTER (!isBLANK(?resourceUri)) } LIMIT 10""" ;
     dc:created "2010-07-29T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Partner".
+
+query:TechnologyStack a sysont:SparqlQuery ;
+    dc:created "2010-07-29T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Technology Stack Projects" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://usefulinc.com/ns/doap#Project> FILTER (!isBLANK(?resourceUri)) } LIMIT 10" .
 
 
 cluster:a1 a lod2:ActivityCluster;
@@ -355,11 +366,20 @@ partner:cwi a lod2:Partner;
 <p>CWI has always been very successful in participating in European research programmes (e.g. VITALAS, K-SPACE, QAP, CREDO, MUSCLE, and others) and large-scale national research programmes (e.g., programmes BRICKS, MultimediaN, and VL-e; NWO Veni, Vidi, Vici grants). It has extensive experience in managing these collaborative research efforts. CWI is also strongly embedded in Dutch university research: about twenty-five of its permanent senior researchers hold part-time positions as professors at universities and many projects are carried out in cooperation with university research groups. CWI receives a basic funding from the Netherlands Organization for Scientific Research (NWO), amounting to about two third of the institute’s total income. The remaining third is obtained through national research programmes, international programmes, and contract research commissioned by industry. CWI hosts a staff of 235 full time employees, 50 permanent scientific staff, 135 temporary scientific staff, and 50 support staff. The Information Systems (INS) group led by Prof. Dr. Martin Kersten is participating in the LOD2 proposal.</p>""";
     lod2:abstract """CWI will be primarily involved in WP2 and work together with OpenLink on improving RDF data management with state-of-the-art database research approaches. CWI will be involved with a minor stake in WP5 in order to evaluate and adapt browsing and navigation in large-scale knowledge bases.""".
 
+project:MonetDB a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://monetdb.cwi.nl/>;
+    foaf:depiction <http://monetdb.cwi.nl/imgs/monetdb_med_abstract.png>;
+    lod2:content """MonetDB is an open-source high-performance database system that allows to store relational, XML and RDF data, downloadable from monetdb.cwi.nl. While being well-known for its columnar architecture and CPU-cache optimizing algorithms, the crucial aspect leveraged in the scope of this project is its unique run-time query optimization framework which provides a unique environment to crack the recursive-correlated-self-join queries caused by semantic web queries to triple stores.""";
+    lod2:abstract """MonetDB is an open-source high-performance database system that allows to store relational, XML and RDF data, downloadable from monetdb.cwi.nl. While being well-known for its columnar architecture and CPU-cache optimizing algorithms, the crucial aspect leveraged in the scope of this project is its unique run-time query optimization framework which provides a unique environment to crack the recursive-correlated-self-join queries caused by semantic web queries to triple stores.""";
+    lod2:partner partner:cwi;
+    rdfs:label "MonetDB".
 
 
 partner:exalead a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Paris>;
+    foaf:depiction <http://www.exalead.com/software/pics/common/logo.gif>;
     foaf:homepage <http://www.exalead.com/>;
     rdfs:label "Exalead";
     lod2:content """
@@ -375,17 +395,116 @@ partner:fub  a lod2:Partner;
     lod2:content """
 <p>The Web-based Systems Group at Freie Universität Berlin explores technical and economic questions concerning the development of global, decentralized information environments. Its current focus lies on the publication and interlinking of structured data on the Web using Semantic Web technologies.</p>
 <p>The group has initialized several widely used open source software projects including D2RQ, D2R Server, RAP – RDF API for PHP, and NG4G – Named Graphs API for Jena. The group contributes to several open data publishing efforts including DBpedia and the W3C Linking-Open-Data project which aims at interlinking large numbers of data sources on the Web. The Web-based Systems Group is active within the World Wide Web Consortium where it has contributed to the SPARQL recommendation and participates in the Semantic Web Education and Outreach activity. The group maintains strong research ties with the Massachusetts Institute of Technology, Hewlett-Packard Labs, and the Open Archives Initiative.</p>""";
-    lod2:abstract """<p>Freie University Berlin will bring in expertise, tools and outreach capabilities to LOD2:</p>
-<ul>
-<li>FUB has developed and maintains the Silk – Link Discovery Framework and Link Quality Assurance Workbench, which will be significantly extended and integrated into the LOD2 Stack.</li>
-<li>FUB has developed D2R Server, the most widely used tool for publishing relational databases as Linked Data on the Web. D2R Server will be used for the domain complementation task in WP3 and will be included together with Pubby and Silk into the LOD2 Stack (WP6).</li>
-<li>Within WP10 Training, Dissemination, community building, FUB will use its existing community building (initiator of W3C LOD) and outreach capabilities (Linked Data on the Web (LDOW) workshop series, Semantic Web Challenge competition series) to maximize the impact of LOD2.</li>
-</ul>
+    lod2:abstract """Freie University Berlin will bring in expertise, tools and outreach capabilities to LOD2: (1) FUB has developed and maintains the Silk – Link Discovery Framework and Link Quality Assurance Workbench, which will be significantly extended and integrated into the LOD2 Stack. (2) FUB has developed D2R Server, the most widely used tool for publishing relational databases as Linked Data on the Web. D2R Server will be used for the domain complementation task in WP3 and will be included together with Pubby and Silk into the LOD2 Stack (WP6). (3) Within WP10 Training, Dissemination, community building, FUB will use its existing community building (initiator of W3C LOD) and outreach capabilities (Linked Data on the Web (LDOW) workshop series, Semantic Web Challenge competition series) to maximize the impact of LOD2.
 """.
+
+
+project:D2R-Server a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://www4.wiwiss.fu-berlin.de/bizer/d2r-server/>;
+    lod2:content """
+<p>D2R Server is a tool for publishing the content of relational databases
+  on the <a href="http://www.w3.org/2001/sw/">Semantic Web</a>, a global
+  information space consisting of
+  <a href="http://www.w3.org/DesignIssues/LinkedData.html">linked data</a>.</p>
+<p>Data on the Semantic Web is modelled and represented in
+  <a href="http://en.wikipedia.org/wiki/Resource_Description_Framework">RDF</a>.
+  D2R Server uses a customizable
+  <a href="http://www4.wiwiss.fu-berlin.de/bizer/d2rq/spec/#specification">D2RQ mapping</a>
+  to map database content into this format, and allows the RDF data to be
+  <em>browsed</em> and <em>searched</em> &#8211; the two main access paradigms
+  to the Semantic Web.</p>
+<p>D2R Server's <strong>Linked Data interface</strong> makes RDF descriptions of individual resources available over the HTTP protocol. An RDF description can be retrieved simply by accessing the resource's URI over the Web. Using a Semantic Web browser like <a href="http://www.w3.org/2005/ajar/tab">Tabulator</a> (<a href="http://www.w3.org/2006/Talks/1019-tab-tbl/">slides</a>) or <a href="http://www4.wiwiss.fu-berlin.de/bizer/ng4j/disco/">Disco</a>, you can follow links from one resource to the next, surfing the Web of Data.</p>
+<p>The <strong>SPARQL interface</strong> enables applications to search and query the database using the <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL</a> query language over the SPARQL protocol.</p>
+<p>A traditional <strong>HTML interface</strong> offers access to the familiar Web browsers.</p>
+<p align="center"><img src="http://www4.wiwiss.fu-berlin.de/bizer/d2r-server/images/architecture.png" alt="D2R Server architecture diagram" /></p>
+<p>Requests from the Web are rewritten into SQL queries via the mapping. This on-the-fly translation allows publishing of RDF from large live databases and eliminates the need for replicating the data into a dedicated RDF triple store.</p>
+<p><strong>Read more</strong> about the interfaces offered by D2R Server, including example HTTP requests and responses, in the Technical Note <a href="publishing/">Publishing Databases on the Semantic Web</a>.</p>
+""";
+    lod2:abstract """D2R Server is a tool for publishing relational databases on the Semantic Web. It enables RDF and HTML browsers to navigate the content of the database, and allows applications to query the database using the SPARQL query language.""";
+    lod2:partner partner:fub;
+    rdfs:label "D2R Server".
+
+
+project:Silk a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://www4.wiwiss.fu-berlin.de/bizer/silk/>;
+    lod2:content """
+<P>The Web of Data is built upon two simple ideas: First, to employ the RDF
+data model to publish structured data on the Web. Second, to set explicit <a href="http://www4.wiwiss.fu-berlin.de/bizer/pub/LinkedDataTutorial/#links">RDF links</a>
+between data items within different data sources. Background information about the Web of Data is found at the wiki pages of the <a href="http://esw.w3.org/topic/SweoIG/TaskForces/CommunityProjects/LinkingOpenData">W3C Linking Open Data community effort</a>,
+    in the overview article <a href="http://tomheath.com/papers/bizer-heath-berners-lee-ijswis-linked-data.pdf">Linked Data - The Story So Far</a>
+
+and in the tutorial on <a href="http://www4.wiwiss.fu-berlin.de/bizer/pub/LinkedDataTutorial/">How to publish Linked Data on the Web</a>. 
+</P>
+<p>The <em>Silk Link Discovery Framework</em> supports data publishers in accomplishing the
+second task. Using the declarative <em>Silk - Link Specification Language</em> (Silk-LSL), developers can specify which types of
+RDF links should be discovered between data sources as well as which conditions data items must
+fulfill in order to be interlinked. These link conditions may combine various similarity
+metrics and can take the graph around a data item into account, which is addressed
+using an RDF path language. Silk accesses the data sources that should be interlinked via the SPARQL protocol and can thus be used against local as well as remote SPARQL endpoints. </p>
+<p>The main features of the Silk link discovery engine are:</p>
+<ul>
+  <li>Open source link discovery framework, running on all major platforms</li>
+
+  <li>Support of RDF link generation (owl:sameAs links as well as other types)</li>
+  <li>Flexible, declarative language for specifying link conditions</li>
+  <li>Employment in distributed environments (by accessing local and remote SPARQL endpoints)</li>
+  <li>Usable in situations where terms from different vocabularies are mixed and where no consistent RDFS or OWL schemata exist</li>
+  <li>Scalability and high performance through efficient data handling (speedup factor of 20 compared to Silk 0.2):
+    <ul>
+        <li>Reduction of network load by caching and reusing of SPARQL result sets</li>
+
+        <li>Multi-threaded computation of the data item comparisons (3 million comparisons per minute on a Core2 Duo)</li>
+        <li>Optional blocking of data items</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Silk is implemented in Scala running on the Java Virtual Machine.     In order to run Silk, developers need to:</p>
+<ol>
+  <li>Have SPARQL access to the datasets that should be interlinked.</li>
+
+  <li>Write a link specification as described in the <a href="http://www4.wiwiss.fu-berlin.de/bizer/silk/spec/">Silk - User Manual</a>. </li>
+  <li>Install the Silk framework as described in the <a href="http://www4.wiwiss.fu-berlin.de/bizer/silk/spec/index.htm#usage">Installation and Usage</a> section of the manual.</li>
+</ol>
+
+""";
+    lod2:abstract """The Silk Linking Framework supports data publishers in setting explicit RDF links between data items within different data sources. Using the declarative Silk - Link Specification Language (Silk-LSL), developers can specify which types of RDF links should be discovered between data sources as well as which conditions data items must fulfil in order to be interlinked. These link conditions may combine various similarity metrics and can take the graph around a data item into account, which is addressed using an RDF path language.""";
+    lod2:partner partner:fub;
+    rdfs:label "Silk Framework".
+
+
+
+project:WIQA a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://www4.wiwiss.fu-berlin.de/bizer/wiqa/>;
+    lod2:content """
+<p>The <strong>WIQA - Information Quality Assessment Framework</strong> is a set of software components for filtering information from the Web using a wide range of different filtering policies.</p>
+<p>The framework has been designed to fulfill the following requirements: </p>
+<ul>
+  <li><strong> Flexible Representation of Information together with Quality-Related Meta-information.</strong> Information quality assessment may rely on a wide range of different quality indicators. Which quality indicators are relevant depends on the application domain and the quality dimensions to be assessed. Important quality indicators in the context of web-based information systems are provenance information, ratings, and background information about information providers. The WIQA framework uses Named Graphs  [<a href="http://www4.wiwiss.fu-berlin.de/bizer/wiqa/#CaBiHaSt04">CaBiHaSt05</a>] as a flexible data model for representing information together with quality related meta-information.</li>
+<li><strong>Support for different Information Filtering Policies.</strong> The relevancy of different quality dimensions and the metrics used to assess these dimensions depend on the application domain, the quality indicators available, the task at hand and the subjective preferences of the information consumer. Therefore, information consumers use a wide range of different information filtering policies in different situations. The WIQA framework allows different policies to be employed for filtering information. Policies are expressed using a declarative policy language and can combine context-, content- and rating-based assessment metrics.</li>
+<li><strong>Explaining Filtering Decisions.</strong> The accuracy of assessment results is often uncertain due to the limited availability of quality indicators and the uncertain quality of the quality indicators themself. Therefore, the final subjective decision of an information consumer whether to trust or distrust assessment results depends on his understanding of the quality indicators and the assessment metrics that have been used in the assessment process. In order to support information consumers in their trust decision, the WIQA framework can generate detailed explanations about filtering decisions.</li>
+</ul>
+""";
+    lod2:abstract """The Web Information Quality Assessment Framework is a set of software components that empowers information consumers to employ a wide range of different information quality assessment policies to filter information from the Web. Information providers on the Web have different levels of knowledge, different views of the world and different intensions. Thus, provided information may be wrong, biased, inconsistent or outdated. Before information from the Web is used to accomplish a specific task, its quality should be assessed according to task-specific criteria.""";
+    lod2:partner partner:fub;
+    rdfs:label "WIQA".
+
+
+project:SemMF a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://sites.wiwiss.fu-berlin.de/suhl/radek/semmf/index.html>;
+    lod2:content """The SemMF is a flexible framework for calculating semantic similarity between objects that are represented as arbitrary RDF graphs. The framework allows taxonomic and non-taxonomic concept matching techniques to be applied to selected object properties and will be used in WP4.""";
+    lod2:abstract """SemMF is an easy-to-use flexible framework for calculating semantic similarity between objects represented as arbitrary RDF Graphs, based on similarities of specified properties.""";
+    lod2:partner partner:fub;
+    rdfs:label "SemMF".
 
 
 partner:nuig a lod2:Partner;
     skos:broader pages:Consortium;
+    foaf:depiction <http://www.deri.ie/fileadmin/images/logos/deri_logo_mp.gif>;
     foaf:based_near <http://dbpedia.org/resource/Galway>;
     foaf:homepage <http://www.deri.ie/>;
     rdfs:label "Digital Enterprise Research Institute";
@@ -397,11 +516,77 @@ same practices which have been daily driving the works behind the Sindice and Si
 provide the relevance, feasibility and consensus of the initiative thanks to the continuous interaction between
 the Linked Data community and the Linked Data Research Centre, a cross institute initiative.""".
 
+project:Sindice a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://sindice.com>;
+    lod2:content """
+<p>
+Billions of pieces of metadata are on
+the Web today, with increasing uptake across the Internet from
+ <a href="http://www.google.com/support/webmasters/bin/topic.py?hl=en&topic=21997" >search engines</a> to 
+ <a href="http://developers.facebook.com/docs/opengraph" >social sites </a> to 
+ <a href="http://data.gov.uk/" >governments </a> alike.
+
+The key technologies are 
+<a href="http://www.w3.org/RDF/">RDF</a>, 
+<a href="http://www.w3.org/TR/xhtml-rdfa-primer/">RDFa</a> 
+and <a href="http://microformats.org/">Microformats</a>. Examples
+of such information types are contacts, events, social networks, web
+polls, reviews, and hundreds of other domain specific entities.
+
+</p>
+<p>
+<strong>Sindice is a state of the art infrastructure to process, consolidate and query the Web of Data</strong>. 
+
+Sindice collates these billions of pieces of metadata into an coherent umbrella of 
+<a href="/developers/welcome">functionalities and services</a>. 
+For more information, visit our <a href="http://blog.sindice.com/">blog</a> or <a href="http://groups.google.com/group/sindice-dev">support group</a>.
+</p>
+""";
+    lod2:abstract """Sindice is a state of the art infrastructure to process, consolidate and query the Web of Data. Sindice collates these billions of pieces of metadata into an coherent umbrella of functionalities and services.""";
+    sioc:feed <http://feeds.sindice.com/SindiceBlog>;
+    lod2:partner partner:nuig;
+    foaf:depiction <http://sindice.com/images/logo.png>;
+    rdfs:label "Sindice".
+
+
+
+project:Sigma a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://sig.ma>;
+    lod2:content """
+<p><a href="http://Sig.ma">http://Sig.ma</a>is a tool to explore and leverage the Web of Data. At any time, information in Sigma is likely to come from multiple, unrelated Web sites - potentially any web site that embeds information in RDF, RDFa or Microformats (standards for the Web of Data).</p>
+<p>Sig.ma can be used in 3 main ways:</p>
+<ul>
+<li>As a Web of Data browser: start from any entity and then click to another from the resulting page. Remember you are browsing a “network of mashups”, quite a unique thing. It might be noisy but you can spot gems, e.g. interesting description differences in different sources.</li>
+<li>As an embeddable/linkable widget: create a Sigma, refine it and when you’re ready to paste it around in emails and twits or embed it on your blog. Sigmas are “data live”: if one of your selected sources updates its information, so will your Sigma be updated wherever it shows.</li>
+<li>As a semantic API: retrieve entity descriptions and specific properties. For example picture,phone@Giovanni Tummarello , ready to consume, in JSON, in RDF.</li>
+</ul>
+""";
+    lod2:abstract """Sig.ma is a tool to explore and leverage the Web of Data. At any time, information in Sigma is likely to come from multiple, unrelated Websites – potentially any website that embeds information in RDF, RDFa or Microformats (standards for the Web of Data). Sig.ma is a semantic web browser as well as an embeddable widget and also provides a Semantic Web API.""";
+    sioc:feed <http://feeds.sindice.com/SindiceBlog>;
+    lod2:partner partner:nuig;
+    foaf:depiction <http://sig.ma/images/icons/sigma-logo-h70.png>;
+    rdfs:label "Sig.ma".
+
+
+project:Sparallax a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://sparallax.deri.ie/>;
+    lod2:content """Sparallax is a faceted browsing interface for SPARQL endpoints, based on Freebase Parallax. This demonstrator showcases the benefits of intelligent browsing of Semantic Web data and represents a good starting point for LOD2 interfaces developed in WP 5.""";
+    lod2:abstract """Sparallax is a faceted browsing interface for SPARQL endpoints, based on Freebase Parallax. This demonstrator showcases the benefits of intelligent browsing of Semantic Web data and represents a good starting point for LOD2 interfaces developed in WP 5.""";
+    sioc:feed <http://feeds.sindice.com/SindiceBlog>;
+    lod2:partner partner:nuig;
+    foaf:depiction <http://sig.ma/images/icons/sigma-logo-h70.png>;
+    rdfs:label "Sparallax".
+
+
 partner:okfn a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Cambridge>;
     foaf:homepage <http://www.okfn.org/>;
     rdfs:label "Open Knowledge Foundation";
+    sioc:feed <http://blog.okfn.org/feed/>;
     lod2:content """
 <p>The Open Knowledge Foundation (OKF) is a not-for-profit organization founded in 2004 and dedicated to promoting open knowledge in all its forms. It is a European leader in this field and prominent on the international stage. The Foundation has pioneered work in developing robust legal mechanisms for sharing data - and has taken a central role in helping to develop standards for openness in knowledge and services. It also works on the infrastructure for open data users and producers. This includes CKAN, a community driven resource for open data, which is currently being used by the UK Government for its Data.gov.uk project, and KForge, a suite of tools for knowledge development being used by academic researchers and civic software developers. Finally it hosts a number of open data and content projects, from a web application to represent UK public finance using best of breed visualization technologies to project to a database of artistic works that have fallen into the public domain. Crucially the Foundation acts as a hub, drawing together representatives from across the knowledge society - from academics, public servants and entrepreneurs to data experts, archivists and web developers. Forums, workshops and an annual conferenceserve to strengthen this network.</p>
 """;
@@ -412,22 +597,51 @@ partner:okfn a lod2:Partner;
 partner:openlink a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/London>;
+    sioc:feed <http://virtuoso.openlinksw.com/blog/gems/rss.xml>, <http://www.openlinksw.com/weblogs/oerling/gems/rss.xml>, <http://www.openlinksw.com/weblog/kidehen@openlinksw.com/127/gems/rss.xml>;
+    foaf:depiction <http://wiki.dbpedia.org/files/openlinklogo_wstrap_190x70.png>;
     foaf:homepage <http://www.openlinksw.com/>;
-    rdfs:label "OpenLink Software Ltd.";
+    rdfs:label "OpenLink Software";
     lod2:content """
 <p>OpenLink Group Ltd is a SME established in the United Kingdom in 1992 and has a business development and sales subsidiary in the United States. Most product development takes place within the EU, including the UK, Netherlands and Bulgaria. OpenLink Software is a leading provider of universal data access middleware. Its products include a suite of high-performance data access drivers for ODBC, JDBC and ADO.NET, the Virtuoso Hybrid Data Server for SQL, XML, and RDF, and the OpenLink Data Spaces suite of distributed collaborative applications.</p>
 <p>OpenLink has extensive experience in scalable triple stores by extending its native Virtuoso database/SQL engine incorporate SPARQL query processing. Virtuoso offers both a native triple store and RDF middleware in a single product offering. It offers management and creation of physical and virtual triples in conjunctions with the ability to declaratively produce RDF views of SQL Data (SQL to RDF mapping). The OpenLink Data Spaces (ODS) application suite offers an integrated platform for managing and integrating blogs, wikis, RSS/Atom feeds, discussion forums and more. Naturally, all these applications are SIOC, SKOS, FOAF, and AtomOWL enabled. OpenLink has hands on experience at both the applications and data management levels within the Semantic Web technology realm.</p>
 <p>OpenLink is a W3C member, an active participant in the W3C Semantic Web Education and Outreach (SWEO) Interest Group, a key member of the Linking Open Data project, and timeless supporter of the Open Data Movement. OpenLink presently hosts the DBpedia service. OpenLink leverages its experience with local and distributed query processing, SQL and SPARQL query optimization, RDF store and heterogeneous data integration technologies in developing an integrated database backbone for the project. OpenLink has extensive experience in combining RDF and Web 2.0 technologies. All data managed by the company’s ODS applications is also possible to query via SPARQL within the SIOC, FOAF and SKOS vocabularies.</p>""";
     lod2:abstract """OpenLink contributes in particular to developing the scalable LOD2 knowledge store (WP2); to track and inference about data provenance and reliability; to support personalized views on knowledge and spatial data; alerts on data; to contribute to standardization activities regarding the integration of semantic and spatial technologies.""".
 
+project:Virtuoso a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://ontowiki.net>;
+    lod2:content """
+Virtuoso is a knowledge store and virtualization platform that transparently integrates Data, Services, and Business Processes across the enterprise. Its product architecture enables it to deliver traditionally distinct server functionality within a single system offering along the following lines: Data Management & Integration (SQL, XML and EII), Application Integration (Web Services & SOA), Process Management & Integration (BPEL), Distributed Collaborative Applications. The open-source data integration server and the highly efficient and scalable RDF triple store implementation in Virtuoso will be the basis for the knowledge store component in the LOD2 Stack. 
+""";
+    lod2:abstract """
+Virtuoso is a knowledge store and virtualization platform that transparently integrates Data, Services, and Business Processes across the enterprise. Its product architecture enables it to deliver traditionally distinct server functionality within a single system offering along the following lines: Data Management & Integration (SQL, XML and EII), Application Integration (Web Services & SOA), Process Management & Integration (BPEL), Distributed Collaborative Applications. The open-source data integration server and the highly efficient and scalable RDF triple store implementation in Virtuoso will be the basis for the knowledge store component in the LOD2 Stack. 
+""";
+    foaf:depiction <http://docs.openlinksw.com/images/misc/splash.jpg>;
+    lod2:partner partner:openlink;
+    rdfs:label "Virtuoso".
+
+
 partner:swc  a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Vienna>;
     foaf:homepage <http://www.semantic-web.at/>;
+    foaf:depiction <>;
     rdfs:label "Semantic Web Company";
+    sioc:feed <http://www.semantic-web.at/rss.php>;
     lod2:content """
 <p>Semantic Web Company (SWC), based in Vienna, is an SME, which offers consulting services in the fields of semantic web technologies, knowledge management systems and social software since 2005. Besides being one of the first European suppliers of consulting services in semantic web technologies and related topics, SWC is the founder of the I-SEMANTICS conference series, one of Europe’s largest industry outreach events in the field of semantic systems and knowledge management, which will take place for the 6th time in 2010. The mission of SWC is to narrow the gap between industry and academia R&D in semantic systems and to accelerate the time to market process of semantic web-technologies. By providing practice-oriented knowledge transfer SWC help companies and public organizations to integrate and apply semantic technologies for various purposes such as data integration, resource management and knowledge management. SWC communicates benefits and risks of semantic applications in corporate environments to developers and decision makers and serves organizations from the life sciences, insurance, energy and the media. SWC has built a special media focus over the last years specializing in business development aspects through semantic (web) technologies. SWC acts as a hub of a wide network of industry partners (software industry, end-user organizations), other Networks (Know Center Graz, Salzburg Research, Austrian Computer Society, W3C, PWM - Platform for Knowledge Management) and academic and research partners throughout Europe.</p>""";
     lod2:abstract """SWC adopt the tool Poolparty, a self-developed modeling tool for corporate thesauri, as a component for the LOD2 stack. SWC will provide its expertise in technology assessment and business development when it comes to evaluate the economic rationale, organisational effects and the commercial potential of semantic web technologies. SWC will investigate governance and regulatory issues such as competition, IPR issues and privacy thereby contributing to the use cases in WP 7, 8 & 9. Our expertise in communicating the principles, technologies and especially business needs for semantic web applications on the one hand and the „translation“ of practical problems into technological concepts on the other hand will help to disseminate the findings beyond the scope of the use cases.""".
+
+project:PoolParty a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://poolparty.punkt.at>;
+    lod2:content """PoolParty is a thesaurus management system and a SKOS editor for the Semantic Web including text mining and linked data  capabilities. The system helps to build and maintain multilingual thesauri providing an easy-to-use interface. PoolParty server provides semantic services to integrate semantic search or recommender systems into systems like CMS, DMS, CRM or Wikis.""";
+    lod2:abstract """PoolParty is a thesaurus management system and a SKOS editor for the Semantic Web including text mining and linked data  capabilities. The system helps to build and maintain multilingual thesauri providing an easy-to-use interface. PoolParty server provides semantic services to integrate semantic search or recommender systems into systems like CMS, DMS, CRM or Wikis.""";
+    sioc:feed <http://poolparty.punkt.at/feed>;
+    foaf:depiction <http://poolparty.punkt.at/wp-content/gallery/test/themes.jpg>;
+    lod2:partner partner:swc;
+    rdfs:label "PoolParty".
+
 
 partner:tenforce  a lod2:Partner;
     skos:broader pages:Consortium;
@@ -447,14 +661,63 @@ partner:ulei a lod2:Partner;
     lod2:content """<p>Universität Leipzig is one of the oldest (founded 1409) and largest (30.000 students) universities in Germany and focuses on interdisciplinary research in the life sciences, cognitive sciences and linguistics as well as mathematics and computer science. The Institute for Applied Computer Science (InfAI) at Universität Leipzig hosts world class research groups in service sciences, knowledge engineering and management as well as natural language processing. The approximately 20 researchers of the Agile Knowledge Engineering and Semantic Web (AKSW) research group at InfAI are establishing theoretical results and scalable implementations for the field. Particular emphasis is given to areas such as ontology creation and manipulation, knowledge extraction, ontology learning and information & data integration on the Semantic Web. The implemented tools and services developed by the group enjoy considerable popularity, the open-source semantic web framework OntoWiki for example is downloaded more than 500 times each month and applied in usage scenarios ranging from the authoring of bio-medical ontologies to knowledge management for the enterprise. InfAI is leading several large-scale collaborative research projects on the national and EU levels such as OntoWiki (EU FP7), Internet Media Businesses (EU SMART), PreBIS (German BmbF) and Factory ServNet (Eureka) and participates in many more.</p>""";
     lod2:abstract """Project coordination; develop knowledge structuring and enrichment algorithms as well as browsing, visualization and authoring interfaces; collaborate with OKFN in order to employ LOD2 results in the GovData.eu use case.""".
 
-:OntoWiki a doap:Project;
+project:OntoWiki a doap:Project;
     skos:broader pages:TechnologyStack;
     doap:homepage <http://ontowiki.net>;
-    doap:description """
+    lod2:content """
+<p>OntoWiki is a tool providing support for agile, distributed knowledge engineering scenarios. It facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.</p>
+<p>OntoWiki provides sophisticated means for navigating, visualising and authoring of RDF-based Knowledge Bases. It serves and consumes Linked Data and comprises a comprehensive middleware API for building custom Semantic Web applications.</p>
+<p>We refer to it as a Wiki, since our focus is on simplicity, adaptability and collaboration. However, other than annotating text-based Wiki pages with a special syntax (as suggested by text-based Semantic Wiki approaches), Onto Wiki uses RDF in the first place to represent information. For human users, Onto Wiki allows to create different views on data, such as tabular representations or maps. For machine consumption it supports various RDF serialisations as well as RDFa, Linked Data and SPARQL interfaces. Since its introduction in 2006, the application has evolved into a framework for building Semantic Web applications and was recently updated to support the collaboration across multiple domains and application via Semantic Pingback and RDFauthor</p>
+""";
+    lod2:abstract """
 OntoWiki is a tool providing support for agile, distributed knowledge engineering scenarios. It facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.""";
     sioc:feed <http://blog.aksw.org/feed/?cat=5>;
     lod2:partner partner:ulei;
     rdfs:label "OntoWiki".
+
+project:Triplify a doap:Project;
+    skos:broader pages:TechnologyStack;
+    doap:homepage <http://triplify.org>;
+    lod2:content """
+<p>Triplify provides a building block for the “semantification” of Web applications.  Triplify is a small plugin for Web applications, which reveals the semantic structures encoded in relational databases by making database content available as RDF, JSON or Linked Data.</p>
+<p>Triplify is very lightweight: It consists of only a few files with less than 500 lines of code. For a typical Web application a configuration for Triplify can be created in less than one hour and if this Web application is deployed multiple times (as most open-source Web applications are), the configuration can be reused without modifications.</p>
+<p>Triplify makes Web applications easier mashable and lays the foundation for next-generation, semantics-based Web searches.</p>
+""";
+    lod2:abstract """
+Triplify provides a building block for the “semantification” of Web applications. As a plugin for Web applications, it reveals the semantic structures encoded in relational databases by making database content available as RDF, JSON or Linked Data. Triplify makes Web applications easier mashable and lays the foundation for next-generation, semantics-based Web searches.""";
+    sioc:feed <http://blog.aksw.org/feed/?cat=15>;
+    lod2:partner partner:ulei;
+    rdfs:label "Triplify".
+
+project:DL-Learner a doap:Project;
+    skos:broader pages:TechnologyStack;
+    foaf:depiction <http://aksw.org/Projects/DLLearner/files?get=dllearner.gif>;
+    doap:homepage <http://dl-learner.org>;
+    lod2:content """
+<p>The DL-Learner software learns concepts in Description Logics (DLs) from examples. Equivalently, it can be used to learn classes in OWL ontologies from selected objects. It extends Inductive Logic Programming to Descriptions Logics and the Semantic Web. The goal of DL-Learner is to provide a DL/OWL based machine learning tool to solve supervised learning tasks and support knowledge engineers in constructing knowledge and learning about the data they created.</p>
+<p><strong>Purposes of Class Expression Learning</strong>:
+<ol>
+<li>Learn Definitions for Classes: Based on existing instances of an OWL class, DL-Learner can make suggestions for class definitions to be included as an owl:equivalentClass or rdfs:subClassOf Axiom. As the algorithm is biased towards short and human readable definitions, a knowledge engineer can be supported when editing the TBox of an ontology (see <a href="http://dl-learner.org/wiki/ProtegePlugin">Protege Plugin</a>).</li>
+<li>Find similar instances: DL-Learner's suggested class expressions can be used to find similar instances via retrieval (Concept definitions as search). Scalable methods allow the generation of recommendations on the fly, e.g. in a web scenario (see <a href="http://navigator.dbpedia.org/">DBpedia Navigator</a> – in experimental stage).</li>
+<li>Classify instances: The learned class descriptions can be used in a typical classification scenario, i.e. to decide for unknown instances whether they belong to a certain class. Common ILP benchmarks have been tested with DL-Learner. On the <a href="http://dl-learner.org/wiki/Carcinogenesis">Carcinogenesis page</a>, DL-Learner competes with other state-of-the-art ILP algorithms.</li>
+</p>
+""";
+    lod2:abstract """DL-Learner is a tool for supervised Machine Learning in OWL and Description Logics. It can learn concepts in Description Logics (DLs) from user-provided examples. Equivalently, it can be used to learn classes in OWL ontologies from selected objects. It extends Inductive Logic Programming to Descriptions Logics and the Semantic Web. The goal of DL-Learner is to provide a DL/OWL-based machine learning tool to solve supervised learning tasks and support knowledge engineers in constructing knowledge and learning about the data they created. """;
+    sioc:feed <http://blog.aksw.org/feed/?cat=10>;
+    lod2:partner partner:ulei;
+    rdfs:label "DL-Learner".
+
+project:DBpedia-Extraction a doap:Project;
+    skos:broader pages:TechnologyStack;
+    foaf:depiction <http://wiki.dbpedia.org/images/dbpedia_logo.png>;
+    doap:homepage <http://wiki.dbpedia.org/Documentation>;
+    lod2:content """DBpedia is a community effort to extract structured information from Wikipedia and to make this information available on the Web. It currently already contains a tremendous amount of valuable knowledge extracted from Wikipedia. The DBpedia knowledge base will be used for evaluation LOD2’s interlinking, fusing, aggregation and visualization components. The DBpedia multi-domain ontology will be used as background-knowledge for the LOD2 applications (WP7, WP8 and WP9), and as an alignment and annotation ontology for LOD in general.""";
+    lod2:abstract """DBpedia is a community effort to extract structured information from Wikipedia and to make this information available on the Web. It currently already contains a tremendous amount of valuable knowledge extracted from Wikipedia. The DBpedia knowledge base will be used for evaluation LOD2’s interlinking, fusing, aggregation and visualization components. The DBpedia multi-domain ontology will be used as background-knowledge for the LOD2 applications (WP7, WP8 and WP9), and as an alignment and annotation ontology for LOD in general.""";
+    sioc:feed <http://blog.dbpedia.org/feed/>;
+    lod2:partner partner:ulei, partner:fub, partner:openlink;
+    rdfs:label "DBpedia Extraction".
+
+
 
 person:SebastianTramp a foaf:Person;
     foaf:homepage <http://sebastian.tramp.name>;
