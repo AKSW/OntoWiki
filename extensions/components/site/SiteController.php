@@ -95,6 +95,20 @@ class SiteController extends OntoWiki_Controller_Component
             $this->_loadModel();
             $this->_loadResource();
             
+            $moduleTemplatePath = $this->_componentRoot
+                                . 'sites'
+                                . DIRECTORY_SEPARATOR
+                                . $this->_privateConfig->defaultSite
+                                . DIRECTORY_SEPARATOR
+                                . 'modules';
+            
+            // add module template override path
+            if (is_readable($moduleTemplatePath)) {
+                $scriptPaths = $this->view->getScriptPaths();
+                array_push($scriptPaths, $moduleTemplatePath);
+                $this->view->setScriptPath($scriptPaths);
+            }
+            
             $siteConfig = array(
                 'id'          => $this->_site,
                 'generator'   => 'OntoWiki ' . $this->_config->version->number,
