@@ -15,8 +15,12 @@
                            class="hasMenu Resource"
                            about="<?php echo $entry['link'] ?>"
                            href="<?php echo $entry['link'] ?>">
-                            <?php echo $entry['dateModified'] ?> |
-                            <?php $authors = $entry['authors']; echo $authors[0] ?>
+                            <?php if (isset($entry['dateModified'])) :?>
+                                <?php echo $entry['dateModified'] ?>
+                            <?php endif; ?>
+                            <?php if (isset($entry['authors'][0])) :?>
+                            | <?php echo $entry['authors'][0] ?>
+                            <?php endif; ?>
                         </a>
                     </p>
                     <p><?php echo $entry['description'] ?></p>
