@@ -23,7 +23,9 @@
                             <?php endif; ?>
                         </a>
                     </p>
-                    <p><?php echo $entry['description'] ?></p>
+                    <?php if (isset($entry['description'])) :?>
+                        <p><?php echo str_replace('[...]', '', substr(strip_tags($entry['description']), 0, 500)) ?> ...</p>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
