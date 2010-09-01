@@ -51,6 +51,14 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
     {
         $this->_componentManager = $componentManager; 
     }
+
+    /**
+     * Gets the component manager
+     */
+    public function getComponentManager()
+    {
+        return $this->_componentManager;
+    }
     
     /**
      * Get controller class name

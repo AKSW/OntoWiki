@@ -252,9 +252,11 @@ $(document).ready(function() {
                         $(this).fadeOut(effectTime);
                     });
                     $('.edit-enable').removeClass('active');
-
-                    // reload whole page
-                    window.location.href = window.location.href;
+                    
+                    // HACK: reload whole page after 1000 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
+                    }, 1000);
                 }, 
                 onCancel: function () {
                     $('.edit').each(function() {
@@ -306,8 +308,10 @@ $(document).ready(function() {
                         });
                         $('.edit-enable').removeClass('active');
                         
-                        // reload whole page
-                        window.location.href = window.location.href;
+                        // HACK: reload whole page after 1000 ms
+                        window.setTimeout(function () {
+                            window.location.href = window.location.href;
+                        }, 1000);
                     }, 
                     onCancel: function () {
                         $('.edit').each(function() {
@@ -422,7 +426,7 @@ $(document).ready(function() {
         } else {
             return true;
         }
-    })
+    });
     
     // box display/hide    
     // $('.toggle-module-display').click(function() {

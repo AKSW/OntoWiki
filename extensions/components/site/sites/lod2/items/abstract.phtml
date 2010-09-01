@@ -1,0 +1,15 @@
+<?php
+$url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+$url->setParam('r', $this->resourceUri, true);
+$abstract = null;
+if (isset($this->description['http://lod2.eu/schema/abstract'])) {
+    $abstract = '<p>'.$this->description['http://lod2.eu/schema/abstract'][0]['value'].'</p>';
+}
+?>
+
+<?php if ($this->title || $abstract): ?>
+<div class="section-content">
+    <h3><a href="<?php echo $url ?>"><?php echo $this->title ?></a></h3>
+    <?php echo $abstract ?>
+</div>
+<?php endif; ?>
