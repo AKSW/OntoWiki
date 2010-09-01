@@ -49,6 +49,21 @@ class SiteHelper extends OntoWiki_Component_Helper
         $controller = $request->getControllerName();
         $action     = $request->getActionName();
         
+        $moduleTemplatePath = $this->getComponentRoot()
+                            . 'sites'
+                            . DIRECTORY_SEPARATOR
+                            . $this->_privateConfig->defaultSite
+                            . DIRECTORY_SEPARATOR
+                            . 'modules';
+        
+        // add module template override path
+        if (is_readable($moduleTemplatePath)) {
+            $view = $event->bootstrap->getResource('View');
+            $scriptPaths = $view->getScriptPaths();
+            array_push($scriptPaths, $moduleTemplatePath);
+            $view->setScriptPath($scriptPaths);
+        }
+        
         if ($router->hasRoute('empty')) {
             $emptyRoute = $router->getRoute('empty');
             $defaults   = $emptyRoute->getDefaults();

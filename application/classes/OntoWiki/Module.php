@@ -119,9 +119,9 @@ abstract class OntoWiki_Module
         
         // set script path if necessary
         $modulesPath = ONTOWIKI_ROOT . $this->_config->extensions->modules;
-        if (!in_array($modulesPath, $this->view->getScriptPaths())) {
-            $this->view->addScriptPath($modulesPath);
-        }
+        // if (!in_array($modulesPath, $this->view->getScriptPaths())) {
+        //     $this->view->addScriptPath($modulesPath);
+        // }
 
 
         // Parse the private config
