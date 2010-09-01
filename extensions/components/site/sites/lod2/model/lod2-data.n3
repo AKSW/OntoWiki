@@ -51,19 +51,24 @@ pages:Project a sioct:WikiArticle, skos:Concept;
     rdfs:label "Project".
 
 pages:ActivityClusters a sioct:WikiArticle, skos:Concept;
+    lod2:content """The work packages of LOD2 fall into five activity clusters.""";
     skos:broader pages:Project;
+    lod2:query query:ActivityCluster;
     sysont:order "1"^^xsd:integer;
     rdfs:label "Activity Clusters".
 pages:WorkPackages a sioct:WikiArticle, skos:Concept;
     skos:broader pages:Project;
+    lod2:query query:WorkPackages;
     sysont:order "2"^^xsd:integer;
     rdfs:label "Work Packages".
 pages:Milestones a sioct:WikiArticle, skos:Concept;
     skos:broader pages:Project;
+    lod2:query query:Milestones;
     sysont:order "3"^^xsd:integer;
     rdfs:label "Milestones".
 pages:Deliverables a sioct:WikiArticle, skos:Concept;
     skos:broader pages:Project;
+    lod2:query query:Deliverables;
     sysont:order "4"^^xsd:integer;
     rdfs:label "Deliverables".
 
@@ -87,7 +92,7 @@ We will integrate and syndicate linked data with large-scale, existing applicati
 query:Partner a sysont:SparqlQuery;
     sysont:Model <http://lod2.eu/> ;
     sysont:generator "qe" ;
-    sysont:sparql_code """SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lod2.eu/schema/Partner> FILTER (!isBLANK(?resourceUri)) } LIMIT 10""" ;
+    sysont:sparql_code """SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Partner> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri LIMIT 20""" ;
     dc:created "2010-07-29T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Partner".
 
@@ -95,6 +100,29 @@ query:TechnologyStack a sysont:SparqlQuery ;
     dc:created "2010-07-29T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Technology Stack Projects" ;
     sysont:generator "qe" ;
-    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://usefulinc.com/ns/doap#Project> FILTER (!isBLANK(?resourceUri)) } LIMIT 10" .
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://usefulinc.com/ns/doap#Project> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri LIMIT 20" .
 
+query:ActivityCluster a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Activity Cluster" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/ActivityCluster> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri ASC LIMIT 20" .
+
+query:WorkPackages a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Work Packages" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/WorkPackage>. ?resourceUri <http://ns.ontowiki.net/SysOnt/order> ?order. FILTER (!isBLANK(?resourceUri)) } ORDER BY ?order ASC LIMIT 20" .
+
+query:Milestones a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Milestones" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Milestone> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri ASC LIMIT 20" .
+
+query:Deliverables a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Deliverables" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri ASC LIMIT 20" .
 
