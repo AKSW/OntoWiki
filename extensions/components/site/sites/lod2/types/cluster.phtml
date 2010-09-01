@@ -23,7 +23,7 @@ $templateData = array(
 <?php // WORKPACKAGES
 
 $query = '
-PREFIX lod2: <http://lod2.eu/schema/>.
+PREFIX lod2: <http://lod2.eu/schema/>
 SELECT DISTINCT ?resourceUri
 WHERE {
 <'.$this->resourceUri.'> lod2:wp ?resourceUri.
@@ -49,7 +49,7 @@ if ($workpackages = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 <?php // MILESTONES
 
 $query = '
-PREFIX lod2: <http://lod2.eu/schema/>.
+PREFIX lod2: <http://lod2.eu/schema/>
 SELECT DISTINCT ?resourceUri
 WHERE {
 <'.$this->resourceUri.'> lod2:wp ?wp.
@@ -76,7 +76,7 @@ if ($tasks = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 <?php // PARTNERS
 
 $query = '
-PREFIX lod2: <http://lod2.eu/schema/>.
+PREFIX lod2: <http://lod2.eu/schema/>
 SELECT DISTINCT ?resourceUri
 WHERE {
 <'.$this->resourceUri.'> lod2:wp ?wp.
