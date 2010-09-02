@@ -32,13 +32,16 @@
 
 lod2:partner a owl:ObjectProperty;
     skos:note "This property is used to link a resource to an associated LOD2 partner.";
+    rdfs:range lod2:Partner;
     rdfs:label "partner".
 
 lod2:leadPartner a owl:ObjectProperty;
     skos:note "This property is used to link a resource to the leading LOD2 partner.";
+    rdfs:range lod2:Partner;
     rdfs:label "leading partner".
 
 lod2:wp a owl:ObjectProperty;
+    rdfs:range lod2:WorkPackage;
     skos:note "This property is used to link a resource to an associated LOD2 work package.";
     rdfs:label "work package".
 
@@ -48,10 +51,12 @@ lod2:wp a owl:ObjectProperty;
 
 lod2:content a owl:DatatypeProperty;
     rdfs:label "content";
+    rdfs:range rdf:XMLLiteral;
     rdfs:subPropertyOf content:encoded.
 
 lod2:abstract a owl:DatatypeProperty;
     rdfs:label "abstract";
+    rdfs:range rdfs:Literal;
     rdfs:subPropertyOf content:encoded.
 
 ###
