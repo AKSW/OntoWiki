@@ -220,6 +220,41 @@
       border-bottom:solid 1px #0099cc;
   }
 
+  /* -- 5. Similar Instances ------------------------------------------------ */
+
+  #similarinstances
+  {
+      margin:0; padding:0; list-style: none;
+  }
+
+  #similarinstances .si_class
+  {
+      margin:0;
+      padding:0.75em 0;
+      border-bottom:solid 1px #0099cc;
+  }
+
+  #similarinstances .si_instances
+  {
+      margin:0; padding:0; list-style: none;
+  }
+
+  #similarinstances .si_instances li
+  {
+      display: inline;
+      padding: 0; margin: 0;
+  }
+
+  #similarinstances .si_instances li:after
+  {
+      content:', ';
+  }
+
+  #similarinstances .si_instances li:last-child:after
+  {
+      content:'';
+  }
+
   /* -- X. Widgets ---------------------------------------------------------- */
 
   /* -- X.1. Deeplinks -- */
