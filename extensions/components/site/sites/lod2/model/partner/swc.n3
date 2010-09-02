@@ -16,7 +16,7 @@ project:PoolParty a doap:Project;
     lod2:content """PoolParty is a thesaurus management system and a SKOS editor for the Semantic Web including text mining and linked data  capabilities. The system helps to build and maintain multilingual thesauri providing an easy-to-use interface. PoolParty server provides semantic services to integrate semantic search or recommender systems into systems like CMS, DMS, CRM or Wikis.""";
     lod2:abstract """PoolParty is a thesaurus management system and a SKOS editor for the Semantic Web including text mining and linked data  capabilities. The system helps to build and maintain multilingual thesauri providing an easy-to-use interface. PoolParty server provides semantic services to integrate semantic search or recommender systems into systems like CMS, DMS, CRM or Wikis.""";
     sioc:feed <http://poolparty.punkt.at/feed>;
-    foaf:depiction <http://poolparty.punkt.at/wp-content/gallery/test/themes.jpg>;
+    foaf:depiction <http://poolparty.punkt.at/wp-content/uploads/2010/08/poolparty-logo.jpg>;
     lod2:partner partner:swc;
     rdfs:label "PoolParty".
 
