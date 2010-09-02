@@ -8,4 +8,11 @@
 <p property="<?php echo $this->curie('http://rdfs.org/sioc/ns#content') ?>">
     <?php echo $this->description['http://rdfs.org/sioc/ns#content'][0]['value']; ?>
 </p>
-<?php endif ?>
+<?php endif; ?>
+
+<?php if (isset($this->description['http://xmlns.com/foaf/0.1/depiction'])): ?>
+    <img rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/depiction') ?>" 
+         src="<?php echo $this->description['http://xmlns.com/foaf/0.1/depiction'][0]['value'] ?>" 
+         alt="Depiction of <?php echo $this->title ?>"/>
+<?php endif; ?>
+
