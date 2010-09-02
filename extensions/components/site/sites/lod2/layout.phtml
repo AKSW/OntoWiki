@@ -79,12 +79,14 @@
     <!-- jQuery -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
+    
+    <!--script type="text/javascript" src="<?php echo $this->libraryUrlBase ?>RDFauthor/src/rdfauthor.js"></script-->
 
     <!--script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery-fluid16.js"></script-->
 
     <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> &mdash; <?php echo $this->site['name'] ?></title>
 </head>
-<body about="<?php echo $this->resourceUri?>"<?php 
+<body<?php 
     foreach ($this->namespaces as $prefix => $ns): ?><?php echo ' xmlns:' . $prefix . '="' . $ns . '"' ?><?php endforeach; ?>>
 <?php
     // this is the standard template data
@@ -113,7 +115,7 @@
   <!-- a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span -->
   <!-- end: skip link navigation -->
   <div class="page_margins">
-    <div class="page">
+    <div class="page" about="<?php echo $this->resourceUri?>">
       <div id="header">
         <h1 id="logo">
             <a href="<?php echo $this->site['index'] ?>">
