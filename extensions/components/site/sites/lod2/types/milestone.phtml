@@ -1,0 +1,29 @@
+<?php
+// this is the standard template data
+$templateData = array(
+    'title'             => $this->title,
+    'resourceUri'       => $this->resourceUri,
+    'description'       => $this->description,
+    'descriptionHelper' => $this->descriptionHelper
+);
+
+$workPackage = isset($this->description['http://lod2.eu/schema/wp'][0]['value']) 
+             ? $this->description['http://lod2.eu/schema/wp'][0]['value'] 
+             : null;
+$deadline = isset($this->description['http://lod2.eu/schema/deadline'][0]['value'])
+          ? $this->description['http://lod2.eu/schema/deadline'][0]['value']
+          : null;
+?>
+
+<div class="maincontent">
+    <div class="section partner">
+        <h3><?php echo $this->title ?></h3>
+        <div class="section-content">
+            <?php echo $this->partial('lod2/content.phtml', $templateData); ?>
+            <?php if ($workPackage): ?>In workpackage: <a href="<?php echo $workPackage; ?>"><?php 
+                echo $this->descriptionHelper->getTitle($workPackage); ?></a><?php endif; 
+            ?>
+            <?php if ($deadline): ?>Deadline: <?php echo $deadline; endif; ?>
+        </div>
+    </div>
+</div>
