@@ -11,6 +11,10 @@ $templateData = array(
                 'descriptionHelper' => $this->descriptionHelper
         );
 
+if ( (isset($this->description['http://lod2.eu/schema/next'])) || (isset($this->description['http://lod2.eu/schema/previous'])) ) {
+    echo $this->partial( 'lod2/micro-navigation.phtml', $templateData);
+}
+
 if (isset($this->description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {
     $types = array ();
     foreach ($this->description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] as $property) {

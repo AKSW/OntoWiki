@@ -17,3 +17,28 @@ $templateData = array(
 </div>
 
 
+<?php // WORKPACKAGES
+
+$query = '
+PREFIX lod2: <http://lod2.eu/schema/>
+SELECT DISTINCT ?resourceUri
+WHERE {
+?resourceUri lod2:partner <'.$this->resourceUri.'> .
+?resourceUri a lod2:WorkPackage.
+FILTER (!isBLANK(?resourceUri))
+}
+LIMIT 10
+​';
+
+if ($workpackages = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c50l">
+    <div class="subcl widget-deeplink">
+        <h3>Workpackages</h3>
+         <ul>
+            <?php echo $workpackages ?>
+         </ul>
+    </div>
+</div>
+
+<?php endif; ?>
