@@ -20,57 +20,34 @@ $templateData = array(
 
 <?php endif; ?>
 
-<?php // MILESTONES
+
+<?php // PARTNERS
 
 $query = '
 PREFIX lod2: <http://lod2.eu/schema/>
 SELECT DISTINCT ?resourceUri
 WHERE {
-?resourceUri lod2:wp <'.$this->resourceUri.'> .
-?resourceUri a lod2:Milestone
+<'.$this->resourceUri.'> lod2:partner ?resourceUri.
+?resourceUri a lod2:Partner
 FILTER (!isBLANK(?resourceUri))
 }
 LIMIT 10
 ​';
 
-if ($milestones = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+if ($partners = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 
 <div class="c33l">
     <div class="subcl widget-deeplink">
-        <h3>Milestones</h3>
+        <h3>Partners</h3>
          <ul>
-            <?php echo $milestones ?>
+            <?php echo $partners ?>
          </ul>
     </div>
 </div>
 
 <?php endif; ?>
 
-<?php // TASKS
 
-$query = '
-PREFIX lod2: <http://lod2.eu/schema/>
-SELECT DISTINCT ?resourceUri
-WHERE {
-?resourceUri lod2:wp <'.$this->resourceUri.'> .
-?resourceUri a lod2:Task
-FILTER (!isBLANK(?resourceUri))
-}
-LIMIT 10
-​';
-
-if ($tasks = $this->querylist($query, 'lod2/items/li.phtml')): ?>
-
-<div class="c33l">
-    <div class="subc widget-deeplink">
-        <h3>Tasks</h3>
-         <ul>
-            <?php echo $tasks ?>
-         </ul>
-    </div>
-</div>
-
-<?php endif; ?>
 
 <?php // DELIVERABLES
 
@@ -98,29 +75,29 @@ if ($deliverables = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 
 <?php endif; ?>
 
-<?php // PARTNERS
+
+<?php // MILESTONES
 
 $query = '
 PREFIX lod2: <http://lod2.eu/schema/>
 SELECT DISTINCT ?resourceUri
 WHERE {
-<'.$this->resourceUri.'> lod2:partner ?resourceUri.
-?resourceUri a lod2:Partner
+?resourceUri lod2:wp <'.$this->resourceUri.'> .
+?resourceUri a lod2:Milestone
 FILTER (!isBLANK(?resourceUri))
 }
 LIMIT 10
 ​';
 
-if ($partners = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+if ($milestones = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 
 <div class="c33l">
-    <div class="subcr widget-deeplink">
-        <h3>Partners</h3>
+    <div class="subc widget-deeplink">
+        <h3>Milestones</h3>
          <ul>
-            <?php echo $partners ?>
+            <?php echo $milestones ?>
          </ul>
     </div>
 </div>
 
 <?php endif; ?>
-
