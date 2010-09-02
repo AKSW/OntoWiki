@@ -31,7 +31,6 @@ WHERE {
 ?resourceUri a lod2:Partner
 FILTER (!isBLANK(?resourceUri))
 }
-LIMIT 10
 ​';
 
 if ($partners = $this->querylist($query, 'lod2/items/li.phtml')): ?>
@@ -59,7 +58,6 @@ WHERE {
 ?resourceUri a lod2:Deliverable
 FILTER (!isBLANK(?resourceUri))
 }
-LIMIT 10
 ​';
 
 if ($deliverables = $this->querylist($query, 'lod2/items/li.phtml')): ?>
@@ -86,7 +84,6 @@ WHERE {
 ?resourceUri a lod2:Milestone
 FILTER (!isBLANK(?resourceUri))
 }
-LIMIT 10
 ​';
 
 if ($milestones = $this->querylist($query, 'lod2/items/li.phtml')): ?>
