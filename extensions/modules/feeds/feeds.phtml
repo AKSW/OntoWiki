@@ -19,7 +19,11 @@
                                 <?php echo $entry['dateModified'] ?>
                             <?php endif; ?>
                             <?php if (isset($entry['authors'][0])) :?>
-                            | <?php echo $entry['authors'][0] ?>
+                                <?php if (is_array($entry['authors'][0]) && isset($entry['authors'][0]['name'])): ?>
+                                    | <?php echo $entry['authors'][0]['name'] ?>
+                                <?php else: ?>
+                                    | <?php echo $entry['authors'][0] ?>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </a>
                     </p>
