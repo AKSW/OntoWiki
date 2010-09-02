@@ -10,15 +10,20 @@ $templateData = array(
 $nature = isset($this->description['http://lod2.eu/schema/deliverableNature'][0]['value'])
           ? $this->description['http://lod2.eu/schema/deliverableNature'][0]['value']
           : null;
-$level = isset($this->description['http://lod2.eu/schema/disseminationLevel'][0]['value'])
+
+          $level = isset($this->description['http://lod2.eu/schema/disseminationLevel'][0]['value'])
        ? $this->description['http://lod2.eu/schema/disseminationLevel'][0]['value']
        : null;
-$date = isset($this->description['http://lod2.eu/schema/deliveryDate'][0]['value']) 
-     ? $this->description['http://lod2.eu/schema/deliveryDate'][0]['value'] 
-     : null;
+
 $workPackage = isset($this->description['http://lod2.eu/schema/wp'][0]['value']) 
              ? $this->description['http://lod2.eu/schema/wp'][0]['value'] 
              : null;
+
+$date = null;
+if (isset($this->description['http://lod2.eu/schema/deliveryDate'][0]['value'])) {
+    $d = new DateTime($this->description['http://lod2.eu/schema/deliveryDate'][0]['value']);
+    $date = $d->format('j F Y');
+}
 ?>
 
 <div class="maincontent">
