@@ -1,19 +1,13 @@
-<?php
-// TODO: Stylen ...
-if (isset($this->description['http://lod2.eu/schema/next'][0]['value'])) {
+<?php if (isset($this->description['http://lod2.eu/schema/next'][0]['value'])): 
     $nextResourceUri = $this->description['http://lod2.eu/schema/next'][0]['value'];
     $nextResource = new OntoWiki_Resource($nextResourceUri, OntoWiki::getInstance()->selectedModel);
     $fullDescription = $nextResource->getDescription();
+?>Next: <a href="<?php echo $this->url($nextResourceUri) ?>"><?php echo $nextResource->getTitle() ?></a><br/>
+<?php endif; ?>
 
-echo 'next: <a href=' . $nextResourceUri. '>'.$nextResource->getTitle() .'</a><br/>';
-}
-
-if (isset($this->description['http://lod2.eu/schema/previous'][0]['value'])) {
+<?php if (isset($this->description['http://lod2.eu/schema/previous'][0]['value'])):
     $previousResourceUri = $this->description['http://lod2.eu/schema/previous'][0]['value'];
     $previousResource = new OntoWiki_Resource($previousResourceUri, OntoWiki::getInstance()->selectedModel);
     $fullDescription = $previousResource->getDescription();
-
-echo 'previous: <a href=' . $previousResourceUri. '>'.$previousResource->getTitle() .'</a>';
-}
-
-?>
+?>Previous: <a href="<?php echo $this->url($previousResourceUri); ?>"><?php echo $previousResource->getTitle() ?></a>
+<?php endif; ?>
