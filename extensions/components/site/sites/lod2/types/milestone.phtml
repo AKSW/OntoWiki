@@ -10,9 +10,12 @@ $templateData = array(
 $workPackage = isset($this->description['http://lod2.eu/schema/wp'][0]['value']) 
              ? $this->description['http://lod2.eu/schema/wp'][0]['value'] 
              : null;
-$deadline = isset($this->description['http://lod2.eu/schema/deadline'][0]['value'])
-          ? $this->description['http://lod2.eu/schema/deadline'][0]['value']
-          : null;
+
+$deadline = null;
+if (isset($this->description['http://lod2.eu/schema/deadline'][0]['value'])) {
+    $date = new DateTime($this->description['http://lod2.eu/schema/deadline'][0]['value']);
+    $deadline = $date->format('j F Y');
+}
 ?>
 
 <div class="maincontent">
