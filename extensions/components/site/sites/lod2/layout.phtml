@@ -96,13 +96,13 @@
                     'description' => $this->description[$this->resourceUri],
                     'descriptionHelper' => $this->descriptionHelper
             );
-    function printNavi($navi, $titleHelper, $depth){
+    function printNavi($navi, $titleHelper, $depth, $view){
         if(is_array($navi) && count($navi)>0):?>
             <ul class="depth_<?php echo $depth; ?>">
                     <?php foreach ($navi as $navurl => $subnavi) : ?>
                     <li>
-                        <a href="<?php echo $navurl ?>"><?php /* for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";}*/ echo $titleHelper->getTitle($navurl) ?></a>
-                        <?php printNavi($subnavi, $titleHelper, $depth+1); ?>
+                        <a href="<?php echo $view->url($navurl) ?>"><?php /* for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";}*/ echo $titleHelper->getTitle($navurl) ?></a>
+                        <?php printNavi($subnavi, $titleHelper, $depth+1, $view); ?>
                     </li>
                     <?php endforeach; ?>
              </ul>
@@ -136,7 +136,7 @@
         <a id="navigation" name="navigation"></a>
           <!-- main navigation: horizontal list -->
           <!-- ul -->
-          <?php printNavi($this->navigation, $this->descriptionHelper, 0); ?>
+          <?php printNavi($this->navigation, $this->descriptionHelper, 0, $this); ?>
             <!-- li class="search"><a href="#">Keyword search</a></li -->
           <!-- /ul -->
       </div>

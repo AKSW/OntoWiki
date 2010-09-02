@@ -20,7 +20,7 @@ $deadline = isset($this->description['http://lod2.eu/schema/deadline'][0]['value
         <h3><?php echo $this->title ?></h3>
         <div class="section-content">
             <?php echo $this->partial('lod2/content.phtml', $templateData); ?>
-            <?php if ($workPackage): ?>In workpackage: <a href="<?php echo $workPackage; ?>"><?php 
+            <?php if ($workPackage): ?>In workpackage: <a href="<?php echo $this->url($workPackage); ?>"><?php 
                 echo $this->descriptionHelper->getTitle($workPackage); ?></a><?php endif; 
             ?>
             <?php if ($deadline): ?>Deadline: <?php echo $deadline; endif; ?>
