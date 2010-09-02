@@ -1,5 +1,7 @@
 
 partner:okfn a lod2:Partner;
+    sysont:order "10"^^xsd:int;
+    lod2:previous partner:wkd;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Cambridge>;
     foaf:homepage <http://www.okfn.org/>;

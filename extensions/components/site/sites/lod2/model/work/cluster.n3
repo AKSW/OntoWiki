@@ -1,5 +1,5 @@
 cluster:a1 a lod2:ActivityCluster;
-    lod2:next cluster:a1;
+    lod2:next cluster:a2;
     skos:broader pages:ActivityClusters;
     lod2:wp workpackages:wp1, workpackages:wp5, workpackages:wp6;
     rdfs:label "A1 - Fundamental and integration activities";

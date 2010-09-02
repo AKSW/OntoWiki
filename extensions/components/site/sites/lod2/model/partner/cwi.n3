@@ -1,5 +1,8 @@
 
 partner:cwi a lod2:Partner;
+    sysont:order "2"^^xsd:int;
+    lod2:previous partner:ulei;
+    lod2:next partner:nuig;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Amsterdam>;
     foaf:homepage <http://www.cwi.nl/>;

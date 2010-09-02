@@ -1,5 +1,7 @@
 
 partner:ulei a lod2:Partner;
+    sysont:order "1"^^xsd:int;
+    lod2:next partner:cwi;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Leipzig>;
     foaf:homepage <http://aksw.org/>;

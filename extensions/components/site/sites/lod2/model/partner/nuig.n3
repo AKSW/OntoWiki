@@ -1,5 +1,8 @@
 
 partner:nuig a lod2:Partner;
+    sysont:order "3"^^xsd:int;
+    lod2:previous partner:cwi;
+    lod2:next partner:fub;
     skos:broader pages:Consortium;
     foaf:depiction <http://www.deri.ie/fileadmin/images/logos/deri_logo_mp.gif>;
     foaf:based_near <http://dbpedia.org/resource/Galway>;

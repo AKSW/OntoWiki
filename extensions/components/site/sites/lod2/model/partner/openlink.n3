@@ -1,5 +1,8 @@
 
 partner:openlink a lod2:Partner;
+    sysont:order "5"^^xsd:int;
+    lod2:previous partner:fub;
+    lod2:next partner:swc;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/London>;
     sioc:feed <http://virtuoso.openlinksw.com/blog/gems/rss.xml>, <http://www.openlinksw.com/weblogs/oerling/gems/rss.xml>, <http://www.openlinksw.com/weblog/kidehen@openlinksw.com/127/gems/rss.xml>;
