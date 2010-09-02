@@ -1,6 +1,6 @@
 
 partner:fub  a lod2:Partner;
-    sysont:order "4"^^xsd:int;
+    sysont:order "4"^^xsd:integer;
     lod2:previous partner:nuig;
     lod2:next partner:openlink;
     skos:broader pages:Consortium;

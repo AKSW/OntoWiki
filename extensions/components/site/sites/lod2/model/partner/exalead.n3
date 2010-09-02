@@ -1,6 +1,6 @@
 
 partner:exalead a lod2:Partner;
-    sysont:order "8"^^xsd:int;
+    sysont:order "8"^^xsd:integer;
     lod2:previous partner:tenforce;
     lod2:next partner:wkd;
     skos:broader pages:Consortium;

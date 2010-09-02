@@ -1,6 +1,6 @@
 
 partner:openlink a lod2:Partner;
-    sysont:order "5"^^xsd:int;
+    sysont:order "5"^^xsd:integer;
     lod2:previous partner:fub;
     lod2:next partner:swc;
     skos:broader pages:Consortium;

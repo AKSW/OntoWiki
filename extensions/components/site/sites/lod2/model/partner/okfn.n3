@@ -1,6 +1,6 @@
 
 partner:okfn a lod2:Partner;
-    sysont:order "10"^^xsd:int;
+    sysont:order "10"^^xsd:integer;
     lod2:previous partner:wkd;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Cambridge>;

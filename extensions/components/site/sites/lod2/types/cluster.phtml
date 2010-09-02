@@ -24,13 +24,15 @@ $templateData = array(
 
 $query = '
 PREFIX lod2: <http://lod2.eu/schema/>
+PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
 SELECT DISTINCT ?resourceUri
 WHERE {
 <'.$this->resourceUri.'> lod2:wp ?resourceUri.
-?resourceUri a lod2:WorkPackage
+?resourceUri a lod2:WorkPackage.
+?resourceUri sysont:order ?order.
 FILTER (!isBLANK(?resourceUri))
 }
-LIMIT 10
+ORDER BY ASC(?order)
 ​';
 
 if ($workpackages = $this->querylist($query, 'lod2/items/li.phtml')): ?>
@@ -50,14 +52,16 @@ if ($workpackages = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 
 $query = '
 PREFIX lod2: <http://lod2.eu/schema/>
+PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
 SELECT DISTINCT ?resourceUri
 WHERE {
 <'.$this->resourceUri.'> lod2:wp ?wp.
 ?resourceUri lod2:wp ?wp .
-?resourceUri a lod2:Milestone
+?resourceUri a lod2:Milestone.
+?resourceUri lod2:deadline ?date.
 FILTER (!isBLANK(?resourceUri))
 }
-LIMIT 10
+ORDER BY ASC(?date)
 ​';
 
 if ($tasks = $this->querylist($query, 'lod2/items/li.phtml')): ?>
@@ -77,14 +81,16 @@ if ($tasks = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 
 $query = '
 PREFIX lod2: <http://lod2.eu/schema/>
+PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
 SELECT DISTINCT ?resourceUri
 WHERE {
 <'.$this->resourceUri.'> lod2:wp ?wp.
 ?wp lod2:partner ?resourceUri.
 ?resourceUri a lod2:Partner.
+?resourceUri sysont:order ?order.
 FILTER (!isBLANK(?resourceUri))
 }
-LIMIT 10
+ORDER BY ASC(?order)
 ​';
 
 if ($partners = $this->querylist($query, 'lod2/items/li.phtml')): ?>
