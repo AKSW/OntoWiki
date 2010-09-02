@@ -16,7 +16,7 @@ $deadline = isset($this->description['http://lod2.eu/schema/deadline'][0]['value
 ?>
 
 <div class="maincontent">
-    <div class="section partner">
+    <div class="section milestone">
         <h3><?php echo $this->title ?></h3>
         <div class="section-content">
             <?php echo $this->partial('lod2/content.phtml', $templateData); ?>
@@ -27,3 +27,62 @@ $deadline = isset($this->description['http://lod2.eu/schema/deadline'][0]['value
         </div>
     </div>
 </div>
+
+
+<?php // PARTNER
+
+$query = <<<EOT
+PREFIX lod2: <http://lod2.eu/schema/>
+PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
+SELECT DISTINCT ?resourceUri
+WHERE {
+    <{$this->resourceUri}> lod2:wp ?workPackage . 
+    ?workPackage lod2:partner ?resourceUri . 
+    ?resourceUri a lod2:Partner .
+    ?resourceUri sysont:order ?order.
+    FILTER (!isBLANK(?resourceUri))
+}
+ORDER BY ASC(?order)
+EOT;
+
+if ($partner = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c50l">
+    <div class="subcl widget-deeplink">
+        <h3>Partner</h3>
+         <ul>
+            <?php echo $partner ?>
+         </ul>
+    </div>
+</div>
+
+<?php endif; ?>
+
+<?php // DELIVERABLES
+
+$query = <<<EOT
+PREFIX lod2: <http://lod2.eu/schema/>
+PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
+SELECT DISTINCT ?resourceUri
+WHERE {
+    <{$this->resourceUri}> lod2:wp ?workPackage . 
+    ?resourceUri lod2:wp ?workPackage . 
+    ?resourceUri a lod2:Deliverable .
+    ?resourceUri lod2:deliveryDate ?date .
+    FILTER (!isBLANK(?resourceUri))
+}
+ORDER BY ASC(?date)
+EOT;
+
+if ($deliverables = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c50l">
+    <div class="subcl widget-deeplink">
+        <h3>Deliverables</h3>
+         <ul>
+            <?php echo $deliverables ?>
+         </ul>
+    </div>
+</div>
+
+<?php endif; ?>
