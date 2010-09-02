@@ -13,6 +13,14 @@ $templateData = array(
 <div class="maincontent">
     <div class="section">
         <h3><?php echo $this->title ?></h3>
+            <?php if (isset($this->description['http://lod2.eu/schema/partner'][0]['value'])) {
+                $partnerResourceUri = $this->description['http://lod2.eu/schema/partner'][0]['value'];
+                $partnerResource = new OntoWiki_Resource($partnerResourceUri, OntoWiki::getInstance()->selectedModel);
+                //echo $partnerResource->getTitle();
+                // TODO: Partner Liste in inline table
+                // TODO: Homepage Link
+            }
+            ?>
         <div class="section-content">
             <?php echo $content; ?>
         </div>

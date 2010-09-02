@@ -164,14 +164,20 @@ class SiteHelper extends OntoWiki_Component_Helper
         $store = OntoWiki::getInstance()->erfurt->getStore();
         $model = OntoWiki::getInstance()->selectedModel;
 
-        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        $query = '
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
             SELECT ?topConcept
             FROM <' . (string)$model . '>
             WHERE {
                 ?cs a skos:ConceptScheme .
                 ?topConcept skos:topConceptOf ?cs
+                OPTIONAL {
+                    ?topConcept sysont:order ?order
+                    }
             }
-            ORDER BY ';
+            ORDER BY ASC(?order)
+            ';
 
         if ($result = $store->sparqlQuery($query)) {
             $tree = array();

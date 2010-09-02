@@ -21,13 +21,15 @@ $templateData = array(
 
 $query = '
 PREFIX lod2: <http://lod2.eu/schema/>
+PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
 SELECT DISTINCT ?resourceUri
 WHERE {
 ?resourceUri lod2:partner <'.$this->resourceUri.'> .
 ?resourceUri a lod2:WorkPackage.
+?resourceUri sysont:order ?order.
 FILTER (!isBLANK(?resourceUri))
 }
-LIMIT 10
+ORDER BY ASC(?order)
 ​';
 
 if ($workpackages = $this->querylist($query, 'lod2/items/li.phtml')): ?>
@@ -37,6 +39,33 @@ if ($workpackages = $this->querylist($query, 'lod2/items/li.phtml')): ?>
         <h3>Workpackages</h3>
          <ul>
             <?php echo $workpackages ?>
+         </ul>
+    </div>
+</div>
+
+<?php endif; ?>
+
+
+<?php // PROJECTS
+
+$query = '
+PREFIX lod2: <http://lod2.eu/schema/>
+PREFIX doap: <http://usefulinc.com/ns/doap#>
+SELECT DISTINCT ?resourceUri
+WHERE {
+?resourceUri lod2:partner <'.$this->resourceUri.'> .
+?resourceUri a doap:Project.
+FILTER (!isBLANK(?resourceUri))
+}
+​';
+
+if ($projects = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+
+<div class="c50l">
+    <div class="subcl widget-deeplink">
+        <h3>Technology Stack Projects</h3>
+         <ul>
+            <?php echo $projects ?>
          </ul>
     </div>
 </div>

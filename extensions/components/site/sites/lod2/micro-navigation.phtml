@@ -1,4 +1,5 @@
 <?php
+// TODO: Stylen ...
 if (isset($this->description['http://lod2.eu/schema/next'][0]['value'])) {
     $nextResourceUri = $this->description['http://lod2.eu/schema/next'][0]['value'];
     $nextResource = new OntoWiki_Resource($nextResourceUri, OntoWiki::getInstance()->selectedModel);

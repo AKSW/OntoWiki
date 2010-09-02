@@ -6,7 +6,6 @@ partner:swc  a lod2:Partner;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Vienna>;
     foaf:homepage <http://www.semantic-web.at/>;
-    foaf:depiction <>;
     rdfs:label "Semantic Web Company";
     sioc:feed <http://www.semantic-web.at/rss.php>;
     lod2:content """
