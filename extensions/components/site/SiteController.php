@@ -122,7 +122,21 @@ class SiteController extends OntoWiki_Controller_Component
                 'description' => $this->_resource->getDescription(), 
                 'descriptionHelper' => $this->_resource->getDescriptionHelper(),
                 'store'       => OntoWiki::getInstance()->erfurt->getStore(),
-                'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper())
+                'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper()), 
+                'namespaces'  => array(
+                    'rdf'    => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 
+                    'rdfs'   => 'http://www.w3.org/2000/01/rdf-schema#', 
+                    'owl'    => 'http://www.w3.org/2002/07/owl#', 
+                    'dc'     => 'http://purl.org/dc/terms/', 
+                    'skos'   => 'http://www.w3.org/2004/02/skos/core#', 
+                    'sioc'   => 'http://rdfs.org/sioc/ns#', 
+                    'sioct'  => 'http://rdfs.org/sioc/types#', 
+                    'doap'   => 'http://usefulinc.com/ns/doap#', 
+                    'foaf'   => 'http://xmlns.com/foaf/0.1/', 
+                    'xsd'    => 'http://www.w3.org/2001/XMLSchema#', 
+                    'sysont' => 'http://ns.ontowiki.net/SysOnt/', 
+                    'lod2'   => 'http://lod2.eu/schema/'
+                )
             );
 
             // mit assign kann man im Template direkt zugreifen ($this->basePath).

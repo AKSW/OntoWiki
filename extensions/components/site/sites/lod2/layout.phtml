@@ -84,7 +84,8 @@
 
     <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> &mdash; <?php echo $this->site['name'] ?></title>
 </head>
-<body about="<?php echo $this->resourceUri?>">
+<body about="<?php echo $this->resourceUri?>"<?php 
+    foreach ($this->namespaces as $prefix => $ns): ?><?php echo ' xmlns:' . $prefix . '="' . $ns . '"' ?><?php endforeach; ?>>
 <?php
     // this is the standard template data
     $templateData = array(
