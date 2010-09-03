@@ -38,7 +38,7 @@
     color:#000 !important;
   }
 
-  #col1_content h2.hideme
+  #col1_content h2.main
   {
       margin: 0; padding:0.4375em 0.3125em 0.125em 0.3125em;
       font-size: 2.4em;
@@ -51,6 +51,19 @@
       text-transform: uppercase;
       color: #0099cc;
       z-index: 0;
+
+            position: absolute;
+            top:0; left:0;
+            color:#eee;
+            font-weight:bold;
+            font-size:3.5em;
+            height:1em;
+            padding:0.08em 0 0 0;
+            border-style:none;
+            background-color:transparent;
+            text-align:left;
+            overflow:hidden;
+
   }
   
   h3
@@ -253,6 +266,34 @@
   #similarinstances .si_instances li:last-child:after
   {
       content:'';
+  }
+
+  /* -- 5. Pager ------------------------------------------------------------ */
+
+  /* -- 5.1. Previous-Next -- */
+
+  div.pager_prevnext
+  {
+      position: absolute;
+      left:0; top: 0.565em;
+      line-height: 1;
+      z-index: 200;
+  }
+
+  div.pager_prevnext a
+  {
+      font-weight:bold;
+      color:#000;
+      text-decoration:none;
+      display: inline-block;
+      height:1em; width:1em;
+      text-align: center;
+  }
+
+  div.pager_prevnext a:focus,
+  div.pager_prevnext a:hover
+  {
+      background-color: #e1f0f7;
   }
 
   /* -- X. Widgets ---------------------------------------------------------- */

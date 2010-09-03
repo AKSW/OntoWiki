@@ -7,7 +7,7 @@ $templateData = array(
                 'descriptionHelper' => $this->descriptionHelper
         );
 ?>
-<?php if ($content = $this->partial( 'lod2/content.phtml', $templateData)): ?>
+<?php if ($content = trim($this->partial( 'lod2/content.phtml', $templateData))): ?>
 
 <div class="maincontent">
     <div class="section">
@@ -36,20 +36,9 @@ FILTER (!isBLANK(?resourceUri))
 ORDER BY ASC(?order)
 ​';
 
-if ($partners = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+$partners = trim($this->querylist($query, 'lod2/items/li.phtml'));
 
-<div class="c33l">
-    <div class="subcl widget-deeplink">
-        <h3>Partners</h3>
-         <ul>
-            <?php echo $partners ?>
-         </ul>
-    </div>
-</div>
-
-<?php endif; ?>
-
-
+?>
 
 <?php // DELIVERABLES
 
@@ -65,19 +54,8 @@ FILTER (!isBLANK(?resourceUri))
 ORDER BY ASC(?date)
 ​';
 
-if ($deliverables = $this->querylist($query, 'lod2/items/li.phtml')): ?>
-
-<div class="c33l">
-    <div class="subc widget-deeplink">
-        <h3>Deliverables</h3>
-         <ul>
-            <?php echo $deliverables ?>
-         </ul>
-    </div>
-</div>
-
-<?php endif; ?>
-
+$deliverables = trim($this->querylist($query, 'lod2/items/li.phtml'));
+?>
 
 <?php // MILESTONES
 
@@ -93,15 +71,51 @@ FILTER (!isBLANK(?resourceUri))
 ORDER BY ASC(?date)
 ​';
 
-if ($milestones = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+$milestones = trim($this->querylist($query, 'lod2/items/li.phtml'));
+?>
 
-<div class="c33l">
-    <div class="subc widget-deeplink">
-        <h3>Milestones</h3>
-         <ul>
-            <?php echo $milestones ?>
-         </ul>
+<?php if ($partners || $deliverables || $milestones): ?>
+<div class="subcolumns">
+
+    <?php if ($partners): ?>
+
+    <div class="c33l">
+        <div class="subcl widget-deeplink">
+            <h3>Partners</h3>
+             <ul>
+                <?php echo $partners ?>
+             </ul>
+        </div>
     </div>
-</div>
 
+    <?php endif; ?>
+
+    <?php if ($deliverables): ?>
+
+    <div class="c33l">
+        <div class="subc widget-deeplink">
+            <h3>Deliverables</h3>
+             <ul>
+                <?php echo $deliverables ?>
+             </ul>
+        </div>
+    </div>
+
+    <?php endif; ?>
+
+
+    <?php if ($milestones): ?>
+
+    <div class="c33l">
+        <div class="subcr widget-deeplink">
+            <h3>Milestones</h3>
+             <ul>
+                <?php echo $milestones ?>
+             </ul>
+        </div>
+    </div>
+
+    <?php endif; ?>
+
+</div>
 <?php endif; ?>

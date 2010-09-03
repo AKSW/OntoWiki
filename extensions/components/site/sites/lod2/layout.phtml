@@ -14,7 +14,7 @@
 
     <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/styleimports.css" media="all" title="Standard" />
 
-    <style type="text/css" media="all" rel="alternate stylesheet" title="Headline v01.1">
+    <!-- style type="text/css" media="all" rel="alternate stylesheet" title="Headline v01.1">
         @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
 
         #col1_content h2.hideme
@@ -70,7 +70,7 @@
         {
             padding-top: 5.275em;
         }
-    </style>
+    </style -->
 
     <!--[if lte IE 6]>
         <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/patches/ie6.css" media="all" />
@@ -157,7 +157,7 @@
           <div id="col1_content" class="clearfix">
             <!-- add your content here -->
             
-            <h2 class="hideme"><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?></h2>
+            <h2 class="hideme_not main"><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?></h2>
             
             <?php echo $this->partial('lod2/main.phtml', $templateData) ?>
             <?php echo $this->partial('lod2/query.phtml', $templateData) ?>
@@ -189,8 +189,8 @@
             
             <?php // NEARBY
             $nearby = trim($this->module('similarinstances', array('noChrome' => true)));
-            // TODO: fix the 'no matches' hack to a clean contraint
-            if (strpos($nearby, 'No matches.') === false && $this->resourceUri !== 'http://lod2.eu/Welcome'):
+            
+            if ($nearby && $this->resourceUri !== 'http://lod2.eu/Welcome'):
             ?>
             <div class="section">
                 <h3>Nearby</h3>
@@ -199,13 +199,16 @@
                 </div>
             </div>
             <?php endif; ?>
-            
+
+            <?php if ($this->resourceUri == 'http://lod2.eu/Welcome'): ?>
             <div class="section">
                 <h3>Last Changes</h3>
                 <div class="section-content">
                     <?php echo $this->module('lastchanges', array('noChrome' => true)); ?>
                 </div>
             </div>
+            <?php endif; ?>
+            
           </div> <!-- /#col3_content -->
           <!-- IE Column Clearing -->
           <div id="ie_clearing"> &#160; </div>

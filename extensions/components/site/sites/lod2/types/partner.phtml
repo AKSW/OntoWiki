@@ -32,19 +32,9 @@ FILTER (!isBLANK(?resourceUri))
 ORDER BY ASC(?order)
 ​';
 
-if ($workpackages = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+$workpackages = trim($this->querylist($query, 'lod2/items/li.phtml'));
 
-<div class="c50l">
-    <div class="subcl widget-deeplink">
-        <h3>Workpackages</h3>
-         <ul>
-            <?php echo $workpackages ?>
-         </ul>
-    </div>
-</div>
-
-<?php endif; ?>
-
+?>
 
 <?php // PROJECTS
 
@@ -59,15 +49,38 @@ FILTER (!isBLANK(?resourceUri))
 }
 ​';
 
-if ($projects = $this->querylist($query, 'lod2/items/li.phtml')): ?>
+$projects = trim($this->querylist($query, 'lod2/items/li.phtml'));
 
-<div class="c50l">
-    <div class="subcl widget-deeplink">
-        <h3>Technology Stack Projects</h3>
-         <ul>
-            <?php echo $projects ?>
-         </ul>
+?>
+
+<?php if ($workpackages || $projects): ?>
+<div class="subcolumns">
+
+    <?php if ($workpackages): ?>
+
+    <div class="c50l">
+        <div class="subcl widget-deeplink">
+            <h3>Workpackages</h3>
+             <ul>
+                <?php echo $workpackages ?>
+             </ul>
+        </div>
     </div>
-</div>
 
+    <?php endif; ?>
+
+    <?php if ($projects): ?>
+
+    <div class="c50l">
+        <div class="subcr widget-deeplink">
+            <h3>Technology Stack Projects</h3>
+             <ul>
+                <?php echo $projects ?>
+             </ul>
+        </div>
+    </div>
+
+    <?php endif; ?>
+
+</div>
 <?php endif; ?>

@@ -10,9 +10,9 @@
 	    <?php foreach ($this->similars as $type => $instances): ?>
             <?php $class = $this->types[$type] ?>
 	        <li class="si_class">
-                    <h4><a class="hasMenu"
+                    <h4><!-- a class="hasMenu"
                            about="<?php echo $class['uri'] ?>"
-                           href="<?php echo $class['url'] ?>"><?php echo $class['title'] ?></a></h4>
+                           href="<?php echo $class['url'] ?>" --><?php echo $class['title'] ?><!-- /a --></h4>
 	            <ul class="si_instances">
 	                <?php $i = 0; ?>
 	                <?php foreach ($instances as $instance): ?>
