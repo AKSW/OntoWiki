@@ -31,6 +31,7 @@ if (isset($this->description['http://lod2.eu/schema/deadline'][0]['value'])) {
     </div>
 </div>
 
+<div class="subcolumns">
 
 <?php // PARTNER
 
@@ -80,7 +81,7 @@ EOT;
 if ($deliverables = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 
 <div class="c50l">
-    <div class="subcl widget-deeplink">
+    <div class="subcr widget-deeplink">
         <h3>Deliverables</h3>
          <ul>
             <?php echo $deliverables ?>
@@ -89,3 +90,5 @@ if ($deliverables = $this->querylist($query, 'lod2/items/li.phtml')): ?>
 </div>
 
 <?php endif; ?>
+
+</div>

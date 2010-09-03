@@ -7,7 +7,7 @@ if (isset($this->description['http://lod2.eu/schema/query'])) {
     $queryDesc = $queryDesc[$querUri];
     if (isset($queryDesc['http://ns.ontowiki.net/SysOnt/sparql_code'])) {
         $sparql = $queryDesc['http://ns.ontowiki.net/SysOnt/sparql_code'][0]['value'];
-        $content = $this->querylist($sparql, 'lod2/item.phtml');
+        $content = trim($this->querylist($sparql, 'lod2/item.phtml'));
     }
 }
 ?>
