@@ -1,5 +1,13 @@
 <?php /* you can use $this->has() as a shortcut */ ?>
 
+<?php // TODO: Images ordentlich stylen ?>
+<?php if (isset($this->description['http://xmlns.com/foaf/0.1/depiction'])): ?>
+    <img rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/depiction') ?>"
+         src="<?php echo $this->description['http://xmlns.com/foaf/0.1/depiction'][0]['value'] ?>"
+         alt="Depiction of <?php echo htmlentities($this->title) ?>"
+         class="depiction"/>
+<?php endif; ?>
+
 <?php // TODO: Tidy HTML content ?>
 <?php if (isset($this->description['http://lod2.eu/schema/content'])) : ?>
     <div property="<?php echo $this->curie('http://lod2.eu/schema/content') ?>"><?php 
@@ -10,11 +18,3 @@
     <?php echo $this->description['http://rdfs.org/sioc/ns#content'][0]['value']; ?>
 </p>
 <?php endif; ?>
-
-<?php // TODO: Images ordentlich stylen ?>
-<?php if (isset($this->description['http://xmlns.com/foaf/0.1/depiction'])): ?>
-    <img rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/depiction') ?>" 
-         src="<?php echo $this->description['http://xmlns.com/foaf/0.1/depiction'][0]['value'] ?>" 
-         alt="Depiction of <?php echo $this->title ?>"/>
-<?php endif; ?>
-

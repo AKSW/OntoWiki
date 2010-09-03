@@ -136,6 +136,20 @@
     font-weight:inherit;
   }
 
+  /* -- 1.4. Images -- */
+
+  img.depiction
+  {
+      display:block;
+      float: right;
+      margin:-0.5em -0.75em 0 0;
+      padding:0.75em;
+      background-color:transparent;
+      max-width:40%;
+      width:250px;
+      border-right:dotted 2px #b5b6b7;
+  }
+
   /* -- 1.y. Maincontent -- */
 
   .maincontent
@@ -157,12 +171,9 @@
   .maincontent .section-content
   {
     background-color:#e1f0f7;
-  }
-  
-  .maincontent .section-content
-  {
     border-bottom:solid 2px #fff;
     padding:0.5em 0.75em 0 0.75em;
+    overflow: hidden;
   }
   
   /* -- 1.x. Sidecontent -- */
@@ -191,7 +202,12 @@
   }
 
   /* -- 2. Subcolumns ------------------------------------------------------- */
-  
+
+  .subcolumns
+  {
+      margin-top:2.13em;
+  }
+
   .subcl
   {
     padding-right:0.75em;
@@ -268,14 +284,14 @@
       content:'';
   }
 
-  /* -- 5. Pager ------------------------------------------------------------ */
+  /* -- 6. Pager ------------------------------------------------------------ */
 
-  /* -- 5.1. Previous-Next -- */
+  /* -- 6.1. Previous-Next -- */
 
   div.pager_prevnext
   {
       position: absolute;
-      left:0; top: 0.565em;
+      right:2em; top: 0.565em;
       line-height: 1;
       z-index: 200;
   }
