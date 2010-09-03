@@ -18,12 +18,6 @@ $nature = isset($this->description['http://lod2.eu/schema/deliverableNature'][0]
 $workPackage = isset($this->description['http://lod2.eu/schema/wp'][0]['value']) 
              ? $this->description['http://lod2.eu/schema/wp'][0]['value'] 
              : null;
-
-$date = null;
-if (isset($this->description['http://lod2.eu/schema/deliveryDate'][0]['value'])) {
-    $d = new DateTime($this->description['http://lod2.eu/schema/deliveryDate'][0]['value']);
-    $date = $d->format('j F Y');
-}
 ?>
 
 <div class="maincontent">
@@ -31,14 +25,13 @@ if (isset($this->description['http://lod2.eu/schema/deliveryDate'][0]['value']))
         <h3><?php echo $this->title ?></h3>
         <div class="section-content">
             <?php echo $this->partial('lod2/content.phtml', $templateData); ?>
-            <?php if ($workPackage): ?>In workpackage: <a href="<?php echo $this->url($workPackage); ?>"><?php 
-                echo $this->descriptionHelper->getTitle($workPackage); ?></a><?php endif; 
-            ?>
-            <?php if ($date): ?>Delivery date: <?php echo $date; endif; ?>
-            <ul>
-                <li><?php if ($nature): ?>Delivarable nature: <?php echo $nature; endif; ?></li>
-                <li><?php if ($level): ?>Dissemination level: <?php echo $level; endif; ?></li>
-            </ul>
+            <?php if ($workPackage): ?><div>In workpackage: <a href="<?php echo $this->url($workPackage); ?>"><?php 
+                echo $this->descriptionHelper->getTitle($workPackage); 
+            ?></a></div><?php endif; ?>
+            <?php if (isset($this->description['http://lod2.eu/schema/deliveryDate'][0]['value'])): ?><div>Delivery date: <?php
+                echo $this->date($this->description['http://lod2.eu/schema/deliveryDate'][0]['value'], 'j F Y');
+            ?></div><?php endif; ?>
+            <?php if ($nature): ?><div>Delivarable nature: <?php echo $nature; ?></div><?php endif; ?>
         </div>
     </div>
 </div>
