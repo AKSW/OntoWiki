@@ -12,6 +12,11 @@ $templateData = array(
         <h3><?php echo $this->title ?></h3>
         <div class="section-content">
             <?php echo $this->partial( 'lod2/content.phtml', $templateData); ?>
+            <?php if (isset($this->description['http://xmlns.com/foaf/0.1/homepage'][0]['value'])): ?>
+            Homepage: <a href="<?php echo $this->description['http://xmlns.com/foaf/0.1/homepage'][0]['value'] ?>"><?php 
+                echo $this->description['http://xmlns.com/foaf/0.1/homepage'][0]['value'] 
+            ?></a>
+            <?php endif; ?>
         </div>
     </div>
 </div>

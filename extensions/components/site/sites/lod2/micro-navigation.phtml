@@ -5,7 +5,7 @@
     $fullDescription = $previousResource->getDescription();
 ?>
     <a href="<?php echo $this->url($previousResourceUri); ?>">
-        <span class="pager_arrow" title="Previous: <?php echo htmlspecialchars($previousResource->getTitle()) ?>">◂</span>
+        <span class="pager_arrow" title="Previous: <?php echo htmlspecialchars($previousResource->getTitle()) ?>">&larr;</span>
         <span class="hideme">Previous: <?php echo $previousResource->getTitle() ?></span>
     </a>
 <?php endif; ?>
@@ -16,7 +16,7 @@
     $fullDescription = $nextResource->getDescription();
 ?>
     <a href="<?php echo $this->url($nextResourceUri) ?>">
-        <span class="pager_arrow" title="Next: <?php echo htmlspecialchars($nextResource->getTitle()) ?>">▸</span>
+        <span class="pager_arrow" title="Next: <?php echo htmlspecialchars($nextResource->getTitle()) ?>">&rarr;</span>
         <span class="hideme">Next: <?php echo $nextResource->getTitle() ?></span>
     </a>
 <?php endif; ?>

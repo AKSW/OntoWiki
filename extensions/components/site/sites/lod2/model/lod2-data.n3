@@ -34,7 +34,8 @@ pages:Consortium a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "3"^^xsd:integer;
     lod2:query query:Partner;
-    rdfs:label "Consortium".
+    rdfs:label "Consortium";
+    lod2:content """The consortium has the required expertise in the necessary technological and scientific areas: Semantic Web technologies, ontological engineering, machine learning, Web search, information retrieval, databases and knowledge stores. All of the scientific partners have outstanding scientific reputations, and some of them are leaders in their respective fields. In particular with CWI’s outstanding reputation in the database world, LOD2 will substantially contribute to cross-fertilization between database and semantic web research. The LOD2 consortium has the required engineering power provided by TenForce, Exalead and OpenLink Software. The consortium also has the required dissemination and exploitation expertise provided by its innovative SMEs (Exalead, Openlink, TenForce and SWC), a large corporation (WKD) and the eGovernment and Open Knowledge communities represented in the consortium by OKFN. Within efforts such as the Linking Open Data effort, DBpedia and MonetDB (and numerous smaller community projects), the project partners have already demonstrated that they can achieve high-impact results and ensure the global dissemination and maximum impact of their work.""".
 
 pages:TechnologyStack a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
@@ -48,7 +49,8 @@ The LOD2 Consortium partners bring the essential know-how and software, which is
 pages:Project a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "1"^^xsd:integer;
-    rdfs:label "Project".
+    rdfs:label "Project";
+    lod2:content """The outputs of this project will range from sci-tech to socio-economic areas by providing new technologies and an underlying scientific basis for these and by applying these new technologies to a number of Semantic Web areas experiencing commercial (enterprise search, media and publishing), scientific (extraction, interlinking, ontology classification and fusion methods), and sociological (community knowledge, integration in social networks, eGovernment) success at present. The project aims to contribute high-quality interlinked versions of public Semantic Web data sets, promoting their use in new cross-domain applications by developers across the globe. The new technologies for enabling scalable management of Linked Data collections in the many billions of triples will raise the state of the art of Semantic Web data management, both commercial and open-source, providing opportunities for new products and spin-offs, and make RDF a viable choice for organizations worldwide as a premier data management format. The algorithms and (open-source) tools that the project will develop for data cleaning, linking and fusing will help creating and bootstrapping new data sets in domains that go much beyond the direct applications and data sets developed in the context of this project, to reach the overall goal of the project of making Linked Data the model of choice for next-generation IT systems and applications.""".
 
 pages:ActivityClusters a sioct:WikiArticle;
     lod2:content """The work packages of LOD2 fall into five activity clusters.""";
@@ -123,6 +125,12 @@ query:Milestones a sysont:SparqlQuery ;
 query:Deliverables a sysont:SparqlQuery ;
     dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Deliverables" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable>. ?resourceUri <http://lod2.eu/schema/deliveryDate> ?date. FILTER (!isBLANK(?resourceUri)) } ORDER BY ?date ASC".
+
+query:ProjectDeliverables a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Project Components" ;
     sysont:generator "qe" ;
     sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable>. ?resourceUri <http://lod2.eu/schema/deliveryDate> ?date. FILTER (!isBLANK(?resourceUri)) } ORDER BY ?date ASC".
 
