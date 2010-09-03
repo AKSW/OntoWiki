@@ -174,7 +174,7 @@ class SiteHelper extends OntoWiki_Component_Helper
                 ?topConcept skos:topConceptOf ?cs
                 OPTIONAL {
                     ?topConcept sysont:order ?order
-                    }
+                }
             }
             ORDER BY ASC(?order)
             ';
@@ -182,24 +182,28 @@ class SiteHelper extends OntoWiki_Component_Helper
         if ($result = $store->sparqlQuery($query)) {
             $tree = array();
             $topConcepts = array();
-            foreach($result as $row){
+            foreach ($result as $row) {
                 $topConcept = $row['topConcept'];
                 $titleHelper->addResource($topConcept);
                 $closure = $store->getTransitiveClosure(
                     (string)$model,
                     'http://www.w3.org/2004/02/skos/core#broader',
                     $topConcept,
-                    true);
-                foreach($closure as $concept){
+                    true, 
+                    1 /* max depth */);
+                
+                // var_dump($closure);
+                
+                foreach ($closure as $concept) {
                     $titleHelper->addResource($concept['node']);
                 }
-                $conceptTree = array(array($topConcept=>array()));
+                
+                $conceptTree = array(array($topConcept => array()));
                 $topConcepts[] = $topConcept;
                 self::_buildTree($conceptTree, $closure);
-                //echo "<pre>"; var_dump($conceptTree); echo "</pre>";
                 $tree[$topConcept] = $conceptTree[0][$topConcept];
             }
-            //echo "<pre>"; var_dump($tree); echo "</pre>";
+            
             return $tree;
         }
 
