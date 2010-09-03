@@ -30,6 +30,11 @@ class OntoWiki_Model_TitleHelper
     const RESOURCE_VARIABLE = '__resource';
     
     /**
+     * Static title cache per graph
+     */
+    protected static $_titleCache = array();
+    
+    /**
      * Whether to always search all configured title properties
      * in order to find the best language match or stop at the 
      * first matching title property.
@@ -306,73 +311,78 @@ class OntoWiki_Model_TitleHelper
      */
     public function getTitle($resourceUri, $language = null)
     {
-        // * means any language
-        if (trim($language) == '*') {
-            $language = null;
-        }
-        
-        // add if we don't have this URI (but logg)
-        if (!array_key_exists($resourceUri, (array)$this->_resources)) {
-            $logger = OntoWiki::getInstance()->logger;
-            $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
-            $this->addResource($resourceUri);
-        }
-        
-        // HACK: fix a probable Virtuoso bug with querying
-        // for only one resource
-        if (count((array)$this->_resources) < 2) {
-            // add a dummy resource ;)
-            $this->addResource('http://example.com/dummy');
-        }
-        
-        // if this is the first getTitle request, fetch titles
-        if (null === $this->_resourceTitles) {
-            $this->_fetchResourceTitlesFromQueryResult(self::RESOURCE_VARIABLE);
-        }
-        
-        // prepend the language that is asked for to the array
-        // of languages we will look for
-        $languages = $this->_languages;
-        if (null !== $language) {
-            array_unshift($languages, (string)$language);
-        }
-        
-        $title = null;
-        // has anything been found for the resource?
-        if (array_key_exists($resourceUri, $this->_resourceTitles)) {
-            $titleProperties = (array)$this->_resourceTitles[$resourceUri];
-            
-            $currentBestLanguage = PHP_INT_MAX;
-            foreach ($this->_titleProperties as $currentTitleProperty) {
-                // has the property been found for the resource?
-                if (array_key_exists($currentTitleProperty, $titleProperties)) {
-                    
-                    for ($i = 0, $max = count($languages); $i  < $max; $i++) {
-                        $currentLanguage = $languages[$i];
-                        
-                        if (($i < $currentBestLanguage) && isset($titleProperties[$currentTitleProperty][$currentLanguage])) {
-                            $title = $titleProperties[$currentTitleProperty][$currentLanguage];
-                            $currentBestLanguage = $i;
-                            // var_dump(sprintf('%d/%d: %s', $currentBestLanguage, $i, $title));
-                            
-                            if (!$this->_alwaysSearchAllProperties || ($currentBestLanguage === 0)) {
-                                // it won't get better :)
-                                break(2);
+        if (!isset(self::$_titleCache[(string) $this->_model][$resourceUri])) {
+            // * means any language
+            if (trim($language) == '*') {
+                $language = null;
+            }
+
+            // add if we don't have this URI (but logg)
+            if (!array_key_exists($resourceUri, (array)$this->_resources)) {
+                $logger = OntoWiki::getInstance()->logger;
+                $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
+                $this->addResource($resourceUri);
+            }
+
+            // HACK: fix a probable Virtuoso bug with querying
+            // for only one resource
+            if (count((array)$this->_resources) < 2) {
+                // add a dummy resource ;)
+                $this->addResource('http://example.com/dummy');
+            }
+
+            // if this is the first getTitle request, fetch titles
+            if (null === $this->_resourceTitles) {
+                $this->_fetchResourceTitlesFromQueryResult(self::RESOURCE_VARIABLE);
+            }
+
+            // prepend the language that is asked for to the array
+            // of languages we will look for
+            $languages = $this->_languages;
+            if (null !== $language) {
+                array_unshift($languages, (string)$language);
+            }
+
+            $title = null;
+            // has anything been found for the resource?
+            if (array_key_exists($resourceUri, $this->_resourceTitles)) {
+                $titleProperties = (array)$this->_resourceTitles[$resourceUri];
+
+                $currentBestLanguage = PHP_INT_MAX;
+                foreach ($this->_titleProperties as $currentTitleProperty) {
+                    // has the property been found for the resource?
+                    if (array_key_exists($currentTitleProperty, $titleProperties)) {
+
+                        for ($i = 0, $max = count($languages); $i  < $max; $i++) {
+                            $currentLanguage = $languages[$i];
+
+                            if (($i < $currentBestLanguage) && isset($titleProperties[$currentTitleProperty][$currentLanguage])) {
+                                $title = $titleProperties[$currentTitleProperty][$currentLanguage];
+                                $currentBestLanguage = $i;
+                                // var_dump(sprintf('%d/%d: %s', $currentBestLanguage, $i, $title));
+
+                                if (!$this->_alwaysSearchAllProperties || ($currentBestLanguage === 0)) {
+                                    // it won't get better :)
+                                    break(2);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        
-        // still not found?
-        if (null === $title) {
-            $title = OntoWiki_Utils::contractNamespace($resourceUri);
-            
-            // not even namespace found?
-            if ($title == $resourceUri and $this->_alwaysUseLocalNames) {
-                $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
-            }           
+
+            // still not found?
+            if (null === $title) {
+                $title = OntoWiki_Utils::contractNamespace($resourceUri);
+
+                // not even namespace found?
+                if ($title == $resourceUri and $this->_alwaysUseLocalNames) {
+                    $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
+                }           
+            }
+        } else {
+            // cached title
+            $title = self::$_titleCache[(string) $this->_model][$resourceUri];
         }
         
         return $title;
