@@ -6,7 +6,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-02-28"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D1.2> a lod2:Deliverable;
     rdfs:label "D1.2 – State-of-the-art analysis";
@@ -14,7 +14,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2010-12-31"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D1.3> a lod2:Deliverable;
     rdfs:label "D1.3 – Architecture & system design";
@@ -22,7 +22,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-02-28"^^xsd:date;
-    lod2:leadPartner partner:exalead.
+    lod2:leadPartner partner:exalead .
 
 <http://lod2.eu/Deliverable/D1.4> a lod2:Deliverable;
     rdfs:label "D1.4 – Early LOD2 Stack prototype";
@@ -30,7 +30,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:exalead.
+    lod2:leadPartner partner:exalead .
 
 <http://lod2.eu/Deliverable/D2.1.1> a lod2:Deliverable;
     rdfs:label "D2.1.1 – Initial LOD cloud hosted on the LOD2 Knowledge Store Cluster";
@@ -38,7 +38,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2010-11-30"^^xsd:date;
-    lod2:leadPartner partner:openlink.
+    lod2:leadPartner partner:openlink .
 
 <http://lod2.eu/Deliverable/D2.1.2> a lod2:Deliverable;
     rdfs:label "D2.1.2 – State-of-the-Art and LOD2 Laboratory";
@@ -46,7 +46,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-02-28"^^xsd:date;
-    lod2:leadPartner partner:cwi.
+    lod2:leadPartner partner:cwi .
 
 <http://lod2.eu/Deliverable/D2.1.3> a lod2:Deliverable;
     rdfs:label "D2.1.3 – Intermediate hosted LOD cloud (50B) and knowledge store evaluation";
@@ -55,7 +55,7 @@
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-11-30"^^xsd:date;
     lod2:leadPartner partner:openlink;
-    lod2:content """D2.1.3 - D2.1.5 are performance and deployment targets. The performance and deployment targets are validated with real and synthetic workloads as described in Task 2.1. The baseline is the present LOD cache of about 8 billion triples, expanded with other data as it becomes available.""".
+    lod2:content """D2.1.3 - D2.1.5 are performance and deployment targets. The performance and deployment targets are validated with real and synthetic workloads as described in Task 2.1. The baseline is the present LOD cache of about 8 billion triples, expanded with other data as it becomes available.""" .
 
 <http://lod2.eu/Deliverable/D2.1.4> a lod2:Deliverable;
     rdfs:label "D2.1.4 – Intermediate hosted LOD cloud (250B) and knowledge store evaluation";
@@ -64,7 +64,7 @@
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-11-30"^^xsd:date;
     lod2:leadPartner partner:openlink;
-    lod2:content """D2.1.3 - D2.1.5 are performance and deployment targets. The performance and deployment targets are validated with real and synthetic workloads as described in Task 2.1. The baseline is the present LOD cache of about 8 billion triples, expanded with other data as it becomes available.""".
+    lod2:content """D2.1.3 - D2.1.5 are performance and deployment targets. The performance and deployment targets are validated with real and synthetic workloads as described in Task 2.1. The baseline is the present LOD cache of about 8 billion triples, expanded with other data as it becomes available.""" .
 
 <http://lod2.eu/Deliverable/D2.1.5> a lod2:Deliverable;
     rdfs:label "D2.1.5 – Final hosted LOD cloud (1T) and knowledge store evaluation";
@@ -73,7 +73,7 @@
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-11-30"^^xsd:date;
     lod2:leadPartner partner:openlink;
-    lod2:content """This deliverable is an update of the copy of the Linked Open Data cloud (including all major data sets) hosted on the LOD2 Knowledge Store Cluster as initially deployed in <a href="http://lod2.eu/Deliverable/D2.1.1">D2.1.1</>. The deliverable will include benchmark results for major RDF benchmarks, which demonstrate the scalability improvements of the LOD2 Knowledge Store component throughout the project. For this particular deliverable we envision the scalability to reach 1 trillion triples.""".
+    lod2:content """This deliverable is an update of the copy of the Linked Open Data cloud (including all major data sets) hosted on the LOD2 Knowledge Store Cluster as initially deployed in <a href="http://lod2.eu/Deliverable/D2.1.1">D2.1.1</>. The deliverable will include benchmark results for major RDF benchmarks, which demonstrate the scalability improvements of the LOD2 Knowledge Store component throughout the project. For this particular deliverable we envision the scalability to reach 1 trillion triples.""" .
 
 
 <http://lod2.eu/Deliverable/D2.2> a lod2:Deliverable;
@@ -83,7 +83,7 @@
     lod2:disseminationLevel "RE";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
     lod2:leadPartner partner:openlink;
-    lod2:content """As servers are added or removed, data is migrated to keep a given level of redundancy and load balance. An initial implementation of reusable intermediate join and owl:sameAs inferences is also included in this deliverable.""".
+    lod2:content """As servers are added or removed, data is migrated to keep a given level of redundancy and load balance. An initial implementation of reusable intermediate join and owl:sameAs inferences is also included in this deliverable.""" .
 
 <http://lod2.eu/Deliverable/D2.3> a lod2:Deliverable;
     rdfs:label "D2.3 – Integration of OpenLink Virtuoso and MonetDB";
@@ -91,7 +91,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:cwi.
+    lod2:leadPartner partner:cwi .
 
 <http://lod2.eu/Deliverable/D2.4> a lod2:Deliverable;
     rdfs:label "D2.4 – Adaptive caching of intermediate joins and inferences";
@@ -100,7 +100,7 @@
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
     lod2:leadPartner partner:ulei;
-    lod2:content """The results of T2.2 and T2.3 are complete and production strength. The database adapts to workload and configuration changes and creates and discards auxiliary structures as needed.""".
+    lod2:content """The results of T2.2 and T2.3 are complete and production strength. The database adapts to workload and configuration changes and creates and discards auxiliary structures as needed.""" .
 
 <http://lod2.eu/Deliverable/D2.5> a lod2:Deliverable;
     rdfs:label "D2.5 – MonetDB release with optimized graph path processing";
@@ -109,7 +109,7 @@
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
     lod2:leadPartner partner:cwi;
-    lod2:content """The results of T2.5 are involve cutting-edge database research, yet will be available in an open-source release of CWI’s open source database system MonetDB. Where useful, OpenLink will incorporate such features in a later Virtuoso release as well and make them available to the LOD2 Stack via its virtual database feature (effectively embedding MonetDB into Virtuoso).""".
+    lod2:content """The results of T2.5 are involve cutting-edge database research, yet will be available in an open-source release of CWI’s open source database system MonetDB. Where useful, OpenLink will incorporate such features in a later Virtuoso release as well and make them available to the LOD2 Stack via its virtual database feature (effectively embedding MonetDB into Virtuoso).""" .
 
 <http://lod2.eu/Deliverable/D2.6> a lod2:Deliverable;
     rdfs:label "D2.6 – LOD2 knowledge store release with integrated bulk processing features";
@@ -118,7 +118,7 @@
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
     lod2:leadPartner partner:openlink;
-    lod2:content """This release will add map-reduce style function-shipping-to-cluster-nodes functionality to the knowledge store.""".
+    lod2:content """This release will add map-reduce style function-shipping-to-cluster-nodes functionality to the knowledge store.""" .
 
 <http://lod2.eu/Deliverable/D2.7> a lod2:Deliverable;
     rdfs:label "D2.7 – LOD2 knowledge store release with enhanced entity ranking";
@@ -127,7 +127,7 @@
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-02-28"^^xsd:date;
     lod2:leadPartner partner:nuig;
-    lod2:content """This release will contain entity ranking functionality to SPARQL queries which going beyond standard ORDER BY clauses.""".
+    lod2:content """This release will contain entity ranking functionality to SPARQL queries which going beyond standard ORDER BY clauses.""" .
 
 
 
@@ -139,7 +139,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2010-09-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D10.2.1> a lod2:Deliverable;
@@ -148,7 +148,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2010-11-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D12.5.1> a lod2:Deliverable;
     rdfs:label "D12.5.1 – Project Fact Sheet Version 1";
@@ -156,7 +156,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2010-11-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D4.3.1> a lod2:Deliverable;
@@ -165,7 +165,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-01-31"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 <http://lod2.eu/Deliverable/D3.1.1> a lod2:Deliverable;
     rdfs:label "D3.1.1 – State-of-the-Art Report for Extraction from Structured Sources";
@@ -173,7 +173,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-02-28"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D3.4.1> a lod2:Deliverable;
     rdfs:label "D3.4.1 – Report on Automatically Detectable Modelling Errors and Problems";
@@ -181,7 +181,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-02-28"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D10.2.2> a lod2:Deliverable;
     rdfs:label "D10.2.2 – Updated dissemination plan";
@@ -189,7 +189,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-02-28"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D12.2.1> a lod2:Deliverable;
     rdfs:label "D12.2.1 – Intermediate Project Reports";
@@ -197,7 +197,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2011-02-28"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D3.2.1> a lod2:Deliverable;
     rdfs:label "D3.2.1 – NLP2RDF";
@@ -205,7 +205,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-04-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D3.2.2> a lod2:Deliverable;
     rdfs:label "D3.2.2 – DBpedia-Live Extraction";
@@ -213,7 +213,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-04-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D4.4.1> a lod2:Deliverable;
     rdfs:label "D4.4.1 – Specification of the mapping publication and discovery framework";
@@ -221,7 +221,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-06-30"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 # <http://lod2.eu/Deliverable/D10.2.5> a lod2:Deliverable;
 #     rdfs:label "D10.2.5 – Press-release collection";
@@ -229,7 +229,7 @@
 #     lod2:deliverableNature "Report";
 #     lod2:disseminationLevel "PU";
 #     lod2:deliveryDate "2011-06-30"^^xsd:date;
-#     lod2:leadPartner lod2:.
+#     lod2:leadPartner lod2: .
 
 <http://lod2.eu/Deliverable/D8.1.1> a lod2:Deliverable;
     rdfs:label "D8.1.1 – Enterprise requirements";
@@ -237,7 +237,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:wkd.
+    lod2:leadPartner partner:wkd .
 
 <http://lod2.eu/Deliverable/D5.1.1> a lod2:Deliverable;
     rdfs:label "D5.1.1 – Initial release faceted spatial-semantic browsing component";
@@ -245,7 +245,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D3.3.1> a lod2:Deliverable;
     rdfs:label "D3.3.1 – Release of Knowledge Base Enrichment Algorithms";
@@ -253,7 +253,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D10.3.1> a lod2:Deliverable;
     rdfs:label "D10.3.1 – Report on dissemination, community building and cross-fertilization";
@@ -261,7 +261,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D12.3.1> a lod2:Deliverable;
     rdfs:label "D12.3.1 – Yearly Cost Statement Including Yearly Project Report";
@@ -269,7 +269,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D11.1.1> a lod2:Deliverable;
     rdfs:label "D11.1.1 – Exploitation plan";
@@ -277,7 +277,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:openlink.
+    lod2:leadPartner partner:openlink .
 
 <http://lod2.eu/Deliverable/D12.5.2> a lod2:Deliverable;
     rdfs:label "D12.5.2 – Project Fact Sheet Version 2";
@@ -285,7 +285,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D10.5.1> a lod2:Deliverable;
     rdfs:label "D10.5.1 – Press release collection";
@@ -293,7 +293,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-06-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D10.2.5> a lod2:Deliverable;
     rdfs:label "D10.2.5 – Press release collection";
@@ -301,7 +301,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D10.1.2> a lod2:Deliverable;
@@ -310,7 +310,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-10-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D4.2.1> a lod2:Deliverable;
@@ -319,7 +319,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2011-11-30"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D12.1.1> a lod2:Deliverable;
     rdfs:label "D12.1.1 – Updated Implementation Plan Including the Updated Dissemination Plan";
@@ -327,7 +327,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2011-11-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D11.2.1> a lod2:Deliverable;
     rdfs:label "D11.2.1 – IPR plan";
@@ -335,7 +335,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2011-12-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D10.1.1> a lod2:Deliverable;
     rdfs:label "D10.1.1 – LOD2 training course for external audiences";
@@ -343,7 +343,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:okfn.
+    lod2:leadPartner partner:okfn .
 
 <http://lod2.eu/Deliverable/D9.3.1> a lod2:Deliverable;
     rdfs:label "D9.3.1 – Guide and best practices presentation";
@@ -351,7 +351,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:okfn.
+    lod2:leadPartner partner:okfn .
 
 
 <http://lod2.eu/Deliverable/D5.1.2> a lod2:Deliverable;
@@ -360,7 +360,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:cwi.
+    lod2:leadPartner partner:cwi .
 
 
 <http://lod2.eu/Deliverable/D4.1.1> a lod2:Deliverable;
@@ -369,7 +369,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D4.3.2> a lod2:Deliverable;
@@ -378,7 +378,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 
 <http://lod2.eu/Deliverable/D4.4.2> a lod2:Deliverable;
@@ -387,7 +387,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 
 <http://lod2.eu/Deliverable/D3.5.1> a lod2:Deliverable;
@@ -396,7 +396,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 
 
@@ -407,7 +407,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 
 <http://lod2.eu/Deliverable/D12.2.2> a lod2:Deliverable;
@@ -416,7 +416,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:cwi.
+    lod2:leadPartner partner:cwi .
 
 
 <http://lod2.eu/Deliverable/D9.1.1> a lod2:Deliverable;
@@ -425,7 +425,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-04-30"^^xsd:date;
-    lod2:leadPartner partner:okfn.
+    lod2:leadPartner partner:okfn .
 
 
 <http://lod2.eu/Deliverable/D7.1.1> a lod2:Deliverable;
@@ -434,7 +434,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "RE";
     lod2:deliveryDate "2012-04-30"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 
 <http://lod2.eu/Deliverable/D5.2.1> a lod2:Deliverable;
@@ -443,7 +443,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-04-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D4.2.2> a lod2:Deliverable;
@@ -452,7 +452,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-04-30"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 
 <http://lod2.eu/Deliverable/D3.1.2> a lod2:Deliverable;
@@ -461,7 +461,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-04-30"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 
 <http://lod2.eu/Deliverable/D3.1.3> a lod2:Deliverable;
@@ -470,7 +470,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-04-30"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D12.5.3> a lod2:Deliverable;
@@ -479,7 +479,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D10.4.1> a lod2:Deliverable;
@@ -488,7 +488,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 
 <http://lod2.eu/Deliverable/D9.4.1> a lod2:Deliverable;
@@ -497,7 +497,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 
 # <http://lod2.eu/Deliverable/D11.3> a lod2:Deliverable;
@@ -506,7 +506,7 @@
 #     lod2:deliverableNature "Report";
 #     lod2:disseminationLevel "PU";
 #     lod2:deliveryDate "2012-08-31"^^xsd:date;
-#     lod2:leadPartner lod2:.
+#     lod2:leadPartner lod2: .
 
 
 <http://lod2.eu/Deliverable/D9.3.2> a lod2:Deliverable;
@@ -515,7 +515,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:okfn.
+    lod2:leadPartner partner:okfn .
 
 <http://lod2.eu/Deliverable/D8.1.2> a lod2:Deliverable;
     rdfs:label "D8.1.2 – Initial release of an adapted LOD2 Stack for large enterprises";
@@ -523,7 +523,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:wkd.
+    lod2:leadPartner partner:wkd .
 
 
 <http://lod2.eu/Deliverable/D6.1.1> a lod2:Deliverable;
@@ -532,7 +532,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:exalead.
+    lod2:leadPartner partner:exalead .
 
 
 <http://lod2.eu/Deliverable/D6.2.1> a lod2:Deliverable;
@@ -541,7 +541,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:exalead.
+    lod2:leadPartner partner:exalead .
 
 
 <http://lod2.eu/Deliverable/D4.3.3> a lod2:Deliverable;
@@ -550,7 +550,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 
 <http://lod2.eu/Deliverable/D4.5.1> a lod2:Deliverable;
@@ -559,7 +559,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 
 <http://lod2.eu/Deliverable/D3.3.2> a lod2:Deliverable;
@@ -568,7 +568,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D10.3.2> a lod2:Deliverable;
     rdfs:label "D10.3.2 – Report on dissemination, community building and cross-fertilization";
@@ -576,7 +576,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D12.3.2> a lod2:Deliverable;
     rdfs:label "D12.3.2 – Yearly Cost Statement Including Yearly Project Report";
@@ -584,7 +584,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D11.3.1> a lod2:Deliverable;
     rdfs:label "D11.3.1 – Report on standardization activities";
@@ -592,7 +592,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 
 <http://lod2.eu/Deliverable/D11.4.1> a lod2:Deliverable;
@@ -601,7 +601,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D5.1.3> a lod2:Deliverable;
     rdfs:label "D5.1.3- Final release faceted spatial-semantic browsing component";
@@ -609,7 +609,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-10-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D10.1.3> a lod2:Deliverable;
     rdfs:label "D10.1.3 – LOD2 PhD workshop and summer school";
@@ -617,7 +617,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-10-31"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D8.2.1> a lod2:Deliverable;
     rdfs:label "D8.2.1 – Specification of semantic features integration in the enterprise dataflow";
@@ -625,7 +625,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-11-30"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D3.2.3> a lod2:Deliverable;
     rdfs:label "D3.2.3 – Extension of DBpedia Framework";
@@ -633,7 +633,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-11-30"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 
 
@@ -643,7 +643,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-12-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 <http://lod2.eu/Deliverable/D7.2.1> a lod2:Deliverable;
@@ -652,7 +652,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "RE";
     lod2:deliveryDate "2012-12-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D6.3.1> a lod2:Deliverable;
     rdfs:label "D6.2.1 – Initial Evaluation, Documentation, Tutorials";
@@ -660,7 +660,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-12-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D3.4.2> a lod2:Deliverable;
     rdfs:label "D3.4.2 – First Release of ORE";
@@ -668,7 +668,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-12-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D3.5.2> a lod2:Deliverable;
     rdfs:label "D3.5.2 – Release of Web Linkage Validator as LOD2 Stack component";
@@ -676,7 +676,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-12-31"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D8.3.1> a lod2:Deliverable;
     rdfs:label "D8.3.1 – Initial LOD2 Enterprise Stack deployment and evaluation report";
@@ -684,7 +684,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2013-02-28"^^xsd:date;
-    lod2:leadPartner partner:wkd.
+    lod2:leadPartner partner:wkd .
 
 <http://lod2.eu/Deliverable/D5.2.2> a lod2:Deliverable;
     rdfs:label "D5.2.2 – Adaptive widget choreography";
@@ -692,7 +692,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-02-28"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D4.1.2> a lod2:Deliverable;
     rdfs:label "D4.1.2 – Second Linking Assist Release";
@@ -700,7 +700,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-02-28"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D4.4.3> a lod2:Deliverable;
     rdfs:label "D4.4.3 – Integration of the mapping publication and discovery framework";
@@ -708,7 +708,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-02-28"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 <http://lod2.eu/Deliverable/D10.2.4> a lod2:Deliverable;
     rdfs:label "D10.2.4 – Updated dissemination plan";
@@ -716,7 +716,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-02-28"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D12.2.3> a lod2:Deliverable;
     rdfs:label "D12.2.3 – Intermediate Project Reports";
@@ -724,7 +724,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2013-02-28"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D12.1.2> a lod2:Deliverable;
     rdfs:label "D12.1.2 – Updated Implementation Plan Including the Updated Dissemination Plan";
@@ -732,7 +732,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2013-02-28"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D12.2.2> a lod2:Deliverable;
     rdfs:label "D12.2.2 – IPR plan";
@@ -740,7 +740,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2013-04-30"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D8.2.2> a lod2:Deliverable;
     rdfs:label "D8.2.2 – Best practices in semantic management of corporate information";
@@ -748,7 +748,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-05-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 
 <http://lod2.eu/Deliverable/D12.5.4> a lod2:Deliverable;
@@ -757,7 +757,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D9.1.2> a lod2:Deliverable;
     rdfs:label "D9.1.2 – Intermediate release of the GovData.eu website and tools";
@@ -765,7 +765,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:okfn.
+    lod2:leadPartner partner:okfn .
 
 <http://lod2.eu/Deliverable/D8.1.3> a lod2:Deliverable;
     rdfs:label "D8.1.3 – Final release of an adapted LOD2 Stack for large enterprises";
@@ -773,7 +773,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:wkd.
+    lod2:leadPartner partner:wkd .
 
 <http://lod2.eu/Deliverable/D7.1.2> a lod2:Deliverable;
     rdfs:label "D7.1.2 – Second release of news & media data sets";
@@ -781,7 +781,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "RE";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D7.4.1> a lod2:Deliverable;
     rdfs:label "D7.4.1 – Guide and best practices to licensing interlinked data";
@@ -789,7 +789,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:wkd.
+    lod2:leadPartner partner:wkd .
 
 <http://lod2.eu/Deliverable/D6.1.2> a lod2:Deliverable;
     rdfs:label "D6.1.2 – Intermediate release of integrated user-interface components";
@@ -797,7 +797,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:exalead.
+    lod2:leadPartner partner:exalead .
 
 
 <http://lod2.eu/Deliverable/D6.2.2> a lod2:Deliverable;
@@ -806,7 +806,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:exalead.
+    lod2:leadPartner partner:exalead .
 
 <http://lod2.eu/Deliverable/D5.1.4> a lod2:Deliverable;
     rdfs:label "D5.1.4 – Geo-benchmark evaluation";
@@ -814,7 +814,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:cwi.
+    lod2:leadPartner partner:cwi .
 
 <http://lod2.eu/Deliverable/D5.3.1> a lod2:Deliverable;
     rdfs:label "D5.3.1 – Subscription and notification service";
@@ -822,7 +822,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D4.5.2> a lod2:Deliverable;
     rdfs:label "D4.5.2 – Final release of Data Fusion Component";
@@ -830,7 +830,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 <http://lod2.eu/Deliverable/D3.3.3> a lod2:Deliverable;
     rdfs:label "D3.3.3 – Evaluation of Knowledge Base Enrichment";
@@ -838,7 +838,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D2.8> a lod2:Deliverable;
     rdfs:label "D2.8 – LOD2 knowledge store release with basic geographical indexing";
@@ -847,7 +847,7 @@
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
     lod2:leadPartner partner:openlink;
-    lod2:content """This release of the LOD2 knowledge store will contain functionality that integrates spatial criteria into search and demonstrates improved scale of spatial queries from adaptive caching.""".
+    lod2:content """This release of the LOD2 knowledge store will contain functionality that integrates spatial criteria into search and demonstrates improved scale of spatial queries from adaptive caching.""" .
 
 <http://lod2.eu/Deliverable/D10.3.3> a lod2:Deliverable;
     rdfs:label "D10.3.3 – Report on dissemination, community building and cross-fertilization";
@@ -855,7 +855,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D12.3.3> a lod2:Deliverable;
     rdfs:label "D12.3.3 – Yearly Cost Statement Including Yearly Project Report";
@@ -863,7 +863,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D11.1.2> a lod2:Deliverable;
     rdfs:label "D11.1.2 – Exploitation plan";
@@ -871,7 +871,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:openlink.
+    lod2:leadPartner partner:openlink .
 
 <http://lod2.eu/Deliverable/D11.4.2> a lod2:Deliverable;
     rdfs:label "D11.4.2 – Organization of a workshop and networking event targeted at other EU-funded projects";
@@ -879,7 +879,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D11.4.3> a lod2:Deliverable;
     rdfs:label "D11.4.3 – Organization of a workshop and networking event targeted at other EU-funded projects";
@@ -887,7 +887,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D10.1.4> a lod2:Deliverable;
     rdfs:label "D10.1.4 – LOD2 PhD workshop and summer school";
@@ -895,7 +895,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-10-31"^^xsd:date;
-    lod2:leadPartner partner:fub.
+    lod2:leadPartner partner:fub .
 
 <http://lod2.eu/Deliverable/D7.2.2> a lod2:Deliverable;
     rdfs:label "D7.2.2 – Second release of interlinked news and media metadata sets";
@@ -903,7 +903,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "RE";
     lod2:deliveryDate "2013-12-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D7.3.1> a lod2:Deliverable;
     rdfs:label "D7.3.1 – Prototype of User Interface of interlinked data sets";
@@ -911,7 +911,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "RE";
     lod2:deliveryDate "2013-12-31"^^xsd:date;
-    lod2:leadPartner partner:wkd.
+    lod2:leadPartner partner:wkd .
 
 <http://lod2.eu/Deliverable/D6.3.2> a lod2:Deliverable;
     rdfs:label "D6.3.2 – Iterative Evaluation, Documentation, Tutorials";
@@ -919,7 +919,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-12-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D5.4.1> a lod2:Deliverable;
     rdfs:label "D5.4.1 – Mobile spatial-semantic annotation interface";
@@ -927,7 +927,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-12-31"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D3.4.3> a lod2:Deliverable;
     rdfs:label "D3.4.3 – Second Release of ORE";
@@ -935,7 +935,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-12-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D5.3.2> a lod2:Deliverable;
     rdfs:label "D5.3.2 – Open-social API for LOD2 Stack";
@@ -943,7 +943,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-02-28"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D12.2.4> a lod2:Deliverable;
     rdfs:label "D12.2.4 – Intermediate Project Reports";
@@ -951,7 +951,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2014-02-28"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 <http://lod2.eu/Deliverable/D8.3.2> a lod2:Deliverable;
     rdfs:label "D8.3.2 – Final LOD2 Enterprise Stack deployment and evaluation report";
@@ -959,7 +959,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2014-06-30"^^xsd:date;
-    lod2:leadPartner partner:wkd.
+    lod2:leadPartner partner:wkd .
 
 <http://lod2.eu/Deliverable/D5.4.2> a lod2:Deliverable;
     rdfs:label "D5.4.2 – Android application for accessing the LOD2 Stack";
@@ -967,7 +967,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-06-30"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D9.1.3> a lod2:Deliverable;
     rdfs:label "D9.1.3 – Final release of the GovData.eu website and tools";
@@ -975,7 +975,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:okfn.
+    lod2:leadPartner partner:okfn .
 
 <http://lod2.eu/Deliverable/D7.5.1> a lod2:Deliverable;
     rdfs:label "D7.5.1 – Asset creation & commercialization of interlinked data";
@@ -983,7 +983,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:wkd.
+    lod2:leadPartner partner:wkd .
 
 <http://lod2.eu/Deliverable/D6.1.3> a lod2:Deliverable;
     rdfs:label "D6.1.3 – Final release of integrated user-interface components";
@@ -991,7 +991,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:exalead.
+    lod2:leadPartner partner:exalead .
 
 <http://lod2.eu/Deliverable/D6.2.3> a lod2:Deliverable;
     rdfs:label "D6.2.3 – Final release of integrated LOD2 Stack API components";
@@ -999,7 +999,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:exalead.
+    lod2:leadPartner partner:exalead .
 
 <http://lod2.eu/Deliverable/D6.3.3> a lod2:Deliverable;
     rdfs:label "D6.3.3 – Final Evaluation, Documentation, Tutorials";
@@ -1007,7 +1007,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:tenforce.
+    lod2:leadPartner partner:tenforce .
 
 <http://lod2.eu/Deliverable/D12.3.4> a lod2:Deliverable;
     rdfs:label "D12.3.4 – Yearly Cost Statement Including Final Project Report";
@@ -1015,7 +1015,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "CO";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 # <http://lod2.eu/Deliverable/D11.4> a lod2:Deliverable;
 #     rdfs:label "D11.4 – Organization of a workshop and networking event targeted at other EU-funded projects";
@@ -1023,7 +1023,7 @@
 #     lod2:deliverableNature "Other";
 #     lod2:disseminationLevel "PU";
 #     lod2:deliveryDate "2014-08-31"^^xsd:date;
-#     lod2:leadPartner lod2:.
+#     lod2:leadPartner lod2: .
 
 <http://lod2.eu/Deliverable/D11.3.2> a lod2:Deliverable;
     rdfs:label "D11.3.2 – Report on standardization activities";
@@ -1031,7 +1031,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D10.4.2> a lod2:Deliverable;
     rdfs:label "D10.4.2 – Video overview of project results";
@@ -1039,7 +1039,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:nuig.
+    lod2:leadPartner partner:nuig .
 
 <http://lod2.eu/Deliverable/D12.6> a lod2:Deliverable;
     rdfs:label "D12.6 – Final Project Report";
@@ -1047,7 +1047,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei.
+    lod2:leadPartner partner:ulei .
 
 
 
