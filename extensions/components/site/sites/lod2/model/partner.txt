@@ -3,8 +3,8 @@
  3  nuig
  4  fub
  5  openlink
- 6  swc
- 7  tenforce
- 8  exalead
- 9  wkd
-10  okfn
+ 7  swc
+ 8  tenforce
+ 9  exalead
+10  wkd
+11  okfn

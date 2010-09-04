@@ -343,7 +343,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:ulei1.
+    lod2:leadPartner partner:okfn.
 
 <http://lod2.eu/Deliverable/D9.3.1> a lod2:Deliverable;
     rdfs:label "D9.3.1 – Guide and best practices presentation";
@@ -351,7 +351,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-02-29"^^xsd:date;
-    lod2:leadPartner partner:ulei1.
+    lod2:leadPartner partner:okfn.
 
 
 <http://lod2.eu/Deliverable/D5.1.2> a lod2:Deliverable;
@@ -425,7 +425,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-04-30"^^xsd:date;
-    lod2:leadPartner partner:ulei1.
+    lod2:leadPartner partner:okfn.
 
 
 <http://lod2.eu/Deliverable/D7.1.1> a lod2:Deliverable;
@@ -515,7 +515,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2012-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei1.
+    lod2:leadPartner partner:okfn.
 
 <http://lod2.eu/Deliverable/D8.1.2> a lod2:Deliverable;
     rdfs:label "D8.1.2 – Initial release of an adapted LOD2 Stack for large enterprises";
@@ -765,7 +765,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei1.
+    lod2:leadPartner partner:okfn.
 
 <http://lod2.eu/Deliverable/D8.1.3> a lod2:Deliverable;
     rdfs:label "D8.1.3 – Final release of an adapted LOD2 Stack for large enterprises";
@@ -789,7 +789,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2013-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei0.
+    lod2:leadPartner partner:wkd.
 
 <http://lod2.eu/Deliverable/D6.1.2> a lod2:Deliverable;
     rdfs:label "D6.1.2 – Intermediate release of integrated user-interface components";
@@ -911,7 +911,7 @@
     lod2:deliverableNature "Prototype";
     lod2:disseminationLevel "RE";
     lod2:deliveryDate "2013-12-31"^^xsd:date;
-    lod2:leadPartner partner:ulei0.
+    lod2:leadPartner partner:wkd.
 
 <http://lod2.eu/Deliverable/D6.3.2> a lod2:Deliverable;
     rdfs:label "D6.3.2 – Iterative Evaluation, Documentation, Tutorials";
@@ -975,7 +975,7 @@
     lod2:deliverableNature "Other";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei1.
+    lod2:leadPartner partner:okfn.
 
 <http://lod2.eu/Deliverable/D7.5.1> a lod2:Deliverable;
     rdfs:label "D7.5.1 – Asset creation & commercialization of interlinked data";
@@ -983,7 +983,7 @@
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
-    lod2:leadPartner partner:ulei0.
+    lod2:leadPartner partner:wkd.
 
 <http://lod2.eu/Deliverable/D6.1.3> a lod2:Deliverable;
     rdfs:label "D6.1.3 – Final release of integrated user-interface components";
