@@ -8,12 +8,12 @@ $templateData = array(
 );
 
 $nature = isset($this->description['http://lod2.eu/schema/deliverableNature'][0]['value'])
-          ? $this->description['http://lod2.eu/schema/deliverableNature'][0]['value']
-          : null;
+        ? $this->description['http://lod2.eu/schema/deliverableNature'][0]['value']
+        : null;
 
-          $level = isset($this->description['http://lod2.eu/schema/disseminationLevel'][0]['value'])
-       ? $this->description['http://lod2.eu/schema/disseminationLevel'][0]['value']
-       : null;
+$leader = isset($this->description['http://lod2.eu/schema/leadPartner'][0]['value'])
+        ? $this->description['http://lod2.eu/schema/leadPartner'][0]['value']
+        : null;
 
 $workPackage = isset($this->description['http://lod2.eu/schema/wp'][0]['value']) 
              ? $this->description['http://lod2.eu/schema/wp'][0]['value'] 
@@ -25,9 +25,15 @@ $workPackage = isset($this->description['http://lod2.eu/schema/wp'][0]['value'])
         <h3><?php echo $this->title ?></h3>
         <div class="section-content">
             <?php echo $this->partial('lod2/content.phtml', $templateData); ?>
+            
             <?php if ($workPackage): ?><div>In workpackage: <a href="<?php echo $this->url($workPackage); ?>"><?php 
                 echo $this->descriptionHelper->getTitle($workPackage); 
             ?></a></div><?php endif; ?>
+            
+            <?php if ($leader): ?><div>Leading partner: <a href="<?php echo $this->url($leader); ?>"><?php 
+                echo $this->descriptionHelper->getTitle($leader); 
+            ?></a></div><?php endif; ?>
+            
             <?php if (isset($this->description['http://lod2.eu/schema/deliveryDate'][0]['value'])): ?><div>Delivery date: <?php
                 echo $this->date($this->description['http://lod2.eu/schema/deliveryDate'][0]['value'], 'j F Y');
             ?></div><?php endif; ?>
