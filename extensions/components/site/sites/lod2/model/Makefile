@@ -1,13 +1,15 @@
 default:
 	@echo "If you wanna install these models via owcli, type 'make install'"
 
-convert:
-	cwm --n3 lod2-schema.n3 --rdf >lod2-schema.rdf
-	cwm --n3 lod2-config.n3 --rdf >lod2-config.rdf
-	cat lod2-data.n3 work/*.n3 partner/*.n3 >lod2-data-all.n3
-	cwm --n3 lod2-data-all.n3 --rdf >lod2-data.rdf
+combine:
+	cat lod2-data.n3 work/*.n3 partner/*.n3 > lod2-data-all.n3
 
-install: convert install-externals install-config install-schema install-data clean
+convert:
+	cwm --n3 lod2-schema.n3 --rdf > lod2-schema.rdf
+	cwm --n3 lod2-config.n3 --rdf > lod2-config.rdf
+	cwm --n3 lod2-data-all.n3 --rdf > lod2-data.rdf
+
+install: combine convert install-externals install-config install-schema install-data clean
 
 clean:
 	rm lod2*.rdf

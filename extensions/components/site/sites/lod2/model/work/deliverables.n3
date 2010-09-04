@@ -1,3 +1,5 @@
+
+
 <http://lod2.eu/Deliverable/D1.1> a lod2:Deliverable;
     rdfs:label "D1.1 – Common requirements analysis and specification";
     lod2:wp workpackages:wp1;
@@ -708,7 +710,7 @@
     lod2:deliveryDate "2013-02-28"^^xsd:date;
     lod2:leadPartner partner:fub.
 
-http://lod2.eu/Deliverable/D10.2.4> a lod2:Deliverable;
+<http://lod2.eu/Deliverable/D10.2.4> a lod2:Deliverable;
     rdfs:label "D10.2.4 – Updated dissemination plan";
     lod2:wp workpackages:wp10;
     lod2:deliverableNature "Report";
@@ -1046,4 +1048,6 @@ http://lod2.eu/Deliverable/D10.2.4> a lod2:Deliverable;
     lod2:disseminationLevel "PU";
     lod2:deliveryDate "2014-08-31"^^xsd:date;
     lod2:leadPartner partner:ulei.
+
+
 
