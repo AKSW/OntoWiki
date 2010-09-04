@@ -292,7 +292,7 @@
     lod2:wp workpackages:wp10;
     lod2:deliverableNature "Report";
     lod2:disseminationLevel "PU";
-    lod2:deliveryDate "2011-06-31"^^xsd:date;
+    lod2:deliveryDate "2011-06-30"^^xsd:date;
     lod2:leadPartner partner:ulei.
 
 <http://lod2.eu/Deliverable/D10.2.5> a lod2:Deliverable;

@@ -108,29 +108,29 @@ query:ActivityCluster a sysont:SparqlQuery ;
     dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Activity Cluster" ;
     sysont:generator "qe" ;
-    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/ActivityCluster> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri ASC LIMIT 20" .
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/ActivityCluster> FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?resourceUri) LIMIT 20" .
 
 query:WorkPackages a sysont:SparqlQuery ;
     dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Work Packages" ;
     sysont:generator "qe" ;
-    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/WorkPackage>. ?resourceUri <http://ns.ontowiki.net/SysOnt/order> ?order. FILTER (!isBLANK(?resourceUri)) } ORDER BY ?order ASC LIMIT 20" .
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/WorkPackage>. ?resourceUri <http://ns.ontowiki.net/SysOnt/order> ?order. FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?order) LIMIT 20" .
 
 query:Milestones a sysont:SparqlQuery ;
     dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Milestones" ;
     sysont:generator "qe" ;
-    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Milestone> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri ASC LIMIT 20" .
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Milestone> FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?resourceUri) LIMIT 20" .
 
 query:Deliverables a sysont:SparqlQuery ;
     dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Deliverables" ;
     sysont:generator "qe" ;
-    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable>. ?resourceUri <http://lod2.eu/schema/deliveryDate> ?date. FILTER (!isBLANK(?resourceUri)) } ORDER BY ?date ASC".
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable>. ?resourceUri <http://lod2.eu/schema/deliveryDate> ?date. FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?date)".
 
 query:ProjectDeliverables a sysont:SparqlQuery ;
     dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Project Components" ;
     sysont:generator "qe" ;
-    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable>. ?resourceUri <http://lod2.eu/schema/deliveryDate> ?date. FILTER (!isBLANK(?resourceUri)) } ORDER BY ?date ASC".
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable>. ?resourceUri <http://lod2.eu/schema/deliveryDate> ?date. FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?date)".
 

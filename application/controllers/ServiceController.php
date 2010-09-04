@@ -625,8 +625,8 @@ class ServiceController extends Zend_Controller_Action
             
             try {
                 $namedModel  = $store->getModel($namedGraph);
-                $insertModel = $namedGraphModel;
-                $deleteModel = $namedGraphModel;
+                $insertModel = $namedModel;
+                $deleteModel = $namedModel;
             } catch (Erfurt_Store_Exception $e) {
                 // TODO: error
                 if (defined('_OWDEBUG')) {
