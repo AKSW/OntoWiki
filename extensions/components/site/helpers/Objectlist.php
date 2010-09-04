@@ -25,7 +25,10 @@ class Site_View_Helper_Objectlist extends Zend_View_Helper_Abstract
         foreach ((array) $objectArray as $object) {
             if (isset($object['type'])) {
                 if ($object['type'] == 'uri') {
-                    $link = sprintf('<a href="%s">%s</a>', $object['value'], $titleHelper->getTitle($object['value']));
+                    $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+                    $url->setParam('r', $object['value'], true);
+                    
+                    $link = sprintf('<a href="%s">%s</a>', (string) $url, $titleHelper->getTitle($object['value']));
                     array_push($list, $link);
                 } else {
                     array_push($list, $object['value']);
