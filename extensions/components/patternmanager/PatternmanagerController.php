@@ -45,8 +45,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $this->_engine->setConfig($this->_privateConfig);
         $this->_engine->setBackend($this->_erfurt);
         
-        require_once ONTOWIKI_ROOT . $this->_owApp->config->extensions->plugins . 'resourcecreationuri/classes/ResourceUriGenerator.php';
-        
     }
 
     /**
@@ -534,7 +532,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 		        );
 	            
 		        $toolbar->appendButton(
-		            OntoWiki_Toolbar::SAVE,
+		            OntoWiki_Toolbar::SUBMIT,
 		            array('name' => $this->_owApp->translate->_('save pattern'))
 		        );
 
@@ -556,20 +554,21 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	
 	        $this->view->jsonPattern = '{}';
 	
-	        $param = $this->_request->getParam('pattern', null);
-	        if ( !empty($param) ) {
-	            $loaded = $this->_engine->loadFromStore($param);
+	        $pUri  = $this->_request->getParam('pattern', null);
+            $eJson = $this->_request->getParam('error_pattern', null);
+            $pJson = $this->_request->getParam('json_pattern', null);
+            
+	        if ( !empty($pUri) ) {
+	            $loaded = $this->_engine->loadFromStore($pUri);
 	            $this->view->jsonPattern = $loaded->toArray(true);
 	        }
 	
-	        $param = $this->_request->getParam('json_pattern', null);
-	        if ( !empty($param) ) {
-	            $this->view->jsonPattern = $param;
+	        if ( !empty($pJson) ) {
+	            $this->view->jsonPattern = $pJson;
 	        }
 	
-	        $param = $this->_request->getParam('error_pattern', null);
-	        if ( !empty($param) ) {
-	            $this->view->errorPattern = $param;
+	        if ( !empty($eJson) ) {
+	            $this->view->errorPattern = $eJson;
 	        }
 	        
 	        $this->view->exportUrl = (string) (new OntoWiki_Url(

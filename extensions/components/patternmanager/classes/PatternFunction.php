@@ -198,7 +198,9 @@ class PatternFunction {
      * @param unknown_type $options
      */
     private function callGetsmarturi($options) {
-                
+        
+        require_once ONTOWIKI_ROOT . 'plugins/resourcecreationuri/classes/ResourceUriGenerator.php';
+        
         $gen = new ResourceUriGenerator();
         $uri = $gen->generateUri($options[0], ResourceUriGenerator::FORMAT_SPARQL);
         

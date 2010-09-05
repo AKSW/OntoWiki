@@ -574,7 +574,7 @@ class BasicPattern {
         $split[] = strlen($value);
 
         
-        $func = new PatternFunction();
+        $func = PatternFunction::getInstance();
         
         if ( !$func->isFunctionAvailable($name) ) {
             throw new RuntimeException('BasicPattern invalid builtinFunction name ' . $name);

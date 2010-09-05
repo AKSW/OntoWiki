@@ -73,6 +73,8 @@ class PatternEngine {
         
         $this->_ac->setExternalAc($erfurt->getAc());
         
+        $this->_ac->setExternalModel($this->_privateConfig->storeModel);
+        
         if ( $this->_store->isModelAvailable($this->_privateConfig->storeModel,false) ) {
             // do nothing
         } else {

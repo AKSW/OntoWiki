@@ -31,12 +31,39 @@ class PatternEngineAc {
     const RIGHT_EDIT_STR = 'EvolutionEngine_Edit';
     const RIGHT_EXEC_STR = 'EvolutionEngine_Exec';
     
+    /**
+     * 
+     * Enter description here ...
+     * @var array
+     */
     private $_allowedActions = array();
     
+    /**
+     * 
+     * Enter description here ...
+     * @var int (bitmask)
+     */
     private $_maskActions = 0;
     
+    /**
+     * 
+     * Enter description here ...
+     * @var Erfurt_Ac_Default
+     */
     private $_externalAc = null;
     
+    /**
+     * 
+     * Enter description here ...
+     * @var string
+     */
+    private $_externalModel = null;
+    
+    /**
+     * 
+     * Enter description here ...
+     * @var boolean
+     */
     private $_isInit = false;
     
     /**
@@ -53,9 +80,9 @@ class PatternEngineAc {
         
         if ($this->_isInit) {
             // do nothing
-        } elseif ($this->_externalAc) {
+        } elseif ($this->_externalAc && $this->_externalModel) {
             
-            if ($this->_externalAc->isActionAllowed(self::RIGHT_EDIT_STR)) {
+            if ($this->_externalAc->isModelAllowed('edit',(string) $this->_externalModel)) {
                 $this->_maskActions |= self::RIGHT_EDIT;
                 $this->_allowedActions[self::RIGHT_EDIT_STR] = true;
             } else {
@@ -69,7 +96,7 @@ class PatternEngineAc {
                 
             }
 
-            if ($this->_externalAc->isActionAllowed(self::RIGHT_VIEW_STR)) {
+            if ($this->_externalAc->isModelAllowed('view',(string) $this->_externalModel)) {
                 $this->_maskActions |= self::RIGHT_VIEW;
                 $this->_allowedActions[self::RIGHT_VIEW_STR] = true;
             } else {
@@ -101,6 +128,23 @@ class PatternEngineAc {
         } else {
             return false;
         }
+    }
+    
+    /**
+     * 
+     * Enter description here ...
+     * @param $model
+     */
+    public function setExternalModel($model) {
+        $this->_externalModel = $model;
+    }
+    
+    /**
+     * 
+     * Enter description here ...
+     */
+    public function getExternalModel() {
+        return $this->_externalModel;
     }
     
     /**

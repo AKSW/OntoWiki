@@ -116,7 +116,7 @@
 <?php if ( !empty($this->jsonPattern) && is_string($this->jsonPattern) )  { ?>
 <script type="text/javascript">
 // jQuery Json used here (compatible)
-var jsonPattern = $.secureEvalJSON(<?php echo '\'' . addcslashes($this->jsonPattern,'\'') . '\''; ?>);
+var jsonPattern = $.secureEvalJSON(<?php echo '\'' . addcslashes($this->jsonPattern,'\\\'') . '\''; ?>);
 
 label = jsonPattern['label'];
 desc = jsonPattern['desc'];
@@ -166,7 +166,7 @@ for (key in jsonPattern['subPattern']) {
 <?php if ( !empty($this->errorPattern) && is_string($this->errorPattern) )  { ?>
 <script type="text/javascript">
 // jQuery Json used here (compatible)
-var errorpattern = $.secureEvalJSON(<?php echo '\'' . $this->errorPattern . '\''; ?>);
+var errorpattern = $.secureEvalJSON(<?php echo '\'' . addcslashes($this->errorPattern,'\'\\') . '\''; ?>);
 for (i in errorpattern) {
     $('#' + errorpattern[i]).css('background-color','#FF7070').css('color','#FAFAFA');
 }
