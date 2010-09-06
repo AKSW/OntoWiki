@@ -590,6 +590,8 @@ class ServiceController extends Zend_Controller_Action
             $deleteGraph   = isset($matches[2]) ? $matches[2] : null;
             $deleteTriples = isset($matches[3]) ? $matches[3] : '';
             
+            // TODO: normalize literals
+            
             $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('nt');
             $insert = $parser->parse($insertTriples, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
             $parser->reset();
