@@ -26,5 +26,5 @@ Virtuoso is a knowledge store and virtualization platform that transparently int
 """;
     foaf:depiction <http://docs.openlinksw.com/images/misc/splash.jpg>;
     lod2:partner partner:openlink;
-    rdfs:label "Virtuoso".
+    rdfs:label "OpenLink Virtuoso".
 
