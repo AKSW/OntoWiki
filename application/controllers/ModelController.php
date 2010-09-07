@@ -796,7 +796,7 @@ class ModelController extends OntoWiki_Controller_Base
         $windowTitle = $translate->_('Model info');
         $this->view->placeholder('main.window.title')->set($windowTitle);
         
-        $title = $resource->getTitle();
+        $title = $resource->getTitle($this->_owApp->getConfig()->languages->locale);
         $this->view->modelTitle = $title ? $title : OntoWiki_Utils::contractNamespace((string)$resource);
         $this->view->resourcesUrl = $this->_config->staticUrlBase . 'index.php/list/init/1';
 
