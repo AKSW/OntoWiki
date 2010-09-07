@@ -10,13 +10,6 @@
 <?php else: ?>
     <p class="messagebox warning"><?php echo $this->_('There are no comments, descriptions or notes on this knowledge base.') ?></p>
 <?php endif; ?>
-<h3>Actions</h3>
-<?php
-if($this->has('showFoafLink') && $this->showFoafLink){
-    ?><a href="<?php echo $this->foafLink; ?>">open FOAF viewer</a><br/><?php
-}
-?>
-<a href="<?php echo $this->resourcesUrl; ?>">view all resources</a>
 <!--h3><?php echo $this->_('Statistical Outline') ?></h3>
 <table class="separated-vertical">
     <tr class="odd">
@@ -106,3 +99,14 @@ if($this->has('showFoafLink') && $this->showFoafLink){
 <?php else: ?>
     <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
 <?php endif; ?>
+
+
+<div class="messagebox">
+<h4><?php echo $this->_('Actions') ?></h4>
+<?php
+if($this->has('showFoafLink') && $this->showFoafLink){
+    ?><a href="<?php echo $this->foafLink; ?>">open FOAF viewer</a><br/><?php
+}
+?>
+<a href="<?php echo $this->resourcesUrl; ?>"> <?php echo $this->_('view all resources') ?></a>
+</div>
