@@ -86,10 +86,19 @@ class SiteHelper extends OntoWiki_Component_Helper
             $router->addRoute('empty', $emptyRoute);
         }
         
-        // modify toolbar
-        $toolbar = OntoWiki_Toolbar::getInstance();
-        $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                ->prependButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Back to Site', 'url' => $this->_owApp->selectedResource . '.html'));
+        if ($controller === 'resource' && $action === 'properties') {
+            $resourceUrl = $this->_owApp->selectedResource;
+            
+            if (!empty($resourceUrl) && $resourceUrl != (string)$this->_owApp->selectedModel) {
+                $resourceUrl .= '.html';
+            }
+            
+            $toolbar = OntoWiki_Toolbar::getInstance();
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
+                    ->prependButton(OntoWiki_Toolbar::SUBMIT, array(
+                        'name' => 'Back to Site', 
+                        'url' => $resourceUrl));
+        }
     }
     
     // http://localhost/OntoWiki/SiteTest/
