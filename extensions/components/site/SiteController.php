@@ -142,6 +142,7 @@ class SiteController extends OntoWiki_Controller_Component
             // mit assign kann man im Template direkt zugreifen ($this->basePath).
             $this->view->assign($siteConfig);
             $this->_response->setBody($this->view->render($mainTemplate));
+            $this->_response->setHeader('Content-Type', 'text/html; encoding=utf-8');
         } else {
             $this->_response->setRawHeader('HTTP/1.0 404 Not Found');
             $this->_response->setBody($this->view->render('404.phtml'));

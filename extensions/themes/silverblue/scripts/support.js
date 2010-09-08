@@ -358,22 +358,21 @@ function populateRDFauthor(data) {
             var objects = data[currentSubject][currentProperty];
 
             for (var i = 0; i < objects.length; i++) {
-                var currentObjectSpec = objects[i];
+                var objSpec = objects[i];
                 
-                var newObjectSpec;
-                if (currentObjectSpec.type == 'uri') {
-                    newObjectSpec = '<' + currentObjectSpec.value + '>';
-                } else {
-                    newObjectSpec = {
-                        value: currentObjectSpec.value, 
-                        options: {}
-                    }
-                    
-                    if (currentObjectSpec.value) {
-                        if (currentObjectSpec.type == 'typed-literal') {
-                            newObjectSpec.options.datatype = currentObjectSpec.datatype;
-                        } else if (currentObjectSpec.lang) {
-                            newObjectSpec.options.lang = currentObjectSpec.lang;
+                var newObjectSpec = {
+                    value: (objSpec.type == 'uri') ? ('<' + objSpec.value + '>') : objSpec.value, 
+                    type: String(objSpec.type).replace('typed-', '')
+                }
+                
+                if (objSpec.value) {
+                    if (objSpec.type == 'typed-literal') {
+                        newObjectSpec.options = {
+                            datatype: objSpec.datatype
+                        }
+                    } else if (objSpec.lang) {
+                        newObjectSpec.options = {
+                            lang: objSpec.lang
                         }
                     }
                 }
@@ -384,9 +383,9 @@ function populateRDFauthor(data) {
                     object: newObjectSpec
                 }, {
                     graph: selectedResource.graphURI, 
-                    title: currentObjectSpec.title, 
+                    title: objSpec.title, 
                     protected: true, 
-                    hidden: currentObjectSpec.hidden ? currentObjectSpec.hidden : false
+                    hidden: objSpec.hidden ? objSpec.hidden : false
                 }));
             }
         }

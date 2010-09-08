@@ -17,7 +17,7 @@ partner:openlink a lod2:Partner;
 
 project:Virtuoso a doap:Project;
     skos:broader pages:TechnologyStack;
-    doap:homepage <http://ontowiki.net>;
+    doap:homepage <http://openlinksw.com>;
     lod2:content """
 Virtuoso is an innovative industry standards compliant platform for native data, information, and knowledge management. It implements and supports a broad spectrum of query languages, data access interfaces, protocols, and data representation formats that includes: SQL, SPARQL, ODBC, JDBC, HTTP, WebDAV, XML, RDF, RDFa, and many more.
 

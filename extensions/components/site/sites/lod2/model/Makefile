@@ -4,12 +4,12 @@ default:
 combine:
 	cat lod2-data.n3 work/*.n3 partner/*.n3 > lod2-data-all.n3
 
-convert:
+convert: combine
 	cwm --n3 lod2-schema.n3 --rdf > lod2-schema.rdf
 	cwm --n3 lod2-config.n3 --rdf > lod2-config.rdf
 	cwm --n3 lod2-data-all.n3 --rdf > lod2-data.rdf
 
-install: combine convert install-externals install-config install-schema install-data clean
+install: convert install-externals install-config install-schema install-data clean
 
 clean:
 	rm lod2*.rdf
