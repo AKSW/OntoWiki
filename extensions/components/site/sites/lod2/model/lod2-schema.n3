@@ -86,7 +86,7 @@ lod2:Deliverable a owl:Class;
 
 lod2:Task a owl:Class;
     skos:note "Short text (maybe this should included in working packages)";
-    rdfs:label "Tasl".
+    rdfs:label "Task".
 
 ### Classes from other schemas
 
