@@ -5,7 +5,7 @@ partner:fub  a lod2:Partner;
     lod2:next partner:openlink;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Berlin>;
-    foaf:homepage <http://www4.wiwiss.fu-berlin.de/bizer/websys/>;
+    foaf:homepage <http://www.wiwiss.fu-berlin.de/en/institute/pwo/bizer/index.html>;
     rdfs:label "Freie Universität Berlin";
     lod2:content """
 <p>The Web-based Systems Group at Freie Universität Berlin explores technical and economic questions concerning the development of global, decentralized information environments. Its current focus lies on the publication and interlinking of structured data on the Web using Semantic Web technologies.</p>
