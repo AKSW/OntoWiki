@@ -207,7 +207,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                         'curi'     => null
                     );
 
-                    $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                    
                     switch ($row['object']['type']) {
                         case 'uri':
                             // every URI objects is only used once for each statement
@@ -251,6 +251,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             break;
 
                         case 'typed-literal':
+                            $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
                             $value['datatype'] = OntoWiki_Utils::compactUri($row['object']['datatype']);
                             $event->value    = $row['object']['value'];
                             $event->datatype = $row['object']['datatype'];
@@ -262,8 +263,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                                 $value['object'] = $row['object']['value'];
                             }
 
-                            /* fallthrough */
-
+                            break;
                         case 'literal':
                             // original (unmodified) for RDFa
                             $value['content'] = $row['object']['value'];
@@ -273,7 +273,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                              * property is returned. Plugins can attach to this trigger in order to modify 
                              * the value that gets displayed.
                              */
-                            
+                            $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
                             $event->value    = $row['object']['value'];
                             $event->property = $predicateUri;
 
