@@ -49,10 +49,8 @@ $(document).ready(function() {
     
     // make resizer draggable
     // draggables need an explicit (inline) position
-    $('.section-sidewindows .resizer-horizontal').css('position', 'absolute');
-    var documentHeight = $(document).height();
     $('.section-sidewindows .resizer-horizontal')
-        .height(documentHeight + 'px')
+        .css('position', 'absolute')
         .draggable({
             axis: 'x', 
             zIndex: dragZIndex,  
@@ -69,12 +67,23 @@ $(document).ready(function() {
                 // jQuery UI bug in Safari
                 $('.section-sidewindows').css('position', 'absolute');
                 $('.section-sidewindows .resizer-horizontal').removeClass('dragging');
-            }
-        });
+            }});
+    
+    // resize separator when all ajax crap is loaded
+    window.setTimeout(function () {        
+        $('.section-sidewindows .resizer-horizontal').height(
+            Math.max(
+                $(document).height(),
+                $(window).height(),
+                /* for Opera: */
+                document.documentElement.clientHeight
+            ) + 'px');
+    }, 750);
+    
     if (typeof sectionRatio != 'undefined') {
         setSectionRatio(sectionRatio);
     }
-
+    
     /* list selection */
     $('table.resource-list > tbody > tr').live('click', function(e) {
         var selectee     = $(this);
