@@ -341,6 +341,7 @@ $(document).ready(function() {
         loadRDFauthor(function () {
             var serviceURI = urlBase + 'service/rdfauthorinit';
             var prototypeResource = selectedResource.URI;
+            RDFauthor.reset();
 
             $.getJSON(serviceURI, {
                mode: 'clone',
