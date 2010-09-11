@@ -4,6 +4,7 @@
     xmlns:dc="http://purl.org/dc/terms/"
     xmlns:foaf="http://xmlns.com/foaf/0.1/">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="generator" content="<?php echo $this->generator ?>" />
     <link rel="alternate" type="application/rdf+xml" href="<?php echo $this->resourceUri ?>.rdf" />
     <link rel="pingback" href="<?php echo $this->pingbackUri ?>" />
@@ -12,19 +13,82 @@
         rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/primaryTopic') ?>"
         href="<?php echo $this->resourceUri?>" />
 
-    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/styleimports.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/styleimports.css" media="all" title="Standard" />
 
-    <!--[if IE lte 6]><link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/patches/ie6.css" media="all" /><![endif]-->
+    <!-- style type="text/css" media="all" rel="alternate stylesheet" title="Headline v01.1">
+        @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
+
+        #col1_content h2.hideme
+        {
+            position:static; left:auto; top:auto;
+        }
+    </style>
+
+    <style type="text/css" media="all" rel="alternate stylesheet" title="Headline v01.2">
+        @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
+
+        #col1_content h2.hideme
+        {
+            position:static; left:auto; top:auto;
+            color:#000;
+        }
+    </style>
+
+    <style type="text/css" media="all" rel="alternate stylesheet" title="Headline v02.1">
+        @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
+
+        #col1_content h2.hideme
+        {
+            top:0; left:0;
+            color:#eee;
+            font-weight:bold;
+            font-size:3.5em;
+            height:1em;
+            padding:0.08em 0 0 0;
+            border-style:none;
+            background-color:transparent;
+            text-align:left;
+            overflow:hidden;
+        }
+    </style>
+
+    <style type="text/css" media="all" rel="alternate stylesheet" title="Headline v03.1">
+        @import url(<?php echo $this->baseUri ?>/css/styleimports.css);
+
+        #col1_content h2.hideme
+        {
+            position:static; top:0; left:0;
+            color:#0099cc;
+            font-weight:normal;
+            font-size:2.4em;
+            padding:0.75em 0 0 0;
+            border-style:none;
+            background-color:transparent;
+            text-align:left;
+        }
+
+        .sidecontent .section:first-child h3
+        {
+            padding-top: 5.275em;
+        }
+    </style -->
+
+    <!--[if lte IE 6]>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/patches/ie6.css" media="all" />
+    <![endif]-->
 
     <!-- jQuery -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
+    
+    <!--script type="text/javascript" src="<?php echo $this->libraryUrlBase ?>RDFauthor/src/rdfauthor.js"></script-->
 
     <!--script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery-fluid16.js"></script-->
 
     <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> &mdash; <?php echo $this->site['name'] ?></title>
 </head>
-<body about="<?php echo $this->resourceUri?>">
+<body<?php 
+    foreach ($this->namespaces as $prefix => $ns): ?><?php echo ' xmlns:' . $prefix . '="' . $ns . '"' ?><?php endforeach; ?>>
 <?php
     // this is the standard template data
     $templateData = array(
@@ -33,13 +97,13 @@
                     'description' => $this->description[$this->resourceUri],
                     'descriptionHelper' => $this->descriptionHelper
             );
-    function printNavi($navi, $titleHelper, $depth){
+    function printNavi($navi, $titleHelper, $depth, $view){
         if(is_array($navi) && count($navi)>0):?>
             <ul class="depth_<?php echo $depth; ?>">
                     <?php foreach ($navi as $navurl => $subnavi) : ?>
                     <li>
-                        <a href="<?php echo $navurl ?>"><?php /* for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";}*/ echo $titleHelper->getTitle($navurl) ?></a>
-                        <?php printNavi($subnavi, $titleHelper, $depth+1); ?>
+                        <a href="<?php echo $view->url($navurl) ?>"><?php /* for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";}*/ echo $titleHelper->getTitle($navurl) ?></a>
+                        <?php printNavi($subnavi, $titleHelper, $depth+1, $view); ?>
                     </li>
                     <?php endforeach; ?>
              </ul>
@@ -52,7 +116,7 @@
   <!-- a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span -->
   <!-- end: skip link navigation -->
   <div class="page_margins">
-    <div class="page">
+    <div class="page" about="<?php echo $this->resourceUri?>">
       <div id="header">
         <h1 id="logo">
             <a href="<?php echo $this->site['index'] ?>">
@@ -64,7 +128,7 @@
                 <!-- li><a href="#">Sitemap</a></li -->
                 <!-- li><a href="#">Contact Us</a></li -->
                 <!-- li><a href="#">Imprint</a></li -->
-                <li><a href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo $this->resourceUri ?>">Log In/Edit</a></li>
+                <li><a rel="nofollow" href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo urlencode($this->resourceUri) ?>">Log In/Edit</a></li>
             </ul>
         </div> <!-- /#topnav -->
       </div>
@@ -73,7 +137,7 @@
         <a id="navigation" name="navigation"></a>
           <!-- main navigation: horizontal list -->
           <!-- ul -->
-          <?php printNavi($this->navigation, $this->descriptionHelper, 0); ?>
+          <?php printNavi($this->navigation, $this->descriptionHelper, 0, $this); ?>
             <!-- li class="search"><a href="#">Keyword search</a></li -->
           <!-- /ul -->
       </div>
@@ -94,7 +158,7 @@
           <div id="col1_content" class="clearfix">
             <!-- add your content here -->
             
-            <h2 class="hideme"><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?></h2>
+            <h2 class="hideme_not main"><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?></h2>
             
             <?php echo $this->partial('lod2/main.phtml', $templateData) ?>
             <?php echo $this->partial('lod2/query.phtml', $templateData) ?>
@@ -126,8 +190,8 @@
             
             <?php // NEARBY
             $nearby = trim($this->module('similarinstances', array('noChrome' => true)));
-            // TODO: fix the 'no matches' hack to a clean contraint
-            if (strpos($nearby, 'No matches.') === false):
+            
+            if ($nearby && $this->resourceUri !== 'http://lod2.eu/Welcome'):
             ?>
             <div class="section">
                 <h3>Nearby</h3>
@@ -136,13 +200,16 @@
                 </div>
             </div>
             <?php endif; ?>
-            
+
+            <?php if ($this->resourceUri == 'http://lod2.eu/Welcome'): ?>
             <div class="section">
                 <h3>Last Changes</h3>
                 <div class="section-content">
                     <?php echo $this->module('lastchanges', array('noChrome' => true)); ?>
                 </div>
             </div>
+            <?php endif; ?>
+            
           </div> <!-- /#col3_content -->
           <!-- IE Column Clearing -->
           <div id="ie_clearing"> &#160; </div>
@@ -159,6 +226,7 @@
         <p class="subline">
             This page is powered by
             <a href="http://ontowiki.net/" title="OntoWiki is a Semantic Data Wiki enabling the collaborative creation and (linked data) publication of RDF knowledge bases."><?php echo $this->generator ?></a>,
+            <a href="http://virtuoso.openlinksw.com/" title="Virtuoso is an innovative enterprise grade multi-model data server for agile enterprises &amp; individuals.">Virtuoso</a>,
             <a href="http://www.yaml.de/" title="YAML is an (X)HTML/CSS framework for creating modern and flexible floated layouts."><abbr title="Yet Another Multicolumn Layout">YAML</abbr</a> and
             <a href="jquery.com" title="jQuery is a fast and concise JavaScript Library that simplifies HTML document traversing, event handling, animating, and Ajax interactions for rapid web development.">jQuery</a>.
             <a id="sfp-logo" href="#"><span class="hideme">publicly sponsored by Seventh Framework Program</span></a>

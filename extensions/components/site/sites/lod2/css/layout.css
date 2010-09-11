@@ -32,7 +32,7 @@
     background-color:#d9dadb;
     color:#000;
     font-size:0.875em;
-    font-family:'Droid Sans', sans-serif; font-weight:normal; font-style:normal;
+    font-family:'Droid Sans', Arial, sans-serif; font-weight:normal; font-style:normal;
     line-height:1.5;
   }
 
@@ -67,12 +67,12 @@
     margin:0; padding:0;
     background:url(./../img/logo-lod2.png) no-repeat top left #fff;
     width:552px;
-    height:114px;
+    height:117px;
   }
   
   #logo a
   {
-    width:175px;
+    width:190px;
   }
   
   #logo span,
@@ -160,7 +160,6 @@
   #nav ul.depth_1
   {
     opacity:0.9;
-    border-bottom:solid 1px #0066cc;
     -webkit-box-shadow:0em 0.5em 0.75em #ccc;
     -moz-box-shadow:0em 0.25em 0.25em #666;
   }
@@ -201,10 +200,8 @@
   #nav ul.depth_1 > li strong
   {
     padding:0.6em 1.2em !important;
-    border-top:dotted 2px #fff;
+    border-top:dotted 1px #fff;
     color:#fff;
-    border-left:solid 1px #0066cc;
-    border-right:solid 1px #0066cc;
   }
   
   #nav ul.depth_1 > li:first-child a
@@ -212,11 +209,12 @@
     border-top-style:none;
   }
   
-  #nav ul.depth_0 > li a:focus,
-  #nav ul.depth_0 > li a:hover
+  #nav ul.depth_1 > li a:focus,
+  #nav ul.depth_1 > li a:hover
   {
-    color:#000;
-    background-color:#e1f0f7;
+    color:#fff;
+    background-color:#02628f;
+    text-decoration: underline;
   }
   
   #nav ul.depth_0 > li:first-child,
@@ -262,7 +260,7 @@
     z-index:1;
   }
 
-  #col1 { float: left; width: 66%; margin-top:1.5em;}
+  #col1 { float: left; width: 66%; /* margin-top:1.5em; */ }
   #col2 { display:none}
   #col3 { width: auto; margin: 0 0 0 66%}
   
@@ -290,6 +288,11 @@
     right:20px;
     background:url(./../img/logo-7fp.png) no-repeat top left #fff;
     outline:none;
+  }
+  
+  #sfp-logo:after
+  {
+    content:'' !important;
   }
   
 }

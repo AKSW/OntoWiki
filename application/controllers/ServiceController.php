@@ -590,6 +590,8 @@ class ServiceController extends Zend_Controller_Action
             $deleteGraph   = isset($matches[2]) ? $matches[2] : null;
             $deleteTriples = isset($matches[3]) ? $matches[3] : '';
             
+            // TODO: normalize literals
+            
             $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('nt');
             $insert = $parser->parse($insertTriples, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
             $parser->reset();
@@ -625,8 +627,8 @@ class ServiceController extends Zend_Controller_Action
             
             try {
                 $namedModel  = $store->getModel($namedGraph);
-                $insertModel = $namedGraphModel;
-                $deleteModel = $namedGraphModel;
+                $insertModel = $namedModel;
+                $deleteModel = $namedModel;
             } catch (Erfurt_Store_Exception $e) {
                 // TODO: error
                 if (defined('_OWDEBUG')) {
@@ -1010,10 +1012,13 @@ class ServiceController extends Zend_Controller_Action
                         $value->datatype = $property['value']['datatype'];
                     } else if (isset($property['value']['xml:lang'])) {
                         $value->lang = $property['value']['xml:lang'];
-                    } else {
+                    }
+                    /* not in RDFauthor 0.8
+                    else {
                         // plain literal --> rdfQuery needs extra quotes
                         $currentValue = '"' . $currentValue . '"';
                     }
+                    */
                 }
 
                 // return title from titleHelper

@@ -1,13 +1,13 @@
 <?php
 $content = '';
-if (isset($this->description['http://lod2.eu/schema/query'])) {
+if (isset($this->description['http://lod2.eu/schema/query'])) {    
     $querUri = $this->description['http://lod2.eu/schema/query'][0]['value'];
     $query = new OntoWiki_Resource($querUri, OntoWiki::getInstance()->selectedModel);
     $queryDesc = $query->getDescription();
     $queryDesc = $queryDesc[$querUri];
     if (isset($queryDesc['http://ns.ontowiki.net/SysOnt/sparql_code'])) {
         $sparql = $queryDesc['http://ns.ontowiki.net/SysOnt/sparql_code'][0]['value'];
-        $content = $this->querylist($sparql, 'lod2/item.phtml');
+        $content = trim($this->querylist($sparql, 'lod2/item.phtml'));
     }
 }
 ?>

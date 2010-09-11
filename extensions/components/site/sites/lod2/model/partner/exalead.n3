@@ -1,7 +1,11 @@
 
 partner:exalead a lod2:Partner;
+    sysont:order "8"^^xsd:integer;
+    lod2:previous partner:tenforce;
+    lod2:next partner:wkd;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Paris>;
+    foaf:depiction <http://www.exalead.com/software/pics/common/logo.gif>;
     foaf:homepage <http://www.exalead.com/>;
     rdfs:label "Exalead";
     lod2:content """

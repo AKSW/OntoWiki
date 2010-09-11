@@ -103,13 +103,26 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         $this->view->headMeta()->setName('generator', 'OntoWiki — Collaborative Knowledge Engineering');
         
         // inject JSON variables into view
-        $this->view->jsonVars = 
-            'var urlBase = "' . $this->_config->urlBase . '";' . PHP_EOL . 
-            'var themeUrlBase = "' . $this->_config->themeUrlBase . '";' . PHP_EOL . 
-            'var _OWSESSION = "' . _OWSESSION . '";' . PHP_EOL . 
-            'var RDFAUTHOR_BASE = "' . $this->_config->staticUrlBase . 'libraries/RDFauthor/";' . PHP_EOL . 
-            'var RDFAUTHOR_DEFAULT_GRAPH = "' . (string)$this->_owApp->selectedModel . '";' . PHP_EOL . 
-            'var RDFAUTHOR_DEFAULT_SUBJECT = "' . (string)$this->_owApp->selectedResource . '";';
+        $this->view->jsonVars = '
+            var urlBase = "' . $this->_config->urlBase . '";
+            var themeUrlBase = "' . $this->_config->themeUrlBase . '";
+            var _OWSESSION = "' . _OWSESSION . '";
+            var RDFAUTHOR_BASE = "' . $this->_config->staticUrlBase . 'libraries/RDFauthor/";' . PHP_EOL;
+        
+        if (defined('_OWDEBUG')) {
+            $this->view->jsonVars .= 'var RDFAUTHOR_DEBUG = 1;';
+        }
+        
+        if ($this->_owApp->selectedResource) {
+            $this->view->jsonVars .= '
+            var selectedResource = {
+                URI: "' . (string)$this->_owApp->selectedResource . '", 
+                title: "' . (string)$this->_owApp->selectedResource->getTitle() . '", 
+                graphURI: "' . (string)$this->_owApp->selectedModel . '"
+            };
+            var RDFAUTHOR_DEFAULT_GRAPH = "' . (string)$this->_owApp->selectedModel . '";
+            var RDFAUTHOR_DEFAULT_SUBJECT = "' . (string)$this->_owApp->selectedResource . '";' . PHP_EOL;
+        }
         
         // set ratio between left bar and main window
         if (isset($this->_session->sectionRation)) {
@@ -178,10 +191,10 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             
             $this->_redirect($redirectUri, $options);
         }
-		
-		if (strlen($this->view->placeholder('main.window.title')->toString()) > 0) {
-			$this->view->headTitle($this->view->placeholder('main.window.title')->toString());
-		}
+        
+        if (strlen($this->view->placeholder('main.window.title')->toString()) > 0) {
+            $this->view->headTitle($this->view->placeholder('main.window.title')->toString());
+        }
     }
     
     /**

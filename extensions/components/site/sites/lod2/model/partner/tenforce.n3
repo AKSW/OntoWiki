@@ -1,5 +1,8 @@
 
 partner:tenforce  a lod2:Partner;
+    sysont:order "7"^^xsd:integer;
+    lod2:previous partner:swc;
+    lod2:next partner:exalead;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Kampenhout>;
     foaf:homepage <http://www.tenforce.com/>;

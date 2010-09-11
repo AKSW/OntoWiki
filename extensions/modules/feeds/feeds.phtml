@@ -15,11 +15,21 @@
                            class="hasMenu Resource"
                            about="<?php echo $entry['link'] ?>"
                            href="<?php echo $entry['link'] ?>">
-                            <?php echo $entry['dateModified'] ?> |
-                            <?php $authors = $entry['authors']; echo $authors[0] ?>
+                            <?php if (isset($entry['dateModified'])) :?>
+                                <?php echo $entry['dateModified'] ?>
+                            <?php endif; ?>
+                            <?php if (isset($entry['authors'][0])) :?>
+                                <?php if (is_array($entry['authors'][0]) && isset($entry['authors'][0]['name'])): ?>
+                                    | <?php echo $entry['authors'][0]['name'] ?>
+                                <?php else: ?>
+                                    | <?php echo $entry['authors'][0] ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </a>
                     </p>
-                    <p><?php echo $entry['description'] ?></p>
+                    <?php if ( (isset($entry['description'])) && ($entry['description'] != $entry['title']) ):?>
+                        <p><?php echo str_replace('[...]', '', substr(strip_tags($entry['description']), 0, 500)) ?> ...</p>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>

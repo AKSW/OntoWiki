@@ -584,6 +584,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                              . $config->themes->default 
                              . 'templates';
         
+        $moduleTemplatePath = ONTOWIKI_ROOT
+                            . $config->extensions->modules;
+        
         $viewOptions = array(
             'use_module_cachce' => (bool)$config->cache->modules, 
             'cache_path'        => $config->cache->path, 
@@ -595,6 +598,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $view = new OntoWiki_View($viewOptions, $translate);
         $view->addScriptPath($defaultTemplatePath)  // default templates
              ->addScriptPath($themeTemplatePath)    // theme templates override default ones
+             ->addScriptPath($moduleTemplatePath)
              ->setEncoding($config->encoding)
              ->setHelperPath(ONTOWIKI_ROOT . 'application/classes/OntoWiki/View/Helper', 'OntoWiki_View_Helper');
         

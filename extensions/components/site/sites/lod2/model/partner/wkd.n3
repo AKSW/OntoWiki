@@ -1,5 +1,8 @@
 
 partner:wkd a lod2:Partner;
+    sysont:order "9"^^xsd:integer;
+    lod2:previous partner:exalead;
+    lod2:next partner:okfn;
     skos:broader pages:Consortium;
     foaf:based_near <http://dbpedia.org/resource/Cologne>;
     foaf:homepage <http://www.wolterskluwer.de/>;

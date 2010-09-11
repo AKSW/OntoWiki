@@ -85,6 +85,20 @@ class SiteHelper extends OntoWiki_Component_Helper
                     );
             $router->addRoute('empty', $emptyRoute);
         }
+        
+        if ($controller === 'resource' && $action === 'properties') {
+            $resourceUrl = $this->_owApp->selectedResource;
+            
+            if (!empty($resourceUrl) && $resourceUrl != (string)$this->_owApp->selectedModel) {
+                $resourceUrl .= '.html';
+            }
+            
+            $toolbar = OntoWiki_Toolbar::getInstance();
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
+                    ->prependButton(OntoWiki_Toolbar::SUBMIT, array(
+                        'name' => 'Back to Site', 
+                        'url' => $resourceUrl));
+        }
     }
     
     // http://localhost/OntoWiki/SiteTest/
@@ -164,36 +178,46 @@ class SiteHelper extends OntoWiki_Component_Helper
         $store = OntoWiki::getInstance()->erfurt->getStore();
         $model = OntoWiki::getInstance()->selectedModel;
 
-        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        $query = '
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
             SELECT ?topConcept
             FROM <' . (string)$model . '>
             WHERE {
                 ?cs a skos:ConceptScheme .
                 ?topConcept skos:topConceptOf ?cs
+                OPTIONAL {
+                    ?topConcept sysont:order ?order
+                }
             }
-            ORDER BY ';
+            ORDER BY ASC(?order)
+            ';
 
         if ($result = $store->sparqlQuery($query)) {
             $tree = array();
             $topConcepts = array();
-            foreach($result as $row){
+            foreach ($result as $row) {
                 $topConcept = $row['topConcept'];
                 $titleHelper->addResource($topConcept);
                 $closure = $store->getTransitiveClosure(
                     (string)$model,
                     'http://www.w3.org/2004/02/skos/core#broader',
                     $topConcept,
-                    true);
-                foreach($closure as $concept){
+                    true, 
+                    1 /* max depth */);
+                
+                // var_dump($closure);
+                
+                foreach ($closure as $concept) {
                     $titleHelper->addResource($concept['node']);
                 }
-                $conceptTree = array(array($topConcept=>array()));
+                
+                $conceptTree = array(array($topConcept => array()));
                 $topConcepts[] = $topConcept;
                 self::_buildTree($conceptTree, $closure);
-                //echo "<pre>"; var_dump($conceptTree); echo "</pre>";
                 $tree[$topConcept] = $conceptTree[0][$topConcept];
             }
-            //echo "<pre>"; var_dump($tree); echo "</pre>";
+            
             return $tree;
         }
 

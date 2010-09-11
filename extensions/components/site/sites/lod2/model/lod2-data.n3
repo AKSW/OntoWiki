@@ -20,6 +20,8 @@
 @prefix milestones: <http://lod2.eu/Milestone/> .
 @prefix workpackages: <http://lod2.eu/WorkPackage/> .
 @prefix deliverables: <http://lod2.eu/Deliverable/> .
+@prefix project: <http://lod2.eu/Project/> .
+@prefix query: <http://lod2.eu/Query/> .
 
 <http://lod2.eu/> a owl:Ontology;
     owl:imports <http://lod2.eu/schema/>;
@@ -28,37 +30,47 @@
 
 <http://lod2.eu/ConceptScheme/Navigation> a skos:ConceptScheme; rdfs:label "Navigation".
 
-pages:Consortium a sioct:WikiArticle, skos:Concept;
+pages:Consortium a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "3"^^xsd:integer;
-    lod2:query <http://lod2.eu/Query/Partner>;
-    rdfs:label "Consortium".
+    lod2:query query:Partner;
+    rdfs:label "Consortium";
+    lod2:content """The consortium has the required expertise in the necessary technological and scientific areas: Semantic Web technologies, ontological engineering, machine learning, Web search, information retrieval, databases and knowledge stores. All of the scientific partners have outstanding scientific reputations, and some of them are leaders in their respective fields. In particular with CWI’s outstanding reputation in the database world, LOD2 will substantially contribute to cross-fertilization between database and semantic web research. The LOD2 consortium has the required engineering power provided by TenForce, Exalead and OpenLink Software. The consortium also has the required dissemination and exploitation expertise provided by its innovative SMEs (Exalead, Openlink, TenForce and SWC), a large corporation (WKD) and the eGovernment and Open Knowledge communities represented in the consortium by OKFN. Within efforts such as the Linking Open Data effort, DBpedia and MonetDB (and numerous smaller community projects), the project partners have already demonstrated that they can achieve high-impact results and ensure the global dissemination and maximum impact of their work.""".
 
-pages:TechnologyStack a sioct:WikiArticle, skos:Concept;
+pages:TechnologyStack a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "2"^^xsd:integer;
+    lod2:query query:TechnologyStack;
+    lod2:content """
+The LOD2 Consortium partners bring the essential know-how and software, which is necessary to build the LOD2 Stack. In particular, we have considered existing state-of-the-art software components developed by the LOD2 members which are briefly introduced in the following paragraphs. This software is freely available under an Open Source GPL license.""";
     rdfs:label "Technology Stack".
 
 
-pages:Project a sioct:WikiArticle, skos:Concept;
+pages:Project a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "1"^^xsd:integer;
-    rdfs:label "Project".
+    rdfs:label "Project";
+    lod2:content """The outputs of this project will range from sci-tech to socio-economic areas by providing new technologies and an underlying scientific basis for these and by applying these new technologies to a number of Semantic Web areas experiencing commercial (enterprise search, media and publishing), scientific (extraction, interlinking, ontology classification and fusion methods), and sociological (community knowledge, integration in social networks, eGovernment) success at present. The project aims to contribute high-quality interlinked versions of public Semantic Web data sets, promoting their use in new cross-domain applications by developers across the globe. The new technologies for enabling scalable management of Linked Data collections in the many billions of triples will raise the state of the art of Semantic Web data management, both commercial and open-source, providing opportunities for new products and spin-offs, and make RDF a viable choice for organizations worldwide as a premier data management format. The algorithms and (open-source) tools that the project will develop for data cleaning, linking and fusing will help creating and bootstrapping new data sets in domains that go much beyond the direct applications and data sets developed in the context of this project, to reach the overall goal of the project of making Linked Data the model of choice for next-generation IT systems and applications.""".
 
-pages:ActivityClusters a sioct:WikiArticle, skos:Concept;
+pages:ActivityClusters a sioct:WikiArticle;
+    lod2:content """The work packages of LOD2 fall into five activity clusters.""";
     skos:broader pages:Project;
+    lod2:query query:ActivityCluster;
     sysont:order "1"^^xsd:integer;
     rdfs:label "Activity Clusters".
-pages:WorkPackages a sioct:WikiArticle, skos:Concept;
+pages:WorkPackages a sioct:WikiArticle;
     skos:broader pages:Project;
+    lod2:query query:WorkPackages;
     sysont:order "2"^^xsd:integer;
     rdfs:label "Work Packages".
-pages:Milestones a sioct:WikiArticle, skos:Concept;
+pages:Milestones a sioct:WikiArticle;
     skos:broader pages:Project;
+    lod2:query query:Milestones;
     sysont:order "3"^^xsd:integer;
     rdfs:label "Milestones".
-pages:Deliverables a sioct:WikiArticle, skos:Concept;
+pages:Deliverables a sioct:WikiArticle;
     skos:broader pages:Project;
+    lod2:query query:Deliverables;
     sysont:order "4"^^xsd:integer;
     rdfs:label "Deliverables".
 
@@ -75,15 +87,49 @@ pages:Deliverables a sioct:WikiArticle, skos:Concept;
 <li>standards and methods for reliably tracking provenance, ensuring privacy and data security as well as for assessing the quality of information.</li>
 <li>adaptive tools for searching, browsing, and authoring of Linked Data.</li>
 </ol>
-We will integrate and syndicate linked data with large-scale, existing applications and showcase the benefits in the three application scenarios of media & publishing, corporate data intranets and eGovernment. The resulting tools, methods and data sets have the potential to change the Web as we know it today.
-""".
+We will integrate and syndicate linked data with large-scale, existing applications and showcase the benefits in the three application scenarios of media and publishing, corporate data intranets and eGovernment. The resulting tools, methods and data sets have the potential to change the Web as we know it today.""".
 
 
-<http://lod2.eu/Query/Partner> a sysont:SparqlQuery;
+query:Partner a sysont:SparqlQuery;
     sysont:Model <http://lod2.eu/> ;
     sysont:generator "qe" ;
-    sysont:sparql_code """SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lod2.eu/schema/Partner> FILTER (!isBLANK(?resourceUri)) } LIMIT 10""" ;
+    sysont:sparql_code """SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Partner> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri LIMIT 20""" ;
     dc:created "2010-07-29T22:48:28+02:00"^^xsd:dateTime ;
     dc:title "LOD2 Partner".
 
+query:TechnologyStack a sysont:SparqlQuery ;
+    dc:created "2010-07-29T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Technology Stack Projects" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://usefulinc.com/ns/doap#Project> FILTER (!isBLANK(?resourceUri)) } ORDER BY ?resourceUri LIMIT 20" .
+
+query:ActivityCluster a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Activity Cluster" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/ActivityCluster> FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?resourceUri) LIMIT 20" .
+
+query:WorkPackages a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Work Packages" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/WorkPackage>. ?resourceUri <http://ns.ontowiki.net/SysOnt/order> ?order. FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?order) LIMIT 20" .
+
+query:Milestones a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Milestones" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Milestone> FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?resourceUri) LIMIT 20" .
+
+query:Deliverables a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Deliverables" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable>. ?resourceUri <http://lod2.eu/schema/deliveryDate> ?date. FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?date)".
+
+query:ProjectDeliverables a sysont:SparqlQuery ;
+    dc:created "2010-09-01T22:48:28+02:00"^^xsd:dateTime ;
+    dc:title "LOD2 Project Components" ;
+    sysont:generator "qe" ;
+    sysont:sparql_code "SELECT DISTINCT ?resourceUri FROM <http://lod2.eu/> WHERE { ?resourceUri a <http://lod2.eu/schema/Deliverable>. ?resourceUri <http://lod2.eu/schema/deliveryDate> ?date. FILTER (!isBLANK(?resourceUri)) } ORDER BY ASC(?date)".
 
