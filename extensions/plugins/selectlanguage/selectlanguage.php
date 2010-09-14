@@ -13,7 +13,7 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
         $this->owApp = OntoWiki::getInstance();
     }
 
-    
+
     public function createMenu() {
         // Translation hack in order to enable the plugin to translate...
         $translate = $this->owApp->translate;
@@ -31,7 +31,7 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
         $appMenu    = OntoWiki_Menu_Registry::getInstance()->getMenu('application');
         #var_dump($appMenu);die;
         $extrasMenu = $appMenu->getSubMenu('Extras');
-        $lanMenuEntry      = $translate->_('select language', $this->owApp->config->languages->locale);
+        $lanMenuEntry      = $translate->_('Select Language', $this->owApp->config->languages->locale);
         $lanMenue = new OntoWiki_Menu();
 
         $request = new OntoWiki_Request();
@@ -66,7 +66,7 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
         if (!empty( $reqLang)) {
             $_SESSION['selectedLanguage'] =  $reqLang;
         }
-      
+
         if (!empty( $selLang)) {
             $config->languages->locale = $selLang;
         }
