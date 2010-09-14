@@ -15,8 +15,8 @@ people:TassiloPellegrini a foaf:Person;
     lod2:nameAffix "R&D";
     lod2:partner partner:swc .
 
-people:GiovanniTumarello a foaf:Person;
-    foaf:name "Giovanni Tumarello";
+people:GiovanniTummarello a foaf:Person;
+    foaf:name "Giovanni Tummarello";
     foaf:title "Dr.";
     lod2:nameAffix "Research Unit Leader";
     lod2:partner partner:nuig .
@@ -35,4 +35,3 @@ people:ChristianDirschl a foaf:Person;
 # people: a foaf:Person;
 #     foaf:name "";
 #     lod2:partner partner: .
-

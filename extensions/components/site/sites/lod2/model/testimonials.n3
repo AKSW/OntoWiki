@@ -22,9 +22,9 @@ testimonials:3 a lod2:Testimonial;
     lod2:content """Semantic interoperability changes the technological and economic nature of metadata opening up exciting opportunities for value creation in various comercial and non-commercial areas. Linked Data is the blueprint for this new ecosystem and it will change the way we think about and use the web today.""" .
 
 testimonials:4 a lod2:Testimonial;
-    rdfs:label "by Giovanni Tumarello";
+    rdfs:label "by Giovanni Tummarello";
     # skos:broader pages:Testimonials;
-    dc:creator people:GiovanniTumarello;
+    dc:creator people:GiovanniTummarello;
     lod2:abstract """Semantic Markups on the Web could drive invormation reuse to enable scenarios and applications which we can now only dream of.""";
     lod2:content """Semantic Markups on the Web could drive invormation reuse to enable scenarios and applications which we can now only dream of. The idea is extraordinarely compelling, but we know now it won't simply realize itself. The LOD2 project is now a great opportunity for inspired and coordinated research: to crack this nut, to ultimately change the world.""" .
 

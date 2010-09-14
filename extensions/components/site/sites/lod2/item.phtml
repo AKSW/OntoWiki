@@ -15,10 +15,11 @@ $descriptionHelper = $resource->getDescriptionHelper();
 
 // this is the standard template data
 $templateData = array(
-        'title' => $descriptionHelper->getTitle($this->resourceUri),
-        'resourceUri' => $this->resourceUri,
-        'description' => $description,
-        'descriptionHelper' => $descriptionHelper
+    'title'             => $descriptionHelper->getTitle($this->resourceUri),
+    'resourceUri'       => $this->resourceUri,
+    'description'       => $description,
+    'descriptionHelper' => $descriptionHelper, 
+    'options'           => isset($this->options) ? $this->options : array()
 );
 
 if (isset($description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {

@@ -9,7 +9,7 @@ $queryDescription = $queryDescription[$querUri];
 $content = '';
 if (isset($queryDescription['http://ns.ontowiki.net/SysOnt/sparql_code'][0]['value'])) {
     $sparqlCode = $queryDescription['http://ns.ontowiki.net/SysOnt/sparql_code'][0]['value'];
-    $content    = $this->querylist($sparqlCode, 'lod2/item.phtml');
+    $content    = $this->querylist($sparqlCode, 'lod2/item.phtml', array('options' => array('show_link' => true)));
 }
 
 $title = $queryInstance->getTitle();
@@ -41,7 +41,7 @@ if (empty($title)) {
                     current = next;
                 });
             });
-        }, 5000);
+        }, 15000);
     });
     </script>
     <h3><?php echo $title ?></h3>

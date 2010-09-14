@@ -1,15 +1,21 @@
-<?php
-$url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-$url->setParam('r', $this->resourceUri, true);
-$abstract = null;
+<?php 
+
+$abstractContent = array();
 if (isset($this->description['http://lod2.eu/schema/abstract'])) {
-    $abstract = '<p>'.$this->description['http://lod2.eu/schema/abstract'][0]['value'].'</p>';
+    $abstractContent[] = $this->description['http://lod2.eu/schema/abstract'][0]['value'];
 }
+
+if (isset($this->options['show_link']) && $this->options['show_link']) {
+    $abstractContent[] = '<a href="' . $this->url($this->resourceUri) . '">read</a>';
+}
+
 ?>
 
 <?php if ($this->title || $abstract): ?>
 <div class="section-content">
-    <h3><a href="<?php echo $url ?>"><?php echo $this->title ?></a></h3>
-    <?php echo $abstract ?>
+    <h3><a href="<?php echo $this->url($this->resourceUri) ?>"><?php echo $this->title ?></a></h3>
+    <?php if (count($abstractContent)): ?>
+    <p><?php echo implode(PHP_EOL, $abstractContent); ?></p>
+    <?php endif; ?>
 </div>
 <?php endif; ?>
