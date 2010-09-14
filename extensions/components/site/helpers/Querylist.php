@@ -36,7 +36,7 @@ class Site_View_Helper_Querylist extends Zend_View_Helper_Abstract
         }
 
         foreach ($result as $row) {
-            foreach($row as $value){
+            foreach ($row as $value) {
                 if (Erfurt_Uri::check($value)) {
                     $titleHelper->addResource($value);
                 }
@@ -49,7 +49,7 @@ class Site_View_Helper_Querylist extends Zend_View_Helper_Abstract
             $row['querylist_titleHelper'] = $titleHelper;
             $return .= $view->partial($template, $row);
         }
+        
         return $return;
     }
-
 }

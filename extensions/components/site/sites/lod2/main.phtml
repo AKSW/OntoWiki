@@ -50,6 +50,9 @@ if (isset($this->description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])
         case (isset($types['http://lod2.eu/schema/Deliverable'])):
             echo $this->partial('lod2/types/deliverable.phtml', $templateData);
             break;
+        case (isset($types['http://lod2.eu/schema/Testimonial'])):
+            echo $this->partial('lod2/types/testimonial.phtml', $templateData);
+            break;
         default:
             // no specific template found
             echo $this->partial( 'lod2/default.phtml', $templateData);
