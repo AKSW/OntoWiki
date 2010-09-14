@@ -214,7 +214,7 @@ class PatternFunction {
     *
     * @author Marvin Frommhold
     */
-    private function callGetLocalName($options) {
+    private function callGetlocalname($options) {
 
         $uri = $options[0];
 
@@ -238,7 +238,7 @@ class PatternFunction {
     *
     * @author Marvin Frommhold
     */
-    private function callCreateUri($options = array()) {
+    private function callCreateuri($options = array()) {
 
         $localname = $options[0];
         $prefix = $options[1];
