@@ -206,7 +206,7 @@ class OntoWiki_Module_Registry
      * @return OntoWiki_Module
      * @throws OntoWiki_Module_Exception if a module with the has not been registered.
      */
-    public function getModule($moduleName, $context = null)
+    public function getModule($moduleName, $context = null, $options)
     {
         $moduleFile = $this->_moduleDir
                     . $moduleName 
@@ -222,7 +222,7 @@ class OntoWiki_Module_Registry
         require_once $moduleFile;
         $moduleClass = ucfirst($moduleName) 
                      . OntoWiki_Module_Manager::MODULE_CLASS_POSTFIX;
-        $module = new $moduleClass($moduleName, $context);
+        $module = new $moduleClass($moduleName, $context, $options);
         
         // inject module config
         foreach ((array)$this->getModuleConfig($moduleName) as $key => $value) {

@@ -190,12 +190,12 @@ class OntoWiki_View extends Zend_View
         
         // get default options from the registry
         $defaultModuleOptions = $moduleRegistry->getModuleConfig($moduleName);
-        $moduleOptions = array_merge($defaultModuleOptions, $renderOptions);
+        $moduleOptions = array_merge((array)$defaultModuleOptions, $renderOptions);
         
         $cssClasses  = isset($moduleOptions['classes']) ? $moduleOptions['classes'] : '';
         $cssId       = isset($moduleOptions['id']) ? $moduleOptions['id'] : '';
         
-        $module = $moduleRegistry->getModule($moduleName, $context);
+        $module = $moduleRegistry->getModule($moduleName, $context, $renderOptions);
         
         if ($module->shouldShow()) {
             // init module view
