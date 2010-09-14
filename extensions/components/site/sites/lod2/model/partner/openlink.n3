@@ -19,16 +19,15 @@ project:Virtuoso a doap:Project;
     skos:broader pages:TechnologyStack;
     doap:homepage <http://openlinksw.com>;
     lod2:content """
-Virtuoso is an innovative industry standards compliant platform for native data, information, and knowledge management. It implements and supports a broad spectrum of query languages, data access interfaces, protocols, and data representation formats that includes: SQL, SPARQL, ODBC, JDBC, HTTP, WebDAV, XML, RDF, RDFa, and many more.
-
-In addition to its core data management capabilities, Virtuoso also delivers sophisticated Data Virtualization functionality enabling the construction of federated views -- which may or may not be materialized -- over heterogeneous RDBMS, Web Services, and Hypermedia data sources. 
-
-The open-source edition of Virtuoso, which includes a scalable high-performance RDF Quad Store, will be the basis for the LOD2 Stack's knowledge store.
+<p>Virtuoso is an innovative industry standards compliant platform for native data, information, and knowledge management. It implements and supports a broad spectrum of query languages, data access interfaces, protocols, and data representation formats that includes: SQL, SPARQL, ODBC, JDBC, HTTP, WebDAV, XML, RDF, RDFa, and many more.</p>
+<p>In addition to its core data management capabilities, Virtuoso also delivers sophisticated Data Virtualization functionality enabling the construction of federated views -- which may or may not be materialized -- over heterogeneous RDBMS, Web Services, and Hypermedia data sources.</p>
+<p>The open-source edition of Virtuoso, which includes a scalable high-performance RDF Quad Store, will be the basis for the LOD2 Stack's knowledge store.</p>
 """;
     lod2:abstract """
 Virtuoso is a knowledge store and virtualization platform that transparently integrates Data, Services, and Business Processes across the enterprise. Its product architecture enables it to deliver traditionally distinct server functionality within a single system offering along the following lines: Data Management & Integration (SQL, XML and EII), Application Integration (Web Services & SOA), Process Management & Integration (BPEL), Distributed Collaborative Applications. The open-source data integration server and the highly efficient and scalable RDF triple store implementation in Virtuoso will be the basis for the knowledge store component in the LOD2 Stack. 
 """;
     foaf:depiction <http://docs.openlinksw.com/images/misc/splash.jpg>;
     lod2:partner partner:openlink;
-    rdfs:label "OpenLink Virtuoso".
+    rdfs:label "OpenLink Virtuoso";
+    sioc:feed <http://virtuoso.openlinksw.com/blog/gems/rss.xml>.
 

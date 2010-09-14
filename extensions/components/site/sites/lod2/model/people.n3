@@ -1,0 +1,38 @@
+
+people:SoerenAuer a foaf:Person;
+    foaf:name "Sören Auer";
+    lod2:partner partner:ulei;
+    foaf:title "Dr.";
+    lod2:nameAffix "LOD2 coordinator".
+
+people:MartinKaltenboeck a foaf:Person;
+    foaf:name "Martin Kaltenböck";
+    lod2:nameAffix "CFO";
+    lod2:partner partner:swc .
+
+people:TassiloPellegrini a foaf:Person;
+    foaf:name "Tassilo Pellegrini";
+    lod2:nameAffix "R&D";
+    lod2:partner partner:swc .
+
+people:GiovanniTummarello a foaf:Person;
+    foaf:name "Giovanni Tummarello";
+    foaf:title "Dr.";
+    lod2:nameAffix "Research Unit Leader";
+    lod2:partner partner:nuig .
+
+people:PeterBoncz a foaf:Person;
+    foaf:name "Peter Boncz";
+    foaf:title "Dr.";
+    lod2:partner partner:cwi .
+
+people:ChristianDirschl a foaf:Person;
+    foaf:name "Christian Dirschl";
+    lod2:nameAffix "Content Architect";
+    lod2:partner partner:wkd .
+
+# empty template: #
+# people: a foaf:Person;
+#     foaf:name "";
+#     lod2:partner partner: .
+
