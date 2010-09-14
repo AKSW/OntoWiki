@@ -25,24 +25,36 @@ class SiteHelper extends OntoWiki_Component_Helper
     const SITE_CONFIG_FILENAME = 'config.ini';
     
     /**
+     * Current site (if in use)
+     * @var string|null
+     */
+    protected $_site = null;
+    
+    /**
      * Site config for the current site.
      * @var array
      */
     protected $_siteConfig = null;
     
+    /**
+     * Current pseudo file extension.
+     * @var string
+     */
+    protected $_currentSuffix = '';
+    
     public function onPostBootstrap($event)
     {
-        $router = $event->bootstrap->getResource('Router');
+        $router     = $event->bootstrap->getResource('Router');
+        $request    = Zend_Controller_Front::getInstance()->getRequest();
+        $controller = $request->getControllerName();
+        $action     = $request->getActionName();
+        
         if ($router->hasRoute('empty')) {
             $emptyRoute = $router->getRoute('empty');
             $defaults   = $emptyRoute->getDefaults();
             
             $defaultController = $defaults['controller'];
             $defaultAction     = $defaults['action'];
-            
-            $request    = Zend_Controller_Front::getInstance()->getRequest();
-            $controller = $request->getControllerName();
-            $action     = $request->getActionName();
             
             // are we currently following the empty route?
             if ($controller === $defaultController && $action === $defaultAction) {
@@ -52,7 +64,7 @@ class SiteHelper extends OntoWiki_Component_Helper
                 
                 if (isset($siteConfig['index'])) {
                     // TODO: detect accept header
-                    $indexResource = $siteConfig['index'] . '.html';
+                    $indexResource = $siteConfig['index'] . $this->getCurrentSuffix();
                     $requestUri    = $this->_config->urlBase
                                    . ltrim($request->getRequestUri(), '/');
 
@@ -73,6 +85,20 @@ class SiteHelper extends OntoWiki_Component_Helper
                     );
             $router->addRoute('empty', $emptyRoute);
         }
+        
+        if ($controller === 'resource' && $action === 'properties') {
+            $resourceUrl = $this->_owApp->selectedResource;
+            
+            if (!empty($resourceUrl) && $resourceUrl != (string)$this->_owApp->selectedModel) {
+                $resourceUrl .= '.html';
+            }
+            
+            $toolbar = OntoWiki_Toolbar::getInstance();
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
+                    ->prependButton(OntoWiki_Toolbar::SUBMIT, array(
+                        'name' => 'Back to Site', 
+                        'url' => $resourceUrl));
+        }
     }
     
     // http://localhost/OntoWiki/SiteTest/
@@ -80,7 +106,11 @@ class SiteHelper extends OntoWiki_Component_Helper
     {
         if ($event->type === 'html') {
             $event->request->setControllerName('site');
-            $event->request->setActionName($this->_privateConfig->defaultsite);
+            $event->request->setActionName($this->_privateConfig->defaultSite);
+            
+            if ($event->flag) {
+                $this->_currentSuffix = '.html';
+            }
         } else {
             // export
             $event->request->setControllerName('resource');
@@ -91,6 +121,33 @@ class SiteHelper extends OntoWiki_Component_Helper
         
         $event->request->setDispatched(false);
         return false;
+    }
+    
+    public function onBuildUrl($event)
+    {
+        $site = $this->getSiteConfig();
+        $graph = isset($site['model']) ? $site['model'] : null;
+        $resource = isset($event->params['r']) ? OntoWiki_Utils::expandNamespace($event->params['r']) : null;
+        
+        // URL for this site?
+        if (($graph === (string)OntoWiki::getInstance()->selectedModel) && !empty($this->_site)) {            
+            if (false !== strpos($resource, $graph)) {
+                // LD-capable
+                $event->url = $resource 
+                            . $this->getCurrentSuffix();
+                
+                // URL created
+                return true;
+            } else {
+                // classic
+                $event->route      = null;
+                $event->controller = 'site';
+                $event->action     = 'lod2'; // TODO: detect actual site
+                
+                // URL not created, but params changed
+                return false;
+            }
+        }
     }
     
     public function getSiteConfig()
@@ -110,4 +167,79 @@ class SiteHelper extends OntoWiki_Component_Helper
         
         return $this->_siteConfig;
     }
+    
+    public function getCurrentSuffix()
+    {
+        return $this->_currentSuffix;
+    }
+
+    public static function skosNavigationAsArray($titleHelper)
+    {
+        $store = OntoWiki::getInstance()->erfurt->getStore();
+        $model = OntoWiki::getInstance()->selectedModel;
+
+        $query = '
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
+            SELECT ?topConcept
+            FROM <' . (string)$model . '>
+            WHERE {
+                ?cs a skos:ConceptScheme .
+                ?topConcept skos:topConceptOf ?cs
+                OPTIONAL {
+                    ?topConcept sysont:order ?order
+                }
+            }
+            ORDER BY ASC(?order)
+            ';
+
+        if ($result = $store->sparqlQuery($query)) {
+            $tree = array();
+            $topConcepts = array();
+            foreach ($result as $row) {
+                $topConcept = $row['topConcept'];
+                $titleHelper->addResource($topConcept);
+                $closure = $store->getTransitiveClosure(
+                    (string)$model,
+                    'http://www.w3.org/2004/02/skos/core#broader',
+                    $topConcept,
+                    true, 
+                    1 /* max depth */);
+                
+                // var_dump($closure);
+                
+                foreach ($closure as $concept) {
+                    $titleHelper->addResource($concept['node']);
+                }
+                
+                $conceptTree = array(array($topConcept => array()));
+                $topConcepts[] = $topConcept;
+                self::_buildTree($conceptTree, $closure);
+                $tree[$topConcept] = $conceptTree[0][$topConcept];
+            }
+            
+            return $tree;
+        }
+
+        return array();
+    }
+    
+    public function setSite($site)
+    {
+        $this->_site = (string)$site;
+    }
+
+    protected static function _buildTree(&$tree, $closure)
+    {
+        foreach ($tree as $treeElement => &$childrenArr) {
+            foreach ($closure as $closureElement) {
+                if (isset($closureElement['parent']) && $closureElement['parent'] == $treeElement) {
+                    $childrenArr[$closureElement['node']] = array();
+                }
+            }
+
+             self::_buildTree($childrenArr, $closure);
+        }
+    }
+
 }

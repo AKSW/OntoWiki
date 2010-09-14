@@ -1,9 +1,12 @@
 <?php
-    $content = $this->module('feeds', array('noChrome' => true));
+    $content = trim($this->module('feeds', array('noChrome' => true)));
     if ($content != "") :
 ?>
-<div class="box">
-    <h2>NEWS</h2>
-    <?php echo $content ?>
+
+<div class="section">
+    <h3>News</h3>
+    <div class="section-content">
+        <?php echo $content; ?>
+    </div>
 </div>
 <?php endif; ?>

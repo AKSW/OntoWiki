@@ -67,8 +67,8 @@ class OntoWiki_Url
         $defaultController = Zend_Controller_Front::getInstance()->getDefaultControllerName();
         $router            = Zend_Controller_Front::getInstance()->getRouter();
         
-        //use defaults - current page
-        if(!isset($options['route']) && !isset($options['controller']) && !isset($options['action'])){
+        // use defaults - current page
+        if (!isset($options['route']) && !isset($options['controller']) && !isset($options['action'])){
             $options['controller'] = $this->_request->getControllerName();
             $options['action'] = $this->_request->getActionName();
         }
@@ -83,8 +83,8 @@ class OntoWiki_Url
         }
 
         if (is_array($paramsToExclude)) {
-            foreach($paramsToExclude as $param){
-                if(isset($this->_params[$param])){
+            foreach ($paramsToExclude as $param) {
+                if (isset($this->_params[$param])) {
                     unset($this->_params[$param]);
                 }
             }
@@ -145,11 +145,11 @@ class OntoWiki_Url
      */
     public function __toString()
     {        
-        try{
+        try {
             return $this->_buildQuery();
-        } catch (Exception $e){
+        } catch (Exception $e) {
             echo $e;
-            return "";
+            return '';
         }
     }
     
@@ -260,6 +260,28 @@ class OntoWiki_Url
      */
     protected function _buildQuery()
     {
+        $base = OntoWiki::getInstance()->config->urlBase;
+        
+        $event = new Erfurt_Event('onBuildUrl');
+        $event->base = $base;
+        $event->route = $this->_route;
+        $event->controller = $this->_controller;
+        $event->action     = $this->_action;
+        $event->params     = $this->_params;
+        $urlCreated        = $event->trigger();
+        
+        if ($event->handled()) {
+            if ($urlCreated && isset($event->url)) {
+                return $event->url;
+            } else {
+                $base = $event->base;
+                $this->_params = $event->params;
+                $this->_controller = $event->controller;
+                $this->_action     = $event->action;
+                $this->_route      = $event->route;
+            }
+        }
+        
         // check params
         foreach ($this->_params as $name => $value) {
             if (is_string($value) && preg_match('/\//', $value)) {
@@ -269,10 +291,9 @@ class OntoWiki_Url
         
         $url = '';
         if ($this->_route) {
-
             // checking if reset of route-defaults necessary
             // fixes pager usage fails on versioning pages
-            if (sizeof($this->_route->getDefaults()) == 0) {
+            if (count($this->_route->getDefaults()) == 0) {
                 $resetRoute = false;
             } else {
                 $resetRoute = true;
@@ -309,7 +330,6 @@ class OntoWiki_Url
         }
         // HACK:
         $this->_useSefUrls = true;
-        $base = OntoWiki::getInstance()->config->urlBase;
         
         return $base . ltrim($url, '/');
     }
