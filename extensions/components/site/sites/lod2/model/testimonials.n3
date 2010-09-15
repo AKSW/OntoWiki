@@ -22,7 +22,7 @@ testimonials:GiovanniTummarello a lod2:Testimonial;
     rdfs:label "by Giovanni Tummarello";
     # skos:broader pages:Testimonials;
     dc:creator people:GiovanniTummarello;
-    lod2:content """Semantic Markups on the Web could drive invormation reuse to enable scenarios and applications which we can now only dream of. The idea is extraordinarely compelling, but we know now it won't simply realize itself. The LOD2 project is now a great opportunity for inspired and coordinated research: to crack this nut, to ultimately change the world.""" .
+    lod2:content """Semantic Markups on the Web could drive information reuse to enable scenarios and applications which we can now only dream of. The idea is extraordinarely compelling, but we know now it won't simply realize itself. The LOD2 project is now a great opportunity for inspired and coordinated research: to crack this nut, to ultimately change the world.""" .
 
 testimonials:PeterBoncz a lod2:Testimonial;
     rdfs:label "by Peter Boncz";
