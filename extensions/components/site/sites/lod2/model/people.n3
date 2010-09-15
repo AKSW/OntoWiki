@@ -53,6 +53,10 @@ people:HughWilliams a foaf:Person;
     foaf:depiction <http://img.lod2.eu/HughWilliams.jpg>;
     lod2:partner partner:openlink .
 
+people:WouterDewanckel a foaf:Person;
+    foaf:name "Wouter Dewanckel";
+    lod2:nameAffix "WP Project Leader";
+    lod2:partner partner:tenforce .
 
 # empty template: #
 # people: a foaf:Person;

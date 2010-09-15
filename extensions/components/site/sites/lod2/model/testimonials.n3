@@ -50,9 +50,13 @@ testimonials:HughWilliams a lod2:Testimonial;
     rdfs:label "by Hugh Williams";
     dc:creator people:HughWilliams;
     lod2:content """It is exciting to see the LOD2 project finally kick off in its quest to take the Linked Open Data cloud to the next level of scalability, performance and integration for the exploitation of the Web as viable platform for enterprise level data and information integration.""" .
-    
+
+testimonials:WouterDewanckel a lod2:Testimonial;
+    rdfs:label "by Wouter Dewanckel";
+    dc:creator people:WouterDewanckel;
+    lod2:content """It is an honor to take part in this challenging integration project to create solutions that can generate business value out of emerging technologies.""" .
+
 # testimonials: a lod2:Testimonial;
 #     rdfs:label "";
 #     dc:creator people:;
-#     lod2:abstract """""";
 #     lod2:content """""" .
