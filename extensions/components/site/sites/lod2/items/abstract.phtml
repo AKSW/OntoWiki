@@ -1,8 +1,18 @@
 <?php 
+if (!defined('MAX_ABSTRACT_LENGTH')) {
+    define('MAX_ABSTRACT_LENGTH', 300);
+}
 
 $abstractContent = array();
-if (isset($this->description['http://lod2.eu/schema/abstract'])) {
+if (isset($this->description['http://lod2.eu/schema/abstract'][0]['value'])) {
     $abstractContent[] = $this->description['http://lod2.eu/schema/abstract'][0]['value'];
+} else if (isset($this->description['http://lod2.eu/schema/content'][0]['value'])) {
+    $content = $this->description['http://lod2.eu/schema/content'][0]['value'];
+    if (strlen($content) > MAX_ABSTRACT_LENGTH) {
+        $content = substr($content, 0, MAX_ABSTRACT_LENGTH - 1)
+                 . '…';
+    }
+    $abstractContent[] = $content;
 }
 
 if (isset($this->options['show_link']) && $this->options['show_link']) {
@@ -11,7 +21,7 @@ if (isset($this->options['show_link']) && $this->options['show_link']) {
 
 ?>
 
-<?php if ($this->title || $abstract): ?>
+<?php if ($this->title || $abstractContent): ?>
 <div class="section-content">
     <h3><a href="<?php echo $this->url($this->resourceUri) ?>"><?php echo $this->title ?></a></h3>
     <?php if (count($abstractContent)): ?>

@@ -18,7 +18,8 @@ $templateData = array(
         'title' => $descriptionHelper->getTitle($this->resourceUri),
         'resourceUri' => $this->resourceUri,
         'description' => $description,
-        'descriptionHelper' => $descriptionHelper
+        'descriptionHelper' => $descriptionHelper,
+        'options'           => $this->options
 );
 
 if (isset($description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {

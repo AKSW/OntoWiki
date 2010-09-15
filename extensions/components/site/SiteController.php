@@ -139,6 +139,7 @@ class SiteController extends OntoWiki_Controller_Component
                 'descriptionHelper' => $this->_resource->getDescriptionHelper(),
                 'store'       => OntoWiki::getInstance()->erfurt->getStore(),
                 'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper()), 
+                'options'     => array(), 
                 'namespaces'  => array(
                     'rdf'    => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 
                     'rdfs'   => 'http://www.w3.org/2000/01/rdf-schema#', 

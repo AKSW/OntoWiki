@@ -32,6 +32,8 @@ if (empty($title)) {
                 $(this).hide();
             }
         });
+        // HACK: height seems to be not enough
+        maxHeight += 20;
         $('.random-results .section-content').height(maxHeight);
         
         window.setInterval(function () {

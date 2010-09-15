@@ -1,12 +1,16 @@
 <?php
 
+if (!defined('MAX_ABSTRACT_LENGTH')) {
+    define('MAX_ABSTRACT_LENGTH', 300);
+}
+
 $templateData = array(
     'title'             => $this->title,
     'resourceUri'       => $this->resourceUri,
     'description'       => $this->description,
     'descriptionHelper' => $this->descriptionHelper,
     'options'           => $this->options
-); 
+);
 
 if (isset($this->description['http://purl.org/dc/terms/creator'][0]['value'])) {
     $creator = $this->description['http://purl.org/dc/terms/creator'][0]['value'];
@@ -38,18 +42,27 @@ if (isset($this->description['http://purl.org/dc/terms/creator'][0]['value'])) {
     }
 }
 
+$abstractContent = array();
+if (isset($this->description['http://lod2.eu/schema/abstract'][0]['value'])) {
+    $abstractContent[] = $this->description['http://lod2.eu/schema/abstract'][0]['value'];
+} else if (isset($this->description['http://lod2.eu/schema/content'][0]['value'])) {
+    $content = $this->description['http://lod2.eu/schema/content'][0]['value'];
+    if (strlen($content) > MAX_ABSTRACT_LENGTH) {
+        $content = substr($content, 0, MAX_ABSTRACT_LENGTH - 10)
+                 . '…';
+    }
+    $abstractContent[] = $content;
+}
+
+if (isset($this->options['show_link']) && $this->options['show_link']) {
+    $abstractContent[] = '<a href="' . $this->url($this->resourceUri) . '">read</a>';
+}
+
 ?>
-<div class="maincontent">
-    <div class="section testimonial">
-        <h3><?php echo $title ?></h3>
-        <div class="section-content">
-            <?php if (isset($creatorDescription['http://xmlns.com/foaf/0.1/depiction'][0]['value'])): ?>
-                <img width="100" src="<?php echo $creatorDescription['http://xmlns.com/foaf/0.1/depiction'][0]['value'] ?>" title="depiction of <?php echo  $creatorInstance->getTitle(); ?>"/>
-            <?php endif; ?>
-            <?php echo $this->partial('lod2/content.phtml', $templateData); ?>
-            <?php if (isset($this->description['http://purl.org/dc/terms/creator'][0]['value'])): ?><p>Author: <?php 
-                echo $title ?></p><?php 
-            endif; ?>
-        </div>
-    </div>
+<div class="section-content">
+    <h4><a href="<?php echo $this->url($this->resourceUri) ?>"><?php echo $title ?></a></h4>
+    <?php if (isset($creatorDescription['http://xmlns.com/foaf/0.1/depiction'][0]['value'])): ?>
+        <img style="float:left;margin-right:5px;margin-top:5px" height="75" src="<?php echo $creatorDescription['http://xmlns.com/foaf/0.1/depiction'][0]['value'] ?>" title="depiction of <?php echo  $creatorInstance->getTitle(); ?>"/>
+    <?php endif; ?>
+    <p><?php echo implode(PHP_EOL, $abstractContent); ?></p>
 </div>

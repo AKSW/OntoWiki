@@ -8,7 +8,8 @@ $templateData = array(
     'title' => $this->title,
     'resourceUri' => $this->resourceUri,
     'description' => $this->description,
-    'descriptionHelper' => $this->descriptionHelper
+    'descriptionHelper' => $this->descriptionHelper,
+    'options'           => $this->options
 );
 
 if ((isset($this->description['http://lod2.eu/schema/next'])) || (isset($this->description['http://lod2.eu/schema/previous']))) {

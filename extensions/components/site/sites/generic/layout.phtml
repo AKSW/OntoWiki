@@ -36,7 +36,8 @@
                     'title' => $this->descriptionHelper->getTitle($this->resourceUri),
                     'resourceUri' => $this->resourceUri,
                     'description' => $this->description[$this->resourceUri],
-                    'descriptionHelper' => $this->descriptionHelper
+                    'descriptionHelper' => $this->descriptionHelper,
+                    'options'           => $this->options
             );
     function printNavi($navi, $titleHelper, $depth){
         if(is_array($navi) && count($navi)>0):?>

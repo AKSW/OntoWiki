@@ -30,7 +30,10 @@ if (isset($description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {
         }
     }
 
-    switch ($types) {
+    switch (true) {
+        case (isset($types['http://lod2.eu/schema/Testimonial'])):
+            echo $this->partial('lod2/items/testimonial.phtml', $templateData);
+            break;
         case (isset($types['http://rdfs.org/sioc/types#WikiArticle'])):
         case (isset($types['http://rdfs.org/sioc/ns#Post'])):
         case (isset($types['http://usefulinc.com/ns/doap#Project'])):
