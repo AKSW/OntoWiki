@@ -9,6 +9,9 @@ var loader_src = '<img id="loader" src="extensions/themes/mobile/image/spinner.g
 var loader_small_src = '<small id="loader"><img src="extensions/themes/mobile/image/spinner.gif"></small>';
 var selected_model = '';
 
+// TODO: add to PHP and remove here
+var RDFAUTHOR_MOBILE = true;
+
 //$("#navigation").bind('pageAnimationEnd', function(e, info){
 //   getBase(e);
 //});
@@ -29,7 +32,8 @@ function getBase(element){
         RDFAUTHOR_DEFAULT_GRAPH = selected_model;
         RDFAUTHOR_DEFAULT_SUBJECT = selected_model;
         // get
-        var url = 'http://'+location.host+'/ontowiki/model/select/?m=' + $(element).attr('about');
+        // 'http://'+location.host+'/ontowiki/
+        var url = urlBase + 'model/select/?m=' + $(element).attr('about');
         var title = $(element).text();
         //$(element).append(loader_small_src);
         $(element).attr("class","loading");
@@ -165,9 +169,9 @@ function openRDFa(){
         }
         object = $(":first-child", this).attr("content");
         if( typeof object === "undefined" || object.length < 1){
-            object = {value: $(":first-child", this).text()};
+            object = {value: $(":first-child", this).text(), type: 'literal'};
         }else{
-            object = "<"+object+">";
+            object = {value: "<"+object+">", type: 'uri'};
         }
         stmt = new Statement({
             subject: "<"+subject+">",
