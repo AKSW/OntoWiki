@@ -1,0 +1,159 @@
+<?php echo $this->doctype('XHTML1_STRICT') ?>
+<html manifest="extensions/themes/mobile/cache.manifest">
+<head>
+    <title>OntoWiki</title>
+
+    <?php if ($this->has('jsonVars')): ?>
+        <script type="text/javascript">
+            <?php echo $this->jsonVars ?>
+        </script>
+    <?php endif; ?>
+
+    <!-- stylesheets -->
+    <style type="text/css" media="screen">@import "extensions/themes/mobile/jqtouch/jqtouch.min.css";</style>
+    <style type="text/css" media="screen">@import "extensions/themes/mobile/jqt/theme.min.css";</style>
+    <style type="text/css" media="screen">
+        .hasMenu {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        li span {
+            font-weight: normal;
+            font-size: 18px;
+            color: #FFFFFF;
+        }
+        span ol li {
+            font-weight: normal;
+            font-size: 18px;
+            color: #FFFFFF;
+        }
+        .pager{
+            background: #4c4d4e;
+            border: 1px solid #333;
+            font-size: 18px;
+            text-align: center;
+            width: 12.5%;
+            float: left;
+            -webkit-border-radius: 8px;
+            -webkit-box-sizing: border-box;
+            display: block;
+            margin-right: 5px;
+            padding: 11px 10px 14px 10px;
+            -webkit-box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
+            background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
+        }
+        .pager a{
+            color: #FFFFFF;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .pager a.selected{
+            color: #3e9ac3;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .pager a.disabled{
+            color: #666666;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+
+    <!-- jQTouch -->
+    <script type="text/javascript" src="libraries/RDFauthor/libraries/jquery.js" charset="utf-8"></script>
+    <script type="application/x-javascript" src="extensions/themes/mobile/jqtouch/jqtouch.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
+
+    <!-- <script type="text/javascript" src="http://localhost/ontowiki/extensions/components/datagathering/scripts/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="http://localhost/ontowiki/extensions/components/datagathering/datagathering.js"></script> -->
+    <script type="text/javascript" src="extensions/modules/modellist/modellist.js"></script>
+    <script type="text/javascript" src="extensions/modules/navigation/navigation.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/base.js"></script>
+</head>
+<body>
+    <div id="home">
+        <div class="toolbar">
+            <?php if( OntoWiki::getInstance()->erfurt->getAuth()->getIdentity()->isAnonymousUser() ): ?>
+                <a href="#login" class="button leftButton flip">Login</a>
+            <?php else: ?>
+                <a href="http://localhost/ontowiki/application/logout" class="button leftButton">Logout</a>
+            <?php endif; ?>
+            <h1>OntoWiki Mobile</h1>
+        </div>
+        <?php echo $this->modules('main.mobile.baselist') ?>
+    </div>
+    <div id="login">
+        <div class="toolbar">
+            <a href="#" class="back">Back</a>
+            <h1>Login</h1>
+        </div>
+        <!-- <ul class="rounded">
+            <li><input type="text" name="login-text" placeholder="Login" id="login-text" /></li>
+            <li><input type="password" name="pass-text" placeholder="Password" id="pass-text" /></li>
+            <li><input type="checkbox" name="login-save" id="login-save" class="checkbox"> Remember me</li>
+        </ul>
+        <a href="#" class="whiteButton" style="margin: 10px" onclick="doLogin(); return false;">OK</a> -->
+        <?php echo $this->modules('main.mobile.login') ?>
+    </div>
+    <div id="nav">
+        <div class="toolbar">
+            <a href="#" class="back">Back</a>
+            <h1 id="nav-title">title</h1>
+            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
+        </div>
+        <?php echo $this->modules('main.mobile.navigation') ?>
+    </div>
+    <div id="list">
+        <div class="toolbar">
+            <a href="#nav" class="back">Back</a>
+            <h1 id="list-title">title</h1>
+            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
+        </div>
+        <div id="navigation-content">
+            <?php echo $this->modules('main.mobile.list') ?>
+        </div>
+    </div>
+    <div id="instance-list">
+        <div class="toolbar">
+            <a href="#list" class="back">Back</a>
+            <h1 id="instance-title">title</h1>
+            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
+        </div>
+        <div id="instance-content">
+            <!-- stuff here -->
+        </div>
+    </div>
+    <div id="properties-list">
+        <div class="toolbar">
+            <a href="#instance-list" class="back">Back</a>
+            <h1 id="properties-title">title</h1>
+            <a href="#" class="button" id="prop-menu" onclick="toggleMenu(this);">Menu</a>
+        </div>
+        <div id="properties-content">
+            <!-- stuff here -->
+        </div>
+    </div>
+    <div id="searchres-list">
+        <div class="toolbar">
+            <a href="#" class="back">Back</a>
+            <h1 id="searchres-title">title</h1>
+        </div>
+        <div id="searchres-content">
+            <!-- stuff here -->
+        </div>
+    </div>
+    <div id="rdfa-list">
+        <div class="toolbar">
+            <a href="#" id="rdfa-back" class="back">Back</a>
+            <h1>Properties</h1>
+        </div>
+        <div id="rdfa-content">
+            <!-- stuff here -->
+        </div>
+    </div>
+    <?php echo $this->inlineScript() ?>
+</body>
+</html>

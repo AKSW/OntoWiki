@@ -63,12 +63,17 @@ class LoginModule extends OntoWiki_Module
         } else {
             $data['showRegisterButton'] = false;
         }
-
-        $content = array(
-            'Local' => $this->render('templates/local', $data),
-            'OpenID' => $this->render('templates/openid', $data),
-            'FOAFSSL' => $this->render('templates/webid', $data)
-        );
+        
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if(!$request->isMobile()){
+            $content = array(
+                'Local' => $this->render('templates/local', $data),
+                'OpenID' => $this->render('templates/openid', $data),
+                'FOAFSSL' => $this->render('templates/webid', $data)
+            );
+        }else{
+            $content = $this->render('templates/local', $data);
+        }
 
         return $content;
     }

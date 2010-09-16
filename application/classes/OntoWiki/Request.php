@@ -49,6 +49,17 @@ class OntoWiki_Request extends Zend_Controller_Request_Http
         
         return $value;
     }
+
+    public function isMobile(){
+        return true;
+        $var = $this->getServer();
+        $user_agent = $var["HTTP_USER_AGENT"];
+        if( strpos($user_agent, "iPhone") !== false || strpos($user_agent, "Android") !== false
+                || strpos($user_agent, "Chrome") !== false){
+            return true;
+        }
+        return false;
+    }
 }
 
 

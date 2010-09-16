@@ -6,11 +6,14 @@
  * @version $Id: login.phtml 3405 2009-06-27 07:35:34Z sebastian.dietzold $
  */
 
+$request = Zend_Controller_Front::getInstance()->getRequest();
+
 ?>
-<form method="post" action="<?php echo $this->actionUrl ?>" class="simple-input input-justify-left" name="locallogin">
+<form method="post" action="<?php echo $this->actionUrl ?>" class="simple-input input-justify-left" name="locallogin" id="loginform">
     <input type="hidden" name="logintype" value="locallogin" />
+    <input type="hidden" name="redirect-uri" value="<?php echo $this->redirectUri ?>" />
+<?php if(!$request->isMobile()): ?>
     <fieldset>
-        <input type="hidden" name="redirect-uri" value="<?php echo $this->redirectUri ?>" />
         <div>
             <label for="username"><?php echo $this->_('Username') ?></label>
             <input class="text" type="text" id="username" name="username" value="" />
@@ -34,5 +37,27 @@
                     <a class="button" href="<?php echo $this->registerActionUrl; ?>"><?php echo $this->_('Register') ?></a>
         <?php endif; ?>
         </div>
-	</fieldset>
+    </fieldset>
+<?php else: ?>
+    <ul>
+        <li>
+            <input placeholder="<?php echo $this->_('Username') ?>" type="text" id="username" name="username" value="" />
+        </li>
+        <li>
+            <input placeholder="<?php echo $this->_('Password') ?>" type="password" id="password" name="password" />
+        </li>
+        <li>
+            <input class="checkbox" type="checkbox" id="login-save" name="login-save" />
+            <?php echo $this->_('Remember me') ?>
+        </li>
+        <li>
+            <ul class="individual">
+                <li><a id="locallogin" onclick="doLogin(); return false;"><?php echo $this->_('Login') ?></a></li>
+                <!-- <?php if ($this->showRegisterButton) : ?>
+                <li><a href="<?php echo $this->registerActionUrl; ?>"><?php echo $this->_('Register') ?></a></li>
+                <?php endif; ?> -->
+            </ul>
+        </li>
+    </ul>
+<?php endif; ?>
 </form>

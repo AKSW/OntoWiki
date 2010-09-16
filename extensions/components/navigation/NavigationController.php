@@ -19,6 +19,7 @@ class NavigationController extends OntoWiki_Controller_Component
     private $session;
     private $ac;
     private $model;
+    private $mobile;
     /* an array of arrays, each has type and text */
     private $messages = array();
     /* the setup consists of state and config */
@@ -36,7 +37,14 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->translate = $this->_owApp->translate;
         $this->session = $this->_owApp->session->navigation;
         $this->ac = $this->_erfurt->getAc();
-        
+
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile()){
+            $this->mobile = true;
+        }else{
+            $this->mobile = false;
+        }
+
         $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');        
         $this->stateSession = new Zend_Session_Namespace($sessionKey);
 
@@ -54,6 +62,7 @@ class NavigationController extends OntoWiki_Controller_Component
         }
     }
 
+    
     /*
      * The main action which is retrieved via ajax
      */
@@ -141,6 +150,7 @@ class NavigationController extends OntoWiki_Controller_Component
         // set view messages and setup
         $this->view->messages = $this->messages;
         $this->view->setup = $this->setup;
+        $this->view->mobile = $this->mobile;
 
         // save state to session
         $this->savestateServer($this->view, $this->setup);

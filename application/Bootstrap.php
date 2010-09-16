@@ -573,7 +573,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // require Config
         $this->bootstrap('Translate');
         $translate = $this->getResource('Translate');
-        
+
+        // require Config
+        $this->bootstrap('Request');
+        $request = $this->getResource('Request');
+
+        // require Config
+        $this->bootstrap('Erfurt');
+
         // standard template path
         $defaultTemplatePath = ONTOWIKI_ROOT 
                              . 'application/views/templates';
@@ -612,10 +619,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
         
         // initialize layout
-        Zend_Layout::startMvc(array(
+        $layoutOptions = array(
             // for layouts we use the default path
             'layoutPath' => $defaultTemplatePath . DIRECTORY_SEPARATOR . 'layouts'
-        ));
+        );
+
+        if($request->isMobile()){
+            $layoutOptions["layout"] = "mobile";
+        }
+
+        Zend_Layout::startMvc($layoutOptions);
         
         return $view;
     }

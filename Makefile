@@ -31,3 +31,4 @@ zend:
 	tar xzf ZendFramework-1.9.4-minimal.tar.gz
 	mv ZendFramework-1.9.4-minimal/library/Zend libraries
 	rm -rf ZendFramework-1.9.4-minimal.tar.gz ZendFramework-1.9.4-minimal
+
