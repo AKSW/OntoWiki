@@ -123,6 +123,66 @@ class SiteHelper extends OntoWiki_Component_Helper
         return false;
     }
     
+    public function onIsDispatchable($event)
+    {
+        if (!$event->getValue()) {
+            // linked data plug-in returned false --> 404
+            
+            $config = $this->getSiteConfig();
+            if (isset($config['error'])) {
+                $errorResource = $config['error'];
+                
+                if (isset($config['model'])) {
+                    $siteGraph = $config['model'];
+                    
+                    $store = OntoWiki::getInstance()->erfurt->getStore();
+                    $siteModel = $store->getModel($siteGraph);
+                    
+                    $sparql = sprintf('ASK FROM <%s> WHERE {<%s> ?p ?o .}', $siteGraph, $errorResource);
+                    $query  = Erfurt_Sparql_SimpleQuery::initWithString($sparql);
+                    $result = $store->sparqlAsk($query);
+                    if (true === $result) {
+                        OntoWiki::getInstance()->selectedModel    = $siteModel;
+                        OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($errorResource, $siteModel);
+
+                        $request = $response = Zend_Controller_Front::getInstance()->getRequest();
+                        $request->setControllerName('site');
+                        $request->setActionName($this->_privateConfig->defaultSite);
+
+                        $response = Zend_Controller_Front::getInstance()->getResponse();
+                        $response->setRawHeader('HTTP/1.0 404 Not Found');
+
+                        return true;
+                    }
+                }
+                
+            }
+            
+            return false;
+            
+            /*
+             * TODO:
+             * if error is 404
+             * 1. set 404 header
+             * if error resource exists in site model
+             *   2. load site model
+             *   3. set error resource as current resource
+             *   4. render site as normal
+             * fi
+             * else
+             *   2. render default 404 template
+             */
+            
+            // $errorHandler = Zend_Controller_Front::getInstance()->getPlugin('Zend_Controller_Plugin_ErrorHandler');
+            // if ($errorHandler) {
+            //     $errorHandler->setErrorHandler(array(
+            //         'controller' => 'site', 
+            //         'action' => 'error'
+            //     ));
+            // }
+        }
+    }
+    
     public function onBuildUrl($event)
     {
         $site = $this->getSiteConfig();
@@ -130,7 +190,7 @@ class SiteHelper extends OntoWiki_Component_Helper
         $resource = isset($event->params['r']) ? OntoWiki_Utils::expandNamespace($event->params['r']) : null;
         
         // URL for this site?
-        if (($graph === (string)OntoWiki::getInstance()->selectedModel) && !empty($this->_site)) {            
+        if (($graph === (string)OntoWiki::getInstance()->selectedModel) && !empty($this->_site)) {
             if (false !== strpos($resource, $graph)) {
                 // LD-capable
                 $event->url = $resource 

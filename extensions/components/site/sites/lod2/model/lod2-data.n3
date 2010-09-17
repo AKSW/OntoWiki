@@ -47,6 +47,10 @@ pages:Consortium a sioct:WikiArticle;
 #     rdfs:label "Testimonials";
 #     lod2:content """Here we collect testimonials about about Linked (Open) Data and what it means to persons, organisations, the society, the economy, the scientific world, and the enterprise.""".
 
+pages:Error a sioct:WikiArticle;
+    rdfs:label "Not Found";
+    lod2:content """This site contains no information about the requested resource.""".
+
 pages:Contact a sioct:WikiArticle;
     skos:topConceptOf <http://lod2.eu/ConceptScheme/Navigation>;
     sysont:order "4"^^xsd:integer;
