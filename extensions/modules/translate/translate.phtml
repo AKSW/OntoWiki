@@ -31,7 +31,7 @@
     <?php foreach ($titles as $title) : ?>
 
         <tr><td>[<b> <?php echo $title['lang'] ?> </b>]</td>
-            <?php if (!$title['title']) : ?>
+            <?php if (!isset($title['title'])) : ?>
                 <td><b style="color:red"> <?php echo $this->_('Title is missing') ?> </b></td>
             <?php else : ?>
                 <td> <?php echo $title['title'] ?> </td>

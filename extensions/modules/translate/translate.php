@@ -16,14 +16,18 @@ class TranslateModule extends OntoWiki_Module
     protected $languages;
     protected $locale;
     protected $properties;
+    protected $resource;
 
     public function init() {
         $this->session      = $this->_owApp->session;
         $this->languages    = $this->_privateConfig->languages;
-        $this->properties    = $this->_privateConfig->properties;
+        $this->properties    = $this->_privateConfig->properties;        
         $this->locale       = $this->_owApp->config->languages->locale;
         $this->titleHelper  = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
+        
+        $this->view->locale       = $this->_owApp->config->languages->locale;
         $this->view->titleHelper = $this->titleHelper;
+        
         $this->resource     = (string) $this->_owApp->selectedResource;
 
         }
@@ -32,9 +36,10 @@ class TranslateModule extends OntoWiki_Module
     	if (null === $this->_owApp->selectedModel) {
             return;
         }
-        $titles = $this->getExistingTitles();
-        $titles = $this->checkMissingTitles($titles);
+        $titles = $this->getExistingTitles();        
+        $titles = $this->checkMissingTitles($titles);        
         $this->view->titles = $titles;
+        
         return $this->render('translate');
     }
 
@@ -44,7 +49,7 @@ class TranslateModule extends OntoWiki_Module
         foreach ($this->properties as $property)  {
             $constraints[] = "?predicate = <" . $property . "> ";
         }
-        $constraint = implode ("||" , $constraints);
+        $constraint = implode (" || " , $constraints);
 
         $query = " SELECT ?predicate ?object WHERE {
             <".$this->resource."> ?predicate ?object .
