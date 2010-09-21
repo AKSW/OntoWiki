@@ -124,7 +124,7 @@ class SiteHelper extends OntoWiki_Component_Helper
     }
     
     public function onIsDispatchable($event)
-    {return false; /* TODO: method is broken! "Fatal error: Call to undefined method Erfurt_Event::getValue() in /var/www/ontowiki/extensions/components/site/SiteHelper.php on line 128 " */
+    {#return false; /* TODO: method is broken! "Fatal error: Call to undefined method Erfurt_Event::getValue() in /var/www/ontowiki/extensions/components/site/SiteHelper.php on line 128 " */
         if (!$event->getValue()) {
             // linked data plug-in returned false --> 404
             
