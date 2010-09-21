@@ -59,7 +59,7 @@ if (isset($this->options['show_link']) && $this->options['show_link']) {
 }
 
 ?>
-<div class="section-content">
+<div class="result">
     <h4><a href="<?php echo $this->url($this->resourceUri) ?>"><?php echo $title ?></a></h4>
     <?php if (isset($creatorDescription['http://xmlns.com/foaf/0.1/depiction'][0]['value'])): ?>
         <img style="float:left;margin-right:5px;margin-top:5px" height="75" src="<?php echo $creatorDescription['http://xmlns.com/foaf/0.1/depiction'][0]['value'] ?>" title="depiction of <?php echo  $creatorInstance->getTitle(); ?>"/>

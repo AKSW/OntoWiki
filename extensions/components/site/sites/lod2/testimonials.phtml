@@ -19,10 +19,11 @@ if (empty($title)) {
 <div class="section random-results">
     <script type="text/javascript">
     $(document).ready(function () {
-        var number  = $('.random-results').children('.section-content').length;
+        var results = $('.random-results').find('.result');
+        var number  = results.length;
         var current = Math.floor(Math.random() * (number - 1));
         var maxHeight = 0;
-        $('.random-results').children('.section-content').each(function (index) {
+        results.each(function (index) {
             if ($(this).height() > maxHeight) {
                 maxHeight = $(this).height();
             }
@@ -31,14 +32,12 @@ if (empty($title)) {
                 $(this).hide();
             }
         });
-        // HACK: height seems to be not enough
-        maxHeight += 20;
-        $('.random-results .section-content').height(maxHeight);
+        results.height(maxHeight);
         
         window.setInterval(function () {
             var next = (current + 1) % number;
-            $('.random-results .section-content').eq(current).fadeOut(function () {
-                $('.random-results .section-content').eq(next).fadeIn(function () {
+            results.eq(current).fadeOut(function () {
+                results.eq(next).fadeIn(function () {
                     current = next;
                 });
             });
