@@ -117,8 +117,8 @@
   .section a:visited:after,
   #footer a:after
   {
-    content:'↘';
-    color:#0066cc;
+      content:' ' url(./../img/icon-linkarrow.png);
+      white-space: nowrap;
   }
   
   .section a:focus,
@@ -246,7 +246,7 @@
   {
     margin:0;
     padding:0.75em 0;
-    border-bottom:solid 1px #0099cc;
+    border-bottom:solid 2px #e1f0f7; /* solid 1px #0099cc; */
   }
 
   /* -- 4. Newsfeed --------------------------------------------------------- */
@@ -255,7 +255,7 @@
   {
       margin:0;
       padding:0.75em 0;
-      border-bottom:solid 1px #0099cc;
+      border-bottom:solid 2px #e1f0f7;
   }
 
   /* -- 5. Similar Instances ------------------------------------------------ */
@@ -269,7 +269,7 @@
   {
       margin:0;
       padding:0.75em 0;
-      border-bottom:solid 1px #0099cc;
+      border-bottom:solid 2px #e1f0f7;
   }
 
   #similarinstances .si_instances
