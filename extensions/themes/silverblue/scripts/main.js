@@ -306,7 +306,6 @@ $(document).ready(function() {
         } else {
             loadRDFauthor(function () {
                 RDFauthor.setOptions({
-                    anchorElement: '.innercontent', 
                     onSubmitSuccess: function () {
                         // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
                         // mainInnerContent.load(document.URL);
