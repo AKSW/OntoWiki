@@ -117,8 +117,8 @@
   .section a:visited:after,
   #footer a:after
   {
-    content:'↘';
-    color:#0066cc;
+      content:' ' url(./../img/icon-linkarrow.png);
+      white-space: nowrap;
   }
   
   .section a:focus,
