@@ -24,7 +24,7 @@ class Site_View_Helper_Processtidy extends Zend_View_Helper_Abstract
         if (function_exists('tidy_repair_string'))
         {
             //*
-            return tidy_repair_string($string,
+            $string = tidy_repair_string($string,
                                       array('alt-text'=>'',
                                             'bare'=>true,
                                             'clean'=>true,
@@ -34,11 +34,16 @@ class Site_View_Helper_Processtidy extends Zend_View_Helper_Abstract
                                             'enclose-block-text'=>true,
                                             'enclose-text'=>true,
                                             'logical-emphasis'=>true,
-                                            'word-2000'=>true),
+                                            'word-2000'=>true,
+                                            'show-body-only'=>true,
+                                            'output-xhtml'=>true,
+                                            'quote-ampersand'=>true
+                                            ),
                                       'utf8');
             // */
-
+            
             return $string;
+            return substr($string, strpos($string, '<body>')+6, strpos($string, '</body>')-strpos($string, '<body>')-6);
         }
         else
         {

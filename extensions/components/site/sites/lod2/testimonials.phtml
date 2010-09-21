@@ -1,4 +1,3 @@
-<div class="section">
 <?php
 
 $querUri          = 'http://lod2.eu/Query/Testimonials';
@@ -47,6 +46,8 @@ if (empty($title)) {
     });
     </script>
     <h3><?php echo $title ?></h3>
-    <?php echo $content; ?>
+    <div class="section-content">
+        <?php echo $content; ?>
+    </div>
 </div>
 
