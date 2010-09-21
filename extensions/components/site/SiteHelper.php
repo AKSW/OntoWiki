@@ -192,12 +192,18 @@ class SiteHelper extends OntoWiki_Component_Helper
         // URL for this site?
         if (($graph === (string)OntoWiki::getInstance()->selectedModel) && !empty($this->_site)) {
             if (false !== strpos($resource, $graph)) {
-                // LD-capable
-                $event->url = $resource 
+                // LD-capable            
+                if ((string) $resource[strlen($resource)-1] == '/') {
+                    // Slash should not get a suffix
+                    $event->url = (string) $resource;
+                    // URL created
+                    return true;
+                } else {
+                    $event->url = $resource 
                             . $this->getCurrentSuffix();
-                
-                // URL created
-                return true;
+                    // URL created
+                    return true;
+                }
             } else {
                 // classic
                 $event->route      = null;
