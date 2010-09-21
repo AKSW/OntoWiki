@@ -147,6 +147,7 @@
   {
     color:#fff;
     background-color:#006aa8; /* #0066cc; */
+    background-color:rgba(0,106,168,0.9);
   }
 
   #nav ul.depth_0,
@@ -160,7 +161,7 @@
   
   #nav ul.depth_1
   {
-    opacity:0.9;
+    /*opacity:0.9;*/
     -webkit-box-shadow:0em 0.5em 0.75em #ccc;
     -moz-box-shadow:0em 0.25em 0.25em #666;
   }
