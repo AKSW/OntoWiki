@@ -149,7 +149,8 @@
     background-color:#0066cc;
   }
 
-  #nav ul.depth_0
+  #nav ul.depth_0,
+  #nav ul.menu
   {
     position:static;
     width:auto;
@@ -177,7 +178,8 @@
     margin:0; padding:0;
   }
   
-  #nav ul.depth_0 > li
+  #nav ul.depth_0 > li,
+  #nav ul.menu > li
   {
     position:relative;
     float:left;
@@ -186,7 +188,9 @@
   }
   
   #nav ul.depth_0 > li a,
-  #nav ul.depth_0 > li strong
+  #nav ul.depth_0 > li strong,
+  #nav ul.menu > li a,
+  #nav ul.menu > li strong
   {
     display:block;
     margin:0;
@@ -209,8 +213,12 @@
     border-top-style:none;
   }
   
+  #nav ul.depth_0 > li a:focus,
+  #nav ul.depth_0 > li a:hover,
   #nav ul.depth_1 > li a:focus,
-  #nav ul.depth_1 > li a:hover
+  #nav ul.depth_1 > li a:hover,
+  #nav ul.menu > li a:focus,
+  #nav ul.menu > li a:hover
   {
     color:#fff;
     background-color:#02628f;
@@ -219,7 +227,10 @@
   
   #nav ul.depth_0 > li:first-child,
   #nav ul.depth_0 > li:first-child > a,
-  #nav ul.depth_0 > li:first-child > strong
+  #nav ul.depth_0 > li:first-child > strong,
+  #nav ul.menu > li:first-child,
+  #nav ul.menu > li:first-child > a,
+  #nav ul.menu > li:first-child > strong
   {
     border-left:none;
     padding-left:0;
