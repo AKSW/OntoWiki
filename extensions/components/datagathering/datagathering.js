@@ -146,7 +146,7 @@ function showLocationBar()
 	$('a.location_bar').removeClass('show');
 	$('#location_bar_container').show();
 	
-	$('#location_bar_input').autocomplete(function(term, cb) { locationBarUriSearch(term, cb); }, {
+	$('#location_bar_input')._autocomplete(function(term, cb) { locationBarUriSearch(term, cb); }, {
         minChars: 3,
         delay: 1000,
         max: 100,
