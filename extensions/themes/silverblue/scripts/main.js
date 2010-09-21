@@ -233,18 +233,19 @@ $(document).ready(function() {
     });
     
     $('.edit.save').click(function() {
-        RDFauthor.commitEditing();
+        RDFauthor.commit();
     });
     
     $('.edit.cancel').click(function() {
         // reload page
         window.location.href = window.location.href;
-        // RDFauthor.cancelEditing();
+        RDFauthor.cancel();
         // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
         // mainInnerContent.load(document.URL);
-        // $('.edit-enable').click();
+        $('.edit-enable').click();
     });
     
+    /*
     $('.icon-edit').click(function() {
         var element = this;
         loadRDFauthor(function() {
@@ -290,17 +291,18 @@ $(document).ready(function() {
             });
         });
     });
+    */
     
     // edit mode
     $('.edit-enable').click(function() {
         var button = this;
         if ($(button).hasClass('active')) {
+            RDFauthor.cancel();
+            $('.edit').each(function() {
+                $(this).fadeOut(effectTime);
+            });
+            $(button).removeClass('active');
             window.location.href = window.location.href;
-            // RDFauthor.cancelEditing();
-            // $('.edit').each(function() {
-            //     $(this).fadeOut(effectTime);
-            // })
-            // $(button).removeClass('active');
         } else {
             loadRDFauthor(function () {
                 RDFauthor.setOptions({
@@ -330,18 +332,17 @@ $(document).ready(function() {
                     }, 
                     saveButtonTitle: 'Save Changes', 
                     cancelButtonTitle: 'Cancel', 
-                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text()
+                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+                    view: 'inline'
                 });
                 
                 RDFauthor.start();
-                // RDFauthor.startInline('*[about] td:nth-child(2)');
-                // RDFauthor.startInline('table tr td');
                 
-                // $('.edit').each(function() {
-                //     $(this).fadeIn(effectTime, function() {
-                //         $(button).addClass('active');
-                //     });
-                // })
+                $('.edit').each(function() {
+                    $(this).fadeIn(effectTime, function() {
+                        $(button).addClass('active');
+                    });
+                })
             });
         }
     });
@@ -667,7 +668,4 @@ $(document).ready(function() {
     $('.window div.cmDiv').adjustClickMenu();
     
 }) // $(document).ready
-
-
-
 
