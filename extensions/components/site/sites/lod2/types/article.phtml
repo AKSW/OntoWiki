@@ -60,13 +60,19 @@ $templateData = array(
     <div class="section">
         <h3><?php echo $this->title ?></h3>
 
-    <?php $entries = loadMyFeed ('http://sebastian.dietzold.de/feed/'); ?>
+    <?php
+        $entries = array ();
+        if (isset($this->description['http://lod2.eu/schema/importantFeed'])) {
+            $feedUri = $this->description['http://lod2.eu/schema/importantFeed'][0]['value'];
+            $entries = loadMyFeed ($feedUri);
+        } 
+    ?>    
     <?php if (count($entries) > 0): ?>
     <?php foreach($entries as $entry): ?>
-        <div class="section-content">
-            <h4><a href="<?php echo $entry['a'];?>"><?php echo $entry['date'];?> - <?php echo $entry['h4'];?></a></h4>
-                     <p><?php echo $entry['p'];?> <a href="<?php echo $entry['a'];?>">read</a></p>
-        </div>
+        <div class="section-content"><p>
+            <a href="<?php echo $entry['a'];?>"><?php echo $entry['date'];?> - <?php echo $entry['h4'];?></a>
+                     <?php echo $entry['p'];?> <a href="<?php echo $entry['a'];?>">read</a>
+                     </p></div>
      <?php endforeach; ?>
         &nbsp;
      <?php endif; ?>
