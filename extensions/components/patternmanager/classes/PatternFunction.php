@@ -233,7 +233,7 @@ class PatternFunction {
 
     /**
     * Creates an URI by concatenating the given localname ($options[0]), prefix ($options[1]) and
-    * optional suffix ($options[2]). If the prefix has no ending slash, one will be appended.
+    * optional suffix ($options[2]). If the prefix is not empty and has no ending slash, one will be appended.
     * The suffix, if available, will be concatenated to the localname without further editing.
     *
     * @author Marvin Frommhold
@@ -248,11 +248,54 @@ class PatternFunction {
             $localname .= $options[2];
         }
 
-        // add slash to the end of the prefix, if it does not exist
-        if ( !preg_match('/\/$/',$prefix) && !preg_match('/#$/',$prefix) ) {
-            $prefix .= '/';
+        if ( !empty($prefix) ) {
+
+            // add slash to the end of the prefix, if it does not exist
+            if ( !preg_match('/\/$/',$prefix) && !preg_match('/#$/',$prefix) ) {
+                $prefix .= '/';
+            }
         }
 
         return array('value' => $prefix . $localname, 'type' => 'uri');
+    }
+
+    /**
+     * Sets the language of the given literal to the given language.
+     */
+    private function callSetlanguage($options = array()) {
+
+        $literal = $options[0];
+        $language = $options[1];
+
+        return array('value' => $literal, 'type' => 'literal', 'language' => $language, 'datatype' => NULL);
+    }
+
+    /**
+     * Creates a literal with the given value ($options[0]) and typed as the given datatype ($options[1]).
+     *
+     * @author Marvin Frommhold
+     */
+    private function callCreatetypedliteral($options = array()) {
+
+        $value = $options[0];
+        $datatype = $options[1];
+
+        switch ( $datatype ) {
+
+            case "http://www.w3.org/2001/XMLSchema#boolean":
+                if ( $value > 0 ) {
+
+                    return array('value' => "true", 'type' => 'literal', "datatype" => $datatype);
+                }
+                else {
+
+                    return array('value' => "false", 'type' => 'literal', "datatype" => $datatype);
+                }
+                break;
+
+            default:
+                return array('value' => $value, 'type' => 'literal', "datatype" => $datatype);
+                break;
+        }
     }
 }
