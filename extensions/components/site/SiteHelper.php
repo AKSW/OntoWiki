@@ -247,7 +247,7 @@ class SiteHelper extends OntoWiki_Component_Helper
         $query = '
             PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
             PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
-            SELECT ?topConcept
+            SELECT ?topConcept ?altLabel
             FROM <' . (string)$model . '>
             WHERE {
                 ?cs a skos:ConceptScheme .
@@ -255,33 +255,61 @@ class SiteHelper extends OntoWiki_Component_Helper
                 OPTIONAL {
                     ?topConcept sysont:order ?order
                 }
+                OPTIONAL {
+                    ?topConcept skos:altLabel ?altLabel
+                }
             }
             ORDER BY ASC(?order)
             ';
 
         if ($result = $store->sparqlQuery($query)) {
             $tree = array();
-            $topConcepts = array();
             foreach ($result as $row) {
-                $topConcept = $row['topConcept'];
-                $titleHelper->addResource($topConcept);
-                $closure = $store->getTransitiveClosure(
-                    (string)$model,
-                    'http://www.w3.org/2004/02/skos/core#broader',
-                    $topConcept,
-                    true, 
-                    1 /* max depth */);
+                $topConcept = new stdClass;
+                $topConcept->uri = $row['topConcept'];
                 
-                // var_dump($closure);
-                
-                foreach ($closure as $concept) {
-                    $titleHelper->addResource($concept['node']);
+                $titleHelper->addResource($topConcept->uri);
+
+                if ($row['altLabel'] != null) {
+                    $topConcept->altLabel = $row['altLabel'];
+                }
+
+                $subQuery = '
+                    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                    PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
+                    SELECT ?subConcept ?altLabel
+                    FROM <' . (string)$model . '>
+                    WHERE {
+                        ?subConcept skos:broader <' . $topConcept->uri . '>
+                        OPTIONAL {
+                            ?subConcept sysont:order ?order
+                        }
+                        OPTIONAL {
+                            ?subConcept skos:altLabel ?altLabel
+                        }
+                    }
+                    ORDER BY ASC(?order)
+                    ';
+                if ($subConceptsResult = $store->sparqlQuery($subQuery)) {
+                    $subconcepts = array();
+                    foreach ($subConceptsResult as $subConceptRow) {
+                        $subConcept = new stdClass;
+                        $subConcept->uri = $subConceptRow['subConcept'];
+                        $subConcept->subconcepts = array();
+
+                        if ($subConceptRow['altLabel'] != null) {
+                            $subConcept->altLabel = $subConceptRow['altLabel'];
+                        }
+                        
+                        $titleHelper->addResource($subConcept->uri);                        
+                        $subconcepts[$subConcept->uri] = $subConcept;
+                    }
+                    $topConcept->subconcepts = $subconcepts;
+                } else {
+                    $topConcept->subconcepts = array();
                 }
                 
-                $conceptTree = array(array($topConcept => array()));
-                $topConcepts[] = $topConcept;
-                self::_buildTree($conceptTree, $closure);
-                $tree[$topConcept] = $conceptTree[0][$topConcept];
+                $tree[$topConcept->uri] = $topConcept;
             }
             
             return $tree;
@@ -293,19 +321,6 @@ class SiteHelper extends OntoWiki_Component_Helper
     public function setSite($site)
     {
         $this->_site = (string)$site;
-    }
-
-    protected static function _buildTree(&$tree, $closure)
-    {
-        foreach ($tree as $treeElement => &$childrenArr) {
-            foreach ($closure as $closureElement) {
-                if (isset($closureElement['parent']) && $closureElement['parent'] == $treeElement) {
-                    $childrenArr[$closureElement['node']] = array();
-                }
-            }
-
-             self::_buildTree($childrenArr, $closure);
-        }
     }
 
 }
