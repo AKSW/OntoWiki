@@ -19,12 +19,12 @@ class LiteraltypesPlugin extends OntoWiki_Plugin {
             $datatypeLink = "<a class=\"hasMenu\" about=\"".$parameter['datatype']."\" href=\"".((string) $url)."\">". (OntoWiki_Utils::getUriLocalPart($parameter['datatype'])) ."</a>";
 
             $ret = "<span>" . $parameter['value'] . "</span>";
-            $ret .= "<span style = 'float:right'>[".$datatypeLink."]</span>";
+            $ret .= "<span style = 'float:right;margin-left:2em'>[".$datatypeLink."]</span>";
             return $ret;
         }
         if (!empty($parameter['language'])) {
             $ret = "<span>" . $parameter['value'] . "</span>";
-            $ret .= "<span style = 'float:right'>[".$parameter['language']."]</span>";
+            $ret .= "<span style = 'float:right;margin-left:2em'>[".$parameter['language']."]</span>";
             return $ret;
         }
     }
