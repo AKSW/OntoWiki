@@ -77,6 +77,43 @@ pages:Project a sioct:WikiArticle;
     rdfs:label "Project";
     lod2:content """The outputs of this project will range from sci-tech to socio-economic areas by providing new technologies and an underlying scientific basis for these and by applying these new technologies to a number of Semantic Web areas experiencing commercial (enterprise search, media and publishing), scientific (extraction, interlinking, ontology classification and fusion methods), and sociological (community knowledge, integration in social networks, eGovernment) success at present. The project aims to contribute high-quality interlinked versions of public Semantic Web data sets, promoting their use in new cross-domain applications by developers across the globe. The new technologies for enabling scalable management of Linked Data collections in the many billions of triples will raise the state of the art of Semantic Web data management, both commercial and open-source, providing opportunities for new products and spin-offs, and make RDF a viable choice for organizations worldwide as a premier data management format. The algorithms and (open-source) tools that the project will develop for data cleaning, linking and fusing will help creating and bootstrapping new data sets in domains that go much beyond the direct applications and data sets developed in the context of this project, to reach the overall goal of the project of making Linked Data the model of choice for next-generation IT systems and applications.""".
 
+
+<http://lod2.eu/Article/Publications> a <http://rdfs.org/sioc/types#WikiArticle> ;
+                                      rdfs:label "Publications" ;
+                                      lod2:content "<p>Members of the LOD2 consortium contributed to the following publications:</p>" ;
+                                      sysont:order "5"^^xsd:integer ;
+                                      lod2:contentSideTop """<div class="section">
+  <h3>Navigation</h3>
+<div class="section-content">
+<span ex:role="facet" ex:facetClass="TextSearch"></span>
+<span ex:facetClass="Cloud" ex:role="facet" ex:expression=".year" ex:facetLabel="Year"></span>
+<span ex:facetClass="Cloud" ex:role="facet" ex:expression=".pub-type" ex:facetLabel="Type" ex:sortMode="count"></span>
+<span ex:role="facet" ex:expression=".author" ex:facetLabel="Author" ex:sortMode="count"></span>
+</div></div>""" ;
+                                      lod2:contentRaw """<div ex:role="view"
+  ex:grouped="false"
+  ex:orders=".year,.label"
+  ex:directions="descending,ascending"
+  ex:showSummary="true"
+  ex:showDuplicates="false"
+  style="display:none"
+>
+<p ex:role="lens" ex:itemTypes="Publication">
+<strong ex:if-exists=".author"><span class="author" ex:content=".author"></span>: </strong>
+<a ex:if-exists=".biburl" ex:href-content=".biburl" ><i ex:content=".label"></i></a>
+<span ex:content="if(exists(.booktitle), concat('In: ', .booktitle), '')"></span>
+<span ex:if-exists=".editor">(Editors: <span class="editor" ex:content=".editor"></span>)</span>
+<span class="journal" ex:content="if(exists(.journal), concat('In: ', .journal), '')"></span>
+<span class="note" ex:content="if(exists(.note), concat(', Note: ', .note), '')"></span>
+<span class="abstract" style="display:none" ex:content="if(exists(.abstract), .abstract, '')"></span>
+<a ex:if-exists=".url" ex:href-content=".url" >link</a>
+
+</div>""" ;
+                                      lod2:exhibitData <http://docs.aksw.org/BibsonomyProxy/exhibit-proxy.php?suffix=group/lod2/sys:relevantFor:lod2&callback=cb> .
+
+
+
+
 pages:ActivityClusters a sioct:WikiArticle;
     lod2:content """The work packages of LOD2 fall into five activity clusters.""";
     skos:broader pages:Project;
