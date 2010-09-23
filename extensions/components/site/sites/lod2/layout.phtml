@@ -1,4 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?php
+    // this is the standard template data
+    $templateData = array(
+                    'title' => $this->descriptionHelper->getTitle($this->resourceUri),
+                    'resourceUri' => $this->resourceUri,
+                    'description' => $this->description[$this->resourceUri],
+                    'descriptionHelper' => $this->descriptionHelper,
+                    'options'           => $this->options
+            );
+?><?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
     xmlns:dc="http://purl.org/dc/terms/"
@@ -99,18 +108,22 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
+<?php    
+    // check for exhibit data URI and integrate this as well as exhibit
+    if (isset($this->description[$this->resourceUri]['http://lod2.eu/schema/exhibitData'])) {
+        echo '  <script src="http://static.simile.mit.edu/exhibit/api-2.0/exhibit-api.js" type="text/javascript"></script>' .PHP_EOL;
+        foreach ($this->description[$this->resourceUri]['http://lod2.eu/schema/exhibitData'] as $property) {
+            if (isset($property['value'])) {
+                echo '  <link href="'.$property['value'].'" type="application/jsonp" rel="exhibit/data" ex:jsonp-callback="cb" />' .PHP_EOL;
+            }
+        }
+    }
+?>    
+    <?php $this->headScript() ?>
 </head>
 <body<?php 
     foreach ($this->namespaces as $prefix => $ns): ?><?php echo ' xmlns:' . $prefix . '="' . $ns . '"' ?><?php endforeach; ?>>
 <?php
-    // this is the standard template data
-    $templateData = array(
-                    'title' => $this->descriptionHelper->getTitle($this->resourceUri),
-                    'resourceUri' => $this->resourceUri,
-                    'description' => $this->description[$this->resourceUri],
-                    'descriptionHelper' => $this->descriptionHelper,
-                    'options'           => $this->options
-            );
     function printNavi($navi, $titleHelper, $depth, $view){
         if(is_array($navi) && count($navi)>0):?>
             <ul class="depth_<?php echo $depth; ?>">
@@ -194,6 +207,7 @@
         <div id="col3">
           <div id="col3_content" class="clearfix sidecontent">
             <!-- add your content here -->
+            <?php echo $this->partial('lod2/content-side-top.phtml', $templateData) ?>
             <?php echo $this->partial('lod2/testimonials.phtml', $templateData) ?>
             <?php echo $this->partial('lod2/feed.phtml', $templateData) ?> <!-- NEWS -->
             
@@ -231,7 +245,8 @@
                 </div>
             </div>
             <?php endif; ?>
-            
+
+            <?php echo $this->partial('lod2/content-side-bottom.phtml', $templateData) ?>
           </div> <!-- /#col3_content -->
           <!-- IE Column Clearing -->
           <div id="ie_clearing"> &#160; </div>
