@@ -162,7 +162,7 @@
   #nav ul.depth_1
   {
     /*opacity:0.9;*/
-    -webkit-box-shadow:0em 0.5em 0.75em #ccc;
+    -webkit-box-shadow:0em 0.25em 0.25em #666;
     -moz-box-shadow:0em 0.25em 0.25em #666;
   }
     
