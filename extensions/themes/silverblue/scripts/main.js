@@ -363,7 +363,7 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel',
                     title: 'Create New Resource by Cloning ' + selectedResource.title,  
                     autoParse: false, 
-                    showPropertyButton: false
+                    showPropertyButton: true
                 });
                 
                 RDFauthor.start();
