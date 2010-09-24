@@ -352,7 +352,9 @@ function loadRDFauthor(callback) {
     }
 }
 
-function populateRDFauthor(data) {
+function populateRDFauthor(data, protect) {
+    protect = arguments.length == 2 ? protect : true;
+    
     for (var currentSubject in data) {
         for (var currentProperty in data[currentSubject]) {
             var objects = data[currentSubject][currentProperty];
@@ -384,7 +386,7 @@ function populateRDFauthor(data) {
                 }, {
                     graph: selectedResource.graphURI, 
                     title: objSpec.title, 
-                    protected: true, 
+                    protected: protect ? true : false, 
                     hidden: objSpec.hidden ? objSpec.hidden : false
                 }));
             }
@@ -434,63 +436,8 @@ function createInstanceFromClassURI(type, dataCallback) {
 }
 
 /*
- * get the rdfa init description from the service in clone mode and start the
- * RDFauthor window
- * TODO: merge it with createInstanceFromClassURI!!
- */
- /*
-function createInstanceFromURI(resource) {
-    var serviceUri = urlBase + 'service/rdfauthorinit';
-
-    // remove resource menus
-    removeResourceMenus();
-    
-    loadRDFauthor(function() {
-        $.getJSON(serviceUri, {
-           mode: 'clone',
-           uri: resource
-        }, function(data) {
-            // grab first object key
-            for (var subjectUri in data) {break;};
-            RDFauthor.setOptions({
-                defaultResource: subjectUri, 
-                anchorElement: '.innercontent',
-                onSubmitSuccess: function () {
-                   // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-                   // mainInnerContent.load(document.URL);
-
-                   // tell RDFauthor that page content has changed
-                   // RDFauthor.invalidatePage();
-
-                   $('.edit').each(function() {
-                       $(this).fadeOut(effectTime);
-                   });
-                   $('.edit-enable').removeClass('active');
-
-                   // reload whole page
-                   window.location.href = window.location.href;
-                },
-                onCancel: function () {
-                   $('.edit').each(function() {
-                       $(this).fadeOut(effectTime);
-                   });
-                   $('.edit-enable').removeClass('active');
-                },
-                saveButtonTitle: 'Create New Resource',
-                cancelButtonTitle: 'Cancel',
-                title: 'Clone Resource ' + resource
-                });
-            
-            RDFauthor.startTemplate(data);
-        })
-    });
-}
-*/
-
-/*
  * get the rdfauthor init description from the service in and start the RDFauthor window
  */
- /*
 function editResourceFromURI(resource) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
 
@@ -502,28 +449,23 @@ function editResourceFromURI(resource) {
            mode: 'edit',
            uri: resource
         }, function(data) {
+            
+            // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
             for (var subjectUri in data) {break;};
+
+            // add statements to RDFauthor
+            populateRDFauthor(data, false);
+
             RDFauthor.setOptions({
-                defaultResource: subjectUri,
-                anchorElement: '.innercontent',
-                onSubmitSuccess: function () {
-                   // reload whole page
-                   window.location.href = window.location.href;
-                },
-                onCancel: function () {
-                   $('.edit').each(function() {
-                       $(this).fadeOut(effectTime);
-                   });
-                   $('.edit-enable').removeClass('active');
-                },
                 saveButtonTitle: 'Save Changes',
                 cancelButtonTitle: 'Cancel',
-                title: 'Edit Resource ' + resource
-                });
+                title: 'Edit Resource ' + resource,  
+                autoParse: false, 
+                showPropertyButton: false
+            });
 
-            RDFauthor.startTemplate(data);
+            RDFauthor.start();
         })
     });
 }
-*/
