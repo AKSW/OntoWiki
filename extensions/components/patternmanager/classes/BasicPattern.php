@@ -153,8 +153,8 @@ class BasicPattern {
      *
      * array[var_name]['name'] 	 => id-key (= var_name)
      * array[var_name]['bound']  => boolean isBound
-     * array[var_name]['type]    => string type of var
-     * array[var_name]['desc]    => string textual description of var
+     * array[var_name]['type']    => string type of var
+     * array[var_name]['desc']    => string textual description of var
      *
      * @param boolean $includeBound include already bound variables
      * @param boolean $noTemp don't include TEMP variables
@@ -410,6 +410,12 @@ class BasicPattern {
                     } else {
                         $object = $parts[2];
                     }
+                    
+                    // fixes issue #895 (will need erfurt fix in future)
+                    if ( $object !== null && array_key_exists('xml:lang', $object) ) {
+                        $object['lang'] = $object['xml:lang'];
+                        unset($object['xml:lang']);
+                    }
 
                     if ($type !== null && $subject !== null && $predicate !== null && $object !== null) {
                         $stmt[$type][$subject][$predicate][] = $object;
@@ -419,7 +425,33 @@ class BasicPattern {
                     }
                 }
             } else {
-                $stmt[$type][$parts[0]['value']][$parts[1]['value']][] = $parts[2];
+                
+                // check static pattern in S,P,O for functions -> see issue #906
+                if ($parts[0]['type'] === 'function') {
+                    $subject = $func->executeFunction($parts[0],array(),true);
+                } else {
+                    $subject = $parts[0]['value'];
+                }
+                
+                if ($parts[1]['type'] === 'function') {
+                    $predicate = $func->executeFunction($parts[1],array(),true);
+                } else {
+                    $predicate = $parts[1]['value'];
+                }
+                
+                if ($parts[2]['type'] === 'function') {
+                    $object = $func->executeFunction($parts[2]);
+                } else {
+                    $object = $parts[2];
+                }
+                
+                // fixes issue #895
+                if ( array_key_exists('xml:lang', $object) ) {
+                    $object['lang'] = $object['xml:lang'];
+                    unset($object['xml:lang']);
+                }
+                
+                $stmt[$type][$subject][$predicate][] = $object;
             }
 
             $result = $this->_engine->updateGraph($stmt['insert'],$stmt['delete'],$graph);
@@ -605,8 +637,6 @@ class BasicPattern {
                 throw new RuntimeException('undefined entity: ' . $current);
             }
         }
-
-
 
         if ($paramStart === ($paramEnd - 1) ) {
             return array('type' => 'function', 'name' => $name, 'param' => array());

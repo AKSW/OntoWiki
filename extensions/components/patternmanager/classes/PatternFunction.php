@@ -61,14 +61,29 @@ class PatternFunction {
         return self::$_instance;
     }
 
+    /**
+     * 
+     * Pattern function internal cache: test for value
+     * @param string $cId Identifier
+     */
     private function cacheTest($cId) {
         return ( array_key_exists($cId,$this->_cache) );
     }
 
+    /**
+     * 
+     * Pattern function internal cache: load value
+     * @param string $cId Identifier
+     */
     private function cacheLoad($cId) {
         return ( $this->_cache[$cId] );
     }
-
+    
+    /**
+     * 
+     * Pattern function internal cache: load value
+     * @param string $cId Identifier
+     */
     private function cacheSave($cId,$payload) {
 
         if ($this->_cacheSize > PatternFunction::CACHE_MAX_ENTRIES) {
@@ -87,7 +102,7 @@ class PatternFunction {
     * @param $bind
     * @param $asString
     */
-    public function executeFunction ($data, $bind, $asString = false) {
+    public function executeFunction ($data, $bind = array(), $asString = false) {
         $funcOptions = array();
         $options = array();
         foreach ($data['param'] as $param) {
@@ -267,7 +282,7 @@ class PatternFunction {
         $literal = $options[0];
         $language = $options[1];
 
-        return array('value' => $literal, 'type' => 'literal', 'language' => $language, 'datatype' => NULL);
+        return array('value' => $literal, 'type' => 'literal', 'lang' => $language, 'datatype' => NULL);
     }
 
     /**

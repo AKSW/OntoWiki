@@ -187,7 +187,7 @@ class PatternEngine {
 
         // Execute the query. access control should be provided by erfurt
         $result = $this->_store->sparqlQuery($selectQuery, array('result_format' => 'extended'));
-        
+
         return $result;
         
     }
@@ -238,9 +238,7 @@ class PatternEngine {
             $resultDelete = $this->_store->deleteMultipleStatements($graph, $delete);
         }
 
-        
         return (boolean) ($resultInsert && $resultDelete);
-        
     }
     
     /**
