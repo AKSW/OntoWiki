@@ -25,6 +25,9 @@ class NavigationModule extends OntoWiki_Module
      * @return string
      */
     public function getMenu() {
+		// check if menu must be shown
+		if(!$this->_privateConfig->defaults->showMenu) return new OntoWiki_Menu();
+		
         // build main menu (out of sub menus below)
         $mainMenu = new OntoWiki_Menu();
 
