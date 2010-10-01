@@ -198,17 +198,22 @@
 
       <div id="footer">
         <p>
-            <a href="<?php echo $this->wikiBaseUri ?>source/edit?r=<?php echo $this->resourceUri ?>">page source</a>,
-            <?php echo $this->partial( 'lod2/lastchange.phtml', $this->lastchange($this->resourceUri)); ?>
+            See <a href="<?php echo $this->wikiBaseUri ?>source/edit?r=<?php echo $this->resourceUri ?>">page source</a>,
+            <?php echo $this->partial('lod2/lastchange.phtml', $this->lastchange($this->resourceUri)); ?>
             </p>
-        <p class="subline">
+        <p class="sublkine">This page is powered by the <a href="http://lod2.eu/WikiArticle/AboutTheWebsite.html">LOD2 stack</a>, 
+            <a href="http://www.yaml.de/" title="YAML is an (X)HTML/CSS framework for creating modern and flexible floated layouts."><abbr title="Yet Another Multicolumn Layout">YAML</abbr></a> and
+            <a href="jquery.com" title="jQuery is a fast and concise JavaScript Library that simplifies HTML document traversing, event handling, animating, and Ajax interactions for rapid web development.">jQuery</a>.
+            <a id="sfp-logo" href="#"><span class="hideme">publicly sponsored by Seventh Framework Program</span></a>
+        </p>
+        <!--p class="subline">
             This page is powered by
             <a href="http://ontowiki.net/" title="OntoWiki is a Semantic Data Wiki enabling the collaborative creation and (linked data) publication of RDF knowledge bases."><?php echo $this->generator ?></a>,
             <a href="http://virtuoso.openlinksw.com/" title="Virtuoso is an innovative enterprise grade multi-model data server for agile enterprises &amp; individuals.">Virtuoso</a>,
             <a href="http://www.yaml.de/" title="YAML is an (X)HTML/CSS framework for creating modern and flexible floated layouts."><abbr title="Yet Another Multicolumn Layout">YAML</abbr></a> and
             <a href="jquery.com" title="jQuery is a fast and concise JavaScript Library that simplifies HTML document traversing, event handling, animating, and Ajax interactions for rapid web development.">jQuery</a>.
             <a id="sfp-logo" href="#"><span class="hideme">publicly sponsored by Seventh Framework Program</span></a>
-        </p>
+        </p-->
       </div>
     </div>
   </div>
