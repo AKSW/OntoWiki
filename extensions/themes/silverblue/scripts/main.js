@@ -332,7 +332,7 @@ $(document).ready(function() {
                     saveButtonTitle: 'Save Changes', 
                     cancelButtonTitle: 'Cancel', 
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
-                    view: 'inline'
+                    view: 'inline' 
                 });
                 
                 RDFauthor.start();

@@ -28,7 +28,7 @@
         <?php foreach ($predicatesForGraph as $uri => $predicate): ?>
             <?php $currentPredicate = $this->predicates[$graph][$uri] ?>
             <tr>
-                <td width="25%">
+                <td width="120">
                     <a class="hasMenu" 
                        about="<?php echo $currentPredicate['uri'] ?>" 
                        href="<?php echo $currentPredicate['url'] ?>"><?php echo $currentPredicate['title'] ?></a>
