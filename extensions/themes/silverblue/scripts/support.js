@@ -352,8 +352,10 @@ function loadRDFauthor(callback) {
     }
 }
 
-function populateRDFauthor(data, protect) {
-    protect = arguments.length == 2 ? protect : true;
+function populateRDFauthor(data, protect, resource, graph) {
+    protect  = arguments.length == 2 ? protect : true;
+    resource = arguments.length == 3 ? resource : null;
+    graph    = arguments.length == 4 ? graph : null;
     
     for (var currentSubject in data) {
         for (var currentProperty in data[currentSubject]) {
@@ -384,7 +386,7 @@ function populateRDFauthor(data, protect) {
                     predicate: '<' + currentProperty + '>', 
                     object: newObjectSpec
                 }, {
-                    graph: selectedResource.graphURI, 
+                    graph: graph, 
                     title: objSpec.title, 
                     protected: protect ? true : false, 
                     hidden: objSpec.hidden ? objSpec.hidden : false
@@ -420,7 +422,7 @@ function createInstanceFromClassURI(type, dataCallback) {
            for (var subjectUri in data) {break;};
            
            // add statements to RDFauthor
-           populateRDFauthor(data);
+           populateRDFauthor(data, true, null, selectedGraph.URI);
            
            RDFauthor.setOptions({
                saveButtonTitle: 'Create Resource',
