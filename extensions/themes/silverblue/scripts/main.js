@@ -333,7 +333,7 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel', 
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
                     viewOptions: {
-                        type: 'inline', 
+                        type: RDFAUTHOR_VIEW_MODE, 
                         container: function (statement) {
                             var element = RDFauthor.elementForStatement(statement);
                             var parent  = $(element).closest('div');

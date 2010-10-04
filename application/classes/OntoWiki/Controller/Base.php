@@ -102,15 +102,21 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         $this->view->headMeta()->setHttpEquiv('Content-Type', 'text/html; charset=' . $this->_config->encoding);
         $this->view->headMeta()->setName('generator', 'OntoWiki — Collaborative Knowledge Engineering');
         
+        // RDFauthor view configuration
+        $viewMode = isset($this->_config->rdfauthor->viewmode)
+                  ? $this->_config->rdfauthor->viewmode 
+                  : 'inline';
+        
         // inject JSON variables into view
         $this->view->jsonVars = '
             var urlBase = "' . $this->_config->urlBase . '";
             var themeUrlBase = "' . $this->_config->themeUrlBase . '";
             var _OWSESSION = "' . _OWSESSION . '";
-            var RDFAUTHOR_BASE = "' . $this->_config->staticUrlBase . 'libraries/RDFauthor/";' . PHP_EOL;
+            var RDFAUTHOR_BASE = "' . $this->_config->staticUrlBase . 'libraries/RDFauthor/";
+            var RDFAUTHOR_VIEW_MODE = "' . $viewMode . '";' . PHP_EOL;
         
         if (defined('_OWDEBUG')) {
-            $this->view->jsonVars .= 'var RDFAUTHOR_DEBUG = 1;';
+            $this->view->jsonVars .= '            var RDFAUTHOR_DEBUG = 1;';
         }
         
         if ($this->_owApp->selectedModel) {
