@@ -371,7 +371,11 @@ $(document).ready(function() {
                mode: 'clone',
                uri: prototypeResource
             }, function(data) {
-                populateRDFauthor(data);
+                // get default resource uri for subjects in added statements (issue 673)
+                // grab first object key
+                for (var subjectUri in data) {break;};
+                
+                populateRDFauthor(data, true, subjectUri, selectedGraph.URI);
                 
                 RDFauthor.setOptions({
                     saveButtonTitle: 'Create Resource',
