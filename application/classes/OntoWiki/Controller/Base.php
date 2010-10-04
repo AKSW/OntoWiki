@@ -113,6 +113,15 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             $this->view->jsonVars .= 'var RDFAUTHOR_DEBUG = 1;';
         }
         
+        if ($this->_owApp->selectedModel) {
+            $this->view->jsonVars .= '
+            var selectedGraph = {
+                URI: "' . (string)$this->_owApp->selectedModel . '", 
+                title: "' . (string)$this->_owApp->selectedModel->getTitle() . '"
+            };
+            var RDFAUTHOR_DEFAULT_GRAPH = "' . (string)$this->_owApp->selectedModel . '";' . PHP_EOL;
+        }
+        
         if ($this->_owApp->selectedResource) {
             $this->view->jsonVars .= '
             var selectedResource = {
@@ -120,7 +129,6 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
                 title: "' . (string)$this->_owApp->selectedResource->getTitle() . '", 
                 graphURI: "' . (string)$this->_owApp->selectedModel . '"
             };
-            var RDFAUTHOR_DEFAULT_GRAPH = "' . (string)$this->_owApp->selectedModel . '";
             var RDFAUTHOR_DEFAULT_SUBJECT = "' . (string)$this->_owApp->selectedResource . '";' . PHP_EOL;
         }
         
