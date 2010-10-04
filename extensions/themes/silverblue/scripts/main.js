@@ -394,7 +394,7 @@ $(document).ready(function() {
         
         $('table.rdfa')
             .children('tbody')
-            .append('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td><td id="' + td2ID + '"></td></tr>');
+            .append('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td></tr>');
         
         var selectorOptions = {
             container: $('#' + td1ID), 
@@ -410,9 +410,9 @@ $(document).ready(function() {
                 var owURL = urlBase + 'view?r=' + encodeURIComponent(uri);
                 $('#' + td1ID).closest('td')
                     .attr('colspan', '1')
-                    .html('<a class="hasMenu" about="' + uri + '" href="' + owURL + '">' + label + '</a>');
-                var v = RDFauthor.getView();
-                v.addWidget(statement, null, {container: $('#' + td2ID), activate: true});
+                    .html('<a class="hasMenu" about="' + uri + '" href="' + owURL + '">' + label + '</a>')
+                    .after('<td id="' + td2ID + '"></td>');
+                RDFauthor.getView().addWidget(statement, null, {container: $('#' + td2ID), activate: true});
             }
         };
         
