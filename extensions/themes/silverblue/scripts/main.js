@@ -332,7 +332,22 @@ $(document).ready(function() {
                     saveButtonTitle: 'Save Changes', 
                     cancelButtonTitle: 'Cancel', 
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
-                    view: 'inline' 
+                    viewOptions: {
+                        type: 'inline', 
+                        container: function (statement) {
+                            var element = RDFauthor.elementForStatement(statement);
+                            var parent  = $(element).closest('div');
+                            
+                            if (!parent.hasClass('ontowiki-processed')) {
+                                parent.children().each(function () {
+                                    $(this).hide();
+                                });
+                                parent.addClass('ontowiki-processed');
+                            }
+                            
+                            return parent.get(0);
+                        }
+                    }
                 });
                 
                 RDFauthor.start();
@@ -369,57 +384,40 @@ $(document).ready(function() {
                 RDFauthor.start();
             });
         });
-        
-        // // grab first object key
-        // for (var subjectUri in data) {break;};
-        // RDFauthor.setOptions({
-        //     defaultResource: subjectUri,
-        //     anchorElement: '.innercontent',
-        //     onSubmitSuccess: function () {
-        //        // reload whole page
-        //        window.location.href = window.location.href;
-        //     },
-        //     onCancel: function () {
-        //        $('.edit').each(function() {
-        //            $(this).fadeOut(effectTime);
-        //        });
-        //        $('.edit-enable').removeClass('active');
-        //     },
-        //     saveButtonTitle: 'Save Changes',
-        //     cancelButtonTitle: 'Cancel',
-        //     title: 'Edit Resource ' + resource
-        //     });
-        // 
-        // RDFauthor.startTemplate(data);
     })
     
     // add property
     $('.property-add').click(function() {
-        RDFauthor.setOptions({
-            anchorElement: '.innercontent', 
-            onSubmitSuccess: function () {
-                var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-                mainInnerContent.load(document.URL);
-                
-                // tell RDFauthor that page content has changed
-                RDFauthor.invalidatePage();
-                
-                $('.edit').each(function() {
-                    $(this).fadeOut(effectTime);
-                });
-                $('.edit-enable').removeClass('active');
-            }, 
-            onCancel: function () {
-                $('.edit').each(function() {
-                    $(this).fadeOut(effectTime);
-                });
-                $('.edit-enable').removeClass('active');
-            }, 
-            saveButtonTitle: 'Save Changes', 
-            cancelButtonTitle: 'Cancel'
-        });
+        var ID = RDFauthor.nextID();
+        var td1ID = 'rdfauthor-property-selector-' + ID;
+        var td2ID = 'rdfauthor-property-widget-' + ID;
         
-        // RDFauthor.newProperty();
+        $('table.rdfa')
+            .children('tbody')
+            .append('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td><td id="' + td2ID + '"></td></tr>');
+        
+        var selectorOptions = {
+            container: $('#' + td1ID), 
+            selectionCallback: function (uri, label) {
+                var statement = new Statement({
+                    subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>', 
+                    predicate: '<' + uri + '>'
+                }, {
+                    title: label, 
+                    graph: RDFAUTHOR_DEFAULT_GRAPH
+                });
+                
+                var owURL = urlBase + 'view?r=' + encodeURIComponent(uri);
+                $('#' + td1ID).closest('td')
+                    .attr('colspan', '1')
+                    .html('<a class="hasMenu" about="' + uri + '" href="' + owURL + '">' + label + '</a>');
+                var v = RDFauthor.getView();
+                v.addWidget(statement, null, {container: $('#' + td2ID), activate: true});
+            }
+        };
+        
+        var selector = new Selector(RDFAUTHOR_DEFAULT_GRAPH, RDFAUTHOR_DEFAULT_SUBJECT, selectorOptions);
+        selector.presentInContainer();
     });
     
     $('.tabs').children('li').children('a').click(function() {
