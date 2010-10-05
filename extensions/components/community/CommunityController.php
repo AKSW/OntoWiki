@@ -47,7 +47,7 @@ class CommunityController extends OntoWiki_Controller_Component {
 
                 $instances = $listHelper->getList('instances');
                 //$list->setAboutHash(md5(var_dump($instances,true)));
-                $query = $instances->getResourceQuery();
+                $query = clone $instances->getResourceQuery();
                 $resourceVar = $instances->getResourceVar();
                 
                 //$resourceVar->setName('listresource'); //does not work as there sadly is no single var object, but multiple with same name
@@ -62,7 +62,7 @@ class CommunityController extends OntoWiki_Controller_Component {
                 $elements[] = new Erfurt_Sparql_Query2_Triple(
                         $list->getResourceVar(),
                         new Erfurt_Sparql_Query2_IriRef($aboutProperty),
-                        $resourceVar
+                        $var
                 );
                 $list->addTripleFilter($elements, "listfilter");
                 

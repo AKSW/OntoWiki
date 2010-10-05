@@ -955,12 +955,12 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
                 ) {
                     $titleHelper->addResource($row['__TYPE']['value']);
             }
-            $titleHelper->addResource($row['resourceUri']['value']);
+            $titleHelper->addResource($row[$this->_resourceVar->getName()]['value']);
         }
 
         $valueResults = array();
         foreach ($result as $row) {
-            $resourceUri = $row['resourceUri']['value'];
+            $resourceUri = $row[$this->_resourceVar->getName()]['value'];
 
             if (!array_key_exists($resourceUri, $valueResults)) {
                 $valueResults[$resourceUri] = array();
@@ -1311,7 +1311,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
             $this->_resources = array();
             foreach ($result['bindings'] as $row) {
-                $this->_resources[] = $row['resourceUri'];
+                $this->_resources[] = $row[$this->_resourceVar->getName()];
             }
             $this->_resourcesUptodate = true;
         } 
