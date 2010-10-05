@@ -214,7 +214,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                                     ?></a>
                     </li>
                                                 <?php else: ?>
-                    <li content="<?php echo $value['value'] ?>"><?php echo $value['value'] ?></li>
+                    <li content="<?php echo $this->escape($value['value']) ?>"><?php echo $value['value'] ?></li>
                             <?php endif; ?>
                                         <?php 
                                         
@@ -231,7 +231,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                             <?php echo $instanceData[$instanceUri][$property['varName']][0]['value'] ?>
             </a>
                                     <?php else: ?>
-            <span about="<?php echo $instanceUri ?>" property="<?php echo $this->curie($property['uri']) ?>" content="<?php echo $instanceData[$instanceUri][$property['varName']][0]['uri'] ?>">
+            <span about="<?php echo $instanceUri ?>" property="<?php echo $this->curie($property['uri']) ?>" content="<?php echo $this->escape($instanceData[$instanceUri][$property['varName']][0]['uri']) ?>">
                             <?php echo $instanceData[$instanceUri][$property['varName']][0]['value'] ?>
             </span>
                         <?php endif; ?>
