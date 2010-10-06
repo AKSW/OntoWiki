@@ -74,12 +74,14 @@ $queryObject->setLimit('10000');
     <div class="block">
         <table class="checklist">
             <thead>
-            <th>Rank</th>
-            <th>Species</th>
-            <th>Number of Records</th>
-            <th>Family</th>
-            <th>Genus</th>
-            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Species</th>
+                    <th>Number of Records</th>
+                    <th>Family</th>
+                    <th>Genus</th>                    
+                </tr>
+            </thead>
             <tbody>
                 <?php echo $this->querylist($queryObject, 'spiders/types/checklist-row.phtml'); ?>
             </tbody>

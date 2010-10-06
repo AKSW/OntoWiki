@@ -14,7 +14,7 @@ PREFIX geof: <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?RecordType ?RecordURI ?RecordLabel ?PublicationUri ?PublicationLabel ?SourceURI ?SourceLabel ?LocationURI ?lat ?long
+SELECT DISTINCT ?RecordURI ?RecordType ?RecordLabel ?PublicationUri ?PublicationLabel ?SourceURI ?SourceLabel ?LocationURI ?lat ?long
     ');
 
 $queryObject->setWherePart('
@@ -32,7 +32,28 @@ WHERE
     ?SourceURI rdfs:label ?SourceLabel.
   }
 
+  {
+  ?RecordURI faun:recordedAtLocation <http://db.caucasus-spiders.info/Area/152> .
   ?RecordURI faun:recordedAtLocation ?LocationURI .
+  }
+  UNION
+  {
+  ?RecordURI faun:recordedAtLocation ?LocationURI .
+  ?LocationURI geof:within <http://db.caucasus-spiders.info/Area/152>.
+  }
+  UNION
+  {
+  ?RecordURI faun:recordedAtLocation ?LocationURI .
+  ?LocationURI geof:within ?l1.
+  ?l1 geof:within <http://db.caucasus-spiders.info/Area/152>.
+  }
+  UNION
+  {
+  ?RecordURI faun:recordedAtLocation ?LocationURI .
+  ?LocationURI geof:within ?l1.
+  ?l1 geof:within ?l2.
+  ?l2 geof:within <http://db.caucasus-spiders.info/Area/152>.
+  }
 
   OPTIONAL {
     ?LocationURI geo:lat ?lat.
