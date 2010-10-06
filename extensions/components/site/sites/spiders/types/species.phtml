@@ -32,21 +32,7 @@ WHERE
     ?SourceURI rdfs:label ?SourceLabel.
   }
 
-  {
-    ?RecordURI faun:recordedAtLocation ?LocationURI .
-  }
-  UNION
-  {
-    ?RecordURI faun:recordedAtLocation ?l1 .
-    ?l1 geof:within ?LocationURI.
-  }
-  UNION
-  {
-    ?RecordURI faun:recordedAtLocation ?l1 .
-    ?l1 geof:within ?l2.
-    ?l2 geof:within ?LocationURI.
-  }
-  ?LocationURI a faun:Location.
+  ?RecordURI faun:recordedAtLocation ?LocationURI .
 
   OPTIONAL {
     ?LocationURI geo:lat ?lat.
@@ -71,12 +57,14 @@ $queryObject->setLimit('10000');
     <div class="block">
         <table class="checklist">
             <thead>
-            <th>Publication</th>
-            <th>Location</th>
-            <th>Source</th>
-            <th>Record / Label</th>
-            <th>Type</th>
-            <thead>
+                <tr>
+                    <th>Publication</th>
+                    <th>Location</th>
+                    <th>Source</th>
+                    <th>Record / Label</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
             <tbody>
                 <?php echo $this->querylist($queryObject, 'spiders/types/species-row.phtml'); ?>
             </tbody>

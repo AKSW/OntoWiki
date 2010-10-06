@@ -13,7 +13,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX faun: <http://purl.org/net/faunistics#>
 PREFIX geof: <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#>
 
-SELECT DISTINCT COUNT(?RecordURI) as ?RecordCount ?FamilyComment ?FamilyLabel ?GenusLabel ?SpeciesLabel ?SpeciesURI ?GenusURI ?FamilyURI ?citationSuffix
+SELECT COUNT(DISTINCT ?RecordURI) as ?RecordCount ?FamilyComment ?FamilyLabel ?GenusLabel ?SpeciesLabel ?SpeciesURI ?GenusURI ?FamilyURI ?citationSuffix
     ');
 
 $queryObject->setWherePart('
