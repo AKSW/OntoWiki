@@ -1,0 +1,24 @@
+/* 
+    Document   : patternmanager
+    Created on : 07.10.2010, 21:25:25
+    Author     : haschek
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* toggle subpatterns */
+
+.eSubpattern legend .icon-toggle-on { display:none; }
+.subpattern-hidden legend .icon-toggle-on { display: inline-block; }
+.subpattern-hidden legend .icon-toggle-off { display: none; }
+.subpattern-hidden legend .icon-delete { display: none; }
+.subpattern-hidden legend .icon-copy { display: none; }
+
+.subpattern-hidden div.subfieldsetbody { display:none; }
+
+/* subpattern body */
+
+.subfieldsetbody
+{
+    margin:0 1.6em;
+}

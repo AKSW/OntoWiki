@@ -39,6 +39,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
         $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/jquery.autocomplete.js');
 
+        $this->view->headLink()->appendStylesheet($this->_componentUrlBase .'css/patternmanager.css');
         //$this->view->headLink()->appendStylesheet($this->_componentUrlBase .'css/jquery.autocomplete.css');
 
         $this->_engine = new PatternEngine();
@@ -536,6 +537,16 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 		            array('name' => $this->_owApp->translate->_('save pattern'))
 		        );
 
+		        $toolbar->appendButton(
+		            OntoWiki_Toolbar::EXPORT,
+		            array('name' => $this->_owApp->translate->_('Export as').' JSON',
+                                  'url'  => (string) (new OntoWiki_Url(
+                                                          array('controller' => 'patternmanager', 'action' => 'export'),
+                                                          array('pattern')
+                                                          )
+                                                     )
+                                )
+		        );
 		        
 		        $url = new OntoWiki_Url(
 		            array('controller' => 'patternmanager', 'action' => 'save'),

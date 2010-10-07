@@ -68,16 +68,27 @@ $(document).ready(function () {
 
 function addPMPattern(name, desc) {
     
-    count = $('div#patternmanager > div').size();
+    count = $('div#patternmanager fieldset.eSubpattern').size();
     
-    pattern = $('div#subpattern').clone();
+    pattern = $('fieldset.eSubpattern:first').clone();
     pattern.attr('id','subpattern-' + count);
     pattern.show();
 
-    $('div#patternmanager').append(pattern);    
-    
-    $('div#subpattern-' + count + ' input#patternlabel-').val(name);
-    $('div#subpattern-' + count + ' input#patterndesc-').val(desc);
+    $('div#patternmanager fieldset.eComplexPattern').append(pattern);
+
+    var name_prefix = '<a class="icon icon-toggle-on" href="javascript:showPMPattern();"><span>open</span></a><a class="icon icon-toggle-off" href="javascript:hidePMPattern();"><span>close</span></a>';
+    var name_suffix = '<a class="icon icon-delete" href="javascript:delPMPattern();" title="Delete this Subpattern"><span>Delete this Subpattern</span></a><a class="icon icon-copy PMcopyVar" title="Copy vars from this Subpattern"><span>Copy vars from this Subpattern</span></a>';
+
+    $('#subpattern-' + count + ' input#patternlabel-').val(name);
+    if (name != null)
+    {
+        $('#subpattern-' + count + ' legend').html(name_prefix+' Subpattern &quot;'+name+"&quot; "+name_suffix);
+    }
+    else
+    {
+        $('#subpattern-' + count + ' legend').html(name_prefix+' New Subpattern '+name_suffix);
+    }
+    $('#subpattern-' + count + ' input#patterndesc-').val(desc);
     
     reindexPM();
     
@@ -86,7 +97,7 @@ function addPMPattern(name, desc) {
 function delPMPattern(id) {
     
     if (confirm ('Confirm action: del pattern')) {
-        $('div#patternmanager > div#subpattern-'+id).remove();
+        $('div#patternmanager > fieldset#subpattern-'+id).remove();
     } else {
         
     }
@@ -97,28 +108,25 @@ function delPMPattern(id) {
 
 function hidePMPattern(id) {
     
-    $('div#patternmanager > div#subpattern-'+id + '> table').hide();
-
-    $('div#patternmanager > div#subpattern-'+id + '> div:has(>input)').hide();
+    $('fieldset#subpattern-'+id).addClass("subpattern-hidden");
     
 }
 
 function showPMPattern(id) {
     
-    $('div#patternmanager > div#subpattern-'+id + '> table').show();
-    $('div#patternmanager > div#subpattern-'+id + '> div:has(>input)').show();
+    $('fieldset#subpattern-'+id).removeClass("subpattern-hidden");
     
 }
 
 function addPMvar(p,unused,varname,vartype,vardesc) {
     
-    input = $('div#subpattern > table').eq(0).find('tbody > tr').clone();
-    varcount = $('div#subpattern-' + p + ' > table').eq(0).find('tbody > tr').size();
+    input = $('fieldset.eSubpattern:first table.vars').find('tbody > tr').clone();
+    varcount = $('fieldset#subpattern-' + p + ' table.vars').find('tbody > tr').size();
     
-    table = $('div#subpattern-' + p + ' > table:eq(0) > tbody');
+    table = $('fieldset#subpattern-' + p + ' table.vars > tbody');
     table.append('<tr>' + input.html() + '</tr>');
-    table.find('tr:eq(' + varcount + ') input:eq(0)').val(varname);
-    table.find('tr:eq(' + varcount + ') input:eq(1)').val(vardesc);
+    table.find('tr:eq(' + varcount + ') input.eVarname').val(varname);
+    table.find('tr:eq(' + varcount + ') input.eVardesc').val(vardesc);
     table.find('tr:eq(' + varcount + ') select > option').each( function (i) {
         if ($(this).text() == vartype) {
             $(this).attr('selected','true');
@@ -134,7 +142,7 @@ function addPMvar(p,unused,varname,vartype,vardesc) {
 
 function delPMvar(p,c) {
     
-    $('div#subpattern-' + p + ' > table').eq(0).find('tbody > tr').eq(c - 1).remove();
+    $('fieldset#subpattern-' + p + ' table.vars').find('tbody > tr').eq(c - 2).remove();
     
     reindexPM();
     
@@ -142,13 +150,14 @@ function delPMvar(p,c) {
 
 function addPMselect(p, c, select) {
     
-    input = $('div#subpattern > table').eq(1).find('tbody > tr').clone();
-    varcount = $('div#subpattern-' + p + ' > table').eq(1).find('tbody > tr').size();
+    input = $('fieldset.eSubpattern:first table.selectqueries').find('tbody > tr').clone();
+    varcount = $('fieldset#subpattern-' + p + ' table.selectqueries').find('tbody > tr').size();
     
-    table = $('div#subpattern-' + p + ' > table:eq(1) > tbody');
+    table = $('fieldset#subpattern-' + p + ' table.selectqueries tbody');
     table.append('<tr>' + input.html() + '</tr>');
     table.find('tr:eq(' + varcount + ') input').val(select);
-    $('div#subpattern-' + p + ' > table:eq(1) > thead a').hide();
+    
+    $('fieldset#subpattern-' + p + ' table.selectqueries tfoot a').hide();
     
     reindexPM();
     
@@ -156,18 +165,18 @@ function addPMselect(p, c, select) {
 
 function delPMselect(p,c) {
     
-    $('div#subpattern-' + p + ' > table').eq(1).find('tbody > tr').eq(c - 1).remove();
-    $('div#subpattern-' + p + ' > table:eq(1) > thead a').show();
+    $('fieldset#subpattern-' + p + ' > table.selectqueries').find('tbody > tr').eq(c - 2).remove();
+    $('fieldset#subpattern-' + p + ' > table.selectqueries tfoot a').show();
     
     reindexPM();
 }
 
 function addPMinsert(p, c, insert) {
     
-    input = $('div#subpattern > table').eq(2).find('tbody > tr').clone();
-    varcount = $('div#subpattern-' + p + ' > table').eq(2).find('tbody > tr').size();
+    input = $('fieldset.eSubpattern:first table.triplesInsert').find('tbody > tr').clone();
+    varcount = $('fieldset#subpattern-' + p + ' table.triplesInsert').find('tbody > tr').size();
     
-    table = $('div#subpattern-' + p + ' > table:eq(2) > tbody');
+    table = $('fieldset#subpattern-' + p + ' table.triplesInsert > tbody');
     table.append('<tr>' + input.html() + '</tr>');
     table.find('tr:eq(' + varcount + ') input').val(insert);
     
@@ -177,17 +186,17 @@ function addPMinsert(p, c, insert) {
 
 function delPMinsert(p,c) {
     
-    $('div#subpattern-' + p + ' > table').eq(2).find('tbody > tr').eq(c - 1).remove();
+    $('fieldset#subpattern-' + p + ' table.triplesInsert').find('tbody > tr').eq(c - 2).remove();
     
     reindexPM();
 }
 
 function addPMdelete(p, c, del) {
     
-    input = $('div#subpattern > table').eq(3).find('tbody > tr').clone();
-    varcount = $('div#subpattern-' + p + ' > table').eq(3).find('tbody > tr').size();
+    input = $('fieldset.eSubpattern:first table.triplesDelete').find('tbody > tr').clone();
+    varcount = $('fieldset#subpattern-' + p + ' table.triplesDelete').find('tbody > tr').size();
     
-    table = $('div#subpattern-' + p + ' > table:eq(3) > tbody');
+    table = $('fieldset#subpattern-' + p + ' table.triplesDelete > tbody');
     table.append('<tr>' + input.html() + '</tr>');
     table.find('tr:eq(' + varcount + ') input').val(del);    
     
@@ -197,7 +206,7 @@ function addPMdelete(p, c, del) {
 
 function delPMdelete(p,c) {
     
-    $('div#subpattern-' + p + ' > table').eq(3).find('tbody > tr').eq(c - 1).remove();
+    $('fieldset#subpattern-' + p + ' table.triplesDelete').find('tbody > tr').eq(c - 2).remove();
     
     reindexPM();
 }
@@ -207,8 +216,8 @@ function loadPMpattern(uri,id) {
     $.getJSON(urlBase + 'patternmanager/loadpattern', { uri: uri , type: 'rdf'}, function(data) {
         current = data;
 
-        $('div#subpattern-' + id + ' input#patternlabel-' + id).val(data.label);
-        $('div#subpattern-' + id + ' input#patterndesc-' + id).val(data.desc);
+        $('fieldset#subpattern-' + id + ' input#patternlabel-' + id).val(data.label);
+        $('fieldset#subpattern-' + id + ' input#patterndesc-' + id).val(data.desc);
         for (j in current['V']) {
             addPMvar(id,null,current['V'][j]['name'],current['V'][j]['type'],current['V'][j]['desc']);
         }
@@ -257,7 +266,7 @@ function reindexPM() {
             );
             node.result( function(event, item) {
                 data = $.secureEvalJSON(item[0]);
-                bp = $('div#patternmanager > div#subpattern-' + i);
+                bp = $('fieldset#subpattern-' + i);
                 //
                 if ( confirm('Load this pattern? (will overwrite current)') ) {
                     bp.find('table:eq(0) > tbody > tr').remove();
@@ -274,14 +283,14 @@ function reindexPM() {
     
     $('div#patternmanager').addClass('is-processing');
     
-    $('div#patternmanager > div').each( function (i) {
+    $('div#patternmanager fieldset.eSubpattern').each( function (i) {
         
         if (i != 0) {
             
             currentId = $(this).attr('id');
             $(this).attr('id',currentId.substr(0,currentId.indexOf('-')) + '-' + i);
             
-            $(this).children('a').each( function (k) {
+            $(this).find('a').each( function (k) {
                 currentHref = $(this).attr('href');
                 if (typeof currentHref == 'undefined') {
                 	// do nothing (no href)
@@ -299,8 +308,9 @@ function reindexPM() {
                 currentId   = currentId.substr(0, currentId.indexOf('-')) + '-' + i;
                 $(this).attr('id',currentId);
             });
-            
-            $(this).children('table').each( function (l) {
+
+            // TODO: hier im JS-Control auf die Nutzung von Tabellen im View zu bauen, ist nicht das sinnvollste!
+            $(this).find('table').each( function (l) {
                 $(this).find('tr').each( function (m) {
                     
                     $(this).find('[name]').each( function () {
