@@ -22,3 +22,15 @@
 {
     margin:0 1.6em;
 }
+
+fieldset.eSubpattern
+{
+    border:solid 1px #999;
+    background-color:#f6f6f6;
+}
+
+fieldset.subpattern-hidden
+{
+    border-style:solid none none none;
+    background-color: transparent;
+}
