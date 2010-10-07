@@ -9,9 +9,9 @@
  */
 
 $(document).ready(function () {
-    $('div#patternmanager table > tbody > tr').each( function (i) {
-        node = $(this).find('td > input');
-        vartype = $(this).find('td:eq(2)').text();
+    $('div#patternmanager div.row-input').each( function (i) {
+        node = $(this).find('input');
+        vartype = $(this).find('span.vartypename').text();
         $(node).autocomplete(
             urlBase + 'patternmanager/autocomplete',
             {

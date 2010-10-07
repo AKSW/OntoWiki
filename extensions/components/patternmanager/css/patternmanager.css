@@ -34,3 +34,42 @@ fieldset.subpattern-hidden
     border-style:solid none none none;
     background-color: transparent;
 }
+
+/* Autosuggestion */
+
+.ac_results .ac_over
+{
+    color:#07c;
+    background-color: #eff9ff;
+}
+
+/* Infolabels für Execution */
+
+fieldset.ePatternExecution p.messagebox
+{
+    margin-top:0.5em;
+    margin-right: 32.5%;
+}
+
+fieldset.ePatternExecution label
+{
+    font-weight: bold;
+}
+
+fieldset.ePatternExecution label.vartype
+{
+    font-weight: normal;
+    color:#999;
+    width:auto;
+    float:left;
+    text-align: left;
+    margin-left: -1.5%; padding-left:0;
+}
+
+/* Pattern Abstract/Desc für Execution */
+
+p.abstract
+{
+    color:#666;
+    font-size:1.5em;
+}
