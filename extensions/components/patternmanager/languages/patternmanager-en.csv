@@ -1,5 +1,10 @@
 execute pattern;Execute Pattern
 save pattern;Save Pattern
 view pattern;View Pattern
+new pattern; New Pattern
+exports as; Exportieren als
+edit pattern; Edit Pattern
+add subpattern;Add Subpattern
+discard changes;Discard Changes
 action %s not allowed;Action %s not allowed.
 HISTORY_ACTIONTYPE_3000;evolution performed

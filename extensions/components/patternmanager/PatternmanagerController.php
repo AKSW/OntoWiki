@@ -21,8 +21,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
     /**
      *
-     * Enter description here ...
-     * @var unknown_type
+     * Constant for maximum of recommended patterns (limit-like)
+     * 
+     * @var int
      */
     const MAX_RECOMMEND_PATTERN = 20;
 
@@ -446,7 +447,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        $toolbar = $this->_owApp->toolbar;
 	        $toolbar->appendButton(
 	            OntoWiki_Toolbar::SUBMIT,
-	            array('name' => $this->_owApp->translate->_('savepattern'))
+	            array('name' => $this->_owApp->translate->_('execute pattern'))
 	        );
 	        $this->view->placeholder('main.window.toolbar')->set($toolbar);
 	
@@ -486,6 +487,22 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         // set ac on view
         $this->view->ac = $this->_engine->getAc();
+        
+        $toolbar = $this->_owApp->toolbar;
+        
+        // button to create pattern (if action allowed)
+        if ( $this->_engine->getAc()->isActionAllowed(PatternEngineAc::RIGHT_EDIT_STR) ) {
+	        $toolbar->appendButton(
+	            null,
+	            array(
+	            	'name' => $this->_owApp->translate->_('new pattern'),
+	                'url'  => (string) (new OntoWiki_Url( array('controller' => 'patternmanager', 'action' => 'view' ))),
+	                'image' => 'icon-go2',
+	            )
+	        );
+        }
+
+        $this->view->placeholder('main.window.toolbar')->set($toolbar);
 
         //Loading data for list of saved queries
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
@@ -528,25 +545,44 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        if ($this->_engine->getAc()->isActionAllowed(PatternEngineAc::RIGHT_EDIT_STR)) {
 	            		
 		        $toolbar->appendButton(
-		            OntoWiki_Toolbar::EDIT,
-		            array('name' => $this->_owApp->translate->_('edit pattern'))
+		            null,
+		            array(
+		            	'name'  => $this->_owApp->translate->_('edit pattern'),
+		                'image' => 'edit',
+		                'id'	=> 'patternmanager_view_edit_button',
+		            )
 		        );
 	            
 		        $toolbar->appendButton(
-		            OntoWiki_Toolbar::SUBMIT,
-		            array('name' => $this->_owApp->translate->_('save pattern'))
+		            null,
+		            array(
+		            	'name' => $this->_owApp->translate->_('save pattern'),
+						'image' => 'go2',
+		                'id'	=> 'patternmanager_view_save_button',
+		            )
 		        );
 
 		        $toolbar->appendButton(
-		            OntoWiki_Toolbar::EXPORT,
-		            array('name' => $this->_owApp->translate->_('Export as').' JSON',
-                                  'url'  => (string) (new OntoWiki_Url(
-                                                          array('controller' => 'patternmanager', 'action' => 'export'),
-                                                          array('pattern')
-                                                          )
-                                                     )
-                                )
+		            null,
+		            array('name' => $this->_owApp->translate->_('export as').' JSON',
+                          'url'  => (string) (new OntoWiki_Url(
+                                            array('controller' => 'patternmanager', 'action' => 'export'),
+                                            array('pattern')
+                                        )
+                                     ),
+                          'id'   => 'patternmanager_view_exportJSON_button',
+                          'image' => 'save',
+                    )
 		        );
+		        
+		        $toolbar->appendButton(
+		            null,
+		            array (
+		                'name' => $this->_owApp->translate->_('discard changes'),
+		                'id' => 'patternmanager_view_cancel_button',    
+		            	'image' => 'cancel',
+		            )
+	            );
 		        
 		        $url = new OntoWiki_Url(
 		            array('controller' => 'patternmanager', 'action' => 'save'),

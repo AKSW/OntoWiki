@@ -70,7 +70,7 @@ class PatternEngineAc {
      * Constructor for PatternEngineAc
      */
     public function __construct() {
-        $this->_init();
+
     }
     
     /**
@@ -119,10 +119,8 @@ class PatternEngineAc {
      */
     public function isActionAllowed($actionStr) {
         
-        if (!$this->_isInit) {
-            $this->_init();
-        }
-        
+        $this->_init();
+
         if (array_key_exists($actionStr,$this->_allowedActions) && $this->_allowedActions[$actionStr]) {
             return true;
         } else {

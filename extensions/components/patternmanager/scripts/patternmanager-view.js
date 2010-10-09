@@ -10,24 +10,33 @@
 
 $(document).ready(function () {
     
-    $('.edit.save').hide();
+    $('#patternmanager_view_save_button').hide();
+    $('#patternmanager_view_cancel_button').hide();
     
-    $('.edit-enable').live('click', function (event) {
-        $('.edit-enable').hide();
-        $('.edit.save').show();
+    $('#patternmanager_view_edit_button').live('click', function (event) {
+       $('#patternmanager_view_edit_button').hide();
+       $('#patternmanager_view_exportJSON_button').hide();
+       $('#patternmanager_view_save_button').show();
+       $('#patternmanager_view_cancel_button').show();
+       return false;
+    });
+    
+    $('#patternmanager_view_cancel_button').live('click', function (event) {
+       location.reload();
+       return false;
     });
     
     $('.PMcopyVar').live('click', function(event) {
         
-		id = $(this).parent().attr('id');
-		
+		id = $(this).parents('fieldset.eSubpattern:first').attr('id');
+
 		if ($(this).parent().hasClass('contextmenu')) {
 		    
 		    sp = $(this).children('div').text();
 		    self = $(this).parent().find('div:eq(0)').text();
-		    replace = $('#patternmanager > ' + sp + ' > table:eq(0)').clone();
+		    replace = $('#patternmanager ' + sp + ' table:eq(0)').clone();
 		    if (confirm ('Confirm action: copy vars')) {
-		        $('#patternmanager > ' + self + ' > table:eq(0)').replaceWith(replace);
+		        $('#patternmanager ' + self + ' table:eq(0)').replaceWith(replace);
 		    } else {
 		        // do nothing
 		    }
@@ -37,12 +46,11 @@ $(document).ready(function () {
 		} else {
 		
 		    // create menu for selection
-		    
 		    id = id.replace('subpattern-','');
     		
 		    var other = new Array();
     		
-		    $('#patternmanager > div').each( function (i) {
+		    $('div#patternmanager fieldset.eSubpattern').each( function (i) {
 		        if (i != id && i != 0) {
 		            other.push(i);
 	            }
@@ -61,7 +69,7 @@ $(document).ready(function () {
     		}
 		}
 		
-		event.stopPropagation();
+		return false;
 		
 	});
 });
@@ -96,8 +104,8 @@ function addPMPattern(name, desc) {
 
 function delPMPattern(id) {
     
-    if (confirm ('Confirm action: del pattern')) {
-        $('div#patternmanager > fieldset#subpattern-'+id).remove();
+    if ( confirm('Confirm action: del pattern') ) {
+        $('div#patternmanager > fieldset.eComplexPattern > fieldset#subpattern-'+id).remove();
     } else {
         
     }
