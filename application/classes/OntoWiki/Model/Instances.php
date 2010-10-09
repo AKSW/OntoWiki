@@ -162,6 +162,23 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         //$this->updateValueQuery();
     }
+    
+    /**
+     * 
+     * Method for setting the store explicitely
+     * (necessary after unserialization from session for unavailable _dbconn 
+     * resource handles etc.)
+     * @param Erfurt_Store $store
+     * @throws Exception for parameter type being incorrect (no Erfurt_Store Object)
+     * @return null
+     */
+    public function setStore($store) {
+        if ($store instanceof Erfurt_Store) {
+            $this->_store = $store;
+        } else {
+            throw new Exception('No Store Object in ' . __CLASS__ . '::' . __METHOD__);
+        }
+    }
 
     /**
      * dont keep the references to the query objects in $this->resourceQuery (the must be cloned too)
@@ -174,6 +191,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             }
         }
     }
+    
     public function  __call($name,  $arguments) {
         if(strpos("From", $name) > 0){
             call_user_func(array($this->_valueQuery, $arguments));

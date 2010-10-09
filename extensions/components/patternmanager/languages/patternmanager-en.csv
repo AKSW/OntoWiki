@@ -1,0 +1,5 @@
+execute pattern;Execute Pattern
+save pattern;Save Pattern
+view pattern;View Pattern
+action %s not allowed;Action %s not allowed.
+HISTORY_ACTIONTYPE_3000;evolution performed
