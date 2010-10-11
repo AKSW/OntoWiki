@@ -70,7 +70,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();
         
-        $pattern = $this->getParam('pattern');
+        $pattern = $this->getRequest()->getParam('pattern');
         
         if (!empty($pattern) && is_string($pattern) && Erfurt_Uri::check($pattern)) {
             $pattern = $this->_engine->loadFromStore($pattern);
@@ -107,8 +107,8 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	
 	        $step = (int) $this->_request->getParam('step',0);
 	        $this->view->step = $step;
-	        $patternInput = json_decode($this->getParam('pattern_input'),true);
-	        $patternSelected = $this->getParam('pattern',null);
+	        $patternInput = json_decode($this->getRequest()->getParam('pattern_input'),true);
+	        $patternSelected = $this->getRequest()->getParam('pattern',null);
 	
 	        if ($step === 0 &&  $patternInput !== null) {
 	
@@ -385,7 +385,12 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
     }
 
     /**
-     *
+     * Opens a pattern for execution (executes pattern if mode is set to 1)
+     * HTTP Parameters:
+     * - mode 				: pattern execution mode (0,1)
+     * - pattern 			: pattern URI 
+     * - prebound_variables	: json object of prebound variables (not in execution mode)
+     * - var				: variables to be bound (in execution mode)
      */
     public function execAction() {
         
@@ -402,19 +407,29 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	
 	        $this->_engine->setDefaultGraph($this->_owApp->selectedModel);
 	
-	        $complexPattern = $this->_engine->loadFromStore($this->_request->getParam('pattern'));
+	        $complexPattern = $this->_engine->loadFromStore($this->getRequest()->getParam('pattern'));
 	
 	        $unboundVariables = $complexPattern->getVariables(false);
-	
-	        $preboundVariables = json_decode($this->_request->getParam('prebound_variables','[]'), true);
 	        
-	        $var  = $this->getParam('var');
-	        
-	        if ( empty($var) ) {
+	        try {
+	            $preboundVariables = Zend_Json::decode(
+	                $this->getRequest()->getParam('preboundVariables','[]'),
+	                Zend_Json::TYPE_ARRAY
+                );
+	        } catch (Zend_Json_Exception $e) {
+	            $preboundVariables = array();
+	        }
+
+	        try {
+	            $var = Zend_Json::decode(
+	                $this->getRequest()->getParam('var','[]'),
+	                Zend_Json::TYPE_ARRAY
+                );
+	        } catch (Zend_Json_Exception $e) {
 	            $var = array();
 	        }
 	        
-	        $mode = $this->getParam('mode');
+	        $mode = $this->getRequest()->getParam('mode');
 	
 	        if ($mode == 1) {
 	            
@@ -461,9 +476,10 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        //$this->view->formName      = 'patternmanager-form';
 	        $this->view->formEncoding  = 'multipart/form-data';
         } else {
-            $msg_located = $this->view->_('action %s not allowed');
+            // message for action not allowed 
+            $msgLocated = $this->view->_('action %s not allowed');
             $msgObject = new OntoWiki_Message(
-            	sprintf($msg_located,PatternEngineAc::RIGHT_EXEC_STR),
+            	sprintf($msgLocated,PatternEngineAc::RIGHT_EXEC_STR),
                 OntoWiki_Message::ERROR
             );
             $this->_owApp->appendMessage($msgObject);
@@ -478,7 +494,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
     }
 
     /**
-     *
+     * List of complex patterns
+     * HTTP Parameters:
+     * - none
      */
     public function browseAction() {
 
@@ -497,7 +515,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            array(
 	            	'name' => $this->_owApp->translate->_('new pattern'),
 	                'url'  => (string) (new OntoWiki_Url( array('controller' => 'patternmanager', 'action' => 'view' ))),
-	                'image' => 'icon-go2',
+	                'image' => 'add',
 	            )
 	        );
         }

@@ -5,9 +5,9 @@
  * @author     Christoph Rieß <c.riess.dev@googlemail.com>
  * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id$
  */
 
+// on site load callback
 $(document).ready(function () {
     
     $('#patternmanager_view_save_button').hide();
@@ -21,6 +21,7 @@ $(document).ready(function () {
        return false;
     });
     
+    // cancel button to discard changes and refresh the site
     $('#patternmanager_view_cancel_button').live('click', function (event) {
        location.reload();
        return false;
