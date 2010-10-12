@@ -242,7 +242,7 @@ $(document).ready(function() {
         RDFauthor.cancel();
         // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
         // mainInnerContent.load(document.URL);
-        $('.edit-enable').click();
+        // $('.edit-enable').click();
     });
     
     $('.icon-edit').click(function() {
