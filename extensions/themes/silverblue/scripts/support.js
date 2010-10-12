@@ -353,9 +353,9 @@ function loadRDFauthor(callback) {
 }
 
 function populateRDFauthor(data, protect, resource, graph) {
-    protect  = arguments.length == 2 ? protect : true;
-    resource = arguments.length == 3 ? resource : null;
-    graph    = arguments.length == 4 ? graph : null;
+    protect  = arguments.length >= 2 ? protect : true;
+    resource = arguments.length >= 3 ? resource : null;
+    graph    = arguments.length >= 4 ? graph : null;
     
     for (var currentSubject in data) {
         for (var currentProperty in data[currentSubject]) {
@@ -457,7 +457,7 @@ function editResourceFromURI(resource) {
             for (var subjectUri in data) {break;};
 
             // add statements to RDFauthor
-            populateRDFauthor(data, false, subjectUri, selectedGraph.URI);
+            populateRDFauthor(data, false, resource, selectedGraph.URI);
 
             RDFauthor.setOptions({
                 saveButtonTitle: 'Save Changes',
