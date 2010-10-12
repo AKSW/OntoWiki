@@ -457,7 +457,7 @@ function editResourceFromURI(resource) {
             for (var subjectUri in data) {break;};
 
             // add statements to RDFauthor
-            populateRDFauthor(data, false);
+            populateRDFauthor(data, false, subjectUri, selectedGraph.URI);
 
             RDFauthor.setOptions({
                 saveButtonTitle: 'Save Changes',
