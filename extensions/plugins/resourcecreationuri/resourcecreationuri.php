@@ -1,5 +1,7 @@
 <?php
 require_once 'OntoWiki/Plugin.php';
+require_once ONTOWIKI_ROOT . 'extensions/plugins/resourcecreationuri/classes/ResourceUriGenerator.php';
+
 /**
  * Plugin that tries to make nice uris if new resources are created.
  *
