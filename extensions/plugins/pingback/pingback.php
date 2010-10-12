@@ -27,7 +27,7 @@ class PingbackPlugin extends OntoWiki_Plugin
         $response->setHeader('X-Pingback', $url, true);
 	}
 	
-	public function onAddStatement()
+	public function onAddStatement($event)
 	{
         $this->_logInfo($event->statement);
 		
