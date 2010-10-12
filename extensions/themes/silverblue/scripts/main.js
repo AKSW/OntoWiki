@@ -245,19 +245,11 @@ $(document).ready(function() {
         $('.edit-enable').click();
     });
     
-    /*
     $('.icon-edit').click(function() {
         var element = this;
-        loadRDFauthor(function() {
+        loadRDFauthor(function () {
             RDFauthor.setOptions({
-                anchorElement: '.innercontent', 
                 onSubmitSuccess: function () {
-                    // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-                    // mainInnerContent.load(document.URL);
-
-                    // tell RDFauthor that page content has changed
-                    // RDFauthor.invalidatePage();
-
                     $('.edit').each(function() {
                         $(this).fadeOut(effectTime);
                     });
@@ -277,21 +269,34 @@ $(document).ready(function() {
                 saveButtonTitle: 'Save Changes', 
                 cancelButtonTitle: 'Cancel', 
                 title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
-                'defaultGraph': defaultGraph, 
-                'defaultResource': defaultResource
+                viewOptions: {
+                    type: RDFAUTHOR_VIEW_MODE, 
+                    container: function (statement) {
+                        var element = RDFauthor.elementForStatement(statement);
+                        var parent  = $(element).closest('div');
+                        
+                        if (!parent.hasClass('ontowiki-processed')) {
+                            parent.children().each(function () {
+                                $(this).hide();
+                            });
+                            parent.addClass('ontowiki-processed');
+                        }
+                        
+                        return parent.get(0);
+                    }
+                }
             });
             
-            RDFauthor.startInline($(element).closest('td'));
+            RDFauthor.start($(element).parents('td'));
             
-            // hide inine edit for whole page
-            $('.edit-enable').hide();
-            // show submit/cancel buttons
             $('.edit').each(function() {
+                var button = this;
                 $(this).fadeIn(effectTime);
             });
         });
+        
+        return false;
     });
-    */
     
     // edit mode
     $('.edit-enable').click(function() {
@@ -356,7 +361,7 @@ $(document).ready(function() {
                     $(this).fadeIn(effectTime, function() {
                         $(button).addClass('active');
                     });
-                })
+                });
             });
         }
     });
