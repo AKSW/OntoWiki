@@ -266,7 +266,7 @@ class PingbackPlugin extends OntoWiki_Plugin
         curl_setopt($rq, CURLOPT_POST, 1);
         curl_setopt($rq, CURLOPT_POSTFIELDS, $xml);
 		curl_setopt($rq, CURLOPT_FOLLOWLOCATION, false); 
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($rq, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($rq);
         curl_close($rq);
 		$this->_logInfo('Pingback Result for ('.$pingbackServiceUrl.', ' . $xml . ') - ' . $res);
