@@ -20,6 +20,17 @@ GQBView.prototype.initLayout = function() {
 	//$("#gqbsavedqueriestree").treeview();
 	//setup the tree of restrictions
 	$('#gqbClassPropertiesRestrictions').treeview();
+        window.onbeforeunload = function (evt) {
+          var message = 'Unsaved queries will be lost.';
+          if (typeof evt == 'undefined') {
+            evt = window.event;
+          }
+          if (evt) {
+            evt.returnValue = message;
+          }
+          return message;
+        }
+
 };
 
 GQBView.prototype.initControlLabels = function() {
