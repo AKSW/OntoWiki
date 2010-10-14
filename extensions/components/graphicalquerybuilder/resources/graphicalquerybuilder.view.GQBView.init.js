@@ -129,7 +129,7 @@ GQBView.prototype.initMouseMoveAndDropHandlers = function() {
             revert: true,
             opacity: 0.7,
             scroll: false,
-            stack: {group:'#gqbcanvas',min: 50},
+            stack: '#gqbcanvas',
             helper: 'clone'
         });
     });
