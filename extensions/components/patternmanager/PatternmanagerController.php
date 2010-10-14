@@ -408,6 +408,8 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        $this->_engine->setDefaultGraph($this->_owApp->selectedModel);
 	
 	        $complexPattern = $this->_engine->loadFromStore($this->getRequest()->getParam('pattern'));
+	        
+	        $this->view->complexPattern = $complexPattern;
 	
 	        $unboundVariables = $complexPattern->getVariables(false);
 	        
@@ -885,7 +887,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 
         if ( array_key_exists($vartype,$allowedInputType) ) {
 
-            if ( !preg_match ($allowedInputType[$vartype], $query) ) {
+            if ( !preg_match ($allowedInputType[$vartype], $query ) ) {
                 $error = true;
             } else  {
                 $error = false;
@@ -975,7 +977,8 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            case 'GRAPH':
 	                $models = array_keys($this->_erfurt->getStore()->getAvailableModels());
 	                for ($i = 0; $i < sizeof($models) && sizeof($ret) < $limit; $i++) {
-	                    if (preg_match('/' . $query . '/i',$models[$i]) !== 0 ) {
+
+	                    if (preg_match('/' . preg_quote($query,'/') . '/i',$models[$i]) !== 0 ) {
 	                        $ret[] = $models[$i];
 	                    }
 	                }

@@ -2,10 +2,10 @@
 
     <fieldset class="ePatternExecution">
 
-        <h2>{Name des Pattern}</h2>
+        <h2><?php echo $this->complexPattern->getLabel(); ?></h2>
 
         <p class="abstract">
-            {Lorem Ipsum Semantic Kauderwelsch, hier kommt die Beschreibung des Patterns hin.}
+           <?php echo $this->complexPattern->getDescription(); ?>
         </p>
 
         <fieldset>
@@ -26,10 +26,10 @@
                     endif; ?>
             	/>
                 <label for="var[<?php echo $var['name']; ?>]" class="vartype">
-                    <span class="onlyAural">(type: </span><span class="vartypename"><?php echo $var['type']; ?></span<span class="onlyAural">)</span>
+                    <span class="onlyAural">(type: </span><span class="vartypename"><?php echo $var['type']; ?></span><span class="onlyAural">)</span>
                 </label>
                 <br class="clearall"/>
-                <p class="messagebox info">{Infotext/Beschreibung zur Variablen.}</p>
+                <p class="messagebox info"><?php echo $var['desc']; ?></p>
             </div>
             <?php endforeach; ?>
 
