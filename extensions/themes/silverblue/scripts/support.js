@@ -471,3 +471,59 @@ function editResourceFromURI(resource) {
         })
     });
 }
+
+/*
+ * Edit a complete OW property view property section
+ */
+function editProperty(event) {
+    var element = $.event.fix(event).target;
+    loadRDFauthor(function () {
+        RDFauthor.setOptions({
+            onSubmitSuccess: function () {
+                $('.edit').each(function() {
+                    $(this).fadeOut(effectTime);
+                });
+                $('.edit-enable').removeClass('active');
+
+                // HACK: reload whole page after 1000 ms
+                window.setTimeout(function () {
+                    window.location.href = window.location.href;
+                }, 1000);
+            }, 
+            onCancel: function () {
+                $('.edit').each(function() {
+                    $(this).fadeOut(effectTime);
+                });
+                $('.edit-enable').removeClass('active');
+            }, 
+            saveButtonTitle: 'Save Changes', 
+            cancelButtonTitle: 'Cancel', 
+            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+            viewOptions: {
+                type: RDFAUTHOR_VIEW_MODE, 
+                container: function (statement) {
+                    var element = RDFauthor.elementForStatement(statement);
+                    var parent  = $(element).closest('div');
+
+                    if (!parent.hasClass('ontowiki-processed')) {
+                        parent.children().each(function () {
+                            $(this).hide();
+                        });
+                        parent.addClass('ontowiki-processed');
+                    }
+
+                    return parent.get(0);
+                }
+            }
+        });
+
+        RDFauthor.start($(element).parents('td'));
+
+        $('.edit').each(function() {
+            var button = this;
+            $(this).fadeIn(effectTime);
+        });
+    });
+
+    //return false;
+}
