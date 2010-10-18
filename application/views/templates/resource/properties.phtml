@@ -3,7 +3,7 @@
 <?php if ($request->isMobile()): ?>
     <?php if ($this->has('predicates')): ?>
     <?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
-    <ul class="edgetoedge" about="<?php echo $this->resourceUri ?>">
+    <ul data-role="listview" data-inset="true" role="listbox" about="<?php echo $this->resourceUri ?>">
         <?php foreach ($this->predicates as $graph => $predicatesForGraph): ?>
             <?php $current++; ?>
             <?php if (count($this->predicates[$graph]) > 0): /* has resource predicates from graph at all? */ ?>
@@ -11,12 +11,12 @@
 
             <?php foreach ($predicatesForGraph as $uri => $predicate): ?>
                 <?php $currentPredicate = $this->predicates[$graph][$uri] ?>
-                    <li class="sep">
-                        <p about="<?php echo $currentPredicate['uri'] ?>"><?php echo $currentPredicate['title'] ?></p>
+                    <li data-role="list-divider" role="heading" about="<?php echo $currentPredicate['uri'] ?>">
+                        <?php echo $currentPredicate['title'] ?>
                     </li>
                     <?php if (count($this->values[$graph][$uri]) > 1): ?>
                         <?php foreach ($this->values[$graph][$uri] as $entry): ?>
-                            <li>
+                            <li role="option">
                                     <a rel="<?php echo $currentPredicate['curi'] ?>"
                                        about="<?php echo $entry['url'] ?>"
                                        content="<?php echo $entry['uri'] ?>"
@@ -25,19 +25,19 @@
                             </li>
                         <?php endforeach; ?>
                         <?php if (isset($currentPredicate['has_more']) && $currentPredicate['has_more']): ?>
-                            <li><a href="#" onclick="pageList(this, true); return false;" about="<?php echo $currentPredicate['has_more_link'] ?>">[<?php echo $this->_('more') ?>]</a></li>
+                            <li role="option"><a href="#" onclick="pageList(this, true); return false;" about="<?php echo $currentPredicate['has_more_link'] ?>">[<?php echo $this->_('more') ?>]</a></li>
                         <?php endif; ?>
                     <?php else: ?>
                         <?php $entry = current($this->values[$graph][$uri]) ?>
                             <?php if ($entry['url']): ?>
-                                <li>
+                                <li role="option">
                                     <a about="<?php echo $entry['url'] ?>"
                                        content="<?php echo $entry['uri'] ?>"
                                        onclick="onInstanceClick(this, false); return false;" href="#"
                                        ><?php echo $entry['object'] ?></a>
                                  </li>
                             <?php else: ?>
-                                 <li>
+                                 <li role="option">
                                     <span property="<?php echo $currentPredicate['curi'] ?>"
                                               <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
                                                             xml:lang="<?php echo $entry['lang'] ?>"

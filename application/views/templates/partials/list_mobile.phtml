@@ -55,15 +55,15 @@ if ($instances->hasData()) {
 $odd = true;
 if ($instances->hasData()):
 ?>
-    <ul class="rounded">
+    <ul data-role="listview" data-inset="true" role="listbox">
         <?php foreach ($instanceInfo as $instanceUri => $instance): ?>
-            <li>
+            <li role="option">
                 <!-- <?php echo  $instanceUri?> -->
                 <a about="<?php echo $instance['url'] ?>" href="#" onclick="onInstanceClick(this); return false;">
                     <?php echo $instance['title'] ?>
                 </a>
                 <?php if (isset($instanceData[$instanceUri]) && isset($instanceData[$instanceUri]['__TYPE'])): ?>
-                    <small class="counter">
+                    <small>
                     <?php if (count($instanceData[$instanceUri]['__TYPE']) > 1): ?>
                         <?php $j = 0;
                         $count = count($instanceData[$instanceUri]['__TYPE']) ?>

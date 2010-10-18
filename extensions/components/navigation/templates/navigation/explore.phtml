@@ -7,23 +7,15 @@ $odd = true;
 ?>
 <?php if($this->mobile): ?>
         <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>
-            <h2 class="navRoot fancybuttons">
+            <!-- <h2 class="navRoot fancybuttons"> -->
             <?php if (isset($this->rootEntry)):?>
-                <ul class="individual">
-                    <li>
-                        <a class="navFirst icon icon-arrow-first" onclick="addLoader(this);return false;" title="Go to root level">Root</a>
-                    </li>
-                    <li>
-                        <a class="navBack icon icon-arrow-previous" onclick="addLoader(this);return false;" title="Go to previous level">Back</a>
-                    </li>
-                </ul>
-                <ul class="plastic">
-                    <li>
-                        <a class="hasMenu" about="<?php echo $this->rootEntry['uri'] ?>">
-                            <?php echo $this->rootEntry['title'] ?>
-                        </a>
-                    </li>
-                </ul>
+                <h3 class="hasMenu" about="<?php echo $this->rootEntry['uri'] ?>">
+                    <?php echo $this->rootEntry['title'] ?>
+                </h3>
+                <div data-role="controlgroup" data-type="horizontal">
+                    <a href="#" class="navFirst" onclick="$.pageLoading(); return false;" data-role="button" title="Go to root level">Root</a>
+                    <a href="#" class="navBack" onclick="$.pageLoading(); return false;" data-role="button" title="Go to previous level">Back</a>
+                </div>
             <?php else: ?>
                 <?php if ( isset($this->rootName) ){
                     if( isset($this->rootLink) ){
@@ -37,7 +29,7 @@ $odd = true;
                     <!-- Root -->
                 <?php } ?>
             <?php endif ?>
-            </h2>
+            <!-- </h2> -->
         <?php endif ?>
         <?php if (!empty($this->messages)): ?>
             <?php foreach ($this->messages as $message): ?>

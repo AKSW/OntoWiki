@@ -12,6 +12,12 @@ var RDFAUTHOR_MOBILE = true;
 //   getBase(e);
 //});
 
+var redrawNavigation = function(){
+    var nav = $("#nav");
+    nav.page("destroy");
+    nav.page();
+};
+
 $(document).ready(function(){
     // load rdfauthor
     var rdf_script = document.createElement( 'script' );
@@ -19,11 +25,32 @@ $(document).ready(function(){
     rdf_script.src = RDFAUTHOR_BASE+"src/rdfauthor.js";
     $('body').append( rdf_script );
     
-    // prepare page
+    // prepare nav page on show
     $("#nav").bind("beforepageshow", function(){
-        console.log('123');
-        $(this).page("destroy");
-        $(this).page();
+        redrawNavigation();
+    });
+    
+    // prepare instance list on show
+    $("#instance-list").bind("beforepageshow", function(){
+        var page = $("#instance-list");
+        page.page("destroy");
+        page.page();
+    });
+    
+    // prepare properties list on show
+    $("#properties-list").bind("beforepageshow", function(){
+        var page = $("#properties-list");
+        page.page("destroy");
+        page.page();
+    });
+    
+    // prepare page on navigation done
+    $(document).bind("navigation.done", function(){        
+        // redraw page
+        redrawNavigation();
+        
+        // remove loader
+        $.pageLoading(true);
     });
 });
 
@@ -62,17 +89,12 @@ function getBase(element){
 }
 
 function onNavigationEntryClick(entry){
-    //$(entry).append(loader_small_src);
-    $(entry).attr("class","loading");
+    // show load progress
+    $.pageLoading();
 
-    if($(entry).parent().attr('class') == "arrow"){
-        $(document).bind("navigation.done", function(e, status){
-            //$("#loader").remove();
-            $(entry).attr("class","");
-            $(document).unbind(e);
-        });
-        navigationEvent('navigateDeeper', $(entry).parent().attr('about'));
-        //$("#loader").remove();
+    if( $(entry).parents("li").hasClass("arrow") ){
+        // navigate
+        navigationEvent('navigateDeeper', $(entry).parents("li").attr('about'));
     }else{
         url = $(entry).attr('about');
         // set rdfa
@@ -82,11 +104,12 @@ function onNavigationEntryClick(entry){
         $.get(url, function(data){
             $("#instance-title").text(title);
             $('#instance-content').html(data);
-            //$("#loader").remove();
-            $(entry).attr("class","");
-            //navigationEvent('reset');
+            
+            // remove loader
+            $.pageLoading(true);
 
-            jQT.goTo("#instance-list", "slide");
+            // switch page
+            location.hash = "instance-list";
         })
     }
 }
@@ -103,24 +126,21 @@ function pageList(entry, animate){
 
 function onInstanceClick(entry, animate){
     if( typeof(animate) == 'undefined' ) animate = true;
-    //$(entry).append(loader_src);
-    $(entry).attr("class","loading");
+    
+    // loading 
+    $.pageLoading();
 
     url = $(entry).attr('about');
     title = $(entry).text();
     $.get(url, function(data){
         $("#properties-title").text(title);
         $('#properties-content').html(data);
-        //$("#loader").remove();
-        $(entry).attr("class","");
+        
+        // remove animation
+        $.pageLoading(true);
 
-        if(animate) jQT.goTo("#properties-list", "slide");
+        if(animate) location.hash = "properties-list";
     })
-}
-
-function addLoader(entry){
-    //$(entry).html(loader_src);
-    $(entry).attr("class","loading");
 }
 
 function toggleMenu(element){
