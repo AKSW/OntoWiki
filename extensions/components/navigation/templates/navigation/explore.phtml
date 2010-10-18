@@ -47,9 +47,9 @@ $odd = true;
             <?php endforeach; ?>
         <?php endif ?>
         <?php if ($this->entries) :?>
-            <ul class="rounded">
+            <ul data-role="listview" data-inset="true" role="listbox">
             <?php foreach ($this->entries as $uri => $entry): ?>
-                <li class="<?php if( $entry['sub'] > 0 ){ echo 'arrow'; } ?>" about="<?php echo $uri ?>">
+                <li role="option" class="<?php if( $entry['sub'] > 0 ){ echo 'arrow'; } ?>" about="<?php echo $uri ?>">
                     <!-- href="<?php echo $entry['link'] ?>" -->
                     <a href="#" onclick="onNavigationEntryClick(this);return false;" about="<?php echo $entry['link'] ?>">
                        <?php echo $entry['title'] ?>

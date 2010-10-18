@@ -10,8 +10,6 @@
     <?php endif; ?>
 
     <!-- stylesheets -->
-    <style type="text/css" media="screen">@import "extensions/themes/mobile/jqtouch/jqtouch.min.css";</style>
-    <style type="text/css" media="screen">@import "extensions/themes/mobile/jqt/theme.min.css";</style>
     <style type="text/css" media="screen">
         .hasMenu {
             color: #ffffff;
@@ -59,9 +57,10 @@
         }
     </style>
 
-    <!-- jQTouch -->
-    <script type="text/javascript" src="libraries/RDFauthor/libraries/jquery.js" charset="utf-8"></script>
-    <script type="application/x-javascript" src="extensions/themes/mobile/jqtouch/jqtouch.min.js" charset="utf-8"></script>
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.css" />
+    <script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.js"></script>
 
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
@@ -74,39 +73,57 @@
     <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/base.js"></script>
 </head>
 <body>
-    <div id="home">
-        <div class="toolbar">
+    <!-- INDEX PAGE -->
+    <div id="home" data-role="page" data-theme="b">
+        <div data-role="header">
             <?php if( OntoWiki::getInstance()->erfurt->getAuth()->getIdentity()->isAnonymousUser() ): ?>
-                <a href="#login" class="button leftButton flip">Login</a>
+                <a href="#login" data-role="button">Login</a>
             <?php else: ?>
-                <a href="http://localhost/ontowiki/application/logout" class="button leftButton">Logout</a>
+                <a data-role="button" href="http://localhost/ontowiki/application/logout" rel="external" class="ui-btn-right" data-icon="delete">Logout</a>
             <?php endif; ?>
             <h1>OntoWiki Mobile</h1>
         </div>
-        <?php echo $this->modules('main.mobile.baselist') ?>
+        
+        <div data-role="content">
+            <?php echo $this->modules('main.mobile.baselist') ?>
+        </div>
+        
+        <!-- <div data-role="footer">
+            <h4>OntoWiki 0.9.6</h4>
+        </div><!-- /footer -->
     </div>
-    <div id="login">
-        <div class="toolbar">
-            <a href="#" class="back">Back</a>
+    
+    <!-- LOGIN PAGE -->
+    <div id="login" data-role="page" data-theme="b">
+        <div data-role="header">
+            <a href="#" data-role="button" data-icon="arrow-l">Back</a>
             <h1>Login</h1>
         </div>
-        <!-- <ul class="rounded">
-            <li><input type="text" name="login-text" placeholder="Login" id="login-text" /></li>
-            <li><input type="password" name="pass-text" placeholder="Password" id="pass-text" /></li>
-            <li><input type="checkbox" name="login-save" id="login-save" class="checkbox"> Remember me</li>
-        </ul>
-        <a href="#" class="whiteButton" style="margin: 10px" onclick="doLogin(); return false;">OK</a> -->
-        <?php echo $this->modules('main.mobile.login') ?>
-    </div>
-    <div id="nav">
-        <div class="toolbar">
-            <a href="#" class="back">Back</a>
-            <h1 id="nav-title">title</h1>
-            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
+    
+        <div data-role="content">
+            <?php echo $this->modules('main.mobile.login') ?>
         </div>
-        <?php echo $this->modules('main.mobile.navigation') ?>
+        
+        <!-- <div data-role="footer">
+            <h5>OntoWiki 0.9.6</h5>
+        </div> /footer -->
     </div>
-    <div id="list">
+    
+    <!-- NAVIGATION PAGE -->
+    <div id="nav" data-role="page">        
+        <div data-role="header">
+            <a href="#" data-icon="arrow-l">Back</a>
+            <h1 id="nav-title">title</h1>
+            <a data-role="button" class="ui-btn-right" onclick="toggleMenu(this);">Menu</a>
+        </div>
+    
+        <div data-role="content">
+            <?php echo $this->modules('main.mobile.navigation') ?>
+        </div>
+    </div>
+    
+    
+    <div id="list" data-role="page">
         <div class="toolbar">
             <a href="#nav" class="back">Back</a>
             <h1 id="list-title">title</h1>
@@ -116,7 +133,7 @@
             <?php echo $this->modules('main.mobile.list') ?>
         </div>
     </div>
-    <div id="instance-list">
+    <div id="instance-list" data-role="page">
         <div class="toolbar">
             <a href="#list" class="back">Back</a>
             <h1 id="instance-title">title</h1>
@@ -126,7 +143,7 @@
             <!-- stuff here -->
         </div>
     </div>
-    <div id="properties-list">
+    <div id="properties-list" data-role="page">
         <div class="toolbar">
             <a href="#instance-list" class="back">Back</a>
             <h1 id="properties-title">title</h1>
@@ -136,7 +153,7 @@
             <!-- stuff here -->
         </div>
     </div>
-    <div id="searchres-list">
+    <div id="searchres-list" data-role="page">
         <div class="toolbar">
             <a href="#" class="back">Back</a>
             <h1 id="searchres-title">title</h1>
@@ -145,7 +162,7 @@
             <!-- stuff here -->
         </div>
     </div>
-    <div id="rdfa-list">
+    <div id="rdfa-list" data-role="page">
         <div class="toolbar">
             <a href="#" id="rdfa-back" class="back">Back</a>
             <h1>Properties</h1>

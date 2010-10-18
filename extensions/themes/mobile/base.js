@@ -3,10 +3,6 @@
  * and open the template in the editor.
  */
 
-var jQT = new $.jQTouch();
-
-var loader_src = '<img id="loader" src="extensions/themes/mobile/image/spinner.gif">'; // <small id="loader"></small>
-var loader_small_src = '<small id="loader"><img src="extensions/themes/mobile/image/spinner.gif"></small>';
 var selected_model = '';
 
 // TODO: add to PHP and remove here
@@ -22,9 +18,18 @@ $(document).ready(function(){
     rdf_script.type = 'text/javascript';
     rdf_script.src = RDFAUTHOR_BASE+"src/rdfauthor.js";
     $('body').append( rdf_script );
+    
+    // prepare page
+    $("#nav").bind("beforepageshow", function(){
+        console.log('123');
+        $(this).page("destroy");
+        $(this).page();
+    });
 });
 
 function getBase(element){
+    $.pageLoading();
+    
     if( selected_model != $(element).attr('about') ){
         // select base
         selected_model = $(element).attr('about');
@@ -32,11 +37,8 @@ function getBase(element){
         RDFAUTHOR_DEFAULT_GRAPH = selected_model;
         RDFAUTHOR_DEFAULT_SUBJECT = selected_model;
         // get
-        // 'http://'+location.host+'/ontowiki/
         var url = urlBase + 'model/select/?m=' + $(element).attr('about');
         var title = $(element).text();
-        //$(element).append(loader_small_src);
-        $(element).attr("class","loading");
 
         $.get(url, function(data){
             $('#nav-title').text(title);
@@ -46,13 +48,17 @@ function getBase(element){
                 //$("#loader").remove();
                 $(element).attr("class","");
                 $(document).unbind(e);
-
-                jQT.goTo("#nav", "slide");
+                
+                location.hash = "nav";
+                //$.changePage($(".ui-page-active"), $("#nav"), "slide");
             });
         })
     }else{
-        jQT.goTo("#nav", "slide");
+        location.hash = "nav";
+        //$.changePage($(".ui-page-active"), $("#nav"), "slide");
     }
+    
+    
 }
 
 function onNavigationEntryClick(entry){

@@ -7,12 +7,12 @@
  */
 ?>
 <?php if (!empty($this->models)): ?>
-    <ul class="rounded">
+    <ul data-role="listview" data-inset="true" role="listbox">
     	<?php foreach ($this->models as $modelDetails): ?>
-    		<li class="arrow">
-                    <a href="#" onclick="getBase(this); return false;" about="<?php echo $modelDetails['graphUri'] ?>">
-                        <?php echo $modelDetails['label'] ?>
-                    </a>
+    		<li role="option">
+                <a href="#" onclick="getBase(this); return false;" about="<?php echo $modelDetails['graphUri'] ?>">
+                    <?php echo $modelDetails['label'] ?>
+                </a>
     		</li>
     	<?php endforeach; ?>
     </ul>
