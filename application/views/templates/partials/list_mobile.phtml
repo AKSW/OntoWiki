@@ -42,14 +42,18 @@ if ($instances->hasData()) {
         }
         $statusBar = OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName);
     }
-    $statusBar = str_replace("<ul>",'', $statusBar);
+    $statusBar = str_replace("<ul>",'<div width="100%" style="text-align:center;" data-role="controlgroup" data-type="horizontal">', $statusBar);
+    $statusBar = str_replace("</ul>",'</div>', $statusBar);
     $statusBar = str_replace("First",'', $statusBar);
     $statusBar = str_replace("Previous",'', $statusBar);
     $statusBar = str_replace("Last",'', $statusBar);
     $statusBar = str_replace("Next",'', $statusBar);
-    $statusBar = str_replace("<li>",'<p class="pager">', $statusBar);
-    $statusBar = str_replace("</li>",'</p>', $statusBar);
-    $statusBar = preg_replace('/href="(.+?)"/i','href="#" about="$1" onclick="pageList(this);"', $statusBar);
+    $statusBar = str_replace("<li>",'', $statusBar);
+    $statusBar = str_replace("</li>",'', $statusBar);
+    //$statusBar = str_replace("<li>",'<td style="text-align: center;">', $statusBar);
+    //$statusBar = str_replace("</li>",'</td>', $statusBar);
+    $statusBar = preg_replace('/href="(.+?)"/i','href="#" about="$1" onclick="pageList(this); return false;"', $statusBar);
+    $statusBar = preg_replace('/class="(.+?)"/i','data-role="button"', $statusBar);
 }
 
 $odd = true;

@@ -43,7 +43,8 @@ $odd = true;
             <?php foreach ($this->entries as $uri => $entry): ?>
                 <li role="option" class="<?php if( $entry['sub'] > 0 ){ echo 'arrow'; } ?>" about="<?php echo $uri ?>">
                     <!-- href="<?php echo $entry['link'] ?>" -->
-                    <a href="#" onclick="onNavigationEntryClick(this);return false;" about="<?php echo $entry['link'] ?>">
+                    <a href="#nav-item-menu" onclick="onNavigationEntryClick(this);return false;" about="<?php echo $entry['link'] ?>"
+                       data-rel="dialog" data-transition="pop">
                        <?php echo $entry['title'] ?>
                     </a>
                     <?php if( $entry['sub'] > 0 ): ?>
@@ -54,11 +55,7 @@ $odd = true;
             </ul>
         <?php endif; ?>
         <?php if ($this->showMeMore) :?>
-        <ul class="individual">
-            <li>
-                <a href="javascript:navigationEvent ('more', '');return false;" id="naviganion-more"> Show Me More</a>
-            </li>
-        </ul>
+        <a href="#" onclick="navigationEvent ('more', '');return false;" data-role="button" id="naviganion-more"> Show Me More</a>
         <?php endif; ?>
 <?php else: ?> <!-- END MOBILE LAYOUT PART -->
         <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>

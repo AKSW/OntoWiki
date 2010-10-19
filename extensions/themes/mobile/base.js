@@ -3,14 +3,14 @@
  * and open the template in the editor.
  */
 
+// selected model uri
 var selected_model = '';
 
-// TODO: add to PHP and remove here
-var RDFAUTHOR_MOBILE = true;
+// selected navigation entry data
+var selectedNavigationEntry = {};
 
-//$("#navigation").bind('pageAnimationEnd', function(e, info){
-//   getBase(e);
-//});
+// TODO: add to PHP and remove here (or not?)
+var RDFAUTHOR_MOBILE = true;
 
 var redrawNavigation = function(){
     var nav = $("#nav");
@@ -18,7 +18,22 @@ var redrawNavigation = function(){
     nav.page();
 };
 
+var redrawProperties = function(){
+    var page = $("#properties-list");
+        page.page("destroy");
+        page.page();
+}
+
+var redrawInstances = function(){
+    var page = $("#instance-list");
+        page.page("destroy");
+        page.page();
+}
+
 $(document).ready(function(){
+    // quickfix for rdfa
+    $.ui = true;
+    
     // load rdfauthor
     var rdf_script = document.createElement( 'script' );
     rdf_script.type = 'text/javascript';
@@ -32,14 +47,17 @@ $(document).ready(function(){
     
     // prepare instance list on show
     $("#instance-list").bind("beforepageshow", function(){
-        var page = $("#instance-list");
-        page.page("destroy");
-        page.page();
+        redrawInstances();
     });
     
     // prepare properties list on show
     $("#properties-list").bind("beforepageshow", function(){
-        var page = $("#properties-list");
+        redrawProperties();
+    });
+    
+    // prepare search list on show
+    $("#searchres-list").bind("beforepageshow", function(){
+        var page = $("#searchres-list");
         page.page("destroy");
         page.page();
     });
@@ -89,39 +107,44 @@ function getBase(element){
 }
 
 function onNavigationEntryClick(entry){
-    // show load progress
-    $.pageLoading();
-
+    selectedNavigationEntry = {
+        parent: $(entry).parents("li").attr('about'),
+        url: $(entry).attr('about'),
+        title: $(entry).text()
+    };
+    
     if( $(entry).parents("li").hasClass("arrow") ){
-        // navigate
-        navigationEvent('navigateDeeper', $(entry).parents("li").attr('about'));
+        $("#item-nav-deep").show();
     }else{
-        url = $(entry).attr('about');
-        // set rdfa
-        RDFAUTHOR_DEFAULT_SUBJECT = url;
-        // get
-        title = $(entry).text();
-        $.get(url, function(data){
-            $("#instance-title").text(title);
-            $('#instance-content').html(data);
-            
-            // remove loader
-            $.pageLoading(true);
-
-            // switch page
-            location.hash = "instance-list";
-        })
+        $("#item-nav-deep").hide();
     }
 }
 
-function pageList(entry, animate){
-    url = $(entry).attr('about');
+function showInstances(){
+    // show load progress
+    $.pageLoading();
+    
+    url = selectedNavigationEntry.url;
+    // set rdfa
+    RDFAUTHOR_DEFAULT_SUBJECT = url;
+    // get
+    title = selectedNavigationEntry.title;
     $.get(url, function(data){
+        $("#instance-title").text(title);
         $('#instance-content').html(data);
+        
+        // remove loader
+        $.pageLoading(true);
 
-        if(animate)
-            jQT.goTo("#instance-list", "slide");
+        // switch page
+        location.hash = "instance-list";
     })
+}
+
+function navigateDeeper(){
+    // show load progress
+    $.pageLoading();
+    navigationEvent('navigateDeeper', selectedNavigationEntry.parent);
 }
 
 function onInstanceClick(entry, animate){
@@ -139,48 +162,64 @@ function onInstanceClick(entry, animate){
         // remove animation
         $.pageLoading(true);
 
-        if(animate) location.hash = "properties-list";
+        if(animate){ 
+            location.hash = "properties-list";
+        }else{
+            redrawProperties();
+        }
     })
 }
 
-function toggleMenu(element){
-    if( $("#menu-form").length == 0 ){
-        var menu_string = '\
-            <div id="menu-form">\
-                <ul class="individual">\
-                    <li><input id="search-input" type="text" placeholder="Search"></li>\
-                    <li><a href="#" onclick="doSearch( $(\'#search-input\').val() ); return false;">Go</a></li>\
-                </ul>';
-
-        if( $("div.current").attr('id') == "properties-list" ){
-            menu_string += '<ul class="rounded">\
-                        <li><a href="#" onclick="openRDFa()">Edit</a></li>\
-                    </ul>';
-        }
-        menu_string += '</div>';
-
-        var menu = $(menu_string);
-
-        $(element).parent().after(menu);
+function toggleMenu(){
+    if( $("#properties-list").hasClass("ui-page-active") == true ){
+        $("#menu-edit-btn").show();
     }else{
-        $("#menu-form").remove();
+        $("#menu-edit-btn").hide();
     }
-}
-
-function doSearch(req){
-    $.get(urlBase+"application/search/?searchtext-input="+req, function(data){
-        $.get(urlBase+"resource/instances",function(data){
-            $("#menu-form").remove();
-            $("#searchres-content").html(data);
-            $("#searchres-title").text(req);
-            jQT.goTo("#searchres-list", "slide");
-        });
-    });
 }
 
 function doLogin(){
     $("#loginform").submit();
 }
+
+function doSearch(){
+    var req = $("#search").val();
+    if(req.length < 3){
+        alert('request too short');
+        return;
+    }
+    // loading 
+    $.pageLoading();
+    // get results
+    $.get(urlBase+"application/search/?searchtext-input="+req, function(data){
+        $.get(urlBase+"resource/instances",function(data){
+            $("#menu-form").remove();
+            $("#searchres-content").html(data);
+            $("#searchres-title").text(req);
+            
+            location.hash = "searchres-list";
+            $.pageLoading(true);
+        });
+    });
+}
+
+function pageList(entry, animate){
+    $.pageLoading();
+    
+    url = $(entry).attr('about');
+    $.get(url, function(data){
+        $('#instance-content').html(data);
+
+        if(animate){
+            location.hash = "instance-list";
+        }else{
+            redrawInstances();
+        }
+        $.pageLoading(true);
+    })
+}
+
+/*****************************  TO REWRITE  *****************************************/
 
 function openRDFa(){
     var content = $("#properties-content");
