@@ -1,12 +1,18 @@
 #!/bin/bash
 
-BUILDPATH=/tmp/ontowiki
+
 VIRTTMP=/tmp/virtuoso
 STICKERBEGIN=ow_vad_sticker_template.xml
 STICKER=ow_vad_sticker.xml
 RESULTFILE=ontowiki_fs.vad
 ISQLFILE=DB.PACK.VAD.isql
 VIRTUOSO_T="/opt/vos-6.1.2/bin/virtuoso-t -c vad.ini -f"
+CURRENT=$PWD
+#do not change this below:
+BUILDPATH=/tmp/ontowiki
+
+echo "DB.DBA.VAD_PACK ('"$PWD/$STICKER"'  , ''  ,  '"$PWD"/"$RESULTFILE"'  );
+shutdown;  " > $ISQLFILE
 
 echo "deleting "$BUILDPATH
 rm -r $BUILDPATH
@@ -17,7 +23,7 @@ rm -r $VIRTTMP
 
 echo "checking out ontowiki"
 hg clone https://ontowiki.googlecode.com/hg/ $BUILDPATH
-CURRENT=$PWD
+
 cd $BUILDPATH
 make zend
 cd $CURRENT
@@ -47,10 +53,12 @@ chmod 777 $BUILDPATH/cache
 echo "vad sticker is assembled from "$STICKERBEGIN
 cat $STICKERBEGIN >$STICKER
 find $BUILDPATH -name ".hg" | xargs rm -r
-for onefile in `find $BUILDPATH -type f | grep -v ' '`
+cd /tmp
+for onefile in `find ontowiki -type f | grep -v ' '`
 do 
-echo "<file type=\"http\" overwrite=\"yes\" source=\"http\" target_uri=\""$onefile"\" makepath=\"yes\" />" >> $STICKER
+echo "<file type=\"http\" overwrite=\"yes\" source=\"http\" target_uri=\""$onefile"\" makepath=\"yes\" />" >> $CURRENT/$STICKER
 done
+cd $CURRENT
 echo "</resources><registry /></sticker>" >> $STICKER
 echo "sticker created at "$STICKER
 
@@ -59,16 +67,14 @@ echo "copying ontowiki where virtuoso expects it"
 mkdir $VIRTTMP
 mkdir $VIRTTMP/vad
 mkdir $VIRTTMP/vad/vsp
-mkdir $VIRTTMP/vad/vsp/tmp
-cp -r $BUILDPATH $VIRTTMP/vad/vsp/tmp
+cp -r $BUILDPATH $VIRTTMP/vad/vsp
 cp vad.ini $VIRTTMP
 cd $VIRTTMP
 
 #Error 42VAD: [Virtuoso Driver][Virtuoso Server]Inexistent file resource (./vad/vsp//tmp/ontowiki/favicon.png)
 
 
-echo "DB.DBA.VAD_PACK ('"$PWD/$STICKER"'  , ''  ,  '"$PWD"/"$RESULTFILE"'  );
-shutdown;  " > $ISQLFILE
+
 
 $VIRTUOSO_T
 cd $CURRENT

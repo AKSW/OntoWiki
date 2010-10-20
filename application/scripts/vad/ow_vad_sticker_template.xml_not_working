@@ -28,6 +28,21 @@
 
 <sql purpose="post-install"><![CDATA[
 
+DB.DBA.USER_CREATE (
+        'OntoWikiAdmin',
+        uuid (),
+        vector ('LOGIN_QUALIFIER', 'OntoWiki',
+                'SQL_ENABLE', 1,
+                'DAV_ENABLE', 0,
+                'FULL_NAME', 'OntoWiki Administrator')
+);
+
+grant SPARQL_SELECT to OntoWikiAdmin;
+grant SPARQL_UPDATE to OntoWikiAdmin;
+
+
+// copied out of conductor ui
+
 DB.DBA.VHOST_REMOVE (
 	 lhost=>'*ini*',
 	 vhost=>'*ini*',
@@ -41,7 +56,7 @@ DB.DBA.VHOST_DEFINE (
 	 ppath=>'/vad/vsp/ontowiki/',
 	 is_dav=>0,
 	 def_page=>'index.php',
-	 vsp_user=>'dba',
+	 vsp_user=>'OntoWikiAdmin',
 	 ses_vars=>0,
 	 opts=>vector ('browse_sheet', '', 'url_rewrite', 'http_rule_list_2'),
 	 is_default_host=>0
