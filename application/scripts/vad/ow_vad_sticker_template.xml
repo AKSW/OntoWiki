@@ -1,3 +1,30 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!DOCTYPE sticker SYSTEM "vad_sticker.dtd"[]>
+<sticker version="0.9.0" xml:lang="en-US">
+  <caption>
+    <name package="OntoWiki">
+      <prop name="Title" value="OntoWiki" />
+      <prop name="Developer" value="AKSW, Uni Leipzig" />
+      <prop name="Copyright" value="" />
+      <prop name="Download" value="http://ontowiki.net" />
+      <prop name="Download" value="http://code.google.com/p/ontowiki" />
+    </name>
+    <version package="0.9.0">
+      <prop name="Release Date" value="2009-07-24 13:59" />
+      <prop name="Build" value="Beta test" />
+    </version>
+  </caption>
+  <dependencies />
+  <procedures uninstallation="supported" />
+  <ddls>
+<sql purpose="pre-install"><![CDATA[
+
+  if (lt (sys_stat ('st_dbms_ver'), '05.11.3038')) {
+	result ('ERROR', 'The Onto Wiki package requires server version 05.11.3038 or greater');
+	signal ('FATAL', 'The Onto Wiki package requires server version 05.11.3038 or greater');
+   }
+
+]]></sql>
 
 <sql purpose="post-install"><![CDATA[
 
@@ -35,9 +62,6 @@ DB.DBA.VHOST_DEFINE (
 	 is_default_host=>0
 );
 
-
-    
-
 DB.DBA.URLREWRITE_CREATE_RULELIST ( 
 'http_rule_list_2', 1, 
   vector ('http_rule_4', 'http_rule_5'));
@@ -71,7 +95,9 @@ NULL,
 );
 
 
-
-
-
  ]]></sql>
+ <sql purpose="pre-uninstall" />
+<sql purpose="post-uninstall" />
+  </ddls>
+  <resources>
+
