@@ -46,18 +46,29 @@
         }
     </style>
     
-    <!-- jQuery Mobile -->
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.css" />
+    <!-- jquery -->
     <script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.js"></script>
-
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script> 
+    
+    <!-- jquery ui -->
+    <link rel="stylesheet" href="libraries/RDFauthor/libraries/jquery-ui.css" />
+    <script type="text/javascript" src="libraries/RDFauthor/libraries/jquery-ui.js"></script>
+    
+    
+    <!-- mobile version js -->
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/external.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/base.js"></script>
+    
+    <!-- rdf author -->
+    <script type="text/javascript" src="libraries/RDFauthor/src/rdfauthor.js"></script>
+    
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.css" />
+    <script src="http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.js"></script>
 
     <script type="text/javascript" src="extensions/modules/modellist/modellist.js"></script>
-    <script type="text/javascript" src="extensions/modules/navigation/navigation.js"></script>
-
-    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/base.js"></script>
+    <script type="text/javascript" src="extensions/modules/navigation/navigation.js"></script>    
 </head>
 <body>
     <!-- INDEX PAGE -->
@@ -130,7 +141,7 @@
             </div>
             
             <div data-role="fieldcontain" style="display:none;" id="menu-edit-btn">
-                <a href="#" data-role="button" data-theme="b" onclick="openRDFa()">Edit</a>
+                <a href="#" data-role="button" data-theme="b" onclick="openRDFa(); return false;">Edit</a>
             </div>
         </div>
     </div>
@@ -176,11 +187,11 @@
     
     <!-- RDFAUTHOR PAGE -->
     <div id="rdfa-list" data-role="page">
-        <div class="toolbar">
+        <div data-role="header">
             <!-- <a href="#" id="rdfa-back" class="back">Back</a> -->
             <h1>Properties</h1>
         </div>
-        <div id="rdfa-content">
+        <div data-role="content" id="rdfa-content">
             <!-- stuff here -->
         </div>
     </div>

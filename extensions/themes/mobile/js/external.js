@@ -1,8 +1,3 @@
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 // selected model uri
 var selected_model = '';
 
@@ -12,6 +7,7 @@ var selectedNavigationEntry = {};
 // TODO: add to PHP and remove here (or not?)
 var RDFAUTHOR_MOBILE = true;
 
+// redraw mobile views
 var redrawNavigation = function(){
     var nav = $("#nav");
     nav.page("destroy");
@@ -30,48 +26,7 @@ var redrawInstances = function(){
         page.page();
 }
 
-$(document).ready(function(){
-    // quickfix for rdfa
-    $.ui = true;
-    
-    // load rdfauthor
-    var rdf_script = document.createElement( 'script' );
-    rdf_script.type = 'text/javascript';
-    rdf_script.src = RDFAUTHOR_BASE+"src/rdfauthor.js";
-    $('body').append( rdf_script );
-    
-    // prepare nav page on show
-    $("#nav").bind("beforepageshow", function(){
-        redrawNavigation();
-    });
-    
-    // prepare instance list on show
-    $("#instance-list").bind("beforepageshow", function(){
-        redrawInstances();
-    });
-    
-    // prepare properties list on show
-    $("#properties-list").bind("beforepageshow", function(){
-        redrawProperties();
-    });
-    
-    // prepare search list on show
-    $("#searchres-list").bind("beforepageshow", function(){
-        var page = $("#searchres-list");
-        page.page("destroy");
-        page.page();
-    });
-    
-    // prepare page on navigation done
-    $(document).bind("navigation.done", function(){        
-        // redraw page
-        redrawNavigation();
-        
-        // remove loader
-        $.pageLoading(true);
-    });
-});
-
+// selects database
 function getBase(element){
     $.pageLoading();
     
@@ -106,6 +61,7 @@ function getBase(element){
     
 }
 
+// navigate
 function onNavigationEntryClick(entry){
     selectedNavigationEntry = {
         parent: $(entry).parents("li").attr('about'),
@@ -120,6 +76,7 @@ function onNavigationEntryClick(entry){
     }
 }
 
+// show instances
 function showInstances(){
     // show load progress
     $.pageLoading();
@@ -141,12 +98,14 @@ function showInstances(){
     })
 }
 
+// navigate deeper
 function navigateDeeper(){
     // show load progress
     $.pageLoading();
     navigationEvent('navigateDeeper', selectedNavigationEntry.parent);
 }
 
+// show properties
 function onInstanceClick(entry, animate){
     if( typeof(animate) == 'undefined' ) animate = true;
     
@@ -170,6 +129,7 @@ function onInstanceClick(entry, animate){
     })
 }
 
+// toggle menu links
 function toggleMenu(){
     if( $("#properties-list").hasClass("ui-page-active") == true ){
         $("#menu-edit-btn").show();
@@ -178,10 +138,12 @@ function toggleMenu(){
     }
 }
 
+// do login
 function doLogin(){
     $("#loginform").submit();
 }
 
+// search function
 function doSearch(){
     var req = $("#search").val();
     if(req.length < 3){
@@ -203,6 +165,7 @@ function doSearch(){
     });
 }
 
+// change instance page
 function pageList(entry, animate){
     $.pageLoading();
     
@@ -219,25 +182,26 @@ function pageList(entry, animate){
     })
 }
 
-/*****************************  TO REWRITE  *****************************************/
-
 function openRDFa(){
+    $.pageLoading();
+    
     var content = $("#properties-content");
     var subject = $("ul", content).attr("about");
    
     var ispred, predicate, object, stmt;
     $("li", content).each(function(index){
-        ispred = ( $(this).attr("class") === "sep" );
+        ispred = ( $(this).attr("data-role") === "list-divider" );
         if(ispred){
-            predicate = $(":first-child", this).attr("about");
+            predicate = $(this).attr("about");
             return;
         }
-        object = $(":first-child", this).attr("content");
+        object = $("a", this).attr("content");
         if( typeof object === "undefined" || object.length < 1){
-            object = {value: $(":first-child", this).text(), type: 'literal'};
+            object = {value: $("a", this).text(), type: 'literal'};
         }else{
             object = {value: "<"+object+">", type: 'uri'};
         }
+        
         stmt = new Statement({
             subject: "<"+subject+">",
             predicate: "<"+predicate+">",
@@ -245,7 +209,7 @@ function openRDFa(){
         },{graph:RDFAUTHOR_DEFAULT_GRAPH});
         RDFauthor.addStatement(stmt);
     });
-
+    
     var options = {
         title: $("#properties-title").text(),
         saveButtonTitle: 'Save',
@@ -255,10 +219,10 @@ function openRDFa(){
         autoParse: false,
         container: "#rdfa-content", 
         onCancel: function() {
-            $("#rdfa-back").click();
+            location.hash = "properties-list";
         }, 
         onSubmitSuccess: function() {
-            $("#rdfa-back").click();
+            location.hash = "properties-list";
         }
     };
     RDFauthor.setOptions(options);
@@ -268,8 +232,5 @@ function openRDFa(){
 
     RDFauthor.start();
 
-    $("#prop-menu").click();
-    jQT.goTo("#rdfa-list", "slide");
-
-    
+    location.hash = "#rdfa-list";
 }
