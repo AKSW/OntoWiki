@@ -12,11 +12,10 @@ $(document).ready(function () {
     
     $('#patternmanager_view_save_button').hide();
     $('#patternmanager_view_cancel_button').hide();
-    
     $('input').attr('readonly','true');
     $('select').attr('disabled','true');
-    $('div#patternmanager fieldset .icon.icon-add').hide();
-    $('div#patternmanager fieldset .icon.icon-delete').hide();
+    $('div#patternmanager fieldset table .icon.icon-add').hide();
+    $('div#patternmanager fieldset table .icon.icon-delete').hide();
     
     $('#patternmanager_view_edit_button').live('click', function (event) {
         $('#patternmanager_view_edit_button').hide();
@@ -25,8 +24,8 @@ $(document).ready(function () {
         $('#patternmanager_view_cancel_button').show();
         $('input').attr('readonly','');
         $('select').attr('disabled','');
-        $('div#patternmanager fieldset .icon.icon-add').show();
-        $('div#patternmanager fieldset .icon.icon-delete').show();
+        $('div#patternmanager fieldset table .icon.icon-add').show();
+        $('div#patternmanager fieldset table .icon.icon-delete').show();
         return false;
     });
     
@@ -133,7 +132,7 @@ function hidePMPattern(id) {
 function showPMPattern(id) {
     
     $('fieldset#subpattern-'+id).removeClass("subpattern-hidden");
-    
+
 }
 
 function addPMvar(p,unused,varname,vartype,vardesc) {

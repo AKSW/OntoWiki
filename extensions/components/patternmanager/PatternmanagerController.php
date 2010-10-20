@@ -212,7 +212,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 		        } else {
 		            $matches = array();
 		        }
-	
+
 		        foreach ($matches as $row) {
 					if ( !in_array($row['cp'],$patternUriArray) ) {
 		            	$patternUriArray[] = $row['cp'];
@@ -235,7 +235,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 		        	foreach ($primarySig as $id => $type) {
 		        		foreach ($pattern->getVariables() as $var) {
 		        			if ($var['type'] === $type ||
-		        			   ( sizeof($fallbackSig) > 0 && $var['type'] === $fallbackTable[$type] )
+		        			   ( sizeof($fallbackSig) > 0 && isset($fallbackTable[$type]) && $var['type'] === $fallbackTable[$type] )
 		        			) {
 		        				if ($var['type'] === $type) {
 		        					$pSig[$patternInput[$id]] = $type;
@@ -283,10 +283,10 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	                    }
 	                }
 	            }
-	
+	            
 	            $execLinks = array();
-	
-	            foreach ($binding as $i => $bind) {
+
+                foreach ($binding as $i => $bind) {
 	                $binding[$i] = array_merge($pattern->getVariables(),$bind);
 	                $url = new Ontowiki_Url(array('controller'=>'patternmanager', 'action' => 'exec'),array('pattern'));
 	                $preboundVariables = array();
@@ -305,7 +305,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            
 	            // redirect directly to execution view if only one single binding is available
 	            if (sizeof($binding) == 1) {
-	                $this->_redirect(current($execLinks));
+	                //$this->_redirect(current($execLinks));
 	            }
 	        }
         } else {
@@ -501,6 +501,8 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      * - none
      */
     public function browseAction() {
+        
+        $this->addModuleContext('main.window.instances');
 
         $store = $this->_owApp->erfurt->getStore();
         $graph = $store->getModel($this->_privateConfig->storeModel);

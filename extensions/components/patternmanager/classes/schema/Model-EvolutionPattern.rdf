@@ -79,7 +79,7 @@
   </owl:Class>
 
   <owl:Class rdf:about="UpdateQuery">
-    <rdfs:label rdf:datatype="&xsd;string">Update Query Delete</rdfs:label>
+    <rdfs:label rdf:datatype="&xsd;string">Update Query</rdfs:label>
   </owl:Class>
 
   <owl:Class rdf:about="UpdateQuery_Delete">
@@ -320,7 +320,7 @@
 
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/c24cbb8efe41638a80b2849520d78b5b">
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/0135012e318410d50c13d69843996a9e" />
-    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/09577cb3a4661782c5068ecdbf28a1a9" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/2928578fefc191ebea7371c8df69c947" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/178d5b644c5b646edd84a08b99bbc147" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/5c7ec2e85f8df04b9c27bba077a4334b" />
     <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/d0750b09a41d309948511f6a46fd356a" />
@@ -528,10 +528,6 @@
   <evopat:PatternVariable_GRAPH rdf:about="&evopat;PatternVariable/0843715ccefdf61356e03a2cd0bef25c"
     rdfs:comment=""
     rdfs:label="graphB" />
-
-  <evopat:PatternVariable_RESOURCE rdf:about="&evopat;PatternVariable/09577cb3a4661782c5068ecdbf28a1a9"
-    rdfs:comment=""
-    rdfs:label="objProp" />
 
   <evopat:PatternVariable_GRAPH rdf:about="&evopat;PatternVariable/0f263ef6045b4bfdc71d9af7b8e6f9b2"
     rdfs:comment="the graph to merge into"
