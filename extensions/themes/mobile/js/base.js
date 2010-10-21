@@ -35,9 +35,11 @@ $(document).ready(function(){
     
     // prepare rdfa list on show
     $("#rdfa-list").bind("beforepageshow", function(){
-        var page = $("#rdfa-list");
-        page.page("destroy");
-        page.page();
+        redrawRDFauthor();
+    });
+    
+    $(document).bind("RDFauthor.added", function(){
+        redrawRDFauthor();
     });
     
     // prepare page on navigation done

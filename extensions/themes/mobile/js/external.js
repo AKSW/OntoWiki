@@ -4,6 +4,9 @@ var selected_model = '';
 // selected navigation entry data
 var selectedNavigationEntry = {};
 
+// selected instance
+var selectedInstance = {};
+
 // TODO: add to PHP and remove here (or not?)
 var RDFAUTHOR_MOBILE = true;
 
@@ -24,6 +27,12 @@ var redrawInstances = function(){
     var page = $("#instance-list");
         page.page("destroy");
         page.page();
+}
+
+var redrawRDFauthor = function(){
+    var page = $("#rdfa-list");
+    page.page("destroy");
+    page.page();
 }
 
 // selects database
@@ -109,21 +118,35 @@ function navigateDeeper(){
 function onInstanceClick(entry, animate){
     if( typeof(animate) == 'undefined' ) animate = true;
     
+    // check for available instance
+    if( !(typeof entry != 'undefined' || (typeof selectedInstance != 'undefined' && selectedInstance.uri.length > 1) ) ) return;
+    
     // loading 
     $.pageLoading();
 
-    url = $(entry).attr('about');
-    title = $(entry).text();
+    // get data
+    var url, title;
+    if( typeof entry != 'undefined' ){
+        url = $(entry).attr('about');
+        title = $(entry).text();
+        
+        // set current instance
+        selectedInstance = {uri:url, title: title};
+    }else{
+        url = selectedInstance.uri;
+        title = selectedInstance.title;
+    }
+    // request instance properties
     $.get(url, function(data){
         $("#properties-title").text(title);
         $('#properties-content').html(data);
-        
-        // remove animation
-        $.pageLoading(true);
 
         if(animate){ 
             location.hash = "properties-list";
         }else{
+            // remove animation
+            $.pageLoading(true);
+            // refresh page
             redrawProperties();
         }
     })
@@ -211,6 +234,14 @@ function openRDFa(){
     });
     
     var options = {
+        onCancel: function() {
+            console.log('cancel');
+            //onInstanceClick();
+        }, 
+        onSubmitSuccess: function() {
+            console.log('ok');
+            onInstanceClick();
+        },
         title: $("#properties-title").text(),
         saveButtonTitle: 'Save',
         cancelButtonTitle: 'Cancel',
@@ -218,11 +249,8 @@ function openRDFa(){
         useAnimations: false,
         autoParse: false,
         container: "#rdfa-content", 
-        onCancel: function() {
-            location.hash = "properties-list";
-        }, 
-        onSubmitSuccess: function() {
-            location.hash = "properties-list";
+        viewOptions: {
+            type: 'mobile' /* inline or popover */
         }
     };
     RDFauthor.setOptions(options);
