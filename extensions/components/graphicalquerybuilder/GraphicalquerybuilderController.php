@@ -158,7 +158,7 @@ class GraphicalquerybuilderController extends OntoWiki_Controller_Component {
 			$this->view->headScript()->appendFile($include_base . 'resources/graphicalquerybuilder.js');
 		} else {
 			//no model selected error
-			$this->view->headScript()->appendScript('$(document).ready(function(){$("#gqbmain").html("no model selected - maybe your session timed out");});');
+			throw new OntoWiki_Exception("no model selected - maybe your session timed out");
 		}
 		$this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Graphical Query Builder'));
 	}

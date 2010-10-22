@@ -353,9 +353,9 @@ function loadRDFauthor(callback) {
 }
 
 function populateRDFauthor(data, protect, resource, graph) {
-    protect  = arguments.length == 2 ? protect : true;
-    resource = arguments.length == 3 ? resource : null;
-    graph    = arguments.length == 4 ? graph : null;
+    protect  = arguments.length >= 2 ? protect : true;
+    resource = arguments.length >= 3 ? resource : null;
+    graph    = arguments.length >= 4 ? graph : null;
     
     for (var currentSubject in data) {
         for (var currentProperty in data[currentSubject]) {
@@ -457,7 +457,7 @@ function editResourceFromURI(resource) {
             for (var subjectUri in data) {break;};
 
             // add statements to RDFauthor
-            populateRDFauthor(data, false);
+            populateRDFauthor(data, false, resource, selectedGraph.URI);
 
             RDFauthor.setOptions({
                 saveButtonTitle: 'Save Changes',
@@ -470,4 +470,60 @@ function editResourceFromURI(resource) {
             RDFauthor.start();
         })
     });
+}
+
+/*
+ * Edit a complete OW property view property section
+ */
+function editProperty(event) {
+    var element = $.event.fix(event).target;
+    loadRDFauthor(function () {
+        RDFauthor.setOptions({
+            onSubmitSuccess: function () {
+                $('.edit').each(function() {
+                    $(this).fadeOut(effectTime);
+                });
+                $('.edit-enable').removeClass('active');
+
+                // HACK: reload whole page after 1000 ms
+                window.setTimeout(function () {
+                    window.location.href = window.location.href;
+                }, 1000);
+            }, 
+            onCancel: function () {
+                $('.edit').each(function() {
+                    $(this).fadeOut(effectTime);
+                });
+                $('.edit-enable').removeClass('active');
+            }, 
+            saveButtonTitle: 'Save Changes', 
+            cancelButtonTitle: 'Cancel', 
+            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+            viewOptions: {
+                type: RDFAUTHOR_VIEW_MODE, 
+                container: function (statement) {
+                    var element = RDFauthor.elementForStatement(statement);
+                    var parent  = $(element).closest('div');
+
+                    if (!parent.hasClass('ontowiki-processed')) {
+                        parent.children().each(function () {
+                            $(this).hide();
+                        });
+                        parent.addClass('ontowiki-processed');
+                    }
+
+                    return parent.get(0);
+                }
+            }
+        });
+
+        RDFauthor.start($(element).parents('td'));
+
+        $('.edit').each(function() {
+            var button = this;
+            $(this).fadeIn(effectTime);
+        });
+    });
+
+    //return false;
 }

@@ -242,56 +242,10 @@ $(document).ready(function() {
         RDFauthor.cancel();
         // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
         // mainInnerContent.load(document.URL);
-        $('.edit-enable').click();
+        // $('.edit-enable').click();
     });
     
-    /*
-    $('.icon-edit').click(function() {
-        var element = this;
-        loadRDFauthor(function() {
-            RDFauthor.setOptions({
-                anchorElement: '.innercontent', 
-                onSubmitSuccess: function () {
-                    // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-                    // mainInnerContent.load(document.URL);
-
-                    // tell RDFauthor that page content has changed
-                    // RDFauthor.invalidatePage();
-
-                    $('.edit').each(function() {
-                        $(this).fadeOut(effectTime);
-                    });
-                    $('.edit-enable').removeClass('active');
-                    
-                    // HACK: reload whole page after 1000 ms
-                    window.setTimeout(function () {
-                        window.location.href = window.location.href;
-                    }, 1000);
-                }, 
-                onCancel: function () {
-                    $('.edit').each(function() {
-                        $(this).fadeOut(effectTime);
-                    });
-                    $('.edit-enable').removeClass('active');
-                }, 
-                saveButtonTitle: 'Save Changes', 
-                cancelButtonTitle: 'Cancel', 
-                title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
-                'defaultGraph': defaultGraph, 
-                'defaultResource': defaultResource
-            });
-            
-            RDFauthor.startInline($(element).closest('td'));
-            
-            // hide inine edit for whole page
-            $('.edit-enable').hide();
-            // show submit/cancel buttons
-            $('.edit').each(function() {
-                $(this).fadeIn(effectTime);
-            });
-        });
-    });
-    */
+//    $('.icon-edit').click(function() {return editProperty(this)});
     
     // edit mode
     $('.edit-enable').click(function() {
@@ -356,7 +310,7 @@ $(document).ready(function() {
                     $(this).fadeIn(effectTime, function() {
                         $(button).addClass('active');
                     });
-                })
+                });
             });
         }
     });

@@ -20,6 +20,17 @@ GQBView.prototype.initLayout = function() {
 	//$("#gqbsavedqueriestree").treeview();
 	//setup the tree of restrictions
 	$('#gqbClassPropertiesRestrictions').treeview();
+        window.onbeforeunload = function (evt) {
+          var message = 'Unsaved queries will be lost.';
+          if (typeof evt == 'undefined') {
+            evt = window.event;
+          }
+          if (evt) {
+            evt.returnValue = message;
+          }
+          return message;
+        }
+
 };
 
 GQBView.prototype.initControlLabels = function() {
@@ -129,7 +140,7 @@ GQBView.prototype.initMouseMoveAndDropHandlers = function() {
             revert: true,
             opacity: 0.7,
             scroll: false,
-            stack: {group:'#gqbcanvas',min: 50},
+            stack: '#gqbcanvas',
             helper: 'clone'
         });
     });

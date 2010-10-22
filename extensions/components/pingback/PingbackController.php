@@ -100,7 +100,7 @@ class PingbackController extends OntoWiki_Controller_Component
             'modeluri' => $this->_targetGraph,
             'resourceuri' => $sourceUri
         ));
-        
+   
 	    // 3. If still nothing was found, try to find a link in the html
 		if (count($foundPingbackTriples) === 0) {
 		    $client = Erfurt_App::getInstance()->getHttpClient($sourceUri, array(
@@ -157,7 +157,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	    // 6. Iterate through pingback triples candidates and add those, wo are not already registered.
 		$added = false;
 		foreach ($foundPingbackTriples as $triple) {
-		    if (!$this->_pingbackExists($triple['s'], $triple['p'], $triple['o'])) {
+		    if (!$this->_pingbackExists($triple['s'], $triple['p'], $triple['o'])) {    
 		        $this->_addPingback($triple['s'], $triple['p'], $triple['o']);
 		        $added = true;
 		    }
@@ -390,7 +390,7 @@ class PingbackController extends OntoWiki_Controller_Component
 	    
 	    $store = Erfurt_App::getInstance()->getStore();
 	    $sql = 'SELECT * FROM ow_pingback_pingbacks LIMIT 1';
-	    
+
 	    try {
 	        $result = $store->sqlQuery($sql);
 	    } catch (Exception $e) {
@@ -410,13 +410,15 @@ class PingbackController extends OntoWiki_Controller_Component
 	        target    VARCHAR(255) COLLATE ascii_bin NOT NULL,
 	        relation  VARCHAR(255) COLLATE ascii_bin NOT NULL
 	    );';
-	    
-	    return $this->_query($sql);
+
+	    return $this->_query($sql, false);
     }
     
-    protected function _query($sql)
+    protected function _query($sql, $withCheck = true)
     {
-        $this->_checkDb();
+        if ($withCheck) {
+            $this->_checkDb();
+        }
         
         $store = Erfurt_App::getInstance()->getStore();
         
