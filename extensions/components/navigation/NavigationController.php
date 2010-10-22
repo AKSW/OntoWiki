@@ -196,8 +196,10 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function _queryNavigationEntries($setup) {
-        $cache = $this->_owApp->erfurt->getCache(); // Object cache
-        $queryCache = $this->_owApp->erfurt->getQueryCache(); // query cache
+        if( isset($setup->config->cache) && $setup->config->cache == true){
+            $cache = $this->_owApp->erfurt->getCache(); // Object cache
+            $queryCache = $this->_owApp->erfurt->getQueryCache(); // query cache
+        }
         
         // set cache id
         $cid = 'nav_'.md5(serialize($setup).$this->model);
@@ -207,12 +209,15 @@ class NavigationController extends OntoWiki_Controller_Component
         );*/
 
         // try to load results from cache
-        if ( $entries_cached = $cache->load($cid) ) {
-            return $entries_cached;
+        if( isset($setup->config->cache) && $setup->config->cache == true){
+            if ( $entries_cached = $cache->load($cid) ) {
+                return $entries_cached;
+            }
+            
+            // start transaction
+            $queryCache->startTransaction($cid);
         }
         
-        // start transaction
-        $queryCache->startTransaction($cid);
 
         // if user searched for something
         if( $setup->state->lastEvent == "search" ){
@@ -424,11 +429,13 @@ class NavigationController extends OntoWiki_Controller_Component
 
         //$this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
 
-        // save results to cache
-        $cache->save($entries, $cid) ;
+        if( isset($setup->config->cache) && $setup->config->cache == true){
+            // save results to cache
+            $cache->save($entries, $cid) ;
 
-        // end cache transaction
-        $queryCache->endTransaction($cid);
+            // end cache transaction
+            $queryCache->endTransaction($cid);
+        }
 
         return $entries;
     }

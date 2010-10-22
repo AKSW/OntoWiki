@@ -6,20 +6,27 @@ default:
 	@echo "     'make zend' (download and install Zend under libraries)"
 
 pull:
-	hg --repository . pull
-	hg --repository libraries/Erfurt pull
+	@hg --repository . pull
+	@hg --repository libraries/Erfurt pull
+	@hg --repository libraries/RDFauthor pull
 
-update:
-	hg --repository . pull -u
-	hg --repository libraries/Erfurt pull -u
+update: pull
+	@echo "\nOntoWiki"
+	hg --repository . update
+	@echo "\nErfurt"
+	hg --repository libraries/Erfurt update
+	@echo "\nRDFauthor"
+	hg --repository libraries/RDFauthor update
 
 status:
 	hg --repository . status
 	hg --repository libraries/Erfurt status
+	hg --repository libraries/RDFauthor status
 
 branch-check:
 	hg --repository . branch
 	hg --repository libraries/Erfurt branch
+	hg --repository libraries/RDFauthor branch
 
 zend:
 	rm -rf libraries/Zend

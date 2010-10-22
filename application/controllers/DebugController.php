@@ -57,9 +57,12 @@ class DebugController extends OntoWiki_Controller_Base
      */
     public function clearquerycacheAction()
     {
-        $cache = $this->_erfurt->getQueryCache();
-        $ret = $cache->cleanUpCache( array('mode' => 'uninstall') );
+        $queryCache = $this->_erfurt->getQueryCache();
+        $queryCacheReturnValue = $queryCache->cleanUpCache( array('mode' => 'uninstall') );
 
+        $objectCache = $this->_erfurt->getCache();
+        $objectCacheReturnValue = $objectCache->clean();
+        
         $this->_redirect($this->_config->urlBase);
         
     }

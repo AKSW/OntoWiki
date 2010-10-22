@@ -15,10 +15,11 @@ $descriptionHelper = $resource->getDescriptionHelper();
 
 // this is the standard template data
 $templateData = array(
-        'title' => $descriptionHelper->getTitle($this->resourceUri),
-        'resourceUri' => $this->resourceUri,
-        'description' => $description,
-        'descriptionHelper' => $descriptionHelper
+    'title'             => $descriptionHelper->getTitle($this->resourceUri),
+    'resourceUri'       => $this->resourceUri,
+    'description'       => $description,
+    'descriptionHelper' => $descriptionHelper, 
+    'options'           => isset($this->options) ? $this->options : array()
 );
 
 if (isset($description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {
@@ -29,7 +30,10 @@ if (isset($description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {
         }
     }
 
-    switch ($types) {
+    switch (true) {
+        case (isset($types['http://lod2.eu/schema/Testimonial'])):
+            echo $this->partial('lod2/items/testimonial.phtml', $templateData);
+            break;
         case (isset($types['http://rdfs.org/sioc/types#WikiArticle'])):
         case (isset($types['http://rdfs.org/sioc/ns#Post'])):
         case (isset($types['http://usefulinc.com/ns/doap#Project'])):
@@ -38,7 +42,7 @@ if (isset($description['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'])) {
         case (isset($types['http://xmlns.com/foaf/0.1/Person'])):
         default:
             // no specific template found
-            echo $this->partial( 'lod2/items/abstract.phtml', $templateData);
+            echo str_replace(array('<h3>', '</h3>'), array('<h4>', '</h4>'), $this->partial( 'lod2/items/abstract.phtml', $templateData));
             break;
     }
 }

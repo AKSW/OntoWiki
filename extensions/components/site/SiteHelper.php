@@ -85,6 +85,20 @@ class SiteHelper extends OntoWiki_Component_Helper
                     );
             $router->addRoute('empty', $emptyRoute);
         }
+        
+        if ($controller === 'resource' && $action === 'properties') {
+            $resourceUrl = $this->_owApp->selectedResource;
+            
+            if (!empty($resourceUrl) && $resourceUrl != (string)$this->_owApp->selectedModel) {
+                $resourceUrl .= '.html';
+            }
+            
+            $toolbar = OntoWiki_Toolbar::getInstance();
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
+                    ->prependButton(OntoWiki_Toolbar::SUBMIT, array(
+                        'name' => 'Back to Site', 
+                        'url' => $resourceUrl));
+        }
     }
     
     // http://localhost/OntoWiki/SiteTest/
@@ -109,6 +123,66 @@ class SiteHelper extends OntoWiki_Component_Helper
         return false;
     }
     
+    public function onIsDispatchable($event)
+    {#return false; /* TODO: method is broken! "Fatal error: Call to undefined method Erfurt_Event::getValue() in /var/www/ontowiki/extensions/components/site/SiteHelper.php on line 128 " */
+        if (!$event->getValue()) {
+            // linked data plug-in returned false --> 404
+            
+            $config = $this->getSiteConfig();
+            if (isset($config['error'])) {
+                $errorResource = $config['error'];
+                
+                if (isset($config['model'])) {
+                    $siteGraph = $config['model'];
+                    
+                    $store = OntoWiki::getInstance()->erfurt->getStore();
+                    $siteModel = $store->getModel($siteGraph);
+                    
+                    $sparql = sprintf('ASK FROM <%s> WHERE {<%s> ?p ?o .}', $siteGraph, $errorResource);
+                    $query  = Erfurt_Sparql_SimpleQuery::initWithString($sparql);
+                    $result = $store->sparqlAsk($query);
+                    if (true === $result) {
+                        OntoWiki::getInstance()->selectedModel    = $siteModel;
+                        OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($errorResource, $siteModel);
+
+                        $request = $response = Zend_Controller_Front::getInstance()->getRequest();
+                        $request->setControllerName('site');
+                        $request->setActionName($this->_privateConfig->defaultSite);
+
+                        $response = Zend_Controller_Front::getInstance()->getResponse();
+                        $response->setRawHeader('HTTP/1.0 404 Not Found');
+
+                        return true;
+                    }
+                }
+                
+            }
+            
+            return false;
+            
+            /*
+             * TODO:
+             * if error is 404
+             * 1. set 404 header
+             * if error resource exists in site model
+             *   2. load site model
+             *   3. set error resource as current resource
+             *   4. render site as normal
+             * fi
+             * else
+             *   2. render default 404 template
+             */
+            
+            // $errorHandler = Zend_Controller_Front::getInstance()->getPlugin('Zend_Controller_Plugin_ErrorHandler');
+            // if ($errorHandler) {
+            //     $errorHandler->setErrorHandler(array(
+            //         'controller' => 'site', 
+            //         'action' => 'error'
+            //     ));
+            // }
+        }
+    }
+    
     public function onBuildUrl($event)
     {
         $site = $this->getSiteConfig();
@@ -116,14 +190,20 @@ class SiteHelper extends OntoWiki_Component_Helper
         $resource = isset($event->params['r']) ? OntoWiki_Utils::expandNamespace($event->params['r']) : null;
         
         // URL for this site?
-        if (($graph === (string)OntoWiki::getInstance()->selectedModel) && !empty($this->_site)) {            
+        if (($graph === (string)OntoWiki::getInstance()->selectedModel) && !empty($this->_site)) {
             if (false !== strpos($resource, $graph)) {
-                // LD-capable
-                $event->url = $resource 
+                // LD-capable            
+                if ((string) $resource[strlen($resource)-1] == '/') {
+                    // Slash should not get a suffix
+                    $event->url = (string) $resource;
+                    // URL created
+                    return true;
+                } else {
+                    $event->url = $resource 
                             . $this->getCurrentSuffix();
-                
-                // URL created
-                return true;
+                    // URL created
+                    return true;
+                }
             } else {
                 // classic
                 $event->route      = null;
@@ -164,36 +244,74 @@ class SiteHelper extends OntoWiki_Component_Helper
         $store = OntoWiki::getInstance()->erfurt->getStore();
         $model = OntoWiki::getInstance()->selectedModel;
 
-        $query = 'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-            SELECT ?topConcept
+        $query = '
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
+            SELECT ?topConcept ?altLabel
             FROM <' . (string)$model . '>
             WHERE {
                 ?cs a skos:ConceptScheme .
                 ?topConcept skos:topConceptOf ?cs
+                OPTIONAL {
+                    ?topConcept sysont:order ?order
+                }
+                OPTIONAL {
+                    ?topConcept skos:altLabel ?altLabel
+                }
             }
-            ORDER BY ';
+            ORDER BY ASC(?order)
+            ';
 
         if ($result = $store->sparqlQuery($query)) {
             $tree = array();
-            $topConcepts = array();
-            foreach($result as $row){
-                $topConcept = $row['topConcept'];
-                $titleHelper->addResource($topConcept);
-                $closure = $store->getTransitiveClosure(
-                    (string)$model,
-                    'http://www.w3.org/2004/02/skos/core#broader',
-                    $topConcept,
-                    true);
-                foreach($closure as $concept){
-                    $titleHelper->addResource($concept['node']);
+            foreach ($result as $row) {
+                $topConcept = new stdClass;
+                $topConcept->uri = $row['topConcept'];
+                
+                $titleHelper->addResource($topConcept->uri);
+
+                if ($row['altLabel'] != null) {
+                    $topConcept->altLabel = $row['altLabel'];
                 }
-                $conceptTree = array(array($topConcept=>array()));
-                $topConcepts[] = $topConcept;
-                self::_buildTree($conceptTree, $closure);
-                //echo "<pre>"; var_dump($conceptTree); echo "</pre>";
-                $tree[$topConcept] = $conceptTree[0][$topConcept];
+
+                $subQuery = '
+                    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+                    PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
+                    SELECT ?subConcept ?altLabel
+                    FROM <' . (string)$model . '>
+                    WHERE {
+                        ?subConcept skos:broader <' . $topConcept->uri . '>
+                        OPTIONAL {
+                            ?subConcept sysont:order ?order
+                        }
+                        OPTIONAL {
+                            ?subConcept skos:altLabel ?altLabel
+                        }
+                    }
+                    ORDER BY ASC(?order)
+                    ';
+                if ($subConceptsResult = $store->sparqlQuery($subQuery)) {
+                    $subconcepts = array();
+                    foreach ($subConceptsResult as $subConceptRow) {
+                        $subConcept = new stdClass;
+                        $subConcept->uri = $subConceptRow['subConcept'];
+                        $subConcept->subconcepts = array();
+
+                        if ($subConceptRow['altLabel'] != null) {
+                            $subConcept->altLabel = $subConceptRow['altLabel'];
+                        }
+                        
+                        $titleHelper->addResource($subConcept->uri);                        
+                        $subconcepts[$subConcept->uri] = $subConcept;
+                    }
+                    $topConcept->subconcepts = $subconcepts;
+                } else {
+                    $topConcept->subconcepts = array();
+                }
+                
+                $tree[$topConcept->uri] = $topConcept;
             }
-            //echo "<pre>"; var_dump($tree); echo "</pre>";
+            
             return $tree;
         }
 
@@ -203,19 +321,6 @@ class SiteHelper extends OntoWiki_Component_Helper
     public function setSite($site)
     {
         $this->_site = (string)$site;
-    }
-
-    protected static function _buildTree(&$tree, $closure)
-    {
-        foreach ($tree as $treeElement => &$childrenArr) {
-            foreach ($closure as $closureElement) {
-                if (isset($closureElement['parent']) && $closureElement['parent'] == $treeElement) {
-                    $childrenArr[$closureElement['node']] = array();
-                }
-            }
-
-             self::_buildTree($childrenArr, $closure);
-        }
     }
 
 }

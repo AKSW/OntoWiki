@@ -22,26 +22,37 @@
     var bmWidgetBase = '<?php echo $this->rdfAuthorBase ?>';
     var href = '\
         href="javascript:void((function() {\
-        widgetBase = \'' + bmWidgetBase + '\';\
-        if (!document.getElementById(\'RDFauthorScript\')) {\
-            var s = document.createElement(\'script\');\
-            s.type = \'text/javascript\';\
-            s.id = \'RDFauthorScript\';\
-            s.src = widgetBase + \'src/loader.js\';\
-            document.getElementsByTagName(\'head\')[0].appendChild(s);\
-        }\
-        rdfauthor_loaded_callback = function() {\
+        RDFAUTHOR_BASE = \'' + bmWidgetBase + '\';\
+        RDFAUTHOR_DEFAULT_GRAPH = \'<?php echo $this->defaultGraph ?>\';\
+        RDFAUTHOR_DEFAULT_UPDATE_ENDPOINT = \'<?php echo $this->defaultUpdateService ?>\';\
+        RDFAUTHOR_DEFAULT_QUERY_ENDPOINT = \'<?php echo $this->defaultQueryService ?>\';\
+        RDFAUTHOR_READY_CALLBACK = function() {\
             RDFauthor.setOptions({\
                 saveButtonTitle: saveTitle,\
                 cancelButtonTitle: \'Cancel\',\
                 title: windowTitle,\
-                showAddPropertyButton: false,\
-                defaultGraph: \'<?php echo $this->defaultGraph ?>\',\
-                defaultUpdateEndpoint: \'<?php echo $this->defaultUpdateService ?>\',\
-                defaultQueryEndpoint: \'<?php echo $this->defaultQueryService ?>\'\
+                showAddPropertyButton: false\
             });\
-            RDFauthor.startEditing();\
+            RDFauthor.start();\
         };\
+        load = function() {\
+            var s = document.createElement(\'script\');\
+            s.type = \'text/javascript\';\
+            s.id = \'rdfauthor-script\';\
+            s.src = RDFAUTHOR_BASE + \'src/rdfauthor.js\';\
+            document.getElementsByTagName(\'head\')[0].appendChild(s);\
+        };\
+        if (typeof jQuery == \'undefined\') {\
+            var j = document.createElement(\'script\');\
+            j.type = \'text/javascript\';\
+            j.src = RDFAUTHOR_BASE + \'libraries/jquery.js\';\
+            j.onload = load;\
+            document.getElementsByTagName(\'head\')[0].appendChild(j);\
+        } else {\
+            if (!document.getElementById(\'rdfauthor-script\')) {\
+                load();\
+            }\
+        }\
     })());"';
     
     // rebuild strings
@@ -49,6 +60,7 @@
         href.replace(/[\s]/g, '')
             .replace('saveTitle', '\'' + saveTitle + '\'')
             .replace('windowTitle', '\'' + windowTitle + '\'')
-            .replace('vars', 'var s') + 
+            .replace('varj', 'var j').replace('vars', 'var s').replace('vars', 'var s')
+            .replace('typeofjQuery', 'typeof jQuery') + 
         '>Save to OntoWiki with RDFauthor</a>');
 </script>

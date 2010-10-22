@@ -20,7 +20,7 @@
  */
 class Site_View_Helper_Querylist extends Zend_View_Helper_Abstract
 {
-    public function querylist($query, $template)
+    public function querylist($query, $template, $templateOptions = array())
     {
         $owapp = OntoWiki::getInstance();
         $store = $owapp->erfurt->getStore();
@@ -35,21 +35,23 @@ class Site_View_Helper_Querylist extends Zend_View_Helper_Abstract
             return $e->getMessage();
         }
 
-        foreach($result as $row){
-            foreach($row as $value){
-                if ( Erfurt_Uri::check($value) ) {
-                    $titleHelper->addResource( $value );
+        foreach ($result as $row) {
+            foreach ($row as $value) {
+                if (Erfurt_Uri::check($value)) {
+                    $titleHelper->addResource($value);
                 }
             }
         }
 
         $count = count($result);
-        foreach($result as $row){
+        foreach ($result as $row) {
             $row['querylist_rowcount'] = $count;
             $row['querylist_titleHelper'] = $titleHelper;
+            
+            $row     = array_merge($row, $templateOptions);
             $return .= $view->partial($template, $row);
         }
+        
         return $return;
     }
-
 }

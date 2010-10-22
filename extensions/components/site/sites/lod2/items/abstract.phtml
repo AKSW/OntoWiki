@@ -1,13 +1,31 @@
-<?php
-$url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-$url->setParam('r', $this->resourceUri, true);
-$abstract = '';
-if (isset($this->description['http://lod2.eu/schema/abstract'])) {
-    $abstract = '<p>'.$this->description['http://lod2.eu/schema/abstract'][0]['value'].'</p>';
+<?php 
+if (!defined('MAX_ABSTRACT_LENGTH')) {
+    define('MAX_ABSTRACT_LENGTH', 300);
 }
+
+$abstractContent = array();
+if (isset($this->description['http://lod2.eu/schema/abstract'][0]['value'])) {
+    $abstractContent[] = $this->description['http://lod2.eu/schema/abstract'][0]['value'];
+} else if (isset($this->description['http://lod2.eu/schema/content'][0]['value'])) {
+    $content = $this->description['http://lod2.eu/schema/content'][0]['value'];
+    if (strlen($content) > MAX_ABSTRACT_LENGTH) {
+        $content = substr($content, 0, MAX_ABSTRACT_LENGTH - 1)
+                 . '…';
+    }
+    $abstractContent[] = $content;
+}
+
+if (isset($this->options['show_link']) && $this->options['show_link']) {
+    $abstractContent[] = '<a href="' . $this->url($this->resourceUri) . '">read</a>';
+}
+
 ?>
 
-<div class="article">
-    <h3><a href="<?php echo $url ?>"><?php echo $this->title ?></a></h3>
-    <?php echo $abstract ?>
+<?php if ($this->title || $abstractContent): ?>
+<div class="section-content">
+    <h3><a href="<?php echo $this->url($this->resourceUri) ?>"><?php echo $this->title ?></a></h3>
+    <?php if (count($abstractContent)): ?>
+    <p><?php echo implode(PHP_EOL, $abstractContent); ?></p>
+    <?php endif; ?>
 </div>
+<?php endif; ?>

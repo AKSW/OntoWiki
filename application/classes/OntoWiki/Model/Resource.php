@@ -207,6 +207,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                         'curi'     => null
                     );
 
+                    
                     switch ($row['object']['type']) {
                         case 'uri':
                             // every URI objects is only used once for each statement
@@ -250,9 +251,19 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             break;
 
                         case 'typed-literal':
+                            $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
                             $value['datatype'] = OntoWiki_Utils::compactUri($row['object']['datatype']);
-                            /* fallthrough */
+                            $event->value    = $row['object']['value'];
+                            $event->datatype = $row['object']['datatype'];
+                            $event->property = $predicateUri;
+                            $value['object'] = $event->trigger();
 
+                            if (!$event->handled()) {
+                                // object (modified by plug-ins)
+                                $value['object'] = $row['object']['value'];
+                            }
+
+                            break;
                         case 'literal':
                             // original (unmodified) for RDFa
                             $value['content'] = $row['object']['value'];
@@ -266,6 +277,11 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             $event->value    = $row['object']['value'];
                             $event->property = $predicateUri;
 
+                            // set literal language
+                            if (isset($row['object']['xml:lang'])) {
+                                $value['lang'] = $row['object']['xml:lang'];
+                                $event->language = $row['object']['xml:lang'];
+                            }
                             // trigger
                             $value['object'] = $event->trigger();
 
@@ -273,12 +289,6 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             if (!$event->handled()) {
                                 $value['object'] = $row['object']['value'];
                             }
-
-                            // set literal language
-                            if (isset($row['object']['xml:lang'])) {
-                                $value['lang'] = $row['object']['xml:lang'];
-                            }
-
                             break;
                     }
                     

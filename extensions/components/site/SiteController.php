@@ -81,7 +81,7 @@ class SiteController extends OntoWiki_Controller_Component
         } else {
             // use action as site otherwise
             $this->_site  = $action;
-        }
+        }        
         
         $this->getComponentHelper()->setSite($this->_site);
         
@@ -94,6 +94,36 @@ class SiteController extends OntoWiki_Controller_Component
             
             $this->_loadModel();
             $this->_loadResource();
+
+            /* Here we start the object cache with id = requesturi + site*/
+            $requestParameters = $this->_request->getParams();
+            ksort($requestParameters);
+            $siteModuleObjectCacheIdSource = $this->_site . ':' . $this->_resourceUri . ':' . serialize($requestParameters);
+            $siteModuleObjectCacheId = 'site_' . md5($siteModuleObjectCacheIdSource);
+            // try to load the cached value
+            $erfurtObjectCache = OntoWiki::getInstance()->erfurt->getCache();
+            $erfurtQueryCache = OntoWiki::getInstance()->erfurt->getQueryCache();
+            $cachePageContent = $erfurtObjectCache->load($siteModuleObjectCacheId);
+            if ($cachePageContent != false) {
+                $this->_response->setBody($cachePageContent); // send cached body instead of generating a new one
+                return;
+            } else {
+                $erfurtQueryCache->startTransaction($siteModuleObjectCacheId);
+            }
+            
+            $moduleTemplatePath = $this->_componentRoot
+                                . 'sites'
+                                . DIRECTORY_SEPARATOR
+                                . $this->_privateConfig->defaultSite
+                                . DIRECTORY_SEPARATOR
+                                . 'modules';
+            
+            // add module template override path
+            if (is_readable($moduleTemplatePath)) {
+                $scriptPaths = $this->view->getScriptPaths();
+                array_push($scriptPaths, $moduleTemplatePath);
+                $this->view->setScriptPath($scriptPaths);
+            }
             
             $siteConfig = array(
                 'id'          => $this->_site,
@@ -108,12 +138,37 @@ class SiteController extends OntoWiki_Controller_Component
                 'description' => $this->_resource->getDescription(), 
                 'descriptionHelper' => $this->_resource->getDescriptionHelper(),
                 'store'       => OntoWiki::getInstance()->erfurt->getStore(),
-                'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper())
+                'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper()), 
+                'options'     => array(), 
+                'namespaces'  => array(
+                    'rdf'    => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 
+                    'rdfs'   => 'http://www.w3.org/2000/01/rdf-schema#', 
+                    'owl'    => 'http://www.w3.org/2002/07/owl#', 
+                    'dc'     => 'http://purl.org/dc/terms/', 
+                    'skos'   => 'http://www.w3.org/2004/02/skos/core#', 
+                    'sioc'   => 'http://rdfs.org/sioc/ns#', 
+                    'sioct'  => 'http://rdfs.org/sioc/types#', 
+                    'doap'   => 'http://usefulinc.com/ns/doap#', 
+                    'foaf'   => 'http://xmlns.com/foaf/0.1/', 
+                    'xsd'    => 'http://www.w3.org/2001/XMLSchema#', 
+                    'sysont' => 'http://ns.ontowiki.net/SysOnt/', 
+                    'lod2'   => 'http://lod2.eu/schema/'
+                )
             );
 
             // mit assign kann man im Template direkt zugreifen ($this->basePath).
             $this->view->assign($siteConfig);
-            $this->_response->setBody($this->view->render($mainTemplate));
+            // generate the page body
+            $bodyContent = $this->view->render($mainTemplate);
+            
+            // save the page body as an object value for the object cache
+            $erfurtObjectCache->save ($bodyContent, $siteModuleObjectCacheId) ;
+            // close the object cache transaction
+            $erfurtQueryCache->endTransaction($siteModuleObjectCacheId);
+            
+            // set the page content
+            $this->_response->setBody($bodyContent);
+            $this->_response->setHeader('Content-Type', 'text/html; encoding=utf-8');            
         } else {
             $this->_response->setRawHeader('HTTP/1.0 404 Not Found');
             $this->_response->setBody($this->view->render('404.phtml'));
