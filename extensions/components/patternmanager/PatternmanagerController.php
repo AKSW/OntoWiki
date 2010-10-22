@@ -272,16 +272,32 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            }
 	
 	            $binding = array();
-	
-	            foreach ($pattern->getVariables() as $var) {
-	                if (array_key_exists($var['type'],$types)) {
-	                    foreach ($types[$var['type']] as $i => $permutation) {
-	                        if (!empty($types[$var['type']][$i])) {
-	                            $binding[$i][$var['name']] = $var;
-	                            $binding[$i][$var['name']]['val'] = array_shift($types[$var['type']][$i]);
-	                        }
+	            
+	            
+	            // calculate bindings for single input
+	            if (sizeof($types) == 1) {
+	                $i = 0;
+	                foreach( $pattern->getVariables() as $var) {
+	                    $i++;
+	                    if (array_key_exists($var['type'],$types)) {
+	                         $binding[$i][$var['name']] = $var;
+	                         $binding[$i][$var['name']]['val'] = current(current(current($types)));
 	                    }
 	                }
+	                
+	            } else {
+	                // calculate bindings for more than one possible order of variables (permutations)
+    	            foreach ($pattern->getVariables() as $var) {
+    	                if (array_key_exists($var['type'],$types)) {
+    	                    foreach ($types[$var['type']] as $i => $permutation) {
+    	                        if (!empty($types[$var['type']][$i])) {
+    	                            $binding[$i][$var['name']] = $var;
+    	                            $binding[$i][$var['name']]['val'] = array_shift($types[$var['type']][$i]);
+    	                        }
+    	                    }
+    	                }
+    	            }
+    	            
 	            }
 	            
 	            $execLinks = array();
@@ -305,7 +321,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            
 	            // redirect directly to execution view if only one single binding is available
 	            if (sizeof($binding) == 1) {
-	                //$this->_redirect(current($execLinks));
+	                $this->_redirect(current($execLinks));
 	            }
 	        }
         } else {
@@ -415,7 +431,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        
 	        try {
 	            $preboundVariables = Zend_Json::decode(
-	                $this->getRequest()->getParam('preboundVariables','[]'),
+	                $this->getRequest()->getParam('prebound_variables','[]'),
 	                Zend_Json::TYPE_ARRAY
                 );
 	        } catch (Zend_Json_Exception $e) {
@@ -443,7 +459,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            $this->_engine->processPattern($complexPattern);
 	            
 	        }
-	        
+
 	        foreach ($unboundVariables as $i => $var) {
 	            if (array_key_exists($var['name'],$preboundVariables)) {
 	                $unboundVariables[$i]['prebound'] = $preboundVariables[$var['name']];
@@ -502,6 +518,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
      */
     public function browseAction() {
         
+        // for explore tags module
         $this->addModuleContext('main.window.instances');
 
         $store = $this->_owApp->erfurt->getStore();
@@ -937,6 +954,30 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 			        }
 			        break;
 	            case PatternVariable::R_CLASS:
+                    $sparqlQuery =  'SELECT DISTINCT ?entity FROM <' .  (string) $model . '> WHERE {
+			        	?entity ?p ?o .
+			        	?entity <' . EF_RDFS_LABEL . '> ?label .
+			        	?entity <' . EF_RDF_TYPE . '> ?type .
+			        	FILTER (
+			        		(
+			        			REGEX( ?label, "' . addcslashes($query,'"') . '","i") ||
+			        			REGEX( STR(?entity), "' . addcslashes($query,'"') . '","i")
+			        		) && (
+			        			SAMETERM(?type,  <' . EF_OWL_CLASS .  '>) ||
+			        			SAMETERM(?type,  <' . EF_RDFS_CLASS . '>)
+			        		)
+			        	)
+			    		} LIMIT ' . $limit;
+
+        	        try {
+			            $res = $this->_erfurt->getStore()->sparqlQuery($sparqlQuery);
+			        } catch (Exception $e) {
+			            $error = true;
+			            $res = array();
+			        }
+			        foreach ($res as $value) {
+			            $ret[] = $value['entity'];
+			        }
 	                break;
 	            case PatternVariable::R_PROPERTY:
                     $sparqlQuery =  'SELECT DISTINCT ?entity FROM <' .  (string) $model . '> WHERE {
