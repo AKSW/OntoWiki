@@ -1,0 +1,26 @@
+<?php
+# ?PublicationUri ?PublicationLabel ?LocationURI ?lat ?long
+?>
+<tr>
+    <td><a href="<?php echo $this->PublicationUri ?>"><?php echo $this->PublicationLabel ?></a></td>
+    <td><a href="<?php echo $this->LocationURI ?>"><?php echo $this->querylist_titleHelper->getTitle($this->LocationURI) ?></a></td>
+    <?php if (isset($this->SourceURI)) :?>
+    <td><a href="<?php echo $this->SourceURI ?>"><?php echo $this->SourceLabel ?></a></td>
+    <?php else: ?>
+    <td></td>
+    <?php endif; ?>
+    <?php if (isset($this->RecordLabel)) :?>
+    <td><a href="<?php echo $this->RecordURI ?>"><?php echo $this->RecordLabel ?></a></td>
+    <?php else: ?>
+    <td></td>
+    <?php endif; ?>
+    <td>
+        <?php if ($this->RecordType == 'http://purl.org/net/faunistics#OriginalRecord') :?>
+        Original
+        <?php elseif ($this->RecordType == 'http://purl.org/net/faunistics#CitedRecord') :?>
+        Cited
+        <?php else: ?>
+        Unknown
+        <?php endif; ?>
+    </td>
+</tr>
