@@ -2,15 +2,6 @@
  * On document ready, prepare needed stuff
  */
 $(document).ready(function(){
-    // quickfix for rdfa
-    //$.ui = true;
-    
-    // load rdfauthor
-    /*var rdf_script = document.createElement( 'script' );
-    rdf_script.type = 'text/javascript';
-    rdf_script.src = RDFAUTHOR_BASE+"src/rdfauthor.js";
-    $('body').append( rdf_script );*/
-    
     // prepare nav page on show
     $("#nav").bind("beforepageshow", function(){
         redrawNavigation();
