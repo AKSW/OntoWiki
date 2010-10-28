@@ -18,6 +18,15 @@ update: pull
 	@echo "\nRDFauthor"
 	hg --repository libraries/RDFauthor update
 
+force-update: pull
+	@echo "I force the update of the subrepos ..."
+	@echo "\nOntoWiki"
+	hg --repository . update
+	@echo "\nErfurt"
+	hg --repository libraries/Erfurt update -c
+	@echo "\nRDFauthor"
+	hg --repository libraries/RDFauthor update -c
+
 status:
 	hg --repository . status
 	hg --repository libraries/Erfurt status
