@@ -12,6 +12,9 @@
  *
  * this helper executes a SPARQL query, renders each row with a given template
  * and outputs the resulting string
+ * 
+ * $templateOptions['isResult'] = true
+ *      means, we do not have a query but a (already prepared) result
  *
  * @category OntoWiki
  * @package    OntoWiki_extensions_components_site
@@ -28,11 +31,15 @@ class Site_View_Helper_Querylist extends Zend_View_Helper_Abstract
         $titleHelper = new OntoWiki_Model_TitleHelper($owapp->selectedModel);
         $return = '';
 
-        try {
-            $result = $store->sparqlQuery($query);
-        } catch (Exception $e) {
-            // executions failed (return nothing)
-            return $e->getMessage();
+        if ( (isset($templateOptions['isResult'])) && ($templateOptions['isResult'] == true) ) {
+            $result = $query;
+        } else {
+            try {
+                $result = $store->sparqlQuery($query);
+            } catch (Exception $e) {
+                // executions failed (return nothing)
+                return $e->getMessage();
+            }
         }
 
         foreach ($result as $row) {
