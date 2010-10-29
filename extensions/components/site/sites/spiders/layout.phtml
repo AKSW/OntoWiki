@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+    xmlns:dc="http://purl.org/dc/terms/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/">
+<head>
+    <meta name="generator" content="<?php echo $this->generator ?>" />
+    <link rel="alternate" type="application/rdf+xml" href="<?php echo $this->resourceUri ?>.rdf" />
+    <link rel="pingback" href="<?php echo $this->pingbackUri ?>" />
+
+    <link
+        rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/primaryTopic') ?>"
+        href="<?php echo $this->resourceUri?>" />
+
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/main.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/reset.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/text.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/grid.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/layout.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/nav.css" media="screen" />
+    <!--[if IE 6]><link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/ie6.css" media="screen" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $this->baseUri ?>/css/ie.css" media="screen" /><![endif]-->
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
+    <script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery.dataTables.min.js"></script>
+    <!--script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery-fluid16.js"></script-->
+    <script type="text/javascript" src="<?php echo $this->baseUri ?>/js/spiders.js"></script>
+
+    <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> :: Caucasus Spiders</title>
+</head>
+<body about="<?php echo $this->resourceUri?>">
+<?php
+    // this is the standard template data
+    $templateData = array(
+                    'title' => $this->descriptionHelper->getTitle($this->resourceUri),
+                    'resourceUri' => $this->resourceUri,
+                    'description' => $this->description[$this->resourceUri],
+                    'descriptionHelper' => $this->descriptionHelper
+            );
+    function printNavi($navi, $titleHelper, $depth){
+        if(is_array($navi) && count($navi)>0):?>
+                    <?php foreach ($navi as $navurl => $subnavi) : ?>
+                    <li>
+                        <a href="<?php echo $navurl ?>"><?php for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";} echo $titleHelper->getTitle($navurl) ?></a>
+                        <?php printNavi($subnavi, $titleHelper, $depth+1); ?>
+                    </li>
+                    <?php endforeach; ?>
+       <?php endif; 
+   }
+
+?>
+<div class="container_16">
+    <div class="grid_16">
+        <h1 id="branding">
+            <a href="<?php echo $this->site['index'] ?>"><?php echo $this->site['name'] ?></a>
+        </h1>
+    </div>
+    <div class="clear"></div>
+    <div class="grid_16">
+        <ul class="nav main">
+            <?php foreach ($this->navigation as $navurl => $subnavi) : ?>
+            <li>
+                <a href="<?php echo $navurl ?>"><?php echo $this->descriptionHelper->getTitle($navurl) ?></a>
+                <ul><?php printNavi($subnavi, $this->descriptionHelper, 0); ?> </ul>
+            </li>
+            <?php endforeach; ?>
+
+            <li class="secondary">
+                <a href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo $this->resourceUri ?>">OntoWiki</a>
+            </li>
+        </ul>
+
+    </div>
+    <div class="clear"></div>
+    <div class="grid_16">
+        <h2 id="page-heading"></h2>
+    </div>
+
+
+    <div class="grid_11">
+        <?php echo $this->partial('spiders/main.phtml', $templateData) ?>
+        <?php echo $this->partial('spiders/feed.phtml', $templateData) ?>
+        <div class="clear"></div>
+    </div>
+
+    <div class="grid_5">
+        <div class="box">
+            <h2>Linking Resources</h2>
+            <?php echo $this->module('linkinghere', array('noChrome' => true)); ?>
+        </div>
+        <div class="box">
+            <h2>Nearby</h2>
+            <?php echo $this->module('similarinstances', array('noChrome' => true)); ?>
+        </div>
+        <div class="box">
+            <h2>Last Changes</h2>
+            <?php echo $this->module('lastchanges', array('noChrome' => true)); ?>
+        </div>
+    </div>
+
+    <div class="grid_16" id="site_info">
+        <div class="box">
+            <p>This page is proudly powered by
+                <a href="http://ontowiki.net" title="OntoWiki is a Semantic Data Wiki enabling the collaborative creation and (linked data) publication of RDF knowledge bases."><?php echo $this->generator ?></a>,
+                <a href="http://www.designinfluences.com/fluid960gs/" title="The 960 Grid System is an effort to streamline web development workflow by providing commonly used dimensions, based on a width of 960 pixels.">Fluid 960 Grid System</a> and
+                <a href="jquery.com" title="jQuery is a fast and concise JavaScript Library that simplifies HTML document traversing, event handling, animating, and Ajax interactions for rapid web development.">jQuery</a>.
+
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+
+</body>
+</html>
