@@ -248,7 +248,7 @@ $(document).ready(function() {
 //    $('.icon-edit').click(function() {return editProperty(this)});
     
     // disable inline-editing for not readable models
-    if (!selectedGraph.editable) {
+    if (typeof selectedGraph !== 'undefined' && !selectedGraph.editable) {
         $('.icon-edit').closest('a').remove();
     }
     
