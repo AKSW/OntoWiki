@@ -20,46 +20,46 @@
  */
 class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
 {
-    /** 
-     * The component manager 
-     * @var OntoWiki_Component_Manager 
+    /**
+     * The component manager
+     * @var OntoWiki_Component_Manager
      */
-    protected $_componentManager = null;
-    
+    protected $_extensionManager = null;
+
     /**
      * Base for building URLs
      * @var string
      */
     protected $_urlBase = '';
-    
+
     public function __construct($params = array())
     {
         if (array_key_exists('url_base', $params)) {
             $urlBase = (string)$params['url_base'];
             unset($params['url_base']);
         }
-        
+
         parent::__construct($params);
-        
+
         $this->urlBase = $urlBase;
     }
-    
+
     /**
      * Sets the component manager
      */
-    public function setComponentManager(OntoWiki_Component_Manager $componentManager)
+    public function setExtensionManager(OntoWiki_Extension_Manager $componentManager)
     {
-        $this->_componentManager = $componentManager; 
+        $this->_extensionManager = $componentManager;
     }
 
     /**
      * Gets the component manager
      */
-    public function getComponentManager()
+    public function getExtensionManager()
     {
-        return $this->_componentManager;
+        return $this->_extensionManager;
     }
-    
+
     /**
      * Get controller class name
      *
@@ -80,7 +80,7 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
             $controllerName = $this->getDefaultControllerName();
             $request->setControllerName($controllerName);
         }
-        
+
         // Zend 1.10+ changes
         $className = $this->formatControllerName($controllerName);
 
@@ -100,14 +100,14 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
 
         // PATCH
         // if component manager has controller registered
-        // redirect to specific controller dir index        
-        if (null !== $this->_componentManager && $this->_componentManager->isComponentRegistered($controllerName)) {
-            $this->_curDirectory = $controllerDirs[$this->_componentManager->getComponentPrefix() . $controllerName];
+        // redirect to specific controller dir index
+        if (null !== $this->_extensionManager && $this->_extensionManager->isComponentRegistered($controllerName)) {
+            $this->_curDirectory = $controllerDirs[$this->_extensionManager->getComponentPrefix() . $controllerName];
         }
 
         return $className;
     }
-    
+
     /**
      * Returns TRUE if the Zend_Controller_Request_Abstract object can be
      * dispatched to a controller.
@@ -121,7 +121,7 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
      * @return boolean
      */
     public function isDispatchable(Zend_Controller_Request_Abstract $request)
-    {        
+    {
         // Zend 1.10+ changes
         $className = $this->getControllerClass($request);
 
@@ -132,31 +132,29 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         $fileSpec    = $this->classToFilename($className);
         $dispatchDir = $this->getDispatchDirectory();
         $test        = $dispatchDir . DIRECTORY_SEPARATOR . $fileSpec;
-        
+
         if (Zend_Loader::isReadable($test)) {
             return true;
         }
-        
+
         /**
-         * @trigger onIsDispatchable 
-         * Triggered if no suitable controller has been found. Plug-ins can 
-         * attach to this event in order to modify request URLs or provide 
+         * @trigger onIsDispatchable
+         * Triggered if no suitable controller has been found. Plug-ins can
+         * attach to this event in order to modify request URLs or provide
          * mechanisms that do not allow a controller/action mapping from URL
          * parts.
          */
         $event = new Erfurt_Event('onIsDispatchable');
         $event->uri     = $this->urlBase . ltrim($request->getPathInfo(), '/');
         $event->request = $request;
-        
+
         // We need to make sure that registered plugins return a boolean value!
         // Otherwise we return false.
         $eventResult = $event->trigger();
         if (is_bool($eventResult)) {
             return $eventResult;
         }
-        
+
         return false;
     }
 }
-
-

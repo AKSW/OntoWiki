@@ -16,7 +16,7 @@
 class ModellistModule extends OntoWiki_Module
 {
     public function init()
-    {
+    {   
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'modellist.js');
 
         $menuRegistry = OntoWiki_Menu_Registry::getInstance();
@@ -79,7 +79,7 @@ class ModellistModule extends OntoWiki_Module
      * Returns the content for the model list.
      */
     public function getContents()
-    {        
+    {
         $models = array();
         $selectedModel = $this->_owApp->selectedModel ? $this->_owApp->selectedModel->getModelIri() : null;
         

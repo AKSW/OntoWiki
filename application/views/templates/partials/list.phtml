@@ -109,8 +109,8 @@ if ($instances->hasData()) {
 $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));$url->setParam('init', true);
 ?>
 <div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
-<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $config->urlBase; ?>querybuilding/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
-<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $config->urlBase; ?>querybuilding/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
+<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
+<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
 
 <?php $odd = true;
     if ($instances->hasData()): ?>
