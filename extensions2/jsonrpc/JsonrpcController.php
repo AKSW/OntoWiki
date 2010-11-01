@@ -32,7 +32,7 @@ class JsonrpcController extends OntoWiki_Controller_Component
     public function __call($method, $args)
     {
         $classname = str_replace  ( 'Action', '', $method) . 'JsonrpcWrapper';
-        @include_once $classname.'.php';
+        @include_once __DIR__ . '/' . $classname . '.php';
         if (class_exists($classname)) {
             $this->server->setClass($classname);
 
@@ -61,7 +61,7 @@ class JsonrpcController extends OntoWiki_Controller_Component
             return;
         } else {
             $this->_response->setRawHeader('HTTP/1.0 404 Not Found');
-            echo '400 Not Found - The given JSONRPC Server has corresponding wrapper class.';
+            echo '400 Not Found - The given JSONRPC Server has no corresponding wrapper class.';
             exit;
         }
     }
