@@ -63,7 +63,7 @@ class PluginsController extends OntoWiki_Controller_Component
 	*/
 	public function pluglistAction()
 	{
-		$client = new Zend_Http_Client($this->_privateConfig->repository->r_url);
+		$client = Erfurt_App::getInstance()->getHttpClient($this->_privateConfig->repository->r_url);
 	
 		$u_query = 'PREFIX type: <'.$this->_privateConfig->p_type_base.'>
 					PREFIX plugin: <'.$this->_privateConfig->plugin_base.'>
@@ -177,11 +177,11 @@ class PluginsController extends OntoWiki_Controller_Component
         }
         
         
-        $client = new Zend_Http_Client($this->_privateConfig->repository->r_url);
+        $client = Erfurt_App::getInstance()->getHttpClient($this->_privateConfig->repository->r_url);
         
         
         
-        //$client = new Zend_Http_Client($this->_config->urlBase . 'sparql/');
+        //$client = Erfurt_App::getInstance()->getHttpClient($this->_config->urlBase . 'sparql/');
         //echo $this->_config->urlBase . 'sparql/';
         //$u_query = 'SELECT * WHERE {?s ?p ?o} limit 100';
         $wrong_response = false;
@@ -423,7 +423,7 @@ class PluginsController extends OntoWiki_Controller_Component
         //echo "<br/>$deadline<br/>";
         $this->view->deadline = $deadline;
 
-        $client = new Zend_Http_Client($this->_privateConfig->repository->r_url);
+        $client = Erfurt_App::getInstance()->getHttpClient($this->_privateConfig->repository->r_url);
 
         $u_query = 'PREFIX type: <'.$this->_privateConfig->p_type_base.'>
 					PREFIX plugin: <'.$this->_privateConfig->plugin_base.'>
@@ -1950,7 +1950,7 @@ class PluginsController extends OntoWiki_Controller_Component
 						WHERE {	node: modified: ?new_created.
 								node: release: ?p_release.
 								?p_release file_release: ?p_f_release.}';
-            $client = new Zend_Http_Client($this->_privateConfig->repository->r_url);
+            $client = Erfurt_App::getInstance()->getHttpClient($this->_privateConfig->repository->r_url);
 
             $client->setParameterPost('query', $query);
             $client->setHeaders('Accept', 'application/sparql-results+json');
@@ -2017,7 +2017,7 @@ class PluginsController extends OntoWiki_Controller_Component
     public function getTags($tag)
     {
         $num_tags = $this->_privateConfig->client->tags_num;
-        $tags_client = new Zend_Http_Client($this->_privateConfig->repository->tags_url);
+        $tags_client = Erfurt_App::getInstance()->getHttpClient($this->_privateConfig->repository->tags_url);
         $tags_client->setHeaders('Accept', 'application/json');
         $tags_client->setParameterPost('count', $num_tags);
         if ($tag!=null) {

@@ -534,7 +534,7 @@ WHERE { \n\
 		accepts: {"sparql-json" : "application/sparql-results+json"},
 		success: function (strResult) {
 			var jsonResult = eval("("+strResult+")");
-                        $.dump(jsonResult);
+                        //$.dump(jsonResult);
 			if (jsonResult.bindings.length > 0) {
 				var uri;
 				var label;

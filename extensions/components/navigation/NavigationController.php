@@ -169,8 +169,10 @@ class NavigationController extends OntoWiki_Controller_Component
      * Queries all navigation entries according to a given setup
      */
     protected function _queryNavigationEntries($setup) {
-        $cache = $this->_owApp->erfurt->getCache(); // Object cache
-        $queryCache = $this->_owApp->erfurt->getQueryCache(); // query cache
+        if( isset($setup->config->cache) && $setup->config->cache == true){
+            $cache = $this->_owApp->erfurt->getCache(); // Object cache
+            $queryCache = $this->_owApp->erfurt->getQueryCache(); // query cache
+        }
         
         // set cache id
         $cid = 'nav_'.md5(serialize($setup).$this->model);
@@ -180,12 +182,15 @@ class NavigationController extends OntoWiki_Controller_Component
         );*/
 
         // try to load results from cache
-        if ( $entries_cached = $cache->load($cid) ) {
-            return $entries_cached;
+        if( isset($setup->config->cache) && $setup->config->cache == true){
+            if ( $entries_cached = $cache->load($cid) ) {
+                return $entries_cached;
+            }
+            
+            // start transaction
+            $queryCache->startTransaction($cid);
         }
         
-        // start transaction
-        $queryCache->startTransaction($cid);
 
         // if user searched for something
         if( $setup->state->lastEvent == "search" ){
@@ -411,11 +416,13 @@ class NavigationController extends OntoWiki_Controller_Component
 
         //$this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
 
-        // save results to cache
-        $cache->save($entries, $cid) ;
+        if( isset($setup->config->cache) && $setup->config->cache == true){
+            // save results to cache
+            $cache->save($entries, $cid) ;
 
-        // end cache transaction
-        $queryCache->endTransaction($cid);
+            // end cache transaction
+            $queryCache->endTransaction($cid);
+        }
 
         return $entries;
     }
@@ -654,6 +661,7 @@ class NavigationController extends OntoWiki_Controller_Component
     protected function _buildSubCheckQuery($uri, $setup){
         $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        //$classVar = new Erfurt_Sparql_Query2_Var('classUri');
         $query = new Erfurt_Sparql_Query2();
         $query->addProjectionVar($subVar);
         $query->setDistinct();
@@ -723,12 +731,22 @@ class NavigationController extends OntoWiki_Controller_Component
                 $elements[] = $queryOptional;
             }
         }
+        /*$elements[] = new Erfurt_Sparql_Query2_Triple(
+            $searchVar,
+            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
+            $classVar
+        );*/
         // add filter
         $elements[] = new Erfurt_Sparql_Query2_Filter(
             new Erfurt_Sparql_Query2_sameTerm($searchVar, new Erfurt_Sparql_Query2_IriRef($uri))
         );
         $query->addElements($elements);
         $query->setLimit(1);
+
+        // log results
+        /*$this->_owApp->logger->info(
+            'NavigationController CHECK SUB: '  . PHP_EOL . $query->__toString()
+        );*/
 
         return $query;
     }

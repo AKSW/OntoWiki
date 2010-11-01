@@ -41,7 +41,7 @@ class RepositoryController extends OntoWiki_Controller_Component {
 	if ($this->_request->isPost()) {
 		$username = $this->_request->getPost('username');
 		$password = $this->_request->getPost('password');
-		$client = new Zend_Http_Client($this->_config->urlBase . 'sparql/');	
+		$client = Erfurt_App::getInstance()->getHttpClient($this->_config->urlBase . 'sparql/');	
 		$u_query = 'PREFIX type: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 					PREFIX value: <http://rdfs.org/sioc/ns#User>
 					PREFIX password: <http://ns.ontowiki.net/SysOnt/userPassword>
@@ -103,7 +103,7 @@ class RepositoryController extends OntoWiki_Controller_Component {
     	$username = $this->_request->getPost('username');
     	$password = $this->_request->getPost('password');
     	//echo $username."     ".$password;
-    	$client = new Zend_Http_Client($this->_config->urlBase . 'sparql/');
+    	$client = Erfurt_App::getInstance()->getHttpClient($this->_config->urlBase . 'sparql/');
 		$u_query = 'INSERT in graph <http://localhost/PluginRepository/>
 					{<http://ns.aksw.org/PluginRepository/account_3> 
 						<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  

@@ -23,3 +23,14 @@
 # maybe php_flag is not allowed in your environment,
 # but if you allow short open tags, xml templates will crash
 #php_flag short_open_tag 0
+
+
+### Additional Auth with external OntoWiki auth-script
+### (more infos at http://code.google.com/p/mod-auth-external/)
+#AuthType Basic
+#AuthName OntoWiki
+#AuthBasicProvider external
+#AuthExternal ontowiki
+#Require valid-user
+### NOTE: This is needed to be included in /etc/apache2/mods-enabled/authnz_external.load or .conf
+#DefineExternalAuth ontowiki pipe /path/to/ontowiki/application/scripts/mod-auth-external/ontowiki.php

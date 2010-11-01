@@ -3,7 +3,7 @@ require_once 'OntoWiki/Plugin.php';
 
 class PingbackPlugin extends OntoWiki_Plugin
 {
-    public function beforeLinkedDataRedirect($event)
+    public function onBeforeLinkedDataRedirect($event)
     {
         if ($event->response === null) {
             return;
@@ -27,7 +27,7 @@ class PingbackPlugin extends OntoWiki_Plugin
         $response->setHeader('X-Pingback', $url, true);
 	}
 	
-	public function onAddStatement()
+	public function onAddStatement($event)
 	{
         $this->_logInfo($event->statement);
 		
@@ -128,7 +128,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 		    $this->_logInfo('Object is not an URI.');	
 		    return;
 		} else {
-		    $targetUri = $object;
+		    $targetUri = $object['value'];
 		    $owApp = OntoWiki::getInstance();
 		    $owBase = $owApp->config->urlBase;
 		    
@@ -168,8 +168,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    
 	    // 2. Check for (X)HTML Link element, if target has content type text/html
 	    // TODO Fetch only the first X bytes...???
-        require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client($targetUri, array(
+        $client = Erfurt_App::getInstance()->getHttpClient($targetUri, array(
             'maxredirects'  => 0,
             'timeout'       => 3
         ));
@@ -190,7 +189,7 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    
 	    // 3. Check RDF/XML
 	    require_once 'Zend/Http/Client.php';
-        $client = new Zend_Http_Client($targetUri, array(
+        $client = Erfurt_App::getInstance()->getHttpClient($targetUri, array(
             'maxredirects'  => 10,
             'timeout'       => 3
         ));
@@ -267,7 +266,7 @@ class PingbackPlugin extends OntoWiki_Plugin
         curl_setopt($rq, CURLOPT_POST, 1);
         curl_setopt($rq, CURLOPT_POSTFIELDS, $xml);
 		curl_setopt($rq, CURLOPT_FOLLOWLOCATION, false); 
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($rq, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($rq);
         curl_close($rq);
 		$this->_logInfo('Pingback Result for ('.$pingbackServiceUrl.', ' . $xml . ') - ' . $res);

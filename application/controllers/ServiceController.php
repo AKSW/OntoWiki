@@ -572,6 +572,8 @@ class ServiceController extends Zend_Controller_Action
         $namedGraph  = $this->_request->getParam('named-graph-uri', null);
         $insertGraph = null;
         $deleteGraph = null;
+        $insertModel = null;
+        $deleteModel = null;
         
         if (isset($this->_request->query)) {
             // we have a query, enter SPARQL/Update mode
@@ -588,31 +590,56 @@ class ServiceController extends Zend_Controller_Action
             $deleteGraph   = isset($matches[2]) ? $matches[2] : null;
             $deleteTriples = isset($matches[3]) ? $matches[3] : '';
             
+            // TODO: normalize literals
+            
             $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('nt');
             $insert = $parser->parse($insertTriples, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
             $parser->reset();
-            $delete = $parser->parse($deleteTriples, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);            
+            $delete = $parser->parse($deleteTriples, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
+            
+            if (null !== $insertGraph) {
+                try {
+                    $insertModel = $insertGraph ? $store->getModel($insertGraph) : $store->getModel($namedGraph);       
+                } catch (Erfurt_Store_Exception $e) {
+                    // TODO: error
+                    if (defined('_OWDEBUG')) {
+                        OntoWiki::getInstance()->logger->info('Could not instantiate models.');
+                    }
+                    exit;
+                }
+            }
+            
+            if (null !== $deleteGraph) {
+                try {
+                    $deleteModel = $deleteGraph ? $store->getModel($deleteGraph) : $store->getModel($namedGraph);
+                } catch (Erfurt_Store_Exception $e) {
+                    // TODO: error
+                    if (defined('_OWDEBUG')) {
+                        OntoWiki::getInstance()->logger->info('Could not instantiate models.');
+                    }
+                    exit;
+                }
+            }
         } else {
             // no query, inserts and delete triples by JSON via param
             $insert = json_decode($this->_request->getParam('insert', '{}'), true);
             $delete = json_decode($this->_request->getParam('delete', '{}'), true);
+            
+            try {
+                $namedModel  = $store->getModel($namedGraph);
+                $insertModel = $namedModel;
+                $deleteModel = $namedModel;
+            } catch (Erfurt_Store_Exception $e) {
+                // TODO: error
+                if (defined('_OWDEBUG')) {
+                    OntoWiki::getInstance()->logger->info('Could not instantiate models.');
+                }
+                exit;
+            }
         }
         
         if (empty($insert) or empty($delete)) {
             // TODO: error
-        }
-        
-        // get update graphs
-        $insertModel = null;
-        $deleteModel = null;
-        try {
-            $insertModel = $insertGraph ? $store->getModel($insertGraph) : $store->getModel($namedGraph);
-            $deleteModel = $deleteGraph ? $store->getModel($deleteGraph) : $store->getModel($namedGraph);            
-        } catch (Erfurt_Store_Exception $e) {
-            // TODO: error
-            if (defined('_OWDEBUG')) {
-                OntoWiki::getInstance()->logger->info('Could not instantiate models.');
-            }
         }
         
         $flag = false;
@@ -985,10 +1012,13 @@ class ServiceController extends Zend_Controller_Action
                         $value->datatype = $property['value']['datatype'];
                     } else if (isset($property['value']['xml:lang'])) {
                         $value->lang = $property['value']['xml:lang'];
-                    } else {
+                    }
+                    /* not in RDFauthor 0.8
+                    else {
                         // plain literal --> rdfQuery needs extra quotes
                         $currentValue = '"' . $currentValue . '"';
                     }
+                    */
                 }
 
                 // return title from titleHelper

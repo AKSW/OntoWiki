@@ -38,6 +38,7 @@ class LastchangesModule extends OntoWiki_Module {
     }
 
     public function getContents() {
+        $url     = new OntoWiki_Url(array('route' => 'properties'), array('r'));
         $changes = array();
         if ($this->results) {
             foreach ($this->results as $change) {
@@ -51,9 +52,12 @@ class LastchangesModule extends OntoWiki_Module {
                 if ( Erfurt_Uri::check($change['resource']) ) {
                     $change['aresource'] = new OntoWiki_Resource((string) $change['useruri'], $this->systemModel);
                     $change['author'] = $change['aresource']->getTitle() ? $change['aresource']->getTitle() : OntoWiki_Utils::getUriLocalPart($change['aresource']);
+                    $url->setParam('r', (string) $change['aresource'], true);
+                    $change['ahref'] = (string) $url;
 
                     //$change['date'] = OntoWiki_Utils::dateDifference($change['tstamp'], null, 3);
-
+                    $url->setParam('r', (string) $change['resource'], true);
+                    $change['rhref'] = (string) $url;
                     $change['resource'] = new OntoWiki_Resource((string) $change['resource'], $this->model);
                     $change['rname'] = $change['resource']->getTitle() ? $change['resource']->getTitle() : OntoWiki_Utils::contractNamespace($change['resource']->getIri());
 

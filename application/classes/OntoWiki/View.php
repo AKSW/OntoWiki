@@ -153,11 +153,11 @@ class OntoWiki_View extends Zend_View
      * @param string $context The module context whose modules should be rendered
      * @return string
      */
-    public function modules($context)
+    public function modules($context, $renderOptions = array())
     {
         $modules = '';
-        foreach ($this->_moduleRegistry->getModulesForContext($context) as $module) {
-            $modules .= $this->module($module['name'], $module, $context);
+        foreach ($this->_moduleRegistry->getModulesForContext($context) as $moduleSpec) {
+            $modules .= $this->module($moduleSpec['name'], $renderOptions, $context);
         }
         
         return $modules;
@@ -184,19 +184,18 @@ class OntoWiki_View extends Zend_View
      *        id       – a css id for the module window
      * @return string
      */
-    public function module($moduleName, $moduleOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
+    public function module($moduleName, $renderOptions = array(), $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
     {
         $moduleRegistry = OntoWiki_Module_Registry::getInstance();
         
-        // no options provided, get them from registry
-        if (null === $moduleOptions) {
-            $moduleOptions = $moduleRegistry->getModuleConfig($moduleName);
-        }
+        // get default options from the registry
+        $defaultModuleOptions = $moduleRegistry->getModuleConfig($moduleName);
+        $moduleOptions = array_merge((array)$defaultModuleOptions, $renderOptions);
         
         $cssClasses  = isset($moduleOptions['classes']) ? $moduleOptions['classes'] : '';
         $cssId       = isset($moduleOptions['id']) ? $moduleOptions['id'] : '';
         
-        $module = $moduleRegistry->getModule($moduleName, $context);
+        $module = $moduleRegistry->getModule($moduleName, $context, $renderOptions);
         
         if ($module->shouldShow()) {
             // init module view
@@ -283,9 +282,14 @@ class OntoWiki_View extends Zend_View
             $this->_moduleView->cssClasses = $cssClasses;
             $this->_moduleView->cssId      = $cssId;
             
-            // render as window
-            $moduleWindow = $this->_moduleView->render('partials/window.phtml');
-
+            if (isset($moduleOptions['noChrome']) && (boolean)$moduleOptions['noChrome']) {
+                // render without window chrome
+                $moduleWindow = $this->_moduleView->render('partials/module.phtml');
+            } else {
+                // render with window chrome
+                $moduleWindow = $this->_moduleView->render('partials/window.phtml');
+            }
+            
             return $moduleWindow;
         }
     }

@@ -10,13 +10,6 @@
 <?php else: ?>
     <p class="messagebox warning"><?php echo $this->_('There are no comments, descriptions or notes on this knowledge base.') ?></p>
 <?php endif; ?>
-<h3>Actions</h3>
-<?php
-if($this->has('showFoafLink') && $this->showFoafLink){
-    ?><a href="<?php echo $this->foafLink; ?>">open FOAF viewer</a><br/><?php
-}
-?>
-<a href="<?php echo $this->resourcesUrl; ?>">view all resources</a>
 <!--h3><?php echo $this->_('Statistical Outline') ?></h3>
 <table class="separated-vertical">
     <tr class="odd">
@@ -106,3 +99,24 @@ if($this->has('showFoafLink') && $this->showFoafLink){
 <?php else: ?>
     <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
 <?php endif; ?>
+
+
+<div class="messagebox">
+<h4><?php echo $this->_('Actions') ?></h4>
+<?php
+if($this->has('showFoafLink') && $this->showFoafLink){
+    ?><a href="<?php echo $this->foafLink; ?>">open FOAF viewer</a><br/><?php
+}
+?>
+<a href="<?php echo $this->resourcesUrl; ?>"> <?php echo $this->_('view all resources') ?></a>&nbsp;|&nbsp;
+
+<a onclick="$('#location_bar_container').toggle()" > <?php echo $this->_('Jump to resource') ?></a>
+
+<div id="location_bar_container" style="display: none; padding: 10px 0px 10px 20px; border-top: 1px dotted #ababab;">
+  <h5><?php echo $this->_('Jump to resource') ?></h5>
+  <input id="location_bar_input" class="text width75" type="text" value="" name="l" />
+  <a id="location_open" class="minibutton" style="float: none"> <?php echo $this->_('View Resource') ?> </a>
+</div>
+
+
+</div>

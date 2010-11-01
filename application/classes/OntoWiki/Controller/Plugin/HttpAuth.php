@@ -35,7 +35,6 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                     $logger = OntoWiki::getInstance()->logger;
                     // authenticate
                     $authResult = $erfurt->authenticate($credentials['username'], $credentials['password']);
-
                     if ($authResult->isValid()) {
                         $logger = OntoWiki::getInstance()->logger;
                         $logger->info("User '$credentials[username]' authenticated via HTTP.");
@@ -45,6 +44,7 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                         $response = $front->getResponse();
                         $response->setRawHeader('HTTP/1.1 401 Unauthorized');
                         $response->sendResponse();
+                        echo 'HTTP/1.1 401 Unauthorized';
                         exit;
                     }
                     break;
@@ -72,9 +72,7 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
     private function _getAuthHeaderCredentials(Zend_Controller_Request_Abstract $request)
     {
         $authHeader  = $request->getHeader('Authorization');
-        
 		if (is_string($authHeader) && strlen($authHeader) > 0) {
-		    
 		    if (strtolower(substr($authHeader, 0, 8)) === 'foaf+ssl') {
 		        $auth  = base64_decode(substr($authHeader, 9));
 		        $creds = explode('=', $auth);
@@ -93,8 +91,7 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
 		    } else if (strtolower(substr($authHeader, 0, 5)) === 'basic') {
 		        $auth  = base64_decode(substr($authHeader, 6));
         		$creds = array_filter(explode(':', $auth));
-        		
-        		if (count($creds) > 1) {
+        		if (count($creds) > 0) {
         		    return array(
         		        'type'     => 'basic',
             		    'username' => $creds[0], 

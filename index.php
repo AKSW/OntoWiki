@@ -56,10 +56,12 @@ date_default_timezone_set(@date_default_timezone_get());
 // determine wheter rewrite engine works
 // and redirect to a URL that doesn't need rewriting
 // TODO: check for AllowOverride All
-// Use of apache functions is not compatible with Virtuoso VAD
 $rewriteEngineOn = false;
 
-if (function_exists('apache_get_modules')) {
+// compatible with Virtuoso VAD
+if (function_exists('__virt_internal_dsn')) {
+    $rewriteEngineOn = true;
+}else if (function_exists('apache_get_modules')) {
     if (in_array('mod_rewrite', apache_get_modules())) {
         // get .htaccess contents
         $htaccess = @file_get_contents(ONTOWIKI_ROOT . '.htaccess');
@@ -92,8 +94,8 @@ require_once 'Zend/Application.php';
 
 // create application
 $application = new Zend_Application(
-                'default',
-                ONTOWIKI_ROOT . 'application/config/application.ini'
+    'default',
+    ONTOWIKI_ROOT . 'application/config/application.ini'
 );
 
 /** OntoWiki */
@@ -102,6 +104,11 @@ require_once 'OntoWiki.php';
 // define alias for backward compatiblity
 class_alias('OntoWiki', 'OntoWiki_Application');
 
-// bootstrap and run
-$application->bootstrap()
-        ->run();
+// bootstrap
+$application->bootstrap();
+
+$event = new Erfurt_Event('onPostBootstrap');
+$event->bootstrap = $application->getBootstrap();
+$event->trigger();
+
+$application->run();

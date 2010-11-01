@@ -1,4 +1,0 @@
-<sql purpose="post-uninstall" />
-  </ddls>
-  <resources>
-  

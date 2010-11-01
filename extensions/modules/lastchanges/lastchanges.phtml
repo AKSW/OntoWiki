@@ -24,10 +24,14 @@
     <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
             <a resource="<?php echo $change['resource'] ?>" class="Resource hasMenu"
                about="<?php echo $change['resource'] ?>"
-               href="<?php echo $this->urlBase ?>resource/properties/?r=<?php echo urlencode($change['resource']) ?>">
+               href="<?php echo $change['rhref'] ?>">
                 <?php echo $change['rname'] ?>
             </a> by
-            <?php echo $change['author'] ?>
+            <a class="Resource hasMenu"
+               about="<?php echo $change['aresource'] ?>"
+               href="<?php echo $change['ahref'] ?>">
+                <?php echo $change['author'] ?>
+            </a>
         </li>
 <?php endforeach; ?>
 </ol>
