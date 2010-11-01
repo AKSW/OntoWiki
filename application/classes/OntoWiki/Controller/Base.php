@@ -123,7 +123,8 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             $this->view->jsonVars .= '
             var selectedGraph = {
                 URI: "' . (string)$this->_owApp->selectedModel . '", 
-                title: "' . (string)$this->_owApp->selectedModel->getTitle() . '"
+                title: "' . (string)$this->_owApp->selectedModel->getTitle() . '", 
+                editable: ' . ($this->_owApp->selectedModel->isEditable() ? 'true' : 'false') . '
             };
             var RDFAUTHOR_DEFAULT_GRAPH = "' . (string)$this->_owApp->selectedModel . '";' . PHP_EOL;
         }
