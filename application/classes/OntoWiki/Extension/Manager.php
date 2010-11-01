@@ -290,7 +290,11 @@ class Ontowiki_Extension_Manager {
                   . $this->_extensionRegistry[$componentName]->templates;
 
             return $path;
-        } else echo "getComponentTemplatePath($componentName) no templates key";
+        }
+
+        return $this->_extensionPath
+                  . $componentName
+                  . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -410,6 +414,9 @@ class Ontowiki_Extension_Manager {
 
                     $this->_extensionRegistry[$extensionName] = $config;
                     OntoWiki::getInstance()->view->addScriptPath($currentExtensionPath);
+                    if(isset($config->templates)){
+                        OntoWiki::getInstance()->view->addScriptPath($config->templates);
+                    }
 
                     //check for component class
                     if(file_exists($currentExtensionPath.ucfirst($extensionName).self::COMPONENT_FILE_POSTFIX)){
