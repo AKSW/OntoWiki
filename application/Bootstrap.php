@@ -147,7 +147,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $port        = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80') 
                      ? (':' . $_SERVER['SERVER_PORT']) 
                      : '';
-        $urlBase     = sprintf('%s://%s%s%s', $protocol, isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', $port, $rewriteBase);
+        $serverName  = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost';
+        $urlBase     = sprintf('%s://%s%s%s', $protocol, $serverName, $port, $rewriteBase);
+        $urlBase     = rtrim($urlBase, '/') . '/';
         
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);

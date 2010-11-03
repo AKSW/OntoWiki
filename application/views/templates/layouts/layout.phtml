@@ -185,10 +185,9 @@
     <div class="section-sidewindows">
         <?php echo $this->placeholder('main.sidewindows') ?>
     </div><!-- .section-sidewindows -->
-    <?php 
+    <?php if (defined('REQUEST_START')) {
         $queryCount = OntoWiki::getInstance()->erfurt->getStore()->getQueryCount();
         $time       = (microtime(true) - REQUEST_START) * 1000;
-    ?>
-    <!-- <?php echo sprintf($this->_('Rendered in %1$d ms using %2$d SPARQL queries.'), $time, $queryCount) ?> -->
+    ?><!-- <?php echo sprintf($this->_('Rendered in %1$d ms using %2$d SPARQL queries.'), $time, $queryCount) ?> --><?php } ?>
 </body>
 </html>
