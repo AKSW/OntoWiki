@@ -269,7 +269,7 @@ GQBClass.prototype.deleteRestriction = function(restrictionObj,level1Idx){
  */
 GQBClass.prototype.recalculateNumInstances = function(){
 	// Build query but limit it to this class and to a max of 1000 instances:
-	var query = escape(GQB.model.findPatternOfClass(this).getQueryAsString(this)) + "\nLIMIT 1000";
+	var query = escape(GQB.model.findPatternOfClass(this).getQueryAsString(this)) + "\n LIMIT 1000";
 
 	// send the request to the "getquerysize" service
 	var url = urlBase+'graphicalquerybuilder/getquerysize/?default-graph-uri='+GQB.model.graphs[0]+'&query='+query;
@@ -410,25 +410,16 @@ GQBClass.prototype.getConformPropsAndNonConformLinksAndProps = function(){
 	//getPropertiesQuery += " ORDER BY ?order";
 
 	// build sparql query url:
-	var queryUrl = urlBase + "service/sparql?";
-	for (var i=0; i < GQB.model.graphs.length; i++) {
-		queryUrl += "default-graph-uri=" + GQB.model.graphs[i];
-		if (i+1 < GQB.model.graphs.length) {
-			query += "&";
-		}
-	}
-	queryUrl += "&query=" + escape(getPropertiesQuery);
+	var queryUrl = urlBase + "service/sparql";
 	var me = this;
 	var myType = this.type;
 	// send off query:
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: queryUrl,
-		data: {},
-		dataType: "sparql-json",
-		accepts: {"sparql-json" : "application/sparql-results+json"},
-		success: function (strResult) {
-			var jsonResult = eval("("+strResult+")");
+		data: {query: getPropertiesQuery, "default-graph-uri" : GQB.model.graphs[0]},
+		dataType: "json",
+		success: function (jsonResult) {
 			var modelconformPropsUris = new Array();
 			if (jsonResult.bindings.length > 0) { 
 				var uri;
@@ -466,17 +457,19 @@ GQBClass.prototype.getConformPropsAndNonConformLinksAndProps = function(){
 				//alert(GQB.translate("fatalErrorNoPropsFoundMsg", myType.getLabel()));
 			}
 			
-			myType.hasGottenProps = true;
 			me.getNonConformProps(modelconformPropsUris);
-
-			if (myType.hasGottenProps && myType.hasGottenLinks && myType.hasGottenNonModelConformPropsAndLinks) {
-				myType.sortAllPropArraysByOrder();
-				myType.ready = true;
-				myType.isGettingPropsOrLinks = false;
-				var gqbEvent = new GQBEvent("classReady", myType);
-				GQB.controller.notify(gqbEvent);
-			}
-		}
+		},
+                complete: function(){
+                    myType.hasGottenProps = true;
+			
+                    if (myType.hasGottenProps && myType.hasGottenLinks && myType.hasGottenNonModelConformPropsAndLinks) {
+                            myType.sortAllPropArraysByOrder();
+                            myType.ready = true;
+                            myType.isGettingPropsOrLinks = false;
+                            var gqbEvent = new GQBEvent("classReady", myType);
+                            GQB.controller.notify(gqbEvent);
+                    }
+                }
 	});
 };
 
@@ -515,25 +508,16 @@ WHERE { \n\
 	//getNonModelConformPropertiesQuery += " ORDER BY ?order";
 
 	// build sparql query url:
-	var queryUrl = urlBase + "service/sparql?";
-	for (var i=0; i < GQB.model.graphs.length; i++) {
-		queryUrl += "default-graph-uri=" + GQB.model.graphs[i];
-		if (i+1 < GQB.model.graphs.length) {
-			queryUrl += "&";
-		}
-	}
-	queryUrl += "&query=" + escape(getNonModelConformPropertiesQuery);
-
+	var queryUrl = urlBase + "service/sparql";
+	
 	var myType = this.type;
 	// send off query:
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: queryUrl,
-		data: {},
-		dataType: "sparql-json",
-		accepts: {"sparql-json" : "application/sparql-results+json"},
-		success: function (strResult) {
-			var jsonResult = eval("("+strResult+")");
+		data: {query: getNonModelConformPropertiesQuery, "default-graph-uri" : GQB.model.graphs[0]},
+		dataType: "json",
+		success: function (jsonResult) {
                         //$.dump(jsonResult);
 			if (jsonResult.bindings.length > 0) {
 				var uri;
@@ -575,15 +559,18 @@ WHERE { \n\
 				}
 
 			}
-			myType.hasGottenNonModelConformPropsAndLinks = true;
-			if (myType.hasGottenProps && myType.hasGottenLinks && myType.hasGottenNonModelConformPropsAndLinks) {
-				myType.sortAllPropArraysByOrder();
-				myType.ready = true;
-				myType.isGettingPropsOrLinks = false;
-				var gqbEvent = new GQBEvent("classReady", myType);
-				GQB.controller.notify(gqbEvent);
-			}
-		}
+			
+		},
+                complete: function(){
+                    myType.hasGottenNonModelConformPropsAndLinks = true;
+                    if (myType.hasGottenProps && myType.hasGottenLinks && myType.hasGottenNonModelConformPropsAndLinks) {
+                            myType.sortAllPropArraysByOrder();
+                            myType.ready = true;
+                            myType.isGettingPropsOrLinks = false;
+                            var gqbEvent = new GQBEvent("classReady", myType);
+                            GQB.controller.notify(gqbEvent);
+                    }
+                }
 	});
 };
 
@@ -618,24 +605,15 @@ GQBClass.prototype.getConformLinks = function(){
 	//getLinksQuery += " ORDER BY ?order";
 
 	// build sparql query url:
-	var queryUrl = urlBase + "service/sparql?";
-	for (var i=0; i < GQB.model.graphs.length; i++) {
-		queryUrl += "default-graph-uri=" + GQB.model.graphs[i];
-		if (i+1 < GQB.model.graphs.length) {
-			queryUrl += "&";
-		}
-	}
-	queryUrl += "&query=" + escape(getLinksQuery);
+	var queryUrl = urlBase + "service/sparql";
 
 	var myType = this.type;
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: queryUrl,
-		data: {},
-		dataType: "sparql-json",
-		accepts: {"sparql-json" : "application/sparql-results+json"},
-		success: function (strResult) {
-			var jsonResult = eval("("+strResult+")");
+		data: {query: getLinksQuery, "default-graph-uri" : GQB.model.graphs[0]},
+		dataType: "json",
+		success: function (jsonResult) {
 			if (jsonResult.bindings.length > 0) {
 				var rangeclass;
 				var uri;
@@ -666,15 +644,18 @@ GQBClass.prototype.getConformLinks = function(){
 				}
 			}
 
-			myType.hasGottenLinks = true;
-			if (myType.hasGottenProps && myType.hasGottenLinks && myType.hasGottenNonModelConformPropsAndLinks) {
-				myType.sortAllPropArraysByOrder();
-				myType.ready = true;
-				myType.isGettingPropsOrLinks = false;
-				var gqbEvent = new GQBEvent("classReady", myType);
-				GQB.controller.notify(gqbEvent);
-			}
-		}
+			
+		},
+                complete: function(){
+                    myType.hasGottenLinks = true;
+                    if (myType.hasGottenProps && myType.hasGottenLinks && myType.hasGottenNonModelConformPropsAndLinks) {
+                            myType.sortAllPropArraysByOrder();
+                            myType.ready = true;
+                            myType.isGettingPropsOrLinks = false;
+                            var gqbEvent = new GQBEvent("classReady", myType);
+                            GQB.controller.notify(gqbEvent);
+                    }
+                }
 	});
 };
 

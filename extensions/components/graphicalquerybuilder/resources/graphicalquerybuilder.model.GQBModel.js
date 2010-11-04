@@ -166,137 +166,152 @@ GQBModel.prototype.getClasses = function(){
     var endpoint = urlBase + "service/sparql";
     
     var me = this;
-    $.ajaxSetup({
-        'beforeSend': function(xhr){
-            xhr.setRequestHeader("Accept", "application/sparql-results+json")
-        }
-    });
-    jQuery.post(endpoint, {
-        "default-graph-uri": this.graphs[0],
-        query: getClassesQuery
-    }, function(result){
-        var jsonresult = eval(" ( " + result + " ) ");
-        for (var i = 0; i < jsonresult.bindings.length; i++) {
-            var resource = jsonresult.bindings[i].type ? jsonresult.bindings[i].type.value : "";
-            var label = jsonresult.bindings[i].label ? jsonresult.bindings[i].label.value : "";
-            var lang = " ";
-            for (var j = 0; j < GQB.supportedLangs.length; j++) {
-                if (jsonresult.bindings[i].label["xml:lang"] == GQB.supportedLangs[j]) {
-                    lang = GQB.supportedLangs[j];
-                    break;
-                }
-            }
-            
-            me.addClass(resource, label, lang);
-        }
-		
-        var getInheritanceQuery = "SELECT DISTINCT ?child ?parent \n \
-			WHERE { \n \
-			 ?child <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?parent . \n \
-			}";
-        
-        //set base url of SPARQL query service
-        var endpoint = urlBase + "service/sparql";
-        var inheritanceStructure = new Array();
-        $.ajaxSetup({
-            'beforeSend': function(xhr){
-                xhr.setRequestHeader("Accept", "application/sparql-results+json")
-            }
-        })
-        jQuery.post(endpoint, {
-            "default-graph-uri": me.graphs[0],
-            query: getInheritanceQuery
-        }, function(result){
-            var jsonresult = eval(" ( " + result + " ) ");
+    
+    $.ajax({
+        url: endpoint,
+        dataType: "json",
+        data: {
+            "default-graph-uri": this.graphs[0],
+            query: getClassesQuery
+        },
+        success: function(jsonresult){
             for (var i = 0; i < jsonresult.bindings.length; i++) {
-                var parent = jsonresult.bindings[i].parent ? jsonresult.bindings[i].parent.value : "";
-                var child = jsonresult.bindings[i].child ? jsonresult.bindings[i].child.value : "";
-                inheritanceStructure.push({
-                    "parent": parent,
-                    "child": child
-                });
+                var resource = jsonresult.bindings[i].type ? jsonresult.bindings[i].type.value : "";
+                var label = jsonresult.bindings[i].label ? jsonresult.bindings[i].label.value : "";
+                var lang = " ";
+                for (var j = 0; j < GQB.supportedLangs.length; j++) {
+                    if (jsonresult.bindings[i].label["xml:lang"] == GQB.supportedLangs[j]) {
+                        lang = GQB.supportedLangs[j];
+                        break;
+                    }
+                }
+
+                me.addClass(resource, label, lang);
             }
-            
-            // calculate transitive closure of the parent-child relation:
-            for (var i = 0; i < inheritanceStructure.length; i++) {
-                var parClass = GQB.model.findRDFClassByUri(inheritanceStructure[i].parent);
-				if(parClass == null) {continue;}
-                var childClass = GQB.model.findRDFClassByUri(inheritanceStructure[i].child);
-                if(childClass == null) {continue;}
-				
-                parClass.children.push(childClass);
-                
-                if(!childClass.directParent) childClass.directParent = parClass;
-                childClass.parents.push(parClass);
-                
-            }
-            var change = false;
-            do {
-                change = false;
-                for (var i = 0; i < GQB.model.classes.length; i++) {
-                    for (var j = 0; j < GQB.model.classes.length; j++) {
-                        if (i == j) 
+
+            var getInheritanceQuery = "SELECT DISTINCT ?child ?parent \n \
+                            WHERE { \n \
+                             ?child <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?parent . \n \
+                            }";
+
+            //set base url of SPARQL query service
+            var endpoint = urlBase + "service/sparql";
+            var inheritanceStructure = new Array();
+
+            $.ajax({
+                url: endpoint,
+                dataType: "json",
+                data: {
+                    "default-graph-uri": me.graphs[0],
+                    query: getInheritanceQuery
+                },
+                success: function(jsonresult){
+                    for (var i = 0; i < jsonresult.bindings.length; i++) {
+                        var parent = jsonresult.bindings[i].parent ? jsonresult.bindings[i].parent.value : "";
+                        var child = jsonresult.bindings[i].child ? jsonresult.bindings[i].child.value : "";
+                        inheritanceStructure.push({
+                            "parent": parent,
+                            "child": child
+                        });
+                    }
+
+                    // calculate transitive closure of the parent-child relation:
+                    for (var i = 0; i < inheritanceStructure.length; i++) {
+                        var parClass = GQB.model.findRDFClassByUri(inheritanceStructure[i].parent);
+                        if(parClass == null) {
                             continue;
-                        var parClass = GQB.model.classes[i];
-                        var childClass = GQB.model.classes[j];
-                        var parIsParOfChild = false;
-                        for (var c = 0; c < parClass.children.length; c++) {
-                            if (parClass.children[c].uri == childClass.uri) {
-                                parIsParOfChild = true;
-                                break;
-                            }
                         }
-                        for (var c = 0; c < childClass.parents.length && !parIsParOfChild; c++) {
-                            if (childClass.parents[c].uri == parClass.uri) {
-                                parIsParOfChild = true;
-                                break;
-                            }
-                        }
-                        if (!parIsParOfChild) 
+                        var childClass = GQB.model.findRDFClassByUri(inheritanceStructure[i].child);
+                        if(childClass == null) {
                             continue;
-                        for (var s = 0; s < parClass.parents.length; s++) {
-                            var foundInChild = false;
-                            for (var t = 0; t < childClass.parents.length; t++) {
-                                if (childClass.parents[t].uri == parClass.parents[s].uri) {
-                                    foundInChild = true;
-                                    break;
-                                }
-                            }
-                            if (!foundInChild) {
-                                childClass.parents.push(GQB.model.findRDFClassByUri(parClass.parents[s].uri));
-                                change = true;
-                            }
                         }
-                        for (var s = 0; s < childClass.children.length; s++) {
-                            var foundInPar = false;
-                            for (var t = 0; t < parClass.children.length; t++) {
-                                if (childClass.children[s].uri == parClass.children[t].uri) {
-                                    foundInPar = true;
-                                    break;
+
+                        parClass.children.push(childClass);
+
+                        if(!childClass.directParent) childClass.directParent = parClass;
+                        childClass.parents.push(parClass);
+
+                    }
+                    var change = false;
+                    do {
+                        change = false;
+                        for (var i = 0; i < GQB.model.classes.length; i++) {
+                            for (var j = 0; j < GQB.model.classes.length; j++) {
+                                if (i == j)
+                                    continue;
+                                var parClass = GQB.model.classes[i];
+                                var childClass = GQB.model.classes[j];
+                                var parIsParOfChild = false;
+                                for (var c = 0; c < parClass.children.length; c++) {
+                                    if (parClass.children[c].uri == childClass.uri) {
+                                        parIsParOfChild = true;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (!foundInPar) {
-                                parClass.children.push(GQB.model.findRDFClassByUri(childClass.children[s].uri));
-                                change = true;
+                                for (var c = 0; c < childClass.parents.length && !parIsParOfChild; c++) {
+                                    if (childClass.parents[c].uri == parClass.uri) {
+                                        parIsParOfChild = true;
+                                        break;
+                                    }
+                                }
+                                if (!parIsParOfChild)
+                                    continue;
+                                for (var s = 0; s < parClass.parents.length; s++) {
+                                    var foundInChild = false;
+                                    for (var t = 0; t < childClass.parents.length; t++) {
+                                        if (childClass.parents[t].uri == parClass.parents[s].uri) {
+                                            foundInChild = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!foundInChild) {
+                                        childClass.parents.push(GQB.model.findRDFClassByUri(parClass.parents[s].uri));
+                                        change = true;
+                                    }
+                                }
+                                for (var s = 0; s < childClass.children.length; s++) {
+                                    var foundInPar = false;
+                                    for (var t = 0; t < parClass.children.length; t++) {
+                                        if (childClass.children[s].uri == parClass.children[t].uri) {
+                                            foundInPar = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!foundInPar) {
+                                        parClass.children.push(GQB.model.findRDFClassByUri(childClass.children[s].uri));
+                                        change = true;
+                                    }
+                                }
                             }
                         }
                     }
+                    while (change);
+
+                },
+                complete: function(){
+                    //now load query (open link from listquery)
+                    if (GQB.toload)
+                        me.loadquery(GQB.toload);
+
+                    me.hasGottenClasses = true;
+                    var gqbEvent = new GQBEvent("gotClasses", me.classes);
+                    GQB.controller.notify(gqbEvent);
                 }
-            }
-            while (change);
-            
-            //now load query (open link from listquery)
-            if (GQB.toload) 
+            });
+        },
+        complete: function(){
+            //
+            if (GQB.toload)
                 me.loadquery(GQB.toload);
-            
+
             me.hasGottenClasses = true;
             var gqbEvent = new GQBEvent("gotClasses", me.classes);
             GQB.controller.notify(gqbEvent);
-        });
+        }
     });
 };
 
-/** 
+/**
  * Queries for a list of all saved queries
  * creates a "gotQueries" Event with results in a view action which display them
  */
@@ -331,42 +346,33 @@ GQBModel.prototype.getSavedQueries = function(){
     var endpoint = urlBase + "service/sparql";
     
     var me = this;
-    $.ajaxSetup({
-        'beforeSend': function(xhr){
-            xhr.setRequestHeader("Accept", "application/sparql-results+json")
+    
+    $.ajax({
+        url: endpoint,
+        data: {
+            "default-graph-uri": GQB.userDbUri,
+            query: getSavedQueriesQuery
+        },
+        dataType: "json",
+        success: function(jsonresult){
+            //delete previous list of queries
+            me.savedQueries.length = 0;
+            for (var i = 0; i < jsonresult.bindings.length; i++) {
+                var query = (jsonresult.bindings[i].query) ? jsonresult.bindings[i].query.value : " ";
+                var name = (jsonresult.bindings[i].name) ? jsonresult.bindings[i].name.value : "Query";
+                var desc = (jsonresult.bindings[i].desc) ? jsonresult.bindings[i].desc.value : " ";
+                var type = (jsonresult.bindings[i].type) ? jsonresult.bindings[i].type.value : undefined;
+                var typelabel = (jsonresult.bindings[i].typelabel) ? jsonresult.bindings[i].typelabel.value : " ";
+                var id = (jsonresult.bindings[i].saveId) ? jsonresult.bindings[i].saveId.value : undefined;
+                me.savedQueries.push(new GQBQueryPatternPre(name, desc, type, id));
+            }
+
+
+        },
+        complete: function(){
+            var gqbEvent = new GQBEvent("gotQueries", me.savedQueries);
+            GQB.controller.notify(gqbEvent);
         }
-    })
-    jQuery.post(endpoint, {
-        "default-graph-uri": GQB.userDbUri,
-        query: getSavedQueriesQuery
-    }, function(result){
-        if (result == "") {
-            //no db exist yet
-            return;
-        }
-        
-        try {
-            var jsonresult = eval(" ( " + result + " ) ");
-        } 
-        catch (e) {
-            alert(GQB.translate("errorParsingQueriesMsg"));
-            return;
-        }
-        
-        //delete previous list of queries
-        me.savedQueries.length = 0;
-        for (var i = 0; i < jsonresult.bindings.length; i++) {
-            var query = (jsonresult.bindings[i].query) ? jsonresult.bindings[i].query.value : " ";
-            var name = (jsonresult.bindings[i].name) ? jsonresult.bindings[i].name.value : "Query";
-            var desc = (jsonresult.bindings[i].desc) ? jsonresult.bindings[i].desc.value : " ";
-            var type = (jsonresult.bindings[i].type) ? jsonresult.bindings[i].type.value : undefined;
-            var typelabel = (jsonresult.bindings[i].typelabel) ? jsonresult.bindings[i].typelabel.value : " ";
-            var id = (jsonresult.bindings[i].saveId) ? jsonresult.bindings[i].saveId.value : undefined;
-            me.savedQueries.push(new GQBQueryPatternPre(name, desc, type, id));
-        }
-        
-        var gqbEvent = new GQBEvent("gotQueries", me.savedQueries);
-        GQB.controller.notify(gqbEvent);
     });
 };
 
@@ -404,50 +410,43 @@ FILTER(sameTerm(?uri, <" +
     var endpoint = urlBase + "service/sparql";
     
     var me = this;
-    $.ajaxSetup({
-        'beforeSend': function(xhr){
-            xhr.setRequestHeader("Accept", "application/sparql-results+json")
-        }
-    })
-    jQuery.post(endpoint, {
-        query: getSavedQueryQuery
-    }, function(result){
-        if (result == "") {
-            //no db exist yet
-            return;
-        }
-        
-        try {
-            var jsonresult = eval(" ( " + result + " ) ");
-        } 
-        catch (e) {
-            alert(GQB.translate("errorParsingQueriesMsg"));
-            return;
-        }
-        
-        //delete previous list of queries
-        me.savedQueries.length = 0;
-        for (var i = 0; i < jsonresult.bindings.length; i++) {
-            var json = (jsonresult.bindings[i].json) ? jsonresult.bindings[i].json.value : " ";
-            var name = (jsonresult.bindings[i].name) ? jsonresult.bindings[i].name.value : "Query";
-            var desc = (jsonresult.bindings[i].desc) ? jsonresult.bindings[i].desc.value : " ";
-            var type = (jsonresult.bindings[i].type) ? jsonresult.bindings[i].type.value : undefined;
-            var typelabel = (jsonresult.bindings[i].typelabel) ? jsonresult.bindings[i].typelabel.value : " ";
-            
-			var canPos = GQB.getPositionOfDOMObj("gqbcanvas");
-			GQB.view.dropCursorPosX = canPos.x+100;
-			GQB.view.dropCursorPosY = canPos.y+100;
-			
-            var savedpattern = eval(" ( " + json + " ) ");
-            var dummypattern = new GQBQueryPattern();
-            
-			
-			GQB.model.addPattern(dummypattern);
-			dummypattern.restore(savedpattern);
-			// as a graphical effect, show the newly restored pattern being expanded:
-            //GQB.view.findPatternById(dummypattern.id).toBlackBox(); // contract first
-            // comment out the following line if the restored pattern shouldn't automatically expand:
-            GQB.view.findPatternById(dummypattern.id).fromBlackBox();
+    
+    $.getJSON({
+        url: endpoint,
+        data: {
+            query: getSavedQueryQuery
+        },
+        dataType: "json",
+        success: function(jsonresult){
+            if (result == "") {
+                //no db exist yet
+                return;
+            }
+
+            //delete previous list of queries
+            me.savedQueries.length = 0;
+            for (var i = 0; i < jsonresult.bindings.length; i++) {
+                var json = (jsonresult.bindings[i].json) ? jsonresult.bindings[i].json.value : " ";
+                var name = (jsonresult.bindings[i].name) ? jsonresult.bindings[i].name.value : "Query";
+                var desc = (jsonresult.bindings[i].desc) ? jsonresult.bindings[i].desc.value : " ";
+                var type = (jsonresult.bindings[i].type) ? jsonresult.bindings[i].type.value : undefined;
+                var typelabel = (jsonresult.bindings[i].typelabel) ? jsonresult.bindings[i].typelabel.value : " ";
+
+                var canPos = GQB.getPositionOfDOMObj("gqbcanvas");
+                GQB.view.dropCursorPosX = canPos.x+100;
+                GQB.view.dropCursorPosY = canPos.y+100;
+
+                var savedpattern = eval(" ( " + json + " ) ");
+                var dummypattern = new GQBQueryPattern();
+
+
+                GQB.model.addPattern(dummypattern);
+                dummypattern.restore(savedpattern);
+                // as a graphical effect, show the newly restored pattern being expanded:
+                //GQB.view.findPatternById(dummypattern.id).toBlackBox(); // contract first
+                // comment out the following line if the restored pattern shouldn't automatically expand:
+                GQB.view.findPatternById(dummypattern.id).fromBlackBox();
+            }
         }
     });
 }
