@@ -164,34 +164,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->stateSession->setup = $setup;
         $this->stateSession->model = (string)$this->model;
     }
-
-    /*
-        foreach ($uris as $uri ) {
-                #takeTime("PointOfInterest ".$uri." received");
-                if (($pointOfInterest = $this->erfurt->objectCache->load( "poi_".(md5($uri)) ))) {
-                    $this->poiCollection[ $uri ] = $pointOfInterest;
-                } else {
-                    $this->erfurt->queryCache->startTransaction("poi_".(md5($uri)));
-
-                    $pointOfInterest = new Model_Resource_PointOfInterest( $uri ) ;
-                    $this->poiCollection[ $uri ] = $pointOfInterest;
-
-
-                    $this->erfurt->objectCache->save ($pointOfInterest, "poi_".(md5($uri))) ;
-                    $this->erfurt->queryCache->endTransaction("poi_".(md5($uri)));
-                }
-            }
-        }
-        return $this->poiCollection;
-     * $this->erfurt = Model_Backend_Erfurt::getInstance()->getStore()->getCache();
-     *
-     *
-     *
-     *
-     * $setup->state->lastEvent
-     *
-     */
-
+    
     /*
      * Queries all navigation entries according to a given setup
      */
@@ -412,6 +385,20 @@ class NavigationController extends OntoWiki_Controller_Component
             if( $filterEmpty ){
                 // generate query
                 $query = $this->_buildCountQuery($uri, $setup);
+                // get results
+                $results = $this->model->sparqlQuery($query);
+                // depending on result format set count
+                if( isset($results[0]['callret-0']) ){
+                    $count = $results[0]['callret-0'];
+                }else{
+                    $count = count($results);
+                }
+                // if count is 0 do not show entry
+                if($count == 0) $show = false;
+            }
+            if( isset($setup->config->checkUsage) && $setup->config->checkUsage == true ){
+                // gen query
+                $query = $this->_buildUsageQuery($uri, $setup);
                 // get results
                 $results = $this->model->sparqlQuery($query);
                 // depending on result format set count
@@ -651,6 +638,20 @@ class NavigationController extends OntoWiki_Controller_Component
         $query->setDistinct();
         $query->addElements(NavigationHelper::getInstancesTriples($uri, $setup));
         
+        return $query;
+    }
+
+    /*
+     * Builds usage query for given $uri
+     */
+    protected function _buildUsageQuery($uri, $setup){
+        $query = new Erfurt_Sparql_Query2();
+        $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
+        $query->setCountStar(true);
+        $query->setDistinct();
+
+        
+
         return $query;
     }
 
