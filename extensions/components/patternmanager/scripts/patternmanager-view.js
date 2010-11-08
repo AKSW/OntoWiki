@@ -16,8 +16,10 @@ $(document).ready(function () {
     $('#patternmanager select').attr('disabled','true');
     $('div#patternmanager fieldset table .icon.icon-add').hide();
     $('div#patternmanager fieldset table .icon.icon-delete').hide();
+    $('#buttonAddSubpattern').hide();
     
     $('#patternmanager_view_edit_button').live('click', function (event) {
+        $('#buttonAddSubpattern').show();
         $('#patternmanager_view_edit_button').hide();
         $('#patternmanager_view_exportJSON_button').hide();
         $('#patternmanager_view_save_button').show();
@@ -102,12 +104,9 @@ function addPMPattern(name, desc) {
     var name_suffix = '<a class="icon icon-delete" href="javascript:delPMPattern();" title="Delete this Subpattern"><span>Delete this Subpattern</span></a><a class="icon icon-copy PMcopyVar" title="Copy vars from this Subpattern"><span>Copy vars from this Subpattern</span></a>';
 
     $('#subpattern-' + count + ' input#patternlabel-').val(name);
-    if (name != null)
-    {
+    if (name != null) {
         $('#subpattern-' + count + ' legend').html(name_prefix+' Subpattern &quot;'+name+"&quot; "+name_suffix);
-    }
-    else
-    {
+    } else {
         $('#subpattern-' + count + ' legend').html(name_prefix+' New Subpattern '+name_suffix);
     }
     $('#subpattern-' + count + ' input#patterndesc-').val(desc);
@@ -130,6 +129,9 @@ function delPMPattern(id) {
 
 function hidePMPattern(id) {
     
+    $('fieldset#subpattern-' + id + ' a.icon-delete').show();
+    $('fieldset#subpattern-' + id + ' a.icon-delete').show();
+    
     $('fieldset#subpattern-'+id).addClass("subpattern-hidden");
     
 }
@@ -137,7 +139,12 @@ function hidePMPattern(id) {
 function showPMPattern(id) {
     
     $('fieldset#subpattern-'+id).removeClass("subpattern-hidden");
-
+ 
+    if ( $('#patternmanager_view_edit_button').is(':visible') ) {
+        $('fieldset#subpattern-' + id + ' a.icon-delete').addClass('hidden');
+        $('fieldset#subpattern-' + id + ' a.icon-copy').addClass('hidden');
+    }
+    
 }
 
 function addPMvar(p,unused,varname,vartype,vardesc) {

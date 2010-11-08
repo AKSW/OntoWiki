@@ -5,20 +5,22 @@
 <!DOCTYPE rdf:RDF [
   <!ENTITY dct "http://purl.org/dc/terms/">
   <!ENTITY evopat "http://ns.ontowiki.net/Evolution/">
-  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
   <!ENTITY owl "http://www.w3.org/2002/07/owl#">
   <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
   <!ENTITY skos "http://www.w3.org/2004/02/skos/core#">
+  <!ENTITY vs "http://www.w3.org/2003/06/sw-vocab-status/ns#">
   <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
 ]>
 
 <rdf:RDF xml:base="&evopat;"
   xmlns:dct="&dct;"
   xmlns:evopat="&evopat;"
-  xmlns:rdfs="&rdfs;"
   xmlns:owl="&owl;"
   xmlns:rdf="&rdf;"
+  xmlns:rdfs="&rdfs;"
   xmlns:skos="&skos;"
+  xmlns:vs="&vs;"
   xmlns:xsd="&xsd;">
 
 
@@ -55,6 +57,11 @@
     <rdfs:subClassOf rdf:resource="PatternVariable" />
   </owl:Class>
 
+  <owl:Class rdf:about="PatternVariable_PROPERTY">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Property</rdfs:label>
+    <rdfs:subClassOf rdf:resource="PatternVariable" />
+  </owl:Class>
+
   <owl:Class rdf:about="PatternVariable_RESOURCE">
     <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Resource</rdfs:label>
     <rdfs:subClassOf rdf:resource="PatternVariable" />
@@ -62,11 +69,6 @@
 
   <owl:Class rdf:about="PatternVariable_TEMP">
     <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Temp</rdfs:label>
-    <rdfs:subClassOf rdf:resource="PatternVariable" />
-  </owl:Class>
-  
-  <owl:Class rdf:about="PatternVariable_PROPERTY">
-    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Property</rdfs:label>
     <rdfs:subClassOf rdf:resource="PatternVariable" />
   </owl:Class>
 
@@ -320,8 +322,8 @@
 
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/c24cbb8efe41638a80b2849520d78b5b">
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/0135012e318410d50c13d69843996a9e" />
-    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/2928578fefc191ebea7371c8df69c947" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/178d5b644c5b646edd84a08b99bbc147" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/2928578fefc191ebea7371c8df69c947" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/5c7ec2e85f8df04b9c27bba077a4334b" />
     <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/d0750b09a41d309948511f6a46fd356a" />
     <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/161647a1024e9a4cb474b4c8aaf0024c" />
@@ -427,25 +429,29 @@
     <rdfs:label>Add subClassOf triple between two classes</rdfs:label>
   </evopat:BasicPattern>
 
-  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/2e8f9c5f28b1271b41e01c162de5245b">
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/2e8f9c5f28b1271b41e01c162de5245b"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/5c190c4abce656652bce5f87dcd9eb4a" />
     <rdfs:comment>Adds owl:equivalentProperty for two properties</rdfs:comment>
     <rdfs:label>Add property axiom owl:equivalentProperty for two properties</rdfs:label>
   </evopat:ComplexPattern>
 
-  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/3eca32151270662c4d97cd2a6db01c4c">
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/3eca32151270662c4d97cd2a6db01c4c"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/02df73e35ba1591778efc60d936ca82e" />
     <rdfs:comment>Removes owl:equivalentProperty for two properties</rdfs:comment>
     <rdfs:label>Delete property axiom owl:equivalentProperty for two properties</rdfs:label>
   </evopat:ComplexPattern>
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/479b25c696f7eea16341b41041e1dd10"
-    rdfs:comment="Adds owl:disjointWith for two classes">
+    rdfs:comment="Adds owl:disjointWith for two classes"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/0ba455b006ddb8621d646cf191d012a0" />
     <rdfs:label>Add class axiom owl:disjointWith for two classes</rdfs:label>
   </evopat:ComplexPattern>
 
-  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/4bd337ada2b8fc909ce8097e0ad68f34">
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/4bd337ada2b8fc909ce8097e0ad68f34"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/5fb2c2965a40c37e47f10d1c3de05fa2" />
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/814bf97ae4a5ed4e1df09206785c23e9" />
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/b10f1a9a9afa83641d2d1a77f925ba9a" />
@@ -455,67 +461,83 @@
   </evopat:ComplexPattern>
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/63a39951074b46463b26dd8d259963cd"
-    rdfs:comment="Adds owl:disjointWith for two classes">
+    rdfs:comment="Adds owl:disjointWith for two classes"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/68f53e647b5debfe9ddb7f1c96842b95" />
     <rdfs:label>Delete class axiom owl:disjointWith for two classes</rdfs:label>
   </evopat:ComplexPattern>
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/7833e61115d57ac17155aa7d2972cbad"
-    rdfs:label="Merge two Models into one - full">
+    evopat:level="Instance/Data"
+    rdfs:label="Merge two Models into one - full"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/0a9a76eff86b08317fc3f74316b6928c" />
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/628f83f53a610eee3c4de1c0a254534e" />
     <rdfs:comment>Merges two models fully into a new (merged) model</rdfs:comment>
   </evopat:ComplexPattern>
 
-  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/84c05c6e750d10f6da52a56c060b1f7e">
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/84c05c6e750d10f6da52a56c060b1f7e"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/5c190c4abce656652bce5f87dcd9eb4a" />
     <rdfs:comment>Adds owl:propertyDisjointWith for two properties</rdfs:comment>
     <rdfs:label>Add property axiom owl:propertyDisjointWith for two properties</rdfs:label>
   </evopat:ComplexPattern>
 
-  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/89239dda179c7e93415ea9ad6c1ea1f0">
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/89239dda179c7e93415ea9ad6c1ea1f0"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/4876f82bf35a61ef099d9c8d4aa6b54a" />
     <rdfs:comment>Adds owl:equivalentClass for two classes</rdfs:comment>
     <rdfs:label>Add class axiom owl:owl:equivalentClass for two classes</rdfs:label>
   </evopat:ComplexPattern>
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/90abfe706504e409544eb1ad878414f1"
-    rdfs:comment="Removes rdf:subClassOf for two classes">
+    rdfs:comment="Removes rdf:subClassOf for two classes"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/883daf8180e85733136ccd5beda97380" />
     <rdfs:label>Delete class axiom rdf:subClassOf for two classes</rdfs:label>
   </evopat:ComplexPattern>
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/95df82be50225d15cb975b5307eac142"
-    rdfs:comment="Adds rdf:subClassOf for two classes">
+    rdfs:comment="Adds rdf:subClassOf for two classes"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/55ad9eac88b8b01d741ebf88388c3f6b" />
     <rdfs:label>Add class axiom rdf:subClassOf for two classes</rdfs:label>
   </evopat:ComplexPattern>
 
-  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/b1d304abe75b3a4440d637a00ebcf1a6">
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/b1d304abe75b3a4440d637a00ebcf1a6"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/f76ce568bc1be3d3f660752ec7839ad2" />
     <rdfs:comment>Removes owl:equivalentClass for two classes</rdfs:comment>
     <rdfs:label>Delete class axiom owl:equivalentClass for two classes</rdfs:label>
   </evopat:ComplexPattern>
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/c3c3c7adf8a2ff6070e2766795b291cd"
-    rdfs:label="Move resource between two graphs">
+    evopat:level="Instance/Data"
+    rdfs:label="Move resource between two graphs"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/9b1602e0be701697f9a2d3c9b275497e" />
     <rdfs:comment>Moves resource from A to B with related values (means predicates and objects for fixed subject)</rdfs:comment>
   </evopat:ComplexPattern>
 
-  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/c7612195e3767d25ec621e6f1193c1f3">
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/c7612195e3767d25ec621e6f1193c1f3"
+    evopat:level="Ontology"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/3cbc9e50c58b44177c992bc889bbbeb7" />
     <rdfs:comment>Removes owl:propertyDisjointWith for two properties</rdfs:comment>
     <rdfs:label>Delete property axiom owl:propertyDisjointWith for two properties</rdfs:label>
   </evopat:ComplexPattern>
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/fbe0954b615880e8a4b8747084c29d04"
-    rdfs:comment="Adds rdfs:subPropertyOf for two classes">
+    evopat:level="Ontology"
+    rdfs:comment="Adds rdfs:subPropertyOf for two classes"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/070a0594c1615cd15ec170cba71f9385" />
     <rdfs:label>Add property axiom rdf:subPropertyOf for two properties</rdfs:label>
   </evopat:ComplexPattern>
 
-  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/ff8c15a3dfe1fa8e17fc6af395de9093">
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/ff8c15a3dfe1fa8e17fc6af395de9093"
+    evopat:level="Ontology"
+    vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/f33f5f01596bdfeb4521165841081052" />
     <rdfs:comment>Removes rdfs:subPropertyOf for two properties</rdfs:comment>
     <rdfs:label>Delete property axiom rdfs:subPropertyOf for two properties</rdfs:label>
