@@ -780,6 +780,11 @@
     rdfs:comment="temp subjects"
     rdfs:label="s" />
 
+  <rdf:Description rdf:about="PatternVariable_LANG"
+    rdfs:label="Pattern Variable Type Language">
+    <rdfs:subClassOf rdf:resource="PatternVariable" />
+  </rdf:Description>
+
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/106e6ec9d09acf4c12bc2a973ab310f3">
     <rdfs:label>WHERE { %s% %p% %o% . FILTER ( REGEX( STR( %s%), "^%oldPrefix%") ) }</rdfs:label>
   </evopat:SelectQuery>
