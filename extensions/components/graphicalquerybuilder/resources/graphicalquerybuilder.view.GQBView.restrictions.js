@@ -7,6 +7,7 @@ GQBView.prototype.initRestrictionTypeBox = function(){
 	var mo_id= parseInt($("#restrictionpropselector :selected").attr("modelId"));
 	var property = this.findModelObjectById(mo_id);
 	switch(property.range) {
+                case 'http://www.w3.org/2001/XMLSchema#string':
 		case "string":
 			$("#restrictiontypeselector").append("<option restrictionType=\"0\">"+GQB.translate("stringContainsMsg")+"</option>");
 			$("#restrictiontypeselector").append("<option restrictionType=\"1\">"+GQB.translate("stringEqualsMsg")+"</option>");
@@ -26,7 +27,7 @@ GQBView.prototype.initRestrictionTypeBox = function(){
 			$("#restrictiontypeselector").append("<option restrictionType=\"12\">"+GQB.translate("numBetweenMsg")+"</option>");
 			break;
 		default:
-			alert(GQB.translate("unsupportedRestMsg"));
+			alert(GQB.translate("unsupportedRestMsg") + "(type: "+property.range+")");
 			break;
 	 }
 	 $("#restrictiontypeselector").append("<option restrictionType=\"13\">"+GQB.translate("valueEmptyMsg")+"</option>");
