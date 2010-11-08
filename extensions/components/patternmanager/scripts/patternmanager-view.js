@@ -12,8 +12,8 @@ $(document).ready(function () {
     
     $('#patternmanager_view_save_button').hide();
     $('#patternmanager_view_cancel_button').hide();
-    $('input').attr('readonly','true');
-    $('select').attr('disabled','true');
+    $('#patternmanager input').attr('readonly','true');
+    $('#patternmanager select').attr('disabled','true');
     $('div#patternmanager fieldset table .icon.icon-add').hide();
     $('div#patternmanager fieldset table .icon.icon-delete').hide();
     
@@ -22,8 +22,8 @@ $(document).ready(function () {
         $('#patternmanager_view_exportJSON_button').hide();
         $('#patternmanager_view_save_button').show();
         $('#patternmanager_view_cancel_button').show();
-        $('input').attr('readonly','');
-        $('select').attr('disabled','');
+        $('#patternmanager input').attr('readonly','');
+        $('#patternmanager select').attr('disabled','');
         $('div#patternmanager fieldset table .icon.icon-add').show();
         $('div#patternmanager fieldset table .icon.icon-delete').show();
         return false;
@@ -33,6 +33,11 @@ $(document).ready(function () {
     $('#patternmanager_view_cancel_button').live('click', function (event) {
        location.reload();
        return false;
+    });
+    
+    // submit first parent form of save button
+    $('#patternmanager_view_save_button').live('click', function (event) {
+       $(event.target).parents('form:first').submit();
     });
     
     $('.PMcopyVar').live('click', function(event) {

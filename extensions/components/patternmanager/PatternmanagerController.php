@@ -564,6 +564,10 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         //$title = '<a>' . $this->_owApp->translate->_('Evolution Patternmanager') . '</a>' . ' &gt; '
         //       . '<a>' . $this->_owApp->translate->_('Browse') . '</a>';
 
+        // javascript functions
+        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/patternmanager-browse.js');
+        
+        $this->view->schema = array('level' => 'http://ns.ontowiki.net/Evolution/level');
         $this->view->placeholder('main.window.title')->set($title);
 
     }
@@ -630,8 +634,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 		        
 		        $this->view->formActionUrl = (string) $url;
 		        $this->view->formMethod    = 'post';
-	            //$this->view->formName      = 'instancelist';
-	            //$this->view->formName      = 'patternmanager-form';
+	            //$this->view->formName      = 'patternmanager_view_form';
 	            $this->view->formEncoding  = 'multipart/form-data';
             }
             
@@ -1045,7 +1048,7 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         
         if ($this->_engine->getAc()->isActionAllowed(PatternEngineAc::RIGHT_VIEW_STR)) {
 	
-	        $uri = $this->_request->getParam('uri','http:/null/uri');
+	        $uri = $this->_request->getParam('uri','http://null/uri');
 	
 	        $schema = array (
 		    	'PatternVariable'        => 'http://ns.ontowiki.net/Evolution/PatternVariable' ,
