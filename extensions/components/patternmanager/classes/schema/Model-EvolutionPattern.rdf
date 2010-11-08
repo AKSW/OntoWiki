@@ -172,6 +172,26 @@
     <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/a249d306d0c9b469c075c77e0ba35bfd" />
   </evopat:SubPattern>
 
+  <evopat:SubPattern rdf:about="&evopat;BasicPattern/0fd738837916b9577f108820e2e1f397"
+    evopat:sequenceId="0">
+    <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/4dff8cbeab78417702a20f095e074240" />
+  </evopat:SubPattern>
+
+  <evopat:BasicPattern rdf:about="&evopat;BasicPattern/1fcc39287d5728e7786cd0f6bcc01cd1">
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/330e4eb82a3745018687cb2f35e5751f" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/a7896e2fb25e37d0e0450538130359c8" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/ce0ebe5f8b1563f751f6da1f4b512861" />
+    <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/d497151a6a959184cc37fac038937d53" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/474f25e3eba4b9fcba0a34c060b328cd" />
+    <rdfs:comment>unspecified Basic Pattern 2010-11-08T10:31:02+0100</rdfs:comment>
+    <rdfs:label>Create new triple for foaf name from first- and surname</rdfs:label>
+  </evopat:BasicPattern>
+
+  <evopat:SubPattern rdf:about="&evopat;BasicPattern/2aa46cd0e7d6aac94a9d575fb49c6580"
+    evopat:sequenceId="0">
+    <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/1fcc39287d5728e7786cd0f6bcc01cd1" />
+  </evopat:SubPattern>
+
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/30664ff6cccba0061340dd8b026641bd">
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/9f86cbca6a07215b6ee481aa31c817aa" />
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/c53b010bd6b9d12166fb6771489da139" />
@@ -188,10 +208,33 @@
     <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/f532bf28c3f812e46ca96cb0db5f3ef3" />
   </evopat:SubPattern>
 
+  <evopat:BasicPattern rdf:about="&evopat;BasicPattern/3e9f570e309f1bd3a7a2ce211615082d">
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/29f095a33dac608cf48fc9daae6aacbb" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/6ab339148ae28f2c2d49ce233b7134f7" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/700edd747917089ba5e9e7f84f1f1440" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/a45af79f7bffe1cb22e6b1e887c8cc71" />
+    <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/d30916963ecf45772aa6d0757ed1e52f" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/9561360b485b209fb0f6629f9d97ec42" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/f206fdd98d163839b848e2fc71faf2ae" />
+    <rdfs:comment>unspecified Basic Pattern 2010-11-08T11:13:36+0100</rdfs:comment>
+    <rdfs:label>Reassign Instances to their respective subclasses</rdfs:label>
+  </evopat:BasicPattern>
+
   <evopat:SubPattern rdf:about="&evopat;BasicPattern/4876f82bf35a61ef099d9c8d4aa6b54a"
     evopat:sequenceId="0">
     <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/09f0eb54926bee1812479049033310d3" />
   </evopat:SubPattern>
+
+  <evopat:BasicPattern rdf:about="&evopat;BasicPattern/4dff8cbeab78417702a20f095e074240">
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/6ab339148ae28f2c2d49ce233b7134f7" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/700edd747917089ba5e9e7f84f1f1440" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/a45af79f7bffe1cb22e6b1e887c8cc71" />
+    <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/4bf4df90b5d59d600943bba82b6e2a84" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/9c583a03c04b5d64aa75086ae388e175" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/b7ac088c6b90fc483d691294a6e71a48" />
+    <rdfs:comment>unspecified Basic Pattern 2010-11-08T11:13:36+0100</rdfs:comment>
+    <rdfs:label>Create Subclass for distinct property values</rdfs:label>
+  </evopat:BasicPattern>
 
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/4e361bf9a8eb3542be0126e330cc8269">
     <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/4e2c814d6f24f1f843568ba09c973946" />
@@ -257,10 +300,27 @@
     <rdfs:label>Copy triples from Graph A to merged Graph</rdfs:label>
   </evopat:BasicPattern>
 
+  <evopat:SubPattern rdf:about="&evopat;BasicPattern/656b4b29a23decc91cbc370c9e0d30da"
+    evopat:sequenceId="1">
+    <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/3e9f570e309f1bd3a7a2ce211615082d" />
+  </evopat:SubPattern>
+
   <evopat:SubPattern rdf:about="&evopat;BasicPattern/68f53e647b5debfe9ddb7f1c96842b95"
     evopat:sequenceId="0">
     <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/c7e846c788a6193ac848215eea1af486" />
   </evopat:SubPattern>
+
+  <evopat:BasicPattern rdf:about="&evopat;BasicPattern/6b35e4136fb7aa6636ab2d0ca1a17a65"
+    rdfs:label="set language tags where no tags exist">
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/9a9a493e15c4764ccb9cb071f4547917" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/bb70f9c09bcb25076ff655991bd77d54" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/cb859ed418c00f9753ecbefb04a95802" />
+    <evopat:hasPatternVariable rdf:resource="&evopat;PatternVariable/fdf7d71c60685c49fa9f1d5c41c00f62" />
+    <evopat:hasSelectQuery rdf:resource="&evopat;SelectQuery/13ab8313ca9be1eab51fce97e598929e" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/d4821a767b0eaf4fbe68e13209f6b601" />
+    <evopat:hasUpdateQuery rdf:resource="&evopat;UpdateQuery_Insert/fe134d0b7893c12df2f54cb0a33fdd56" />
+    <rdfs:comment>unspecified Basic Pattern 2010-11-08T10:44:21+0100</rdfs:comment>
+  </evopat:BasicPattern>
 
   <evopat:BasicPattern rdf:about="&evopat;BasicPattern/7dbb6851b870edd660ff1a866ad9cbaf"
     rdfs:label="Delete property">
@@ -464,6 +524,11 @@
     <rdfs:label>Add subClassOf triple between two classes</rdfs:label>
   </evopat:BasicPattern>
 
+  <evopat:SubPattern rdf:about="&evopat;BasicPattern/fd9d9f53c4e826c664744b8df45130b2"
+    evopat:sequenceId="0">
+    <evopat:hasBasicPattern rdf:resource="&evopat;BasicPattern/6b35e4136fb7aa6636ab2d0ca1a17a65" />
+  </evopat:SubPattern>
+
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/2e8f9c5f28b1271b41e01c162de5245b"
     vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/5c190c4abce656652bce5f87dcd9eb4a" />
@@ -483,6 +548,14 @@
     vs:term_status="stable">
     <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/0ba455b006ddb8621d646cf191d012a0" />
     <rdfs:label>Add class axiom owl:disjointWith for two classes</rdfs:label>
+  </evopat:ComplexPattern>
+
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/4ae23e5428e62b8fab24d91ef53f550d"
+    evopat:level="Entity"
+    vs:term_status="testing">
+    <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/fd9d9f53c4e826c664744b8df45130b2" />
+    <rdfs:comment>Selects all literals that do not have a language tag and adds the default tag</rdfs:comment>
+    <rdfs:label>Set language Tag for non-existing language tags on literals to default</rdfs:label>
   </evopat:ComplexPattern>
 
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/4bd337ada2b8fc909ce8097e0ad68f34"
@@ -578,6 +651,23 @@
     <rdfs:label>Delete property axiom owl:propertyDisjointWith for two properties</rdfs:label>
   </evopat:ComplexPattern>
 
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/e3048bd921c5798917b6e7f7583fa7bb"
+    evopat:level="Instance/Data"
+    rdfs:label="Complete foaf:name values of Resources"
+    vs:term_status="testing">
+    <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/2aa46cd0e7d6aac94a9d575fb49c6580" />
+    <rdfs:comment>Selects all resources that have foaf:first and foaf:surname but no foaf:name property and creates foaf:name property from name, surname</rdfs:comment>
+  </evopat:ComplexPattern>
+
+  <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/ecc80411f4f22a986a4517317dc4f0eb"
+    evopat:level="Ontology"
+    rdfs:label="Split class by property values"
+    vs:term_status="testing">
+    <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/0fd738837916b9577f108820e2e1f397" />
+    <evopat:hasSubPattern rdf:resource="&evopat;BasicPattern/656b4b29a23decc91cbc370c9e0d30da" />
+    <rdfs:comment>Performs a creation of n subclasses where n ist the number of distinct properties that all instances of the superclass have, and reassigns the instances to their respective subclasses</rdfs:comment>
+  </evopat:ComplexPattern>
+
   <evopat:ComplexPattern rdf:about="&evopat;ComplexPattern/fbe0954b615880e8a4b8747084c29d04"
     evopat:level="Ontology"
     rdfs:comment="Adds rdfs:subPropertyOf for two classes"
@@ -622,6 +712,10 @@
     rdfs:comment=""
     rdfs:label="objProp" />
 
+  <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/29f095a33dac608cf48fc9daae6aacbb"
+    rdfs:comment="temp for reassignable instances"
+    rdfs:label="instance" />
+
   <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/2f9b43cc058fc204391703e6d819bf5e"
     rdfs:label="p">
     <rdfs:comment>variable to store the correct property (owl:disjointWith)</rdfs:comment>
@@ -634,6 +728,10 @@
   <evopat:PatternVariable_GRAPH rdf:about="&evopat;PatternVariable/31fef6130a60d304a1bdd247a783fc55"
     rdfs:comment=""
     rdfs:label="mergedGraph" />
+
+  <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/330e4eb82a3745018687cb2f35e5751f"
+    rdfs:comment="the resource of a person"
+    rdfs:label="person" />
 
   <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/358c07fc0b69cb0102133fb50abbf2ee"
     rdfs:comment=""
@@ -676,6 +774,14 @@
     rdfs:comment="datatype property"
     rdfs:label="dtProp" />
 
+  <evopat:PatternVariable_CLASS rdf:about="&evopat;PatternVariable/6ab339148ae28f2c2d49ce233b7134f7"
+    rdfs:comment="the class to split"
+    rdfs:label="splitClass" />
+
+  <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/700edd747917089ba5e9e7f84f1f1440"
+    rdfs:comment="temp for distinct property values"
+    rdfs:label="pValues" />
+
   <evopat:PatternVariable_CLASS rdf:about="&evopat;PatternVariable/74789db8d4a2fb21e4750df1d1e66b78"
     rdfs:comment="super class"
     rdfs:label="superClass" />
@@ -703,6 +809,15 @@
   <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/9f86cbca6a07215b6ee481aa31c817aa"
     rdfs:comment="temp to store one property"
     rdfs:label="tempA" />
+
+  <evopat:PatternVariable_PROPERTY rdf:about="&evopat;PatternVariable/a45af79f7bffe1cb22e6b1e887c8cc71"
+    rdfs:label="distinctProperty">
+    <rdfs:comment>the property to determine distinct subclasses</rdfs:comment>
+  </evopat:PatternVariable_PROPERTY>
+
+  <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/a7896e2fb25e37d0e0450538130359c8"
+    rdfs:comment="the firstname of a person"
+    rdfs:label="fn" />
 
   <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/a97b9081580ab363c8e0ba26e8917049"
     rdfs:comment="temp pred"
@@ -732,6 +847,10 @@
     rdfs:comment="sub property"
     rdfs:label="subProp" />
 
+  <evopat:PatternVariable_LANG rdf:about="&evopat;PatternVariable/bb70f9c09bcb25076ff655991bd77d54"
+    rdfs:comment="the default language to set"
+    rdfs:label="defaultLang" />
+
   <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/c53b010bd6b9d12166fb6771489da139"
     rdfs:comment="temp to store other property"
     rdfs:label="tempB" />
@@ -743,6 +862,14 @@
   <evopat:PatternVariable_RESOURCE rdf:about="&evopat;PatternVariable/c75b942fbc09fb61d9dc41737c9e0cca"
     rdfs:comment="the resource to move"
     rdfs:label="resourceMove" />
+
+  <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/cb859ed418c00f9753ecbefb04a95802"
+    rdfs:comment="temporary for untagged literals"
+    rdfs:label="untaggedLiteral" />
+
+  <evopat:PatternVariable_TEMP rdf:about="&evopat;PatternVariable/ce0ebe5f8b1563f751f6da1f4b512861"
+    rdfs:comment="the lastname of a person"
+    rdfs:label="sn" />
 
   <evopat:PatternVariable_GRAPH rdf:about="&evopat;PatternVariable/d8e077a126e6d8d6a6097aa9dcc290cf"
     rdfs:comment="the prefix replacement"
@@ -789,6 +916,10 @@
     <rdfs:label>WHERE { %s% %p% %o% . FILTER ( REGEX( STR( %s%), "^%oldPrefix%") ) }</rdfs:label>
   </evopat:SelectQuery>
 
+  <evopat:SelectQuery rdf:about="&evopat;SelectQuery/13ab8313ca9be1eab51fce97e598929e">
+    <rdfs:label>WHERE { %s% %p% %untaggedLiterals% . FILTER ( isLiteral(%untaggedLiteral%) ) FILTER ( langMatches(%untaggedLiteral%, "") ) }</rdfs:label>
+  </evopat:SelectQuery>
+
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/292cbbe75e4a20c95132f63668b7a660">
     <rdfs:label>{{ %disjointOne% %p% %disjointTwo% .  FILTER (sameTerm(%p%,&lt;http://www.w3.org/2002/07/owl#disjointWith&gt;)) } UNION { %disjointTwo% %p% %disjointOne% .  FILTER (sameTerm(%p%,&lt;http://www.w3.org/2002/07/owl#disjointWith&gt;)) }}</rdfs:label>
   </evopat:SelectQuery>
@@ -798,6 +929,10 @@
 
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/3838d4bd8e9e7859f027571f160ce00c">
     <rdfs:label>{ %dtProp% %p% %o% .  FILTER ( !sameTerm(%p%,&lt;http://www.w3.org/2000/01/rdf-schema#range&gt;) &amp;&amp; !sameTerm(%p%,&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt;) ) }</rdfs:label>
+  </evopat:SelectQuery>
+
+  <evopat:SelectQuery rdf:about="&evopat;SelectQuery/4bf4df90b5d59d600943bba82b6e2a84">
+    <rdfs:label>WHERE { ?inst &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; %splitClass% . ?inst %distinctProperty% %pValues% . }</rdfs:label>
   </evopat:SelectQuery>
 
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/6b43a2cbb061dc72f0a70f59378aa77a"
@@ -843,6 +978,14 @@
 
   <evopat:SelectQuery rdf:about="&evopat;SelectQuery/d0750b09a41d309948511f6a46fd356a"
     rdfs:label="{ %inst% %dtProp% %o% . }" />
+
+  <evopat:SelectQuery rdf:about="&evopat;SelectQuery/d30916963ecf45772aa6d0757ed1e52f">
+    <rdfs:label>WHERE { %instance% %distinctProperty% %pValues% . %instance% &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; %splitClass% . }</rdfs:label>
+  </evopat:SelectQuery>
+
+  <evopat:SelectQuery rdf:about="&evopat;SelectQuery/d497151a6a959184cc37fac038937d53">
+    <rdfs:label>WHERE { %person% &lt;&gt; &lt;http://xmlns.com/foaf/0.1/Person&gt; . %person% &lt;http://xmlns.com/foaf/0.1/name&gt; ?name . %person% &lt;http://xmlns.com/foaf/0.1/firstName&gt; %fn% . %person% &lt;http://xmlns.com/foaf/0.1/surname&gt; %sn% . FILTER (!BOUND(?name)) }</rdfs:label>
+  </evopat:SelectQuery>
 
   <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/05c85d350fb7ce178e9e4002a28a6db5"
     evopat:updatePatternSubject="%objProp%">
@@ -899,6 +1042,12 @@
     evopat:updatePatternPredicate="%P%"
     evopat:updatePatternSubject="%S%" />
 
+  <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/474f25e3eba4b9fcba0a34c060b328cd"
+    evopat:updatePatternGraph="&quot;,%sn%)"
+    evopat:updatePatternObject="concat(%fn%,&quot;"
+    evopat:updatePatternPredicate="&lt;http://xmlns.com/foaf/0.1/name&gt;"
+    evopat:updatePatternSubject="%person%" />
+
   <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/48dfbd466cf79e1375e8b1182e85902f"
     evopat:updatePatternGraph="%graphB%"
     evopat:updatePatternObject="%O%"
@@ -946,6 +1095,12 @@
     evopat:updatePatternPredicate="%p%"
     evopat:updatePatternSubject="%resourceMove%" />
 
+  <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/9561360b485b209fb0f6629f9d97ec42"
+    evopat:updatePatternObject="%splitClass%"
+    evopat:updatePatternSubject="%instance%">
+    <evopat:updatePatternPredicate>&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt;</evopat:updatePatternPredicate>
+  </evopat:UpdateQuery_Delete>
+
   <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/957f7dfede817ef81f5349fe553aad0e"
     evopat:updatePatternObject="%tempB%"
     evopat:updatePatternSubject="%tempA%">
@@ -956,6 +1111,12 @@
     evopat:updatePatternObject="%superClass%"
     evopat:updatePatternSubject="%subClass%">
     <evopat:updatePatternPredicate>&lt;http://www.w3.org/2000/01/rdf-schema#subClassOf&gt;</evopat:updatePatternPredicate>
+  </evopat:UpdateQuery_Insert>
+
+  <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/9c583a03c04b5d64aa75086ae388e175"
+    evopat:updatePatternObject="%splitClass%">
+    <evopat:updatePatternPredicate>&lt;http://www.w3.org/2000/01/rdf-schema#subClassOf&gt;</evopat:updatePatternPredicate>
+    <evopat:updatePatternSubject>createURI(getNamespace(%splitClass%),%pValues)</evopat:updatePatternSubject>
   </evopat:UpdateQuery_Insert>
 
   <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/ad06188c4f69fefa3a4f14e696a43610"
@@ -970,6 +1131,12 @@
     <evopat:updatePatternPredicate>&lt;http://www.w3.org/2000/01/rdf-schema#subClassOf&gt;</evopat:updatePatternPredicate>
   </evopat:UpdateQuery_Delete>
 
+  <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/b7ac088c6b90fc483d691294a6e71a48"
+    evopat:updatePatternObject="&lt;&owl;Class&gt;">
+    <evopat:updatePatternPredicate>&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt;</evopat:updatePatternPredicate>
+    <evopat:updatePatternSubject>createURI(getNamespace(%splitClass%),%pValues)</evopat:updatePatternSubject>
+  </evopat:UpdateQuery_Insert>
+
   <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/bc770bee53ef5b1842bd36cf77ac4b02"
     evopat:updatePatternObject="%o%"
     evopat:updatePatternSubject="getTempUri(getNamespace(%objProp%),%o%)">
@@ -982,11 +1149,22 @@
     <evopat:updatePatternPredicate>&lt;http://www.w3.org/2000/01/rdf-schema#subPropertyOf&gt;</evopat:updatePatternPredicate>
   </evopat:UpdateQuery_Delete>
 
+  <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/d4821a767b0eaf4fbe68e13209f6b601"
+    evopat:updatePatternObject="%untaggedLiteral%"
+    evopat:updatePatternPredicate="%p%"
+    evopat:updatePatternSubject="%s%" />
+
   <evopat:UpdateQuery_Delete rdf:about="&evopat;UpdateQuery_Insert/ee45d665cc923269181c5482a0863760"
     evopat:updatePatternObject="%disjointTwo%"
     evopat:updatePatternSubject="%disjointOne%">
     <evopat:updatePatternPredicate>&lt;http://www.w3.org/2002/07/owl#disjointWith&gt;</evopat:updatePatternPredicate>
   </evopat:UpdateQuery_Delete>
+
+  <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/f206fdd98d163839b848e2fc71faf2ae"
+    evopat:updatePatternSubject="%instance%">
+    <evopat:updatePatternObject>createURI(getNamespace(%splitClass%),%pValues)</evopat:updatePatternObject>
+    <evopat:updatePatternPredicate>&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt;</evopat:updatePatternPredicate>
+  </evopat:UpdateQuery_Insert>
 
   <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/f2b8d560cd0d766e40a6611a4aa56f5b"
     evopat:updatePatternObject="%o%"
@@ -1002,6 +1180,12 @@
     evopat:updatePatternObject="%superProp%"
     evopat:updatePatternSubject="%subProp%">
     <evopat:updatePatternPredicate>&lt;http://www.w3.org/2000/01/rdf-schema#subClassOf&gt;</evopat:updatePatternPredicate>
+  </evopat:UpdateQuery_Insert>
+
+  <evopat:UpdateQuery_Insert rdf:about="&evopat;UpdateQuery_Insert/fe134d0b7893c12df2f54cb0a33fdd56"
+    evopat:updatePatternPredicate="%p%"
+    evopat:updatePatternSubject="%s%">
+    <evopat:updatePatternObject>setLanguage(%untaggedLiteral%,%defaultLang%)</evopat:updatePatternObject>
   </evopat:UpdateQuery_Insert>
 
 </rdf:RDF>
