@@ -7,4 +7,6 @@ edit pattern; Edit Pattern
 add subpattern;Add Subpattern
 discard changes;Discard Changes
 action %s not allowed;Action %s not allowed.
+back to list;Back to list
+eport as;Export as
 HISTORY_ACTIONTYPE_3000;evolution performed

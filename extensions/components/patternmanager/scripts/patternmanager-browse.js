@@ -9,7 +9,7 @@ $(document).ready(function() {
                 label : 'Pattern Level' ,
                 isInverse : false
             };
-            var getUri = urlBase+"service/session?method=setArrayValue&name=cloudproperties&valueIsSerialized=true";
+            var getUri = urlBase + 'service/session?method=setArrayValue&name=cloudproperties&valueIsSerialized=true';
             $.post(getUri,
                 {
                    "key": evopatLevelUri,

@@ -438,19 +438,10 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	            $preboundVariables = array();
 	        }
 
-	        try {
-	            $var = Zend_Json::decode(
-	                $this->getRequest()->getParam('var','[]'),
-	                Zend_Json::TYPE_ARRAY
-                );
-	        } catch (Zend_Json_Exception $e) {
-	            $var = array();
-	        }
-	        
+	        $var = $this->getRequest()->getParam('var',array());
 	        $mode = $this->getRequest()->getParam('mode');
 	
 	        if ($mode == 1) {
-	            
 	            foreach ($var as $name => $value) {
 	                unset($unboundVariables[$name]);
 	                $complexPattern->bindVariable($name,$value);
@@ -484,8 +475,9 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        );
 	        $this->view->placeholder('main.window.toolbar')->set($toolbar);
 	
-	        $url = new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'exec'));
+	        $url = new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'exec'),array());
 	        $url->setParam('mode','1');
+	        $url->setParam('pattern',$this->getRequest()->getParam('pattern'));
 	
 	
 	        $this->view->formActionUrl = (string) $url;
@@ -555,10 +547,14 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
         } else {
 
             $list = new OntoWiki_Model_Instances($store, $graph, array());
+            $list->setDefaultUrl('resource', new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'view'), array()));
+            $list->setDefaultUrlParamName('resource', 'pattern');
             $list->addTypeFilter($this->_privateConfig->rdf->ComplexPattern);
             $listHelper->addListPermanently($listName, $list, $this->view, "patternmanager-list.phtml");
 
         }
+        
+       
 
         $title = 'Evolution Patternmanager > Browser ';
         //$title = '<a>' . $this->_owApp->translate->_('Evolution Patternmanager') . '</a>' . ' &gt; '
@@ -583,6 +579,19 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
 	        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/patternmanager-view.js');
 	        
             $toolbar = $this->_owApp->toolbar;
+            
+            $toolbar->appendButton(
+		            null,
+		            array('name' => $this->_owApp->translate->_('back to list'),
+                          'url'  => (string) (new OntoWiki_Url(
+                                            array('controller' => 'patternmanager', 'action' => 'browse'),
+                                            array()
+                                        )
+                                     ),
+                          'id'   => 'patternmanager_view_back_button',
+                          'image' => 'go',
+                    )
+		        );
 
 	        // button to commit pattern (if action allowed)
 	        if ($this->_engine->getAc()->isActionAllowed(PatternEngineAc::RIGHT_EDIT_STR)) {
@@ -649,6 +658,18 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             
 	        if ( !empty($pUri) ) {
 	            $loaded = $this->_engine->loadFromStore($pUri);
+	            $toolbar->appendButton(
+		            null,
+		            array('name' => $this->_owApp->translate->_('execute pattern'),
+                          'url'  => (string) (new OntoWiki_Url(
+                                            array('controller' => 'patternmanager', 'action' => 'exec'),
+                                            array('pattern')
+                                        )
+                                     ),
+                          'id'   => 'patternmanager_view_toExec_button',
+                          'image' => 'go',
+                    )
+		        );
 	            $this->view->jsonPattern = $loaded->toArray(true);
 	        }
 	
