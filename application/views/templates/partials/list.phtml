@@ -18,7 +18,7 @@ $resourceQuery =  $instances->getResourceQuery();
 $valueQuery = $instances->getQuery();
 //echo htmlentities($valueQuery);
 $config = Erfurt_App::getInstance()->getConfig();
-$permalink = new OntoWiki_Url().'/'.$instances->getPermalink();
+$permalink = $instances->getPermalink($this->listName);
 
 $graph = $this->instances->getGraph();
 $store = $this->instances->getStore();

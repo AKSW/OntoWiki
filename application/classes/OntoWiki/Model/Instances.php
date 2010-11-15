@@ -837,31 +837,35 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
      * build a link that recreates the current state on a different system
      * @return string
      */
-    public function getPermalink(){
-        $url = 'init/1/';
+    public function getPermalink($listname){
+        $url = new OntoWiki_Url();
+        $url->init = true;
+
         if($this->getOffset() != 0 && $this->getLimit() != 0){
-            $url .= 'p/'. (($this->getOffset() / $this->getLimit()) + 1 ).'/';
+            $url->p=(($this->getOffset() / $this->getLimit()) + 1 );
         }
         if($this->getLimit() != 10){
-            $url .= 'limit/'.$this->getLimit().'/';
+            $url->limit=$this->getLimit();
         }
+        $url->list=$listname;
+
         $conf = array();
-        
+
         if(is_array($this->_shownProperties) && count($this->_shownProperties) > 0){
             $conf['shownProperties'] = array();
-            
+
             foreach($this->_shownProperties as $shownProperty){
                 $conf['shownProperties'][] = array(
                     'uri' => $shownProperty['uri'],
                     'label' => $shownProperty['name'],
-                    'inverse' => $shownProperty['inverse'], 
+                    'inverse' => $shownProperty['inverse'],
                     'action' => 'add'
                 );
             }
         }
         if(is_array($this->_filter) && count($this->_filter) > 0){
             $conf['filter'] = array();
-            
+
             foreach($this->_filter as $filter){
                 switch($filter['mode']){
                     case 'box':
@@ -892,17 +896,84 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
                         $conf['filter'][] = array(
                             'action' => 'add',
                             'mode' => 'triples',
-                            'triples' => $filter['triples'] 
+                            'triples' => $filter['triples']
                         );
                         */
                     break;
                 }
             }
-            $url .= '?m=' . urlencode((string) $this->_model);
+            $url->m= (string) $this->_model;
             if(!empty($conf)){
-                $url .= '&instancesconfig=' . urlencode(json_encode($conf));
+                $url->instancesconfig = json_encode($conf);
             }
         }
+//        $url = '?init=1';
+//        if($this->getOffset() != 0 && $this->getLimit() != 0){
+//            $url .= '&p='. (($this->getOffset() / $this->getLimit()) + 1 );
+//        }
+//        if($this->getLimit() != 10){
+//            $url .= '&limit='.$this->getLimit();
+//        }
+//        $url = '&list='.$listname;
+//
+//        $conf = array();
+//
+//        if(is_array($this->_shownProperties) && count($this->_shownProperties) > 0){
+//            $conf['shownProperties'] = array();
+//
+//            foreach($this->_shownProperties as $shownProperty){
+//                $conf['shownProperties'][] = array(
+//                    'uri' => $shownProperty['uri'],
+//                    'label' => $shownProperty['name'],
+//                    'inverse' => $shownProperty['inverse'],
+//                    'action' => 'add'
+//                );
+//            }
+//        }
+//        if(is_array($this->_filter) && count($this->_filter) > 0){
+//            $conf['filter'] = array();
+//
+//            foreach($this->_filter as $filter){
+//                switch($filter['mode']){
+//                    case 'box':
+//                        $arr = array(
+//                            'action' => 'add',
+//                            'mode' => 'box'
+//                        );
+//                        $arr = array_merge($arr, $filter);
+//                        $conf['filter'][] = $arr;
+//                    break;
+//                    case "search":
+//                        $conf['filter'][] = array(
+//                            'action' => 'add',
+//                            'mode' => 'search',
+//                            'searchText' => $filter['searchText']
+//                        );
+//                    break;
+//                    case "rdfsclass":
+//                        $conf['filter'][] = array(
+//                            'action' => 'add',
+//                            'mode' => 'rdfsclass',
+//                            'rdfsclass' => $filter['rdfsclass']
+//                        );
+//                    break;
+//                    case "triples":
+//                        //problem: php objects can not be json encoded ...
+//                        /*
+//                        $conf['filter'][] = array(
+//                            'action' => 'add',
+//                            'mode' => 'triples',
+//                            'triples' => $filter['triples']
+//                        );
+//                        */
+//                    break;
+//                }
+//            }
+//            $url .= '&m=' . urlencode((string) $this->_model);
+//            if(!empty($conf)){
+//                $url .= '&instancesconfig=' . urlencode(json_encode($conf));
+//            }
+//        }
 
         return $url;
     }
