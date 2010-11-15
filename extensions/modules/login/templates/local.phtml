@@ -54,6 +54,7 @@ $request = Zend_Controller_Front::getInstance()->getRequest();
         </fieldset>
     </div>
     
-    <a id="locallogin" onclick="doLogin(); return false;" data-role="button" data-icon="check"><?php echo $this->_('Login') ?></a>
+    <!-- <a id="locallogin" onclick="doLogin(); return false;" data-role="button" data-icon="check"><?php echo $this->_('Login') ?></a> -->
+    <input id="locallogin" onclick="doLogin(); return false;" type="submit" value="<?php echo $this->_('Login') ?>">
 <?php endif; ?>
 </form>

@@ -3,29 +3,29 @@
  */
 $(document).ready(function(){
     // prepare nav page on show
-    $("#nav").bind("beforepageshow", function(){
+    $("#nav").bind("pagebeforeshow", function(){
         redrawNavigation();
     });
     
     // prepare instance list on show
-    $("#instance-list").bind("beforepageshow", function(){
+    $("#instance-list").bind("pagebeforeshow", function(){
         redrawInstances();
     });
     
     // prepare properties list on show
-    $("#properties-list").bind("beforepageshow", function(){
+    $("#properties-list").bind("pagebeforeshow", function(){
         redrawProperties();
     });
     
     // prepare search list on show
-    $("#searchres-list").bind("beforepageshow", function(){
+    $("#searchres-list").bind("pagebeforeshow", function(){
         var page = $("#searchres-list");
         page.page("destroy");
         page.page();
     });
     
     // prepare rdfa list on show
-    $("#rdfa-list").bind("beforepageshow", function(){
+    $("#rdfa-list").bind("pagebeforeshow", function(){
         redrawRDFauthor();
     });
     
@@ -39,6 +39,6 @@ $(document).ready(function(){
         redrawNavigation();
         
         // remove loader
-        $.pageLoading(true);
+        $.mobile.pageLoading(true);
     });
 });

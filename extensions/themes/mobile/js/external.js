@@ -13,8 +13,8 @@ var RDFAUTHOR_MOBILE = true;
 // redraw mobile views
 var redrawNavigation = function(){
     var nav = $("#nav");
-    nav.page("destroy");
-    nav.page();
+        nav.page("destroy");
+        nav.page();
 };
 
 var redrawProperties = function(){
@@ -31,13 +31,13 @@ var redrawInstances = function(){
 
 var redrawRDFauthor = function(){
     var page = $("#rdfa-list");
-    page.page("destroy");
-    page.page();
+        page.page("destroy");
+        page.page();
 }
 
 // selects database
 function getBase(element){
-    $.pageLoading();
+    $.mobile.pageLoading();
     
     if( selected_model != $(element).attr('about') ){
         // select base
@@ -58,13 +58,13 @@ function getBase(element){
                 $(element).attr("class","");
                 $(document).unbind(e);
                 
-                location.hash = "nav";
-                //$.changePage($(".ui-page-active"), $("#nav"), "slide");
+                //location.hash = "nav";
+                $.mobile.changePage("#nav", "slide"); //$(".ui-page-active"), $(
             });
         })
     }else{
-        location.hash = "nav";
-        //$.changePage($(".ui-page-active"), $("#nav"), "slide");
+        //location.hash = "nav";
+        $.mobile.changePage("#nav", "slide");
     }
     
     
@@ -88,7 +88,7 @@ function onNavigationEntryClick(entry){
 // show instances
 function showInstances(){
     // show load progress
-    $.pageLoading();
+    $.mobile.pageLoading();
     
     url = selectedNavigationEntry.url;
     // set rdfa
@@ -100,17 +100,18 @@ function showInstances(){
         $('#instance-content').html(data);
         
         // remove loader
-        $.pageLoading(true);
+        $.mobile.pageLoading(true);
 
         // switch page
-        location.hash = "instance-list";
+        //location.hash = "instance-list";
+        $.mobile.changePage("#instance-list", "slide");
     })
 }
 
 // navigate deeper
 function navigateDeeper(){
     // show load progress
-    $.pageLoading();
+    $.mobile.pageLoading();
     navigationEvent('navigateDeeper', selectedNavigationEntry.parent);
 }
 
@@ -122,7 +123,7 @@ function onInstanceClick(entry, animate){
     if( !(typeof entry != 'undefined' || (typeof selectedInstance != 'undefined' && selectedInstance.uri.length > 1) ) ) return;
     
     // loading 
-    $.pageLoading();
+    $.mobile.pageLoading();
 
     // get data
     var url, title;
@@ -142,10 +143,11 @@ function onInstanceClick(entry, animate){
         $('#properties-content').html(data);
 
         if(animate){ 
-            location.hash = "properties-list";
+            //location.hash = "properties-list";
+            $.mobile.changePage("#properties-list", "slide");
         }else{
             // remove animation
-            $.pageLoading(true);
+            $.mobile.pageLoading(true);
             // refresh page
             redrawProperties();
         }
@@ -174,7 +176,7 @@ function doSearch(){
         return;
     }
     // loading 
-    $.pageLoading();
+    $.mobile.pageLoading();
     // get results
     $.get(urlBase+"application/search/?searchtext-input="+req, function(data){
         $.get(urlBase+"resource/instances",function(data){
@@ -182,31 +184,33 @@ function doSearch(){
             $("#searchres-content").html(data);
             $("#searchres-title").text(req);
             
-            location.hash = "searchres-list";
-            $.pageLoading(true);
+            //location.hash = "searchres-list";
+            $.mobile.changePage("#searchres-list", "slide");
+            $.mobile.pageLoading(true);
         });
     });
 }
 
 // change instance page
 function pageList(entry, animate){
-    $.pageLoading();
+    $.mobile.pageLoading();
     
     url = $(entry).attr('about');
     $.get(url, function(data){
         $('#instance-content').html(data);
 
         if(animate){
-            location.hash = "instance-list";
+            //location.hash = "instance-list";
+            $.mobile.changePage("#instance-list", "slide");
         }else{
             redrawInstances();
         }
-        $.pageLoading(true);
+        $.mobile.pageLoading(true);
     })
 }
 
 function openRDFa(){
-    $.pageLoading();
+    $.mobile.pageLoading();
     
     var content = $("#properties-content");
     var subject = $("ul", content).attr("about");
@@ -260,5 +264,6 @@ function openRDFa(){
 
     RDFauthor.start();
 
-    location.hash = "#rdfa-list";
+    //location.hash = "#rdfa-list";
+    $.mobile.changePage("#rdfa-list", "slide");
 }
