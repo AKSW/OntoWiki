@@ -543,33 +543,32 @@ class Ontowiki_Extension_Manager {
      */
     private function _addPlugin($filename, $pluginPath, $config)
     {
-        if ($config->enabled && isset($config->events) && is_array($config->events)) {
-            foreach ($config->events as $event) {
-                if (is_array($event)) {
-                    // TODO: allow trigger method that differs from event name
-                } else if (is_string($event)) {
-                    $pluginSpec = array(
-                        'class_name'   => ucfirst(substr($filename,0,strlen($filename) -strlen(self::PLUGIN_FILE_POSTFIX))) . self::PLUGIN_CLASS_POSTFIX,
-                        'file_name'    => $filename,
-                        'include_path' => $pluginPath,
-                        'config'       => isset($config->private) ? $config->private : array()
-                    );
-
-                    // register plugin events with event dispatcher
-                    $this->_eventDispatcher->register($event, $pluginSpec);
-                }
-            }
-        }
-        // var_dump($pluginConfig);
+        $owApp = OntoWiki::getInstance();
+    	$pluginManager = $owApp->erfurt->getPluginManager(false);
+        $pluginManager->addPluginExternally(strtolower(substr($filename,0,strlen($filename) - strlen(self::PLUGIN_FILE_POSTFIX))), $filename, $pluginPath, $config);
     }
 
     private function _loadConfigs($name){
         $path = $this->_extensionPath . $name . DIRECTORY_SEPARATOR;
         $config = new Zend_Config_Ini($path . self::DEFAULT_CONFIG_FILE, null, true);
-
+        
         // overwrites default config with local config
         if (is_readable($this->_extensionPath . $name . ".ini")) {
-            $config->merge(new Zend_Config_Ini($this->_extensionPath . $name . ".ini", null, true));
+            $local_ini = new Zend_Config_Ini($this->_extensionPath . $name . ".ini", null, true);
+            $config->merge($local_ini);
+        }
+
+        //TODO this might be nessary 
+        if(is_string($config->enabled)){
+            switch($config->enabled){
+                case "1":
+                case "enabled":
+                case "true":
+                    $config->enabled = true;
+                    break;
+                default:
+                    $config->enabled = false;
+            }
         }
 
         // normalize paths
