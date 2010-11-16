@@ -523,15 +523,12 @@ class Ontowiki_Extension_Manager {
      */
     protected function _addWrapper($filename, $wrapperPath, $config)
     {
-        $wrapperSpec = array(
-            'class_name'   => ucfirst(substr($filename,0,strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))) . self::WRAPPER_CLASS_POSTFIX,
-            'include_path' => $wrapperPath,
-            'config'       => isset($config->private) ? $config->private : array(),
-            'instance'     => null
-        );
-
-        // Finally register the wrapper.
-        $this->_wrapperRegistry->register($filename, $wrapperSpec);
+        $owApp = OntoWiki::getInstance();
+    	$pluginManager = $owApp->erfurt->getWrapperManager(false);
+        $pluginManager->addWrapperExternally(
+                strtolower(substr($filename,0,strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))), 
+                $wrapperPath,
+                isset($config->private)?$config->private:array());
     }
 
 
