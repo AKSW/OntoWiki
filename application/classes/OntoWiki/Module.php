@@ -123,14 +123,12 @@ abstract class OntoWiki_Module
         //     $this->view->addScriptPath($modulesPath);
         // }
         
-        // TODO: frickel ahead
         // set important script variables
         $this->view->themeUrlBase = $this->_config->themeUrlBase;
         $this->view->urlBase      = $this->_config->urlBase;
         $this->view->moduleUrl    = $this->_config->staticUrlBase 
-                                  . $this->_config->extensions->modules
+                                  . $this->_config->extensions->base
                                   . $this->_name . '/';
-        
         // set context
         $this->setContext($context);
         

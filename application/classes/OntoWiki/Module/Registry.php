@@ -274,7 +274,6 @@ class OntoWiki_Module_Registry
     public function getModulesForContext($context = self::DEFAULT_CONTEXT)
     {
         $modules = array();
-        //var_dump($this->_moduleOrder);
         if (array_key_exists($context, $this->_moduleOrder)) {
             ksort($this->_moduleOrder[$context]);
 
@@ -286,7 +285,6 @@ class OntoWiki_Module_Registry
                 }
             }
         }
-
         return $modules;
     }
 
