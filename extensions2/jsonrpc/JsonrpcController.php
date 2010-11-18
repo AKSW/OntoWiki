@@ -31,7 +31,7 @@ class JsonrpcController extends OntoWiki_Controller_Component
 
     public function __call($method, $args)
     {
-        $classname = str_replace  ( 'Action', '', $method) . 'JsonrpcWrapper';
+        $classname = str_replace  ( 'Action', '', $method) . 'JsonrpcAdapter';
         @include_once $classname . '.php';
         if (class_exists($classname)) {
             $this->server->setClass($classname);

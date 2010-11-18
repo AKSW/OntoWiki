@@ -50,7 +50,7 @@ $(document).ready(function()
                 break;
             }
         }
-        var url = urlBase + 'datagathering/import/';
+        var url = urlBase + 'linkeddatagathering/import/';
         $(this).replaceWith('<span class="is-processing" style="min-height: 16px; display: block"></span>');
         $.getJSON(url, {uri: uriValue, wrapper: wrapperName}, function(data) {
 			$('.contextmenu-enhanced .contextmenu').fadeOut(effectTime, function(){ $(this).remove(); })
@@ -71,7 +71,7 @@ $(document).ready(function()
                 break;
             }
         }
-        var url = urlBase + 'datagathering/sync';
+        var url = urlBase + 'linkeddatagathering/sync';
         $(this).replaceWith('<span class="is-processing" style="min-height: 16px; display: block"></span>');
         $.getJSON(url, {uri: uriValue, wrapper: wrapperName}, function(data) {
 			if (data['redirect']) {
@@ -92,7 +92,7 @@ $(document).ready(function()
 	var checkElem = $('#dg_check_update');
 	if (typeof(checkElem.get(0)) != 'undefined') {
 		var uriValue = $('div.section-mainwindows table').eq(0).attr('about');
-		var url = urlBase + 'datagathering/modified';
+		var url = urlBase + 'linkeddatagathering/modified';
 		
         $.getJSON(url, {uri: uriValue, wrapper: 'linkeddata'}, function(data) {
 			if (data != false) {
@@ -109,7 +109,7 @@ $(document).ready(function()
 				checkElem.parent('p').removeClass('info').addClass('success');
 				
 				$('#dg_sync_button').livequery('click', function() {
-			        var url = urlBase + 'datagathering/sync';
+			        var url = urlBase + 'linkeddatagathering/sync';
 			        $(this).append('<div class="is-processing" style="float:right; width: 16px; min-height: 16px; margin-left: 4px;"></div>');
 			        $.getJSON(url, {uri: uriValue, wrapper: 'linkeddata'}, function(data) {
 			            window.location = document.URL;
@@ -134,7 +134,7 @@ $(document).ready(function()
  */
 function locationBarUriSearch(term, cb)
 {
-    var searchUrl = urlBase + 'datagathering/search?q=' + term;
+    var searchUrl = urlBase + 'linkeddatagathering/search?q=' + term;
 
     $.getJSON(searchUrl,
         function(jsonData) {
@@ -180,7 +180,7 @@ function hideLocationBar()
  */
 function uriSearch(term, cb)
 {
-	var searchUrl = urlBase + 'datagathering/search?q=' + term;
+	var searchUrl = urlBase + 'linkeddatagathering/search?q=' + term;
 	
 	$.getJSON(searchUrl, 
         function(jsonData) {

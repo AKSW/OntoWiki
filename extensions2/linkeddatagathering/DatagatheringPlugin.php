@@ -62,7 +62,6 @@ class DatagatheringPlugin extends OntoWiki_Plugin
     public function init()
     {
         parent::init();
-        
         $this->_properties   = $this->_privateConfig->properties->toArray();
         $this->_syncModelUri = $this->_privateConfig->syncModelUri;
         
@@ -169,7 +168,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
             
             // Configure for sync entry.
             if ((boolean)$this->_privateConfig->sync->enabled) {
-                $configUrl = $owApp->config->urlBase . 'datagathering/config?uri=' . urlencode($uri) .
+                $configUrl = $owApp->config->urlBase . 'linkeddatagathering/config?uri=' . urlencode($uri) .
                     '&wrapper=' . urlencode($wrapperName);
 
                 if ($event->isModel) {
