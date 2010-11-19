@@ -16,6 +16,7 @@ class metaJsonrpcWrapper
         'meta' => 'methods to query the json service itself',
         'store' => 'methods to manipulate and query the store',
         'model' => 'methods to manipulate and query a specific model',
+        'evolution' => 'methods to manage and use the evolution engine',
     );
 
     public function __construct()
