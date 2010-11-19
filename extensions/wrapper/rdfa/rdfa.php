@@ -63,11 +63,6 @@ class RdfaWrapper extends Erfurt_Wrapper
             if ( ($triple['s'] == $uri) && 
                     (array_search ($triple['p'], $this->_config->ignore->toArray()) === false) ) {
                 
-                // create new array if not exists
-                if (!isset($data[$uri][$triple['s']]) ) {
-                    $data[$uri][$triple['s']] = array();
-                }
-                
                 // create resource objects
                 if ($triple['o_type'] == 'uri') {
                     $data[$uri][$triple['p']][] = array(
@@ -91,6 +86,15 @@ class RdfaWrapper extends Erfurt_Wrapper
                     $data[$uri][$triple['p']][] = $newObject;
                 }
             }
+        }
+
+        // set a default class type if configured and no type was extracted
+        if ((!isset($data[$uri][EF_RDF_TYPE])) &&
+            (isset($this->_config->defaultClass))) {
+                $data[$uri][EF_RDF_TYPE][] = array(
+                    'type'  => 'uri',
+                    'value' => $this->_config->defaultClass
+                );
         }
         
         $fullResult['status_description'] = "RDFa data found for URI $uri";
