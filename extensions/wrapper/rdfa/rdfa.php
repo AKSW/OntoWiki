@@ -57,8 +57,11 @@ class RdfaWrapper extends Erfurt_Wrapper
         // transform arc2 triple to RDF_PHP structure
         // TODO: blank nodes?
         foreach ($triples as $triple) {
-            // but only for the requested resource
-            if ($triple['s'] == $uri) {
+            // but only for the requested resource and not ignored properties
+            // TODO: use a generic fetch preset from linkeddata wrapper
+            
+            if ( ($triple['s'] == $uri) && 
+                    (array_search ($triple['p'], $this->_config->ignore->toArray()) === false) ) {
                 
                 // create new array if not exists
                 if (!isset($data[$uri][$triple['s']]) ) {
