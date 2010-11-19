@@ -103,6 +103,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_valueQueryResourceFilter = null;
 
     protected $_aboutHash;
+    
+    protected $_defaultUrl = array();
+    protected $_defaultUrlParam = array();
 
     /**
      * Constructor
@@ -110,6 +113,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $options = array())
     {
         parent::__construct($store, $graph);
+        
+        $this->_defaultUrl['resource']      = new OntoWiki_Url(array('route' => 'properties'), array());
+        $this->_defaultUrlParam['resource'] = 'r';
         
         $this->_resourceQuery   =  new Erfurt_Sparql_Query2();
         $this->_resourceVar = new Erfurt_Sparql_Query2_Var("resourceUri");
@@ -162,6 +168,23 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         //$this->updateValueQuery();
     }
+    
+    /**
+     * 
+     * Method for setting the store explicitely
+     * (necessary after unserialization from session for unavailable _dbconn 
+     * resource handles etc.)
+     * @param Erfurt_Store $store
+     * @throws Exception for parameter type being incorrect (no Erfurt_Store Object)
+     * @return null
+     */
+    public function setStore($store) {
+        if ($store instanceof Erfurt_Store) {
+            $this->_store = $store;
+        } else {
+            throw new Exception('No Store Object in ' . __CLASS__ . '::' . __METHOD__);
+        }
+    }
 
     /**
      * dont keep the references to the query objects in $this->resourceQuery (the must be cloned too)
@@ -174,6 +197,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             }
         }
     }
+    
     public function  __call($name,  $arguments) {
         if(strpos("From", $name) > 0){
             call_user_func(array($this->_valueQuery, $arguments));
@@ -1342,7 +1366,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
      */
     public function convertResources ($resources)
     {
-        $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
         
         // add titles
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
@@ -1361,7 +1384,9 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             }
 
             // URL
-            $url->setParam('r', $uri, true);
+            $url = $this->_defaultUrl['resource'];
+            $url->setParam($this->_defaultUrlParam['resource'],$uri,true);
+            
             $resourceResults[$uri]['url'] = (string) $url;
 
             // title
@@ -1544,6 +1569,14 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
      */
     public function getSearchText(){
         return $this->searchText;
+    }
+    
+    public function setDefaultUrl($key, $value) {
+        $this->_defaultUrl[(string) $key] = $value;    
+    }
+    
+    public function setDefaultUrlParamName($key, $value) {
+        $this->_defaultUrlParam[(string)$key] = $value;
     }
 }
 

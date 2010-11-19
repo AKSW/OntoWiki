@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Exported with the Erfurt API - http://aksw.org/Projects/Erfurt -->
+
+<!DOCTYPE rdf:RDF [
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY vs "http://www.w3.org/2003/06/sw-vocab-status/ns#">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+  <!ENTITY ns0 "http://ns.ontowiki.net/Evolution/">
+]>
+
+<rdf:RDF xml:base="&ns0;"
+  xmlns:rdf="&rdf;"
+  xmlns:rdfs="&rdfs;"
+  xmlns:vs="&vs;"
+  xmlns:xsd="&xsd;"
+  xmlns:ns0="&ns0;">
+
+
+<!-- Ontology specific informations -->
+  <ns1:Ontology rdf:about="&ns0;"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">OntoWiki Evolution Pattern Ontology</rdfs:label>
+  </ns1:Ontology>
+
+<!-- Classes -->
+  <ns1:Class rdf:about="BasicPattern"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Basic Pattern</rdfs:label>
+  </ns1:Class>
+
+  <ns1:Class rdf:about="ComplexPattern"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Complex Pattern</rdfs:label>
+  </ns1:Class>
+
+  <ns1:Class rdf:about="PatternVariable"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable</rdfs:label>
+  </ns1:Class>
+
+  <ns1:Class rdf:about="PatternVariable_CLASS"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Class</rdfs:label>
+    <rdfs:subClassOf rdf:resource="PatternVariable" />
+  </ns1:Class>
+
+  <ns1:Class rdf:about="PatternVariable_GRAPH"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Graph</rdfs:label>
+    <rdfs:subClassOf rdf:resource="PatternVariable" />
+  </ns1:Class>
+
+  <ns1:Class rdf:about="PatternVariable_LITERAL"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Literal</rdfs:label>
+    <rdfs:subClassOf rdf:resource="PatternVariable" />
+  </ns1:Class>
+
+  <ns1:Class rdf:about="PatternVariable_PROPERTY"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Property</rdfs:label>
+    <rdfs:subClassOf rdf:resource="PatternVariable" />
+  </ns1:Class>
+
+  <ns1:Class rdf:about="PatternVariable_RESOURCE"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Resource</rdfs:label>
+    <rdfs:subClassOf rdf:resource="PatternVariable" />
+  </ns1:Class>
+
+  <ns1:Class rdf:about="PatternVariable_TEMP"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Pattern Variable Type Temp</rdfs:label>
+    <rdfs:subClassOf rdf:resource="PatternVariable" />
+  </ns1:Class>
+
+  <ns1:Class rdf:about="SelectQuery"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Select Query</rdfs:label>
+  </ns1:Class>
+
+  <ns1:Class rdf:about="SubPattern"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Sub Pattern</rdfs:label>
+  </ns1:Class>
+
+  <ns1:Class rdf:about="UpdateQuery"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Update Query</rdfs:label>
+  </ns1:Class>
+
+  <ns1:Class rdf:about="UpdateQuery_Delete"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Update Query Delete</rdfs:label>
+    <rdfs:subClassOf rdf:resource="UpdateQuery" />
+  </ns1:Class>
+
+  <ns1:Class rdf:about="UpdateQuery_Insert"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Update Query Insert</rdfs:label>
+    <rdfs:subClassOf rdf:resource="UpdateQuery" />
+  </ns1:Class>
+
+<!-- Datatype properties -->
+  <ns1:DatatypeProperty rdf:about="UpdatePatternSubject"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Update Pattern Subject</rdfs:label>
+  </ns1:DatatypeProperty>
+
+  <ns1:DatatypeProperty rdf:about="sequenceId"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Sequence Id</rdfs:label>
+  </ns1:DatatypeProperty>
+
+  <ns1:DatatypeProperty rdf:about="updatePatternObject"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Update Pattern Object</rdfs:label>
+  </ns1:DatatypeProperty>
+
+  <ns1:DatatypeProperty rdf:about="updatePatternPredicate"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">Update Pattern Predicate</rdfs:label>
+  </ns1:DatatypeProperty>
+
+<!-- Object properties -->
+  <ns1:ObjectProperty rdf:about="hasBasicPattern"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">has BasicPattern</rdfs:label>
+    <rdfs:domain rdf:resource="SubPattern" />
+    <rdfs:range rdf:resource="BasicPattern" />
+  </ns1:ObjectProperty>
+
+  <ns1:ObjectProperty rdf:about="hasPatternVariable"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">has PatternVariable</rdfs:label>
+    <rdfs:domain rdf:resource="BasicPattern" />
+    <rdfs:range rdf:resource="PatternVariable" />
+  </ns1:ObjectProperty>
+
+  <ns1:ObjectProperty rdf:about="hasSelectQuery"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">has SelectQuery</rdfs:label>
+    <rdfs:domain rdf:resource="BasicPattern" />
+    <rdfs:range rdf:resource="SelectQuery" />
+  </ns1:ObjectProperty>
+
+  <ns1:ObjectProperty rdf:about="hasSubPattern"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">has SubPattern</rdfs:label>
+    <rdfs:domain rdf:resource="ComplexPattern" />
+    <rdfs:range rdf:resource="SubPattern" />
+  </ns1:ObjectProperty>
+
+  <ns1:ObjectProperty rdf:about="hasUpdateQuery"
+    xmlns:ns1="http://www.w3.org/2002/07/owl#">
+    <rdfs:label rdf:datatype="&xsd;string">has UpdatePattern</rdfs:label>
+    <rdfs:domain rdf:resource="BasicPattern" />
+    <rdfs:range rdf:resource="UpdateQuery_Delete" />
+    <rdfs:range rdf:resource="UpdateQuery_Insert" />
+  </ns1:ObjectProperty>
+
+<!-- Instances and untyped data -->
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/ec14dbb65a27db5ca2d09ecd351f91f1" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/84e0e51804fd74c2522859c5985cb1c9" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/09f0eb54926bee1812479049033310d3" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/62d5308137d956480e4a9d24f3fa4fd0" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/a249d306d0c9b469c075c77e0ba35bfd" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/4dff8cbeab78417702a20f095e074240" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/1fcc39287d5728e7786cd0f6bcc01cd1" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/30664ff6cccba0061340dd8b026641bd" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/f532bf28c3f812e46ca96cb0db5f3ef3" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/3e9f570e309f1bd3a7a2ce211615082d" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/4e361bf9a8eb3542be0126e330cc8269" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/f8d1849c21237107c204a5c48404f191" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/57ed59d1350430689eaf30664d3c5aad" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/57faa504ecd5b58b6bd80d959045eeff" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/c5ed5f676418a83249cca025a2feb53d" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/c24cbb8efe41638a80b2849520d78b5b" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/adb0ecbe6f8e059568cd0b572543b3e4" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/c7e846c788a6193ac848215eea1af486" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/6b35e4136fb7aa6636ab2d0ca1a17a65" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/7dbb6851b870edd660ff1a866ad9cbaf" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/e98be98dcf6968ff1db95d8df722ba1d" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/bfab224dd24ba95d77a8cc73e38e3b4e" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/b3dd07bd148cfcbcf7a79b1b1bc59225" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/cfda871955d430a42dcbb7e240feff47" />
+
+  <ns0:BasicPattern rdf:about="&ns0;BasicPattern/f191d06d319ba182553c36485a60a29b" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/2e8f9c5f28b1271b41e01c162de5245b" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/3eca32151270662c4d97cd2a6db01c4c" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/479b25c696f7eea16341b41041e1dd10" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/4ae23e5428e62b8fab24d91ef53f550d" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/4bd337ada2b8fc909ce8097e0ad68f34" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/63a39951074b46463b26dd8d259963cd" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/77e25bdf521c3d9dd064b8eb2b187e57" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/7833e61115d57ac17155aa7d2972cbad" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/84c05c6e750d10f6da52a56c060b1f7e" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/89239dda179c7e93415ea9ad6c1ea1f0" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/90abfe706504e409544eb1ad878414f1" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/95df82be50225d15cb975b5307eac142" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/b1d304abe75b3a4440d637a00ebcf1a6" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/b281576522fb063352ffe468c9221fcd" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/c3c3c7adf8a2ff6070e2766795b291cd" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/c7612195e3767d25ec621e6f1193c1f3" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/e3048bd921c5798917b6e7f7583fa7bb" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/ecc80411f4f22a986a4517317dc4f0eb" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/fbe0954b615880e8a4b8747084c29d04" />
+
+  <ns0:ComplexPattern rdf:about="&ns0;ComplexPattern/ff8c15a3dfe1fa8e17fc6af395de9093" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/830e87dff8a05b5ac3a2f88af0af388c" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/ee4f90db3e3b274a180709c0d61ba7a3" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/6ab339148ae28f2c2d49ce233b7134f7" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/4e2c814d6f24f1f843568ba09c973946" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/f61806b2d326ad5e408629956f6f1d02" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/5ac4c6f0762c53bfb5368683606e9b97" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/7a57e8007ab7512d5cbd0863a1b96350" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/74789db8d4a2fb21e4750df1d1e66b78" />
+
+  <ns0:PatternVariable_CLASS rdf:about="&ns0;PatternVariable/ad9e2928d010e4131de714dcfaadb70c" />
+
+  <ns0:PatternVariable_GRAPH rdf:about="&ns0;PatternVariable/aba052772aefc434a5dd7357cb7cbf0c" />
+
+  <ns0:PatternVariable_GRAPH rdf:about="&ns0;PatternVariable/d8e077a126e6d8d6a6097aa9dcc290cf" />
+
+  <ns0:PatternVariable_GRAPH rdf:about="&ns0;PatternVariable/0f263ef6045b4bfdc71d9af7b8e6f9b2" />
+
+  <ns0:PatternVariable_GRAPH rdf:about="&ns0;PatternVariable/b5e0040aebdb61c1cb5a407a9d7dc753" />
+
+  <ns0:PatternVariable_GRAPH rdf:about="&ns0;PatternVariable/0843715ccefdf61356e03a2cd0bef25c" />
+
+  <ns0:PatternVariable_GRAPH rdf:about="&ns0;PatternVariable/31fef6130a60d304a1bdd247a783fc55" />
+
+  <ns0:PatternVariable_GRAPH rdf:about="&ns0;PatternVariable/1f1aca155b701181322c13b5d964ecc3" />
+
+  <ns0:PatternVariable_GRAPH rdf:about="&ns0;PatternVariable/5109f958fdf0cefe16d4ad7a2457948d" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/e0542e0c4141003489e743708aa07b56" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/f67772c8a469c601b9023820e52e4821" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/a45af79f7bffe1cb22e6b1e887c8cc71" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/2928578fefc191ebea7371c8df69c947" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/0135012e318410d50c13d69843996a9e" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/b19175b91c3d4dedb6a6b966af5d8c72" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/b9d9ba8933fff93df2377d62af500927" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/5dbb326be6c04e1a0bbc2872e5eeafee" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/f13ad1e2c665f1bd2ed8e452abcc125b" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/1a1ad4af0e5eb1df7acf178c93c1493f" />
+
+  <ns0:PatternVariable_PROPERTY rdf:about="&ns0;PatternVariable/5c631a7831a8289280358764f33aada5" />
+
+  <ns0:PatternVariable_RESOURCE rdf:about="&ns0;PatternVariable/c75b942fbc09fb61d9dc41737c9e0cca" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/330e4eb82a3745018687cb2f35e5751f" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/a7896e2fb25e37d0e0450538130359c8" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/ce0ebe5f8b1563f751f6da1f4b512861" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/9f86cbca6a07215b6ee481aa31c817aa" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/c53b010bd6b9d12166fb6771489da139" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/29f095a33dac608cf48fc9daae6aacbb" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/700edd747917089ba5e9e7f84f1f1440" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/ab512411e98e0012f428b2461d3cbbfc" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/c6075163247cff660359eb0cb412b8e0" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/178d5b644c5b646edd84a08b99bbc147" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/53d0c76c3b0e07d76dd67efa2be870dc" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/8cf602112c79d92eb26e0cf6e3fe19c0" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/31fd692607e66412a53466a7f2d3b24d" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/358c07fc0b69cb0102133fb50abbf2ee" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/5d05a596c298fbf5e1f4ccfa6f7dad3e" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/9a9a493e15c4764ccb9cb071f4547917" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/cb859ed418c00f9753ecbefb04a95802" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/fdf7d71c60685c49fa9f1d5c41c00f62" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/a97b9081580ab363c8e0ba26e8917049" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/781f8691acc38c28859de5f240415ff3" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/5c7ec2e85f8df04b9c27bba077a4334b" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/de0d3e867c056ad1177b83d664e6adcb" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/ef091de4b841b179cad293f2db98cd3b" />
+
+  <ns0:PatternVariable_TEMP rdf:about="&ns0;PatternVariable/2f9b43cc058fc204391703e6d819bf5e" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/d497151a6a959184cc37fac038937d53" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/bd848b606be6db1072c0f011c9fe12a3" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/d30916963ecf45772aa6d0757ed1e52f" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/4bf4df90b5d59d600943bba82b6e2a84" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/822b378767011d56614fbb94f244c41a" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/106e6ec9d09acf4c12bc2a973ab310f3" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/af96588f23ee984bbfdd75987a296d9c" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/13ab8313ca9be1eab51fce97e598929e" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/2eb614cde14bdb31e858c6f2ed1ea167" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/6b43a2cbb061dc72f0a70f59378aa77a" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/3838d4bd8e9e7859f027571f160ce00c" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/ba0590ab9d6f1dde7a726a5aa61bbce8" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/d0750b09a41d309948511f6a46fd356a" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/cae903a4d1c31f4a2cb1f3d47fce2cfb" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/b58ac025de2c2706ff95135102a3544f" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/8f2a9acb6fb28d6836a5fedc0d99ddc8" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/8b399b13640f8fdf0a97d9e3cfc67746" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/6b93a0751960868f28a6028433448cab" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/292cbbe75e4a20c95132f63668b7a660" />
+
+  <ns0:SelectQuery rdf:about="&ns0;SelectQuery/8d819ea449244282fc2d8ba2fbe835e2" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/02df73e35ba1591778efc60d936ca82e" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/070a0594c1615cd15ec170cba71f9385" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/0a9a76eff86b08317fc3f74316b6928c" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/0ba455b006ddb8621d646cf191d012a0" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/0fd738837916b9577f108820e2e1f397" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/2aa46cd0e7d6aac94a9d575fb49c6580" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/3cbc9e50c58b44177c992bc889bbbeb7" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/4876f82bf35a61ef099d9c8d4aa6b54a" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/55ad9eac88b8b01d741ebf88388c3f6b" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/5c190c4abce656652bce5f87dcd9eb4a" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/5fb2c2965a40c37e47f10d1c3de05fa2" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/628f83f53a610eee3c4de1c0a254534e" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/656b4b29a23decc91cbc370c9e0d30da" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/68f53e647b5debfe9ddb7f1c96842b95" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/814bf97ae4a5ed4e1df09206785c23e9" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/883daf8180e85733136ccd5beda97380" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/9b1602e0be701697f9a2d3c9b275497e" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/b04a3830eb4cd72a2eeac0cf67142061" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/b10f1a9a9afa83641d2d1a77f925ba9a" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/ca1c4b1df9854c3b01e7577d959874b2" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/cf230851d0130cbe3c9e5d09a2be6587" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/f33f5f01596bdfeb4521165841081052" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/f76ce568bc1be3d3f660752ec7839ad2" />
+
+  <ns0:SubPattern rdf:about="&ns0;BasicPattern/fd9d9f53c4e826c664744b8df45130b2" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/d1f603d3cfeaea0eac6d3896210a1517" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/9561360b485b209fb0f6629f9d97ec42" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/b3b4399b01cdb6434df69e421fae7e0a" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/f573df8f914039d67f8e3571bdc01fcc" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/372c9ee6d0b4772b0ae2f566d1b8ef5c" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/d4821a767b0eaf4fbe68e13209f6b601" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/173c348eab6416cffdb6f7734f22ea1e" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/48dfbd466cf79e1375e8b1182e85902f" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/19adf0548635a0491614e6eb11e108dc" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/957f7dfede817ef81f5349fe553aad0e" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/0b07dd34e5239a1cfcfb5e600f3fd289" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/8cff82591a35ec63575ba642bce22350" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/4c04eb527825958df5be567a912f164e" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/1e2d97b7fde74ce16c5b751ddf8b1fbf" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/1cecdad62e2f7c67f9fa0f745cf203bc" />
+
+  <ns0:UpdateQuery_Delete rdf:about="&ns0;UpdateQuery_Insert/ee45d665cc923269181c5482a0863760" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/ad06188c4f69fefa3a4f14e696a43610" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/474f25e3eba4b9fcba0a34c060b328cd" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/f206fdd98d163839b848e2fc71faf2ae" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/9c583a03c04b5d64aa75086ae388e175" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/b7ac088c6b90fc483d691294a6e71a48" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/05c85d350fb7ce178e9e4002a28a6db5" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/1a30ff0e516654783e4843a18873db57" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/8f70ddc287879166b2df37ac7cefa8a6" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/fe134d0b7893c12df2f54cb0a33fdd56" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/f5f48115de41d024a8638204d270fd56" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/2f20fe694b764b01bc658d6075ba8c4c" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/f2b8d560cd0d766e40a6611a4aa56f5b" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/69568d00240c3c5b26809a577d82cf45" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/161647a1024e9a4cb474b4c8aaf0024c" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/bc770bee53ef5b1842bd36cf77ac4b02" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/710a4311322bdf357e4196ecd27df647" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/83a41bb95b5246eecef2e4da903df997" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/93474db164c328b12c3c66ac75eb45e9" />
+
+  <ns0:UpdateQuery_Insert rdf:about="&ns0;UpdateQuery_Insert/9a6266fb673ff18a7e07833fa3fecd30" />
+
+  <ns0:PatternVariable_LANG rdf:about="&ns0;PatternVariable/bb70f9c09bcb25076ff655991bd77d54" />
+
+  <ns0:PatternVariable_LANG rdf:about="&ns0;PatternVariable/360d37984c2855fce0d7040cec64f7b5" />
+
+  <rdf:Description rdf:about="PatternVariable_LANG"
+    rdfs:label="Pattern Variable Type Language" />
+
+</rdf:RDF>
