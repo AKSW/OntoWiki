@@ -81,5 +81,15 @@ class FilterModule extends OntoWiki_Module
         return $content;
     }
 
+    public function getMenu() {
+	$edit = new OntoWiki_Menu();
+        $edit->setEntry('Add', 'javascript:showAddFilterBox()')
+                  ->setEntry('Remove all', 'javascript:removeAllFilters()');
+        
+	$main = new OntoWiki_Menu();
+        $main->setEntry('Edit', $edit);
+        
+        return $main;
+    }
 }
 
