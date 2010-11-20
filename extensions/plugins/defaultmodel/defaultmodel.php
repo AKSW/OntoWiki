@@ -44,6 +44,12 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
                 // everythings fine nothing to do here
             } else {
                 $owApp->selectedModel = $efStore->getModel($modelUri);
+                // set redirect to model info and send immediately
+                $response = Zend_Controller_Front::getInstance()->getResponse();
+                $url = new OntoWiki_Url(array('controller' => 'model', 'action' => 'info'), array());
+                $response->setRedirect((string)$url, 303)
+                         ->sendResponse();
+                exit;
             }
             if($config['setSelectedResource']){
                 $owApp->selectedResource = $owApp->selectedModel;
