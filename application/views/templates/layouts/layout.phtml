@@ -92,7 +92,7 @@
     
     <?php echo $this->inlineScript() ?>
     
-    <div class="section-mainwindows">
+    <div class="section-mainwindows <?php echo $this->placeholder('main.window.additionalclasses') ?>">
         <div class="window<?php echo (OntoWiki_Navigation::isDisabled() ? '' : ' tabbed') ?>">
             <?php
                 /**
