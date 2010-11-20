@@ -7,10 +7,8 @@
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_modules_application
- * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: application.php 4227 2009-10-02 21:24:32Z norman.heino $
  */
 class ApplicationModule extends OntoWiki_Module
 {   
@@ -69,18 +67,20 @@ class ApplicationModule extends OntoWiki_Module
      *
      * @return string
      */
-/*
     public function shouldShow()
     {
-        // show only if there are models (visible or hidden)
-        // or any other possible action for the user
-        if ($this->_store->getAvailableModels(true)) {
-            return true;
+        if ( ($this->_privateConfig->hideForAnonymousOnNoModels) &&
+                 ($this->_owApp->user->isAnonymousUser()) ) {
+            // show only if there are models (visible or hidden)
+            if ($this->_store->getAvailableModels(true)) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return true;
         }
     }
-*/
 
     /**
      * Returns the menu of the module
