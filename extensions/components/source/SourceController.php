@@ -15,8 +15,18 @@ class SourceController extends OntoWiki_Controller_Component
         $showList = false;
         
         // window title
-        $title       = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
-        $windowTitle = sprintf($translate->_('Source of Statements about %1$s') .' ('. $translate->_('without imported statements') . ')', $title);
+        if (!$resource) {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message("No resource selected", OntoWiki_Message::WARNING)
+            );
+            $title = 'RDF Source';
+        } else {
+            $title = $resource->getTitle() 
+                   ? $resource->getTitle() 
+                   : OntoWiki_Utils::contractNamespace($resource->getIri());
+        }
+        $windowTitle = sprintf($translate->_('Source of Statements about %1$s') 
+                     . ' ('. $translate->_('without imported statements') . ')', $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
 	    
         // check for N3 capability
@@ -28,10 +38,10 @@ class SourceController extends OntoWiki_Controller_Component
             );
         }
 
-        if (!$this->_owApp->selectedModel->isEditable()) {
+        if (!$this->_owApp->selectedModel || !$this->_owApp->selectedModel->isEditable()) {
             $allowSaving = false;
             $this->_owApp->appendMessage(
-                new OntoWiki_Message("You have no permissions to edit this model.", OntoWiki_Message::WARNING)
+                new OntoWiki_Message("No model selected or no permissions to edit this model.", OntoWiki_Message::WARNING)
             );
         }
 
