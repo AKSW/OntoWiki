@@ -1,8 +1,6 @@
 <?php
 /**
  * OntoWiki filter module template
- *
- * @version $Id: filter.phtml 4296 2009-10-13 12:16:54Z norman.heino $
  */
 $odd = true;
 ?>
@@ -12,20 +10,12 @@ $odd = true;
 	<p class="width98">
 		<label class="display-block" for="filtersearchtext-input"><?php echo $this->_('Search in list') ?></label>
 		<input class="text width99 inner-label" type="text" id="filtersearchtext-input" name="s" value="<?php echo $this->s ?>" />
-	</p>
-	
-	<p>
-		<!--a class="button submit"><?php echo $this->_('Submit') ?></a-->
-	</p>
+	</p>	
     </form>
-    <p>
-        <a class="minibutton" href="javascript:showAddFilterBox()" />Add complex Filter</a>
-        <a class="minibutton" href="javascript:removeAllFilters()" />Clear</a>
-    </p>
     <?php if ($this->filter) : ?>
     <?php $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r')) ?>
-    Active Filters:
-    <ul class="separated">
+    <?php echo $this->_('Active Filters') ?>:
+    <ul class="bullets-none separated">
         <?php foreach ($this->filter as $filter) : 
             if ( isset($filter['hidden'] ) && $filter['hidden'] ) {
                 continue;

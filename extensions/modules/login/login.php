@@ -48,8 +48,9 @@ class LoginModule extends OntoWiki_Module
      */
     public function getContents()
     {
-        // $url = new OntoWiki_Url();
-        $url = $_SERVER['REQUEST_URI'];
+        $request = $this->_owApp->request;
+        $url     = $request->getServer('REQUEST_URI');
+        
         $data = array(
             'actionUrl'   => $this->_config->urlBase . 'application/login', 
             'redirectUri' => urlencode((string) $url)

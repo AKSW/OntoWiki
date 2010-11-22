@@ -1,4 +1,4 @@
-<?
+<?php
 	//require_once("lib/Sajax.php");
 	require_once("PrefixHandler.php");
 	require_once("Options.php");

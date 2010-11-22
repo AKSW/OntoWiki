@@ -39,10 +39,10 @@ $this->placeholder('main.window.innerwindows')->append(
     	foreach($patterns as $key=>$pattern): 
     	$in = 'id="'.$key.'"';
     	?>
-        <tr <?=$in?> class="triplepattern">
-            <td><input type="text" class="text width25 pattern" name="s"  value="<?=$pattern['s']?>" /></td>
-            <td><input type="text" class="text width25 pattern" name="p"  value="<?=$pattern['p']?>" /></td>
-            <td><input type="text" class="text width25 pattern" name="o"  value="<?=$pattern['o']?>" /></td>
+        <tr <?php echo $in; ?> class="triplepattern">
+            <td><input type="text" class="text width25 pattern" name="s"  value="<?php echo  $pattern['s']; ?>" /></td>
+            <td><input type="text" class="text width25 pattern" name="p"  value="<?php echo $pattern['p']; ?>" /></td>
+            <td><input type="text" class="text width25 pattern" name="o"  value="<?php echo $pattern['o']; ?>" /></td>
             <td>
                 <img class="qb-addtp" src="<?php echo $this->themeUrlBase ?>/images/icon-add.png" title="<?php echo $this->_('Add triple pattern') ?>" />
                 <img class="qb-deltp" src="<?php echo $this->themeUrlBase ?>/images/icon-delete.png" title="<?php echo $this->_('Remove this triple pattern') ?>" />

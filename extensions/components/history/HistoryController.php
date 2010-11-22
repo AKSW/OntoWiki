@@ -344,6 +344,8 @@ class HistoryController extends OntoWiki_Controller_Component
 
         return true;
     }
+
+    //TODO generate feed about resource
 }
 
 

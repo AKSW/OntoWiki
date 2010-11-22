@@ -107,6 +107,12 @@ class ApplicationController extends OntoWiki_Controller_Base
             return;
         }
         
+        // reload selected model w/ new privileges
+        if ($this->_owApp->selectedModel instanceof Erfurt_Rdf_Model) {
+            $this->_owApp->selectedModel = $erfurt->getStore()->getModel((string) $this->_owApp->selectedModel);
+        }
+        
+        
         $this->_owApp->authResult = $authResult->getMessages();
     }
     

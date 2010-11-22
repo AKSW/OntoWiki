@@ -806,6 +806,8 @@ img.clickicon, a.clickicon img {
 .icon-edit   { background-image:url(./../images/icons/edit.png); }
 .icon-list   { background-image:url(./../images/icons/list.png); }
 .icon-save   { background-image:url(./../images/icons/save.png); }
+.icon-copy   { background-image:url(./../images/icons/copy.png); }
+.icon-add    { background-image:url(./../images/icons/add.png); }
 
 .icon-arrow-first    { background-image:url(./../images/icons/arrow-first.png); }
 .icon-arrow-last     { background-image:url(./../images/icons/arrow-last.png); }
@@ -815,6 +817,11 @@ img.clickicon, a.clickicon img {
 .icon-arrow-up       { background-image:url(./../images/icons/arrow-up.png); }
 .icon-arrow-down     { background-image:url(./../images/icons/arrow-down.png); }
 .icon-arrow-bottom   { background-image:url(./../images/icons/arrow-bottom.png); }
+
+.icon-toggle-on   { background-image:url(./../images/icons/toggle-on.png); }
+.icon-toggle-off  { background-image:url(./../images/icons/toggle-off.png); }
+
+
 
 /* -- 2.5. Links ------------------------------------------------------------ */
 

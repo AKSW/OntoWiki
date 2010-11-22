@@ -1,0 +1,57 @@
+<!-- <div 
+    about="<?php echo $this->resourceUri; ?>"
+    <?php 
+        foreach ($this->namespaces as $namespace => $prefix) {
+            echo ' xmlns:' . $prefix . '="' . $namespace . '" ';
+        }
+    ?>
+>
+    <h3> 
+        <span
+            content="<?php echo $this->otherdata['title'][0]['object']; ?>"
+            property="<?php echo $this->propertydata['title']['curi']; ?>"
+        >
+            <?php
+                echo $this->otherdata['title'][0]['object'];
+            ?>
+        </span>
+    </h3>
+    by
+    <h3>
+        <?php foreach ($this->siocdata['has_creator'] as $key => $creator) { ?>
+            <span
+                resource="<?php echo $creator['uri']; ?>"
+                rel="<?php echo $this->propertydata['has_creator']['curi']; ?>"
+            >
+                <?php
+                    echo $creator['object'];
+                ?>
+            </span>
+            <?php if (($key + 1) < sizeof($this->siocdata['has_creator'])) echo ', '; ?>
+        <?php } ?>
+    </h3>
+    <h4 style="float:right;">
+        <a onclick="javascript: $('.content_toggle').toggle();">toggle view</a>
+    </h4>
+    <div class="content_toggle">
+        <span
+            
+            property="<?php echo $this->propertydata['content']['curi']; ?>"
+        >
+            <?php
+                echo $this->siocdata['content'][0]['object'];
+            ?>
+        </span>
+    </div>
+        
+    <div class="content_toggle" style="display:none">
+        <span
+            
+            property="<?php echo $this->propertydata['encoded']['curi']; ?>"
+        >
+            <?php
+                echo $this->otherdata['encoded'][0]['object'];
+            ?>
+        </span>
+    </div>
+</div> -->
