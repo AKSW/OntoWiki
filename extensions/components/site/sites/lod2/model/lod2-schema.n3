@@ -45,9 +45,9 @@ lod2:wp a owl:ObjectProperty;
     skos:note "This property is used to link a resource to an associated LOD2 work package.";
     rdfs:label "work package".
 
-lod2:importantFeed a owl:ObjectProperty;
-    skos:note "Important feeds are rendered on top of the resources main content";
-    rdfs:label "important feed".
+lod2:feedRelevantFor a owl:ObjectProperty;
+    skos:note "The resource for which this object's feeds are relevant as well.";
+    rdfs:label "feeds relevant for".
 
 lod2:exhibitData a owl:ObjectProperty;
     skos:note "This property is used to link an article with an exhibit datasource (JSONP)";

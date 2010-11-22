@@ -22,7 +22,8 @@ project:OntoWiki a doap:Project;
 OntoWiki is a tool providing support for agile, distributed knowledge engineering scenarios. It facilitates the visual presentation of a knowledge base as an information map, with different views on instance data. It enables intuitive authoring of semantic content, with an inline editing mode for editing RDF content, similar to WYSIWIG for text documents.""";
     sioc:feed <http://blog.aksw.org/feed/?cat=5>;
     lod2:partner partner:ulei;
-    rdfs:label "OntoWiki".
+    rdfs:label "OntoWiki";
+    lod2:feedRelevantFor :Welcome .
 
 project:Triplify a doap:Project;
     skos:broader pages:TechnologyStack;
@@ -36,7 +37,8 @@ project:Triplify a doap:Project;
 Triplify provides a building block for the “semantification” of Web applications. As a plugin for Web applications, it reveals the semantic structures encoded in relational databases by making database content available as RDF, JSON or Linked Data. Triplify makes Web applications easier mashable and lays the foundation for next-generation, semantics-based Web searches.""";
     sioc:feed <http://blog.aksw.org/feed/?cat=15>;
     lod2:partner partner:ulei;
-    rdfs:label "Triplify".
+    rdfs:label "Triplify";
+    lod2:feedRelevantFor :Welcome .
 
 project:DL-Learner a doap:Project;
     skos:broader pages:TechnologyStack;
@@ -54,7 +56,8 @@ project:DL-Learner a doap:Project;
     lod2:abstract """DL-Learner is a tool for supervised Machine Learning in OWL and Description Logics. It can learn concepts in Description Logics (DLs) from user-provided examples. Equivalently, it can be used to learn classes in OWL ontologies from selected objects. It extends Inductive Logic Programming to Descriptions Logics and the Semantic Web. The goal of DL-Learner is to provide a DL/OWL-based machine learning tool to solve supervised learning tasks and support knowledge engineers in constructing knowledge and learning about the data they created. """;
     sioc:feed <http://blog.aksw.org/feed/?cat=10>;
     lod2:partner partner:ulei;
-    rdfs:label "DL-Learner".
+    rdfs:label "DL-Learner";
+    lod2:feedRelevantFor :Welcome .
 
 project:DBpedia-Extraction a doap:Project;
     skos:broader pages:TechnologyStack;
@@ -64,7 +67,8 @@ project:DBpedia-Extraction a doap:Project;
     lod2:abstract """DBpedia is a community effort to extract structured information from Wikipedia and to make this information available on the Web. It currently already contains a tremendous amount of valuable knowledge extracted from Wikipedia. The DBpedia knowledge base will be used for evaluation LOD2’s interlinking, fusing, aggregation and visualization components. The DBpedia multi-domain ontology will be used as background-knowledge for the LOD2 applications (WP7, WP8 and WP9), and as an alignment and annotation ontology for LOD in general.""";
     sioc:feed <http://blog.dbpedia.org/feed/>;
     lod2:partner partner:ulei, partner:fub, partner:openlink;
-    rdfs:label "DBpedia Extraction".
+    rdfs:label "DBpedia Extraction";
+    lod2:feedRelevantFor :Welcome .
 
 
 

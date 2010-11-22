@@ -11,7 +11,8 @@ partner:okfn a lod2:Partner;
     lod2:content """
 <p>The Open Knowledge Foundation (OKF) is a not-for-profit organization founded in 2004 and dedicated to promoting open knowledge in all its forms. It is a European leader in this field and prominent on the international stage. The Foundation has pioneered work in developing robust legal mechanisms for sharing data - and has taken a central role in helping to develop standards for openness in knowledge and services. It also works on the infrastructure for open data users and producers. This includes CKAN, a community driven resource for open data, which is currently being used by the UK Government for its Data.gov.uk project, and KForge, a suite of tools for knowledge development being used by academic researchers and civic software developers. Finally it hosts a number of open data and content projects, from a web application to represent UK public finance using best of breed visualization technologies to project to a database of artistic works that have fallen into the public domain. Crucially the Foundation acts as a hub, drawing together representatives from across the knowledge society - from academics, public servants and entrepreneurs to data experts, archivists and web developers. Forums, workshops and an annual conference serve to strengthen this network.</p>
 """;
-    lod2:abstract """Adaptation of the LOD2 Stack for GovData.eu Support with legal mechanisms for knowledge sharing and with open standards. Research and consultation with end-user communities. Dissemination and communication with relevant knowledge users and providers.""".
+    lod2:abstract """Adaptation of the LOD2 Stack for GovData.eu Support with legal mechanisms for knowledge sharing and with open standards. Research and consultation with end-user communities. Dissemination and communication with relevant knowledge users and providers.""";
+    lod2:feedRelevantFor :Welcome .
 
 project:CKAN a doap:Project;
     skos:broader pages:TechnologyStack;
@@ -21,5 +22,6 @@ project:CKAN a doap:Project;
     sioc:feed <http://ckan.okfn.org/feed/>;
     foaf:depiction <http://farm4.static.flickr.com/3550/3856810834_9be0ed9556_o.jpg>;
     lod2:partner partner:okfn;
-    rdfs:label "CKAN (Comprehensive Knowledge Archive Network)".
+    rdfs:label "CKAN (Comprehensive Knowledge Archive Network)";
+    lod2:feedRelevantFor :Welcome .
 
