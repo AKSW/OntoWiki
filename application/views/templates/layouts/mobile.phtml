@@ -59,6 +59,7 @@
     
     <!-- mobile version js -->
     <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/external.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/store.js"></script>
     <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/local.js"></script>
     <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/base.js"></script>
     
@@ -68,11 +69,22 @@
     <!-- jQuery Mobile -->
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.css" />
     <script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.js"></script>
+    
+    <!-- templates -->
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 
     <script type="text/javascript" src="extensions/modules/modellist/modellist.js"></script>
     <script type="text/javascript" src="extensions/modules/navigation/navigation.js"></script>    
 </head>
 <body>
+    <!-- TEMPLATES -->
+    <script id="kbTemplate" type="text/x-jquery-tmpl">
+        <li role="option">
+            <a href="#" onclick="getBase(this); return false;" about="${uri}">${label}</a>
+    	</li>
+    </script>
+
+
     <!-- INDEX PAGE -->
     <div id="home" data-role="page">
         <div data-role="header">
@@ -85,7 +97,7 @@
         </div>
         
         <div data-role="content">
-            <?php echo $this->modules('main.mobile.baselist') ?>
+            <ul data-role="listview" data-inset="true" id="kb-listholder"></ul>
         </div>
     </div>
     

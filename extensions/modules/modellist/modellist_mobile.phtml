@@ -6,16 +6,15 @@
  * @version $Id: modellist.phtml 3045 2009-05-07 11:36:02Z pfrischmuth $
  */
 ?>
-<?php if (!empty($this->models)): ?>
-    <ul data-role="listview" data-inset="true" role="listbox">
-    	<?php foreach ($this->models as $modelDetails): ?>
-    		<li role="option">
-                <a href="#" onclick="getBase(this); return false;" about="<?php echo $modelDetails['graphUri'] ?>">
-                    <?php echo $modelDetails['label'] ?>
-                </a>
-    		</li>
-    	<?php endforeach; ?>
-    </ul>
-<?php else: ?>
-    <p class="messagebox info"><?php echo $this->_('No knowledge bases found.') ?></p>
-<?php endif; ?>
+{"data":[
+<?php 
+if (!empty($this->models)){
+    $length = count($this->models);
+    for ($i = 0; $i < $length; $i++){
+        $modelDetails = $this->models[$i];
+        echo '{"label":"'.$modelDetails['label'].'", "uri":"'.$modelDetails['graphUri'].'"}';
+        if( $i < $length-1 ) echo ", ";
+    }
+}
+?>
+]}

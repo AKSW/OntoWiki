@@ -2,6 +2,9 @@
  * On document ready, prepare needed stuff
  */
 $(document).ready(function(){
+    getKBList();
+
+
     // prepare nav page on show
     $("#nav").bind("pagebeforeshow", function(){
         redrawNavigation();
