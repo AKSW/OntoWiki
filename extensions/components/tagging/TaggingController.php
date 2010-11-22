@@ -9,11 +9,8 @@ require_once 'OntoWiki/Model/TitleHelper.php';
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_components_tagging
- * @author     Atanas Alexandrov <sirakov@gmail.com>
- * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: TaggingController.php 4319 2009-10-19 09:11:57Z sirakov $
  */
 
 class TaggingController extends OntoWiki_Controller_Component
@@ -224,7 +221,7 @@ class TaggingController extends OntoWiki_Controller_Component
                         sameTerm(?p, <'.$conf->tagproperty.'>) && 
                         sameTerm(?o, <'.$tagresource.'>)
                     ) . }';
-                    $count = $store->countWhereMatches($modelURI, $where, "?s ?p ?o");
+                    $count = $store->countWhereMatches($modelURI, $where, "*");
 
                     // if the resource is not tagged with this tagresource
                     if ($count == 0) {

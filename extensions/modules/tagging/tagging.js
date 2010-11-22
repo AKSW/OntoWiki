@@ -32,7 +32,7 @@ $(document).ready(function() {
         return false;
     });
 	
-    $('#tagging-input').autocomplete(function(term, cb) { uriSearch(term, cb); }, {
+    $('#tagging-input')._autocomplete(function(term, cb) { uriSearch(term, cb); }, {
     minChars: 3,
     delay: 1000,
     max: 100,

@@ -26,7 +26,7 @@ class NavigationModule extends OntoWiki_Module
      */
     public function getMenu() {
         $request = Zend_Controller_Front::getInstance()->getRequest();
-        if($request->isMobile()){
+        if($request->isMobile() || !$this->_privateConfig->defaults->showMenu){
             return new OntoWiki_Menu();
         }
 

@@ -6,14 +6,26 @@ default:
 	@echo "     'make zend' (download and install Zend under libraries)"
 
 pull:
-	hg --repository . pull
-	hg --repository libraries/Erfurt pull
-	hg --repository libraries/RDFauthor pull
+	@hg --repository . pull
+	@hg --repository libraries/Erfurt pull
+	@hg --repository libraries/RDFauthor pull
 
-update:
-	hg --repository . pull -u
-	hg --repository libraries/Erfurt pull -u
-	hg --repository libraries/RDFauthor pull -u
+update: pull
+	@echo "\nOntoWiki"
+	hg --repository . update
+	@echo "\nErfurt"
+	hg --repository libraries/Erfurt update
+	@echo "\nRDFauthor"
+	hg --repository libraries/RDFauthor update
+
+force-update: pull
+	@echo "I force the update of the subrepos ..."
+	@echo "\nOntoWiki"
+	hg --repository . update
+	@echo "\nErfurt"
+	hg --repository libraries/Erfurt update -c
+	@echo "\nRDFauthor"
+	hg --repository libraries/RDFauthor update -c
 
 status:
 	hg --repository . status

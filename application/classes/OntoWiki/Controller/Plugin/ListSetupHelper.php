@@ -31,7 +31,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         // only once and only when possible
         if (!$this->_isSetup &&
-            $ontoWiki->selectedModel instanceof Erfurt_Rdf_Model &&
             (
                 /*
                  *these are paramters that change the list
@@ -58,6 +57,17 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
                 //reset config from tag explorer
                 unset($session->cloudproperties);
+            }
+
+            //react on m parameter to set the selected model
+            if (isset($request->m)) {
+                
+                try {
+                    $model = $store->getModel($request->getParam('m', null, false));
+                    $ontoWiki->selectedModel = $model;
+                } catch (Erfurt_Store_Exception $e) {
+
+                }
             }
 
             $list = $listHelper->getLastList();
@@ -93,8 +103,8 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 
                 return json_decode($string);
             }
-            //echo $request->instancesconfig; exit;
-            //a shortcut for s param
+            
+            //a shortcut for search param
             if(isset($request->s)){
                 if(isset($request->instancesconfig)){
                     $config = _json_decode($request->instancesconfig);

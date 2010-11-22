@@ -144,8 +144,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // set path variables
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
-        $port        = $_SERVER['SERVER_PORT'] != '80' ? ':' . $_SERVER['SERVER_PORT'] : '';
-        $urlBase     = sprintf('%s://%s%s%s', $protocol, $_SERVER['SERVER_NAME'], $port, $rewriteBase);
+        $port        = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80') 
+                     ? (':' . $_SERVER['SERVER_PORT']) 
+                     : '';
+        $urlBase     = sprintf('%s://%s%s%s', $protocol, isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', $port, $rewriteBase);
         
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);
@@ -167,8 +169,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
            // log everything
            $config->log->level = 7;
         }
-        
-        
         
         return $config;
     }

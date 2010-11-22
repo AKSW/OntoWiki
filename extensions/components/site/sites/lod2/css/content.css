@@ -117,8 +117,8 @@
   .section a:visited:after,
   #footer a:after
   {
-    content:'↘';
-    color:#0066cc;
+      content:' ' url(./../img/icon-linkarrow.png);
+      white-space: nowrap;
   }
   
   .section a:focus,
@@ -246,7 +246,7 @@
   {
     margin:0;
     padding:0.75em 0;
-    border-bottom:solid 1px #0099cc;
+    border-bottom:solid 2px #e1f0f7; /* solid 1px #0099cc; */
   }
 
   /* -- 4. Newsfeed --------------------------------------------------------- */
@@ -255,7 +255,7 @@
   {
       margin:0;
       padding:0.75em 0;
-      border-bottom:solid 1px #0099cc;
+      border-bottom:solid 2px #e1f0f7;
   }
 
   /* -- 5. Similar Instances ------------------------------------------------ */
@@ -269,7 +269,7 @@
   {
       margin:0;
       padding:0.75em 0;
-      border-bottom:solid 1px #0099cc;
+      border-bottom:solid 2px #e1f0f7;
   }
 
   #similarinstances .si_instances
@@ -319,6 +319,102 @@
   div.pager_prevnext a:hover
   {
       background-color: #e1f0f7;
+  }
+
+  /* -- 7. Simile Exhibit Publications -------------------------------------- */
+
+  div.exhibit-collectionView-header-sortControls
+  {
+      display:block; margin:0.75em 0; padding: 0;
+      text-align:left !important;
+  }
+
+  span.exhibit-collectionView-header-groupControl
+  {
+      display:block; margin:0; padding: 0;
+  }
+
+  a.exhibit-optionWidget
+  {
+      display:inline-block;
+      margin-left: -1em;
+  }
+  a.exhibit-optionWidget img
+  {
+      float:none;
+      vertical-align: middle !important;
+      padding:0; margin:0;
+      background-color: #e1f0f7;
+  }
+
+  div.exhibit-cloudFacet-header,
+  div.exhibit-facet-header
+  {
+      padding:0 !important;
+      margin-top:0.75em;
+  }
+  div.exhibit-cloudFacet-body
+  {
+      padding:0 !important;
+      border: none !important;
+  }
+  div.exhibit-cloudFacet-body span
+  {
+      font-size:1em !important;
+  }
+  span.exhibit-cloudFacet-value-selected
+  {
+      color:#000 !important;
+      background-color: #e1f0f7 !important;
+}
+
+  span.exhibit-facet
+  {
+      display:block;
+      padding:0; margin:0;
+  }
+  div.exhibit-facet-body-frame
+  {
+      clear: inherit !important;
+  }
+  div.exhibit-facet-body
+  {
+      /* height: auto !important; */
+  }
+  div.exhibit-resizableDivWidget-resizer
+  {
+      clear: inherit !important;
+  }
+
+  div.exhibit-menu-popup
+  {
+      color:#fff !important;
+      background-color:#006aa8 !important; /* #0066cc; */
+      background-color:rgba(0,106,168,0.9) !important;
+      border:none !important;
+      -webkit-box-shadow:0em 0.25em 0.25em #666;
+      -moz-box-shadow:0em 0.25em 0.25em #666;
+  }
+  div.exhibit-menu-popup hr
+  {
+    display: none !important;
+  }
+  div.exhibit-menu-popup a.exhibit-menu-item div
+  {
+      color:#fff !important;
+      border-top:dotted 1px #fff !important;
+      padding:0.6em 20px !important;
+  }
+  div.exhibit-menu-popup a.exhibit-menu-item:first-child div
+  {
+      border-top:none !important;
+  }
+  div.exhibit-menu-popup a.exhibit-menu-item:focus div,
+  div.exhibit-menu-popup a.exhibit-menu-item:hover div
+  {
+      color:#fff !important;
+      background-color:#004471 !important; /* #02628f; */
+      /* text-decoration: underline !important; */
   }
 
   /* -- X. Widgets ---------------------------------------------------------- */

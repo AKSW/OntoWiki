@@ -29,6 +29,7 @@ class OntoWiki_Toolbar
     const ADD       =   3;
     const EDITADD   =   4;
     const DELETE    =   5;
+    const EXPORT    =   6;
     const SUBMIT    =  10;
     const RESET     =  11;
     const SEPARATOR = 100;
@@ -45,7 +46,8 @@ class OntoWiki_Toolbar
         self::EDITADD => array('name' => 'Add', 'image' => 'editadd'), 
         self::DELETE  => array('name' => 'Delete', 'image' => 'delete'), 
         self::SUBMIT  => array('name' => 'Submit', 'class' => 'submit', 'image' => 'go2'), 
-        self::RESET   => array('name' => 'Reset', 'class' => 'reset', 'image' => 'reset') 
+        self::RESET   => array('name' => 'Reset', 'class' => 'reset', 'image' => 'reset'),
+        self::EXPORT  => array('name' => 'Export', 'class' => 'export', 'image' => 'save')
     );
     
     /** 

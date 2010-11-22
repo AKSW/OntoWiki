@@ -45,6 +45,14 @@ lod2:wp a owl:ObjectProperty;
     skos:note "This property is used to link a resource to an associated LOD2 work package.";
     rdfs:label "work package".
 
+lod2:importantFeed a owl:ObjectProperty;
+    skos:note "Important feeds are rendered on top of the resources main content";
+    rdfs:label "important feed".
+
+lod2:exhibitData a owl:ObjectProperty;
+    skos:note "This property is used to link an article with an exhibit datasource (JSONP)";
+    rdfs:label "exhibit data resource".
+
 ###
 # Datatype Properties
 ###
@@ -58,6 +66,25 @@ lod2:abstract a owl:DatatypeProperty;
     rdfs:label "abstract";
     rdfs:range rdfs:Literal;
     rdfs:subPropertyOf content:encoded.
+
+lod2:contentSideTop a owl:DatatypeProperty;
+    rdfs:label "side content (top)";
+    skos:note "use this for sidebar content (appended on top of the sidebar)";
+    rdfs:range rdfs:Literal;
+    rdfs:subPropertyOf content:encoded.
+
+lod2:contentSideBottom a owl:DatatypeProperty;
+    rdfs:label "side content (bottom)";
+    skos:note "use this for sidebar content (appended on bottom of the sidebar)";
+    rdfs:range rdfs:Literal;
+    rdfs:subPropertyOf content:encoded.
+
+lod2:contentRaw a owl:DatatypeProperty;
+    rdfs:label "raw content";
+    skos:note "use this raw encoded content (will not be tidy-uped)";
+    rdfs:range rdfs:Literal;
+    rdfs:subPropertyOf content:encoded.
+
 
 ###
 # Classes

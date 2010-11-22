@@ -36,6 +36,7 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         $lists = $this->_owApp->session->managedLists;
         
         if (key_exists($name, $lists)) {
+            $lists[$name]->setStore($this->_owApp->erfurt->getStore());
             return $lists[$name];
         }
         

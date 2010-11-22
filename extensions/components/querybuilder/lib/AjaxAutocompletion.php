@@ -1,4 +1,4 @@
-<?
+<?php
 	//@session_start();
 	require_once("PrefixHandler.php");
 	require_once("Options.php");

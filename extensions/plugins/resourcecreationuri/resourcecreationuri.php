@@ -1,5 +1,7 @@
 <?php
 require_once 'OntoWiki/Plugin.php';
+require_once ONTOWIKI_ROOT . 'extensions/plugins/resourcecreationuri/classes/ResourceUriGenerator.php';
+
 /**
  * Plugin that tries to make nice uris if new resources are created.
  *
@@ -30,21 +32,6 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
     private $insertModel    = null;
     
     /**
-     * @var Array that holds multibyte and special chars to uri compatible chars.
-     *      All other non-alphanumeric will be deleted
-     */
-    private $charTable = array (
-        'Ä'     => 'Ae' ,
-        'ä'     => 'ae' ,
-        'Ü'     => 'Ue' ,
-        'ü'     => 'ue' ,
-        'Ö'     => 'Oe' ,
-        'ö'     => 'oe' ,
-        ' '     => '_'  ,
-        PHP_EOL => '_'
-    );
-    
-    /**
      * Try to generate nice uri if new resource uri is found
      * @param   $event triggered Erfurt_Event
      * @return  null
@@ -69,10 +56,12 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
                             . '\/([A-Z]|[0-9]){32,32}'
                             . '/i';
 
-            $nameParts = $this->loadNamingSchema();
+            // $nameParts = $this->loadNamingSchema();
+            
+            $gen = new ResourceUriGenerator($this->insertModel,$this->_pluginRoot . 'plugin.ini');
 
             if ( count($event->insertData) == 1 && preg_match($pattern,$subjectUri) ) {
-                $newUri = $this->buildNiceUri($subjectUri, $nameParts);
+                $newUri = $gen->generateUri($subjectUri, ResourceUriGenerator::FORMAT_RDFPHP, $this->insertData);
                 $temp   = array();
                 foreach ($this->insertData[$subjectUri] as $p => $o) {
                     $temp[$newUri][$p] = $o;
@@ -91,186 +80,4 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
     
     }
     
-    /**
-     * Nice uri building method
-     * @param   $uri string to convert to nice uri
-     * @return  string nice uri
-     */
-    private function buildNiceUri($uri, $nameParts)
-    {
-        $newInstance = $this->insertData[$uri];
-        
-        $titleHelper = new OntoWiki_Model_TitleHelper($this->insertModel);
-        
-        // prepare TitleHelper by adding all possible resources
-        foreach ($newInstance as $prop => $object) {
-            $titleHelper->addResource($prop);
-            foreach($object as $value) {
-                if ($value['type'] === 'uri') {
-                    $titleHelper->addResource($value['value']);
-                }
-            }
-        } 
-
-        $uriParts = array();
-
-        foreach($nameParts as $part) {
-            if ( is_string($this->_privateConfig->property->$part) ) {
-                $property = $this->_privateConfig->property->$part;
-                if ( array_key_exists($property,$newInstance) && $value = current($newInstance[$property]) ) {
-                    if ($value['type'] === 'uri') {
-                        $uriParts[$part] = $this->convertChars($titleHelper->getTitle($value['value']));
-                    } else {
-                        $uriParts[$part] = $this->convertChars($value['value']);
-                    }
-                } else {
-                    // do nothing (no data to generate title from found)
-                }
-            } elseif ( is_array($this->_privateConfig->property->$part->toArray()) ) {
-                foreach ( $this->_privateConfig->property->$part as $subpart) {
-                    $property = $subpart;
-                    if ( array_key_exists($property,$newInstance) && $value = current($newInstance[$property]) ) {
-                        if ($value['type'] === 'uri') {
-                            $uriParts[$part] = $this->convertChars($titleHelper->getTitle($value['value']));
-                        } else {
-                            $uriParts[$part] = $this->convertChars($value['value']);
-                        }
-                        // on first value exit foreach
-                        break;
-                    } else {
-                        // do nothing (no data to generate title from found)
-                    }
-                }
-            } else {
-                // do nothing
-            }
-        
-        }
-
-        $baseUri = $this->insertModel->getBaseUri();
-        $baseUriLastCharacter = $baseUri[ strlen($baseUri) - 1];
-        if ( ($baseUriLastCharacter == '/') || ($baseUriLastCharacter == '#') ) {
-            $createdUri = $baseUri . implode('/',$uriParts);
-        } else {
-            // avoid ugly glued uris without separator
-            $createdUri = $baseUri . '/' . implode('/',$uriParts);
-        }
-        
-        $count = $this->countUriPattern($createdUri);
-
-        if ($count) {
-            return $createdUri . '_' . $count;
-        } else {
-            return $createdUri;
-        }
-    }
-    
-    /**
-     * Load Naming Scheme from Model or Ini
-     * @return Array
-     */
-    private function loadNamingSchema()
-    {
-        if ( $this->_privateConfig->fromModel ) {
-        
-            $query          = new Erfurt_Sparql_Query2();
-            $schemaVar      = new Erfurt_Sparql_Query2_Var('schema');
-            
-            $subjectArray   = array_keys($this->insertData);
-            
-            // Test if exists at least one subject and if this first subject has a type statement
-            if ( sizeof($subjectArray) > 0 &&
-                 array_key_exists($this->_privateConfig->property->type, $subjectArray)
-            ) {
-                $subjectUri     = current($subjectArray);
-                $typeArray      = current($this->insertData[$subjectUri][$this->_privateConfig->property->type]);
-                $type           = $typeArray['value'];
-            
-                $query->addTriple(
-                    new Erfurt_Sparql_Query2_IriRef($type),
-                    new Erfurt_Sparql_Query2_IriRef($this->_privateConfig->namingSchemeProperty),
-                    $schemaVar
-                );
-                
-                $query->setDistinct(true);
-                
-                $result = $this->insertModel->sparqlQuery($query);
-                
-                if ( !empty($result['bindings']) ) {
-                    $schema = current($result);
-                    return explode('/',$schema['schema']['value']);
-                }
-            }
-            
-        }       
-        
-        return explode('/',$this->_privateConfig->defaultNamingScheme);
-        
-    }
-    
-    /**
-     * Method to convert chars in a string to uri compatible
-     * @param $str any string
-     * @return string with some characters replaced or deleted
-     */
-    private function convertChars($str)
-    {
-        foreach ($this->charTable as $key => $value) {
-            $str = str_replace($key, $value, $str);
-        }
-        $str= preg_replace('/[^a-z0-9_]+/i','',$str);
-        $str = substr($str,0,32);
-        return $str;
-    }
-    
-    /**
-     * Method that counts already existing distinct datasets for given uri
-     * @param $uri uri string
-     * @return int distinct existing datasets
-     */
-    private function countUriPattern($uri)
-    {
-        $query = new Erfurt_Sparql_Query2();
-        $query->setDistinct(true);
-        
-        $unions = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
-        
-        $subjectVar = new Erfurt_Sparql_Query2_Var('s');
-        $query->addProjectionVar($subjectVar);
-        
-        // create six temporary vars (not selected in query)
-        $tempVars = array();
-        for ($i = 0;$i < 6; $i++) {
-            $tempVars[] = new Erfurt_Sparql_Query2_Var('var' . $i);
-        }
-        
-        $singlePattern = new Erfurt_Sparql_Query2_GroupGraphPattern();
-        $singlePattern->addTriple($subjectVar,$tempVars[0],$tempVars[1]);
-        $unions->addElement($singlePattern);
-        
-        $singlePattern = new Erfurt_Sparql_Query2_GroupGraphPattern();
-        $singlePattern->addTriple($tempVars[2],$subjectVar,$tempVars[3]);
-        $unions->addElement($singlePattern);
-        
-        $singlePattern = new Erfurt_Sparql_Query2_GroupGraphPattern();
-        $singlePattern->addTriple($tempVars[4],$tempVars[5],$subjectVar);
-        $unions->addElement($singlePattern);
-        
-        $query->getWhere()->addElement($unions);
-
-        $filter = new Erfurt_Sparql_Query2_ConditionalOrExpression();
-
-        $filter->addElement(
-            new Erfurt_Sparql_Query2_Regex(
-                    $subjectVar ,
-                    new Erfurt_Sparql_Query2_RDFLiteral('^' . $uri),
-                    new Erfurt_Sparql_Query2_RDFLiteral('i')
-            )
-        );
-
-        $query->addFilter($filter);
-        $result = $this->insertModel->sparqlQuery($query);
-        return count($result);
-    }
-
 }

@@ -124,6 +124,19 @@ class IndexController extends OntoWiki_Controller_Base
 
         }
     }
+    
+    /**
+     * This action display simply no main window section and is useful
+     * in combination with index.default.controller and index.default.action
+     */
+    public function emptyAction()
+    {
+        // service controller needs no view renderer
+        $this->_helper->viewRenderer->setNoRender();
+        OntoWiki_Navigation::disableNavigation();
+        // sorry for this hack, but I dont wanted to modify the the main layout too much ...
+        $this->view->placeholder('main.window.additionalclasses')->set('hidden');
+    }    
 }
 
 

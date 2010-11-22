@@ -102,7 +102,8 @@ class ModellistModule extends OntoWiki_Module
             $temp['selected'] = ($selectedModel == $graphUri ? 'selected' : '');
          
             // use URI if no title exists
-            $temp['label'] = $titleHelper->getTitle($graphUri, $lang);
+            $label = $titleHelper->getTitle($graphUri, $lang);
+            $temp['label'] = !empty($label) ? $label : $graphUri;
             
             $temp['backendName'] = $true;
          

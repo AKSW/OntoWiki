@@ -57,6 +57,9 @@
         <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
     <?php endif; ?>
 <?php else: ?>
+	<?php if (isset($this->prePropertiesContent)): ?>
+    	<div><?php echo $this->prePropertiesContent; ?></div>    
+	<?php endif; ?>
     <?php if (isset($this->prePropertiesContent)): ?>
         <div><?php echo $this->prePropertiesContent; ?></div>
     <?php endif; ?>
