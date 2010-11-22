@@ -6,57 +6,28 @@
 $odd = true;
 ?>
 <?php if($this->mobile): ?>
-        <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>
-            <!-- <h2 class="navRoot fancybuttons"> -->
-            <?php if (isset($this->rootEntry)):?>
-                <h3 class="hasMenu" about="<?php echo $this->rootEntry['uri'] ?>">
-                    <?php echo $this->rootEntry['title'] ?>
-                </h3>
-                <div data-role="controlgroup" data-type="horizontal">
-                    <a href="#" class="navFirst" onclick="$.pageLoading(); return false;" data-role="button" title="Go to root level">Root</a>
-                    <a href="#" class="navBack" onclick="$.pageLoading(); return false;" data-role="button" title="Go to previous level">Back</a>
-                </div>
-            <?php else: ?>
-                <?php if ( isset($this->rootName) ){
-                    if( isset($this->rootLink) ){
-                       echo '<a class="navigation" href="'.$this->rootLink.'" >';
-                       echo $this->rootName;
-                       echo '</a>';
-                    }else{
-                        echo $this->rootName;
-                    }
-                }else{ ?>
-                    <!-- Root -->
-                <?php } ?>
-            <?php endif ?>
-            <!-- </h2> -->
-        <?php endif ?>
-        <?php if (!empty($this->messages)): ?>
-            <?php foreach ($this->messages as $message): ?>
-            <p class="messagebox <?php echo $message['type'] ?>">
-                <?php echo $message['text'] ?>
-            </p>
-            <?php endforeach; ?>
-        <?php endif ?>
-        <?php if ($this->entries) :?>
-            <ul data-role="listview" data-inset="true" role="listbox">
-            <?php foreach ($this->entries as $uri => $entry): ?>
-                <li role="option" class="<?php if( $entry['sub'] > 0 ){ echo 'arrow'; } ?>" about="<?php echo $uri ?>">
-                    <!-- href="<?php echo $entry['link'] ?>" -->
-                    <a href="#nav-item-menu" onclick="onNavigationEntryClick(this);return false;" about="<?php echo $entry['link'] ?>"
-                       data-rel="dialog" data-transition="pop">
-                       <?php echo $entry['title'] ?>
-                    </a>
-                    <?php if( $entry['sub'] > 0 ): ?>
-                        <!-- <small class="navDeeper counter">&nbsp;</small> -->
-                    <?php endif; ?>
-                </li>
-            <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-        <?php if ($this->showMeMore) :?>
-        <a href="#" onclick="navigationEvent ('more', '');return false;" data-role="button" id="naviganion-more"> Show Me More</a>
-        <?php endif; ?>
+{
+<?php
+echo '"showRoot":';
+echo isset($this->rootEntry)?'"true"':'"false"';
+echo ",";
+echo '"rootEntry":"'.$this->rootEntry['uri'].'",';
+echo '"rootTitle":"'.$this->rootEntry['title'].'",';
+echo '"data":[';
+
+if ($this->entries){
+    $length = count($this->entries);
+    foreach ($this->entries as $uri => $entry){
+        echo '{"uri":"'.$uri.'", "sub":"'.$entry['sub'].'", "entry_link":"'.$entry['link'].'", "entry_title":"'.$entry['title'].'"}';
+        if(--$length > 0) echo ",";
+    } 
+}
+
+echo "],";
+echo '"showMore":';
+echo $this->showMeMore?'"true"':'"false"';
+?>
+}
 <?php else: ?> <!-- END MOBILE LAYOUT PART -->
         <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>
             <h2 class="navRoot fancybuttons">

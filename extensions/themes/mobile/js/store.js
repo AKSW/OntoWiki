@@ -14,8 +14,39 @@ dataProvider.prototype.getKBList = function(){
     }
 }
 
+dataProvider.prototype.getNavigation = function(event, uri){
+    if( typeof uri == 'undefined' || uri == null) uri = "init";
+    var temp = "#navTemplate";
+    var cont = "#nav-list";
+    
+    if( typeof localStorage["ontowiki.nav."+uri] != 'undefined' && localStorage["ontowiki.nav."+uri] != null){
+        this.renderData($.parseJSON(localStorage["ontowiki.nav."+uri]), temp, cont);
+        $(document).trigger('navigation.done');
+    }else{
+        navigationEvent(event);
+    }
+};
+
+dataProvider.prototype.saveNavigation = function(data){
+    var temp = "#navTemplate";
+    var cont = "#nav-list";
+    // data
+    var dataArr = $.parseJSON(data);
+    
+    // get uri
+    var uri = dataArr["rootEntry"];
+    if( uri.length < 1 ) uri = "init";
+    
+    // save to store
+    localStorage["ontowiki.nav."+uri] = data;
+
+    this.renderData(dataArr, temp, cont);
+};
+
 // renders data
 dataProvider.prototype.renderData = function(data, template, container){
+    // clear
+    $(container).empty();
     // render
     $(template).tmpl(data).appendTo(container);
     // try refresh listview

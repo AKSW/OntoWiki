@@ -74,14 +74,41 @@
     <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 
     <script type="text/javascript" src="extensions/modules/modellist/modellist.js"></script>
-    <script type="text/javascript" src="extensions/modules/navigation/navigation.js"></script>    
+    <script type="text/javascript" src="extensions/modules/navigation/navigation.mobile.js"></script>    
 </head>
 <body>
+    <!-- blank modules -->
+    <?php echo $this->modules('main.mobile.navigation', array('json' => true)) ?>
+
     <!-- TEMPLATES -->
+    <!-- kb list template -->
     <script id="kbTemplate" type="text/x-jquery-tmpl">
         <li role="option">
             <a href="#" onclick="getBase(this); return false;" about="${uri}">${label}</a>
     	</li>
+    </script>
+    <!-- nav template -->
+    <script id="navTemplate" type="text/x-jquery-tmpl">
+        {{if showRoot == "true"}}
+            <h3 class="hasMenu" about="<?php echo $this->rootEntry['uri'] ?>">
+                <?php echo $this->rootEntry['title'] ?>
+            </h3>
+            <div data-role="controlgroup" data-type="horizontal">
+                <a href="#" class="navFirst" onclick="$.mobile.pageLoading(); return false;" data-role="button" title="Go to root level">Root</a>
+                <a href="#" class="navBack" onclick="$.mobile.pageLoading(); return false;" data-role="button" title="Go to previous level">Back</a>
+            </div>
+        {{/if}}
+        {{each data}}
+            <li role="option" about="${uri}" class="{{if sub == 1}}arrow{{/if}}" >
+                <a href="#nav-item-menu" onclick="onNavigationEntryClick(this);return false;" about="${entry_link}"
+                   data-rel="dialog" data-transition="pop">
+                   ${entry_title}
+                </a>
+            </li>
+        {{/each}}
+        {{if showMore == "true"}}
+            <a href="#" onclick="navigationEvent ('more', '');return false;" data-role="button" id="naviganion-more"> Show Me More</a>
+        {{/if}}
     </script>
 
 
@@ -124,7 +151,7 @@
         </div>
     
         <div data-role="content">
-            <?php echo $this->modules('main.mobile.navigation') ?>
+            <ul data-role="listview" data-inset="true" role="listbox" id="nav-list"></ul>
         </div>
     </div>
     

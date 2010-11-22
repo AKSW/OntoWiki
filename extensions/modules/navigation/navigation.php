@@ -127,9 +127,11 @@ class NavigationModule extends OntoWiki_Module
             // load view
             $this->view->stateView = $stateSession->view;
             // set js actions
-            $this->view->inlineScript()->prependScript(
-                '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
-            );
+            if(!$request->isMobile()){
+                $this->view->inlineScript()->prependScript(
+                    '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
+                );
+            }    
         }
         
         // init view from scratch
@@ -143,7 +145,7 @@ class NavigationModule extends OntoWiki_Module
 
         
         if($request->isMobile()){
-            $content = $this->render('navigation_mobile', $data, 'data'); //
+            $content = $this->render('navigation.mobile', $data, 'data'); //
         }else{
             $content = $this->render('navigation', $data, 'data'); //
         }

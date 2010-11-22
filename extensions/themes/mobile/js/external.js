@@ -51,11 +51,9 @@ function getBase(element){
 
         $.get(url, function(data){
             $('#nav-title').text(title);
-            navigationEvent('reset');
-
+            provider.getNavigation('reset');
+            
             $(document).bind("navigation.done", function(e, status){
-                //$("#loader").remove();
-                $(element).attr("class","");
                 $(document).unbind(e);
                 
                 //location.hash = "nav";
