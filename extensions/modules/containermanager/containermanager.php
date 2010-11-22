@@ -20,6 +20,8 @@ class ContainermanagerModule extends OntoWiki_Module {
 		if  ( (!isset($_SESSION['container'])) || ($_SESSION['container'] == null) ) {
             $_SESSION['container'] = array();
         }
+
+        $this->view->headScript()->appendFile($this->view->moduleUrl . 'containermanager.js');
     }
 
   	//protected function _initPlugin($erfurtobject) {
@@ -112,19 +114,13 @@ class ContainermanagerModule extends OntoWiki_Module {
 
 		$content = $this->render('container', $data); 
         return $content;
-	}	
+	}
+	
+	
     /**
-     * adds ContainerManager.js for javascript usage
-     *
+     * (non-PHPdoc)
+     * @see application/classes/OntoWiki/OntoWiki_Module::getStateId()
      */
-    public function addIncludes(&$includes){
-
-		$includes.='<!-- ContainerManager scripts -->'. PHP_EOL;
-		$includes.='<script type="text/javascript" src="'.$this->_getPluginBaseUri().'/ContainerManager.js"></script>'.PHP_EOL;
-		$includes.='<!-- End of ContainerManager scripts -->'.PHP_EOL;
-		return true;
-	}	
-
 	public function getStateId() {
 	    $session = OntoWiki::getInstance()->session;
 	    

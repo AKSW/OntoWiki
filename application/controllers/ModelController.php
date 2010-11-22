@@ -769,7 +769,7 @@ class ModelController extends OntoWiki_Controller_Base
         }
         // Else use all available models.
         else {
-// TODO Exporters need to support this feature...
+            // TODO Exporters need to support this feature...
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
             $response->sendResponse();

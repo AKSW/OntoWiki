@@ -1,0 +1,38 @@
+;;
+; Basic component configuration
+;;
+active = true
+name = "SIOC Editor"
+templates  = "templates"
+
+[private]
+ns                  = "http://rdfs.org/sioc/ns#"
+
+class.usergroup     = "Usergroup"
+class.user          = "User"
+class.site          = "Site"
+class.post          = "Post"
+class.forum         = "Forum"
+
+property.forum.has_moderator    = "has_moderator"
+property.forum.has_host         = "has_host"
+
+property.post.content           = "content"
+property.post.has_creator       = "has_creator"
+property.post.has_reply         = "has_reply"
+
+property.user.name              = "name"
+
+property.usergroup.has_member   = "has_member"
+property.usergroup.usergroup_of = "usergroup_of"
+
+property.other.created          = "http://purl.org/dc/terms/created"
+property.other.encoded          = "http://purl.org/rss/1.0/modules/content/encoded"
+property.other.title            = "http://purl.org/dc/elements/1.1/title"
+
+;class.community     = "Community"
+;class.container     = "Container"
+;class.item          = "Item"
+;class.role          = "Role"
+;class.space         = "Space"
+;class.thread        = "Thread"
