@@ -21,8 +21,8 @@
 class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
 {
     /**
-     * The component manager
-     * @var OntoWiki_Component_Manager
+     * The extension manager
+     * @var OntoWiki_Extension_Manager
      */
     protected $_extensionManager = null;
 
@@ -47,9 +47,9 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
     /**
      * Sets the component manager
      */
-    public function setExtensionManager(OntoWiki_Extension_Manager $componentManager)
+    public function setExtensionManager(OntoWiki_Extension_Manager $extensionManager)
     {
-        $this->_extensionManager = $componentManager;
+        $this->_extensionManager = $extensionManager;
     }
 
     /**

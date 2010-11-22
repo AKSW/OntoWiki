@@ -134,7 +134,7 @@ class EasyinferencePlugin extends OntoWiki_Plugin {
 
 
         // import rdf
-        $sourcepath = $_app->componentManager->getComponentPath() . 'easyinference/rule.rdf';
+        $sourcepath = $_app->extensionManager->getComponentPath() . 'easyinference/rule.rdf';
         //$this->_removeForTestPurposes($store);
         $store->getNewModel(EI_RULE_MODELURI, EI_RULE_MODELURI , Erfurt_Store::MODEL_TYPE_OWL, false);
         try {

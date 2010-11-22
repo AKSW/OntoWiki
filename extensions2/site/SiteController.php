@@ -85,7 +85,7 @@ class SiteController extends OntoWiki_Controller_Component
         
         $this->getComponentHelper()->setSite($this->_site);
         
-        $templatePath = $this->_owApp->componentManager->getComponentTemplatePath('site');
+        $templatePath = $this->_owApp->extensionManager->getComponentTemplatePath('site');
         $mainTemplate = sprintf('%s/%s', $this->_site, self::MAIN_TEMPLATE_NAME);
         
         if (is_readable($templatePath . $mainTemplate)) {

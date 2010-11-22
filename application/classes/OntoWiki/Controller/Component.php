@@ -91,8 +91,8 @@ class OntoWiki_Controller_Component extends OntoWiki_Controller_Base
     {
         if (null === $this->_componentHelper) {
             $name = $this->_request->getControllerName();
-            $componentManager = $this->_owApp->componentManager;
-            $this->_componentHelper = $componentManager->getComponentHelper($name);
+            $extensionManager = $this->_owApp->extensionManager;
+            $this->_componentHelper = $extensionManager->getComponentHelper($name);
         }
         
         return $this->_componentHelper;

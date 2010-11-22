@@ -178,7 +178,19 @@ class Ontowiki_Extension_Manager {
     }
 
     /**
-     * Returns the path the component manager used to search for components.
+     * Returns the path the component manager used to search for components
+     * because there is one component per extension, this path is equal to the extension path.
+     *
+     * @return string
+     */
+    public function getComponentPath()
+    {
+        return $this->getExtensionPath();
+    }
+
+
+    /**
+     * Returns the path the component manager used to search for extensions.
      *
      * @return string
      */
@@ -369,7 +381,7 @@ class Ontowiki_Extension_Manager {
     // ------------------------------------------------------------------------
 
     protected function _loadHelper($componentName)
-    {
+    { echo "loading $componentName";
         if (!array_key_exists($componentName, $this->_helpers)) {
             throw new OntoWiki_Component_Exception("No helper defined for component '$componentName'.");
         }
@@ -401,10 +413,17 @@ class Ontowiki_Extension_Manager {
     private function _scanExtensionPath()
     {
         $dir = new DirectoryIterator($this->_extensionPath);
+        $view = OntoWiki::getInstance()->view;
+        $reservedNames = array(/*'components','modules','wrapper','plugins',*/'themes','translations');
         foreach ($dir as $file) {
             if (!$file->isDot() && $file->isDir()) {
                 //for all folders in <ow>/extensions/
                 $extensionName = $file->getFileName();
+                
+                //TODO its kindof bad style?!
+                if( in_array($extensionName, $reservedNames)){
+                    continue;
+                }
 
                 $currentExtensionPath = $file->getPathname() . DIRECTORY_SEPARATOR;
 
@@ -413,12 +432,15 @@ class Ontowiki_Extension_Manager {
                     $config = $this->_loadConfigs($extensionName);
 
                     $this->_extensionRegistry[$extensionName] = $config;
-                    OntoWiki::getInstance()->view->addScriptPath($currentExtensionPath);
+
+                    //templates can be in the main extension folder
+                    $view->addScriptPath($currentExtensionPath);
                     if(isset($config->templates)){
-                        OntoWiki::getInstance()->view->addScriptPath($config->templates);
+                        //or in a folder specified in the config
+                        $view->addScriptPath($currentExtensionPath.$config->templates);
                     }
 
-                    //check for component class
+                    //check for component class (only one per extension for now)
                     if(file_exists($currentExtensionPath.ucfirst($extensionName).self::COMPONENT_FILE_POSTFIX)){
                         $this->_addComponent($extensionName, $currentExtensionPath, $config);
                     }
@@ -447,34 +469,37 @@ class Ontowiki_Extension_Manager {
      *
      * @param string $componentName the component's (folder) name
      * @param string $componentPath the path to the component folder
+     * @param array $config the config of the components extension
      */
     private function _addComponent($componentName, $componentPath, $config)
     {
         // load helper
         $helperClassName = ucfirst($componentName) . self::COMPONENT_HELPER_SUFFIX;
         $helperPathName  = $componentPath . ucfirst($componentName) . self::COMPONENT_HELPER_FILE_SUFFIX;
-
         if (is_readable($helperPathName)) {
             $helperSpec = array(
                 'path'   => $helperPathName,
                 'class'  => $helperClassName
             );
-
+            
             // store events
             if (isset($config->helperEvents)) {
-                $helperSpec['events'] = (array)$config->helperEvents;
+                $helperSpec['events'] = $config->helperEvents->toArray();
+            } else {
+                $helperSpec['events'] = array();
             }
-
-            // keep for later instantiatin$enabledg the helper
+           
             if($config->enabled){
                 $this->_helpers[$componentName] = $helperSpec;
-            }
+                
+                // event helpers need to be called early
+                if (!empty($helperSpec['events'])) {
+                    $this->_loadHelper($componentName);
+                }
 
-            // event helpers need to be called early
-            if (!empty($this->_helpers[$componentName]['events']) && $enabled) {
-                $this->_loadHelper($componentName);
-            }
-        }
+                //helpers without events will be instantiated onRouteShutdown
+            } 
+        } 
 
         $action = isset($config->action) ? $config->action : null;
 

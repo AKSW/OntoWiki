@@ -25,15 +25,13 @@ class LoginModule extends OntoWiki_Module
         
             // Translate partial messages before creation of message box
             $translate = OntoWiki::getInstance()->translate;
-            $cm = $this->_owApp->componentManager;
-
+            
             $message = $translate->translate($authResult[0]);
-            // check if account recovery is possible and display link then
-            if ( $cm->isComponentRegistered('account') ) {
-                $message .= '<a href="' . $this->view->urlBase . 'account/recover"> '
-                         . $translate->translate('Forgot your password?') 
-                         . ' </a>';
-            }
+
+            $message .= '<a href="' . $this->view->urlBase . 'account/recover"> '
+                     . $translate->translate('Forgot your password?')
+                     . ' </a>';
+
             
             // create messagebox for loginbox (no escape for html code)
             $message = new OntoWiki_Message($message, OntoWiki_Message::ERROR, array('escape' => false, 'translate' => false) );
