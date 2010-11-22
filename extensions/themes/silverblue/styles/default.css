@@ -1810,6 +1810,24 @@ a.hasMenu:hover span.toggle {
     min-height:16px; min-width:16px; /* as long as we cannot use svg */
 }
 
+/* Dragging Draggables */
+
+a.Resource.ui-draggable-dragging
+{
+    display:block;
+    position: absolute;
+    color:#000;
+    background:#dee8ee;
+    padding:0.25em;
+    border:solid 1px #cdd7dd;
+    -moz-box-shadow:0 0 2em #ccc;
+}
+
+a.ui-draggable-dragging.hasMenu span.toggle
+{
+    display:none;
+}
+
 /* -- 4.2.2 Area Context Menus ---------------------------------------------- */
 
 /**
@@ -1848,7 +1866,7 @@ a.hasMenu:hover span.toggle {
 {
     display:block;
     /* wegen .window .contextmenu */
-    top:0 !important;
+    top:-0.25em !important;
     right:0 !important;
     bottom:auto !important;
     left:auto !important;

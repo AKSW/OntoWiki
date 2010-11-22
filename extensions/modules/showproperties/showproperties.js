@@ -1,6 +1,11 @@
 $(document).ready(function() {
     //Set up drag- and drop-functionality
-    $('.show-property').draggable({ helper: 'clone' });
+    $('.show-property').draggable({
+                            helper: 'clone',
+                            zIndex: 10000,
+                            scroll: false,
+                            appendTo: 'body'
+                        });
 
     // highlight previously selected properties
     $('.show-property').each(function() {

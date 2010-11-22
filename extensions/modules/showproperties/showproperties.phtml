@@ -8,15 +8,16 @@
 
 ?>
 <?php if (!empty($this->properties)): ?>
-    <ul class="inline separated has-contextmenu-area">
-        <div class="contextmenu">
-            <a class="item"
-               href="<?php echo $this->propertiesListLink ?>">
-                    <span class="icon icon-list" title="Show as List">
-                            <span>Show as List</span>
-                    </span>
-            </a>
-        </div>
+<div class="has-contextmenu-area">
+    <div class="contextmenu">
+        <a class="item"
+           href="<?php echo $this->propertiesListLink ?>">
+                <span class="icon icon-list" title="Show as List">
+                        <span>Show as List</span>
+                </span>
+        </a>
+    </div>
+    <ul class="inline separated">
         <?php $i = 0; 
         foreach ($this->properties as $id => $propertyInfo):
             if (++$i == count($this->properties)): ?>
@@ -26,17 +27,19 @@
             <?php endif; ?>
         <?php endforeach; ?>
     </ul>
+</div>
 <?php endif ?>
 <?php if (!empty($this->reverseProperties)): ?>
-	<ul class="inline separated has-contextmenu-area">
-            <div class="contextmenu">
-                <a class="item"
-                   href="<?php echo $this->inversePropertiesListLink ?>">
-                        <span class="icon icon-list" title="Show as List">
-                                <span>Show as List</span>
-                        </span>
-                </a>
-            </div>
+<div class="has-contextmenu-area">
+    <div class="contextmenu">
+        <a class="item"
+           href="<?php echo $this->inversePropertiesListLink ?>">
+                <span class="icon icon-list" title="Show as List">
+                        <span>Show as List</span>
+                </span>
+        </a>
+    </div>
+	<ul class="inline separated">
 	    <?php $i = 0; 
             foreach ($this->reverseProperties as $id => $propertyInfo):
                     if (++$i == count($this->properties)): ?>
@@ -46,6 +49,7 @@
 		    <?php endif; ?>
 		<?php endforeach; ?>
 	</ul>
+</div>
 <?php endif ?>
 <?php if ( ( !empty($this->Properties) ) && ( !empty($this->reverseProperties) ) ): ?>
 	<p class="messagebox info"><?php echo $this->_($this->message) ?></p>
