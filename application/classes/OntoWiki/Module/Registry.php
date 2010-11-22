@@ -165,7 +165,7 @@ class OntoWiki_Module_Registry
         }
 
         // set module order and context
-        if (array_key_exists('priority', $options)) {
+        if (isset($options->priority)) {
             $position = $this->_getModulePosition($context, $options->priority);
             $this->_moduleOrder[$context][$position] = $moduleName;
         } else {
