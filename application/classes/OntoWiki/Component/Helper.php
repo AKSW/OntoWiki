@@ -98,7 +98,7 @@ class OntoWiki_Component_Helper
         
         // set component root url
         $this->_componentUrlBase = $this->_config->staticUrlBase 
-                                 . $this->_config->extensions->components 
+                                 . $this->_config->extensions->base
                                  . $componentName 
                                  . '/';
         
