@@ -40,8 +40,26 @@ class ModuleController extends OntoWiki_Controller_Base
             $id = '';
         }
         
+        if(isset($this->_request->noChrome)){
+            $noChrome = $this->_request->noChrome;
+        }else{
+            $noChrome = false;
+        }
+        
+        if(isset($this->_request->json)){
+            $json = $this->_request->json;
+        }else{
+            $json = false;
+        }        
+        
         $this->_response->setHeader('Content-Type', 'text/html');
-        $this->_response->setBody($this->view->module($name, array('classes' => $class, 'id' => $id)));
+        $this->_response->setBody($this->view->module($name, 
+            array(
+                'classes' => $class, 
+                'id' => $id, 
+                'noChrome' => $noChrome,
+                'json' => $json
+            )));
     }
 }
 
