@@ -59,12 +59,12 @@ function getBase(element){
                 $(document).unbind(e);
                 
                 //location.hash = "nav";
-                $.mobile.changePage("#nav", "slide"); //$(".ui-page-active"), $(
+                $.mobile.changePage("#nav", "slide", false, true ); //$(".ui-page-active"), $(
             });
         })
     }else{
         //location.hash = "nav";
-        $.mobile.changePage("#nav", "slide");
+        $.mobile.changePage("#nav", "slide", false, true );
     }
     
     
@@ -104,7 +104,7 @@ function showInstances(){
 
         // switch page
         //location.hash = "instance-list";
-        $.mobile.changePage("#instance-list", "slide");
+        $.mobile.changePage("#instance-list", "slide", false, true );
     })
 }
 
@@ -144,7 +144,7 @@ function onInstanceClick(entry, animate){
 
         if(animate){ 
             //location.hash = "properties-list";
-            $.mobile.changePage("#properties-list", "slide");
+            $.mobile.changePage("#properties-list", "slide", false, true );
         }else{
             // remove animation
             $.mobile.pageLoading(true);
@@ -185,7 +185,7 @@ function doSearch(){
             $("#searchres-title").text(req);
             
             //location.hash = "searchres-list";
-            $.mobile.changePage("#searchres-list", "slide");
+            $.mobile.changePage("#searchres-list", "slide", false, true );
             $.mobile.pageLoading(true);
         });
     });
@@ -201,7 +201,7 @@ function pageList(entry, animate){
 
         if(animate){
             //location.hash = "instance-list";
-            $.mobile.changePage("#instance-list", "slide");
+            $.mobile.changePage("#instance-list", "slide", false, true );
         }else{
             redrawInstances();
         }
@@ -265,5 +265,5 @@ function openRDFa(){
     RDFauthor.start();
 
     //location.hash = "#rdfa-list";
-    $.mobile.changePage("#rdfa-list", "slide");
+    $.mobile.changePage("#rdfa-list", "slide", false, true );
 }

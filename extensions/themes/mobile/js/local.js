@@ -61,65 +61,12 @@ $(document).ready(function(){
         console.log(connectionStatus);
     };
     
-    /* 
-     * 
-     * Knowledge base list function 
-     * 
-     */
-    var knowledgeBaseList = {};
-    // save list to local DB
-    knowledgeBaseList.saveList = function(){
-        // get elements
-        var container = $("#modellist");
-        var list = $("ul", container);
-        // create list 
-        var kbList = [];
-        
-        $("li", list).each(function(index,item){
-            var a = $("a", item);
-            var text = $.trim(a.text());
-            var alink = $.trim(a.attr("about"));
-            
-            kbList.push({text: text, alink:alink});
-            
-            localStorage["ontowiki.bases"] = kbList;
-        });
-    };
-    // load stuff
-    knowledgeBaseList.loadList = function(){
-        var kbList = localStorage["ontowiki.bases"];
-        console.log(kbList);
-        
-        if(typeof kbList != 'undefined' && kbList != null){
-            for(var i = 0; i < kbList.length; i++){
-                console.log(kbList[i].text + ' - ' + kbList[i].alink);
-            }
-        }else{
-            console.log('no kbList saved');
-        }
-    };
-    // clear kb
-    knowledgeBaseList.clearList = function(){
-        localStorage["ontowiki.bases"] = null;
-    }
-    
-    /*
-     * 
-     * Navigation entries
-     *
-     */
-    var navigationEntriesList = {};
-    navigationEntriesList.saveEntry = function(entry){
-        
-    }
-    
     // prepare all
     prepareCacheEvents();
     prepareConnectionEvents();
     
     // on load save new knowledge base list
     if( navigator.onLine ){
-        knowledgeBaseList.saveList();
     }
 });
 
