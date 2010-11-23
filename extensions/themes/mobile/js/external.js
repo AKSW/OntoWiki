@@ -45,21 +45,19 @@ function getBase(element){
         // set rdfa vars
         RDFAUTHOR_DEFAULT_GRAPH = selected_model;
         RDFAUTHOR_DEFAULT_SUBJECT = selected_model;
-        // get
-        var url = urlBase + 'model/select/?m=' + $(element).attr('about');
-        var title = $(element).text();
 
-        $.get(url, function(data){
-            $('#nav-title').text(title);
-            provider.getNavigation('reset');
-            
-            $(document).bind("navigation.done", function(e, status){
-                $(document).unbind(e);
-                
-                //location.hash = "nav";
-                $.mobile.changePage("#nav", "slide", false, true ); //$(".ui-page-active"), $(
-            });
-        })
+        // set title
+        $('#nav-title').text( $(element).text() );
+        
+        // set change page event        
+        $(document).bind("navigation.done", function(e, status){
+            $(document).unbind(e);        
+            //location.hash = "nav";
+            $.mobile.changePage("#nav", "slide", false, true ); //$(".ui-page-active"), $(
+        });
+        
+        // get nav
+        provider.getNavigation('reset', selected_model);
     }else{
         //location.hash = "nav";
         $.mobile.changePage("#nav", "slide", false, true );
@@ -110,7 +108,7 @@ function showInstances(){
 function navigateDeeper(){
     // show load progress
     $.mobile.pageLoading();
-    navigationEvent('navigateDeeper', selectedNavigationEntry.parent);
+    provider.getNavigation('navigateDeeper', selectedNavigationEntry.parent);
 }
 
 // show properties

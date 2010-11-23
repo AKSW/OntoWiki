@@ -15,7 +15,7 @@ dataProvider.prototype.getKBList = function(){
 }
 
 dataProvider.prototype.getNavigation = function(event, uri){
-    if( typeof uri == 'undefined' || uri == null) uri = "init";
+    if( typeof uri == 'undefined' ) uri = selected_model;
     var temp = "#navTemplate";
     var cont = "#nav-list";
     
@@ -23,7 +23,20 @@ dataProvider.prototype.getNavigation = function(event, uri){
         this.renderData($.parseJSON(localStorage["ontowiki.nav."+uri]), temp, cont);
         $(document).trigger('navigation.done');
     }else{
-        navigationEvent(event);
+        switch(event){ 
+            case 'navigateDeeper':
+                navigationEvent(event, uri);
+                break;
+            case 'reset':
+                var url = urlBase + 'model/select/?m=' + uri;
+                $.get(url, function(data){    
+                    navigationEvent(event);
+                })
+                break;
+            default:
+                navigationEvent(event);
+                break;
+        }
     }
 };
 
@@ -33,14 +46,18 @@ dataProvider.prototype.saveNavigation = function(data){
     // data
     var dataArr = $.parseJSON(data);
     
+    console.log(dataArr);
+    
     // get uri
     var uri = dataArr["rootEntry"];
-    if( uri.length < 1 ) uri = "init";
+    if( uri.length < 1 ) uri = selected_model;
     
     // save to store
     localStorage["ontowiki.nav."+uri] = data;
 
     this.renderData(dataArr, temp, cont);
+    
+    $(document).trigger('navigation.done');
 };
 
 // renders data

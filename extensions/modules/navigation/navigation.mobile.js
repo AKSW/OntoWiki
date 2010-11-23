@@ -24,18 +24,6 @@ $(document).ready(function() {
     if( typeof navigationStateSetup != 'undefined'){
         navigationSetup = navigationStateSetup;
     }
-    
-    // the link to the root
-    $('.navFirst').live('click', function(event){
-        navigationEvent('navigateRoot');
-        return false;
-    })
-    
-    // the link to higher level
-    $('.navBack').live('click', function(event){
-        navigationEvent('navigateHigher');
-        return false;
-    })
 });
 
 /**

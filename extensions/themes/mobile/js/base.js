@@ -44,4 +44,25 @@ $(document).ready(function(){
         // remove loader
         $.mobile.pageLoading(true);
     });
+    
+    
+    // navigation buttons events
+    // the link to the root
+    $('.navFirst').live('click', function(event){
+        provider.getNavigation('navigateRoot', selected_model);
+        return false;
+    })
+    
+    // the link to higher level
+    $('.navBack').live('click', function(event){
+        if(navigationStateSetup['state']['path'].length > 0){
+            provider.getNavigation('navigateHigher', navigationStateSetup['state']['parent']);
+        }else{
+            provider.getNavigation('navigateHigher', selected_model);
+        }
+        return false;
+    })
+    
+    
+    
 });
