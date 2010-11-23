@@ -340,7 +340,7 @@ function showResourceMenu(event) {
 function loadRDFauthor(callback) {
     var loaderURI = RDFAUTHOR_BASE + 'src/rdfauthor.js';
     
-    if ($('head').children('script').children('@src=' + loaderURI).length > 0) {
+    if ($('head').children('script[src=' + loaderURI + ']').length > 0) {
         callback();
     } else {
         RDFAUTHOR_READY_CALLBACK = callback;
@@ -352,28 +352,31 @@ function loadRDFauthor(callback) {
     }
 }
 
-function populateRDFauthor(data) {
+function populateRDFauthor(data, protect, resource, graph) {
+    protect  = arguments.length >= 2 ? protect : true;
+    resource = arguments.length >= 3 ? resource : null;
+    graph    = arguments.length >= 4 ? graph : null;
+    
     for (var currentSubject in data) {
         for (var currentProperty in data[currentSubject]) {
             var objects = data[currentSubject][currentProperty];
 
             for (var i = 0; i < objects.length; i++) {
-                var currentObjectSpec = objects[i];
+                var objSpec = objects[i];
                 
-                var newObjectSpec;
-                if (currentObjectSpec.type == 'uri') {
-                    newObjectSpec = '<' + currentObjectSpec.value + '>';
-                } else {
-                    newObjectSpec = {
-                        value: currentObjectSpec.value, 
-                        options: {}
-                    }
-                    
-                    if (currentObjectSpec.value) {
-                        if (currentObjectSpec.type == 'typed-literal') {
-                            newObjectSpec.options.datatype = currentObjectSpec.datatype;
-                        } else if (currentObjectSpec.lang) {
-                            newObjectSpec.options.lang = currentObjectSpec.lang;
+                var newObjectSpec = {
+                    value: (objSpec.type == 'uri') ? ('<' + objSpec.value + '>') : objSpec.value, 
+                    type: String(objSpec.type).replace('typed-', '')
+                }
+                
+                if (objSpec.value) {
+                    if (objSpec.type == 'typed-literal') {
+                        newObjectSpec.options = {
+                            datatype: objSpec.datatype
+                        }
+                    } else if (objSpec.lang) {
+                        newObjectSpec.options = {
+                            lang: objSpec.lang
                         }
                     }
                 }
@@ -383,10 +386,10 @@ function populateRDFauthor(data) {
                     predicate: '<' + currentProperty + '>', 
                     object: newObjectSpec
                 }, {
-                    graph: selectedResource.graphURI, 
-                    title: currentObjectSpec.title, 
-                    protected: true, 
-                    hidden: currentObjectSpec.hidden ? currentObjectSpec.hidden : false
+                    graph: graph, 
+                    title: objSpec.title, 
+                    protected: protect ? true : false, 
+                    hidden: objSpec.hidden ? objSpec.hidden : false
                 }));
             }
         }
@@ -419,7 +422,7 @@ function createInstanceFromClassURI(type, dataCallback) {
            for (var subjectUri in data) {break;};
            
            // add statements to RDFauthor
-           populateRDFauthor(data);
+           populateRDFauthor(data, true, null, selectedGraph.URI);
            
            RDFauthor.setOptions({
                saveButtonTitle: 'Create Resource',
@@ -435,63 +438,8 @@ function createInstanceFromClassURI(type, dataCallback) {
 }
 
 /*
- * get the rdfa init description from the service in clone mode and start the
- * RDFauthor window
- * TODO: merge it with createInstanceFromClassURI!!
- */
- /*
-function createInstanceFromURI(resource) {
-    var serviceUri = urlBase + 'service/rdfauthorinit';
-
-    // remove resource menus
-    removeResourceMenus();
-    
-    loadRDFauthor(function() {
-        $.getJSON(serviceUri, {
-           mode: 'clone',
-           uri: resource
-        }, function(data) {
-            // grab first object key
-            for (var subjectUri in data) {break;};
-            RDFauthor.setOptions({
-                defaultResource: subjectUri, 
-                anchorElement: '.innercontent',
-                onSubmitSuccess: function () {
-                   // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-                   // mainInnerContent.load(document.URL);
-
-                   // tell RDFauthor that page content has changed
-                   // RDFauthor.invalidatePage();
-
-                   $('.edit').each(function() {
-                       $(this).fadeOut(effectTime);
-                   });
-                   $('.edit-enable').removeClass('active');
-
-                   // reload whole page
-                   window.location.href = window.location.href;
-                },
-                onCancel: function () {
-                   $('.edit').each(function() {
-                       $(this).fadeOut(effectTime);
-                   });
-                   $('.edit-enable').removeClass('active');
-                },
-                saveButtonTitle: 'Create New Resource',
-                cancelButtonTitle: 'Cancel',
-                title: 'Clone Resource ' + resource
-                });
-            
-            RDFauthor.startTemplate(data);
-        })
-    });
-}
-*/
-
-/*
  * get the rdfauthor init description from the service in and start the RDFauthor window
  */
- /*
 function editResourceFromURI(resource) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
 
@@ -503,28 +451,79 @@ function editResourceFromURI(resource) {
            mode: 'edit',
            uri: resource
         }, function(data) {
+            
+            // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
             for (var subjectUri in data) {break;};
+
+            // add statements to RDFauthor
+            populateRDFauthor(data, false, resource, selectedGraph.URI);
+
             RDFauthor.setOptions({
-                defaultResource: subjectUri,
-                anchorElement: '.innercontent',
-                onSubmitSuccess: function () {
-                   // reload whole page
-                   window.location.href = window.location.href;
-                },
-                onCancel: function () {
-                   $('.edit').each(function() {
-                       $(this).fadeOut(effectTime);
-                   });
-                   $('.edit-enable').removeClass('active');
-                },
                 saveButtonTitle: 'Save Changes',
                 cancelButtonTitle: 'Cancel',
-                title: 'Edit Resource ' + resource
-                });
+                title: 'Edit Resource ' + resource,  
+                autoParse: false, 
+                showPropertyButton: false
+            });
 
-            RDFauthor.startTemplate(data);
+            RDFauthor.start();
         })
     });
 }
-*/
+
+/*
+ * Edit a complete OW property view property section
+ */
+function editProperty(event) {
+    var element = $.event.fix(event).target;
+    loadRDFauthor(function () {
+        RDFauthor.setOptions({
+            onSubmitSuccess: function () {
+                $('.edit').each(function() {
+                    $(this).fadeOut(effectTime);
+                });
+                $('.edit-enable').removeClass('active');
+
+                // HACK: reload whole page after 1000 ms
+                window.setTimeout(function () {
+                    window.location.href = window.location.href;
+                }, 1000);
+            }, 
+            onCancel: function () {
+                $('.edit').each(function() {
+                    $(this).fadeOut(effectTime);
+                });
+                $('.edit-enable').removeClass('active');
+            }, 
+            saveButtonTitle: 'Save Changes', 
+            cancelButtonTitle: 'Cancel', 
+            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+            viewOptions: {
+                type: RDFAUTHOR_VIEW_MODE, 
+                container: function (statement) {
+                    var element = RDFauthor.elementForStatement(statement);
+                    var parent  = $(element).closest('div');
+
+                    if (!parent.hasClass('ontowiki-processed')) {
+                        parent.children().each(function () {
+                            $(this).hide();
+                        });
+                        parent.addClass('ontowiki-processed');
+                    }
+
+                    return parent.get(0);
+                }
+            }
+        });
+
+        RDFauthor.start($(element).parents('td'));
+
+        $('.edit').each(function() {
+            var button = this;
+            $(this).fadeIn(effectTime);
+        });
+    });
+
+    //return false;
+}

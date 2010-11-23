@@ -49,10 +49,8 @@ $(document).ready(function() {
     
     // make resizer draggable
     // draggables need an explicit (inline) position
-    $('.section-sidewindows .resizer-horizontal').css('position', 'absolute');
-    var documentHeight = $(document).height();
     $('.section-sidewindows .resizer-horizontal')
-        .height(documentHeight + 'px')
+        .css('position', 'absolute')
         .draggable({
             axis: 'x', 
             zIndex: dragZIndex,  
@@ -69,12 +67,23 @@ $(document).ready(function() {
                 // jQuery UI bug in Safari
                 $('.section-sidewindows').css('position', 'absolute');
                 $('.section-sidewindows .resizer-horizontal').removeClass('dragging');
-            }
-        });
+            }});
+    
+    // resize separator when all ajax crap is loaded
+    window.setTimeout(function () {        
+        $('.section-sidewindows .resizer-horizontal').height(
+            Math.max(
+                $(document).height(),
+                $(window).height(),
+                /* for Opera: */
+                document.documentElement.clientHeight
+            ) + 'px');
+    }, 750);
+    
     if (typeof sectionRatio != 'undefined') {
         setSectionRatio(sectionRatio);
     }
-
+    
     /* list selection */
     $('table.resource-list > tbody > tr').live('click', function(e) {
         var selectee     = $(this);
@@ -224,76 +233,38 @@ $(document).ready(function() {
     });
     
     $('.edit.save').click(function() {
-        RDFauthor.commitEditing();
+        RDFauthor.commit();
     });
     
     $('.edit.cancel').click(function() {
         // reload page
         window.location.href = window.location.href;
-        // RDFauthor.cancelEditing();
+        RDFauthor.cancel();
         // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
         // mainInnerContent.load(document.URL);
         // $('.edit-enable').click();
     });
     
-    $('.icon-edit').click(function() {
-        var element = this;
-        loadRDFauthor(function() {
-            RDFauthor.setOptions({
-                anchorElement: '.innercontent', 
-                onSubmitSuccess: function () {
-                    // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-                    // mainInnerContent.load(document.URL);
-
-                    // tell RDFauthor that page content has changed
-                    // RDFauthor.invalidatePage();
-
-                    $('.edit').each(function() {
-                        $(this).fadeOut(effectTime);
-                    });
-                    $('.edit-enable').removeClass('active');
-
-                    // reload whole page
-                    window.location.href = window.location.href;
-                }, 
-                onCancel: function () {
-                    $('.edit').each(function() {
-                        $(this).fadeOut(effectTime);
-                    });
-                    $('.edit-enable').removeClass('active');
-                }, 
-                saveButtonTitle: 'Save Changes', 
-                cancelButtonTitle: 'Cancel', 
-                title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
-                'defaultGraph': defaultGraph, 
-                'defaultResource': defaultResource
-            });
-            
-            RDFauthor.startInline($(element).closest('td'));
-            
-            // hide inine edit for whole page
-            $('.edit-enable').hide();
-            // show submit/cancel buttons
-            $('.edit').each(function() {
-                $(this).fadeIn(effectTime);
-            });
-        });
-    });
+//    $('.icon-edit').click(function() {return editProperty(this)});
+    
+    // disable inline-editing for not readable models
+    if (typeof selectedGraph !== 'undefined' && !selectedGraph.editable) {
+        $('.icon-edit').closest('a').remove();
+    }
     
     // edit mode
     $('.edit-enable').click(function() {
         var button = this;
         if ($(button).hasClass('active')) {
+            RDFauthor.cancel();
+            $('.edit').each(function() {
+                $(this).fadeOut(effectTime);
+            });
+            $(button).removeClass('active');
             window.location.href = window.location.href;
-            // RDFauthor.cancelEditing();
-            // $('.edit').each(function() {
-            //     $(this).fadeOut(effectTime);
-            // })
-            // $(button).removeClass('active');
         } else {
             loadRDFauthor(function () {
                 RDFauthor.setOptions({
-                    anchorElement: '.innercontent', 
                     onSubmitSuccess: function () {
                         // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
                         // mainInnerContent.load(document.URL);
@@ -306,8 +277,10 @@ $(document).ready(function() {
                         });
                         $('.edit-enable').removeClass('active');
                         
-                        // reload whole page
-                        window.location.href = window.location.href;
+                        // HACK: reload whole page after 1000 ms
+                        window.setTimeout(function () {
+                            window.location.href = window.location.href;
+                        }, 1000);
                     }, 
                     onCancel: function () {
                         $('.edit').each(function() {
@@ -317,18 +290,32 @@ $(document).ready(function() {
                     }, 
                     saveButtonTitle: 'Save Changes', 
                     cancelButtonTitle: 'Cancel', 
-                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text()
+                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+                    viewOptions: {
+                        type: RDFAUTHOR_VIEW_MODE, 
+                        container: function (statement) {
+                            var element = RDFauthor.elementForStatement(statement);
+                            var parent  = $(element).closest('div');
+                            
+                            if (!parent.hasClass('ontowiki-processed')) {
+                                parent.children().each(function () {
+                                    $(this).hide();
+                                });
+                                parent.addClass('ontowiki-processed');
+                            }
+                            
+                            return parent.get(0);
+                        }
+                    }
                 });
                 
                 RDFauthor.start();
-                // RDFauthor.startInline('*[about] td:nth-child(2)');
-                // RDFauthor.startInline('table tr td');
                 
-                // $('.edit').each(function() {
-                //     $(this).fadeIn(effectTime, function() {
-                //         $(button).addClass('active');
-                //     });
-                // })
+                $('.edit').each(function() {
+                    $(this).fadeIn(effectTime, function() {
+                        $(button).addClass('active');
+                    });
+                });
             });
         }
     });
@@ -337,75 +324,63 @@ $(document).ready(function() {
         loadRDFauthor(function () {
             var serviceURI = urlBase + 'service/rdfauthorinit';
             var prototypeResource = selectedResource.URI;
+            RDFauthor.reset();
 
             $.getJSON(serviceURI, {
                mode: 'clone',
                uri: prototypeResource
             }, function(data) {
-                populateRDFauthor(data);
+                // get default resource uri for subjects in added statements (issue 673)
+                // grab first object key
+                for (var subjectUri in data) {break;};
+                
+                populateRDFauthor(data, true, subjectUri, selectedGraph.URI);
                 
                 RDFauthor.setOptions({
                     saveButtonTitle: 'Create Resource',
                     cancelButtonTitle: 'Cancel',
                     title: 'Create New Resource by Cloning ' + selectedResource.title,  
                     autoParse: false, 
-                    showPropertyButton: false
+                    showPropertyButton: true
                 });
                 
                 RDFauthor.start();
             });
         });
-        
-        // // grab first object key
-        // for (var subjectUri in data) {break;};
-        // RDFauthor.setOptions({
-        //     defaultResource: subjectUri,
-        //     anchorElement: '.innercontent',
-        //     onSubmitSuccess: function () {
-        //        // reload whole page
-        //        window.location.href = window.location.href;
-        //     },
-        //     onCancel: function () {
-        //        $('.edit').each(function() {
-        //            $(this).fadeOut(effectTime);
-        //        });
-        //        $('.edit-enable').removeClass('active');
-        //     },
-        //     saveButtonTitle: 'Save Changes',
-        //     cancelButtonTitle: 'Cancel',
-        //     title: 'Edit Resource ' + resource
-        //     });
-        // 
-        // RDFauthor.startTemplate(data);
     })
     
     // add property
     $('.property-add').click(function() {
-        RDFauthor.setOptions({
-            anchorElement: '.innercontent', 
-            onSubmitSuccess: function () {
-                var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
-                mainInnerContent.load(document.URL);
-                
-                // tell RDFauthor that page content has changed
-                RDFauthor.invalidatePage();
-                
-                $('.edit').each(function() {
-                    $(this).fadeOut(effectTime);
-                });
-                $('.edit-enable').removeClass('active');
-            }, 
-            onCancel: function () {
-                $('.edit').each(function() {
-                    $(this).fadeOut(effectTime);
-                });
-                $('.edit-enable').removeClass('active');
-            }, 
-            saveButtonTitle: 'Save Changes', 
-            cancelButtonTitle: 'Cancel'
-        });
+        var ID = RDFauthor.nextID();
+        var td1ID = 'rdfauthor-property-selector-' + ID;
+        var td2ID = 'rdfauthor-property-widget-' + ID;
         
-        // RDFauthor.newProperty();
+        $('table.rdfa')
+            .children('tbody')
+            .append('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td></tr>');
+        
+        var selectorOptions = {
+            container: $('#' + td1ID), 
+            selectionCallback: function (uri, label) {
+                var statement = new Statement({
+                    subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>', 
+                    predicate: '<' + uri + '>'
+                }, {
+                    title: label, 
+                    graph: RDFAUTHOR_DEFAULT_GRAPH
+                });
+                
+                var owURL = urlBase + 'view?r=' + encodeURIComponent(uri);
+                $('#' + td1ID).closest('td')
+                    .attr('colspan', '1')
+                    .html('<a class="hasMenu" about="' + uri + '" href="' + owURL + '">' + label + '</a>')
+                    .after('<td id="' + td2ID + '"></td>');
+                RDFauthor.getView().addWidget(statement, null, {container: $('#' + td2ID), activate: true});
+            }
+        };
+        
+        var selector = new Selector(RDFAUTHOR_DEFAULT_GRAPH, RDFAUTHOR_DEFAULT_SUBJECT, selectorOptions);
+        selector.presentInContainer();
     });
     
     $('.tabs').children('li').children('a').click(function() {
@@ -422,7 +397,7 @@ $(document).ready(function() {
         } else {
             return true;
         }
-    })
+    });
     
     // box display/hide    
     // $('.toggle-module-display').click(function() {
@@ -653,7 +628,4 @@ $(document).ready(function() {
     $('.window div.cmDiv').adjustClickMenu();
     
 }) // $(document).ready
-
-
-
 

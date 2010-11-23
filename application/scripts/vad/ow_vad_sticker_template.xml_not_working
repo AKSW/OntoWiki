@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ASCII"?>
+<!DOCTYPE sticker SYSTEM "vad_sticker.dtd"[]>
+<sticker version="0.9.0" xml:lang="en-US">
+  <caption>
+    <name package="OntoWiki">
+      <prop name="Title" value="OntoWiki" />
+      <prop name="Developer" value="AKSW, Uni Leipzig" />
+      <prop name="Copyright" value="" />
+      <prop name="Download" value="http://ontowiki.net" />
+      <prop name="Download" value="http://code.google.com/p/ontowiki" />
+    </name>
+    <version package="0.9.0">
+      <prop name="Release Date" value="2009-07-24 13:59" />
+      <prop name="Build" value="Beta test" />
+    </version>
+  </caption>
+  <dependencies />
+  <procedures uninstallation="supported" />
+  <ddls>
+<sql purpose="pre-install"><![CDATA[
+
+  if (lt (sys_stat ('st_dbms_ver'), '05.11.3038')) {
+	result ('ERROR', 'The Onto Wiki package requires server version 05.11.3038 or greater');
+	signal ('FATAL', 'The Onto Wiki package requires server version 05.11.3038 or greater');
+   }
+
+]]></sql>
+
+<sql purpose="post-install"><![CDATA[
+
+DB.DBA.USER_CREATE (
+        'OntoWikiAdmin',
+        uuid (),
+        vector ('LOGIN_QUALIFIER', 'OntoWiki',
+                'SQL_ENABLE', 1,
+                'DAV_ENABLE', 0,
+                'FULL_NAME', 'OntoWiki Administrator')
+);
+
+grant SPARQL_SELECT to OntoWikiAdmin;
+grant SPARQL_UPDATE to OntoWikiAdmin;
+
+
+// copied out of conductor ui
+
+DB.DBA.VHOST_REMOVE (
+	 lhost=>'*ini*',
+	 vhost=>'*ini*',
+	 lpath=>'/OntoWiki'
+);
+
+DB.DBA.VHOST_DEFINE (
+	 lhost=>'*ini*',
+	 vhost=>'*ini*',
+	 lpath=>'/OntoWiki',
+	 ppath=>'/vad/vsp/ontowiki/',
+	 is_dav=>0,
+	 def_page=>'index.php',
+	 vsp_user=>'OntoWikiAdmin',
+	 ses_vars=>0,
+	 opts=>vector ('browse_sheet', '', 'url_rewrite', 'http_rule_list_2'),
+	 is_default_host=>0
+);
+
+DB.DBA.URLREWRITE_CREATE_RULELIST ( 
+'http_rule_list_2', 1, 
+  vector ('http_rule_4', 'http_rule_5'));
+
+DB.DBA.URLREWRITE_CREATE_REGEX_RULE ( 
+'http_rule_4', 1, 
+  '/OntoWiki/(.*)$', 
+vector (), 
+0, 
+'/OntoWiki/index.php', 
+vector (), 
+NULL, 
+NULL, 
+0, 
+0, 
+'' 
+);
+
+DB.DBA.URLREWRITE_CREATE_REGEX_RULE ( 
+'http_rule_5', 1, 
+  '/OntoWiki/(extensions|application|libraries)(.*).(js|ico|gif|jpg|png|css|php|swf)(.*)$', 
+vector ('par_1', 'par_2', 'par_3', 'par_4'), 
+4, 
+'/OntoWiki/%s%s.%s%s', 
+vector ('par_1', 'par_2', 'par_3', 'par_4'), 
+NULL, 
+NULL, 
+0, 
+0, 
+'' 
+);
+
+
+ ]]></sql>
+ <sql purpose="pre-uninstall" />
+<sql purpose="post-uninstall" />
+  </ddls>
+  <resources>
+

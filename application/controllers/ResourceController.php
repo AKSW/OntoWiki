@@ -110,18 +110,33 @@ class ResourceController extends OntoWiki_Controller_Base {
             $graphs = array_keys($predicates);
             $titleHelper->addResources($graphs);
 
+            // set RDFa widgets update info for editable graphs and other graph info
             $graphInfo = array();
+            $editableFlags = array();
             foreach ($graphs as $g) {
                 $graphInfo[$g] = $titleHelper->getTitle($g, $this->_config->languages->locale);
-            }
 
+                if ($this->_erfurt->getAc()->isModelAllowed('edit', $g)) {
+                    $editableFlags[$g] = true;
+                    $graphInfo[$g] = $titleHelper->getTitle($g, $this->_config->languages->locale);
+                    $this->view->placeholder('update')->append(array(
+                        'sourceGraph'    => $g,
+                        'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
+                        'updateEndpoint' => $this->_config->urlBase . 'update/'
+                    ));
+                } else {
+                    $editableFlags[$g] = false;
+                }
+            }
+            
             $this->view->graphs        = $graphInfo;
+            $this->view->editableFlags = $editableFlags;
             $this->view->values        = $values;
             $this->view->predicates    = $predicates;
             $this->view->resourceUri   = (string)$resource;
             $this->view->graphUri      = $graph->getModelIri();
             $this->view->graphBaseUri  = $graph->getBaseIri();
-            $this->view->editable = false; //$graph->isEditable();
+            $this->view->editable = false; // use $this->editableFlags[$graph] now
             // prepare namespaces
             $namespaces = $graph->getNamespaces();
             $graphBase  = $graph->getBaseUri();
@@ -129,17 +144,6 @@ class ResourceController extends OntoWiki_Controller_Base {
                 $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
             }
             $this->view->namespaces = $namespaces;
-
-            // set RDFa widgets update info for editable graphs
-            foreach ($graphs as $g) {
-                if ($this->_erfurt->getAc()->isModelAllowed('edit', $g)) {
-                    $this->view->placeholder('update')->append(array(
-                        'sourceGraph'    => $g,
-                        'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
-                        'updateEndpoint' => $this->_config->urlBase . 'update/'
-                    ));
-                }
-            }
         }
 
         $toolbar = $this->_owApp->toolbar;
