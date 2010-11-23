@@ -86,22 +86,26 @@ function showInstances(){
     // show load progress
     $.mobile.pageLoading();
     
-    url = selectedNavigationEntry.url;
+    var url = selectedNavigationEntry.url;
     // set rdfa
     RDFAUTHOR_DEFAULT_SUBJECT = url;
-    // get
-    title = selectedNavigationEntry.title;
-    $.get(url, function(data){
-        $("#instance-title").text(title);
-        $('#instance-content').html(data);
+    // set title
+    var title = selectedNavigationEntry.title;
+    $("#instance-title").text(title);
+    
+    // handle page change
+    $(document).bind("instance.done", function(e, status){
+        $(document).unbind(e); 
         
         // remove loader
         $.mobile.pageLoading(true);
 
         // switch page
-        //location.hash = "instance-list";
-        $.mobile.changePage("#instance-list", "slide", false, true );
+        $.mobile.changePage("#instance-list");
     })
+    
+    // get
+    provider.getInstanceList(url);
 }
 
 // navigate deeper
@@ -133,9 +137,13 @@ function onInstanceClick(entry, animate){
         url = selectedInstance.uri;
         title = selectedInstance.title;
     }
+    
+    // set title
+    $("#properties-title").text(title);
+    
     // request instance properties
     $.get(url, function(data){
-        $("#properties-title").text(title);
+        // set view
         $('#properties-content').html(data);
 
         if(animate){ 
@@ -192,17 +200,25 @@ function pageList(entry, animate){
     $.mobile.pageLoading();
     
     url = $(entry).attr('about');
-    $.get(url, function(data){
-        $('#instance-content').html(data);
-
+    
+    console.log(url);
+    
+    // handle page change
+    $(document).bind("instance.done", function(e, status){
+        $(document).unbind(e); 
+        
+        $.mobile.pageLoading(true);
+        
         if(animate){
             //location.hash = "instance-list";
             $.mobile.changePage("#instance-list", "slide", false, true );
         }else{
             redrawInstances();
         }
-        $.mobile.pageLoading(true);
     })
+    
+    // get
+    provider.getInstanceList(url);
 }
 
 function openRDFa(){
@@ -235,11 +251,11 @@ function openRDFa(){
     
     var options = {
         onCancel: function() {
-            console.log('cancel');
+            //console.log('cancel');
             //onInstanceClick();
         }, 
         onSubmitSuccess: function() {
-            console.log('ok');
+            //console.log('ok');
             onInstanceClick();
         },
         title: $("#properties-title").text(),

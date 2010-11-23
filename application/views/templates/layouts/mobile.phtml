@@ -110,6 +110,20 @@
             <a href="#" onclick="navigationEvent ('more', '');return false;" data-role="button" id="naviganion-more"> Show Me More</a>
         {{/if}}
     </script>
+    
+    <!-- instance template -->
+    <script id="instTemplate" type="text/x-jquery-tmpl">
+        {{each data}}
+            <li role="option">
+                <a about="${url}" href="#" onclick="onInstanceClick(this); return false;">${title}</a>
+                <small>
+                {{each types}}
+                    ${value} 
+                {{/each}}
+                </small>
+            </li>
+        {{/each}}
+    </script>
 
 
     <!-- INDEX PAGE -->
@@ -197,7 +211,9 @@
         </div>
         
         <div data-role="content" id="instance-content">
-            
+            <ul id="inst-list" data-role="listview" data-inset="true" role="listbox"></ul>
+            <span id="inst-statusbar"></span>
+            <h3 style="display:none" id="no-instances">No matches.</h3>
         </div>
     </div>    
     

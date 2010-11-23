@@ -14,6 +14,31 @@ dataProvider.prototype.getKBList = function(){
     }
 }
 
+dataProvider.prototype.getInstanceList = function(url){
+    var temp = "#instTemplate";
+    var cont = "#inst-list";
+    
+    var data = $.parseJSON(localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url]);
+    if( typeof data != 'undefined' && data != null){
+        this.renderData(data, temp, cont);
+        $("#inst-statusbar").empty().append( $(data['statusbar']) );
+        $(document).trigger('instance.done');
+    }else{
+        var dp = this;
+        $.get(url, function(data){
+            // save 
+            localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url] = data;
+            // parse
+            var dataArr = $.parseJSON(data);
+            // render
+            dp.renderData(dataArr, temp, cont);
+            $("#inst-statusbar").empty().append( $(dataArr['statusbar']) );
+            $(document).trigger('instance.done');
+        });
+    }
+}
+
+// navigation
 dataProvider.prototype.getNavigation = function(event, uri){
     if( typeof uri == 'undefined' ) uri = selected_model;
     var temp = "#navTemplate";
@@ -39,14 +64,11 @@ dataProvider.prototype.getNavigation = function(event, uri){
         }
     }
 };
-
 dataProvider.prototype.saveNavigation = function(data){
     var temp = "#navTemplate";
     var cont = "#nav-list";
     // data
     var dataArr = $.parseJSON(data);
-    
-    console.log(dataArr);
     
     // get uri
     var uri = dataArr["rootEntry"];
