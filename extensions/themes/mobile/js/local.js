@@ -56,7 +56,6 @@ $(document).ready(function(){
             connectionStatus = 'online';
         } else {
             connectionStatus = 'offline';
-            knowledgeBaseList.loadList();
         }
         console.log(connectionStatus);
     };

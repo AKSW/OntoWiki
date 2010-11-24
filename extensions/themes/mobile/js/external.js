@@ -94,7 +94,7 @@ function showInstances(){
     $("#instance-title").text(title);
     
     // handle page change
-    $(document).bind("instance.done", function(e, status){
+    $(document).bind("instance.list.done", function(e, status){
         $(document).unbind(e); 
         
         // remove loader
@@ -102,6 +102,32 @@ function showInstances(){
 
         // switch page
         $.mobile.changePage("#instance-list");
+    })
+    
+    // get
+    provider.getInstanceList(url);
+}
+
+// change instance page
+function pageList(entry, animate){
+    $.mobile.pageLoading();
+    
+    url = $(entry).attr('about');
+    
+    console.log(url);
+    
+    // handle page change
+    $(document).bind("instance.list.done", function(e, status){
+        $(document).unbind(e); 
+        
+        $.mobile.pageLoading(true);
+        
+        if(animate){
+            //location.hash = "instance-list";
+            $.mobile.changePage("#instance-list", "slide", false, true );
+        }else{
+            redrawInstances();
+        }
     })
     
     // get
@@ -141,21 +167,23 @@ function onInstanceClick(entry, animate){
     // set title
     $("#properties-title").text(title);
     
-    // request instance properties
-    $.get(url, function(data){
-        // set view
-        $('#properties-content').html(data);
-
+    // handle page change
+    $(document).bind("instance.done", function(e, status){
+        $(document).unbind(e); 
+        
+        $.mobile.pageLoading(true);
+        
         if(animate){ 
             //location.hash = "properties-list";
             $.mobile.changePage("#properties-list", "slide", false, true );
         }else{
-            // remove animation
-            $.mobile.pageLoading(true);
             // refresh page
             redrawProperties();
         }
     })
+    
+    // get
+    provider.getInstance(url);
 }
 
 // toggle menu links
@@ -193,32 +221,6 @@ function doSearch(){
             $.mobile.pageLoading(true);
         });
     });
-}
-
-// change instance page
-function pageList(entry, animate){
-    $.mobile.pageLoading();
-    
-    url = $(entry).attr('about');
-    
-    console.log(url);
-    
-    // handle page change
-    $(document).bind("instance.done", function(e, status){
-        $(document).unbind(e); 
-        
-        $.mobile.pageLoading(true);
-        
-        if(animate){
-            //location.hash = "instance-list";
-            $.mobile.changePage("#instance-list", "slide", false, true );
-        }else{
-            redrawInstances();
-        }
-    })
-    
-    // get
-    provider.getInstanceList(url);
 }
 
 function openRDFa(){

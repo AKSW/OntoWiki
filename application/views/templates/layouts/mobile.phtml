@@ -124,6 +124,46 @@
             </li>
         {{/each}}
     </script>
+    
+    <!-- properties list template -->
+    <script id="propsTemplate" type="text/x-jquery-tmpl">
+        {{each data}}
+            <li data-role="list-divider" role="heading" about="${predicate_uri}">
+                ${predicate_title}
+            </li>
+            {{each objects}}
+                {{if (typeof lang != 'undefined' && lang.length > 0) || (typeof datatype != 'undefined' && datatype.length > 0)}}
+                    <li role="option">
+                        <span property="${relation}"
+                                  {{if lang.length > 0}}
+                                    xml:lang="${lang}"
+                                  {{else datatype.length > 0}}
+                                    datatype="${datatype}"
+                                  {{/if}}
+                                  >${title}</span>
+                     </li>
+                {{else (typeof relation != 'undefined' && relation.length > 0)}}
+                    <li role="option">
+                            <a rel="${relation}"
+                               about="${about}"
+                               content="${content}"
+                               onclick="onInstanceClick(this, false); return false;" href="#"
+                               >${title}</a>
+                    </li>
+                {{else}}
+                    <li role="option">
+                        <a about="${about}"
+                           content="${content}"
+                           onclick="onInstanceClick(this, false); return false;" href="#"
+                           >${title}</a>
+                     </li>
+                {{/if}}
+            {{/each}}
+        {{/each}}
+    </script>
+
+
+
 
 
     <!-- INDEX PAGE -->
@@ -228,6 +268,7 @@
         
         <div data-role="content" id="properties-content">
             <!-- stuff here -->
+            <ul data-role="listview" data-inset="true" role="listbox" id="prop-list"></ul>
         </div>
     </div>
     

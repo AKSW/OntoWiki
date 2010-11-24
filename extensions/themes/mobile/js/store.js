@@ -14,6 +14,33 @@ dataProvider.prototype.getKBList = function(){
     }
 }
 
+// instance
+dataProvider.prototype.getInstance = function(url){
+    var temp = "#propsTemplate";
+    var cont = "#prop-list";
+    
+    var data = $.parseJSON(localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url]);
+    if( typeof data != 'undefined' && data != null){
+        this.renderData(data, temp, cont);
+        $(document).trigger('instance.done');
+    }else{
+        var dp = this;
+        $.get(url, function(data){
+            // save 
+            localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url] = data;
+            // parse            
+            //console.log(data);
+            var dataArr = $.parseJSON(data);
+            //console.log(dataArr);
+            
+            // render
+            dp.renderData(dataArr, temp, cont);
+            $(document).trigger('instance.done');
+        });
+    }
+}
+
+// instance list 
 dataProvider.prototype.getInstanceList = function(url){
     var temp = "#instTemplate";
     var cont = "#inst-list";
@@ -22,7 +49,7 @@ dataProvider.prototype.getInstanceList = function(url){
     if( typeof data != 'undefined' && data != null){
         this.renderData(data, temp, cont);
         $("#inst-statusbar").empty().append( $(data['statusbar']) );
-        $(document).trigger('instance.done');
+        $(document).trigger('instance.list.done');
     }else{
         var dp = this;
         $.get(url, function(data){
@@ -33,7 +60,7 @@ dataProvider.prototype.getInstanceList = function(url){
             // render
             dp.renderData(dataArr, temp, cont);
             $("#inst-statusbar").empty().append( $(dataArr['statusbar']) );
-            $(document).trigger('instance.done');
+            $(document).trigger('instance.list.done');
         });
     }
 }
@@ -46,6 +73,9 @@ dataProvider.prototype.getNavigation = function(event, uri){
     
     if( typeof localStorage["ontowiki.nav."+uri] != 'undefined' && localStorage["ontowiki.nav."+uri] != null){
         this.renderData($.parseJSON(localStorage["ontowiki.nav."+uri]), temp, cont);
+        if(event == "reset"){
+            $.get(urlBase + 'model/select/?m=' + uri, function(){})
+        }
         $(document).trigger('navigation.done');
     }else{
         switch(event){ 

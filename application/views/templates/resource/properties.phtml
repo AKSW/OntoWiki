@@ -1,67 +1,89 @@
 <?php $flag = false; ?>
 <?php $request = Zend_Controller_Front::getInstance()->getRequest(); ?>
 <?php if ($request->isMobile()): ?>
-    <?php if ($this->has('predicates')): ?>
-    <?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
-    <ul data-role="listview" data-inset="true" role="listbox" about="<?php echo $this->resourceUri ?>">
-        <?php foreach ($this->predicates as $graph => $predicatesForGraph): ?>
-            <?php $current++; ?>
-            <?php if (count($this->predicates[$graph]) > 0): /* has resource predicates from graph at all? */ ?>
-                <?php $flag = true; ?>
+<?php 
+    echo "{";
 
-            <?php foreach ($predicatesForGraph as $uri => $predicate): ?>
-                <?php $currentPredicate = $this->predicates[$graph][$uri] ?>
-                    <li data-role="list-divider" role="heading" about="<?php echo $currentPredicate['uri'] ?>">
-                        <?php echo $currentPredicate['title'] ?>
-                    </li>
-                    <?php if (count($this->values[$graph][$uri]) > 1): ?>
-                        <?php foreach ($this->values[$graph][$uri] as $entry): ?>
-                            <li role="option">
-                                    <a rel="<?php echo $currentPredicate['curi'] ?>"
-                                       about="<?php echo $entry['url'] ?>"
-                                       content="<?php echo $entry['uri'] ?>"
-                                       onclick="onInstanceClick(this, false); return false;" href="#"
-                                       ><?php echo $entry['object'] ?></a>
-                            </li>
-                        <?php endforeach; ?>
-                        <?php if (isset($currentPredicate['has_more']) && $currentPredicate['has_more']): ?>
+    if ($this->has('predicates')){
+        $odd = true; 
+        $current = 0; 
+        $graphCount = count($this->graphs);
+        
+        echo '"resourceUri":"'.$this->resourceUri.'",';
+        echo '"data":[';
+        
+        foreach ($this->predicates as $graph => $predicatesForGraph){
+            $current++;
+            if (count($this->predicates[$graph]) > 0){
+                $cnt = count($predicatesForGraph);
+                foreach ($predicatesForGraph as $uri => $predicate){
+                    // get current predicate title and uri
+                    $currentPredicate = $this->predicates[$graph][$uri];
+                    echo '{';
+                    echo '"predicate_uri":"'.$currentPredicate['uri'].'",';
+                    echo '"predicate_title":"'.$currentPredicate['title'].'",';
+                    
+                    // get object for current predicate
+                    echo '"objects":[';
+                    $entr = count($this->values[$graph][$uri]);
+                    if ($entr > 1){
+                        foreach ($this->values[$graph][$uri] as $entry){
+                            echo '{';
+                            echo '"relation":"'.$currentPredicate['curi'].'",';
+                            echo '"about":"'.$entry['url'].'",';
+                            echo '"content":"'.$entry['uri'].'",';
+                            echo '"title":"'.$entry['object'].'"';
+                            echo '}';
+                            if( --$entr > 0 ) echo ',';
+                        }
+                        if (isset($currentPredicate['has_more']) && $currentPredicate['has_more']){
+                            echo ',"more":"'.$currentPredicate['has_more_link'].'"';
+                        }
+                    }else{
+                        echo '{';
+                        $entry = current($this->values[$graph][$uri]);
+                        if ($entry['url']){
+                            echo '"about":"'.$entry['url'].'",';
+                            echo '"content":"'.$entry['uri'].'",';
+                            echo '"title":"'.$entry['object'].'"';
+                        }else{
+                            echo '"relation":"'.$currentPredicate['curi'].'",';
+                            
+                            if (isset($entry['lang']) && !empty($entry['lang'])){
+                                echo '"lang":"'.$entry['lang'].'",';
+                            } else if(isset($entry['datatype']) && !empty($entry['datatype'])){
+                                echo '"datatype":"'.$entry['datatype'].'",';
+                            }
+                            echo '"title":"'.$entry['object'].'"';
+                        }
+                        echo '}';
+                    }
+                    echo ']';
+                    
+                    echo '}';
+                    if( --$cnt > 0 ) echo ',';
+                }
+            }
+        }
+        
+        echo ']';
+    }
+    
+    echo "}";
+    
+    /*
+    <?php if (isset($currentPredicate['has_more']) && $currentPredicate['has_more']): ?>
                             <li role="option"><a href="#" onclick="pageList(this, true); return false;" about="<?php echo $currentPredicate['has_more_link'] ?>">[<?php echo $this->_('more') ?>]</a></li>
                         <?php endif; ?>
-                    <?php else: ?>
-                        <?php $entry = current($this->values[$graph][$uri]) ?>
-                            <?php if ($entry['url']): ?>
-                                <li role="option">
-                                    <a about="<?php echo $entry['url'] ?>"
-                                       content="<?php echo $entry['uri'] ?>"
-                                       onclick="onInstanceClick(this, false); return false;" href="#"
-                                       ><?php echo $entry['object'] ?></a>
-                                 </li>
-                            <?php else: ?>
-                                 <li role="option">
-                                    <span property="<?php echo $currentPredicate['curi'] ?>"
-                                              <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
-                                                            xml:lang="<?php echo $entry['lang'] ?>"
-                                                    <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
-                                                      datatype="<?php echo $entry['datatype'] ?>"
-                                              <?php endif; ?>
-                                              ><?php echo $entry['object'] ?></span>
-                                 </li>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    </ul>
-    <?php endif; ?>
-    <?php if (!$flag): ?>
-        <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
-    <?php endif; ?>
+    */
+?>
 <?php else: ?>
 	<?php if (isset($this->prePropertiesContent)): ?>
     	<div><?php echo $this->prePropertiesContent; ?></div>    
 	<?php endif; ?>
     <?php if (isset($this->prePropertiesContent)): ?>
-        <div><?php echo $this->prePropertiesContent; ?></div>
+        <div><?php echo $this
+        ->prePropertiesContent; ?></div>
     <?php endif; ?>
     <span about="<?php echo $this->resourceUri ?>" style="display:none" class="about_span"></span>
     <?php if ($this->has('predicates')): ?>
