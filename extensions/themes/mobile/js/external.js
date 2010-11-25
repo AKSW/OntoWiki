@@ -254,11 +254,11 @@ function openRDFa(){
     var options = {
         onCancel: function() {
             //console.log('cancel');
-            //onInstanceClick();
+            $.mobile.changePage("#properties-list", "slide", false, true );
         }, 
         onSubmitSuccess: function() {
             //console.log('ok');
-            onInstanceClick();
+            $.mobile.changePage("#properties-list", "slide", false, true );
         },
         title: $("#properties-title").text(),
         saveButtonTitle: 'Save',

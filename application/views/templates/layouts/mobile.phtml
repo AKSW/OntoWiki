@@ -115,7 +115,7 @@
     <script id="instTemplate" type="text/x-jquery-tmpl">
         {{each data}}
             <li role="option">
-                <a about="${url}" href="#" onclick="onInstanceClick(this); return false;">${title}</a>
+                <a about="${url}" onclick="onInstanceClick(this); return false;">${title}</a>
                 <small>
                 {{each types}}
                     ${value} 
@@ -165,7 +165,7 @@
 
 
 
-
+    <!-- PAGES -->
     <!-- INDEX PAGE -->
     <div id="home" data-role="page">
         <div data-role="header">
@@ -206,38 +206,6 @@
     
         <div data-role="content">
             <ul data-role="listview" data-inset="true" role="listbox" id="nav-list"></ul>
-        </div>
-    </div>
-    
-    <!-- NAVIGATION ITEM MENU -->
-    <div id="nav-item-menu" data-role="dialog" data-transition="pop">
-        <div data-role="header">
-            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
-            <h1>Item Menu</h1>
-        </div>
-    
-        <div data-role="content">
-            <a href="#" data-role="button" data-theme="b" onclick="showInstances(); return false;">Show Instances</a>
-            <a href="#nav" data-role="button" data-theme="b" style="display:none;" id="item-nav-deep" onclick="navigateDeeper();">Navigate deeper</a>
-        </div>
-    </div>
-    
-    <!-- NAVIGATION ACTIONS MENU -->
-    <div id="nav-menu" data-role="dialog" data-transition="pop">
-        <div data-role="header">
-            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
-            <h1>Actions Menu</h1>
-        </div>
-    
-        <div data-role="content">
-            <div data-role="fieldcontain">
-                <input placeholder="<?php echo $this->_('Search') ?>" type="text" id="search" name="search" />
-                <a href="#" data-role="button" data-theme="b" onclick="doSearch(); return false;"><?php echo $this->_('Search') ?></a>
-            </div>
-            
-            <div data-role="fieldcontain" style="display:none;" id="menu-edit-btn">
-                <a href="#" data-role="button" data-theme="b" onclick="openRDFa(); return false;">Edit</a>
-            </div>
         </div>
     </div>
     
@@ -294,15 +262,36 @@
         </div>
     </div>
     
-    <!-- WTF IS THIS? -->
-    <div id="list" data-role="page">
-        <div class="toolbar">
-            <!-- <a href="#nav" class="back">Back</a> -->
-            <h1 id="list-title">title</h1>
-            <a href="#" class="button" onclick="toggleMenu(this);">Menu</a>
+    <!-- NAVIGATION ITEM MENU -->
+    <div id="nav-item-menu" data-role="dialog" data-transition="pop">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1>Item Menu</h1>
         </div>
-        <div id="navigation-content">
-            <?php echo $this->modules('main.mobile.list') ?>
+    
+        <div data-role="content">
+            <a href="#" data-role="button" data-theme="b" onclick="showInstances(); return false;">Show Instances</a>
+            <a href="#nav" data-role="button" data-theme="b" style="display:none;" id="item-nav-deep" onclick="navigateDeeper();">Navigate deeper</a>
+        </div>
+    </div>
+    
+    <!-- MENUS -->
+    <!-- NAVIGATION ACTIONS MENU -->
+    <div id="nav-menu" data-role="dialog" data-transition="pop">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1>Actions Menu</h1>
+        </div>
+    
+        <div data-role="content">
+            <div data-role="fieldcontain">
+                <input placeholder="<?php echo $this->_('Search') ?>" type="text" id="search" name="search" />
+                <a href="#" data-role="button" data-theme="b" onclick="doSearch(); return false;"><?php echo $this->_('Search') ?></a>
+            </div>
+            
+            <div data-role="fieldcontain" style="display:none;" id="menu-edit-btn">
+                <a href="#" data-role="button" data-theme="b" onclick="openRDFa(); return false;">Edit</a>
+            </div>
         </div>
     </div>
     
