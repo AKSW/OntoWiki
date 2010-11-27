@@ -1,6 +1,6 @@
 <?php
 
-$querUri          = 'http://lod2.eu/Query/Testimonials';
+$querUri          = time() % 2 == 0 ? 'http://lod2.eu/Query/Testimonials' : 'http://lod2.eu/Query/Demos';
 $queryInstance    = new OntoWiki_Resource($querUri, OntoWiki::getInstance()->selectedModel);
 $queryDescription = $queryInstance->getDescription();
 $queryDescription = $queryDescription[$querUri];
@@ -15,33 +15,17 @@ $title = $queryInstance->getTitle();
 if (empty($title)) {
     $title = 'Query Result';
 }
+
 ?>
 <div class="section random-results">
     <script type="text/javascript">
     $(document).ready(function () {
-        var results = $('.random-results').find('.result');
-        var number  = results.length;
-        var current = Math.floor(Math.random() * (number - 1));
-        var maxHeight = 0;
-        results.each(function (index) {
-            if ($(this).height() > maxHeight) {
-                maxHeight = $(this).height();
-            }
-            
-            if (index !== current) {
-                $(this).hide();
-            }
-        });
-        results.height(maxHeight);
+        if ($.browser.webkit && document.readyState != 'complete') {
+            setTimeout(arguments.callee, 10);
+            return;
+        }
         
-        window.setInterval(function () {
-            var next = (current + 1) % number;
-            results.eq(current).fadeOut(function () {
-                results.eq(next).fadeIn(function () {
-                    current = next;
-                });
-            });
-        }, 15000);
+        var results = $('.random-results').find('.result').cycle();
     });
     </script>
     <h3><?php echo $title ?></h3>

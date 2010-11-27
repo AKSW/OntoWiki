@@ -53,6 +53,11 @@ lod2:exhibitData a owl:ObjectProperty;
     skos:note "This property is used to link an article with an exhibit datasource (JSONP)";
     rdfs:label "exhibit data resource".
 
+lod2:demoOf a owl:ObjectProperty;
+    skos:note "Used to link a demo description to the actual project being demonstrated.";
+    rdfs:label "demo of";
+    rdfs:range doap:Project.
+
 ###
 # Datatype Properties
 ###
@@ -81,7 +86,7 @@ lod2:contentSideBottom a owl:DatatypeProperty;
 
 lod2:contentRaw a owl:DatatypeProperty;
     rdfs:label "raw content";
-    skos:note "use this raw encoded content (will not be tidy-uped)";
+    skos:note "use this raw encoded content (will not be tidied)";
     rdfs:range rdfs:Literal;
     rdfs:subPropertyOf content:encoded.
 
@@ -118,6 +123,14 @@ lod2:Task a owl:Class;
 lod2:Testimonial a owl:Class;
     skos:note "Testimonial about about Linked (Open) Data and what it meens to you, your organisation, the society, the economy, the scientific world, the enterprise etc."; 
     rdfs:label "Testimonial" .
+
+lod2:Demo a owl:Class ;
+    skos:note "Demos of LOD2 from the LOD2 stack." ; 
+    rdfs:label "Demo" .
+
+lod2:PressClipping a owl:Class ;
+    skos:note "Press clippings are statements from the press about LOD2 or Linked Data in general." ; 
+    rdfs:label "Press clipping" .
 
 ### Classes from other schemas
 
