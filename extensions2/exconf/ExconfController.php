@@ -23,31 +23,7 @@ class ExconfController extends OntoWiki_Controller_Component {
     
     public function  init() {
         parent::init();
-        OntoWiki_Navigation :: reset();
-        OntoWiki_Navigation :: register('component', array (
-                'controller' => "exconf",
-                'action' => "list",
-                'name' => "Components",
-                'position' => 0,
-                'active' => "active",
-                'type' => 'component'
-        ));
-        OntoWiki_Navigation :: register('module', array (
-                'controller' => "exconf",
-                'action' => "list",
-                'name' => "Modules",
-                'position' => 0,
-                'active' => "active",
-                'type' => 'module'
-        ));
-        OntoWiki_Navigation :: register('plugin', array (
-                'controller' => "exconf",
-                'action' => "list",
-                'name' => "Plugins",
-                'position' => 0,
-                'active' => "active",
-                'type' => 'plugin'
-        ));
+        OntoWiki_Navigation::disableNavigation();
     }
 
     function listAction() {
@@ -55,40 +31,18 @@ class ExconfController extends OntoWiki_Controller_Component {
         
         $ow = OntoWiki::getInstance();
         
-        $type = "component";
-        if(isset($this->_request->type)){
-            $type = $this->_request->getParam("type");
-        }
-        
-        switch ($type) {
-            case "component":
-                $compMan = $ow->componentManager;
-                $this->view->extensions = $compMan->getComponents();
-                break;
-            case "plugin":
-                $pluginMan = $ow->pluginManager;
-                $this->view->extensions = $pluginMan->getPlugins();
-                break;
-            case "module":
-                $modMan = $ow->moduleManager;
-                $this->view->extensions = $modMan->getModules();
-                break;
-            default:
-                throw new OntoWiki_Exception("invalid type given");
-                break;
-        }
-        
-	OntoWiki_Navigation :: setActive($type);
+        $modMan = $ow->extensionManager;
+        $this->view->extensions = $modMan->getExtensions();
+              
         ksort($this->view->extensions);
-        $this->view->type = $type;
     }
     
     function confAction(){
-        if(!isset($this->_request->name) || !isset($this->_request->type)){
-            throw new OntoWiki_Exception("param 'name' and 'type' needs to be passed to this action");
+        if(!isset($this->_request->name)){
+            throw new OntoWiki_Exception("param 'name' needs to be passed to this action");
         }
         OntoWiki_Navigation::disableNavigation();
-        $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Configure ').' '.$this->_request->getParam('type').' '.$this->_request->getParam('name'));
+        $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Configure ').' '.$this->_request->getParam('name'));
         if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration') && !$this->_request->isXmlHttpRequest()) {
             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not allowed for this user", OntoWiki_Message::ERROR));
         }
@@ -105,76 +59,30 @@ class ExconfController extends OntoWiki_Controller_Component {
         // add toolbar
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
         
-        $type = $this->_request->getParam('type');
         $name = $this->_request->getParam('name');
-        switch ($type){
-            case 'component':
-                $manager        = $ow->componentManager;
-                $dirPath  = $manager->getComponentPath(). $name .'/';
-                if(!is_dir($dirPath)){
-                    throw new OntoWiki_Exception("invalid extension - does not exists");
-                }
-                $configFilePath = $dirPath.OntoWiki_Component_Manager::COMPONENT_CONFIG_FILE;
-                $localIniPath   = $dirPath.OntoWiki_Component_Manager::COMPONENT_PRIVATE_CONFIG_FILE;
-
-                $privateConfig       = $manager->getComponentPrivateConfig($name);
-                $config              = ($privateConfig != null ? $privateConfig->toArray() : array());
-                $this->view->enabled = $manager->isComponentActive($name);
-                
-                break;
-            case 'module':
-                $manager = $ow->moduleManager;
-                $dirPath  = $manager->getModulePath(). $name .'/';
-                if(!is_dir($dirPath)){
-                    throw new OntoWiki_Exception("invalid extension - does not exists");
-                }
-                $configFilePath = $dirPath.OntoWiki_Module_Manager::MODULE_CONFIG_FILE;
-                $localIniPath   = $dirPath.OntoWiki_Module_Manager::MODULE_LOCAL_CONFIG_FILE;
-
-                $config              = $manager->getModuleConfig($name);
-                $config              =  isset($config["private"]) ? $config["private"] : array();
-                $this->view->enabled = $manager->isModuleEnabled($name);
-
-                break;
-            case 'plugin':
-                $manager = $ow->pluginManager;
-
-                $config              = $manager->getPlugin($name);
-                
-                $dirPath  = $config['pluginPath'];
-                if(!is_dir($dirPath)){
-                    throw new OntoWiki_Exception("invalid extension - dir '$dirPath' does not exists");
-                }
-
-                $configFilePath = $dirPath.Erfurt_Plugin_Manager::CONFIG_FILENAME;
-                $localIniPath   = $dirPath.Erfurt_Plugin_Manager::CONFIG_LOCAL_FILENAME;
-                
-                $config              = isset($config["private"]) ? $config["private"] : array();
-                $this->view->enabled = $manager->isPluginEnabled($name);
-
-                break;
-            case 'wrapper':
-                throw new OntoWiki_Exception("not supported yet");
-                break;
-            case 'theme':
-                throw new OntoWiki_Exception("not supported yet");
-                break;
-            default :
-                throw new OntoWiki_Exception("invalid type");
-                break;
+        $manager        = $ow->extensionManager;
+        $dirPath  = $manager->getExtensionPath(). $name .'/';
+        if(!is_dir($dirPath)){
+            throw new OntoWiki_Exception("invalid extension - does not exists");
         }
+        $configFilePath = $dirPath.Ontowiki_Extension_Manager::DEFAULT_CONFIG_FILE;
+        $localIniPath   = $manager->getExtensionPath().$name.".ini";
+
+        $privateConfig       = $manager->getPrivateConfig($name);
+        $config              = ($privateConfig != null ? $privateConfig->toArray() : array());
+        $this->view->enabled = $manager->isExtensionActive($name);
+              
         $this->view->config  = $config;
         $this->view->name    = $name;
-        $this->view->type    = $type;
         
         function assertRights(){
-            if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration')) {
+            if (!Erfurt_App::getInstance()->getAc()->isActionAllowed('ExtensionConfiguration')) {
                 throw new OntoWiki_Exception("config not allowed for this user");
             }
         }
-        if(!is_writeable($dirPath)){
+        if(!is_writeable($manager->getExtensionPath())){
             if(!$this->_request->isXmlHttpRequest()){
-                OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the $type folder '$dirPath' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
+                OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the extension folder '".$manager->getExtensionPath()."' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
             }
         } else {
                 //react on post data
@@ -213,7 +121,7 @@ class ExconfController extends OntoWiki_Controller_Component {
                         $writer->write($localIniPath, $postIni, true);
                         OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config sucessfully changed", OntoWiki_Message::SUCCESS));
                     }
-                    $this->_redirect($this->urlBase.'exconf/conf/?type='.$type.'&name='.$name);
+                    $this->_redirect($this->urlBase.'exconf/conf/?name='.$name);
                 }
                 if(isset($this->_request->reset)){
                     assertRights();
@@ -222,7 +130,7 @@ class ExconfController extends OntoWiki_Controller_Component {
                     } else {
                         OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not reverted to default - not existing or not writeable", OntoWiki_Message::ERROR));
                     }
-                    $this->_redirect($this->urlBase.'exconf/conf/?type='.$type.'&name='.$name);
+                    $this->_redirect($this->urlBase.'exconf/conf/?name='.$name);
                 }
         }
 

@@ -40,7 +40,7 @@ $this->headScript()->appendScript('var exconfConfig = '.  json_encode($this->con
         $("#exConf").submit(function(){return false;});
         $("#exConf .button").click(function(){
         var arr = form2array($("#topConfTable"));
-            window.location = urlBase+"exconf/conf?name='.$this->name.'&type='.$this->type.'&config="+encodeURIComponent($.toJSON(arr));
+            window.location = urlBase+"exconf/conf?name='.$this->name.'&config="+encodeURIComponent($.toJSON(arr));
             //$.dump(arr);
         });
         $(".addProperty").submit(function(){return false;});

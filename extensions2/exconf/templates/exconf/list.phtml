@@ -1,12 +1,11 @@
 <?php
-$this->headScript()->appendFile($this->urlBase."extensions/components/exconf/resources/jquery.togglebutton.js");
-$this->headLink()->appendStylesheet($this->urlBase."extensions/components/exconf/resources/togglebutton.css");
+$this->headScript()->appendFile($this->staticUrlBase."extensions2/exconf/resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($this->staticUrlBase."extensions2/exconf/resources/togglebutton.css");
 $this->headScript()->appendScript('$(function(){
     function postToggle(button){
             var name = $(button).parent().find("> div:first > h3").html();
-            var type = $(button).parent().attr("type");
             var enabled = $(button).attr("selected");
-            $.post(urlBase + "exconf/conf/?type="+type+"&name="+name+"&enabled="+enabled);
+            $.post(urlBase + "exconf/conf/?name="+name+"&enabled="+enabled);
         }
  $(".togglebutton").togglebutton(
     {"onEnable":
@@ -21,13 +20,13 @@ $this->headScript()->appendScript('$(function(){
 <?php $odd = false; foreach($this->extensions as $name => $extension){ ?>
     <tr class="<?php echo $odd ? "odd" : "even"; ?>">
         <td>
-            <div class="extension " type="<?php echo $this->type; ?>">
+            <div class="extension ">
                 <div class="name"><h3><?php echo $name; ?></h3></div>
-                <div class="description"><?php echo isset($extension['description']) ? $extension['description'] : "no description yet"; ?></div>
-                <div class="maker"><?php echo isset($extension['maker']) ? $extension['maker'] : "maker unknown"; ?></div>
-                <div class="togglebutton" <?php if(isset($extension['enabled']) && $extension['enabled']){ echo "selected=\"true\""; } ?>></div>
-                <a href="<?php echo $this->urlBase; ?>exconf/conf/?type=<?php echo $this->type; ?>&name=<?php echo $name; ?>">configure</a>
-                <a href="<?php echo $this->urlBase; ?>exconf/conf/?type=<?php echo $this->type; ?>&name=<?php echo $name; ?>&remove=1">remove permanently</a>
+                <div class="description"><?php echo isset($extension->description) ? $extension->description : "no description yet"; ?></div>
+                <div class="maker"><?php echo isset($extension->maker) ? $extension->maker : "maker unknown"; ?></div>
+                <div class="togglebutton" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
+                <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>">configure</a>
+                <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>&remove=1">remove permanently</a>
             </div>
         </td>
     </tr>

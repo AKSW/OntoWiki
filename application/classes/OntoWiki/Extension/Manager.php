@@ -190,7 +190,7 @@ class Ontowiki_Extension_Manager {
 
 
     /**
-     * Returns the path the component manager used to search for extensions.
+     * Returns the path the extension manager used to search for extensions.
      *
      * @return string
      */
