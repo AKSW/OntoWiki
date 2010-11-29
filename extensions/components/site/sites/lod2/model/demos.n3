@@ -3,7 +3,7 @@ demos:OntoWikiDemo a lod2:Demo;
     rdfs:label "OntoWiki demo";
     rdfs:seeAlso <http://demo.ontowiki.net>;
     lod2:demoOf project:OntoWiki;
-    # foaf:depiction <http://static.lod2.eu/OntoWikiScreenshot>; get screenshot from tool
+    foaf:depiction <http://static.lod2.eu/OntoWikiScreenshot>;
     lod2:content """This demo presents a full-featured installation of OntoWiki. You can upload your own knowledge bases and browse/search them with OntoWiki's tools as well as display them in various views.""".
 
 demos:SigmaDemo a lod2:Demo;
