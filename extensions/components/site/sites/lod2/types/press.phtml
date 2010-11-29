@@ -26,6 +26,11 @@ if (isset($this->description['http://lod2.eu/schema/lang'][0]['value'])) {
     $renderData['Language'] = $languages[$lang];
 }
 
+if (isset($this->description['http://lod2.eu/schema/publishedBy'][0]['value'])) {
+    $publisher = $this->description['http://lod2.eu/schema/publishedBy'][0]['value'];
+    $renderData['Publisher'] = $publisher;
+}
+
 if (isset($this->description['http://www.w3.org/2000/01/rdf-schema#seeAlso'][0]['value'])) {
     $link = $this->description['http://www.w3.org/2000/01/rdf-schema#seeAlso'][0]['value'];
     $renderData['Link'] = '<a href="' . $link . '">View clipping</a>';
