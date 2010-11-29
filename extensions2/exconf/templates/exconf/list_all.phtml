@@ -1,0 +1,62 @@
+<?php
+$this->headScript()->appendFile($this->urlBase."extensions/components/exconf/resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($this->urlBase."extensions/components/exconf/resources/togglebutton.css");
+$this->headScript()->appendScript('$(function(){
+    function postToggle(button){
+            var name = $(button).parent().parent().find("> td:first").html();
+            var type = $(button).parent().parent().find("> td:last").html();
+            var enabled = $(button).parent().parent().find("> td").eq(1).find(">div.togglebutton").attr("selected");
+            $.post(urlBase + "exconf/conf/?type="+type+"&name="+name+"&enabled="+enabled);
+        }
+ $(".togglebutton").togglebutton(
+    {"onEnable":
+        postToggle,
+     "onDisable":
+        postToggle
+    }
+ );
+ });');
+?>
+<table>
+    <tr>
+        <td>
+            <h3>Components</h3>
+            <table border="0">
+            <?php foreach($this->components as $name => $component){ ?>
+                <tr>
+                    <td><?php echo $name; ?></td>
+                    <td><div class="togglebutton" <?php if(isset($component['enabled']) && $component['enabled']){ echo "selected=\"true\""; } ?>></div></td>
+                    <td><a href="<?php echo $this->urlBase; ?>exconf/conf/?type=component&name=<?php echo $name; ?>">configure</a></td>
+                    <td style="display: none">component</td>
+                </tr>
+            <?php } ?>
+            </table>
+        </td>
+        <td>
+            <h3>Modules</h3>
+            <table border="0">
+            <?php foreach($this->modules as $name => $component){ ?>
+                <tr>
+                    <td><?php echo $name; ?></td>
+                    <td><div class="togglebutton" <?php if(isset($component['enabled']) && $component['enabled']){ echo "selected=\"true\""; } ?>></div></td>
+                    <td><a href="<?php echo $this->urlBase; ?>exconf/conf/?type=module&name=<?php echo $name; ?>">configure</a></td>
+                    <td style="display: none">module</td>
+                </tr>
+            <?php } ?>
+            </table>
+        </td>
+        <td>
+            <h3>Plugins</h3>
+            <table border="0">
+            <?php foreach($this->plugins as $name => $component){ ?>
+                <tr>
+                    <td><?php echo $name; ?></td>
+                    <td><div class="togglebutton" <?php if(isset($component['enabled']) && $component['enabled']){ echo "selected=\"true\""; } ?>></div></td>
+                    <td><a href="<?php echo $this->urlBase; ?>exconf/conf/?type=plugin&name=<?php echo $name; ?>">configure</a></td>
+                    <td style="display: none">plugin</td>
+                </tr>
+            <?php } ?>
+            </table>
+        </td>
+    </tr>
+</table>
