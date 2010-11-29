@@ -11,7 +11,8 @@ partner:fub a lod2:Partner;
 <p>The Web-based Systems Group at Freie Universität Berlin explores technical and economic questions concerning the development of global, decentralized information environments. Its current focus lies on the publication and interlinking of structured data on the Web using Semantic Web technologies.</p>
 <p>The group has initialized several widely used open source software projects including D2RQ, D2R Server, RAP – RDF API for PHP, and NG4G – Named Graphs API for Jena. The group contributes to several open data publishing efforts including DBpedia and the W3C Linking-Open-Data project which aims at interlinking large numbers of data sources on the Web. The Web-based Systems Group is active within the World Wide Web Consortium where it has contributed to the SPARQL recommendation and participates in the Semantic Web Education and Outreach activity. The group maintains strong research ties with the Massachusetts Institute of Technology, Hewlett-Packard Labs, and the Open Archives Initiative.</p>""";
     lod2:abstract """Freie University Berlin will bring in expertise, tools and outreach capabilities to LOD2: (1) FUB has developed and maintains the Silk – Link Discovery Framework and Link Quality Assurance Workbench, which will be significantly extended and integrated into the LOD2 Stack. (2) FUB has developed D2R Server, the most widely used tool for publishing relational databases as Linked Data on the Web. D2R Server will be used for the domain complementation task in WP3 and will be included together with Pubby and Silk into the LOD2 Stack (WP6). (3) Within WP10 Training, Dissemination, community building, FUB will use its existing community building (initiator of W3C LOD) and outreach capabilities (Linked Data on the Web (LDOW) workshop series, Semantic Web Challenge competition series) to maximize the impact of LOD2.
-""".
+"""    ;
+    lod2:feedRelevantFor :Welcome .
 
 
 project:D2R-Server a doap:Project;
@@ -38,7 +39,8 @@ project:D2R-Server a doap:Project;
 """;
     lod2:abstract """D2R Server is a tool for publishing relational databases on the Semantic Web. It enables RDF and HTML browsers to navigate the content of the database, and allows applications to query the database using the SPARQL query language.""";
     lod2:partner partner:fub;
-    rdfs:label "D2R Server".
+    rdfs:label "D2R Server";
+    lod2:feedRelevantFor :Welcome .
 
 
 project:Silk a doap:Project;
@@ -87,7 +89,8 @@ using an RDF path language. Silk accesses the data sources that should be interl
 """;
     lod2:abstract """The Silk Linking Framework supports data publishers in setting explicit RDF links between data items within different data sources. Using the declarative Silk - Link Specification Language (Silk-LSL), developers can specify which types of RDF links should be discovered between data sources as well as which conditions data items must fulfil in order to be interlinked. These link conditions may combine various similarity metrics and can take the graph around a data item into account, which is addressed using an RDF path language.""";
     lod2:partner partner:fub;
-    rdfs:label "Silk Framework".
+    rdfs:label "Silk Framework";
+    lod2:feedRelevantFor :Welcome .
 
 
 
@@ -105,7 +108,8 @@ project:WIQA a doap:Project;
 """;
     lod2:abstract """The Web Information Quality Assessment Framework is a set of software components that empowers information consumers to employ a wide range of different information quality assessment policies to filter information from the Web. Information providers on the Web have different levels of knowledge, different views of the world and different intensions. Thus, provided information may be wrong, biased, inconsistent or outdated. Before information from the Web is used to accomplish a specific task, its quality should be assessed according to task-specific criteria.""";
     lod2:partner partner:fub;
-    rdfs:label "WIQA".
+    rdfs:label "WIQA";
+    lod2:feedRelevantFor :Welcome .
 
 
 project:SemMF a doap:Project;
@@ -128,5 +132,6 @@ project:SemMF a doap:Project;
 """;
     lod2:abstract """SemMF is a flexible framework for calculating semantic similarity between objects that are represented as arbitrary RDF graphs. The framework allows taxonomic and non-taxonomic concept matching techniques to be applied to selected object properties. Moreover, new concept matchers are easily integrated into SemMF by implementing a simple interface, thus making it applicable in a wide range of different use case scenarios""";
     lod2:partner partner:fub;
-    rdfs:label "SemMF".
+    rdfs:label "SemMF";
+    lod2:feedRelevantFor :Welcome .
 
