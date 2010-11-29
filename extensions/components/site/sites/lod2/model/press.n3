@@ -1,6 +1,6 @@
 
 clippings:ComputerweltAustria20100928 a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Austria - Computerwelt - 20100928" ;
+    rdfs:label "Austria - Computerwelt" ;
     lod2:publishedBy "Computerwelt (Austria)"; 
     lod2:lang "de"; 
     lod2:date "2010-09-28"^^xsd:date ; 
@@ -8,7 +8,7 @@ clippings:ComputerweltAustria20100928 a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/LOD2_Austria_Computerwelt_20100928.pdf> .
 
 clippings:DatanewsBelgium20100924 a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Belgium - Datanews - 20100924" ;
+    rdfs:label "Belgium - Datanews" ;
     lod2:publishedBy "Datanews (Belgium)"; 
     lod2:lang "nl"; 
     lod2:date "2010-09-24"^^xsd:date ; 
@@ -16,7 +16,7 @@ clippings:DatanewsBelgium20100924 a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/TenForce_LOD2_Datanews_september_2010.pdf> .
 
 clippings:HannoverZeitung20100928 a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Germany - Hannover Zeitung - 20100928" ;
+    rdfs:label "Germany - Hannover Zeitung" ;
     lod2:publishedBy "Hannover Zeitung (Germany)"; 
     lod2:lang "de"; 
     lod2:date "2010-09-28"^^xsd:date ; 
@@ -24,7 +24,7 @@ clippings:HannoverZeitung20100928 a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/LOD2_Clipping_-_Germany_-_Hannover_Zeitung_-_20100928_-_PDF.pdf> .
 
 clippings:Boersenblatt20100927 a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Germany - Börsenblatt - 20100927" ;
+    rdfs:label "Germany - Börsenblatt" ;
     lod2:publishedBy "Börsenblatt (Germany)"; 
     lod2:lang "de"; 
     lod2:date "2010-09-27"^^xsd:date ; 
@@ -32,7 +32,7 @@ clippings:Boersenblatt20100927 a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/LOD2_Clipping_-_Germany_-_Boersenblatt_-_20100927_-_PDF.pdf> .
     
 clippings:xtranewsGermany a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Germany - xtranews - 20100930" ;
+    rdfs:label "Germany - xtranews" ;
     lod2:publishedBy "xtranews (Germany)"; 
     lod2:lang "de"; 
     lod2:date "2010-09-27"^^xsd:date ; 
@@ -40,7 +40,7 @@ clippings:xtranewsGermany a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/LOD2_Clipping_-_Germany_-_xtranews_-_20100930_-_PDF.pdf> .
     
 clippings:JuraforumGermany a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Germany - Juraforum - 20100930" ;
+    rdfs:label "Germany - Juraforum" ;
     lod2:publishedBy "Juraforum (Germany)"; 
     lod2:lang "de"; 
     lod2:date "2010-09-30"^^xsd:date ; 
@@ -48,7 +48,7 @@ clippings:JuraforumGermany a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/LOD2_Clipping_-_Germany_-_Juraforum_-_20100930_-_PDF.pdf> .
 
 clippings:InnovationsreportGermany a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Germany - Innovationsreport - 20100930" ;
+    rdfs:label "Germany - Innovationsreport" ;
     lod2:publishedBy "Innovationsreport (Germany)"; 
     lod2:lang "de"; 
     lod2:date "2010-09-30"^^xsd:date ; 
@@ -56,7 +56,7 @@ clippings:InnovationsreportGermany a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/LOD2_Clipping_-_Germany_-_Innovationsreport_-_20100930_-_PDF.pdf> .
 
 clippings:DatanewsBelgium20100908 a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Belgium - Datanews - 20100908" ;
+    rdfs:label "Belgium - Datanews" ;
     lod2:publishedBy "Datanews (Belgium)"; 
     lod2:lang "nl"; 
     lod2:date "2010-09-08"^^xsd:date ; 
@@ -80,7 +80,7 @@ clippings:Kick-offarticleinLVZ a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/Kick-off_article_in_LVZ.pdf> .
 
 clippings:LetterddtFachpresse a lod2:PressClipping;
-    rdfs:label "LOD2 Clipping - Germany - Letter d. dt. Fachpresse - 20101112" ;
+    rdfs:label "Germany - Letter d. dt. Fachpresse" ;
     lod2:publishedBy "Letter d. dt. Fachpresse (Germany)"; 
     lod2:lang "de"; 
     lod2:date "2010-11-12"^^xsd:date ; 
@@ -120,7 +120,7 @@ clippings:LeipzigDeGermany a lod2:PressClipping;
     rdfs:seeAlso <http://static.lod2.eu/LOD2_Kick-off_news_at_Leipzig.de.png> .
 
 # clippings:DerBoersianerAustria20102809 a lod2:PressClipping;
-#     rdfs:label "LOD2 Clipping - Austria - Der Boersianer 20102809" ;
+#     rdfs:label "Austria - Der Boersianer 20102809" ;
 #     lod2:publishedBy "Der Boersianer (Austria)"; 
 #     lod2:lang "de"; 
 #     lod2:date "2010-28-09"^^xsd:date ; 
