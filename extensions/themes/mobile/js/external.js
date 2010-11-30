@@ -188,6 +188,12 @@ function onInstanceClick(entry, animate){
 
 // toggle menu links
 function toggleMenu(){
+    if( $("#instance-list").hasClass("ui-page-active") == true ){
+        $("#menu-filters-btn").show();
+    }else{
+        $("#menu-filters-btn").hide();
+    }
+    
     if( $("#properties-list").hasClass("ui-page-active") == true ){
         $("#menu-edit-btn").show();
     }else{
@@ -222,6 +228,29 @@ function doSearch(){
         });
     });
 }
+
+function getFilters(){
+    // loading 
+    $.mobile.pageLoading();
+    // get results
+    $.get(urlBase+"module/get?name=filter&json=true", function(data){
+        data = $.parseJSON(data);
+        
+        $.mobile.changePage("#filters-view", "slide", false, true );
+        $.mobile.pageLoading(true);
+        
+        var container = "#filters-list";
+        var template = "#filtersTemplate";
+        // clear
+        $(container).empty();
+        // render
+        $(template).tmpl(data).appendTo(container);
+        // try refresh listview
+        try{
+            $(container).listview("refresh");
+        }catch(e){} // ignore all errors
+    });
+};
 
 function openRDFa(){
     $.mobile.pageLoading();

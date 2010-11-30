@@ -1,0 +1,95 @@
+<?php
+/**
+ * OntoWiki filter module template
+ */
+$odd = true;
+
+echo "{";
+
+if ($this->filter){
+    $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+    
+    echo '"activefilters":[';
+    
+    foreach ($this->filter as $filter){
+        if ( isset($filter['hidden'] ) && $filter['hidden'] ){
+            continue;
+        }
+        
+        // id
+        echo '{"id":"'.$filter['id'].'",';
+        
+        // mode
+        echo '"mode":"'.$filter['mode'].'",';
+        
+        //
+        if($filter['mode'] == "box"){            
+            // property
+            echo '"property":"'.$filter['property'].'",';
+            
+            // link
+            echo '"property_link":"'.(string) $linkurl->setParam('r', $filter['property'], true).'",';
+            
+            // label
+            echo '"property_label":"'.$this->titleHelper->getTitle($filter['property']).'",';
+            
+            if ($filter['isInverse']){
+                echo '"inverse":true,';
+            }
+            if ($filter['negate']){ 
+                echo '"negate":true,';
+            }
+            
+            echo $filter['filter'];
+            if ($filter['value1']){
+                if ($filter['valuetype'] == 'uri'){
+                    echo '"value1":"'.$filter['value1'].'",';
+                    echo '"value1_link":"'. (string) $linkurl->setParam('r', $filter['value1'], true).'",';
+                    echo '"value1_label":"'.$this->titleHelper->getTitle($filter['value1']).'"';
+                }else{
+                    echo '"value1":"'.$filter['value1'].'"';
+                }
+            }
+            if ($filter['value2']){
+                if ($filter['valuetype'] == 'uri'){
+                    echo ',"value2":"'.$filter['value2'].'",';
+                    echo '"value2_link":"'.(string) $linkurl->setParam('r', $filter['value2'], true).'",';
+                    echo '"value2_label":"'.$this->titleHelper->getTitle($filter['value2']).'"';
+                }else{
+                    echo ',"value2":"'.$filter['value2'].'"';
+                }
+            }
+        }
+        
+        if($filter['mode'] == "rdfsclass"){
+            echo '"property":"'.$filter['rdfsclass'].'",';
+            echo '"property_link":"'.(string) $linkurl->setParam('r', $filter['rdfsclass'], true).'",';
+            echo '"property_label":"'.$this->titleHelper->getTitle($filter['rdfsclass']).'"';
+        } 
+        
+        if($filter['mode'] == "search"){
+            echo '"property":"'.$filter['searchText'].'"';
+        } 
+        
+        if($filter['mode'] == "triples"){
+            echo '"property":"Base Query"';
+        }
+        
+        echo "}";
+    }
+    
+    echo "]";
+}
+/*
+foreach($this->properties as $key => $property){
+    echo $property['uri']; 
+    echo $property["title"]; 
+}
+
+foreach($this->inverseProperties as $key => $property){
+    echo $property['uri']; 
+    echo $property["title"];
+}*/
+
+echo "}";
+?>

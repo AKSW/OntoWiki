@@ -161,8 +161,17 @@
             {{/each}}
         {{/each}}
     </script>
-
-
+    
+    <!-- properties list template -->
+    <script id="filtersTemplate" type="text/x-jquery-tmpl">
+        {{each activefilters}}
+            <li role="option" id="${id}">
+            {{if mode == "rdfsclass"}}
+                Type: <a about="${property}" href="${property_link}">${property_label}</a>
+            {{/if}}
+            </li>
+        {{/each}}
+    </script>
 
 
     <!-- PAGES -->
@@ -262,6 +271,19 @@
         </div>
     </div>
     
+    <!-- FILTER VIEW -->
+    <div id="filters-view" data-role="page">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1>Filters</h1>
+        </div>
+    
+        <div data-role="content">
+            <ul id="filters-list" data-role="listview" data-inset="true" role="listbox"></ul>
+        </div>
+    </div>
+    
+    <!-- MENUS -->
     <!-- NAVIGATION ITEM MENU -->
     <div id="nav-item-menu" data-role="dialog" data-transition="pop">
         <div data-role="header">
@@ -275,7 +297,6 @@
         </div>
     </div>
     
-    <!-- MENUS -->
     <!-- NAVIGATION ACTIONS MENU -->
     <div id="nav-menu" data-role="dialog" data-transition="pop">
         <div data-role="header">
@@ -291,6 +312,10 @@
             
             <div data-role="fieldcontain" style="display:none;" id="menu-edit-btn">
                 <a href="#" data-role="button" data-theme="b" onclick="openRDFa(); return false;">Edit</a>
+            </div>
+            
+            <div data-role="fieldcontain" style="display:none;" id="menu-filters-btn">
+                <a href="#" data-role="button" data-theme="b" onclick="getFilters(); return false;">Filters</a>
             </div>
         </div>
     </div>
