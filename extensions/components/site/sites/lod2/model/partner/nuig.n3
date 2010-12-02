@@ -14,7 +14,8 @@ National University of Ireland, Galway (NUI, Galway) - Digital Enterprise Resear
     lod2:abstract """NUIG will guarantee technical excellence in reliable large-scale data processing with the
 same practices which have been daily driving the works behind the Sindice and Sig.ma projects. NUIG will
 provide the relevance, feasibility and consensus of the initiative thanks to the continuous interaction between
-the Linked Data community and the Linked Data Research Centre, a cross institute initiative.""".
+the Linked Data community and the Linked Data Research Centre, a cross institute initiative.""";
+lod2:feedRelevantFor :Welcome .
 
 project:Sindice a doap:Project;
     skos:broader pages:TechnologyStack;
@@ -47,7 +48,8 @@ For more information, visit our <a href="http://blog.sindice.com/">blog</a> or <
     sioc:feed <http://feeds.sindice.com/SindiceBlog>;
     lod2:partner partner:nuig;
     foaf:depiction <http://sindice.com/images/logo.png>;
-    rdfs:label "Sindice".
+    rdfs:label "Sindice";
+    lod2:feedRelevantFor :Welcome .
 
 
 
@@ -67,7 +69,8 @@ project:Sigma a doap:Project;
     sioc:feed <http://feeds.sindice.com/SindiceBlog>;
     lod2:partner partner:nuig;
     foaf:depiction <http://sig.ma/images/icons/sigma-logo-h70.png>;
-    rdfs:label "Sig.ma".
+    rdfs:label "Sig.ma";
+    lod2:feedRelevantFor :Welcome .
 
 
 project:Sparallax a doap:Project;
@@ -78,5 +81,6 @@ project:Sparallax a doap:Project;
     sioc:feed <http://feeds.sindice.com/SindiceBlog>;
     lod2:partner partner:nuig;
     foaf:depiction <http://sig.ma/images/icons/sigma-logo-h70.png>;
-    rdfs:label "Sparallax".
+    rdfs:label "Sparallax";
+    lod2:feedRelevantFor :Welcome .
 

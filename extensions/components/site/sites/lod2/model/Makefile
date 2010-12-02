@@ -2,7 +2,7 @@ default:
 	@echo "If you wanna install these models via owcli, type 'make install'"
 
 combine:
-	cat lod2-data.n3 people.n3 testimonials.n3 work/*.n3 partner/*.n3 > lod2-data-all.n3
+	cat lod2-data.n3 people.n3 testimonials.n3 press.n3 demos.n3 work/*.n3 partner/*.n3 > lod2-data-all.n3
 
 convert: combine
 	cwm --n3 lod2-schema.n3 --rdf > lod2-schema.rdf

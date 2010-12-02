@@ -40,21 +40,22 @@ class FeedsModule extends OntoWiki_Module
 
         // look for configure feed properties
         if (isset($this->_privateConfig->properties)) {
-            $properties = $this->_privateConfig->properties;
-            if (is_string($properties)) {
-                $property = $properties;
-                $properties = array();
-                $properties[] = $property;
-            }
+            $properties = (array)$this->_privateConfig->properties->toArray();
+            
             // ask for values for every feed property
             foreach ($properties as $key => $property) {
                 if (isset($this->description[$property])) {
                     foreach ($this->description[$property] as $feedObject) {
                         // load the feed content
-                        $this->loadFeed($feedObject['value']);
+                        $this->_loadFeed($feedObject['value']);
                     }
                 }
             }
+        }
+        
+        // load feeds on relevant resources
+        if (isset($this->_privateConfig->relevant)) {
+            $this->_loadRelevantFeeds();
         }
 
         // sort entries according to time (taken from http://devzone.zend.com/article/3208)
@@ -100,11 +101,40 @@ class FeedsModule extends OntoWiki_Module
             return false;
         }
     }
+    
+    /**
+     * Loads feeds from configured relevant resources
+     */
+    private function _loadRelevantFeeds()
+    {
+        if ($this->_owApp->selectedModel && $this->_owApp->selectedResource) {
+            $relevants  = is_string($this->_privateConfig->relevant) 
+                        ? (array)$this->_privateConfig->relevant
+                        : $this->_privateConfig->relevant->toArray();
+            $properties = is_string($this->_privateConfig->properties)
+                        ? (array)$this->_privateConfig->properties
+                        : $this->_privateConfig->properties->toArray();
+            
+            $relevantQuery = "
+                SELECT DISTINCT ?f
+                FROM <{$this->_owApp->selectedModel}>
+                WHERE {
+                    ?s <{$relevants[0]}> <{$this->_owApp->selectedResource}> . 
+                    ?s <{$properties[0]}> ?f . 
+                }";
+            
+            if ($result = $this->_erfurt->getStore()->sparqlQuery($relevantQuery)) {
+                foreach ($result as $row) {
+                    $this->_loadFeed($row['f']);
+                }
+            }
+        }
+    }
 
     /*
      * Loads a feed silently and use the OntoWiki cache dir for caching
      */
-    private function loadFeed ($url) {
+    private function _loadFeed ($url) {
         // check then feed uri
         if (!Erfurt_Uri::check($url)) {
             return;
@@ -116,7 +146,7 @@ class FeedsModule extends OntoWiki_Module
 
             // use the ontowiki cache directory if writeable
             // http://framework.zend.com/manual/en/zend.feed.reader.html#zend.feed.reader.cache-request.cache
-            if ((isset($config->cache->path)) && (is_writable($config->cache->path)) ) {
+            if ((isset($config->cache->path)) && (is_writable($config->cache->path))) {
                 
                 if (isset($this->_privateConfig->livetime)) {
                     $livetime = $this->_privateConfig->livetime;
@@ -128,11 +158,11 @@ class FeedsModule extends OntoWiki_Module
                 $cacheFrontendOptions = array(
                     'lifetime' => $livetime,
                     'automatic_serialization' => true
-                );
+               );
                 $cacheBackendOptions = array('cache_dir' => $config->cache->path);
-                Zend_Feed_Reader::setCache( Zend_Cache::factory(
+                Zend_Feed_Reader::setCache(Zend_Cache::factory(
                     'Core', 'File', $cacheFrontendOptions, $cacheBackendOptions
-                ));
+               ));
 
                 // this uses 304 http codes to speed up retrieval
                 Zend_Feed_Reader::useHttpConditionalGet();
@@ -155,7 +185,7 @@ class FeedsModule extends OntoWiki_Module
                 'authors'      => $entry->getAuthors(),
                 'link'         => $entry->getLink(),
                 'content'      => $entry->getContent()
-            );
+           );
             $this->entries[$entry->getLink()] = $newEntry;
         }
 
