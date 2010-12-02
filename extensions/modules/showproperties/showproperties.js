@@ -1,6 +1,7 @@
 $(document).ready(function() {
     //Set up drag- and drop-functionality
     $('.show-property').draggable({
+                            scope: 'Resource',
                             helper: 'clone',
                             zIndex: 10000,
                             scroll: false,

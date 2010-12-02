@@ -27,7 +27,12 @@ $(document).ready(function() {
     taggedResource = taglistContainer.attr('about');
     taggingInput = $("#exploretags-content");
 
-    taglistContainer.droppable({accept: '.show-property', drop:
+    taglistContainer.droppable({
+        accept: '.show-property',
+        scope: 'Resource',
+        activeClass: 'ui-droppable-accepted-destination',
+        hoverClass: 'ui-droppable-hovered',
+        drop:
         function(event, ui) {
             var data = {
                 "uri" : $(ui.draggable).attr("about"),
