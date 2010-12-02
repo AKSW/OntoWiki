@@ -2018,6 +2018,7 @@ a.Resource.ui-draggable-dragging
     border:solid 1px #cdd7dd;
     -moz-box-shadow:0 0 0.5em #666;
     -webkit-box-shadow:0 0 0.5em #666;
+    box-shadow:0 0 0.5em #666;
     cursor: move;
 }
 
@@ -2038,12 +2039,16 @@ a.ui-draggable-dragging.hasMenu span.toggle
 {
     background-color: #dee8ee;
     -moz-box-shadow:inset 0 0 1em #333;
+    -webkit-box-shadow:inset 0 0 1em #333;
+    box-shadow:inset 0 0 1em #333;
 }
 
 .ui-droppable-hovered
 {
     background-color: #eff9ff;
     -moz-box-shadow:inset 0 0 1.5em #333;
+    -webkit-box-shadow:inset 0 0 1em #333;
+    box-shadow:inset 0 0 1.5em #333;
 }
 
 /* 6. Etcetera -------------------------------------------------------------- */
