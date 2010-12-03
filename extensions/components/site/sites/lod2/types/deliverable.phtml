@@ -19,6 +19,10 @@ $leader = isset($this->description['http://lod2.eu/schema/leadPartner'][0]['valu
 $workPackage = isset($this->description['http://lod2.eu/schema/wp'][0]['value']) 
              ? $this->description['http://lod2.eu/schema/wp'][0]['value'] 
              : null;
+
+$link = isset($this->description['http://www.w3.org/2000/01/rdf-schema#seeAlso'][0]['value']) 
+      ? $this->description['http://www.w3.org/2000/01/rdf-schema#seeAlso'][0]['value'] 
+      : null;
 ?>
 
 <div class="maincontent">
@@ -39,6 +43,7 @@ $workPackage = isset($this->description['http://lod2.eu/schema/wp'][0]['value'])
                 echo $this->date($this->description['http://lod2.eu/schema/deliveryDate'][0]['value'], 'j F Y');
             ?></div><?php endif; ?>
             <?php if ($nature): ?><div>Delivarable nature: <?php echo $nature; ?></div><?php endif; ?>
+            <?php if ($link): ?><div>Download: <a href="<?php echo $link; ?>"><?php echo $link; ?></a></div><?php endif; ?>
         </div>
     </div>
 </div>
