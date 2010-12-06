@@ -194,7 +194,7 @@ class OntoWiki_View extends Zend_View
         
         $cssClasses  = isset($moduleOptions['classes']) ? $moduleOptions['classes'] : '';
         $cssId       = isset($moduleOptions['id']) ? $moduleOptions['id'] : '';
-        echo "getmdule $moduleName";
+        
         $module = $moduleRegistry->getModule($moduleName, $context, $renderOptions);
         
         if ($module->shouldShow()) {
