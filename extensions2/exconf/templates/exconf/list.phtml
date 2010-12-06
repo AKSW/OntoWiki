@@ -21,7 +21,7 @@ $this->headScript()->appendScript('$(function(){
     <tr class="<?php echo $odd ? "odd" : "even"; ?>">
         <td>
             <div class="extension ">
-                <div class="name"><?php echo isset($extension->name) ? $extension->name : $name; ?></h3></div>
+                <div class="name"><h3><?php echo isset($extension->name) ? $extension->name : $name; ?></h3></div>
                 <div class="description"><?php echo isset($extension->description) ? $extension->description : "no description yet"; ?></div>
                 <div class="maker"><?php echo isset($extension->author) ? $extension->author : "maker unknown"; ?></div>
                 <div class="homepage"><?php echo isset($extension->homepage) ? $extension->homepage : "homepage unknown"; ?></div>
