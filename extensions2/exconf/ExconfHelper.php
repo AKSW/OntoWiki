@@ -10,7 +10,7 @@ class ExconfHelper extends OntoWiki_Component_Helper
 {
     public function __construct()
     {
-        if ($this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration')) {
+        if (Erfurt_App::getInstance()->getAc()->isActionAllowed('ExtensionConfiguration')) {
             $owApp = OntoWiki::getInstance();
             $translate  = $owApp->translate;
             $url        = new OntoWiki_Url(array('controller' => 'exconf', 'action' => 'list'), array());
