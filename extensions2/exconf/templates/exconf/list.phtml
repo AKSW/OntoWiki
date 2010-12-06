@@ -20,7 +20,7 @@ $this->headScript()->appendScript('$(function(){
 <?php $odd = false; foreach($this->extensions as $name => $extension){ ?>
     <tr class="<?php echo $odd ? "odd" : "even"; ?>">
         <td>
-            <div class="extension ">
+            <div class="extension has-contextmenu-area">
                 <div class="name"><h3><?php echo isset($extension->name) ? $extension->name : $name; ?></h3></div>
                 <div class="description"><?php echo isset($extension->description) ? $extension->description : "no description yet"; ?></div>
                 <div class="author">
@@ -30,8 +30,18 @@ $this->headScript()->appendScript('$(function(){
                 </div>
                 <?php if(isset($extension->homepage)){ ?> <div class="homepage"><a href="<?php echo $extension->homepage ; ?>"</a></div><?php } ?>
                 <div class="togglebutton" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
-                <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>" class="minibutton">configure</a>
-                <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>&remove=1" class="minibutton">remove permanently</a>
+                <div class="contextmenu">
+                    <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>" class="item">
+                        <span title="Configure" class="icon icon-edit">
+                            <span>Configure</span>
+                        </span>
+                    </a>
+                    <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>&remove=1" class="item">
+                        <span title="Remove permanently" class="icon icon-delete">
+                            <span>Remove permanently</span>
+                        </span>
+                    </a>
+                </div>
             </div>
         </td>
     </tr>
