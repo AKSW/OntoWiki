@@ -85,6 +85,11 @@ class LoginModule extends OntoWiki_Module
         // no caching
         return false;
     }
+    
+    public function getTitle()
+    {
+        return "Login";
+    }    
 }
 
 
