@@ -142,12 +142,12 @@ class OntoWiki_Module_Registry
             $options->merge(new Zend_Config(array(
                 'id'      => $moduleName,
                 'classes' => '',
-                'name'    => $moduleName,
+                'name'    => isset($options->name) ? $options->name : $moduleName,
                 'enabled' => true ,
                 'extensionName' => $extensionName,
                 '_privateConfig' => $options->private
             )));
-
+            ;
             // set css classes according to module state
             switch ($this->_moduleStates->{$options->id}) {
                 case self::MODULE_STATE_OPEN:
