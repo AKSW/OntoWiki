@@ -116,7 +116,7 @@ function form2array(node){
     <table border="1" id="topConfTable">
         <tr>
             <td width="15%">enabled</td>
-            <td><input type="checkbox" name="enabled" <?php if($this->enabled){ ?>checked="checked"<?php } ?>></td>
+            <td><input type="checkbox" <?php if($this->enabled){ ?>selected="true" checked="checked"<?php } ?>></td>
         </tr>
         <tr>
             <td width="15%">private</td>
