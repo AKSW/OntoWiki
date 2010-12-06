@@ -10,12 +10,12 @@ class ExconfHelper extends OntoWiki_Component_Helper
 {
     public function __construct()
     {
-        $owApp = OntoWiki::getInstance();
-        
-        $translate  = $owApp->translate;
-        $url        = new OntoWiki_Url(array('controller' => 'exconf', 'action' => 'list'), array());
-        $extrasMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('application')->getSubMenu('Extras');
-        $extrasMenu->setEntry($translate->_('Configure Extensions'), (string) $url);
-
+        if ($this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration')) {
+            $owApp = OntoWiki::getInstance();
+            $translate  = $owApp->translate;
+            $url        = new OntoWiki_Url(array('controller' => 'exconf', 'action' => 'list'), array());
+            $extrasMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('application')->getSubMenu('Extras');
+            $extrasMenu->setEntry($translate->_('Configure Extensions'), (string) $url);
+        }
     }
 }

@@ -51,6 +51,9 @@
                     if(!container.is("div")){
                         var newNode = $("<div/>");
                         container.replaceWith(newNode); //returns the old node
+                        if(container.is(":checked") || container.attr("selected") == "true"){
+                            newNode.attr("selected", "true");
+                        }
                         container = newNode;
                     }
 
@@ -69,7 +72,7 @@
                     
                     var ref = slider.position().left;
                     
-                    if(options.enabled || (container.attr("selected") && container.attr("selected") == "true")){
+                    if(options.enabled || container.is(":checked") || container.attr("selected") == "true"){
                         enable(container, false);
                     } else {
                         disable(container, false);
