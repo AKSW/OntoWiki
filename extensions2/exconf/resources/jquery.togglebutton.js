@@ -47,12 +47,17 @@
 
 
 		// loop through each matched element
-		this
-		 .not('.togglebutton')
-			.addClass('togglebutton');
+		
 		this.each(function(){
                     var container = $(this);
-                    
+                    if(!container.is("div")){
+                        var newNode = $("<div/>");
+                        container.replaceWith(newNode); //returns the old node
+                        container = newNode;
+                    }
+
+                    container.addClass('togglebutton');
+
                     var slider = $("<div></div>").addClass("slider");
                     container.append(slider);
                     slider.draggable({

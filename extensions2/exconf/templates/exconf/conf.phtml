@@ -30,19 +30,21 @@ function array2form($confArr){
     <?php
 }
 
-$this->headScript()->appendFile($this->urlBase."extensions/components/graphicalquerybuilder/resources/jquery.dump.js");
-$this->headScript()->appendFile($this->urlBase."extensions/components/exconf/resources/jquery.togglebutton.js");
-$this->headLink()->appendStylesheet($this->urlBase."extensions/components/exconf/resources/togglebutton.css");
+$this->headScript()->appendFile($this->staticUrlBase."extensions2/queries/resources/jquery.dump.js");
+$this->headScript()->appendFile($this->staticUrlBase."extensions2/exconf/resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($this->staticUrlBase."extensions2/exconf/resources/togglebutton.css");
 $this->headScript()->appendScript('var exconfConfig = '.  json_encode($this->config).';
     $(document).ready(function(){
         $("#topConfTable > tbody > tr:first > td > *:first").togglebutton();
-        
-        $("#exConf").submit(function(){return false;});
-        $("#exConf .button").click(function(){
-        var arr = form2array($("#topConfTable"));
-            window.location = urlBase+"exconf/conf?name='.$this->name.'&config="+encodeURIComponent($.toJSON(arr));
+
+        //handle the form myself
+        $("div.toolbar a.button.submit").unbind("click");
+        $("div.toolbar a.button.submit").click(function(){
+            var arr = form2array($("#topConfTable"));
             //$.dump(arr);
+            window.location = urlBase+"exconf/conf?name='.$this->name.'&config="+encodeURIComponent($.toJSON(arr));
         });
+        
         $(".addProperty").submit(function(){return false;});
         $(".addProperty").live("click",function(){
             var lastKey = $(this).parent().find(">table>tbody>tr:last>td:first>input").val();
@@ -83,7 +85,7 @@ function form2array(node){
         if($(key).find("input").is("input")){
             var name = $(key).find("input").val();
         } else {
-            name = key.html();
+            var name = key.html();
         }
         var nameInt = parseInt(name);
         if(!isNaN(nameInt)){
@@ -91,15 +93,15 @@ function form2array(node){
         }
         var value = $(this).find("> td").eq(1).find("> *:first");
         if($(value).is("table")){
-            value = form2array($(value));
+            value = form2array(value);
         } else if( $(value).text() == "[empty]+"){
             value = {};
         } else if( $(value).is("input[type=checkbox]")){
             value = $(value).is(":checked");
-        } else if( $(value).is("input[type=checkbox]")){
-            value = $(value).is(":checked");
         } else if( $(value).is("div.togglebutton")){
             value = ($(value).attr("selected") == "true");
+        } else if( $(value).is("input.text")){
+            value = $(value).val();
         }
         arr[name] = value;
         

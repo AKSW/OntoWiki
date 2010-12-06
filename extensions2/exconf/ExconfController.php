@@ -35,6 +35,15 @@ class ExconfController extends OntoWiki_Controller_Component {
         $this->view->extensions = $modMan->getExtensions();
               
         ksort($this->view->extensions);
+
+        if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration') && !$this->_request->isXmlHttpRequest()) {
+            OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not allowed for this user", OntoWiki_Message::ERROR));
+        }
+        if(!is_writeable($modMan->getExtensionPath())){
+            if(!$this->_request->isXmlHttpRequest()){
+                OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the extension folder '".$modMan->getExtensionPath()."' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
+            }
+        }
     }
     
     function confAction(){
