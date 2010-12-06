@@ -15,9 +15,9 @@ class QueriesHelper extends OntoWiki_Component_Helper
         if ($owApp->selectedModel) {
             // register with extras menu
             $translate  = $owApp->translate;
-            $url        = new OntoWiki_Url(array('controller' => 'queries', 'action' => 'manage'));
+            $url        = new OntoWiki_Url(array('controller' => 'queries', 'action' => 'editor'));
             $extrasMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('application')->getSubMenu('Extras');
-            $extrasMenu->setEntry($translate->_('Query Builder'), (string) $url);
+            $extrasMenu->setEntry($translate->_('Queries'), (string) $url);
             //$extrasMenu->setEntry('Query Builder', (string) $url);
         }
     }

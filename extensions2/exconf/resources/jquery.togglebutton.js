@@ -45,9 +45,7 @@
                     }
                 }
 
-
 		// loop through each matched element
-		
 		this.each(function(){
                     var container = $(this);
                     if(!container.is("div")){
