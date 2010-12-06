@@ -30,29 +30,31 @@ class ExconfController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Configure Extensions'));
         
         $ow = OntoWiki::getInstance();
-        
-        $modMan = $ow->extensionManager;
-        
-        $extensions = $modMan->getExtensions();
-        
-        function compExtensions($a, $b){
-            if ($a == $b) {
-                return 0;
-            }
-            $a_key = isset($extensions[$a]["name"]) ? $extensions[$a]["name"] : $a;
-            $b_key = isset($extensions[$b]["name"]) ? $extensions[$b]["name"] : $b;
-            return strcasecmp($a_key, $b_key);
-        }
-        uksort($extensions, "compExtensions");
-        $this->view->extensions = $extensions;
         if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration') && !$this->_request->isXmlHttpRequest()) {
             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not allowed for this user", OntoWiki_Message::ERROR));
-        }
-        if(!is_writeable($modMan->getExtensionPath())){
-            if(!$this->_request->isXmlHttpRequest()){
-                OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the extension folder '".$modMan->getExtensionPath()."' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
+            $extensions = array();
+        } else {
+            $modMan = $ow->extensionManager;
+
+            $extensions = $modMan->getExtensions();
+
+            function compExtensions($a, $b){
+                if ($a == $b) {
+                    return 0;
+                }
+                $a_key = isset($extensions[$a]["name"]) ? $extensions[$a]["name"] : $a;
+                $b_key = isset($extensions[$b]["name"]) ? $extensions[$b]["name"] : $b;
+                return strcasecmp($a_key, $b_key);
+            }
+            uksort($extensions, "compExtensions");
+
+            if(!is_writeable($modMan->getExtensionPath())){
+                if(!$this->_request->isXmlHttpRequest()){
+                    OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the extension folder '".$modMan->getExtensionPath()."' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
+                }
             }
         }
+        $this->view->extensions = $extensions;
     }
     
     function confAction(){
@@ -61,95 +63,94 @@ class ExconfController extends OntoWiki_Controller_Component {
         }
         OntoWiki_Navigation::disableNavigation();
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Configure ').' '.$this->_request->getParam('name'));
-        if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration') && !$this->_request->isXmlHttpRequest()) {
-            OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not allowed for this user", OntoWiki_Message::ERROR));
-        }
-        $ow = OntoWiki::getInstance();
-        
-        $toolbar = OntoWiki::getInstance()->toolbar;
-        $urlList = new OntoWiki_Url(array('controller'=>'exconf','action'=>'list'), array());
-        $urlConf = new OntoWiki_Url(array('controller'=>'exconf','action'=>'conf'), array());
-        $urlConf->restore = 1;
-        $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'save'))
-                ->appendButton(OntoWiki_Toolbar::CANCEL, array('name' => 'back', 'class' => '', 'url' => (string) $urlList))
-                ->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'restore defaults', 'class' => '', 'url' => (string) $urlConf));
-        
-        // add toolbar
-        $this->view->placeholder('main.window.toolbar')->set($toolbar);
-        
-        $name = $this->_request->getParam('name');
-        $manager        = $ow->extensionManager;
-        $dirPath  = $manager->getExtensionPath(). $name .'/';
-        if(!is_dir($dirPath)){
-            throw new OntoWiki_Exception("invalid extension - does not exists");
-        }
-        $configFilePath = $dirPath.Ontowiki_Extension_Manager::DEFAULT_CONFIG_FILE;
-        $localIniPath   = $manager->getExtensionPath().$name.".ini";
-
-        $privateConfig       = $manager->getPrivateConfig($name);
-        $config              = ($privateConfig != null ? $privateConfig->toArray() : array());
-        $this->view->enabled = $manager->isExtensionActive($name);
-              
-        $this->view->config  = $config;
-        $this->view->name    = $name;
-        
-        function assertRights(){
-            if (!Erfurt_App::getInstance()->getAc()->isActionAllowed('ExtensionConfiguration')) {
-                throw new OntoWiki_Exception("config not allowed for this user");
-            }
-        }
-        if(!is_writeable($manager->getExtensionPath())){
-            if(!$this->_request->isXmlHttpRequest()){
-                OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the extension folder '".$manager->getExtensionPath()."' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
-            }
+        if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration')) {
+           throw new OntoWiki_Exception("config not allowed for this user");
         } else {
-                //react on post data
-                if(isset($this->_request->remove)){
-                    assertRights();
-                    if(rmdir($dirPath)){
-                        $this->_redirect($this->urlBase.'exconf/list');
-                    } else {
-                        OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("extension could not be deleted", OntoWiki_Message::ERROR));
-                    }
+            $ow = OntoWiki::getInstance();
+
+            $toolbar = OntoWiki::getInstance()->toolbar;
+            $urlList = new OntoWiki_Url(array('controller'=>'exconf','action'=>'list'), array());
+            $urlConf = new OntoWiki_Url(array('controller'=>'exconf','action'=>'conf'), array());
+            $urlConf->restore = 1;
+            $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'save'))
+                    ->appendButton(OntoWiki_Toolbar::CANCEL, array('name' => 'back', 'class' => '', 'url' => (string) $urlList))
+                    ->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'restore defaults', 'class' => '', 'url' => (string) $urlConf));
+
+            // add toolbar
+            $this->view->placeholder('main.window.toolbar')->set($toolbar);
+
+            $name = $this->_request->getParam('name');
+            $manager        = $ow->extensionManager;
+            $dirPath  = $manager->getExtensionPath(). $name .'/';
+            if(!is_dir($dirPath)){
+                throw new OntoWiki_Exception("invalid extension - does not exists");
+            }
+            $configFilePath = $dirPath.Ontowiki_Extension_Manager::DEFAULT_CONFIG_FILE;
+            $localIniPath   = $manager->getExtensionPath().$name.".ini";
+
+            $privateConfig       = $manager->getPrivateConfig($name);
+            $config              = ($privateConfig != null ? $privateConfig->toArray() : array());
+            $this->view->enabled = $manager->isExtensionActive($name);
+
+            $this->view->config  = $config;
+            $this->view->name    = $name;
+
+
+
+
+            if(!is_writeable($manager->getExtensionPath())){
+                if(!$this->_request->isXmlHttpRequest()){
+                    OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the extension folder '".$manager->getExtensionPath()."' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
                 }
-                if(isset($this->_request->enabled)){
-                    assertRights();
-                    if(!file_exists($localIniPath)){
-                        @touch($localIniPath);
-                    }
-                    $ini = new Zend_Config_Ini($localIniPath, null, array('allowModifications' => true));
-                    $ini->enabled = $this->_request->getParam('enabled') == "true";
-                    $writer = new Zend_Config_Writer_Ini(array());
-                    $writer->write($localIniPath, $ini, true);
-                }
-                if(isset($this->_request->config)){
-                    $arr = json_decode($this->_request->getParam('config'), true);
-                    if($arr == null){
-                        throw new OntoWiki_Exception("invalid json: ".$this->_request->getParam('config'));
-                    } else {
-                        //only modification of the private section and the enabled-property are allowed
-                        foreach($arr as $key => $val){
-                            if($key != 'enabled' && $key != 'private'){
-                                unset($arr[$key]);
-                            }
-                        }
+            } else {
+                    //react on post data
+                    if(isset($this->_request->remove)){
                         assertRights();
+                        if(rmdir($dirPath)){
+                            $this->_redirect($this->urlBase.'exconf/list');
+                        } else {
+                            OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("extension could not be deleted", OntoWiki_Message::ERROR));
+                        }
+                    }
+                    if(isset($this->_request->enabled)){
+                        assertRights();
+                        if(!file_exists($localIniPath)){
+                            @touch($localIniPath);
+                        }
+                        $ini = new Zend_Config_Ini($localIniPath, null, array('allowModifications' => true));
+                        $ini->enabled = $this->_request->getParam('enabled') == "true";
                         $writer = new Zend_Config_Writer_Ini(array());
-                        $postIni = new Zend_Config($arr, true);
-                        $writer->write($localIniPath, $postIni, true);
-                        OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config sucessfully changed", OntoWiki_Message::SUCCESS));
+                        $writer->write($localIniPath, $ini, true);
                     }
-                    $this->_redirect($this->urlBase.'exconf/conf/?name='.$name);
-                }
-                if(isset($this->_request->reset)){
-                    assertRights();
-                    if(@unlink($localIniPath)){
-                        OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config sucessfully reverted to default", OntoWiki_Message::SUCCESS));
-                    } else {
-                        OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not reverted to default - not existing or not writeable", OntoWiki_Message::ERROR));
+                    if(isset($this->_request->config)){
+                        $arr = json_decode($this->_request->getParam('config'), true);
+                        if($arr == null){
+                            throw new OntoWiki_Exception("invalid json: ".$this->_request->getParam('config'));
+                        } else {
+                            //only modification of the private section and the enabled-property are allowed
+                            foreach($arr as $key => $val){
+                                if($key != 'enabled' && $key != 'private'){
+                                    unset($arr[$key]);
+                                }
+                            }
+                            assertRights();
+                            $writer = new Zend_Config_Writer_Ini(array());
+                            $postIni = new Zend_Config($arr, true);
+                            $writer->write($localIniPath, $postIni, true);
+                            OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config sucessfully changed", OntoWiki_Message::SUCCESS));
+                        }
+                        $this->_redirect($this->urlBase.'exconf/conf/?name='.$name);
                     }
-                    $this->_redirect($this->urlBase.'exconf/conf/?name='.$name);
-                }
+                    if(isset($this->_request->reset)){
+                        assertRights();
+                        if(@unlink($localIniPath)){
+                            OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config sucessfully reverted to default", OntoWiki_Message::SUCCESS));
+                        } else {
+                            OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not reverted to default - not existing or not writeable", OntoWiki_Message::ERROR));
+                        }
+                        $this->_redirect($this->urlBase.'exconf/conf/?name='.$name);
+                    }
+            }
         }
 
         if($this->_request->isXmlHttpRequest()){
