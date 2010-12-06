@@ -8,12 +8,11 @@
  * @category   OntoWiki
  * @package    OntoWiki_extensions_modules_login
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: login.php 4282 2009-10-12 11:20:57Z c.riess.dev $
  */
 class LoginModule extends OntoWiki_Module
-{   
+{
     /**
      * Returns the message of the module
      *

@@ -19,7 +19,6 @@
   <owl:Ontology rdf:about="http://localhost/OntoWiki/Sync/"
                 rdfs:label="OntoWiki Sync Ontology">
     <rdfs:comment>This schema model provides the vocabulary for syncing resources with OntoWiki.</rdfs:comment>
-    <owl:versionInfo>$Id: $</owl:versionInfo>
   </owl:Ontology>
 
 <!-- Classes -->

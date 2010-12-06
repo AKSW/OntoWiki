@@ -19,6 +19,11 @@ class NavigationModule extends OntoWiki_Module
         $this->session = $this->_owApp->session;
     }
 
+    public function getTitle() {
+        return "Navigation";
+    }
+
+
     /**
      * Returns the menu of the module
      *

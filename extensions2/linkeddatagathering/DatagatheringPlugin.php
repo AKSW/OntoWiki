@@ -4,9 +4,8 @@
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_plugins
- * @copyright Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: datagathering.php 4093 2009-08-19 22:29:29Z christian.wuerker $
  */
 
 require_once 'OntoWiki/Plugin.php';

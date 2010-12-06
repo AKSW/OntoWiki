@@ -9,9 +9,8 @@
  * @category   OntoWiki
  * @package    OntoWiki_extensions_plugins
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: linkeddata.php 4093 2009-08-19 22:29:29Z christian.wuerker $
  */
 class LinkeddataPlugin extends OntoWiki_Plugin
 {

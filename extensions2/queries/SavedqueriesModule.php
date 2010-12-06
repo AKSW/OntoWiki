@@ -52,7 +52,7 @@ class SavedqueriesModule extends OntoWiki_Module
         
         return $id;
     }
-    
+
     public function shouldShow()
     {
         if ($this->_owApp->selectedModel) {

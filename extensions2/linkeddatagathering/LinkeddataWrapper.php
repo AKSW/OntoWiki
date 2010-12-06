@@ -4,16 +4,15 @@
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_wrapper
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: linkeddata.php 4094 2009-08-19 22:36:13Z christian.wuerker $
  */
 
 require_once 'Erfurt/Wrapper.php';
 
 /**
  * This wrapper extension provides functionality for gathering linked data.
- * 
+ *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_wrapper
  * @copyright  Copyright (c) 2009 {@link http://aksw.org aksw}
