@@ -28,9 +28,15 @@ $this->headScript()->appendScript('$(function(){
                     <?php echo isset($extension->author) ? $extension->author : "author unknown"; ?>
                     <?php if(isset($extension->authorUrl)) { ?></a><?php } ?>
                 </div>
-                <?php if(isset($extension->homepage)){ ?> <div class="homepage"><a href="<?php echo $extension->homepage ; ?>">homepage</a></div><?php } ?>
                 <div class="togglebutton" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
                 <div class="contextmenu">
+                <?php if(isset($extension->homepage)) : ?>
+                    <a href="<?php echo $extension->homepage ?>" class="item">
+                        <span title="Go to plugin homepage" class="icon icon-homepage">
+                            <span>Go to plugin homepage</span>
+                        </span>
+                    </a>
+                <?php endif; ?>
                     <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>" class="item">
                         <span title="Configure" class="icon icon-edit">
                             <span>Configure</span>
