@@ -54,7 +54,7 @@ class modelJsonrpcWrapper
      * @param string countSpec
      * @return string
      */
-    public function count($modelIri, $whereSpec = '{?s ?p ?o}', $countSpec = '?s ?p ?o')
+    public function count($modelIri, $whereSpec = '{?s ?p ?o}', $countSpec = '*')
     {
         return $this->store->countWhereMatches($modelIri, $whereSpec, $countSpec);
     }

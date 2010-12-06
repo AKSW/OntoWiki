@@ -49,7 +49,12 @@ $(document).ready(function(){
     $("#addFilterWindowOverlay").hide();
     $("#filterbox #clear").hide();
 
-    $('#filter').droppable({accept: '.show-property', drop:
+    $('#filter').droppable({
+        accept: '.show-property',
+        scope: 'Resource',
+        activeClass: 'ui-droppable-accepted-destination',
+        hoverClass: 'ui-droppable-hovered',
+        drop:
         function(event, ui) {
              $("#property option:selected").each(function () {
                  $(this).attr('selected', false);

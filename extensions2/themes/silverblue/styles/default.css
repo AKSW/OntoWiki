@@ -1817,24 +1817,6 @@ a.hasMenu:hover span.toggle {
     min-height:16px; min-width:16px; /* as long as we cannot use svg */
 }
 
-/* Dragging Draggables */
-
-a.Resource.ui-draggable-dragging
-{
-    display:block;
-    position: absolute;
-    color:#000;
-    background:#dee8ee;
-    padding:0.25em;
-    border:solid 1px #cdd7dd;
-    -moz-box-shadow:0 0 2em #ccc;
-}
-
-a.ui-draggable-dragging.hasMenu span.toggle
-{
-    display:none;
-}
-
 /* -- 4.2.2 Area Context Menus ---------------------------------------------- */
 
 /**
@@ -2022,7 +2004,54 @@ body.javascript-on tbody.closed tr.grouptitle th a.toggle:active {
     background-position: -10px center;
 }
 
-/* 5. Etcetera -------------------------------------------------------------- */
+/* 5. jQuery UI enhancements ------------------------------------------------ */
+
+/* Draggables */
+
+a.Resource.ui-draggable-dragging
+{
+    display:block;
+    position: absolute;
+    color:#000;
+    background:#dee8ee;
+    padding:0.25em;
+    border:solid 1px #cdd7dd;
+    -moz-box-shadow:0 0 0.5em #666;
+    -webkit-box-shadow:0 0 0.5em #666;
+    box-shadow:0 0 0.5em #666;
+    cursor: move;
+}
+
+a.ui-draggable-dragging.hasMenu span.toggle
+{
+    display:none;
+}
+
+/* Droppables */
+
+.ui-droppable-accepted-destination *
+{
+    background-color: transparent;
+    border-color:transparent;
+}
+
+.ui-droppable-accepted-destination
+{
+    background-color: #dee8ee;
+    -moz-box-shadow:inset 0 0 1em #333;
+    -webkit-box-shadow:inset 0 0 1em #333;
+    box-shadow:inset 0 0 1em #333;
+}
+
+.ui-droppable-hovered
+{
+    background-color: #eff9ff;
+    -moz-box-shadow:inset 0 0 1.5em #333;
+    -webkit-box-shadow:inset 0 0 1em #333;
+    box-shadow:inset 0 0 1.5em #333;
+}
+
+/* 6. Etcetera -------------------------------------------------------------- */
 
 .hide {display: none !important;}
 
@@ -2047,7 +2076,7 @@ body.javascript-on tbody.closed tr.grouptitle th a.toggle:active {
 
 .ui-draggable { position:relative; z-index:998; }
 
-/* 6. Specials -------------------------------------------------------------- */
+/* 7. Specials -------------------------------------------------------------- */
 
 ul.hierarchy li > a, 
 ol.hierarchy li > a {
