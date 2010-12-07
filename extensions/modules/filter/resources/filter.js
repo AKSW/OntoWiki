@@ -52,7 +52,7 @@ $(document).ready(function(){
     $('#filter').droppable({
         accept: '.show-property',
         scope: 'Resource',
-        activeClass: 'ui-droppable-accepted-destination',
+        activeClass: 'ui-droppable-accepted-window',
         hoverClass: 'ui-droppable-hovered',
         drop:
         function(event, ui) {

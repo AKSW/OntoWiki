@@ -2029,13 +2029,19 @@ a.ui-draggable-dragging.hasMenu span.toggle
 
 /* Droppables */
 
-.ui-droppable-accepted-destination *
+/* please use .ui-droppable-accepted-window for droppable div.window elements,
+   and .ui-droppable-accepted-destination for all outher elements in a window */
+
+.window .content .ui-droppable-accepted-destination *,
+.window.ui-droppable-accepted-window .content *
 {
-    background-color: transparent;
-    border-color:transparent;
+    background-color: transparent !important;
+    border-color:transparent !important;
+    background-image: none;
 }
 
-.ui-droppable-accepted-destination
+.window .content .ui-droppable-accepted-destination,
+.window.ui-droppable-accepted-window .content
 {
     background-color: #dee8ee;
     -moz-box-shadow:inset 0 0 1em #333;
@@ -2043,7 +2049,8 @@ a.ui-draggable-dragging.hasMenu span.toggle
     box-shadow:inset 0 0 1em #333;
 }
 
-.ui-droppable-hovered
+.window .content .ui-droppable-hovered,
+.window.ui-droppable-hovered .content
 {
     background-color: #eff9ff;
     -moz-box-shadow:inset 0 0 1.5em #333;
