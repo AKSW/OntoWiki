@@ -150,9 +150,9 @@ class QuerybuildingController extends OntoWiki_Controller_Component {
                     $url = new OntoWiki_Url(array('controller'=>'list'),array());
                     $query = str_replace("\r\n", " ", $query);
                     $url .= '?init=1&instancesconfig=' . urlencode(json_encode(array('filter'=>array( array ('mode' => 'query', 'action' => 'add' , 'query' => $query)))));
-
                     //redirect
-                    header('Location: ' . $url);
+                    $redirector = $this->_helper->getHelper('Redirector');
+                    $redirector->gotoUrl($url);
                     exit;
                 }
 

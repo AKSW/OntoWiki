@@ -203,6 +203,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                 );
                             } else if($filter->mode == 'query') {
                                 try{
+                                    //echo $filter->query."   ";
                                     $query = Erfurt_Sparql_Query2::initFromString($filter->query);
                                     if(!($query instanceof  Exception)){
                                         $list->addTripleFilter(
@@ -210,6 +211,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                             isset($filter->id) ? $filter->id : null
                                         );
                                     }
+                                    //echo $query->getSparql();
                                 } catch (Erfurt_Sparql_ParserException $e){
                                     $ontoWiki->appendMessage("the query could not be parsed");
                                 }
@@ -245,7 +247,8 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 //strip of url parameters that modify the list
                 $url = new OntoWiki_Url(array(), null, array('init', 'instancesconfig', 's', 'p', 'limit', 'class', 'list'));
                 //redirect
-                header('Location: ' . $url);
+                $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+                $redirector->gotoUrl($url);
                 exit;
             }
         }
