@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+  <!ENTITY SysOnt "http://ns.ontowiki.net/SysOnt/">
+  <!ENTITY sync "http://ns.ontowiki.net/Sync/">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+<rdf:RDF xml:base="&sync;"
+         xmlns:sysont="&SysOnt;"
+         xmlns:sync="&sync;"
+         xmlns="&sync;"
+         xmlns:owl="&owl;"
+         xmlns:rdf="&rdf;"
+         xmlns:rdfs="&rdfs;">
+
+<!-- Ontology Information -->
+  <owl:Ontology rdf:about="http://localhost/OntoWiki/Sync/"
+                rdfs:label="OntoWiki Sync Ontology">
+    <rdfs:comment>This schema model provides the vocabulary for syncing resources with OntoWiki.</rdfs:comment>
+  </owl:Ontology>
+
+<!-- Classes -->
+  <owl:Class rdf:about="SyncConfig"
+             rdfs:label="Sync Configuration">
+    <rdfs:comment>This class contains all sync configurations.</rdfs:comment>
+  </owl:Class>
+
+<!-- Datatypes -->
+  <rdfs:Datatype rdf:about="&xsd;string" rdfs:label="String"/>
+  <rdfs:Datatype rdf:about="&xsd;dateTime" rdfs:label="Date/Time"/>
+  <rdfs:Datatype rdf:about="&xsd;boolean" rdfs:label="Boolean"/>
+
+<!-- Annotation Properties -->
+  <owl:AnnotationProperty rdf:about="&rdfs;comment" rdfs:label="comment">
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:about="&rdfs;label"  rdfs:label="label">
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:AnnotationProperty>
+
+<!-- Datatype Properties -->
+  <owl:DatatypeProperty rdf:about="wrapperName"
+                        rdfs:comment="The name of the wrapper to use."
+                        rdfs:label="wrapper name">
+    <rdfs:domain rdf:resource="SyncConfig"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+  
+  <owl:DatatypeProperty rdf:about="syncQuery"
+                        rdfs:comment="The query to use in order to determine the statements, which will be added."
+                        rdfs:label="sync query">
+    <rdfs:domain rdf:resource="SyncConfig"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+  
+  <owl:DatatypeProperty rdf:about="lastSyncDateTime"
+                        rdfs:comment="The date and time of the last sync."
+                        rdfs:label="date/time of last sync">
+    <rdfs:domain rdf:resource="SyncConfig"/>
+    <rdfs:range rdf:resource="&xsd;dateTime"/>
+  </owl:DatatypeProperty>
+  
+  <owl:DatatypeProperty rdf:about="lastSyncPayload"
+                        rdfs:comment="Contains the statements, which were added at the last sync."
+                        rdfs:label="payload of last sync">
+    <rdfs:domain rdf:resource="SyncConfig"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+  
+  <owl:DatatypeProperty rdf:about="checkHasChanged"
+                        rdfs:comment="States, whether a syncable resource is checked for updates."
+                        rdfs:label="check for updates">
+    <rdfs:domain rdf:resource="SyncConfig"/>
+    <rdfs:range rdf:resource="&xsd;boolean"/>
+  </owl:DatatypeProperty>
+
+<!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="targetModel"
+                      rdfs:label="target model">
+    <rdfs:comment>This property defines the model, which will contain the statements.</rdfs:comment>
+    <rdfs:domain rdf:resource="SyncConfig"/>
+    <rdfs:range rdf:resource="&SysOnt;Model"/>
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:about="syncResource"
+                      rdfs:label="source uri">
+    <rdfs:comment>This property defines the source of the data..</rdfs:comment>
+    <rdfs:domain rdf:resource="SyncConfig"/>
+    <rdfs:range rdf:resource="&rdfs;Resource"/>
+  </owl:ObjectProperty>
+
+</rdf:RDF>
+

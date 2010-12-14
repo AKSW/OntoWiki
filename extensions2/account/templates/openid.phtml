@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * OntoWiki login module template
+ */
+
+?>
+<form method="post" action="<?php echo $this->actionUrl ?>" class="simple-input input-justify-left" name="openidlogin">
+    <input type="hidden" name="logintype" value="openidlogin" />
+    <fieldset>
+        <input type="hidden" name="redirect-uri" value="<?php echo $this->redirectUri ?>" />
+        <div>
+            <label for="openid_url" class="openid"><?php echo $this->_('OpenID') ?></label>
+            <input class="text submitOnEnter" type="text" id="openid_url" name="openid_url" value="" />
+            <br class="clearall" />
+        </div>
+        <div class="actionbuttons">
+            <a id="openidlogin" class="button submit"><?php echo $this->_('Login') ?></a>
+            <?php if ($this->showRegisterButton) : ?>
+            <a class="button" href="<?php echo $this->openIdRegisterActionUrl; ?>"><?php echo $this->_('Register') ?></a>
+            <?php endif; ?>
+        </div>
+    </fieldset>
+</form>

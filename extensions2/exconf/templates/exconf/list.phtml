@@ -1,0 +1,59 @@
+<?php
+$this->headScript()->appendFile($this->staticUrlBase."extensions2/exconf/resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($this->staticUrlBase."extensions2/exconf/resources/togglebutton.css");
+$this->headScript()->appendScript('$(function(){
+    function postToggle(button){
+            var name = $(button).parent().find("> div:first > h3").html();
+            var enabled = $(button).attr("selected");
+            $.post(urlBase + "exconf/conf/?name="+name+"&enabled="+enabled);
+        }
+ $(".togglebutton").togglebutton(
+    {"onEnable":
+        postToggle,
+     "onDisable":
+        postToggle
+    }
+ );
+ });');
+?>
+<table >
+<?php $odd = false; foreach($this->extensions as $name => $extension){ ?>
+    <tr class="<?php echo $odd ? "odd" : "even"; ?>">
+        <td>
+            <div class="extension has-contextmenu-area">
+                <div class="name"><h3><?php echo isset($extension->name) ? $extension->name : $name; ?></h3></div>
+                <div class="description"><?php echo isset($extension->description) ? $extension->description : "no description yet"; ?></div>
+                <div class="author">
+                    <?php if(isset($extension->authorUrl)) { ?><a href="<?php echo $extension->authorUrl;?>"><?php } ?>
+                    <?php echo isset($extension->author) ? $extension->author : "author unknown"; ?>
+                    <?php if(isset($extension->authorUrl)) { ?></a><?php } ?>
+                </div>
+                <div class="togglebutton" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
+                <div class="contextmenu">
+                <?php if(isset($extension->homepage)) : ?>
+                    <a href="<?php echo $extension->homepage ?>" class="item">
+                        <span title="Go to plugin homepage" class="icon icon-homepage">
+                            <span>Go to plugin homepage</span>
+                        </span>
+                    </a>
+                <?php endif; ?>
+                    <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>" class="item">
+                        <span title="Configure" class="icon icon-edit">
+                            <span>Configure</span>
+                        </span>
+                    </a>
+                    <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>&remove=1" class="item">
+                        <span title="Remove permanently" class="icon icon-delete">
+                            <span>Remove permanently</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </td>
+    </tr>
+<?php 
+$odd = !$odd; 
+} 
+?>
+</table>
+       

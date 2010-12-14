@@ -157,7 +157,7 @@ class OntoWiki_View extends Zend_View
     {
         $modules = '';
         foreach ($this->_moduleRegistry->getModulesForContext($context) as $moduleSpec) {
-            $modules .= $this->module($moduleSpec['name'], $renderOptions, $context);
+            $modules .= $this->module($moduleSpec->id, $renderOptions, $context);
         }
         
         return $modules;

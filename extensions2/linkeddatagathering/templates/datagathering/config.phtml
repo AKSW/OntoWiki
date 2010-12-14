@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * OntoWiki sync config template
+ */
+
+?>
+
+<?php if (!isset($this->errorFlag) || $this->errorFlag === false): ?>
+<fieldset>
+    <div class="row-input">
+        <label for="modeluri"><?php echo $this->_('Model URI') ?></label>
+        <input class="text" id="modeluri" type="text" name="modeluri" readonly="readonly" value="<?php echo $this->modelUri ?>" />
+        <br class="clearall" />
+    </div>
+    <div class="row-input">
+        <label for="wrappername"><?php echo $this->_('Wrapper Name') ?></label>
+        <input class="text" id="wrappername" type="text" name="wrappername" readonly="readonly" value="<?php echo $this->wrapperName ?>" />
+        <br class="clearall" />
+    </div>
+    <div class="row-input">
+        <label for="resourceuri"><?php echo $this->_('Resource URI') ?></label>
+        <input class="text" id="resourceuri" type="text" name="resourceuri" readonly="readonly" value="<?php echo $this->uri ?>" />
+        <br class="clearall" />
+    </div>
+    <div class="clearall"></div>
+</fieldset>
+
+<fieldset>
+    <div class="row-input">
+        <label for="checkhaschanged"><?php echo $this->_('Check for Updates') ?></label>
+        <input class="checkbox" type="checkbox" value="checkhaschanged" name="checkhaschanged" <?php echo $this->checkHasChanged ?> />
+    </div>
+</fieldset>
+
+<fieldset>
+    <div class="row-input">
+        <label for="syncQuery"><?php echo $this->_('Sync Query') ?></label>
+        <textarea class="text" id="syncQuery" type="text" name="syncQuery" cols="50" rows="10"><?php echo $this->syncQuery ?></textarea>
+        <br class="clearall" />
+    </div>
+    <div class="clearall"></div>
+</fieldset>
+<?php endif; ?>
+

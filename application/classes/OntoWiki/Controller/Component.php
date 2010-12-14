@@ -51,13 +51,13 @@ class OntoWiki_Controller_Component extends OntoWiki_Controller_Base
     {
         parent::init();
         
-        $cm   = $this->_owApp->componentManager;
+        $cm   = $this->_owApp->extensionManager;
         $name = $this->_request->getControllerName();
         
         // set component specific template path
         if ($tp = $cm->getComponentTemplatePath($name)) {
-            $this->view->addScriptPath($tp);
-        }
+            $this->view->addScriptPath($tp); 
+        } 
         
         // set component specific helper path
         if ($hp = $cm->getComponentHelperPath($name)) {
@@ -65,18 +65,18 @@ class OntoWiki_Controller_Component extends OntoWiki_Controller_Base
         }
         
         // set private config
-        if ($pc = $cm->getComponentPrivateConfig($name)) {
+        if ($pc = $cm->getPrivateConfig($name)) {
             $this->_privateConfig = $pc;
         }
         
         // set component root dir
-        $this->_componentRoot = $cm->getComponentPath() 
+        $this->_componentRoot = $cm->getExtensionPath()
                               . $name 
                               . '/';
         
         // set component root url
         $this->_componentUrlBase = $this->_config->staticUrlBase 
-                                 . $this->_config->extensions->components 
+                                 . $this->_config->extensions->base
                                  . $name 
                                  . '/';
     }
@@ -91,8 +91,8 @@ class OntoWiki_Controller_Component extends OntoWiki_Controller_Base
     {
         if (null === $this->_componentHelper) {
             $name = $this->_request->getControllerName();
-            $componentManager = $this->_owApp->componentManager;
-            $this->_componentHelper = $componentManager->getComponentHelper($name);
+            $extensionManager = $this->_owApp->extensionManager;
+            $this->_componentHelper = $extensionManager->getComponentHelper($name);
         }
         
         return $this->_componentHelper;
