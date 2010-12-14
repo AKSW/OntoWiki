@@ -27,7 +27,7 @@ class ServiceController extends Zend_Controller_Action
             if (!$this->_request->isPost()) {
                 $this->_response->setRawHeader('HTTP/1.0 405 Method Not Allowed');
                 $this->_response->setRawHeader('Allow: POST');
-                exit();
+                return;
             }
         }
     
@@ -40,7 +40,7 @@ class ServiceController extends Zend_Controller_Action
         } else {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             // $this->_response->setRawHeader('');
-            exit();
+            return;
         }
       
         if ($logout) {
@@ -48,7 +48,7 @@ class ServiceController extends Zend_Controller_Action
             Erfurt_Auth::getInstance()->clearIdentity();
             session_destroy();
             $this->_response->setRawHeader('HTTP/1.0 200 OK');
-            exit();
+            return;
         } else {
             // authenticate
             $result = $owApp->erfurt->authenticate($username, $password);
@@ -58,11 +58,11 @@ class ServiceController extends Zend_Controller_Action
         if ($result->isValid()) {
             // return success (200)
             $this->_response->setRawHeader('HTTP/1.0 200 OK');
-            exit();
+            return;
         } else {
             // return fail (401)
             $this->_response->setRawHeader('HTTP/1.0 401 Unauthorized');
-            exit();
+            return;
         }
     }
     

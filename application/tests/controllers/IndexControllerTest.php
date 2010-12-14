@@ -4,7 +4,7 @@ require_once '../test_base.php';
 
 class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
 {
-    public function setup()
+    public function setUp()
     {
         $this->bootstrap = new Zend_Application(
             'default',
@@ -13,14 +13,30 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         parent::setUp();
     }
     
+    public function tearDown()
+    {
+        OntoWiki_Navigation::reset();
+    }
+    
     public function testTest()
     {
         $this->dispatch('/');
         
         $r = $this->getResponse();
-        var_dump($r->getBody());
+        //var_dump($r->getBody());
         
-        // $this->assertController('index');
-        // $this->assertAction('news');
+        $this->assertController('index');
+        $this->assertAction('news');
+    }
+    
+    public function testAnotherTest()
+    {
+        $this->dispatch('/');
+        
+        $r = $this->getResponse();
+        //var_dump($r->getBody());
+        
+        $this->assertController('index');
+        $this->assertAction('news');
     }
 }
