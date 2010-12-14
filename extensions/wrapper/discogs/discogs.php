@@ -1,6 +1,6 @@
 <?php
 
-require_once 'extensions/wrapper/MusicWrapper.php';
+require_once OntoWiki::getInstance()->extensionManager->getExtensionPath.'/MusicWrapper.php';
 require_once 'DiscogsClient.php';
 
 /**

@@ -414,14 +414,14 @@ class Ontowiki_Extension_Manager {
     {
         $dir = new DirectoryIterator($this->_extensionPath);
         $view = OntoWiki::getInstance()->view;
-        $reservedNames = array(/*'components','modules','wrapper','plugins',*/'themes','translations');
+        $reservedNames = array('themes','translations');
         foreach ($dir as $file) {
             if (!$file->isDot() && $file->isDir()) {
                 //for all folders in <ow>/extensions/
                 $extensionName = $file->getFileName();
-                
-                //TODO its kindof bad style?!
-                if( in_array($extensionName, $reservedNames)){
+
+                //we ignore these
+                if(in_array($extensionName, $reservedNames)){
                     continue;
                 }
 
@@ -431,7 +431,13 @@ class Ontowiki_Extension_Manager {
                 if (is_readable($currentExtensionPath . self::DEFAULT_CONFIG_FILE)) {
                     $config = $this->_loadConfigs($extensionName);
 
+                    //keep record
                     $this->_extensionRegistry[$extensionName] = $config;
+
+                    //we have kept record but take no action on disabled extensions
+                    if(!$config->enabled){
+                        continue;
+                    } 
 
                     //templates can be in the main extension folder
                     $view->addScriptPath($currentExtensionPath);
@@ -527,6 +533,17 @@ class Ontowiki_Extension_Manager {
             $contexts = $config->contexts;
         } else {
             $contexts = (array) OntoWiki_Module_Registry::DEFAULT_CONTEXT;
+        }
+        
+        //one extension can contain many modules - so they share a config file
+        //but each module needs different settings
+        //so we got this hack to change the config like it was when every module had its own config
+        if(isset($config->modules)){
+            $moduleName = strtolower(substr($moduleFilename, 0, strlen($moduleFilename)-strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)));
+            if(isset ($config->modules->{$moduleName})){
+                $config = clone $config;
+                $config->merge($config->modules->{$moduleName}); //pull this subconfig up
+            }
         }
 
         // register for context(s)

@@ -36,8 +36,7 @@ $filter = $instances->getFilter();
 $filter_js = json_encode(is_array($filter) ? $filter : array());
 
 $this->headScript()->prependFile(
-        $config->staticUrlBase.
-        'extensions/modules/filter/resources/FilterAPI.js'
+        OntoWiki::getInstance()->extensionManager->getComponentUrl('filter') .'resources/FilterAPI.js'
 );
 $this->headScript()->prependScript(
         'function showPermaLink(){$("#permalink").slideToggle(400);}

@@ -20,25 +20,8 @@ class QueriesController extends OntoWiki_Controller_Component {
     protected $userUri;
     protected $userName;
     protected $userDbUri;
-    //uris that are used for saving
-    public $baseQueryDbUri = 'http://ns.ontowiki.net/SysOnt/UserQueries/';
-    public $saveQueryClassUri = 'http://ns.ontowiki.net/SysOnt/SparqlQuery';
-    public $saveQueryNameUri = 'http://purl.org/dc/elements/1.1/title';
-    public $saveQueryDateUri = 'http://purl.org/dc/elements/1.1/created';
-    public $saveQueryDescriptionUri = 'http://purl.org/dc/elements/1.1/description';
-    public $saveQueryModelUri = 'http://ns.ontowiki.net/SysOnt/Model';
-    public $saveQueryIdUri = 'http://rdfs.org/sioc/ns#id';
-    public $saveQueryNumViewsUri = 'http://rdfs.org/sioc/ns#num_views';
-    public $saveQueryCreatorUri = 'http://rdfs.org/sioc/ns#has_creator';
-    public $saveQueryGeneratorUri = 'http://ns.ontowiki.net/SysOnt/generator';
- // which query builder created this query. is there a better namespace?
-    public $saveQueryQueryUri = 'http://ns.ontowiki.net/SysOnt/sparql_code';
- // the actual content. is there a better namespace?
-    public $saveQueryJsonUri = 'http://ns.ontowiki.net/SysOnt/json_code';
- // the actual content. is there a better namespace?
-    //specific for graphical query builder
-    public $saveQuerySelClassUri = 'http://ns.ontowiki.net/GQB/UserQueries/Pattern/Type';
-    public $saveQuerySelClassLabelUri = 'http://ns.ontowiki.net/GQB/UserQueries/Pattern/TypeLabel';
+    
+    
     public $prefixHandler;
 
     /**
@@ -50,6 +33,7 @@ class QueriesController extends OntoWiki_Controller_Component {
         // setup the navigation
         OntoWiki_Navigation :: reset();
         $tab_exist = false;
+        $ow = OntoWiki::getInstance();
         //var_dump($this->_privateConfig);
         if ($this->_privateConfig->general->enabled->saving) {
             OntoWiki_Navigation :: register('listquery', array(
@@ -59,8 +43,7 @@ class QueriesController extends OntoWiki_Controller_Component {
                         'position' => 0,
                         'active' => true
                     ));
-            $this->view->headScript()->appendFile($this->_config->staticUrlBase .
-                    'extensions2/components/queries/resources/savepartial.js');
+            $this->view->headScript()->appendFile($ow->extensionManager->getComponentUrl('queries').'resources/savepartial.js');
             $tab_exist = true;
         }
         if ($this->_privateConfig->general->enabled->editor) {

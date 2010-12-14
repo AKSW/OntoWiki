@@ -124,9 +124,9 @@ class OntoWiki_Module_Registry
      * @param array $options config array of the module
      * @return OntoWiki_Module_Registry
      */
-    public function register($extensionName, $moduleName, $context = self::DEFAULT_CONTEXT, $options = null)
+    public function register($extensionName, $moduleFileName, $context = self::DEFAULT_CONTEXT, $options = null)
     {
-        $moduleName = strtolower(substr($moduleName, 0, strlen($moduleName)-strlen(self::MODULE_FILE_POSTFIX)));
+        $moduleName = strtolower(substr($moduleFileName, 0, strlen($moduleFileName)-strlen(self::MODULE_FILE_POSTFIX)));
 
         // create module context if necessary
         if (!array_key_exists($context, $this->_moduleOrder)) {
@@ -214,7 +214,7 @@ class OntoWiki_Module_Registry
      * @return OntoWiki_Module
      * @throws OntoWiki_Module_Exception if a module with the has not been registered.
      */
-    public function getModule($moduleName, $context = null, $options)
+    public function getModule($moduleName, $context = null)
     {
         if(!$this->isModuleEnabled($moduleName)){
             return null;
@@ -226,7 +226,6 @@ class OntoWiki_Module_Registry
                     . self::MODULE_FILE_POSTFIX;
 
         if (!is_readable($moduleFile)) {
-            xdebug_print_function_stack(); exit;
             throw new OntoWiki_Module_Exception("Module '$moduleName' could not be loaded from path '$moduleFile'.");
         }
         
@@ -234,13 +233,7 @@ class OntoWiki_Module_Registry
         require_once $moduleFile;
         $moduleClass = ucfirst($moduleName)
                      . self::MODULE_CLASS_POSTFIX;
-        $module = new $moduleClass($moduleName, $context, $options);
-
-        // inject module config
-
-        foreach ($this->getModuleConfig($moduleName) as $key => $value) {
-            $module->$key = $value;
-        }
+        $module = new $moduleClass($moduleName, $context, $this->_modules[$moduleName]);
 
         return $module;
     }

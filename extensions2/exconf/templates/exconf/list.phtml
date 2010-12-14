@@ -1,6 +1,7 @@
 <?php
-$this->headScript()->appendFile($this->staticUrlBase."extensions2/exconf/resources/jquery.togglebutton.js");
-$this->headLink()->appendStylesheet($this->staticUrlBase."extensions2/exconf/resources/togglebutton.css");
+$ow = OntoWiki::getInstance();
+$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/togglebutton.css");
 $this->headScript()->appendScript('$(function(){
     function postToggle(button){
             var name = $(button).parent().find("> div:first > h3").html();

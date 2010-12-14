@@ -29,10 +29,10 @@ function array2form($confArr){
     <a class="addProperty">+</a>
     <?php
 }
-
-$this->headScript()->appendFile($this->staticUrlBase."extensions2/queries/resources/jquery.dump.js");
-$this->headScript()->appendFile($this->staticUrlBase."extensions2/exconf/resources/jquery.togglebutton.js");
-$this->headLink()->appendStylesheet($this->staticUrlBase."extensions2/exconf/resources/togglebutton.css");
+$ow = OntoWiki::getInstance();
+$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('queries')."resources/jquery.dump.js");
+$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/togglebutton.css");
 $this->headScript()->appendScript('var exconfConfig = '.  json_encode($this->config).';
     $(document).ready(function(){
         $("#topConfTable > tbody > tr:first > td > *:first").togglebutton();

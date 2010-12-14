@@ -2,7 +2,7 @@
 
 
 require_once 'OntoWiki/Module.php';
-require_once 'extensions/components/easyinference/InfRuleContainer.php';
+require_once OntoWiki::getInstance()->extensionManager->getExtensionPath.'/easyinference/InfRuleContainer.php';
 
 
 /**
@@ -23,18 +23,9 @@ class EasyinferenceModule extends OntoWiki_Module {
     public function init() {
         $this->prologue = ($this->has_ask ? 'ASK' : ($this->has_star_select ? 'SELECT *' : die('db not supported')));
         $this->star_limit = (!$this->has_ask ? ' LIMIT 1' : '');
-        $this->view->headScript()->captureStart(); // Start JavaScript Entry
-        ?>
-var eiRequestUrl = '<?php echo new OntoWiki_Url(array('controller' => 'easyinference', 'action' => '__action__')) ?>';
-        <?php
-
-        $this->view->headScript()->captureEnd(); // End JavaScript Entry
+        $this->view->headScript()->appendScript("var eiRequestUrl = '".new OntoWiki_Url(array('controller' => 'easyinference', 'action' => '__action__'))."';");
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'easyinference.js');
         //$this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'easyinference.css', 'screen');
-
-        $this->_owApp->translate->addTranslation(_OWROOT . $this->_config->extensions->modules .
-                $this->_name . DIRECTORY_SEPARATOR . 'languages/', null,
-                array('scan' => Zend_Translate::LOCALE_FILENAME));
     }
 
     public function shouldShow() {

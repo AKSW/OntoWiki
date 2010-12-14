@@ -94,7 +94,7 @@ abstract class OntoWiki_Module
     /**
      * Constructor
      */
-    public function __construct($name, $context, $options)
+    public function __construct($name, $context, $config)
     {
         // init view
         if (null === $this->view) {
@@ -117,19 +117,17 @@ abstract class OntoWiki_Module
         
         $this->_name = $name;
         
-        // set script path if necessary
-        $modulesPath = ONTOWIKI_ROOT . $this->_config->extensions->modules;
-        // if (!in_array($modulesPath, $this->view->getScriptPaths())) {
-        //     $this->view->addScriptPath($modulesPath);
-        // }
-        
         // set important script variables
         $this->view->themeUrlBase = $this->_config->themeUrlBase;
         $this->view->urlBase      = $this->_config->urlBase;
         $this->view->moduleUrl    = $this->_config->staticUrlBase 
                                   . $this->_config->extensions->base
-                                  . $this->_name . '/';
-        // set context
+                                  . $config->extensionName . '/';
+
+        // set the config
+        $this->_privateConfig = $config->private;
+
+        // set the context
         $this->setContext($context);
         
         // allow custom module initialization
