@@ -15,9 +15,43 @@ $this->headScript()->appendScript('$(function(){
         postToggle
     }
  );
- });');
+
+    $("#show_extension input:radio").change(function()
+    {
+       switch($("#show_extension input:checked").val()){
+             case "all" :
+                $("#extensions tr").each(function(){
+                    $(this).show();
+                })
+             break;
+             case "enabled" :
+                $("#extensions tr").each(function(){if($(this).find(".togglebutton").attr("selected") == "true"){
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }})
+             break;
+             case "disabled" :
+                $("#extensions tr").each(function(){if($(this).find(".togglebutton").attr("selected") == "true"){
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }})
+             break;
+         }
+    }
+    );
+ });
+
+');
 ?>
-<table >
+Show
+<form id="show_extension">
+    All <input type="radio" name="show" value="all">
+    Enabled <input type="radio" name="show" value="enabled">
+    Disabled <input type="radio" name="show" value="disabled">
+</form>
+<table id="extensions">
 <?php $odd = false; foreach($this->extensions as $name => $extension){ ?>
     <tr class="<?php echo $odd ? "odd" : "even"; ?>">
         <td>
