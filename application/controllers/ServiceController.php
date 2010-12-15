@@ -19,49 +19,61 @@ class ServiceController extends Zend_Controller_Action
     /**
      * Attempts an authentication to the underlying Erfurt framework via 
      * HTTP GET/POST parameters.
+     * 
+     * Uses the following HTTP parameters: logout, username, password
+     * 
      */
     public function authAction()
     {
-        if (!$this->_config->service->allowGetAuth) {
+        if (!$this->_config->service->auth->allowGet) {
             // disallow get
             if (!$this->_request->isPost()) {
-                $this->_response->setRawHeader('HTTP/1.0 405 Method Not Allowed');
-                $this->_response->setRawHeader('Allow: POST');
+                $code = 405;
+                $this->_response->setHttpResponseCode($code);
+                $this->_response->setHeader('Allow', 'POST');
+                $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
                 return;
             }
         }
     
         // fetch params
-        if (isset($this->_request->logout)) {
-            $logout = $this->_request->logout == 'true' ? true : false;
-        } elseif (isset($this->_request->u)) {
-            $username = $this->_request->u;
-            $password = $this->_request->getParam('p', '');
-        } else {
-            $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
-            // $this->_response->setRawHeader('');
-            return;
-        }
-      
-        if ($logout) {
+        if (isset($this->_request->logout) && ($this->_request->logout === 'true')) {
             // logout
             Erfurt_Auth::getInstance()->clearIdentity();
             session_destroy();
-            $this->_response->setRawHeader('HTTP/1.0 200 OK');
+            
+            $code = 200;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
             return;
+        } 
+        
+        if (isset($this->_request->username)) {
+            $username = $this->_request->username;
+            $password = $this->_request->getParam('password', ''); // Defaults to '' if no p param was given.
+            
         } else {
-            // authenticate
-            $result = $owApp->erfurt->authenticate($username, $password);
+            $code = 400;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
         }
+      
+        // authenticate
+        $result = $this->_owApp->erfurt->authenticate($username, $password);
       
         // return HTTP result
         if ($result->isValid()) {
             // return success (200)
-            $this->_response->setRawHeader('HTTP/1.0 200 OK');
+            $code = 200;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
             return;
         } else {
             // return fail (401)
-            $this->_response->setRawHeader('HTTP/1.0 401 Unauthorized');
+            $code = 401;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
             return;
         }
     }
