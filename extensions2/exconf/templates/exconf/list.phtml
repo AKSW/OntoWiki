@@ -4,7 +4,7 @@ $this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')
 $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/togglebutton.css");
 $this->headScript()->appendScript('$(function(){
     function postToggle(button){
-            var name = $(button).parent().find("> div:first > h3").html();
+            var name = $(button).parent().attr("id");
             var enabled = $(button).attr("selected");
             $.post(urlBase + "exconf/conf/?name="+name+"&enabled="+enabled);
         }
@@ -55,7 +55,7 @@ Show
 <?php $odd = false; foreach($this->extensions as $name => $extension){ ?>
     <tr class="<?php echo $odd ? "odd" : "even"; ?>">
         <td>
-            <div class="extension has-contextmenu-area">
+            <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
                 <div class="name"><h3><?php echo isset($extension->name) ? $extension->name : $name; ?></h3></div>
                 <div class="description"><?php echo isset($extension->description) ? $extension->description : "no description yet"; ?></div>
                 <div class="author">

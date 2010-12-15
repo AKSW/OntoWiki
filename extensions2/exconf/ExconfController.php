@@ -58,17 +58,17 @@ class ExconfController extends OntoWiki_Controller_Component {
     }
     
     function confAction(){
-        if(!isset($this->_request->name)){
-            throw new OntoWiki_Exception("param 'name' needs to be passed to this action");
-        }
+        
         OntoWiki_Navigation::disableNavigation();
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Configure ').' '.$this->_request->getParam('name'));
         if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration')) {
            throw new OntoWiki_Exception("config not allowed for this user");
         } else {
+            if(!isset($this->_request->name)){
+                throw new OntoWiki_Exception("param 'name' needs to be passed to this action");
+            }
             $ow = OntoWiki::getInstance();
-
-            $toolbar = OntoWiki::getInstance()->toolbar;
+            $toolbar = $ow->toolbar;
             $urlList = new OntoWiki_Url(array('controller'=>'exconf','action'=>'list'), array());
             $urlConf = new OntoWiki_Url(array('controller'=>'exconf','action'=>'conf'), array());
             $urlConf->restore = 1;
@@ -95,17 +95,13 @@ class ExconfController extends OntoWiki_Controller_Component {
             $this->view->config  = $config;
             $this->view->name    = $name;
 
-
-
-
             if(!is_writeable($manager->getExtensionPath())){
                 if(!$this->_request->isXmlHttpRequest()){
                     OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the extension folder '".$manager->getExtensionPath()."' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
                 }
-            } else {
+            } else  {
                     //react on post data
                     if(isset($this->_request->remove)){
-                        assertRights();
                         if(rmdir($dirPath)){
                             $this->_redirect($this->urlBase.'exconf/list');
                         } else {
@@ -113,7 +109,6 @@ class ExconfController extends OntoWiki_Controller_Component {
                         }
                     }
                     if(isset($this->_request->enabled)){
-                        assertRights();
                         if(!file_exists($localIniPath)){
                             @touch($localIniPath);
                         }
@@ -133,7 +128,6 @@ class ExconfController extends OntoWiki_Controller_Component {
                                     unset($arr[$key]);
                                 }
                             }
-                            assertRights();
                             $writer = new Zend_Config_Writer_Ini(array());
                             $postIni = new Zend_Config($arr, true);
                             $writer->write($localIniPath, $postIni, true);
@@ -142,7 +136,6 @@ class ExconfController extends OntoWiki_Controller_Component {
                         $this->_redirect($this->urlBase.'exconf/conf/?name='.$name);
                     }
                     if(isset($this->_request->reset)){
-                        assertRights();
                         if(@unlink($localIniPath)){
                             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config sucessfully reverted to default", OntoWiki_Message::SUCCESS));
                         } else {
