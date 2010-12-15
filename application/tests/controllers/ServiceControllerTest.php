@@ -13,8 +13,6 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         parent::setUp();
     }
     
-    /* We need to refactor the OntoWiki bootstrap mechanism in order to support more than one test
-       case, since extension loading leads to problems.
     public function testCallWithoutActionShouldPullFromIndexAction()
     {
         $this->dispatch('/service');
@@ -24,7 +22,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertController('error');
         $this->assertAction('error');
     }
-    */
+    
     
     public function testAuthAction()
     {
