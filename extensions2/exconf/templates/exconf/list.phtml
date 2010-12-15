@@ -39,6 +39,16 @@ $this->headScript()->appendScript('$(function(){
                 }})
              break;
          }
+         //fix odd even style
+         var even = true;
+         $("#extensions tr:visible").each(function(){
+            if(even){
+               $(this).addClass("even").removeClass("odd");
+            } else {
+                $(this).addClass("odd").removeClass("even");
+            }
+            even = !even;
+         })
     }
     );
  });
