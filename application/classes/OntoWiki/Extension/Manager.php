@@ -471,7 +471,7 @@ class Ontowiki_Extension_Manager {
     }
 
     /**
-     * Reads a components configuration and adds it to the internal registry.
+     * adds a component to the internal registry.
      *
      * @param string $componentName the component's (folder) name
      * @param string $componentPath the path to the component folder
@@ -527,14 +527,6 @@ class Ontowiki_Extension_Manager {
 
     protected function _addModule($extensionName, $moduleFilename, $modulePath, $config = null)
     {
-        if (isset($config->context)) {
-            $contexts = (array)$config->context;
-        } else if (isset($config->contexts) && $config->contexts instanceof Zend_Config) {
-            $contexts = $config->contexts;
-        } else {
-            $contexts = (array) OntoWiki_Module_Registry::DEFAULT_CONTEXT;
-        }
-        
         //one extension can contain many modules - so they share a config file
         //but each module needs different settings
         //so we got this hack to change the config like it was when every module had its own config
@@ -545,6 +537,16 @@ class Ontowiki_Extension_Manager {
                 $config->merge($config->modules->{$moduleName}); //pull this subconfig up
             }
         }
+        //var_dump($config);
+
+        if (isset($config->context)) {
+            $contexts = (array)$config->context;
+        } else if (isset($config->contexts) && $config->contexts instanceof Zend_Config) {
+            $contexts = $config->contexts;
+        } else {
+            $contexts = (array) OntoWiki_Module_Registry::DEFAULT_CONTEXT;
+        }
+
 
         // register for context(s)
         foreach ($contexts as $context) {
@@ -554,11 +556,7 @@ class Ontowiki_Extension_Manager {
 
 
     /**
-     * Checks a given wrapper name and path pair, whether the specified plugin
-     * is active (a key "enabled" needs to be set to "true").
-     * If a wrapper plugin is not active, the method just returns.
-     * If a wrapper plugin is activated, the method parses the config file and
-     * registers the wrapper within the registry.
+     * adds a wrapper
      *
      * @param string $filename
      * @param string $wrapperPath

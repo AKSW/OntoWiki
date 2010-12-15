@@ -23,6 +23,8 @@ class ImprintModule extends OntoWiki_Module
      * Returns the content
      */
     public function getContents() {
+        $this->view->notice = $this->_privateConfig->notice;
+        $this->view->mail = $this->_privateConfig->mail;
         $this->view->name = $this->_privateConfig->name;
         $this->view->street = $this->_privateConfig->street;
         $this->view->zip = $this->_privateConfig->zip;
