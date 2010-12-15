@@ -48,6 +48,22 @@ class ExconfController extends OntoWiki_Controller_Component {
             }
             uksort($extensions, "compExtensions");
 
+            //some statistics
+            $numEnabled = 0;
+            $numDisabled = 0;
+            foreach($extensions as $extension){
+                if($extension->enabled){
+                    $numEnabled++;
+                } else {
+                    $numDisabled++;
+                }
+            }
+            $numAll = count($extensions);
+
+            $this->view->numEnabled = $numEnabled;
+            $this->view->numDisabled = $numDisabled;
+            $this->view->numAll = $numAll;
+
             if(!is_writeable($modMan->getExtensionPath())){
                 if(!$this->_request->isXmlHttpRequest()){
                     OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("the extension folder '".$modMan->getExtensionPath()."' is not writeable. no changes can be made", OntoWiki_Message::WARNING));
