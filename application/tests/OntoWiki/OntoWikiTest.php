@@ -1,7 +1,6 @@
 <?php
 
-require_once '../test_base.php';
-require_once '../../src/application/classes/OntoWiki.php';
+require_once 'OntoWiki.php';
 
 // PHPUnit
 require_once 'PHPUnit/Framework.php';

@@ -4,6 +4,7 @@ default:
 	@echo "     'make update' ('hg pull -u' for all subrepos)"
 	@echo "     'make branch-check' ('hg branch' for all subrepos)"
 	@echo "     'make zend' (download and install Zend under libraries)"
+	@echo "     'make test' (execute 'phpunit TestSuite')"
 
 pull:
 	@hg --repository . pull
