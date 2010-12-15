@@ -1,7 +1,5 @@
 <?php
 
-require_once '../test_base.php';
-
 class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
 {
     public function setUp()

@@ -52,3 +52,5 @@ libraries:
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	hg clone https://rdfauthor.googlecode.com/hg/ libraries/RDFauthor
 
+test:
+	cd application/tests && phpunit TestSuite && cd ../..
