@@ -1,6 +1,6 @@
 <?php
 
-require_once '../test_base.php';
+require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'TestHelper.php';
 
 class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
 {
@@ -11,11 +11,6 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
             ONTOWIKI_ROOT . 'application/config/application.ini'
         );
         parent::setUp();
-    }
-    
-    public function tearDown()
-    {
-        OntoWiki_Navigation::reset();
     }
     
     public function testTest()
