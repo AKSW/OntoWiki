@@ -43,9 +43,6 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->dispatch('/service/auth');
         
-        $r = $this->getResponse();
-        var_dump($r->getBody());
-        
         $this->assertController('service');
         $this->assertAction('auth');
         $this->assertResponseCode(405);
