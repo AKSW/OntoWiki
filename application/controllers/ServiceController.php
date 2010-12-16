@@ -501,23 +501,48 @@ class ServiceController extends Zend_Controller_Action
 
             // check graph availability
             $ac = Erfurt_App::getInstance()->getAc();
-            foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
-                if (!$ac->isModelAllowed('view', $graphUri)) {
-                    if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
-                        // In this case we allow the requesting party to authorize...
-                        $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                        $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
-                        $response->sendResponse();
-                        exit;
-                        
-                    } else {
-                        $response->setRawHeader('HTTP/1.1 500 Internal Server Error')
-                                 ->setBody('QueryRequestRefused')
-                                 ->sendResponse();
-                        exit;
+            
+            try
+            {
+                foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
+                    if (!$ac->isModelAllowed('view', $graphUri)) {
+                        if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
+                            // In this case we allow the requesting party to authorize...
+                            $response->setHttpResponseCode (401)
+                                     ->setRawHeader('HTTP/1.1 401 Unauthorized')
+                                     ->setHeader('WWW-Authenticate', 'FOAF+SSL')
+                                     ->sendResponse();
+                            return;
+                            
+                        } else {
+                            $response->setHttpResponseCode (500)
+                                     ->setRawHeader('HTTP/1.1 500 Internal Server Error')
+                                     ->setBody('QueryRequestRefused')
+                                     ->sendResponse();
+                            return;
+                        }
                     }
                 }
             }
+            // Erfurt Access Control error occured.
+            catch ( Erfurt_Ac_Exception $e )
+            {
+                $response->setHttpResponseCode (401)
+                         ->setRawHeader('HTTP/1.1 401 Unauthorized')
+                         ->setBody('HTTP/1.1 401 Unauthorized')
+                         ->sendResponse();
+                exit;
+            }
+            // Unknown exception was thrown
+            catch ( Exception $e )
+            {
+                $response->setHttpResponseCode (500)
+                         ->setRawHeader('HTTP/1.1 500 Internal Server Error')
+                         ->setBody('HTTP/1.1 500 Internal Server Error')
+                // $response->setBody($e->getMessage ());
+                         ->sendResponse();
+                exit;
+            }  
             
             $typeMapping = array(
                 'application/sparql-results+xml'  => 'xml', 
@@ -543,26 +568,29 @@ class ServiceController extends Zend_Controller_Action
                 // get result for mimetype
                 $result = $store->sparqlQuery($query, array('result_format' => $typeMapping[$type]));
             } catch (Exception $e) {
-                $response->setRawHeader('HTTP/1.1 400 Bad Request')
+                $response->setHttpResponseCode (400)
+                         ->setRawHeader('HTTP/1.1 400 Bad Request')
                          ->setBody('MalformedQuery: ' . $e->getMessage())
                          ->sendResponse();
-                exit;
+                return;
             }
             
             if (/* $typeMapping[$type] == 'json' && */isset($this->_request->callback)) {
                 // return jsonp
+                $response->setHttpResponseCode (200);
                 $response->setHeader('Content-Type', 'application/javascript');
                 $padding = $this->_request->getParam('callback', '');
                 $response->setBody($padding . '(' . $result . ')');
             } else {
                 // set header
+                $response->setHttpResponseCode (200);
                 $response->setHeader('Content-Type', $type);
                 // return normally
                 $response->setBody($result);
             }
             
             $response->sendResponse();
-            exit;
+            return;
         }
     }
     

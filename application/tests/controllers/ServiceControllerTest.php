@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Contains tests for 
+ *  - auth
+ *  - sparql
+ */
 class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
 {
     public function setUp()
@@ -17,6 +22,9 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         Erfurt_Auth::getInstance()->clearIdentity();
     }
     
+    # ################
+    # AUTH ACTION ####
+    # ################
     public function testCallWithoutActionShouldPullFromIndexAction()
     {
         $this->dispatch('/service');
@@ -34,6 +42,9 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $config->service->auth->allowGet = false;
         
         $this->dispatch('/service/auth');
+        
+        $r = $this->getResponse();
+        var_dump($r->getBody());
         
         $this->assertController('service');
         $this->assertAction('auth');
@@ -96,7 +107,6 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertResponseCode(400);
     }
     
-    
     public function testAuthActionAnonymousUserNoPasswordSuccess()
     {
         $this->request->setMethod('POST')
@@ -110,7 +120,6 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('auth');
         $this->assertResponseCode(200);
     }
-    
     
     public function testAuthActionAnonymousUserPasswordSetSuccess()
     {
@@ -139,5 +148,45 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertController('service');
         $this->assertAction('auth');
         $this->assertResponseCode(401);
+    }
+    
+    # ##################
+    # SPARQL ACTION ####
+    # ##################
+    
+    /**
+     * No parameter, no action!
+     * 
+     * @test
+     */
+    public function sparqlNoParameter()
+    {
+        $this->request->setMethod('POST');
+        
+        $this->dispatch('/service/sparql');
+        
+        $this->assertController('service');
+        $this->assertAction('sparql');
+        $this->assertResponseCode(200);
+    }
+    
+    /**
+     * No authentification, but with an query. 
+     * 
+     * @test
+     */
+    public function sparqlNoAuthWithQuery()
+    {        
+        // Send invalid query
+        $this->request->setMethod('POST')
+                      ->setPost(
+                        array( 'query' => '123')
+                      );
+        
+        $this->dispatch('/service/sparql');
+        
+        $this->assertController('service');
+        $this->assertAction('sparql');
+        $this->assertResponseCode(400);
     }
 }
