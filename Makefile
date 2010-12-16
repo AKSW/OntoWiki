@@ -55,3 +55,6 @@ libraries:
 
 test:
 	cd application/tests && phpunit TestSuite && cd ../..
+
+test-erfurt:
+	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..
