@@ -53,6 +53,8 @@
   
 /* @import url('default.dev.css'); - included extra with debug modus */
 
+@import url('jquery-ui.css');
+
 /* 1. Layout ---------------------------------------------------------------- */
 
 
