@@ -3,7 +3,7 @@
 /**
  * OntoWiki test base file
  *
- * Sets the same include paths as OntoWik uses and must be included
+ * Sets the same include paths as OntoWiki uses and must be included
  * by all tests.
  *
  * @author     Norman Heino <norman.heino@gmail.com>
@@ -43,6 +43,7 @@ require_once 'Zend/Loader/Autoloader.php';
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('OntoWiki_');
 $loader->registerNamespace('Erfurt_');
+$loader->registerNamespace('PHPUnit_');
 
 /** OntoWiki */
 require_once 'OntoWiki.php';
