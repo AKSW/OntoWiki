@@ -5,6 +5,7 @@ default:
 	@echo "     'make branch-check' ('hg branch' for all subrepos)"
 	@echo "     'make zend' (download and install Zend under libraries)"
 	@echo "     'make test' (execute 'phpunit TestSuite')"
+	@echo "     'make test-erfurt' (execute Erfurts TestSuite)"
 
 pull:
 	@hg --repository . pull
@@ -54,7 +55,7 @@ libraries:
 	hg clone https://rdfauthor.googlecode.com/hg/ libraries/RDFauthor
 
 test:
-	phpunit --verbose application/Tests/TestSuite 
+	phpunit --verbose application/tests/TestSuite 
 
 test-erfurt:
 	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..
