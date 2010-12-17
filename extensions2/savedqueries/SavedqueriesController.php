@@ -14,7 +14,7 @@ require_once 'OntoWiki/Controller/Component.php';
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @version    $Id$
  */
-class SimplesparqlresultviewController extends OntoWiki_Controller_Component
+class SavedqueriesController extends OntoWiki_Controller_Component
 {
     private $model = null;
     private $translate = null;
@@ -78,19 +78,11 @@ class SimplesparqlresultviewController extends OntoWiki_Controller_Component
 
 	    $this->view->queryResult = $queryResult;
 	    $this->view->header = $header;
-
-
-
     }
 
     private function _getQueryResult( $queryString) {
-
         $elements = $this->model->sparqlQuery($queryString);
         return $elements;
-
     }
-
-    
-
 }
 

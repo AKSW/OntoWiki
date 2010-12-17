@@ -253,6 +253,7 @@ class QueriesController extends OntoWiki_Controller_Component {
         $this->view->prefixes = $prefixes;
         $this->view->placeholder('sparql.result.format')->set($format);
         $this->view->placeholder('sparql.query.target')->set($this->_request->getParam('target', 'this'));
+        $this->addModuleContext('main.window.queryeditor');
     }
 
     /**

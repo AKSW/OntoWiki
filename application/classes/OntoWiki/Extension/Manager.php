@@ -533,20 +533,18 @@ class Ontowiki_Extension_Manager {
         if(isset($config->modules)){
             $moduleName = strtolower(substr($moduleFilename, 0, strlen($moduleFilename)-strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)));
             if(isset ($config->modules->{$moduleName})){
-                $config = clone $config;
-                $config->merge($config->modules->{$moduleName}); //pull this subconfig up
+                $config = unserialize(serialize($config)) ; //dont touch the original config
+                $config->merge($config->modules->{$moduleName});
             }
         }
-        //var_dump($config);
 
-        if (isset($config->context)) {
-            $contexts = (array)$config->context;
+        if (isset($config->context) && is_string($config->context)) {
+            $contexts = array($config->context);
         } else if (isset($config->contexts) && $config->contexts instanceof Zend_Config) {
-            $contexts = $config->contexts;
+            $contexts = $config->contexts->toArray();
         } else {
-            $contexts = (array) OntoWiki_Module_Registry::DEFAULT_CONTEXT;
+            $contexts = array(OntoWiki_Module_Registry::DEFAULT_CONTEXT);
         }
-
 
         // register for context(s)
         foreach ($contexts as $context) {

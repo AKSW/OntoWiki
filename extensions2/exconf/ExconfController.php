@@ -26,7 +26,7 @@ class ExconfController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Configure Extensions'));
 
         $this->addModuleContext('main.window.exconf');
-
+        
         $ow = OntoWiki::getInstance();
         if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration') && !$this->_request->isXmlHttpRequest()) {
             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not allowed for this user", OntoWiki_Message::ERROR));
