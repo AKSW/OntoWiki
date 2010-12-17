@@ -39,6 +39,10 @@ $this->headScript()->appendScript('$(function(){
                 }})
              break;
          }
+
+         // re-populate the outline
+         extensionOutline();
+
          //fix odd even style
          var even = true;
          $("#extensions tr:visible").each(function(){
@@ -57,7 +61,7 @@ $this->headScript()->appendScript('$(function(){
 ?>
 Show
 <form id="show_extension">
-    <input type="radio" name="show" value="all"> All (<span id="numAll"><?php echo $this->numAll; ?></span>)<br/>
+    <input type="radio" name="show" value="all" checked> All (<span id="numAll"><?php echo $this->numAll; ?></span>)<br/>
     <input type="radio" name="show" value="enabled"> Enabled (<span id="numEnabled"><?php echo $this->numEnabled; ?></span>)<br/>
     <input type="radio" name="show" value="disabled"> Disabled (<span id="numDisabled"><?php echo $this->numDisabled; ?></span>)
 </form>
