@@ -595,12 +595,18 @@ class Ontowiki_Extension_Manager {
             $config->merge($local_ini);
         }
 
-        //TODO this might be nessary 
+        //fix unset names
+        if(!isset ($config->name)){
+           $config->name = $name;
+        }
+
+        //this might be nessary
         if(is_string($config->enabled)){
             switch($config->enabled){
                 case "1":
                 case "enabled":
                 case "true":
+                case "on":
                     $config->enabled = true;
                     break;
                 default:

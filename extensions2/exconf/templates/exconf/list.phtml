@@ -67,7 +67,7 @@ Show
     <tr class="<?php echo $odd ? "odd" : "even"; ?>">
         <td>
             <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
-                <div class="name"><h3><?php echo isset($extension->name) ? $extension->name : $name; ?></h3></div>
+                <div class="name"><h3><?php echo $extension->name; ?></h3></div>
                 <div class="description"><?php echo isset($extension->description) ? $extension->description : "no description yet"; ?></div>
                 <div class="author">
                     <?php if(isset($extension->authorUrl)) { ?><a href="<?php echo $extension->authorUrl;?>"><?php } ?>

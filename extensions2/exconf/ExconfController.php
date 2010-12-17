@@ -32,19 +32,16 @@ class ExconfController extends OntoWiki_Controller_Component {
             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not allowed for this user", OntoWiki_Message::ERROR));
             $extensions = array();
         } else {
+            //get extension from manager
             $modMan = $ow->extensionManager;
-
             $extensions = $modMan->getExtensions();
 
-            function compExtensions($a, $b){
-                if ($a == $b) {
-                    return 0;
-                }
-                $a_key = isset($extensions[$a]["name"]) ? $extensions[$a]["name"] : $a;
-                $b_key = isset($extensions[$b]["name"]) ? $extensions[$b]["name"] : $b;
-                return strcasecmp($a_key, $b_key);
+            //sort by name property
+            $volume = array();
+            foreach ($extensions as $key => $row) {
+                $volume[$key]  = $row->name;
             }
-            uksort($extensions, "compExtensions");
+            array_multisort($volume, SORT_ASC, $extensions);
 
             //some statistics
             $numEnabled = 0;
@@ -58,6 +55,7 @@ class ExconfController extends OntoWiki_Controller_Component {
             }
             $numAll = count($extensions);
 
+            //save to view
             $this->view->numEnabled = $numEnabled;
             $this->view->numDisabled = $numDisabled;
             $this->view->numAll = $numAll;
