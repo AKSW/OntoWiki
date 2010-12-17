@@ -341,8 +341,13 @@ class OntoWiki_Component_Manager
         
         $helperSpec = $this->_helpers[$componentName];
         
-        // load helper class
-        require $helperSpec['path'];
+        // Load the helper class iff it is not available yet.
+        // Normally a helper is loaded only once, but in some cases 
+        // (e.g. unit testing) this method will be called more than once.
+        if (!class_exists($helperSpec['class'])) {
+            require $helperSpec['path'];
+        }
+        
         // instantiate helper object
         $helperInstance = new $helperSpec['class']($this);
         

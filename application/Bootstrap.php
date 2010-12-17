@@ -123,7 +123,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->themes->default  = rtrim($config->themes->default, '/\\') . '/';
         $config->extensions->base = rtrim($config->extensions->base, '/\\') . '/';
         
-        define('EXTENSION_PATH', $config->extensions->base);
+        if ( false === defined ('EXTENSION_PATH') )
+        {
+            define('EXTENSION_PATH', $config->extensions->base);
+        }
         $config->extensions->components = EXTENSION_PATH . rtrim($config->extensions->components, '/\\') . '/';
         $config->extensions->modules    = EXTENSION_PATH . rtrim($config->extensions->modules, '/\\') . '/';
         $config->extensions->plugins    = EXTENSION_PATH . rtrim($config->extensions->plugins, '/\\') . '/';
@@ -163,13 +166,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // define constants for development/debugging
         if (isset($config->debug) and (boolean)$config->debug) {
-           // display errors
-           error_reporting(E_ALL | E_STRICT);
-           ini_set('display_errors', 'On');
-           // enable debugging options
-           define('_OWDEBUG', 1);
-           // log everything
-           $config->log->level = 7;
+            // display errors
+            error_reporting(E_ALL | E_STRICT);
+            ini_set('display_errors', 'On');
+            // enable debugging options
+           
+            if ( false === defined ('_OWDEBUG') )
+            {
+                define('_OWDEBUG', 1);
+            }
+           
+            // log everything
+            $config->log->level = 7;
         }
         
         return $config;
@@ -322,6 +330,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                ? $session->lastRoute 
                : $config->route->default->name;
         
+        // Reset the Navigation class, since in some cases (e.g. unit testing) the
+        // application is bootstrapped more than once. This should have no implications,
+        // since normally this method is only called once.
+        OntoWiki_Navigation::reset();
+        
         // register with navigation
         if (isset($config->routes->{$route})) {
             extract($config->routes->{$route}->defaults->toArray());
@@ -450,7 +463,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $session    = new Zend_Session_Namespace($sessionKey);
         
         // define the session key as a constant for global reference
-        define('_OWSESSION', $sessionKey);
+        if ( false === defined ('_OWSESSION') )
+        {
+            define('_OWSESSION', $sessionKey);
+        }
         
         // inject session vars into OntoWiki
         if (array_key_exists('sessionVars', $this->_options['bootstrap'])) {
