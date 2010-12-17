@@ -1,8 +1,8 @@
 <?php
 
-require_once 'test_base.php';
+require_once 'TestHelper.php';
 
-require_once _TESTROOT .'controllers/ServiceControllerTest.php';
+require_once _TESTROOT .'controllers/TestSuite.php';
 
 /*
 require_once _TESTROOT .'OntoWiki/InstancesTest.php';
@@ -17,7 +17,7 @@ class TestSuite extends PHPUnit_Framework_TestSuite
     {
         $suite = new TestSuite('OntoWiki Tests');
         
-        $suite->addTestSuite('ServiceControllerTest');
+        $suite->addTestSuite('Controllers_TestSuite');
         
         /*
         $suite->addTestSuite('InstancesTest');

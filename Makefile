@@ -54,7 +54,7 @@ libraries:
 	hg clone https://rdfauthor.googlecode.com/hg/ libraries/RDFauthor
 
 test:
-	cd application/tests && phpunit TestSuite && cd ../..
+	phpunit --verbose application/Tests/TestSuite 
 
 test-erfurt:
 	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..

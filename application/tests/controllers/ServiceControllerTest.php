@@ -47,7 +47,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
  * @subpackage UnitTests
  * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
- * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>#
+ * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  * @author     Konrad Abicht <k.abicht@googlemail.com>
  */
 class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
