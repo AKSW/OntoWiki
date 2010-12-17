@@ -1,7 +1,4 @@
 <?php
-
-require_once 'OntoWiki/Controller/Component.php';
-
 /**
  * edit extension configuration via a gui
  *
@@ -13,7 +10,6 @@ require_once 'OntoWiki/Controller/Component.php';
  * @author     Jonas Brekle <jonas.brekle@gmail.com>
  * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $$
  */
 class ExconfController extends OntoWiki_Controller_Component {
 
@@ -28,7 +24,9 @@ class ExconfController extends OntoWiki_Controller_Component {
 
     function listAction() {
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Configure Extensions'));
-        
+
+        $this->addModuleContext('main.window.exconf');
+
         $ow = OntoWiki::getInstance();
         if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration') && !$this->_request->isXmlHttpRequest()) {
             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not allowed for this user", OntoWiki_Message::ERROR));
