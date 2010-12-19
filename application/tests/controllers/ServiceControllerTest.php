@@ -219,11 +219,11 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     }
     
     /**
-     * No authentification, but with an query. 
+     * No authentification, but with an query. OW should used Anonymous.
      * 
      * @test
      */
-    public function sparqlNoAuthWithQuery()
+    public function sparqlNoAuthWithInvalidQuery()
     {        
         // Send invalid query
         $this->request->setMethod('POST')
@@ -232,10 +232,68 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
                       );
         
         $this->dispatch('/service/sparql');
-        
+                
         $this->assertController('service');
         $this->assertAction('sparql');
         $this->assertResponseCode(400);
+    }
+    
+    /**
+     * No auth, valid query. Expected XML.
+     * @test
+     */
+    public function sparqlNoAuthWithValidQueryResultAsXML()
+    {        
+        // Send invalid query
+        $this->request->setMethod('POST')
+                      ->setPost(
+                        array( 'query' => 'SELECT ?s WHERE { ?s ?p ?o. }')
+                      );
+        
+        $this->dispatch('/service/sparql');
+                
+        $this->assertController('service');
+        $this->assertAction('sparql');
+        $this->assertResponseCode(200);
+        
+        $expected = '<?xml version="1.0" encoding="UTF-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+<variable name="s" />
+</head>
+<results>
+</results>
+</sparql>
+';
+        
+        $this->assertEquals ( $expected, $this->response->getBody () );
+    }
+    
+    /**
+     * No auth, valid query. Expected XML.
+     * @test
+     */
+    public function sparqlNoAuthWithValidQueryResultAsJSON()
+    {        
+        // Send invalid query
+        $this->request->setMethod('POST')
+                      ->setPost(
+                        array( 'query' => 'SELECT ?s WHERE { ?s ?p ?o. }')
+                      );
+        
+        $this->request->setHeaders ( 
+            array ( 'Accept' => 'application/sparql-results+json' ) 
+        );
+        
+        $this->dispatch('/service/sparql');
+                
+        $this->assertController('service');
+        $this->assertAction('sparql');
+        $this->assertResponseCode(200);
+        
+        $expected = '{"head":{"vars":["s"]},"bindings":[],"results":{"bindings":[]}}';
+        
+        $this->assertEquals ( $expected, $this->response->getBody () );
     }
 }
 
