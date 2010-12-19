@@ -1,11 +1,12 @@
-<?php
+#!/usr/bin/env php
 
+<?php
 /**
  * OntoWiki
  *
  * LICENSE
  *
- * This file is part of the OntoWiki project.
+ * This file is part of the Erfurt project.
  * Copyright (C) 2006-2010, AKSW
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -23,65 +24,61 @@
  * this URL: http://opensource.org/licenses/gpl-2.0.php
  *
  * @category   OntoWiki
- * @package    OntoWiki
+ * @package    controllers
  * @subpackage UnitTests
  * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
  * @version    $Id: $
  */
- 
+
 /*
  * Helper file, that adjusts the include_path and initializes the test environment.
  */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'TestHelper.php';
+require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'TestHelper.php';
 
 // This constant will not be defined iff this file is executed directly.
 if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'OntoWiki_MessageTest::main');
+    define('PHPUnit_MAIN_METHOD', 'OntoWiki_TestSuite::main');
 }
 
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'MessageTest.php';
+
 /**
- * This test class comtains tests for the OntoWiki index controller.
- * 
  * @category   OntoWiki
- * @package    OntoWiki
+ * @package    controllers
  * @subpackage UnitTests
  * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
- * @author     Norman Heino <norman.heino@gmail.com>
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
-class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
+class OntoWiki_TestSuite extends PHPUnit_Framework_TestSuite
 {
-    protected $_fixture;
-    
     /**
-     * The main method, which executes all tests inside this class.
+     * The main method, which executes all controller tests.
      * 
      * @return void
      */
     public static function main()
     {
-        PHPUnit_TextUI_TestRunner::run(new ReflectionClass('OntoWiki_MessageTest'));
+        PHPUnit_TextUI_TestRunner::run(self::suite());
     }
     
-    public function setUp()
+    /**
+     * Returns a test suite containing all controller tests.
+     *
+     * @return PHPUnit_Framework_TestSuite
+     */
+    public static function suite()
     {
-        $this->_fixture = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
-    }
-    
-    public function testMessageType()
-    {
-        $this->assertEquals($this->_fixture->getType(), 'success');
-    }
-    
-    public function testMessageText()
-    {
-        $this->assertEquals($this->_fixture->getText(), 'The test string for the message object.');
+        $suite = new PHPUnit_Framework_TestSuite('OntoWiki Tests');
+        
+        $suite->addTestSuite('OntoWiki_MessageTest');
+        
+        return $suite;
     }
 }
 
 // If this file is executed directly, execute the tests.
-if (PHPUnit_MAIN_METHOD === 'OntoWiki_MessageTest::main') {
-    OntoWiki_MessageTest::main();
+if (PHPUnit_MAIN_METHOD === 'OntoWiki_TestSuite::main') {
+    OntoWiki_TestSuite::main();
 }

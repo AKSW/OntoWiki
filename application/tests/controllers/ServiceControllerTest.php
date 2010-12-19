@@ -270,7 +270,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     }
     
     /**
-     * No auth, valid query. Expected XML.
+     * No auth, valid query. Expected JSON.
      * @test
      */
     public function sparqlNoAuthWithValidQueryResultAsJSON()
