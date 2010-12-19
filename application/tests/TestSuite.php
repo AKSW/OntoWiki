@@ -16,8 +16,6 @@ class TestSuite extends PHPUnit_Framework_TestSuite
         $suite->addTestSuite('Controllers_TestSuite');
         $suite->addTestSuite('OntoWiki_TestSuite');
         
-        $suite->addTestSuite('OntoWikiTest');
-        
         return $suite;
     }
 }

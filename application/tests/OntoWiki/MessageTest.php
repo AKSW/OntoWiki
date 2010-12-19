@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OntoWiki
  *
@@ -53,8 +52,6 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
  */
 class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
 {
-    protected $_fixture;
-    
     /**
      * The main method, which executes all tests inside this class.
      * 
@@ -65,19 +62,40 @@ class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
         PHPUnit_TextUI_TestRunner::run(new ReflectionClass('OntoWiki_MessageTest'));
     }
     
-    public function setUp()
+    public function testMessageGetTypeDefaultInfo()
     {
-        $this->_fixture = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
+        $msg = new OntoWiki_Message('ttt');
+        $this->assertEquals($msg->getType(), OntoWiki_Message::INFO);
     }
     
-    public function testMessageType()
+    public function testMessageGetTypeSuccess()
     {
-        $this->assertEquals($this->_fixture->getType(), 'success');
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::SUCCESS);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::SUCCESS);
     }
     
-    public function testMessageText()
+    public function testMessageGetTypeInfo()
     {
-        $this->assertEquals($this->_fixture->getText(), 'The test string for the message object.');
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::INFO);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::INFO);
+    }
+    
+    public function testMessageGetTypeWarning()
+    {
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::WARNING);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::WARNING);
+    }
+    
+    public function testMessageGetTypeError()
+    {
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::ERROR);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::ERROR);
+    }
+    
+    public function testMessageGetText()
+    {
+        $msg = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
+        $this->assertEquals($msg->getText(), 'The test string for the message object.');
     }
 }
 

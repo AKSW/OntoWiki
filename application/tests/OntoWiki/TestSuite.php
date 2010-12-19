@@ -1,5 +1,3 @@
-#!/usr/bin/env php
-
 <?php
 /**
  * OntoWiki
@@ -41,7 +39,8 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'OntoWiki_TestSuite::main');
 }
 
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'MessageTest.php';
+// Include required files, that do not autoload.
+require_once _TESTROOT . 'OntoWikiTest.php';
 
 /**
  * @category   OntoWiki
@@ -71,6 +70,8 @@ class OntoWiki_TestSuite extends PHPUnit_Framework_TestSuite
     public static function suite()
     {
         $suite = new PHPUnit_Framework_TestSuite('OntoWiki Tests');
+        
+        $suite->addTestSuite('OntoWikiTest');
         
         $suite->addTestSuite('OntoWiki_MessageTest');
         
