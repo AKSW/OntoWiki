@@ -110,7 +110,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                     $config = _json_decode($request->instancesconfig);
                     if ($config == false) {
                         throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
-                        exit;
                     }
                 } else {
                     $config = new stdClass();
@@ -131,7 +130,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                     $config = _json_decode($request->instancesconfig);
                     if ($config == false) {
                         throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
-                        exit;
                     }
                 } else {
                     $config = new stdClass();
@@ -152,7 +150,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 $config = _json_decode($request->instancesconfig);
                 if ($config == false) {
                     throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed)');
-                    exit;
                 }
 
                 if (isset($config->shownProperties)) {
@@ -249,7 +246,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 //redirect
                 $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
                 $redirector->gotoUrl($url);
-                exit;
             }
         }
         

@@ -52,6 +52,8 @@
   
 /* @import url('default.dev.css'); - included extra with debug modus */
 
+@import url('jquery-ui.css');
+
 /* 1. Layout ---------------------------------------------------------------- */
 
 
@@ -2031,7 +2033,7 @@ a.ui-draggable-dragging.hasMenu span.toggle
 /* please use .ui-droppable-accepted-window for droppable div.window elements,
    and .ui-droppable-accepted-destination for all outher elements in a window */
 
-.window .content .ui-droppable-accepted-destination *,
+.ui-droppable-accepted-destination *,
 .window.ui-droppable-accepted-window .content *
 {
     background-color: transparent !important;
@@ -2039,13 +2041,24 @@ a.ui-draggable-dragging.hasMenu span.toggle
     background-image: none;
 }
 
-.window .content .ui-droppable-accepted-destination,
+.ui-droppable-accepted-destination,
 .window.ui-droppable-accepted-window .content
 {
     background-color: #dee8ee;
     -moz-box-shadow:inset 0 0 1em #333;
     -webkit-box-shadow:inset 0 0 1em #333;
     box-shadow:inset 0 0 1em #333;
+}
+
+.window.ui-droppable-accepted-window h1.title
+{
+    background-color:#adb5ba !important;
+}
+
+.window.ui-droppable-accepted-window .cmDiv,
+.window.ui-droppable-accepted-window .cmDiv *
+{
+    background-color:#c5ced4 !important;
 }
 
 .window .content .ui-droppable-hovered,

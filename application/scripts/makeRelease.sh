@@ -38,8 +38,8 @@ make update
 echo "Delete unwanted files and directories in $releaseDir"
 #rm -rf `find $releaseDir -name '.svn'`
 rm -rf $releaseDir/.hg
-cd $releaseDir/extensions/components && rm -rf calendar graphicalquerybuilder querybuilder repositoryservices artistedit dllearner foafedit querybuilding containermanager easyinference freebedit cacheconfiguration dashboard plugins repository skos
-cd $releaseDir//extensions/modules && rm -rf containermanager dllearner easyinference keyboard rating skosrelations tabs tagcloud
+cd $releaseDir/extensions/components && rm -rf calendar graphicalquerybuilder querybuilder repositoryservices artistedit dllearner foafedit containermanager easyinference freebedit cacheconfiguration dashboard plugins repository skos
+cd $releaseDir/extensions/modules && rm -rf containermanager dllearner easyinference keyboard rating skosrelations tabs tagcloud
 cd $releaseDir/extensions/plugins && rm -rf breadcrumbs easyinference isressourceeditingallowed sendmail
 #cd $releaseDir/extensions/themes && rm -rf flatcarbon
 cd $releaseDir/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php

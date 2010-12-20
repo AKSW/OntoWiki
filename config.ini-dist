@@ -36,7 +36,7 @@ store.zenddb.dbtype     = mysql             ; mysql
 ;;
 ; Frontend language
 ;;
-languages.locale = "en"             ; en, de, zh (Chinese)
+languages.locale = "en"             ; en, de, ru, zh (Chinese)
 
 
 ;;
