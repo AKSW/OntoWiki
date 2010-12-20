@@ -23,7 +23,8 @@ class OutlineModule extends OntoWiki_Module
     public function getContents() {
         #$data['resourceUri'] = $this->_owApp->selectedResource->getIri();
         #$content = $this->render('tagging', $data, 'data');
-        $content = "...";
+        $this->view->headScript()->appendFile($this->view->moduleUrl . '/resources/outline.js');
+        $content = '<div class="outline" />';
         return $content;
     }
 	

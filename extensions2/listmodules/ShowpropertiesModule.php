@@ -10,7 +10,6 @@
  * @author     Norman Heino <norman.heino@gmail.com>
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: showproperties.php 4222 2009-10-02 10:54:38Z sebastian.dietzold $
  */
 class ShowpropertiesModule extends OntoWiki_Module
 {
@@ -20,6 +19,11 @@ class ShowpropertiesModule extends OntoWiki_Module
     {
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $this->_instances = $listHelper->getLastList();
+    }
+    
+    public function getTitle()
+    {
+        return 'Show Properties';
     }
 
     public function shouldShow()
