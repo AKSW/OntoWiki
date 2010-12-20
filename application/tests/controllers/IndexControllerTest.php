@@ -119,6 +119,40 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertNotQuery('div.section-mainwindows');
         $this->assertQuery('div.section-sidewindows');
     }
+    
+    public function testMessagesActionNoMessages()
+    {
+        $this->dispatch('/index/messages');
+        
+        $this->assertController('index');
+        $this->assertAction('messages');
+        $this->assertQueryContentContains('p.messagebox', 'No messages');
+    }
+    
+    public function testMessagesActionSingleMessage()
+    {
+        $owApp = OntoWiki::getInstance();
+        $owApp->appendMessage(new OntoWiki_Message('Test Message 123', OntoWiki_Message::INFO));
+        
+        $this->dispatch('/index/messages');
+        
+        $this->assertController('index');
+        $this->assertAction('messages');
+        $this->assertQueryContentContains('p.messagebox.info', 'Test Message 123');
+    }
+    
+    public function testMessagesActionMultipleMessages()
+    {
+        $owApp = OntoWiki::getInstance();
+        $owApp->appendMessage(new OntoWiki_Message('Test Message 123', OntoWiki_Message::INFO));
+        $owApp->appendMessage(new OntoWiki_Message('Error Message 456', OntoWiki_Message::ERROR));
+        
+        $this->dispatch('/index/messages');
+        $this->assertController('index');
+        $this->assertAction('messages');
+        $this->assertQueryContentContains('p.messagebox.info', 'Test Message 123');
+        $this->assertQueryContentContains('p.messagebox.error', 'Error Message 456');
+    }
 }
 
 // If this file is executed directly, execute the tests.

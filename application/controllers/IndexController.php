@@ -66,6 +66,30 @@ class IndexController extends OntoWiki_Controller_Base
         $this->view->isMainWindowDisabled = true;
     }
     
+    /**
+     * This action only displays pending messages. No other content is shown.
+     * 
+     * @return void
+     */
+    public function messagesAction()
+    {
+        // We disable rendering of the main window content and navigation.
+        $this->_helper->viewRenderer->setNoRender();
+        OntoWiki_Navigation::disableNavigation();
+        
+        // Set the title of the main window.
+        $this->view->placeholder('main.window.title')->set('OntoWiki Messages');
+        
+        // If no message is pending, we add a info message, since we want to
+        // avoid an empty main window.
+        if (!$this->_owApp->hasMessages()) {
+            $this->_owApp->appendMessage(new OntoWiki_Message(
+                'No messages', 
+                OntoWiki_Message::INFO
+            ));
+        }
+    }
+    
 	/**
      * Displays the OntoWiki news feed short summary (dashboard part)
      */
@@ -114,15 +138,7 @@ class IndexController extends OntoWiki_Controller_Base
 	
 	
 
-    /**
-     * Displays messages only without any othe content.
-     */
-    public function messagesAction()
-    {
-        OntoWiki_Navigation::disableNavigation();
-        $this->view->placeholder('main.window.title')->set('OntoWiki Messages');
-        $this->_helper->viewRenderer->setNoRender();
-    }
+    
     
     /**
      * Displays the OntoWiki news feed
