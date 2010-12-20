@@ -12,7 +12,13 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class SimilarinstancesModule extends OntoWiki_Module
-{    
+{
+
+    public function getTitle()
+    {
+        return "Similar Instances";
+    }
+
     public function getContents()
     {
         $query = new Erfurt_Sparql_SimpleQuery();
