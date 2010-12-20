@@ -153,6 +153,49 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertQueryContentContains('p.messagebox.info', 'Test Message 123');
         $this->assertQueryContentContains('p.messagebox.error', 'Error Message 456');
     }
+    
+    public function testNewsActionSuccess()
+    {
+        $adapter = new Zend_Http_Client_Adapter_Test();
+        Zend_Feed::setHttpClient(new Zend_Http_Client(null, array('adapter' => $adapter)));
+        $adapter->setResponse(new Zend_Http_Response(
+            200, 
+            array(), 
+            '<?xml version="1.0" encoding="UTF-8"?>
+             <!-- generator="wordpress/2.1" -->
+             <rss version="2.0"
+                xmlns:content="http://purl.org/rss/1.0/modules/content/"
+                xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+                xmlns:dc="http://purl.org/dc/elements/1.1/">
+             <channel>
+             <title>blog.aksw.org</title>
+                <link>http://blog.aksw.org</link>
+                <description>The shared AKSW blog about our projects and the Semantic Web.</description>
+                 <pubDate>Tue, 14 Dec 2010 16:02:49 +0000</pubDate>
+                <generator>http://wordpress.org/?v=2.1</generator>
+                <language>en</language>
+             </channel>
+             </rss>'
+        ));
+        
+        $this->dispatch('/index/news');
+        $this->assertController('index');
+        $this->assertAction('news');
+        $this->assertQueryContentContains('h1.title', 'News');
+    }
+    
+    public function testNewsActionFail()
+    {
+        $adapter = new Zend_Http_Client_Adapter_Test();
+        Zend_Feed::setHttpClient(new Zend_Http_Client(null, array('adapter' => $adapter)));
+        $adapter->setResponse(new Zend_Http_Response(404, array(), ''));
+        
+        $this->dispatch('/index/news');
+        $this->assertController('index');
+        $this->assertAction('news');
+        $this->assertQueryContentContains('h1.title', 'News');
+        $this->assertQuery('p.messagebox.warning');
+    }
 }
 
 // If this file is executed directly, execute the tests.

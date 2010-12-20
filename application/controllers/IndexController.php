@@ -14,6 +14,13 @@
 class IndexController extends OntoWiki_Controller_Base
 {
     /**
+     * The URL of the OntoWiki news feed.
+     * 
+     * @var string
+     */
+    const FEED_URL = 'http://blog.aksw.org/feed/?cat=5';
+    
+    /**
      * This method is called if a action was specified for this controller that
      * was not found. Depending on the configuration this will forward the 
      * request to a default controller/action pair, to the news action or to
@@ -90,6 +97,34 @@ class IndexController extends OntoWiki_Controller_Base
         }
     }
     
+    /**
+     * This action displays the OntoWiki news feed.
+     *
+     * @return void
+     */
+    public function newsAction()
+    {
+        // We need no navigation here.
+        OntoWiki_Navigation::disableNavigation();
+        
+        // Set the title of the main window.
+        $this->view->placeholder('main.window.title')->set('News');
+        
+        try {
+            $owFeed = $this->_importFeed();
+            
+            $this->view->feed        = $owFeed;
+            $this->view->title       = $owFeed->title();
+            $this->view->link        = $owFeed->link();
+            $this->view->description = $owFeed->description();
+        } catch (Exception $e) {
+            $this->_owApp->appendMessage(new OntoWiki_Message('Newsfeed not available', OntoWiki_Message::WARNING));
+            $this->view->feed = array();
+        }
+    }
+    
+    
+    
 	/**
      * Displays the OntoWiki news feed short summary (dashboard part)
      */
@@ -135,49 +170,24 @@ class IndexController extends OntoWiki_Controller_Base
         // assign data array to view rss data variable
         $this->view->rssData = $data;
     } 
-	
-	
-
-    
     
     /**
-     * Displays the OntoWiki news feed
+     * Helper method that imports the OntoWiki news feed.
+     * 
+     * This method does not handle exceptions thrown by Zend_Feed.
+     * 
+     * @return Zend_Feed
+     * 
      */
-    public function newsAction()
+    private function _importFeed()
     {
-        $owFeed  = null;
         $version = $this->_config->version;
         
-        $this->view->placeholder('main.window.title')->set('News');
-        
-        try {
-            $url = 'http://blog.aksw.org/feed/?cat=5&client=' 
-                 . $version->label 
-                 . '&version=' 
-                 . $version->number 
-                 . '&suffix=' 
-                 . $version->suffix;
-            
-            $owFeed = Zend_Feed::import($url);
-            
-            $this->view->feed        = $owFeed;
-            $this->view->title       = $owFeed->title();
-            $this->view->link        = $owFeed->link();
-            $this->view->description = $owFeed->description();
-            
-        } catch (Exception $e) {
-            $this->view->messages = array(new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::ERROR));
-            $this->view->feed     = array();
-            // var_dump($url);
-            // exit;
-        }
-        
-        OntoWiki_Navigation::disableNavigation();
+        $url = self::FEED_URL
+             . (isset($version->label)  ? ('&client=' . $version->label) : '')
+             . (isset($version->number) ? ('&version=' . $version->number) : '')
+             . (isset($version->suffix) ? ('&suffix=' . $version->suffix) : '');
+             
+        return Zend_Feed::import($url);
     }
-    
-    
-    
-     
 }
-
-
