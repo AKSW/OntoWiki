@@ -123,52 +123,44 @@ class IndexController extends OntoWiki_Controller_Base
         }
     }
     
-    
-    
-	/**
-     * Displays the OntoWiki news feed short summary (dashboard part)
+    /**
+     * This action shows a short summary of the OntoWiki news feed, which is
+     * used e.g. by the dashboard.
+     *
+     * @return void
      */
     public function newsshortAction()
     {
-        // requires zend Feed module
-		// number of news
-		$feed_count = 3;
-        // create empty var for feed
-        $owFeed  = null;
-        // get current version
-        $version = $this->_config->version;
-        // try reading
+        // We need no navigation here.
+        OntoWiki_Navigation::disableNavigation();
+        
+        // Set the title of the main window.
+        $this->view->placeholder('main.window.title')->set('News');
+        
         try {
-            $url = 'http://blog.aksw.org/feed/?cat=5&client='
-                . $version->label
-                . '&version='
-                . $version->number
-                . '&suffix='
-                . $version->suffix;
+            $owFeed = $this->_importFeed();
+            
+            $rssData = array();
+            foreach ($owFeed as $feedItem) {
+                $description = substr($feedItem->description(), 0, strpos($feedItem->description(), ' ', 40)) . '[...]';
+                
+                $tempData = array(
+                    'link'        => $feedItem->link(),
+                    'title'       => $feedItem->title(),
+                    'description' => $description
+                );
+                
+                $rssData[] = $tempData;
 
-            $owFeed = Zend_Feed::import($url);
+                if(count($rssData) === 3) {
+                    break;
+                }
+            }
+            $this->view->rssData = $rssData;
         } catch (Exception $e) {
-            $owFeed = $e;
+            $this->_owApp->appendMessage(new OntoWiki_Message('Newsfeed not available', OntoWiki_Message::WARNING));
+            $this->view->rssData = array();
         }
-
-        // create new array for data
-        $data = array();
-        // parse feed items into array
-        foreach ($owFeed as $feedItem) {
-        // form temporary array with needed data
-            $tempdata = array(
-                'link' => $feedItem->link(),
-                'title' => $feedItem->title(),
-                'description' => substr($feedItem->description(),0, strpos($feedItem->description()," ",40) )." [...]"
-            );
-            // append temporary array to data array
-            $data[] = $tempdata;
-
-            // take only needed items
-            if(count($data) == $feed_count) break;
-        }
-        // assign data array to view rss data variable
-        $this->view->rssData = $data;
     } 
     
     /**
