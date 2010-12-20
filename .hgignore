@@ -1,5 +1,6 @@
 syntax: glob
 
+extensions2/*.ini
 local.ini
 config.ini
 .settings
