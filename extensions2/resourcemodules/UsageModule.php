@@ -5,9 +5,8 @@
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_modules_usage
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: usage.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
 
 
@@ -18,21 +17,20 @@
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_modules_usage
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @category  extensions
  * @package   modules
  * @author    Norman Heino <norman.heino@gmail.com>
- * @author    Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
  */
 class UsageModule extends OntoWiki_Module
 {
     /** @var array */
     protected $_subjects = null;
-    
+
     /** @var OntoWiki_Model */
     protected $_model = null;
-    
+
     /** @var array */
     protected $_objects = null;
 
@@ -53,7 +51,7 @@ class UsageModule extends OntoWiki_Module
                 }')
             ->setLimit(OW_SHOW_MAX);
         $this->_subjects = $this->_owApp->selectedModel->sparqlQuery($this->subjectQuery);
-        
+
         // objects
         $this->objectQuery = new Erfurt_Sparql_SimpleQuery();
         $this->objectQuery->setProloguePart('SELECT DISTINCT ?resourceUri')
@@ -64,13 +62,13 @@ class UsageModule extends OntoWiki_Module
             ->setLimit(OW_SHOW_MAX);
         $this->_objects = $this->_owApp->selectedModel->sparqlQuery($this->objectQuery);
     }
-    
+
     public function shouldShow()
     {
         if (!empty($this->_subjects) || !empty($this->_objects)) {
             return true;
         }
-        
+
         return false;
     }
 

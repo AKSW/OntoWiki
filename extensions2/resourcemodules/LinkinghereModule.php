@@ -31,6 +31,11 @@ class LinkinghereModule extends OntoWiki_Module
         $this->predicates = $this->_owApp->selectedModel->sparqlQuery($query);
     }
 
+    public function getTitle()
+    {
+        return "Instances linking here";
+    }
+
     public function shouldShow()
     {
         // show only if there are predicates
