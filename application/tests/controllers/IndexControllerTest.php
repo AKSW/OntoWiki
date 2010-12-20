@@ -161,27 +161,14 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $adapter->setResponse(new Zend_Http_Response(
             200, 
             array(), 
-            '<?xml version="1.0" encoding="UTF-8"?>
-             <!-- generator="wordpress/2.1" -->
-             <rss version="2.0"
-                xmlns:content="http://purl.org/rss/1.0/modules/content/"
-                xmlns:wfw="http://wellformedweb.org/CommentAPI/"
-                xmlns:dc="http://purl.org/dc/elements/1.1/">
-             <channel>
-             <title>blog.aksw.org</title>
-                <link>http://blog.aksw.org</link>
-                <description>The shared AKSW blog about our projects and the Semantic Web.</description>
-                 <pubDate>Tue, 14 Dec 2010 16:02:49 +0000</pubDate>
-                <generator>http://wordpress.org/?v=2.1</generator>
-                <language>en</language>
-             </channel>
-             </rss>'
+            file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'_files'.DIRECTORY_SEPARATOR.'aksw.rss')
         ));
         
         $this->dispatch('/index/news');
         $this->assertController('index');
         $this->assertAction('news');
         $this->assertQueryContentContains('h1.title', 'News');
+        $this->assertQueryCount('div.messagebox.feed', 5);
     }
     
     public function testNewsActionFail()
@@ -203,28 +190,15 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         Zend_Feed::setHttpClient(new Zend_Http_Client(null, array('adapter' => $adapter)));
         $adapter->setResponse(new Zend_Http_Response(
             200, 
-            array(), 
-            '<?xml version="1.0" encoding="UTF-8"?>
-             <!-- generator="wordpress/2.1" -->
-             <rss version="2.0"
-                xmlns:content="http://purl.org/rss/1.0/modules/content/"
-                xmlns:wfw="http://wellformedweb.org/CommentAPI/"
-                xmlns:dc="http://purl.org/dc/elements/1.1/">
-             <channel>
-             <title>blog.aksw.org</title>
-                <link>http://blog.aksw.org</link>
-                <description>The shared AKSW blog about our projects and the Semantic Web.</description>
-                 <pubDate>Tue, 14 Dec 2010 16:02:49 +0000</pubDate>
-                <generator>http://wordpress.org/?v=2.1</generator>
-                <language>en</language>
-             </channel>
-             </rss>'
+            array(),
+            file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'_files'.DIRECTORY_SEPARATOR.'aksw.rss')
         ));
         
         $this->dispatch('/index/newsshort');
         $this->assertController('index');
         $this->assertAction('newsshort');
         $this->assertQueryContentContains('h1.title', 'News');
+        $this->assertQueryCount('div.messagebox.feed', 3);
     }
     
     public function testNewsshortActionFail()
