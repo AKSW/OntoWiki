@@ -36,7 +36,8 @@ class TaggingModule extends OntoWiki_Module
     public function shouldShow(){
         // do not show if model is not writeable
         if ( (isset($this->_owApp->selectedModel)) &&
-                ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) ) {
+                ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) &&
+                        (isset($this->_owApp->selectedResource)) ) {
             return true;
         } else {
             return false;
