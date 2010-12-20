@@ -32,7 +32,11 @@ class ImprintModule extends OntoWiki_Module
         $content = $this->render('imprint'); //
         return $content;
     }
-	
+
+    public function getTitle(){
+        return 'Imprint';
+    }
+
     public function shouldShow(){
        return true;
     }
