@@ -74,7 +74,7 @@ class UsageModule extends OntoWiki_Module
 
     public function getTitle()
     {
-        $title = $this->view->_($this->title) . ' (' 
+        $title = $this->view->_('Usage as property') . ' (' 
                . count($this->_subjects) . '/'
                . count($this->_objects) . ')';
         
