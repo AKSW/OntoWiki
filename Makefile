@@ -4,6 +4,8 @@ default:
 	@echo "     'make update' ('hg pull -u' for all subrepos)"
 	@echo "     'make branch-check' ('hg branch' for all subrepos)"
 	@echo "     'make zend' (download and install Zend under libraries)"
+	@echo "     'make test' (execute 'phpunit TestSuite')"
+	@echo "     'make test-erfurt' (execute Erfurts TestSuite)"
 
 pull:
 	@hg --repository . pull
@@ -39,10 +41,10 @@ branch-check:
 
 zend:
 	rm -rf libraries/Zend
-	curl -O http://framework.zend.com/releases/ZendFramework-1.9.4/ZendFramework-1.9.4-minimal.tar.gz || wget  http://framework.zend.com/releases/ZendFramework-1.9.4/ZendFramework-1.9.4-minimal.tar.gz
-	tar xzf ZendFramework-1.9.4-minimal.tar.gz
-	mv ZendFramework-1.9.4-minimal/library/Zend libraries
-	rm -rf ZendFramework-1.9.4-minimal.tar.gz ZendFramework-1.9.4-minimal
+	curl -O http://framework.zend.com/releases/ZendFramework-1.11.1/ZendFramework-1.11.1-minimal.tar.gz || wget  http://framework.zend.com/releases/ZendFramework-1.11.1/ZendFramework-1.11.1-minimal.tar.gz
+	tar xzf ZendFramework-1.11.1-minimal.tar.gz
+	mv ZendFramework-1.11.1-minimal/library/Zend libraries
+	rm -rf ZendFramework-1.11.1-minimal.tar.gz ZendFramework-1.11.1-minimal
 
 libraries:
 	rm -rf libraries/Erfurt
@@ -52,3 +54,8 @@ libraries:
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	hg clone https://rdfauthor.googlecode.com/hg/ libraries/RDFauthor
 
+test:
+	phpunit --verbose application/tests/TestSuite 
+
+test-erfurt:
+	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..

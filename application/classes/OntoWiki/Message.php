@@ -125,11 +125,27 @@ class OntoWiki_Message
      */
     public function getText()
     {
-        $text = $this->_options['translate'] ? $this->_translate->translate($this->_text) : $this->_text;
-        $text = $this->_options['escape'] ? $this->_view->escape($text) : $text;
+        $text = $this->_translate($this->_text);
+        $text = $this->_escape($text);
+        
+        return $text;
+    }
+    
+    protected function _translate($text)
+    {
+        if ($this->_options['translate'] && (null !== $this->_translate)) {
+            return $this->_translate->translate($text);
+        }
+        
+        return $text;
+    }
+    
+    protected function _escape($text)
+    {
+        if ($this->_options['escape']) {
+            return $this->_view->escape($text);
+        }
         
         return $text;
     }
 }
-
-
