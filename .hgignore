@@ -1,13 +1,12 @@
 syntax: glob
 
+extensions2/*.ini
 local.ini
-config.ini
 .settings
 .project
 .idea
 .buildpath
 .DS_Store
-.htaccess
 *.log
 config.ini
 nbproject
