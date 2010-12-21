@@ -18,7 +18,7 @@ class IndexController extends OntoWiki_Controller_Base
      * 
      * @var string
      */
-    const FEED_URL = 'http://blog.aksw.org/feed/?cat=5';
+    const FEED_URL = 'http://blog.aksw.org/feed/?cat=5&client=OntoWiki';
     
     /**
      * This method is called if a action was specified for this controller that
@@ -173,12 +173,7 @@ class IndexController extends OntoWiki_Controller_Base
      */
     private function _importFeed()
     {
-        $version = $this->_config->version;
-        
-        $url = self::FEED_URL
-             . (isset($version->label)  ? ('&client=' . $version->label) : '')
-             . (isset($version->number) ? ('&version=' . $version->number) : '')
-             . (isset($version->suffix) ? ('&suffix=' . $version->suffix) : '');
+        $url = self::FEED_URL . '&version=' . OntoWiki_Version::VERSION;
              
         return Zend_Feed::import($url);
     }
