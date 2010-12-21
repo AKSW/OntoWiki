@@ -74,6 +74,7 @@ class OntoWiki_TestSuite extends PHPUnit_Framework_TestSuite
         $suite->addTestSuite('OntoWikiTest');
         
         $suite->addTestSuite('OntoWiki_MessageTest');
+        $suite->addTestSuite('OntoWiki_VersionTest');
         
         return $suite;
     }
