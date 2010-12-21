@@ -9,7 +9,6 @@
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: ApplicationController.php 4313 2009-10-14 21:37:47Z c.riess.dev $
  */
 class ApplicationController extends OntoWiki_Controller_Base
 {

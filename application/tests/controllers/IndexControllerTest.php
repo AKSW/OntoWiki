@@ -26,7 +26,6 @@
  * @subpackage UnitTests
  * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
- * @version    $Id: $
  */
  
 /*
