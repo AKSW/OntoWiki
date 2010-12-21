@@ -81,6 +81,10 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     
     public function testInvalidActionNoDefaultActionDefaultsToNewsAction()
     {
+        $config = OntoWiki::getInstance()->config;
+        unset($config->index->default->controller);
+        unset($config->index->default->action);
+        
         $this->dispatch('/index/actionXYZNotExisting');
         
         $this->assertController('index');
