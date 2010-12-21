@@ -3,11 +3,11 @@
  * JSON RPC Class, this wrapper class is for all store RPC calls
  *
  * @category   OntoWiki
- * @package    extensions_components_jsonrpc
+ * @package    extensions_jsonrpc
  * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class storeJsonrpcWrapper
+class storeJsonrpcAdapter
 {
     private $store = null;
     private $erfurt = null;

@@ -13,7 +13,7 @@
  *   HISTORY_ACTIONTYPE_802xx for all store actions
  *
  * @category   OntoWiki
- * @package    extensions_components_jsonrpc
+ * @package    extensions_jsonrpc
  * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */

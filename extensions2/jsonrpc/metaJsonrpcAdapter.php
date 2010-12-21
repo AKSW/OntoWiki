@@ -3,11 +3,11 @@
  * JSON RPC Class, this wrapper class is for all meta RPC calls
  *
  * @category   OntoWiki
- * @package    extensions_components_jsonrpc
+ * @package    extensions_jsonrpc
  * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class metaJsonrpcWrapper
+class metaJsonrpcAdapter
 {
     private $store = null;
     private $erfurt = null;
@@ -69,7 +69,7 @@ class metaJsonrpcWrapper
      */
     public function listProcedures ($server)
     {
-        $classname = $server . 'JsonrpcWrapper';
+        $classname = $server . 'JsonrpcAdapter';
         @include_once $classname.'.php';
         if (class_exists($classname)) {
             $reflectionClass = new ReflectionClass($classname);
