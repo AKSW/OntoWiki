@@ -20,10 +20,7 @@ class ApplicationController extends OntoWiki_Controller_Base
         OntoWiki_Navigation::disableNavigation();
         $this->view->placeholder('main.window.title')->set('About OntoWiki');
         
-        $version = $this->_config->version->number;
-        if (isset($this->_config->version->suffix)) {
-            $version .= ' ' . $this->_config->version->suffix;
-        }
+        $version = OntoWiki_Version::VERSION;
         
         $cacheWritable = is_writable($this->_config->cache->path)
                        ? ' <span style="color:#aea">(writable)</span>'

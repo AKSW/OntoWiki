@@ -127,7 +127,7 @@ class SiteController extends OntoWiki_Controller_Component
             
             $siteConfig = array(
                 'id'          => $this->_site,
-                'generator'   => 'OntoWiki ' . $this->_config->version->number,
+                'generator'   => OntoWiki::APPLICATION_NAME . ' ' . OntoWiki_Version::VERSION,
                 'pingbackUri' => $this->_owApp->getUrlBase() . 'pingback/ping',
                 'wikiBaseUri' => $this->_owApp->getUrlBase(),
                 'basePath'    => sprintf('%ssites/%s', $this->_componentRoot, $this->_site),
