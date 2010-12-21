@@ -9,7 +9,7 @@ if($entry["generator"][0]["value"]=="qb") {
     $base = $this->urlBase."graphicalquerybuilder/display?open=true";
     $base .= "&queryuri=".htmlentities($entry["query"][0]["value"]);
 }
-$qelink = Erfurt_App::getInstance()->getConfig()->urlBase."querybuilding/editor?immediate=1&query=".urlencode($entry['query'][0]["value"]);
+$qelink = Erfurt_App::getInstance()->getConfig()->urlBase."queries/editor?immediate=1&query=".urlencode($entry['query'][0]["value"]);
 ?>
 <a style="margin:2px;" class="minibutton" href="<?php echo $qelink; ?>">qe</a>
 <?php if($entry["generator"][0]["value"]=="qb" || $entry["generator"][0]["value"]=="gqb") {?>
