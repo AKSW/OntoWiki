@@ -39,9 +39,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //because serialized erfurt objects in the session need constants defined in erfurt
         //is this ok?
 
+        Erfurt_Wrapper_Registry::reset();
+
         // require Erfurt
         $this->bootstrap('Erfurt');
-        // $erfurt = $this->getResource('Erfurt');
+        //$erfurt = $this->getResource('Erfurt');
 
         // require Session
         $this->bootstrap('Session');
@@ -216,6 +218,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('OntoWiki');
         $ontoWiki = $this->getResource('OntoWiki');
 
+        // Reset the Erfurt app for testability... needs to be refactored.
+        Erfurt_App::reset();
+
         try {
             $erfurt = Erfurt_App::getInstance(false)->start($config);
         } catch (Erfurt_Exception $ee) {
@@ -294,6 +299,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
+
+        OntoWiki_Navigation::reset();
 
         // get current action name
         $currentAction = $request->getActionName();

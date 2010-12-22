@@ -211,6 +211,7 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $adapter->setResponse(new Zend_Http_Response(404, array(), ''));
         
         $this->dispatch('/index/newsshort');
+        
         $this->assertController('index');
         $this->assertAction('newsshort');
         $this->assertQueryContentContains('h1.title', 'News');

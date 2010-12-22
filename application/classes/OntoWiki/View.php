@@ -40,12 +40,6 @@ class OntoWiki_View extends Zend_View
     protected $_moduleCache = null;
     
     /** 
-     * The module registry 
-     * @var OntoWiki_Module_Registry 
-     */
-    protected $_moduleRegistry = null;
-    
-    /** 
      * Translation object
      * @var Zend_Translate 
      */
@@ -71,7 +65,6 @@ class OntoWiki_View extends Zend_View
         parent::__construct($config);
         
         $this->_translate           = $translate;
-        $this->_moduleRegistry      = OntoWiki_Module_Registry::getInstance();
         $this->_placeholderRegistry = Zend_View_Helper_Placeholder_Registry::getRegistry();
         
         if (array_key_exists('use_module_cache', $config) && (boolean)$config['use_module_cache']) {
@@ -156,7 +149,7 @@ class OntoWiki_View extends Zend_View
     public function modules($context, $renderOptions = array())
     {
         $modules = '';
-        foreach ($this->_moduleRegistry->getModulesForContext($context) as $moduleSpec) {
+        foreach (OntoWiki_Module_Registry::getInstance()->getModulesForContext($context) as $moduleSpec) {
             $modules .= $this->module($moduleSpec->id, $renderOptions, $context);
         }
         

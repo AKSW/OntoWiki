@@ -102,6 +102,7 @@ class Ontowiki_Extension_Manager {
         }
         $this->_extensionPath = $extensionPath;
 
+        OntoWiki_Module_Registry::reset();
         $this->_moduleRegistry = OntoWiki_Module_Registry::getInstance();
         $this->_moduleRegistry->setExtensionPath($extensionPath);
 
@@ -565,7 +566,7 @@ class Ontowiki_Extension_Manager {
     protected function _addWrapper($filename, $wrapperPath, $config)
     {
         $owApp = OntoWiki::getInstance();
-    	$pluginManager = $owApp->erfurt->getWrapperManager(false);
+    	$pluginManager = new Erfurt_Wrapper_Manager();
         $pluginManager->addWrapperExternally(
                 strtolower(substr($filename,0,strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))), 
                 $wrapperPath,

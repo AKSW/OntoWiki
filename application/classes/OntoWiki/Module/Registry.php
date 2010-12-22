@@ -87,6 +87,11 @@ class OntoWiki_Module_Registry
         return self::$_instance;
     }
 
+    public static function reset()
+    {
+        self::$_instance = null;
+    }
+
     /**
      * Resets the instance to its initial state. Mainly used for
      * testing purposes.
@@ -136,7 +141,7 @@ class OntoWiki_Module_Registry
         if($options == null){
             $options = new Zend_Config(array());
         }
-
+        
         if (!array_key_exists($moduleName, $this->_modules)) {
             // merge defaults
             $options->merge(new Zend_Config(array(
