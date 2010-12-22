@@ -106,7 +106,7 @@ class Ontowiki_Extension_Manager {
         $this->_moduleRegistry->setExtensionPath($extensionPath);
 
         //TODO plugin & wrapper registry? needed anymore? why split it?
-        $this->_wrapperRegistry = Erfurt_Wrapper_Registry::getInstance();
+        //$this->_wrapperRegistry = Erfurt_Wrapper_Registry::getInstance();
 
         $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
 
@@ -389,7 +389,10 @@ class Ontowiki_Extension_Manager {
         $helperSpec = $this->_helpers[$componentName];
 
         // load helper class
-        require_once $helperSpec['path'];
+        if (!class_exists($helperSpec['class'])) {
+            require_once $helperSpec['path'];
+        }
+        
         // instantiate helper object
         $helperInstance = new $helperSpec['class']($this);
 

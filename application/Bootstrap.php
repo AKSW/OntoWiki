@@ -584,11 +584,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $view;
     }
 
+
     /**
      * Initializes the wrapper manager
      *
      * @since 0.9.5
      */
+    /*
     public function _initWrapperManager()
     {
         // require Erfurt
@@ -598,6 +600,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // require Config
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
+        
+        // For testability we reset the wrapper registry first, since
+        // multiple calls of this method would fail otherwise.
+        Erfurt_Wrapper_Registry::reset();
 
         // initialize wrapper manager and load wrapper
         $wrapperManager = $erfurt->getWrapperManager(false);
@@ -605,4 +611,5 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         return $wrapperManager;
     }
+    */
 }
