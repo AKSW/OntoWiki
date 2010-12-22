@@ -1,19 +1,11 @@
 <?php
-
-require_once 'OntoWiki/Controller/Component.php';
-require_once 'OntoWiki/Toolbar.php';
-require_once 'OntoWiki/Navigation.php';
-
 /**
  * Controller for OntoWiki Filter Module
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_queries
- * @author     Sebastian Hellmann <hellmann@informatik.uni-leipzig.de>
- * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package    OntoWiki_extensions_queries
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $$
  */
 class QueriesController extends OntoWiki_Controller_Component {
 
@@ -57,24 +49,28 @@ class QueriesController extends OntoWiki_Controller_Component {
             $tab_exist = true;
         }
 
-        OntoWiki_Navigation :: register('savedqueries', array(
-                    'controller' => "queries",
-                    'action' => "manage",
-                    'name' => "Query Builder ",
-                    'position' => 2,
-                    'active' => false
-                ));
-        $tab_exist = true;
+        if ($this->_privateConfig->general->enabled->builder) {
+            OntoWiki_Navigation :: register('savedqueries', array(
+                        'controller' => "queries",
+                        'action' => "manage",
+                        'name' => "Query Builder ",
+                        'position' => 2,
+                        'active' => false
+                    ));
+            $tab_exist = true;
+        }
 
 
-        OntoWiki_Navigation :: register('gqb', array(
-                    'controller' => "queries",
-                    'action' => "display",
-                    'name' => "Graphical Query Builder",
-                    'position' => 3,
-                    'active' => false
-                ));
-        $tab_exist = true;
+        if ($this->_privateConfig->general->enabled->gqb) {
+            OntoWiki_Navigation :: register('gqb', array(
+                        'controller' => "queries",
+                        'action' => "display",
+                        'name' => "Graphical Query Builder",
+                        'position' => 3,
+                        'active' => false
+                    ));
+            $tab_exist = true;
+        }
 
         if (!$tab_exist) {
             OntoWiki_Navigation :: disableNavigation();
@@ -261,7 +257,7 @@ class QueriesController extends OntoWiki_Controller_Component {
      */
     public function listqueryAction() {
         // set the active tab navigation
-        OntoWiki_Navigation :: setActive('savedqueries', true);
+        OntoWiki_Navigation :: setActive('listquery', true);
 
         $store = $this->_owApp->erfurt->getStore();
         $graph = $this->_owApp->selectedModel;

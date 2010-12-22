@@ -19,11 +19,11 @@ require_once 'OntoWiki/Component/Helper.php';
  * @subpackage component
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
-class LinkeddatagatheringHelper extends OntoWiki_Component_Helper
+class DatagatheringHelper extends OntoWiki_Component_Helper
 {
     public function init()
     {
-        $pathBase = $this->_componentManager->getComponentUrl('linkeddatagathering');
+        $pathBase = $this->_componentManager->getComponentUrl('datagathering');
         $this->_owApp->view->headScript()->appendFile($pathBase.'scripts/jquery.autocomplete.js');
         $this->_owApp->view->headScript()->appendFile($pathBase.'datagathering.js');
         

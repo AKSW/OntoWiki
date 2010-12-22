@@ -22,7 +22,7 @@ require_once 'OntoWiki/Controller/Component.php';
  * @subpackage component
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
-class LinkeddatagatheringController extends OntoWiki_Controller_Component
+class DatagatheringController extends OntoWiki_Controller_Component
 {   
     // ------------------------------------------------------------------------
     // --- Search related constants -------------------------------------------
