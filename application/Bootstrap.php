@@ -95,7 +95,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // actionhelper
         Zend_Controller_Action_HelperBroker::addPrefix('OntoWiki_Controller_ActionHelper_');
-        Zend_Controller_Action_HelperBroker::addHelper( new OntoWiki_Controller_ActionHelper_List());
+        Zend_Controller_Action_HelperBroker::addHelper(new OntoWiki_Controller_ActionHelper_List());
     }
 
     /**
