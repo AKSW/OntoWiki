@@ -95,7 +95,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // actionhelper
         Zend_Controller_Action_HelperBroker::addPrefix('OntoWiki_Controller_ActionHelper_');
-        Zend_Controller_Action_HelperBroker::addHelper( new OntoWiki_Controller_ActionHelper_List());
+        Zend_Controller_Action_HelperBroker::addHelper(new OntoWiki_Controller_ActionHelper_List());
     }
 
     /**
@@ -593,33 +593,4 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         return $view;
     }
-
-
-    /**
-     * Initializes the wrapper manager
-     *
-     * @since 0.9.5
-     */
-    /*
-    public function _initWrapperManager()
-    {
-        // require Erfurt
-        $this->bootstrap('Erfurt');
-        $erfurt = $this->getResource('Erfurt');
-
-        // require Config
-        $this->bootstrap('Config');
-        $config = $this->getResource('Config');
-        
-        // For testability we reset the wrapper registry first, since
-        // multiple calls of this method would fail otherwise.
-        Erfurt_Wrapper_Registry::reset();
-
-        // initialize wrapper manager and load wrapper
-        $wrapperManager = $erfurt->getWrapperManager(false);
-        $wrapperManager->addWrapperPath(ONTOWIKI_ROOT . $config->extensions->wrapper);
-
-        return $wrapperManager;
-    }
-    */
 }
