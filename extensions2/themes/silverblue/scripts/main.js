@@ -279,7 +279,7 @@ $(document).ready(function() {
                         
                         // HACK: reload whole page after 1000 ms
                         window.setTimeout(function () {
-                            window.location.href = window.location.href;
+                            // window.location.href = window.location.href;
                         }, 1000);
                     }, 
                     onCancel: function () {
@@ -292,7 +292,8 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel', 
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
                     viewOptions: {
-                        type: RDFAUTHOR_VIEW_MODE, 
+                        // no statements needs popover
+                        type: $('.section-mainwindows table.Resource').length ? RDFAUTHOR_VIEW_MODE : 'popover', 
                         container: function (statement) {
                             var element = RDFauthor.elementForStatement(statement);
                             var parent  = $(element).closest('div');
