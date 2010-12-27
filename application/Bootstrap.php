@@ -93,7 +93,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // actionhelper
         Zend_Controller_Action_HelperBroker::addPrefix('OntoWiki_Controller_ActionHelper_');
-        Zend_Controller_Action_HelperBroker::addHelper( new OntoWiki_Controller_ActionHelper_List());
+        Zend_Controller_Action_HelperBroker::addHelper(new OntoWiki_Controller_ActionHelper_List());
     }
 
     /**
@@ -143,7 +143,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $port        = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80') 
                      ? (':' . $_SERVER['SERVER_PORT']) 
                      : '';
-        $urlBase     = sprintf('%s://%s%s%s', $protocol, isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', $port, $rewriteBase);
+        $urlBase     = sprintf('%s://%s%s%s', 
+                               $protocol, 
+                               isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', 
+                               $port, 
+                               $rewriteBase);
         
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);

@@ -61,7 +61,7 @@ $rewriteEngineOn = false;
 // compatible with Virtuoso VAD
 if (function_exists('__virt_internal_dsn')) {
     $rewriteEngineOn = true;
-}else if (function_exists('apache_get_modules')) {
+} else if (function_exists('apache_get_modules')) {
     if (in_array('mod_rewrite', apache_get_modules())) {
         // get .htaccess contents
         $htaccess = @file_get_contents(ONTOWIKI_ROOT . '.htaccess');
