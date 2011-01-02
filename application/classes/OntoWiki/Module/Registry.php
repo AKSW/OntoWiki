@@ -127,7 +127,7 @@ class OntoWiki_Module_Registry
     public function register($extensionName, $moduleFileName, $context = self::DEFAULT_CONTEXT, $options = null)
     {
         $moduleName = strtolower(substr($moduleFileName, 0, strlen($moduleFileName)-strlen(self::MODULE_FILE_POSTFIX)));
-
+        
         // create module context if necessary
         if (!array_key_exists($context, $this->_moduleOrder)) {
             $this->_moduleOrder[$context] = array();
@@ -199,9 +199,9 @@ class OntoWiki_Module_Registry
     public function disableModule($moduleName, $context = self::DEFAULT_CONTEXT)
     {
         if ($this->isModuleEnabled($moduleName)) {
-            $this->_modules[$moduleName]['enabled'] = false;
+            $this->_modules[$moduleName]->enabled = false;
         } else {
-            $this->register($moduleName, $context, array('enabled' => false));
+            $this->register($moduleName, $moduleName, $context, new Zend_Config(array('enabled' => false), true));
         }
 
         return $this;
