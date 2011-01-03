@@ -153,7 +153,7 @@ class OntoWiki_View extends Zend_View
      * @param string $context The module context whose modules should be rendered
      * @return string
      */
-    public function modules($context, $renderOptions = array())
+    public function modules($context, Zend_Config $renderOptions = null)
     {
         $modules = '';
         foreach ($this->_moduleRegistry->getModulesForContext($context) as $moduleSpec) {
@@ -184,16 +184,20 @@ class OntoWiki_View extends Zend_View
      *        id       – a css id for the module window
      * @return string
      */
-    public function module($moduleName, $renderOptions = array(), $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
+    public function module($moduleName, Zend_Config $renderOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
     {
         $moduleRegistry = OntoWiki_Module_Registry::getInstance();
         
         // get default options from the registry
         $defaultModuleOptions = $moduleRegistry->getModuleConfig($moduleName);
-        $moduleOptions = array_merge((array)$defaultModuleOptions, $renderOptions);
+        if($renderOptions != null){
+            $moduleOptions = $defaultModuleOptions->merge($renderOptions);
+        } else {
+            $moduleOptions = $defaultModuleOptions;
+        }
         
-        $cssClasses  = isset($moduleOptions['classes']) ? $moduleOptions['classes'] : '';
-        $cssId       = isset($moduleOptions['id']) ? $moduleOptions['id'] : '';
+        $cssClasses  = isset($moduleOptions->classes) ? $moduleOptions->classes : '';
+        $cssId       = isset($moduleOptions->id) ? $moduleOptions->id : '';
         
         $module = $moduleRegistry->getModule($moduleName, $context);
         
@@ -282,7 +286,7 @@ class OntoWiki_View extends Zend_View
             $this->_moduleView->cssClasses = $cssClasses;
             $this->_moduleView->cssId      = $cssId;
             
-            if (isset($moduleOptions['noChrome']) && (boolean)$moduleOptions['noChrome']) {
+            if (isset($moduleOptions->noChrome) && (boolean)$moduleOptions->noChrome) {
                 // render without window chrome
                 $moduleWindow = $this->_moduleView->render('partials/module.phtml');
             } else {
