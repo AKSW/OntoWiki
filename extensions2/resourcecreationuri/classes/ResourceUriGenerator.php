@@ -81,22 +81,8 @@ class ResourceUriGenerator {
         } else {
             $this->_owApp = $ow;
         }
-        
-        // check for configuration in specific path
-        if ( $configPath === null || !(is_string($configPath)) ) {
-            // rebuild default path to plugin.ini
-            $configPath = str_replace(__CLASS__ . '.php','',__FILE__);
-            $configPath = substr($configPath,0,sizeof($configPath) - 9);
-            $configPath .= 'plugin.ini';
-        } else {
-            // do nothing
-        }
-
-        if (is_readable($configPath)) {
-            $this->_config = new Zend_Config_Ini($configPath,'private');
-        } else {
-            throw new InvalidArgumentException('ResourceUriGenerator can\'t load configuration from : ' . $configPath);
-        }
+        $config = OntoWiki::getInstance()->extensionManager->getExtensionConfig("resourcecreationuri");
+        $this->_config = $config->private;
         
         // check for defaultModel to work on
         if ($defaultModel === null && $this->_owApp->selectedModel !== null) {
