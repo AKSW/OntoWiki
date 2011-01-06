@@ -562,11 +562,12 @@ class Ontowiki_Extension_Manager {
     protected function _addWrapper($filename, $wrapperPath, $config)
     {
         $owApp = OntoWiki::getInstance();
-    	$pluginManager = $owApp->erfurt->getWrapperManager(false);
-        $pluginManager->addWrapperExternally(
+    	$wrapperManager = $owApp->erfurt->getWrapperManager(false);
+        $wrapperManager->addWrapperExternally(
                 strtolower(substr($filename,0,strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))), 
                 $wrapperPath,
-                isset($config->private)?$config->private:array());
+                isset($config->private) ? $config->private : new Zend_Config(array(), true)
+        );
     }
 
 
