@@ -67,8 +67,7 @@ class ResourceUriGenerator {
     const FORMAT_SPARQL = 'sparql';
     
     /**
-     * 
-     * Enter description here ...
+     * constructor
      * @param $resourceUri
      * @param $defaultModel
      * @param $configPath
@@ -81,7 +80,9 @@ class ResourceUriGenerator {
         } else {
             $this->_owApp = $ow;
         }
-        $config = OntoWiki::getInstance()->extensionManager->getExtensionConfig("resourcecreationuri");
+
+        //get config
+        $config = $this->_owApp->extensionManager->getExtensionConfig("resourcecreationuri");
         $this->_config = $config->private;
         
         // check for defaultModel to work on
@@ -99,8 +100,7 @@ class ResourceUriGenerator {
     }
     
     /**
-     * 
-     * Enter description here ...
+     * set a new defaultmodel in which the resources should be created
      * @param $defaultModel
      */
     public function setDefaultModel($defaultModel) {
@@ -406,7 +406,6 @@ class ResourceUriGenerator {
     
     /**
      * Method that counts already existing distinct datasets for given uri
-     * 
      * 
      * @param $uri uri string
      * @return int distinct existing datasets
