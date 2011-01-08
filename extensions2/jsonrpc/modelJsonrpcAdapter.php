@@ -16,6 +16,7 @@ class modelJsonrpcAdapter
     {
         $this->store = Erfurt_App::getInstance()->getStore();
         $this->erfurt = Erfurt_App::getInstance();
+        $this->config = $this->erfurt->getConfig();
     }
 
     /**
@@ -70,13 +71,22 @@ class modelJsonrpcAdapter
      * @param string namespace uri
      * @return bool
      */
-    public function addPrefix($modelIri, $prefix = 'rdf', $namespace = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+    public function addPrefix($modelIri, $prefix, $namespace = false)
     {
         $model = $this->store->getModel($modelIri);
         $prefixes = $model->getNamespacePrefixes();
         if (isset($prefixes[$prefix])) {
             return false;
         } else {
+            // try to use a standard namespace if no parameter is given
+            if ($namespace == false) {
+                $standards = isset($this->config->namespaces) ? $this->config->namespaces->toArray() : array();
+                if (isset($standards[$prefix])) {
+                    $namespace = $standards[$prefix];
+                } else {
+                    return false;
+                }
+            }
             $model->addNamespacePrefix($prefix, $namespace);
             return true;
         }
