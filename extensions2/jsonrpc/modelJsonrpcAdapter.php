@@ -4,7 +4,7 @@
  *
  * @category   OntoWiki
  * @package    extensions_jsonrpc
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class modelJsonrpcAdapter
@@ -45,6 +45,59 @@ class modelJsonrpcAdapter
         require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = Erfurt_Sparql_SimpleQuery::initWithString($query);
         return $model->sparqlQuery($query);
+    }
+
+    /**
+     * @desc List all prefix-namespace mappings
+     * @param string modelIri
+     * @return array
+     */
+    public function getPrefixes($modelIri)
+    {
+        $model = $this->store->getModel($modelIri);
+        $prefixes = $model->getNamespacePrefixes();
+        $return = array();
+        foreach ($prefixes as $index => $key) {
+            $return[] = array('prefix' => $index, 'namespace' => $key);
+        }
+        return $return;
+    }
+
+    /**
+     * @desc Add a prefix to namespace mapping
+     * @param string modelIri
+     * @param string prefix
+     * @param string namespace uri
+     * @return bool
+     */
+    public function addPrefix($modelIri, $prefix = 'rdf', $namespace = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+    {
+        $model = $this->store->getModel($modelIri);
+        $prefixes = $model->getNamespacePrefixes();
+        if (isset($prefixes[$prefix])) {
+            return false;
+        } else {
+            $model->addNamespacePrefix($prefix, $namespace);
+            return true;
+        }
+    }
+
+    /**
+     * @desc delete a prefix to namespace mapping
+     * @param string modelIri
+     * @param string prefix
+     * @return bool
+     */
+    public function deletePrefix($modelIri, $prefix = 'rdf')
+    {
+        $model = $this->store->getModel($modelIri);
+        $prefixes = $model->getNamespacePrefixes();
+        if (!isset($prefixes[$prefix])) {
+            return false;
+        } else {
+            $model->deleteNamespacePrefix($prefix);
+            return true;
+        }
     }
 
     /**
