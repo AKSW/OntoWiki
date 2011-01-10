@@ -40,13 +40,20 @@ var classUri = "foaf:Person";    //]]>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#button-tests button, #button-tests input, #button-tests a').button().click(function(){ $('#dialog-test').dialog('open'); return false;});
+        $('#button-tests-2 button, #button-tests-2 input, #button-tests-2 a').button().click(function(){ $('#dialog-test').dialog('open'); return false;});
         $('#tabs').tabs();
+        $('#tabs2').tabs();
         $('#progressbar-1').progressbar({ value: 75 });
         $('#progressbar-2').progressbar({ value: 20 });
         $('#dialog-test').dialog({autoOpen: false});
         $('#slider-1').slider();
         $('#slider-2').slider({ value: 100, max: 400, min: 0, step: 10});
         $('#accordion').accordion();
+        $('#progressbar-3').progressbar({ value: 75 });
+        $('#progressbar-4').progressbar({ value: 20 });
+        $('#slider-3').slider();
+        $('#slider-4').slider({ value: 100, max: 400, min: 0, step: 10});
+        $('#accordion-2').accordion();
     });
 </script>
 
@@ -169,7 +176,52 @@ var navigationConfig = $.evalJSON(navigationConfigString);
                                                     </form>
                                                 <div class="innerwindows">
 
-
+<h3>tabs</h3>
+    <div id="tabs2">
+        <ul>
+            <li><a href="#tabs-2_1">tab1</a></li>
+            <li><a href="#tabs-2_2">tab2</a></li>
+            <li><a href="#tabs-2_3">tab3</a></li>
+        </ul>
+        <div id="tabs-2_1">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+        <div id="tabs-2_2">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam</div>
+        <div id="tabs-2_3">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
+    </div>
+    <h3>buttons - click to open dialog</h3>
+    <div id="button-tests-2">
+        <p>
+            <button>Element Button</button>
+            <input value="Submit Button" type="submit"></input>
+            <a href="#">An anchor Button</a>
+        </p>
+    </div>
+    <h3>progressbars</h3>
+    <div id="progressbar-test">
+        <div id="progressbar-3"></div>
+        <br></br>
+        <div id="progressbar-4"></div>
+    </div>
+    <h3>slider</h3>
+    <div id="slider-test">
+        <div id="slider-3"></div>
+        <br></br>
+        <div id="slider-4"></div>
+    </div>
+    <h3>accordion</h3>
+    <div id="accordion-2">
+        <h3>One</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+        <h3>Two</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+        <h3>Three</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+    </div>
 
 </div><!-- .window -->
                         </div><!-- .innerwindows -->
@@ -178,9 +230,6 @@ var navigationConfig = $.evalJSON(navigationConfigString);
 
 
                     <div class="messagebox statusbar">
-                    <div class="statustool"></div>
-                    <div class="statustool">Search returned 6 results.</div>
-                    <div class="statustool">Query execution took 60 ms.</div>
             </div>
             </div><!-- .slidehelper -->
         <div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
