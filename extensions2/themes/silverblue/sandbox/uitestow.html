@@ -39,7 +39,7 @@ var classUri = "foaf:Person";    //]]>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#button-tests button, #button-tests input, #button-tests a').button().click(function(){ $('#dialog-test').dialog('open'); });
+        $('#button-tests button, #button-tests input, #button-tests a').button().click(function(){ $('#dialog-test').dialog('open'); return false;});
         $('#tabs').tabs();
         $('#progressbar-1').progressbar({ value: 75 });
         $('#progressbar-2').progressbar({ value: 20 });
