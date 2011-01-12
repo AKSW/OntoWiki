@@ -702,7 +702,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
             exit;
         }
         $uri = urldecode($this->_request->uri);
-        
+        $proxyUri = $this->_getUri();
+
         if (isset($this->_request->wrapper)) {
             $wrapperName = $this->_request->wrapper;
         } else {
@@ -713,11 +714,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $store = Erfurt_App::getInstance()->getStore();
        
             $wrapper = $this->_wrapperRegisty->getWrapperInstance($wrapperName);
-            $hasData = $wrapper->isAvailable($uri, $this->_graphUri);
+            $hasData = $wrapper->isAvailable($proxyUri, $this->_graphUri);
 
             $wrapperResult = false;
             if ($hasData) {
-                $wrapperResult = $wrapper->run($uri, $this->_graphUri);
+                $wrapperResult = $wrapper->run($proxyUri, $this->_graphUri);
             }
         } catch (Exception $e) {
             $wrapperResult = false;
@@ -750,6 +751,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     
                     // Start action, add statements, finish action.
                     $versioning->startAction($actionSpec);
+                    
+                    // TODO handle configuration for import...
+                    $wrapperAdd = array(
+                        $uri => $wrapperAdd[$uri]
+                    );
 
                     $store->addMultipleStatements($this->_graphUri, $wrapperAdd);
                     $versioning->endAction();
@@ -1495,6 +1501,25 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
         
         return $syncModel;
+    }
+    
+    private function _getUri()
+    {
+        $uri = urldecode($this->_request->uri);
+        
+        // If at least one rewrite rule is defined, we iterate through them.
+        if (isset($this->_privateConfig->rewrite)) {
+            $rulesArray = $this->_privateConfig->rewrite->toArray();
+            foreach ($rulesArray as $ruleId => $ruleSpec) {
+                $resultUri = preg_replace($ruleSpec['pattern'], $ruleSpec['replacement'], $uri);
+                if ($resultUri !== $uri) {
+                    $uri = $resultUri;
+                    break;
+                }
+            }
+        }
+               
+        return $uri;
     }
     
     /**

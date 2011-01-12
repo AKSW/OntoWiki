@@ -250,6 +250,20 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $data = $this->_cachedData;
         $ns   = $this->_cachedNs;
         
+        $fullResult = array();
+        $fullResult['status_codes'] = array(
+            Erfurt_Wrapper::NO_MODIFICATIONS, 
+            Erfurt_Wrapper::RESULT_HAS_ADD, 
+            Erfurt_Wrapper::RESULT_HAS_NS
+        );
+        $fullResult['status_description'] = "Linked Data found for URI $uri";
+        $fullResult['ns'] = $ns;
+        $fullResult['add'] = $data;
+        return $fullResult;
+        
+        
+        // TODO clean up the following code
+        
         $presetMatch = false;
         if (isset($this->_config->fetch->preset)) {
             foreach ($this->_config->fetch->preset->toArray() as $i=>$preset) {
