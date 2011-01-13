@@ -7,7 +7,8 @@ dataProvider.prototype.getKBList = function(){
     var temp = "#kbTemplate";
     var cont = "#kb-listholder";
     
-    if( typeof localStorage["ontowiki.bases"] != 'undefined' && localStorage["ontowiki.bases"] != null){
+    if( typeof localStorage["ontowiki.bases"] != 'undefined' && localStorage["ontowiki.bases"] != null
+        && connectionStatus == "offline" ){
         this.renderData($.parseJSON(localStorage["ontowiki.bases"]), temp, cont);
     }else{
         this.getModule(uri, temp, cont, "bases");
@@ -20,7 +21,8 @@ dataProvider.prototype.getInstance = function(url){
     var cont = "#prop-list";
     
     var data = $.parseJSON(localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url]);
-    if( typeof data != 'undefined' && data != null){
+    if( typeof data != 'undefined' && data != null
+        && connectionStatus == "offline" ){
         this.renderData(data, temp, cont);
         $(document).trigger('instance.done');
     }else{
@@ -46,7 +48,8 @@ dataProvider.prototype.getInstanceList = function(url){
     var cont = "#inst-list";
     
     var data = $.parseJSON(localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url]);
-    if( typeof data != 'undefined' && data != null){
+    if( typeof data != 'undefined' && data != null
+        && connectionStatus == "offline" ){
         this.renderData(data, temp, cont);
         $("#inst-statusbar").empty().append( $(data['statusbar']) );
         $(document).trigger('instance.list.done');
@@ -71,7 +74,8 @@ dataProvider.prototype.getNavigation = function(event, uri){
     var temp = "#navTemplate";
     var cont = "#nav-list";
     
-    if( typeof localStorage["ontowiki.nav."+uri] != 'undefined' && localStorage["ontowiki.nav."+uri] != null){
+    if( typeof localStorage["ontowiki.nav."+uri] != 'undefined' && localStorage["ontowiki.nav."+uri] != null
+        && connectionStatus == "offline" ){
         this.renderData($.parseJSON(localStorage["ontowiki.nav."+uri]), temp, cont);
         if(event == "reset"){
             $.get(urlBase + 'model/select/?m=' + uri, function(){})
