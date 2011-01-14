@@ -58,10 +58,10 @@
     
     
     <!-- mobile version js -->
-    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/external.js"></script>
-    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/store.js"></script>
-    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/local.js"></script>
-    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/base.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions2/themes/mobile/js/external.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions2/themes/mobile/js/store.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions2/themes/mobile/js/local.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions2/themes/mobile/js/base.js"></script>
     
     <!-- rdf author -->
     <script type="text/javascript" src="libraries/RDFauthor/src/rdfauthor.js"></script>
@@ -73,12 +73,12 @@
     <!-- templates -->
     <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 
-    <script type="text/javascript" src="extensions/modules/modellist/modellist.js"></script>
-    <script type="text/javascript" src="extensions/modules/navigation/navigation.mobile.js"></script>    
+    <script type="text/javascript" src="extensions2/modellist/modellist.js"></script>
+    <script type="text/javascript" src="extensions2/navigation/navigation.mobile.js"></script>    
 </head>
 <body>
     <!-- blank modules -->
-    <?php echo $this->modules('main.mobile.navigation', array('json' => true)) ?>
+    <?php echo $this->modules('main.mobile.navigation', new Zend_Config(array('json' => true)) ) ?>
 
     <!-- TEMPLATES -->
     <!-- kb list template -->

@@ -54,12 +54,16 @@ class ModuleController extends OntoWiki_Controller_Base
         
         $this->_response->setHeader('Content-Type', 'text/html');
         $this->_response->setBody($this->view->module($name, 
-            array(
-                'classes' => $class, 
-                'id' => $id, 
-                'noChrome' => $noChrome,
-                'json' => $json
-            )));
+              new Zend_Config(
+                array(
+                    'classes' => $class, 
+                    'id' => $id, 
+                    'noChrome' => $noChrome,
+                    'json' => $json
+                )
+              )
+            )
+        );
     }
 }
 
