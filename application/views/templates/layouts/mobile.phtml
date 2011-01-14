@@ -1,0 +1,338 @@
+<!DOCTYPE html> 
+<html>
+<!-- manifest="extensions/themes/mobile/cache.manifest" -->
+<head>
+    <title>OntoWiki</title>
+
+    <?php if ($this->has('jsonVars')): ?>
+        <script type="text/javascript">
+            <?php echo $this->jsonVars ?>
+        </script>
+    <?php endif; ?>
+
+    <!-- viewport -->
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+
+    <!-- stylesheets -->
+    <style type="text/css" media="screen">
+        .pager{
+            background: #4c4d4e;
+            border: 1px solid #333;
+            font-size: 18px;
+            text-align: center;
+            width: 12.5%;
+            float: left;
+            -webkit-border-radius: 8px;
+            -webkit-box-sizing: border-box;
+            display: block;
+            margin-right: 5px;
+            padding: 11px 10px 14px 10px;
+            -webkit-box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
+            background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
+        }
+        .pager a{
+            color: #FFFFFF;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .pager a.selected{
+            color: #3e9ac3;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .pager a.disabled{
+            color: #666666;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+    
+    <!-- jquery -->
+    <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script> 
+    
+    <!-- jquery ui -->
+    <link rel="stylesheet" href="libraries/RDFauthor/libraries/jquery-ui.css" />
+    <script type="text/javascript" src="libraries/RDFauthor/libraries/jquery-ui.js"></script>
+    
+    
+    <!-- mobile version js -->
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/external.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/store.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/local.js"></script>
+    <script type="text/javascript" charset="utf-8" src="extensions/themes/mobile/js/base.js"></script>
+    
+    <!-- rdf author -->
+    <script type="text/javascript" src="libraries/RDFauthor/src/rdfauthor.js"></script>
+    
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.css" />
+    <script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.js"></script>
+    
+    <!-- templates -->
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+
+    <script type="text/javascript" src="extensions/modules/modellist/modellist.js"></script>
+    <script type="text/javascript" src="extensions/modules/navigation/navigation.mobile.js"></script>    
+</head>
+<body>
+    <!-- blank modules -->
+    <?php echo $this->modules('main.mobile.navigation', array('json' => true)) ?>
+
+    <!-- TEMPLATES -->
+    <!-- kb list template -->
+    <script id="kbTemplate" type="text/x-jquery-tmpl">
+        <li role="option">
+            <a href="#" onclick="getBase(this); return false;" about="${uri}">${label}</a>
+    	</li>
+    </script>
+    <!-- nav template -->
+    <script id="navTemplate" type="text/x-jquery-tmpl">
+        {{if showRoot == "true"}}
+            <h3 class="hasMenu" about="<?php echo $this->rootEntry['uri'] ?>">
+                <?php echo $this->rootEntry['title'] ?>
+            </h3>
+            <div data-role="controlgroup" data-type="horizontal">
+                <a href="#" class="navFirst" onclick="$.mobile.pageLoading(); return false;" data-role="button" title="Go to root level">Root</a>
+                <a href="#" class="navBack" onclick="$.mobile.pageLoading(); return false;" data-role="button" title="Go to previous level">Back</a>
+            </div>
+        {{/if}}
+        {{each data}}
+            <li role="option" about="${uri}" class="{{if sub == 1}}arrow{{/if}}" >
+                <a href="#nav-item-menu" onclick="onNavigationEntryClick(this);return false;" about="${entry_link}"
+                   data-rel="dialog" data-transition="pop">
+                   ${entry_title}
+                </a>
+            </li>
+        {{/each}}
+        {{if showMore == "true"}}
+            <a href="#" onclick="navigationEvent ('more', '');return false;" data-role="button" id="naviganion-more"> Show Me More</a>
+        {{/if}}
+    </script>
+    
+    <!-- instance template -->
+    <script id="instTemplate" type="text/x-jquery-tmpl">
+        {{each data}}
+            <li role="option">
+                <a about="${url}" onclick="onInstanceClick(this); return false;" href="#">${title}</a>
+                <small>
+                {{each types}}
+                    ${value} 
+                {{/each}}
+                </small>
+            </li>
+        {{/each}}
+    </script>
+    
+    <!-- properties list template -->
+    <script id="propsTemplate" type="text/x-jquery-tmpl">
+        {{each data}}
+            <li data-role="list-divider" role="heading" about="${predicate_uri}">
+                ${predicate_title}
+            </li>
+            {{each objects}}
+                {{if (typeof lang != 'undefined' && lang.length > 0) || (typeof datatype != 'undefined' && datatype.length > 0)}}
+                    <li role="option">
+                        <span property="${relation}"
+                                  {{if lang.length > 0}}
+                                    xml:lang="${lang}"
+                                  {{else datatype.length > 0}}
+                                    datatype="${datatype}"
+                                  {{/if}}
+                                  >${title}</span>
+                     </li>
+                {{else (typeof relation != 'undefined' && relation.length > 0)}}
+                    <li role="option">
+                            <a rel="${relation}"
+                               about="${about}"
+                               content="${content}"
+                               onclick="onInstanceClick(this, false); return false;" href="#"
+                               >${title}</a>
+                    </li>
+                {{else}}
+                    <li role="option">
+                        <a about="${about}"
+                           content="${content}"
+                           onclick="onInstanceClick(this, false); return false;" href="#"
+                           >${title}</a>
+                     </li>
+                {{/if}}
+            {{/each}}
+        {{/each}}
+    </script>
+    
+    <!-- properties list template -->
+    <script id="filtersTemplate" type="text/x-jquery-tmpl">
+        {{each activefilters}}
+            <li role="option" id="${id}">
+            {{if mode == "rdfsclass"}}
+                Type: <a about="${property}" href="${property_link}">${property_label}</a>
+            {{/if}}
+            </li>
+        {{/each}}
+    </script>
+
+
+    <!-- PAGES -->
+    <!-- INDEX PAGE -->
+    <div id="home" data-role="page">
+        <div data-role="header">
+            <?php if( OntoWiki::getInstance()->erfurt->getAuth()->getIdentity()->isAnonymousUser() ): ?>
+                <a href="#login" data-role="button">Login</a>
+            <?php else: ?>
+                <a data-role="button" href="http://localhost/ontowiki/application/logout" rel="external" class="ui-btn-right" data-icon="delete">Logout</a>
+            <?php endif; ?>
+            <h1>OntoWiki Mobile</h1>
+        </div>
+        
+        <div data-role="content">
+            <ul data-role="listview" data-inset="true" id="kb-listholder"></ul>
+        </div>
+    </div>
+    
+    <!-- LOGIN PAGE -->
+    <div id="login" data-role="page">
+        <div data-role="header">
+            <!-- <a href="#" data-role="button" data-icon="arrow-l">Back</a> -->
+            <h1>Login</h1>
+        </div>
+    
+        <div data-role="content">
+            <?php echo $this->modules('main.mobile.login') ?>
+        </div>
+        
+    </div>
+    
+    <!-- NAVIGATION PAGE -->
+    <div id="nav" data-role="page">        
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1 id="nav-title">title</h1>
+            <a href="#nav-menu" class="ui-btn-right" onclick="toggleMenu(); return false;"
+                data-role="button" data-inline="true" data-rel="dialog" data-transition="pop">Menu</a>
+        </div>
+    
+        <div data-role="content">
+            <ul data-role="listview" data-inset="true" role="listbox" id="nav-list"></ul>
+        </div>
+    </div>
+    
+    <!-- INSTANCE LIST -->
+    <div id="instance-list" data-role="page">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1 id="instance-title">title</h1>
+            <a href="#nav-menu" class="ui-btn-right" onclick="toggleMenu(); return false;"
+                data-role="button" data-inline="true" data-rel="dialog" data-transition="pop">Menu</a>
+        </div>
+        
+        <div data-role="content" id="instance-content">
+            <ul id="inst-list" data-role="listview" data-inset="true" role="listbox"></ul>
+            <span id="inst-statusbar"></span>
+            <h3 style="display:none" id="no-instances">No matches.</h3>
+        </div>
+    </div>    
+    
+    <!-- PROPERTIES LIST -->
+    <div id="properties-list" data-role="page">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1 id="properties-title">title</h1>
+            <a href="#nav-menu" class="ui-btn-right" onclick="toggleMenu(); return false;"
+                data-role="button" data-inline="true" data-rel="dialog" data-transition="pop">Menu</a>
+        </div>
+        
+        <div data-role="content" id="properties-content">
+            <!-- stuff here -->
+            <ul data-role="listview" data-inset="true" role="listbox" id="prop-list"></ul>
+        </div>
+    </div>
+    
+    <!-- SEARCH RESULTS -->
+    <div id="searchres-list" data-role="page">
+        <div data-role="header">
+            <h1 id="searchres-title">title</h1>
+        </div>
+        
+        <div data-role="content" id="searchres-content">
+            <!-- stuff here -->
+        </div>
+    </div>
+    
+    <!-- RDFAUTHOR PAGE -->
+    <div id="rdfa-list" data-role="page">
+        <div data-role="header">
+            <!-- <a href="#" id="rdfa-back" class="back">Back</a> -->
+            <h1>Properties</h1>
+        </div>
+        <div data-role="content" id="rdfa-content">
+            <!-- stuff here -->
+        </div>
+    </div>
+    
+    <!-- FILTER VIEW -->
+    <div id="filters-view" data-role="page">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1>Active filters</h1>
+            <a href="#filters-add-view" data-icon="plus" class="ui-btn-right">Add</a>
+        </div>
+    
+        <div data-role="content">
+            <ul id="filters-list" data-role="listview" data-inset="true" role="listbox"></ul>
+        </div>
+    </div>
+    
+    <!-- FILTER ADD VIEW -->
+    <div id="filters-add-view" data-role="page">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1>Active filters</h1>
+        </div>
+    
+        <div data-role="content">
+            <ul id="filters-add-list" data-role="listview" data-inset="true" role="listbox"></ul>
+        </div>
+    </div>
+    
+    <!-- MENUS -->
+    <!-- NAVIGATION ITEM MENU -->
+    <div id="nav-item-menu" data-role="dialog" data-transition="pop">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1>Item Menu</h1>
+        </div>
+    
+        <div data-role="content">
+            <a href="#" data-role="button" data-theme="b" onclick="showInstances(); return false;">Show Instances</a>
+            <a href="#nav" data-role="button" data-theme="b" style="display:none;" id="item-nav-deep" onclick="navigateDeeper();">Navigate deeper</a>
+        </div>
+    </div>
+    
+    <!-- NAVIGATION ACTIONS MENU -->
+    <div id="nav-menu" data-role="dialog" data-transition="pop">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1>Actions Menu</h1>
+        </div>
+    
+        <div data-role="content">
+            <div data-role="fieldcontain">
+                <input placeholder="<?php echo $this->_('Search') ?>" type="text" id="search" name="search" />
+                <a href="#" data-role="button" data-theme="b" onclick="doSearch(); return false;"><?php echo $this->_('Search') ?></a>
+            </div>
+            
+            <div data-role="fieldcontain" style="display:none;" id="menu-edit-btn">
+                <a href="#" data-role="button" data-theme="b" onclick="openRDFa(); return false;">Edit</a>
+            </div>
+            
+            <div data-role="fieldcontain" style="display:none;" id="menu-filters-btn">
+                <a href="#" data-role="button" data-theme="b" onclick="getFilters(); return false;">Filters</a>
+            </div>
+        </div>
+    </div>
+    
+    <?php echo $this->inlineScript() ?>
+</body>
+</html>

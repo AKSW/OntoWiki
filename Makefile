@@ -44,11 +44,3 @@ zend:
 	mv ZendFramework-1.9.4-minimal/library/Zend libraries
 	rm -rf ZendFramework-1.9.4-minimal.tar.gz ZendFramework-1.9.4-minimal
 
-libraries:
-	rm -rf libraries/Erfurt
-	@echo 'Cloning Erfurt into libraries/Erfurt ...'
-	hg clone https://erfurt.ontowiki.googlecode.com/hg/ libraries/Erfurt
-	rm -rf libraries/RDFauthor
-	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
-	hg clone https://rdfauthor.googlecode.com/hg/ libraries/RDFauthor
-

@@ -76,17 +76,28 @@ class FilterModule extends OntoWiki_Module
         $this->view->titleHelper = $this->titleHelper;
 
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/filter.js');
-
-        $content = $this->render('filter');
+        
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile()){
+            $content = $this->render('filter_mobile');
+        }else{
+            $content = $this->render('filter');
+        }
+        
         return $content;
     }
 
     public function getMenu() {
-	$edit = new OntoWiki_Menu();
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile()){
+            return new OntoWiki_Menu();
+        }
+    
+    	$edit = new OntoWiki_Menu();
         $edit->setEntry('Add', 'javascript:showAddFilterBox()')
                   ->setEntry('Remove all', 'javascript:removeAllFilters()');
         
-	$main = new OntoWiki_Menu();
+	    $main = new OntoWiki_Menu();
         $main->setEntry('Edit', $edit);
         
         return $main;

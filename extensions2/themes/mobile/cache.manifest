@@ -1,0 +1,26 @@
+CACHE MANIFEST
+# rev 1
+NETWORK:
+*
+CACHE:
+# jquery mobile
+http://code.jquery.com/jquery-1.4.3.min.js
+http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.css
+http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.js
+
+# jquery extensions
+extensions/themes/silverblue/scripts/libraries/jquery.livequery.js
+extensions/themes/silverblue/scripts/libraries/jquery.json.js
+
+# jquery UI
+libraries/RDFauthor/libraries/jquery-ui.css
+libraries/RDFauthor/libraries/jquery-ui.js
+
+# OW extension scripts
+extensions/modules/modellist/modellist.js
+extensions/modules/navigation/navigation.js
+
+# OW scripts
+extensions/themes/mobile/js/external.js
+extensions/themes/mobile/js/local.js
+extensions/themes/mobile/js/base.js

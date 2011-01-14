@@ -30,9 +30,11 @@ class NavigationModule extends OntoWiki_Module
      * @return string
      */
     public function getMenu() {
-		// check if menu must be shown
-		if(!$this->_privateConfig->defaults->showMenu) return new OntoWiki_Menu();
-		
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile() || !$this->_privateConfig->defaults->showMenu){
+            return new OntoWiki_Menu();
+        }
+
         // build main menu (out of sub menus below)
         $mainMenu = new OntoWiki_Menu();
 
@@ -94,6 +96,9 @@ class NavigationModule extends OntoWiki_Module
      * Returns the content
      */
     public function getContents() {
+        // get request
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+
         // scripts and css only if module is visible
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'navigation.js');
         $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'navigation.css');
@@ -116,7 +121,8 @@ class NavigationModule extends OntoWiki_Module
         
         $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');        
         $stateSession = new Zend_Session_Namespace($sessionKey);
-        if( isset($stateSession) && ( $stateSession->model == (string)$this->_owApp->selectedModel ) ){
+        if( isset($stateSession) && ( $stateSession->model == (string)$this->_owApp->selectedModel ) &&
+                ( strlen($stateSession->setup) > 0 ) ){
             // load setup
             $this->view->inlineScript()->prependScript(
                 '/* from modules/navigation/ */'.PHP_EOL.
@@ -126,23 +132,39 @@ class NavigationModule extends OntoWiki_Module
             // load view
             $this->view->stateView = $stateSession->view;
             // set js actions
-            $this->view->inlineScript()->prependScript(
-                '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
-            );
+            if(!$request->isMobile()){
+                $this->view->inlineScript()->prependScript(
+                    '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
+                );
+            }    
         }
         
         // init view from scratch
-        $this->view->inlineScript()->prependScript(
-            '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
-        );
+        if(!$request->isMobile()){
+            $this->view->inlineScript()->prependScript(
+                '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
+            );
+        }
 
         $data['session'] = $this->session->navigation;
-        $content = $this->render('navigation', $data, 'data'); // 
+
+        
+        if($request->isMobile()){
+            $content = $this->render('navigation.mobile', $data, 'data'); //
+        }else{
+            $content = $this->render('navigation', $data, 'data'); //
+        }
+
         return $content;
     }
 	
     public function shouldShow(){
-        if (isset($this->_owApp->selectedModel)) {
+        // get request
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+
+        if( $request->isMobile() ){
+            return true;
+        }else if (isset($this->_owApp->selectedModel)) {
             return true;
         } else {
             return false;

@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * OntoWiki model list template
+ *
+ * @version $Id: modellist.phtml 3045 2009-05-07 11:36:02Z pfrischmuth $
+ */
+?>
+{"data":[
+<?php 
+if (!empty($this->models)){
+    $length = count($this->models);
+    for ($i = 0; $i < $length; $i++){
+        $modelDetails = $this->models[$i];
+        echo '{"label":"'.$modelDetails['label'].'", "uri":"'.$modelDetails['graphUri'].'"}';
+        if( $i < $length-1 ) echo ", ";
+    }
+}
+?>
+]}

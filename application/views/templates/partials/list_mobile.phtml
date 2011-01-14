@@ -1,0 +1,86 @@
+<?php
+
+$instances = $this->instances;
+
+$graph = $this->instances->getGraph();
+$store = $this->instances->getStore();
+
+$config = Erfurt_App::getInstance()->getConfig();
+
+$statusBar = '';
+
+if ($instances->hasData()) {
+    $instanceInfo = $instances->getResources();
+    $instanceData = $instances->getValues();
+    
+    $itemsOnPage = count($instanceData);
+    
+    $propertyInfo = $instances->getShownProperties();
+    
+    $start     = $instances->getOffset() + 1;
+    $translate = OntoWiki::getInstance()->translate;
+    
+    $limit = $instances->getLimit();
+    $offset = $instances->getOffset();
+    if($limit != 0) {
+        $page = ($offset / $limit) +1;
+    } else {
+        $page = 1;
+    }
+
+    if($graph->getOption($config->sysont->properties->isLarge)) {
+        $statusBar = OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName);
+    } else {
+        $query = clone $instances->getResourceQuery();
+
+        $where = 'WHERE '.$query->getWhere();
+
+        try {
+            $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
+        } catch (Erfurt_Store_Exception $e) {
+            $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
+        }
+        $statusBar = OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName);
+    }
+    $statusBar = str_replace("<ul>",'<div width="100%" style="text-align:center;" data-role="controlgroup" data-type="horizontal">', $statusBar);
+    $statusBar = str_replace("</ul>",'</div>', $statusBar);
+    $statusBar = str_replace("First",'', $statusBar);
+    $statusBar = str_replace("Previous",'', $statusBar);
+    $statusBar = str_replace("Last",'', $statusBar);
+    $statusBar = str_replace("Next",'', $statusBar);
+    $statusBar = str_replace("<li>",'', $statusBar);
+    $statusBar = str_replace("</li>",'', $statusBar);
+    //$statusBar = str_replace("<li>",'<td style="text-align: center;">', $statusBar);
+    //$statusBar = str_replace("</li>",'</td>', $statusBar);
+    $statusBar = preg_replace('/href="(.+?)"/i','href="#" about="$1" onclick="pageList(this); return false;"', $statusBar);
+    $statusBar = preg_replace('/class="(.+?)"/i','data-role="button"', $statusBar);
+}
+
+$odd = true;
+if ($instances->hasData()){
+    echo '{"data":[';
+    $len = count($instanceInfo);
+    foreach ($instanceInfo as $instanceUri => $instance){
+        echo "{";
+        echo '"url":"'.$instance['url'].'",';
+        echo '"title":"'.$instance['title'].'",';
+        if (isset($instanceData[$instanceUri]) && isset($instanceData[$instanceUri]['__TYPE'])){
+            echo '"types":[';
+            if (count($instanceData[$instanceUri]['__TYPE']) > 1){
+                $j = 0;
+                $count = count($instanceData[$instanceUri]['__TYPE']);
+                foreach ($instanceData[$instanceUri]['__TYPE'] as $type){
+                    echo '"'.$type['value'].'"';
+                    echo ($count > ++$j ? ', ' : '');
+                };
+            }else{
+                echo '"'.$instanceData[$instanceUri]['__TYPE'][0]['value'].'"';
+            }
+            echo ']}';
+        }
+        if( --$len > 0 ) echo ",";
+    }
+    
+    echo "],";
+    echo '"statusbar":"'.str_replace("\"", "\\\"", $statusBar).'"}';
+}

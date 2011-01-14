@@ -49,8 +49,16 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
     }
 
     public function addList($listName, OntoWiki_Model_Instances $list, Zend_View_Interface $view, $templateName = null){
+        
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if($request->isMobile()){
+            $list_file = 'partials/list_mobile.phtml';
+        }else{
+            $list_file = 'partials/list.phtml';
+        }
+        
         $this->getResponse()->append('default',
-            $view->partial('partials/list.phtml',
+            $view->partial($list_file,
                 array(
                     'listName'              => $listName,
                     'instances'             => $list,

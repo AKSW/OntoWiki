@@ -53,18 +53,18 @@ if ($instances->hasData()) {
     $instanceInfo = $instances->getResources();
     $instanceData = $instances->getValues();
     //echo '<pre>'; print_r($instanceData); echo '</pre>';
-    
+
     $itemsOnPage = count($instanceData);
-    
+
     $propertyInfo = $instances->getShownProperties();
-    
+
     $time = (microtime(true) - $start) * 1000;
-    
+
     $start     = $instances->getOffset() + 1;
     $translate = OntoWiki::getInstance()->translate;
-    
+
     $statusBar = $this->placeholder('main.window.statusbar');
-    
+
     $limit = $instances->getLimit();
     $offset = $instances->getOffset();
     if($limit != 0) {
@@ -72,21 +72,21 @@ if ($instances->hasData()) {
     } else {
         $page = 1;
     }
-    
+
     if($graph->getOption($config->sysont->properties->isLarge)) {
         $statusBar->append(OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName));
     } else {
         $query = clone $instances->getResourceQuery();
-        
+
         $where = 'WHERE '.$query->getWhere();
-        
+
         try {
             $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
         } catch (Erfurt_Store_Exception $e) {
             $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
         }
         $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName));
-        
+
         if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
             $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
             $numResultsMsg = sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results);
@@ -99,7 +99,7 @@ if ($instances->hasData()) {
     $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
     $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
     $statusBar->append($limit);
-    
+
     if (defined('_OWDEBUG')) {
         $timeMsg = sprintf($translate->translate('Query execution took %1$d ms.'), $time);
         $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
@@ -172,7 +172,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
         </td>
                         <?php foreach ($propertyInfo as $property):
                             if($property['hidden']){continue;} ?>
-        <td> 
+        <td>
                             <?php if (array_key_exists($instanceUri, $instanceData) &&
                         array_key_exists($property['varName'], $instanceData[$instanceUri]) &&
                                         !empty($instanceData[$instanceUri][$property['varName']])): ?>
@@ -181,7 +181,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                         <?php $i=0;
                                         foreach ($instanceData[$instanceUri][$property['varName']] as $value): ?>
                                                         <?php $i++; if($i==OW_SHOW_MAX+1) {
-                                                            ?>&hellip;<?php 
+                                                            ?>&hellip;<?php
                                                             break;
                                                         }
                                                         if($i==2){
@@ -204,8 +204,8 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                                                 </a>
                                                             </div>
                                                             <?php
-                                                            
-                                                        } 
+
+                                                        }
                                                         if (isset($value['url']) && $value['url'] !== null): ?>
                     <li>
                         <a class="hasMenu" href="<?php echo $value['url'] ?>" resource="<?php echo $value['uri'] ?>"><?php
@@ -215,10 +215,10 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                                 <?php else: ?>
                     <li content="<?php echo $this->escape($value['value']) ?>"><?php echo $value['value'] ?></li>
                             <?php endif; ?>
-                                        <?php 
-                                        
+                                        <?php
+
                         endforeach;?>
-                        
+
             </ul>
                     <?php else: ?>
                         <?php if ($instanceData[$instanceUri][$property['varName']][0]['url']): ?>
@@ -249,5 +249,4 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
     <?php else: ?>
 <p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
     <?php endif; ?>
-
 
