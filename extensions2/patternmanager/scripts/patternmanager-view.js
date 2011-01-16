@@ -39,7 +39,11 @@ $(document).ready(function () {
     
     // submit first parent form of save button
     $('#patternmanager_view_save_button').live('click', function (event) {
-       $(event.target).parents('form:first').submit();
+       if ( $(event.target).parents('form:first').find('#patternUri').val() != '' && confirm("Pattern überschreiben?") ) {
+           $(event.target).parents('form:first').submit();
+       } else {
+           // do nothing
+       }
     });
     
     $('.PMcopyVar').live('click', function(event) {
@@ -194,9 +198,9 @@ function addPMselect(p, c, select) {
 
 function delPMselect(p,c) {
     
-    $('fieldset#subpattern-' + p + ' > table.selectqueries').find('tbody > tr').eq(c - 2).remove();
-    $('fieldset#subpattern-' + p + ' > table.selectqueries tfoot a').show();
-    
+    $('fieldset#subpattern-' + p + ' table.selectqueries tbody tr').remove();
+    $('fieldset#subpattern-' + p + ' table.selectqueries tfoot a').show();
+
     reindexPM();
 }
 

@@ -29,7 +29,9 @@
                     <span class="onlyAural">(type: </span><span class="vartypename"><?php echo $var['type']; ?></span><span class="onlyAural">)</span>
                 </label>
                 <br class="clearall"/>
-                <p class="messagebox info"><?php echo $var['desc']; ?></p>
+                <?php if ( !empty($var['desc']) ) : ?>
+                	<p class="messagebox info"> <?php echo $var['desc']; ?> </p>
+                <?php endif; ?>
             </div>
             <?php endforeach; ?>
 

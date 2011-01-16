@@ -9,4 +9,7 @@ discard changes;Discard Changes
 action %s not allowed;Action %s not allowed.
 back to list;Back to list
 eport as;Export as
-HISTORY_ACTIONTYPE_3000;evolution performed
+HISTORY_ACTIONTYPE_3000;Evolution performed
+back to detailview;Back to Detailview
+proceed to execution;Proceed to Executionview
+select no value;-- Not specified --

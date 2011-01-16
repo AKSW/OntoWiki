@@ -10,3 +10,6 @@ action %s not allowed;Aktion %s nicht erlaubt.
 back to list;Zurück zur Liste
 export as;Exportiere als
 HISTORY_ACTIONTYPE_3000;Evolution durchgeführt
+back to detailview;Zurück zur Detailanzeige
+proceed to execution;Weiter zur Ausführungsansicht
+select no value;-- keine Angabe --
