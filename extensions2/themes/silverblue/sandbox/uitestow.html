@@ -96,11 +96,11 @@ var classUri = "foaf:Person";    //]]>
         $('#autocomplete-2').autocomplete({ 
             source: tags,
             focus: function( event, ui ) {
-                    $( "#autocomplete" ).val( ui.item.label );
+                    $( "#autocomplete-2" ).val( ui.item.label );
                     return false;
             },
             select: function( event, ui ) {
-                    $( "#autocomplete" ).val( ui.item.label );
+                    $( "#autocomplete-2" ).val( ui.item.label );
             }
         }).data( "autocomplete" )._renderItem = function( ul, item ) {
                 return $( "<li></li>" )
@@ -108,6 +108,8 @@ var classUri = "foaf:Person";    //]]>
                         .append( "<a><span class='resource-edit-source'>" + item.source + "</span><span class='resource-edit-label'>" + item.label + "</span><span class='resource-edit-uri'>" + item.uri + "</span></a>" )
                         .appendTo( ul );
         };
+        $('#autocomplete-3').autocomplete({ source: tags });
+        $('#autocomplete-4').autocomplete({ source: tags });
     });
 </script>
 
@@ -178,9 +180,10 @@ var navigationConfig = $.evalJSON(navigationConfigString);
     <div>
         <p>Date: <input id="datepicker" type="text"></p>
     </div>
-    <h3>autocomplete</h3>
+    <h3>autocomplete - type space to get all results</h3>
     <div>
         <p><input id="autocomplete" type="text"></p>
+        <p><input id="autocomplete-3" type="text"></p>
     </div>
     <h3>tabs</h3>
     <div id="tabs">
@@ -240,9 +243,10 @@ var navigationConfig = $.evalJSON(navigationConfigString);
     <div>
         <p>Date: <input id="datepicker-2" type="text"></p>
     </div>
-    <h3>autocomplete</h3>
+    <h3>autocomplete - type space to get all results</h3>
     <div>
         <p><input id="autocomplete-2" type="text"></p>
+        <p><input id="autocomplete-4" type="text"></p>
     </div>
     <h3>tabs</h3>
     <div id="tabs2">
