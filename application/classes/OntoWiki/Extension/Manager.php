@@ -106,7 +106,9 @@ class Ontowiki_Extension_Manager {
         $this->_moduleRegistry->setExtensionPath($extensionPath);
 
         //TODO plugin & wrapper registry? needed anymore? why split it?
+        Erfurt_Wrapper_Registry::reset();
         $this->_wrapperRegistry = Erfurt_Wrapper_Registry::getInstance();
+        
 
         $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
 
