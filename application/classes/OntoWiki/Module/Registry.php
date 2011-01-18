@@ -97,6 +97,14 @@ class OntoWiki_Module_Registry
         $this->_moduleStates = array();
         $this->_moduleOrder  = array();
     }
+    
+    public static function reset()
+    {
+        if (null !== self::$_instance) {
+            self::$_instance->resetInstance();
+        }
+        self::$_instance = null;
+    }
 
     /**
      * Sets the path where modules are to be found
@@ -127,7 +135,7 @@ class OntoWiki_Module_Registry
     public function register($extensionName, $moduleFileName, $context = self::DEFAULT_CONTEXT, $options = null)
     {
         $moduleName = strtolower(substr($moduleFileName, 0, strlen($moduleFileName)-strlen(self::MODULE_FILE_POSTFIX)));
-        
+
         // create module context if necessary
         if (!array_key_exists($context, $this->_moduleOrder)) {
             $this->_moduleOrder[$context] = array();
@@ -162,6 +170,8 @@ class OntoWiki_Module_Registry
 
             // register module
             $this->_modules[$moduleName] = $options;
+        } else if (in_array($moduleName, $this->_moduleOrder[$context])) {
+            throw new Exception("Module '$moduleName' is already registered for context '$context'.");
         }
 
         // set module order and context
@@ -278,6 +288,7 @@ class OntoWiki_Module_Registry
                 }
             }
         }
+        
         return $modules;
     }
 

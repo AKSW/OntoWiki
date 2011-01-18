@@ -697,37 +697,57 @@ class DatagatheringController extends OntoWiki_Controller_Component
      */
     public function importAction()
     {
+        // Disable rendering
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout()->disableLayout();
+        
+        // We require GET requests here.
+        if (!$this->_request->isGet()) {
+            $code = 400;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
+        }
+        
+        // uri param is required.
         if (!isset($this->_request->uri)) {
-            $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
-            echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            $code = 400;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
         }
         $uri = urldecode($this->_request->uri);
-        $proxyUri = $this->_getUri();
-
+        $r = new Erfurt_Rdf_Resource($uri, $this->_graphUri);
+        $r->setLocator($this->_getProxyUri($uri));
+        
+        // Try to instanciate the requested wrapper
+        $wrapper = null;
+        $wrapperName = 'linkeddata';
         if (isset($this->_request->wrapper)) {
             $wrapperName = $this->_request->wrapper;
-        } else {
-            $wrapperName = 'linkeddata';
-        }
-       
+        } 
         try {
-            $store = Erfurt_App::getInstance()->getStore();
-       
-            $wrapper = $this->_wrapperRegisty->getWrapperInstance($wrapperName);
-            $hasData = $wrapper->isAvailable($proxyUri, $this->_graphUri);
-
-            $wrapperResult = false;
-            if ($hasData) {
-                $wrapperResult = $wrapper->run($proxyUri, $this->_graphUri);
-            }
-        } catch (Exception $e) {
-            $wrapperResult = false;
+            $wrapper = Erfurt_Wrapper_Registry::getInstance()->getWrapperInstance($wrapperName);
+        } catch (Erfurt_Wrapper_Exception $e) {
+            $code = 400;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
+        }
+        
+        // Check whether user is allowed to write the model.
+        $store = $this->_erfurt->getStore();
+        $model = $store->getModel($this->_graphUri);
+        if (!$model || !$model->isEditable()) {
+            $code = 403;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
         }
         
         $translate = $this->_owApp->translate;
-        
-        if ($wrapperResult !== false) {
+        $wrapperResult = $wrapper->run($r, $this->_graphUri);
+        if (is_array($wrapperResult)) {
             $retVal = true;
             
             if (isset($wrapperResult['status_codes'])) {
@@ -1371,23 +1391,20 @@ class DatagatheringController extends OntoWiki_Controller_Component
     
     
     
-    private function _getUri()
+    private function _getProxyUri($uri)
     {
-        $uri = urldecode($this->_request->uri);
-        
         // If at least one rewrite rule is defined, we iterate through them.
         if (isset($this->_privateConfig->rewrite)) {
             $rulesArray = $this->_privateConfig->rewrite->toArray();
             foreach ($rulesArray as $ruleId => $ruleSpec) {
-                $resultUri = preg_replace($ruleSpec['pattern'], $ruleSpec['replacement'], $uri);
-                if ($resultUri !== $uri) {
-                    $uri = $resultUri;
-                    break;
+                $proxyUri = preg_replace($ruleSpec['pattern'], $ruleSpec['replacement'], $uri);
+                if ($proxyUri !== $uri) {
+                    return $proxyUri;
                 }
             }
         }
                
-        return $uri;
+        return null;
     }
     
     /**

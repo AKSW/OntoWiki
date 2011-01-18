@@ -101,7 +101,9 @@ class Ontowiki_Extension_Manager {
             $extensionPath .= DIRECTORY_SEPARATOR;
         }
         $this->_extensionPath = $extensionPath;
-
+        
+        OntoWiki_Module_Registry::reset();
+        //OntoWiki_Module_Registry::getInstance()->resetInstance();
         $this->_moduleRegistry = OntoWiki_Module_Registry::getInstance();
         $this->_moduleRegistry->setExtensionPath($extensionPath);
 
@@ -469,7 +471,6 @@ class Ontowiki_Extension_Manager {
                 }
             }
         }
-
     }
 
     /**
@@ -538,6 +539,8 @@ class Ontowiki_Extension_Manager {
                 $config = unserialize(serialize($config)) ; //dont touch the original config
                 $config->merge($config->modules->{$moduleName});
             }
+        } else {
+            $moduleName = $extensionName;
         }
 
         if (isset($config->context) && is_string($config->context)) {
@@ -550,7 +553,7 @@ class Ontowiki_Extension_Manager {
 
         // register for context(s)
         foreach ($contexts as $context) {
-            $this->_moduleRegistry->register($extensionName, $moduleFilename, $context, $config);
+            $this->_moduleRegistry->register($moduleName, $moduleFilename, $context, $config);
         }
     }
 

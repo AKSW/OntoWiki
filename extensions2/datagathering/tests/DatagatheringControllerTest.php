@@ -13,13 +13,53 @@ class LinkeddataWrapperTest extends Zend_Test_PHPUnit_ControllerTestCase
         parent::setUp();
     }
     
-    public function test1()
+    public function testImportActionRequestTypeNotGetBadRequest()
     {
+        $this->request->setMethod('POST');
+        $this->dispatch('/datagathering/import');
         
+        $this->assertController('datagathering');
+        $this->assertAction('import');
+        $this->assertResponseCode(400);
     }
     
-    public function test2()
+    public function testImportActionNoParamsBadRequest()
     {
+        $this->dispatch('/datagathering/import');
         
+        var_dump($this->response->getBody());exit;
+        
+        $this->assertController('datagathering');
+        $this->assertAction('import');
+        $this->assertResponseCode(400);
     }
+    
+    public function testImportActionInvalidWrapperParamBadRequest()
+    {
+        $this->request->setQuery(array(
+            'wrapper' => 'anInvalidWrapperName123456789ThisShouldNeverExist'
+        ));
+        
+        $this->dispatch('/datagathering/import');
+        
+        $this->assertController('datagathering');
+        $this->assertAction('import');
+        $this->assertResponseCode(400);
+    }
+    
+    /*
+    public function testImportActionNoWritePermissionsForbidden()
+    {
+        $this->request->setQuery(array(
+            'uri' => 'http://example.org/testResource1',
+            'm' => 'http://localhost/'
+        ));
+        
+        $this->dispatch('/datagathering/import');
+        
+        $this->assertController('datagathering');
+        $this->assertAction('import');
+        $this->assertResponseCode(403);
+    }
+    */
 }
