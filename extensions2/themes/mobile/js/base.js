@@ -7,39 +7,37 @@ $(document).ready(function(){
 
     // prepare nav page on show
     $("#nav").bind("pagebeforeshow", function(){
-        redrawNavigation();
+        redrawPage();
     });
     
     // prepare instance list on show
     $("#instance-list").bind("pagebeforeshow", function(){
-        redrawInstances();
+        redrawPage();
     });
     
     // prepare properties list on show
     $("#properties-list").bind("pagebeforeshow", function(){
-        redrawProperties();
+        redrawPage();
     });
     
     // prepare search list on show
     $("#searchres-list").bind("pagebeforeshow", function(){
-        var page = $("#searchres-list");
-        page.page("destroy");
-        page.page();
+        redrawPage();
     });
     
     // prepare rdfa list on show
     $("#rdfa-list").bind("pagebeforeshow", function(){
-        redrawRDFauthor();
+        redrawPage();
     });
     
     $(document).bind("RDFauthor.added", function(){
-        redrawRDFauthor();
+        redrawPage();
     });
     
     // prepare page on navigation done
     $(document).bind("navigation.done", function(){        
         // redraw page
-        redrawNavigation();
+        redrawPage();
         
         // remove loader
         $.mobile.pageLoading(true);

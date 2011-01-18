@@ -11,29 +11,11 @@ var selectedInstance = {};
 var RDFAUTHOR_MOBILE = true;
 
 // redraw mobile views
-var redrawNavigation = function(){
-    var nav = $("#nav");
+var redrawPage = function(){
+    var nav = $(".ui-page-active")[0];
         nav.page("destroy");
         nav.page();
 };
-
-var redrawProperties = function(){
-    var page = $("#properties-list");
-        page.page("destroy");
-        page.page();
-}
-
-var redrawInstances = function(){
-    var page = $("#instance-list");
-        page.page("destroy");
-        page.page();
-}
-
-var redrawRDFauthor = function(){
-    var page = $("#rdfa-list");
-        page.page("destroy");
-        page.page();
-}
 
 // selects database
 function getBase(element){
@@ -126,7 +108,7 @@ function pageList(entry, animate){
             //location.hash = "instance-list";
             $.mobile.changePage("#instance-list", "slide", false, true );
         }else{
-            redrawInstances();
+            redrawPage();
         }
     })
     
@@ -178,7 +160,7 @@ function onInstanceClick(entry, animate){
             $.mobile.changePage("#properties-list", "slide", false, true );
         }else{
             // refresh page
-            redrawProperties();
+            redrawPage();
         }
     })
     
