@@ -304,6 +304,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                ? $session->lastRoute
                : $config->route->default->name;
 
+        // Reset navigation for multiple boostraping (tests)
+        OntoWiki_Navigation::reset();
+
         // register with navigation
         if (isset($config->routes->{$route})) {
             extract($config->routes->{$route}->defaults->toArray());

@@ -2,10 +2,10 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_wrapper
+ * @category  OntoWiki
+ * @package   OntoWiki_extensions_wrapper
  * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 require_once 'Erfurt/Wrapper.php';
@@ -13,11 +13,11 @@ require_once 'Erfurt/Wrapper.php';
 /**
  * This wrapper extension provides functionality for gathering linked data.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_wrapper
- * @copyright  Copyright (c) 2009 {@link http://aksw.org aksw}
- * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @category  OntoWiki
+ * @package   OntoWiki_extensions_wrapper
+ * @copyright Copyright (c) 2009 {@link http://aksw.org aksw}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class LinkeddataWrapper extends Erfurt_Wrapper
 {
@@ -49,6 +49,8 @@ class LinkeddataWrapper extends Erfurt_Wrapper
      */
     private $_url = null;
     
+    private $_httpAdapter = null;
+    
     // ------------------------------------------------------------------------
     // --- Public methods -----------------------------------------------------
     // ------------------------------------------------------------------------
@@ -63,25 +65,23 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         return 'Linked Data Wrapper';
     }
     
-    public function isAvailable($uri, $graphUri)
+    public function isAvailable($r, $graphUri)
     { 
-        $uri = urldecode($uri);
-        if ($pos = strrpos($uri, '/')) {
-            $suffix = substr($uri, $pos+1);
-            $uri = substr($uri, 0, $pos);
-            $uri .= '/' . urlencode($suffix);
-        }
+        $uri = $r->getUri();
+        $url = $r->getLocator();
         
         // Check whether there is a cache hit...
-        $id = $this->_cache->makeId($this, 'isAvailable', array($uri, $graphUri));
-        $result = $this->_cache->load($id);
-        if ($result !== false) {
-            if (isset($result['data'])) {
-                $this->_cachedData = $result['data'];
-                $this->_cachedNs   = $result['ns'];
+        if (null !== $this->_cache) {
+            $id = $this->_cache->makeId($this, 'isAvailable', array($uri, $graphUri));
+            $result = $this->_cache->load($id);
+            if ($result !== false) {
+                if (isset($result['data'])) {
+                    $this->_cachedData = $result['data'];
+                    $this->_cachedNs   = $result['ns'];
+                }
+
+                return $result['value'];
             }
-            
-            return $result['value'];
         }
         
         $retVal = false;
@@ -89,9 +89,8 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $data = array();
 
         // Test the URI.
-        $this->_url = $uri;
-        require_once 'Zend/Http/Client.php';
-        $client = Erfurt_App::getInstance()->getHttpClient($uri, array(
+        $this->_url = $url;
+        $client = $this->_getHttpClient($url, array(
             'maxredirects'  => 0,
             'timeout'       => 30
         ));
@@ -99,17 +98,17 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $client->setHeaders('Accept', 'application/rdf+xml');
         $response = $client->request();
         $success = $this->_handleResponse($client, $response, 'application/rdf+xml');
-        
+
         if ($success === true) {
             $response = $client->getLastResponse();
             
             if (null !== $this->_url) {
                 $temp = $this->_url;
             } else {
-                $temp = $uri;
+                $temp = $url;
             }
             
-            if (strrpos($uri, '#') !== false) {
+            if (strrpos($url, '#') !== false) {
                 $baseUri = substr($temp, 0, strrpos($temp, '#'));
             } else {
                 $baseUri = $temp;
@@ -119,15 +118,6 @@ class LinkeddataWrapper extends Erfurt_Wrapper
             $ns = $tempArray['ns'];
             $tempArray = $tempArray['data'];
             
-            /*
-            $data = $tempArray;
-            if (count($data) > 0) {
-                $retVal = true;
-            } else {
-                $retVal = false;
-            }
-            */
-
             if (isset($tempArray[$uri])) {
                 $data = array($uri => $tempArray[$uri]);
                 $retVal = true;
@@ -140,7 +130,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
             // try n3
             $client->setHeaders('Accept', 'text/n3');
             $response = $client->request();
-            
+
             $success = $this->_handleResponse($client, $response);
             if ($success === true) {
                 $tempArray = $this->_handleResponseBody($client->getLastResponse());
@@ -159,7 +149,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                 // try text/html...
                 $client->setHeaders('Accept', 'text/html');
                 $response = $client->request();
-                
+             
                 $success = $this->_handleResponse($client, $response);
                 if ($success === true) {
                     $tempArray = $this->_handleResponseBody($client->getLastResponse());
@@ -180,22 +170,21 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         
         $this->_cachedData = $data;  
         $this->_cachedNs   = $ns;
-        $cacheVal = array('value' => $retVal, 'data' => $data, 'ns' => $ns);
-        $this->_cache->save($cacheVal, $id);
+        
+        if (null !== $this->_cache) {
+            $cacheVal = array('value' => $retVal, 'data' => $data, 'ns' => $ns);
+            $this->_cache->save($cacheVal, $id);
+        }
         
         return $retVal;
     }
     
-    public function isHandled($uri, $graphUri)
+    public function isHandled($r, $graphUri)
     {
-        $uri = urldecode($uri);
-        if ($pos = strrpos($uri, '/')) {
-            $suffix = substr($uri, $pos+1);
-            $uri = substr($uri, 0, $pos);
-            $uri .= '/' . urlencode($suffix);
-        }
+        $url = $r->getLocator();
         
-        if ((substr($uri, 0, 7) !== 'http://')) {
+        // We only support HTTP URLs.
+        if ((substr($url, 0, 7) !== 'http://') && (substr($url, 0, 8) !== 'https://')) {
             return false;
         } else {
             if (isset($this->_config->handle->mode) && $this->_config->handle->mode === 'none') {
@@ -203,7 +192,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                     // handle only explicit mentioned uris
                     $isHandled = false;
                     foreach ($this->_config->handle->exception->toArray() as $exception) {
-                        if ($this->_matchUri($exception, $uri)) {
+                        if ($this->_matchUri($exception, $url)) {
                             $isHandled = true;
                             break;
                         }
@@ -217,7 +206,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                 // handle all uris by default
                 if (isset($this->_config->handle->exception)) {
                     foreach ($this->_config->handle->exception->toArray() as $ignored) {
-                        if ($this->_matchUri($ignored, $uri)) {
+                        if ($this->_matchUri($ignored, $url)) {
                             return false;
                         }
                     }
@@ -230,17 +219,10 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         return true;
     }
     
-    public function run($uri, $graphUri)
-    {
-        $uri = urldecode($uri);
-        if ($pos = strrpos($uri, '/')) {
-            $suffix = substr($uri, $pos+1);
-            $uri = substr($uri, 0, $pos);
-            $uri .= '/' . urlencode($suffix);
-        }
-        
+    public function run($r, $graphUri)
+    { 
         if (null === $this->_cachedData) {
-            $isAvailable = $this->isAvailable($uri, $graphUri);
+            $isAvailable = $this->isAvailable($r, $graphUri);
         
             if ($isAvailable === false) {
                 return false;
@@ -259,146 +241,13 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $fullResult['status_description'] = "Linked Data found for URI $uri";
         $fullResult['ns'] = $ns;
         $fullResult['add'] = $data;
+        
         return $fullResult;
-        
-        
-        // TODO clean up the following code
-        
-        $presetMatch = false;
-        if (isset($this->_config->fetch->preset)) {
-            foreach ($this->_config->fetch->preset->toArray() as $i=>$preset) {
-                if ($this->_matchUri($preset['match'], $uri)) {
-                    $presetMatch = $i;
-                    break;
-                }
-            }
-        }
-
-        if ($presetMatch !== false) {
-            // Use the preset.
-            $presets = $this->_config->fetch->preset->toArray();
-
-            if (isset($presets[$presetMatch]['mode']) && $presets[$presetMatch]['mode'] === 'none') {
-
-                // Start with an empty result.
-                $result = array();
-                if (isset($presets[$presetMatch]['exception'])) {
-
-                    foreach ($presets[$presetMatch]['exception'] as $exception) {
-                        if (isset($data[$uri][$exception])) {
-                            if (!isset($result[$uri])) {
-                                $result[$uri] = array();
-                            }
-                            if (!isset($result[$uri][$exception])) {
-                                $result[$uri][$exception] = array();
-                            }
-                            
-                            foreach ($data[$uri][$exception] as $o) {
-                                if ($o['type'] === 'literal') {
-                                    if (isset($presets[$presetMatch]['lang'])) {
-                                        foreach ($presets[$presetMatch]['lang'] as $lang) {
-                                            if (isset($o['lang']) && $o['lang'] === $lang) {
-                                                $result[$uri][$exception][] = $o;
-                                            }
-                                        }
-                                    } else {
-                                        $result[$uri][$exception][] = $o;
-                                    }
-                                } else {
-                                    $result[$uri][$exception][] = $o;
-                                }
-                            }
-                            
-                            if (isset($presets[$presetMatch]['lang'])) {
-                                if (count($result[$uri][$exception]) === 0) {
-                                    foreach ($data[$uri][$exception] as $o) {
-                                        if (!isset($o['lang'])) {
-                                            $result[$uri][$exception][] = $o;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }   
-            } else {
-                // Use the default rule.
-
-                // Start with all data.
-                $result = $data;
-                if (isset($presets[$presetMatch]['exception'])) {
-                    foreach ($presets[$presetMatch]['exception'] as $exception) {
-                        if (isset($data[$uri][$exception])) {
-                            if (isset($result[$uri][$exception])) {
-                                unset($result[$uri][$exception]);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            if (isset($this->_config->fetch->default->mode) && $this->_config->fetch->default->mode === 'none') {
-                // Start with an empty result.
-                $result = array();
-                if (isset($this->_config->fetch->default->exception)) {
-                    foreach ($this->_config->fetch->default->exception->toArray() as $exception) {
-                        if (isset($data[$uri][$exception])) {
-                            if (!isset($result[$uri])) {
-                                $result[$uri] = array();
-                            } 
-
-                            $result[$uri][$exception] = $data[$uri][$exception];
-                        }
-                    }
-                }
-            } else {
-                // Start with all data.
-                $result = $data;
-                if (isset($this->_config->fetch->default->exception)) {
-                    foreach ($this->_config->fetch->default->exception->toArray() as $exception) {
-                        if (isset($data[$uri][$exception])) {
-                            if (isset($result[$uri][$exception])) {
-                                unset($result[$uri][$exception]);
-                            }
-                        }
-                    }
-                }
-            }
-        } 
-        
-        $fullResult = array();
-        $fullResult['status_codes'] = array(
-            Erfurt_Wrapper::NO_MODIFICATIONS, 
-            Erfurt_Wrapper::RESULT_HAS_ADD, 
-            Erfurt_Wrapper::RESULT_HAS_NS
-        );
-        $fullResult['status_description'] = "Linked Data found for URI $uri";
-        
-        $fullResult['ns']  = $ns;
-
-        //remove blanknodes (bn as object)
-        foreach($result as $rkey => $resource){
-            foreach($resource as $pkey => $property){
-                foreach($property as $vkey => $value){
-                    if(($value['type'] == 'uri' && substr($value['value'], 0, 2) == '_:') || $value['type'] == 'bnode'){
-                        unset($result[$rkey][$pkey][$vkey]);
-                        if(empty($result[$rkey][$pkey])){ //if this was the last value if this property - delete the property
-                            unset($result[$rkey][$pkey]);
-                        }
-                        /*
-                        if(empty($result[$rkey][$pkey])){ // if this was the last property of this resource - delete the resource
-                            unset($result[$rkey]);
-                        }*/
-                    }
-                }
-            }
-        }
-
-        $fullResult['add'] = $result;
-        //print_r($result);
-
-        return $fullResult;
+    }
+    
+    public function setHttpAdapter($adapter)
+    {
+        $this->_httpAdapter = $adapter;
     }
     
     // ------------------------------------------------------------------------
@@ -444,7 +293,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                     return false;
                 }
 
-                $client = Erfurt_App::getInstance()->getHttpClient($url, array(
+                $client = $this->_getHttpClient($url, array(
                     'maxredirects'  => 10,
                     'timeout'       => 30,
                     'sslcert'       => $certFilename
@@ -503,7 +352,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat($type);
         $result = $parser->parse($data, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING, $baseUri);
         $ns     = $parser->getNamespaces();
-        
+
         return array(
             'data' => $result,
             'ns'   => $ns
@@ -530,14 +379,14 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $fullNs     = array();
         $fullResult = array();
         
-        $client = Erfurt_App::getInstance()->getHttpClient(null, array(
+        $client = $this->_getHttpClient(null, array(
             'maxredirects'  => 0,
             'timeout'       => 30
         ));
-        
         $client->setHeaders('Accept', 'application/rdf+xml');
    
         foreach ($documents as $docUrl) {
+            
             $client->setUri($docUrl);
             $response = $client->request();
            
@@ -601,5 +450,14 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         } else {
             return false;
         }
+    }
+    
+    private function _getHttpClient($uri, $options = array())
+    {
+        if (null !== $this->_httpAdapter) {
+            $options['adapter'] = $this->_httpAdapter;
+        }
+// TODO Create HTTP client here and remove method from Erfurt_App.
+        return Erfurt_App::getInstance()->getHttpClient($uri, $options);
     }
 }
