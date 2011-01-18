@@ -121,8 +121,10 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         foreach ($activeWrapperList as $wrapperName) {
             $hash = $this->_getHash($uri, $wrapperName, $modelUri);
 
+            $r = new Erfurt_Rdf_Resource($uri, $model);
+
             $wrapperInstance = $wrapperRegistry->getWrapperInstance($wrapperName);
-            if ($wrapperInstance->isHandled($uri, $modelUri)) {
+            if ($wrapperInstance->isHandled($r, $modelUri)) {
                 $menuArray[$wrapperName] = array(
                     'instance' => $wrapperInstance
                 );

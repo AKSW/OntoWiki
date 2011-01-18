@@ -27,8 +27,6 @@ class LinkeddataWrapperTest extends Zend_Test_PHPUnit_ControllerTestCase
     {
         $this->dispatch('/datagathering/import');
         
-        var_dump($this->response->getBody());exit;
-        
         $this->assertController('datagathering');
         $this->assertAction('import');
         $this->assertResponseCode(400);
@@ -47,19 +45,21 @@ class LinkeddataWrapperTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertResponseCode(400);
     }
     
-    /*
+    
     public function testImportActionNoWritePermissionsForbidden()
     {
         $this->request->setQuery(array(
             'uri' => 'http://example.org/testResource1',
-            'm' => 'http://localhost/'
+            //'m' => 'http://localhost/OntoWiki/Config/'
         ));
         
         $this->dispatch('/datagathering/import');
+        
+        echo $this->response->getBody();exit;
         
         $this->assertController('datagathering');
         $this->assertAction('import');
         $this->assertResponseCode(403);
     }
-    */
+    
 }

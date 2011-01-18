@@ -708,7 +708,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
             return;
         }
-        
+    
         // uri param is required.
         if (!isset($this->_request->uri)) {
             $code = 400;
@@ -719,7 +719,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $uri = urldecode($this->_request->uri);
         $r = new Erfurt_Rdf_Resource($uri, $this->_graphUri);
         $r->setLocator($this->_getProxyUri($uri));
-        
+            
         // Try to instanciate the requested wrapper
         $wrapper = null;
         $wrapperName = 'linkeddata';
@@ -734,7 +734,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
             return;
         }
-        
+
         // Check whether user is allowed to write the model.
         $store = $this->_erfurt->getStore();
         $model = $store->getModel($this->_graphUri);
@@ -744,7 +744,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
             return;
         }
-        
+
         $translate = $this->_owApp->translate;
         $wrapperResult = $wrapper->run($r, $this->_graphUri);
         if (is_array($wrapperResult)) {

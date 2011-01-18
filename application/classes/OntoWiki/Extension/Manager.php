@@ -539,9 +539,7 @@ class Ontowiki_Extension_Manager {
                 $config = unserialize(serialize($config)) ; //dont touch the original config
                 $config->merge($config->modules->{$moduleName});
             }
-        } else {
-            $moduleName = $extensionName;
-        }
+        } 
 
         if (isset($config->context) && is_string($config->context)) {
             $contexts = array($config->context);
@@ -553,7 +551,7 @@ class Ontowiki_Extension_Manager {
 
         // register for context(s)
         foreach ($contexts as $context) {
-            $this->_moduleRegistry->register($moduleName, $moduleFilename, $context, $config);
+            $this->_moduleRegistry->register($extensionName, $moduleFilename, $context, $config);
         }
     }
 
