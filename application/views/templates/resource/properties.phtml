@@ -32,7 +32,7 @@
                             echo '"relation":"'.$currentPredicate['curi'].'",';
                             echo '"about":"'.$entry['url'].'",';
                             echo '"content":"'.$entry['uri'].'",';
-                            echo '"title":"'.$entry['object'].'"';
+                            echo '"title":"'.htmlentities( strip_tags($entry['object']) ).'"';
                             echo '}';
                             if( --$entr > 0 ) echo ',';
                         }
@@ -45,7 +45,7 @@
                         if ($entry['url']){
                             echo '"about":"'.$entry['url'].'",';
                             echo '"content":"'.$entry['uri'].'",';
-                            echo '"title":"'.$entry['object'].'"';
+                            echo '"title":"'.htmlentities( strip_tags($entry['object']) ).'"';
                         }else{
                             echo '"relation":"'.$currentPredicate['curi'].'",';
                             
@@ -54,7 +54,7 @@
                             } else if(isset($entry['datatype']) && !empty($entry['datatype'])){
                                 echo '"datatype":"'.$entry['datatype'].'",';
                             }
-                            echo '"title":"'.$entry['object'].'"';
+                            echo '"title":"'.htmlentities( strip_tags($entry['object']) ).'"';
                         }
                         echo '}';
                     }
