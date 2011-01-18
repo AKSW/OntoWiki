@@ -5,7 +5,7 @@ $(document).ready(function(){
     getKBList();
     
     $(document).bind("RDFauthor.added", function(){
-        redrawPage();
+        //redrawPage();
     });
     
     // prepare page on navigation done
