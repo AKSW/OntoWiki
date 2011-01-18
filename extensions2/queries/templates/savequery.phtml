@@ -1,0 +1,9 @@
+<p class="messagebox info"><?php echo $this->_('If you think your query can be useful for others, please share it.') ?></p>
+<p>
+    <input type="text" class="text width98 inner-label"  id="qname" value="<?php echo $this->_('name of query') ?>" maxlength="20" />
+    </p><p>
+    <input id="hidden_query" type="hidden"  value=""/>
+    <input id="hidden_json" type="hidden" value=""/>
+    <input id="savequerysharecheckbox" type="checkbox"> share with others
+</p>
+<a id = 'savequerybutton' class="button submit"><span><?php echo $this->_('Save Query'); ?></span></a>
