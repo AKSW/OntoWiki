@@ -79,29 +79,6 @@ function doSearch(){
     });
 }
 
-function getFilters(){
-    // loading 
-    $.mobile.pageLoading();
-    // get results
-    $.get(urlBase+"module/get?name=filter&json=true", function(data){
-        data = $.parseJSON(data);
-        
-        $.mobile.changePage("#filters-view", "slide", false, true );
-        $.mobile.pageLoading(true);
-        
-        var container = "#filters-list";
-        var template = "#filtersTemplate";
-        // clear
-        $(container).empty();
-        // render
-        $(template).tmpl(data).appendTo(container);
-        // try refresh listview
-        try{
-            $(container).listview("refresh");
-        }catch(e){} // ignore all errors
-    });
-};
-
 function openRDFa(){
     $.mobile.pageLoading();
     

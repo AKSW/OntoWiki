@@ -164,7 +164,7 @@
         {{/each}}
     </script>
     
-    <!-- properties list template -->
+    <!-- filters enabled list template -->
     <script id="filtersTemplate" type="text/x-jquery-tmpl">
         {{each activefilters}}
             <li role="option" id="${id}">
@@ -174,7 +174,16 @@
             </li>
         {{/each}}
     </script>
-
+    
+    <!-- filters available list template -->
+    <script id="filtersAvailableTemplate" type="text/x-jquery-tmpl">
+        {{each availablefilters}}
+            <li role="option">
+                <a about="${uri}" href="#" class="addfilter">${title}</a>
+            </li>
+        {{/each}}
+    </script>
+    
 
     <!-- PAGES -->
     <!-- INDEX PAGE -->
@@ -278,7 +287,7 @@
         <div data-role="header">
             <!-- <a href="#" data-icon="arrow-l">Back</a> -->
             <h1>Active filters</h1>
-            <a href="#filters-add-view" data-icon="plus" class="ui-btn-right">Add</a>
+            <a href="#" id="add-filter" data-icon="plus" class="ui-btn-right">Add</a>
         </div>
     
         <div data-role="content">
@@ -290,7 +299,7 @@
     <div id="filters-add-view" data-role="page">
         <div data-role="header">
             <!-- <a href="#" data-icon="arrow-l">Back</a> -->
-            <h1>Active filters</h1>
+            <h1>Available filters</h1>
         </div>
     
         <div data-role="content">
@@ -330,7 +339,7 @@
             </div>
             
             <div data-role="fieldcontain" style="display:none;" id="menu-filters-btn">
-                <a href="#" data-role="button" data-theme="b" onclick="getFilters(); return false;">Filters</a>
+                <a href="#" data-role="button" data-theme="b" id="get-filters">Filters</a>
             </div>
         </div>
     </div>

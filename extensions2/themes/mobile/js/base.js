@@ -17,6 +17,52 @@ $(document).ready(function(){
         $.mobile.pageLoading(true);
     });
     
+    // filters
+    // on addfilter btn click
+    $("#add-filter").click(function(){
+        $.mobile.changePage("#filters-add-view", "slide", false, true );
+    });
+    
+    
+    $("#get-filters").click(function(){
+        // loading 
+        $.mobile.pageLoading();
+        // get results
+        $.get(urlBase+"module/get?name=filter&json=true", function(data){
+            data = $.parseJSON(data);
+            
+            $.mobile.changePage("#filters-view", "slide", false, true );
+            $.mobile.pageLoading(true);
+            
+            // render active stuff
+            var container = "#filters-list";
+            var template = "#filtersTemplate";
+            // clear
+            $(container).empty();
+            // render
+            $(template).tmpl(data).appendTo(container);
+            // try refresh listview
+            try{
+                $(container).listview("refresh");
+            }catch(e){} // ignore all errors
+            
+            // render available stuff
+            container = "#filters-add-list";
+            template = "#filtersAvailableTemplate";
+            // clear
+            $(container).empty();
+            // render
+            $(template).tmpl(data).appendTo(container);
+            // try refresh listview
+            try{
+                $(container).listview("refresh");
+            }catch(e){} // ignore all errors            
+        });
+    });
+    
+    $(".addfilter").live('click', function(event){
+        
+    });
     
     // navigation buttons events
     // the link to the root

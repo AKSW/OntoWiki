@@ -80,16 +80,35 @@ if ($this->filter){
     
     echo "]";
 }
-/*
+
+echo ',"availablefilters":[';
+
+$res = "";
+
 foreach($this->properties as $key => $property){
-    echo $property['uri']; 
-    echo $property["title"]; 
+    $res .= "{";
+    $res .= "\"uri\":\"".$property['uri']."\","; 
+    $res .= "\"title\":\"".$property["title"]."\",";
+    $res .= "\"inverse\":false";
+    $res .= "},";
 }
 
 foreach($this->inverseProperties as $key => $property){
-    echo $property['uri']; 
-    echo $property["title"];
-}*/
+    $res .= "{";
+    $res .= "\"uri\":\"".$property['uri']."\","; 
+    $res .= "\"title\":\"".$property["title"]."\",";
+    $res .= "\"inverse\":false";
+    $res .= "},";
+}
+
+echo substr($res,0,-1);
+
+echo "]";
 
 echo "}";
 ?>
+
+
+
+
+
