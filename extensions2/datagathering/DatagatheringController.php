@@ -703,22 +703,23 @@ class DatagatheringController extends OntoWiki_Controller_Component
         
         // We require GET requests here.
         if (!$this->_request->isGet()) {
-            $code = 400;
-            $this->_response->setHttpResponseCode($code);
-            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
             return;
         }
     
         // uri param is required.
         if (!isset($this->_request->uri)) {
-            $code = 400;
-            $this->_response->setHttpResponseCode($code);
-            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
             return;
         }
         $uri = urldecode($this->_request->uri);
-        $r = new Erfurt_Rdf_Resource($uri, $this->_graphUri);
+        $r = new Erfurt_Rdf_Resource($uri);
         $r->setLocator($this->_getProxyUri($uri));
+            
+        if (null === $this->_graphUri) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            return;
+        }
             
         // Try to instanciate the requested wrapper
         $wrapper = null;
@@ -729,9 +730,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         try {
             $wrapper = Erfurt_Wrapper_Registry::getInstance()->getWrapperInstance($wrapperName);
         } catch (Erfurt_Wrapper_Exception $e) {
-            $code = 400;
-            $this->_response->setHttpResponseCode($code);
-            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
             return;
         }
 
@@ -739,9 +738,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $store = $this->_erfurt->getStore();
         $model = $store->getModel($this->_graphUri);
         if (!$model || !$model->isEditable()) {
-            $code = 403;
-            $this->_response->setHttpResponseCode($code);
-            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            $this->_response->setException(new OntoWiki_Http_Exception(403));
             return;
         }
 

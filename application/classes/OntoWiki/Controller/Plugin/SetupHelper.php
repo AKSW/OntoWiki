@@ -62,10 +62,10 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                         // In this case we allow the requesting party to authorize...
                         $response = $frontController->getResponse();
                         
-                        $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                        $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
-                        $response->sendResponse();
-                        exit;
+                        $e = new OntoWiki_Http_Exception(401);
+                        $response->setException($e);
+                        
+                        return;
                     }
                     
                     // post error message
