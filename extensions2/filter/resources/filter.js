@@ -79,7 +79,7 @@ $(document).ready(function(){
         var negate = $("#negate").is(':checked');
         var value1 = $("#addwindow #value1").val();
         if(typeof value1 == "undefined"){
-            value1 = null;
+            value1 = null;  
         }
 
         var value2 = $("#addwindow #value2").val();

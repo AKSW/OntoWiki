@@ -164,6 +164,19 @@
         {{/each}}
     </script>
     
+    <!-- properties list template -->
+    <script id="propsSearchTemplate" type="text/x-jquery-tmpl">
+        {{each data}}
+            <li role="option">
+                <a about="${url}" href="#" class="instanceEntry">${title} <small>(
+                {{each types}}
+                    ${this} 
+                {{/each}}
+                )</small></a>
+             </li>
+        {{/each}}
+    </script>
+    
     <!-- filters enabled list template -->
     <script id="filtersTemplate" type="text/x-jquery-tmpl">
         {{each activefilters}}
@@ -277,6 +290,7 @@
         
         <div data-role="content" id="searchres-content">
             <!-- stuff here -->
+            <ul data-role="listview" data-inset="true" role="listbox" id="search-list"></ul>
         </div>
     </div>
     

@@ -69,8 +69,22 @@ function doSearch(){
     $.get(urlBase+"application/search/?searchtext-input="+req, function(data){
         $.get(urlBase+"resource/instances",function(data){
             $("#menu-form").remove();
-            $("#searchres-content").html(data);
             $("#searchres-title").text(req);
+            
+            console.log(data);
+            
+            data = $.parseJSON(data);
+            
+            var template = "#propsSearchTemplate";
+            var container = "#search-list";
+            // clear
+            $(container).empty();
+            // render
+            $(template).tmpl(data).appendTo(container);
+            // try refresh listview
+            try{
+                $(container).listview("refresh");
+            }catch(e){} // ignore all errors
             
             //location.hash = "searchres-list";
             $.mobile.changePage("#searchres-list", "slide", false, true );
