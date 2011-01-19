@@ -1,3 +1,33 @@
+<?php if($this->mobile){
+
+echo '{"values":[';
+
+$str = "";
+
+foreach($this->values as $value){
+    $str .= "{";
+    $str .= '"value":"'.$value['value'].'",';
+    $str .= '"type":"'.$value['type'].'"';
+    if ($value['type']=='typed-literal') {
+        $str .= ',"datatype":"'.$value['datatype'].'"';
+    }
+
+    if (!empty($value['xml:lang'])) {
+        $str .= ',"language":"'.$value['xml:lang'].'"';
+    }
+    if (isset($value['title'])){
+        $str .= ',"title":"'.$value['title'].'"'; 
+    }else{
+        $str .= ',"title":"'.$value['value'].'"';
+    }
+    $str .= "},";
+}
+
+echo substr($str, 0, -1);
+
+echo ']}';
+
+}else{ ?>
 <?php foreach($this->values as $value) : ?>
     <option
         value="<?php echo $value['value']; ?>"
@@ -18,7 +48,9 @@
     </option>
 <?php endforeach ?>
 
-<?php if (empty($this->values)) {
-    echo 'Error: no values found';
+<?php 
+    if (empty($this->values)) {
+        echo 'Error: no values found';
+    }
 }
 ?>

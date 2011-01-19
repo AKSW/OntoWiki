@@ -179,7 +179,16 @@
     <script id="filtersAvailableTemplate" type="text/x-jquery-tmpl">
         {{each availablefilters}}
             <li role="option">
-                <a about="${uri}" href="#" class="addfilter">${title}</a>
+                <a about="${uri}" inverse="${inverse}" href="#" class="addfilter">${title}</a>
+            </li>
+        {{/each}}
+    </script>
+    
+    <!-- filters available values list template -->
+    <script id="filtersValuesTemplate" type="text/x-jquery-tmpl">
+        {{each values}}
+            <li role="option">
+                <a about="${value}" type="${type}" datatype="${datatype}" language="${language}" href="#" class="applyfilter">${title}</a>
             </li>
         {{/each}}
     </script>
@@ -304,6 +313,18 @@
     
         <div data-role="content">
             <ul id="filters-add-list" data-role="listview" data-inset="true" role="listbox"></ul>
+        </div>
+    </div>
+    
+    <!-- FILTER ADD VIEW -->
+    <div id="filters-values-view" data-role="page">
+        <div data-role="header">
+            <!-- <a href="#" data-icon="arrow-l">Back</a> -->
+            <h1>Available values</h1>
+        </div>
+    
+        <div data-role="content">
+            <ul id="filters-values-list" data-role="listview" data-inset="true" role="listbox"></ul>
         </div>
     </div>
     

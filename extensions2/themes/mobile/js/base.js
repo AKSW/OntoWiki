@@ -61,7 +61,81 @@ $(document).ready(function(){
     });
     
     $(".addfilter").live('click', function(event){
+        var listName = "instances";
+        var url = urlBase+"filter/getpossiblevalues?predicate="+escape( $(this).attr("about") )+"&inverse="+$(this).attr("inverse")+"&list="+listName;
         
+        // loading 
+        $.mobile.pageLoading();
+        // get results
+        $.get(url, function(data){
+            data = $.parseJSON(data);
+            
+            $.mobile.changePage("#filters-values-view", "slide", false, true );
+            $.mobile.pageLoading(true);
+            
+            // render active stuff
+            var container = "#filters-values-list";
+            var template = "#filtersValuesTemplate";
+            // clear
+            $(container).empty();
+            // render
+            $(template).tmpl(data).appendTo(container);
+            // try refresh listview
+            try{
+                $(container).listview("refresh");
+            }catch(e){} // ignore all errors
+        });
+    });
+    
+    $(".applyfilter").live('click', function(event){
+        var prop = $(this).attr("about");
+        var propLabel = $(this).html();
+        var inverse = ( $(this).attr("inverse") == "true" );
+
+        var filtertype = $(this).attr("type");
+        var value1 = $(this).attr("value");
+        if(typeof value1 == "undefined"){
+            value1 = null;
+        }
+
+        var type = $(this).attr("type");
+        var typedata;
+        
+        if(type == "literal" && typeof $(this).attr("language") != 'undefined'){
+            typedata = $(this).attr("language");
+        } else if(type == "typed-literal"){
+            typedata = $(this).attr("datatype");
+        }
+        
+        var id = Math.random()*100;
+            
+        var data =
+            {
+            filter:
+                [
+                    {
+                        "mode" : "box",
+                        "action" : "add",
+                        "id" : "filter"+id,
+                        "property" : prop,
+                        "isInverse" : typeof inverse != 'undefined' ? inverse : false,
+                        "propertyLabel" : typeof propLabel != 'undefined' ? propLabel : null,
+                        "filter" : filtertype,
+                        "value1": value1,
+                        "value2": null,
+                        "valuetype": typeof type != 'undefined' ? type : null,
+                        "literaltype" : typeof typedata != 'undefined' ? typedata : null,
+                        "hidden" : false,
+                        "negate" : false
+                    }
+                ]
+        };
+
+        var dataserialized = $.toJSON(data);
+        var url = urlBase + "resource/instances?instancesconfig=" + encodeURIComponent(dataserialized)+"&list=instances";
+        $.post(url, function(data){
+            console.log(data);
+        });
     });
     
     // navigation buttons events

@@ -18,6 +18,8 @@ class FilterController extends OntoWiki_Controller_Component
 {
        
     public function getpossiblevaluesAction() {
+        $this->view->mobile = Zend_Controller_Front::getInstance()->getRequest()->isMobile();
+        
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         if($listHelper->listExists($this->_request->getParam('list'))){
             $instances   = $listHelper->getList($this->_request->getParam('list'));
