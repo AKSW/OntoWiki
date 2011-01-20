@@ -59,7 +59,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
     public function init()
     {
         parent::init();
-        $this->_properties   = $this->_privateConfig->properties->toArray();
+        //$this->_properties   = $this->_privateConfig->properties->toArray();
         $this->_syncModelUri = $this->_privateConfig->syncModelUri;
 
         // Translation hack in order to enable the plugin to translate...
@@ -121,7 +121,8 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         foreach ($activeWrapperList as $wrapperName) {
             $hash = $this->_getHash($uri, $wrapperName, $modelUri);
 
-            $r = new Erfurt_Rdf_Resource($uri, $model);
+            $r = new Erfurt_Rdf_Resource($uri);
+            $r->setLocator($this->_getProxyUri($uri));
 
             $wrapperInstance = $wrapperRegistry->getWrapperInstance($wrapperName);
             if ($wrapperInstance->isHandled($r, $modelUri)) {
@@ -512,5 +513,21 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         }
 
         return $this->_syncConfigListCache;
+    }
+    
+    private function _getProxyUri($uri)
+    {
+        // If at least one rewrite rule is defined, we iterate through them.
+        if (isset($this->_privateConfig->rewrite)) {
+            $rulesArray = $this->_privateConfig->rewrite->toArray();
+            foreach ($rulesArray as $ruleId => $ruleSpec) {
+                $proxyUri = preg_replace($ruleSpec['pattern'], $ruleSpec['replacement'], $uri);
+                if ($proxyUri !== $uri) {
+                    return $proxyUri;
+                }
+            }
+        }
+               
+        return null;
     }
 }
