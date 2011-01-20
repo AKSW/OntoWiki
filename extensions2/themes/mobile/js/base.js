@@ -221,6 +221,9 @@ $(document).ready(function(){
             // remove loader
             $.mobile.pageLoading(true);
 
+            // redraw page
+            $("#instance-list").page('destroy').page();
+
             // switch page
             $.mobile.changePage("#instance-list", "slide", false, true );
         })
