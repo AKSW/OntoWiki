@@ -60,9 +60,14 @@ $(document).ready(function(){
         });
     });
     
+    var filter_property, filter_property_label, filter_inverse;
+    
     $(".addfilter").live('click', function(event){
         var listName = "instances";
-        var url = urlBase+"filter/getpossiblevalues?predicate="+escape( $(this).attr("about") )+"&inverse="+$(this).attr("inverse")+"&list="+listName;
+        filter_property_label = $(this).text();
+        filter_property = $(this).attr("about");
+        filter_inverse = $(this).attr("inverse");
+        var url = urlBase+"filter/getpossiblevalues?predicate="+escape( filter_property )+"&inverse="+filter_inverse+"&list="+listName;
         
         // loading 
         $.mobile.pageLoading();
@@ -88,12 +93,12 @@ $(document).ready(function(){
     });
     
     $(".applyfilter").live('click', function(event){
-        var prop = $(this).attr("about");
-        var propLabel = $(this).html();
-        var inverse = ( $(this).attr("inverse") == "true" );
-
-        var filtertype = $(this).attr("type");
-        var value1 = $(this).attr("value");
+        // show load progress
+        $.mobile.pageLoading();
+    
+        // set filter options
+        var filtertype = "equals";
+        var value1 = $(this).attr("about");
         if(typeof value1 == "undefined"){
             value1 = null;
         }
@@ -108,7 +113,8 @@ $(document).ready(function(){
         }
         
         var id = Math.random()*100;
-            
+        
+        // create filter data array
         var data =
             {
             filter:
@@ -117,9 +123,9 @@ $(document).ready(function(){
                         "mode" : "box",
                         "action" : "add",
                         "id" : "filter"+id,
-                        "property" : prop,
-                        "isInverse" : typeof inverse != 'undefined' ? inverse : false,
-                        "propertyLabel" : typeof propLabel != 'undefined' ? propLabel : null,
+                        "property" : filter_property,
+                        "isInverse" : typeof filter_inverse != 'undefined' ? ( filter_inverse=="true" ) : false,
+                        "propertyLabel" : typeof filter_property_label != 'undefined' ? filter_property_label : null,
                         "filter" : filtertype,
                         "value1": value1,
                         "value2": null,
@@ -130,12 +136,28 @@ $(document).ready(function(){
                     }
                 ]
         };
-
+        
+        // serialize array
         var dataserialized = $.toJSON(data);
         var url = urlBase + "resource/instances?instancesconfig=" + encodeURIComponent(dataserialized)+"&list=instances";
-        $.post(url, function(data){
-            console.log(data);
+        // set title  
+        $("#instance-title").text("Custom filtering");        
+        // handle page change
+        $(document).bind("instance.list.done", function(e, status){
+            $(document).unbind(e); 
+            
+            // remove loader
+            $.mobile.pageLoading(true);
+
+            // redraw page
+            $("#instance-list").page('destroy').page();
+
+            // switch page
+            $.mobile.changePage("#instance-list", "slide", false, true );
         });
+        
+        // get
+        provider.getInstanceList(url);
     });
     
     // navigation buttons events

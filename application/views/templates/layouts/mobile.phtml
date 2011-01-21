@@ -184,6 +184,9 @@
             {{if mode == "rdfsclass"}}
                 Type: <a about="${property}" href="${property_link}">${property_label}</a>
             {{/if}}
+            {{if mode == "box"}}
+                Equals: <a about="${property}" href="${property_link}">${value1}</a>
+            {{/if}}
             </li>
         {{/each}}
     </script>

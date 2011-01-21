@@ -6,6 +6,8 @@ $odd = true;
 
 echo "{";
 
+$res = "";
+
 if ($this->filter){
     $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r'));
     
@@ -17,66 +19,68 @@ if ($this->filter){
         }
         
         // id
-        echo '{"id":"'.$filter['id'].'",';
+        $res .= '{"id":"'.$filter['id'].'",';
         
         // mode
-        echo '"mode":"'.$filter['mode'].'",';
+        $res .= '"mode":"'.$filter['mode'].'",';
         
         //
         if($filter['mode'] == "box"){            
             // property
-            echo '"property":"'.$filter['property'].'",';
+            $res .= '"property":"'.$filter['property'].'",';
             
             // link
-            echo '"property_link":"'.(string) $linkurl->setParam('r', $filter['property'], true).'",';
+            $res .= '"property_link":"'.(string) $linkurl->setParam('r', $filter['property'], true).'",';
             
             // label
-            echo '"property_label":"'.$this->titleHelper->getTitle($filter['property']).'",';
+            $res .= '"property_label":"'.$this->titleHelper->getTitle($filter['property']).'",';
             
             if ($filter['isInverse']){
-                echo '"inverse":true,';
+                $res .= '"inverse":true,';
             }
             if ($filter['negate']){ 
-                echo '"negate":true,';
+                $res .= '"negate":true,';
             }
             
-            echo $filter['filter'];
+            $res .= '"type":"'.$filter['filter'].'",';
             if ($filter['value1']){
                 if ($filter['valuetype'] == 'uri'){
-                    echo '"value1":"'.$filter['value1'].'",';
-                    echo '"value1_link":"'. (string) $linkurl->setParam('r', $filter['value1'], true).'",';
-                    echo '"value1_label":"'.$this->titleHelper->getTitle($filter['value1']).'"';
+                    $res .= '"value1":"'.$filter['value1'].'",';
+                    $res .= '"value1_link":"'. (string) $linkurl->setParam('r', $filter['value1'], true).'",';
+                    $res .= '"value1_label":"'.$this->titleHelper->getTitle($filter['value1']).'"';
                 }else{
-                    echo '"value1":"'.$filter['value1'].'"';
+                    $res .= '"value1":"'.$filter['value1'].'"';
                 }
             }
             if ($filter['value2']){
                 if ($filter['valuetype'] == 'uri'){
-                    echo ',"value2":"'.$filter['value2'].'",';
-                    echo '"value2_link":"'.(string) $linkurl->setParam('r', $filter['value2'], true).'",';
-                    echo '"value2_label":"'.$this->titleHelper->getTitle($filter['value2']).'"';
+                    $res .= ',"value2":"'.$filter['value2'].'",';
+                    $res .= '"value2_link":"'.(string) $linkurl->setParam('r', $filter['value2'], true).'",';
+                    $res .= '"value2_label":"'.$this->titleHelper->getTitle($filter['value2']).'"';
                 }else{
-                    echo ',"value2":"'.$filter['value2'].'"';
+                    $res .= ',"value2":"'.$filter['value2'].'"';
                 }
             }
         }
         
         if($filter['mode'] == "rdfsclass"){
-            echo '"property":"'.$filter['rdfsclass'].'",';
-            echo '"property_link":"'.(string) $linkurl->setParam('r', $filter['rdfsclass'], true).'",';
-            echo '"property_label":"'.$this->titleHelper->getTitle($filter['rdfsclass']).'"';
+            $res .= '"property":"'.$filter['rdfsclass'].'",';
+            $res .= '"property_link":"'.(string) $linkurl->setParam('r', $filter['rdfsclass'], true).'",';
+            $res .= '"property_label":"'.$this->titleHelper->getTitle($filter['rdfsclass']).'"';
         } 
         
         if($filter['mode'] == "search"){
-            echo '"property":"'.$filter['searchText'].'"';
+            $res .= '"property":"'.$filter['searchText'].'"';
         } 
         
         if($filter['mode'] == "triples"){
-            echo '"property":"Base Query"';
+            $res .= '"property":"Base Query"';
         }
         
-        echo "}";
+        $res .= "},";
     }
+    
+    echo substr($res,0,-1);
     
     echo "]";
 }
