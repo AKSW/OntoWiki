@@ -47,7 +47,11 @@ dataProvider.prototype.getInstanceList = function(url){
     var temp = "#instTemplate";
     var cont = "#inst-list";
     
-    var data = $.parseJSON(localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url]);
+    var str = localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url];
+    var data = [];
+    if( str && str.length > 0){ 
+        data = $.parseJSON(str);
+    }
     if( typeof data != 'undefined' && data != null
         && connectionStatus == "offline" ){
         this.renderData(data, temp, cont);
@@ -56,13 +60,20 @@ dataProvider.prototype.getInstanceList = function(url){
     }else{
         var dp = this;
         $.get(url, function(data){
-            // save 
-            localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url] = data;
-            // parse
-            var dataArr = $.parseJSON(data);
-            // render
-            dp.renderData(dataArr, temp, cont);
-            $("#inst-statusbar").empty().append( $(dataArr['statusbar']) );
+            if( data.replace(/[\n\r]/, "").length < 1){
+                // save null
+                localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url] = '';            
+                // show empty list
+                dp.renderData([], temp, cont);
+            }else{
+                // save 
+                localStorage["ontowiki.inst."+selectedNavigationEntry.url+"."+url] = data;
+                // parse
+                var dataArr = $.parseJSON(data);
+                // render
+                dp.renderData(dataArr, temp, cont);
+                $("#inst-statusbar").empty().append( $(dataArr['statusbar']) );
+            }
             $(document).trigger('instance.list.done');
         });
     }
