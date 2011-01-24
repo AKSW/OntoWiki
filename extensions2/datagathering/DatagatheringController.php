@@ -921,14 +921,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     $stmtAddCount = $stmtAfterCount - $stmtBeforeCount;
 
                     if ($stmtAddCount > 0) {
-                        $message = $translate->_('Data was found for the given URI. %1$d statements were added.');
-            
-                        $this->_owApp->appendMessage(
-                            new OntoWiki_Message(sprintf($message, $stmtAddCount), OntoWiki_Message::SUCCESS)
-                        );
 // TODO test ns
                         // If we added some statements, we check for additional namespaces and add them.
-                        if (in_array(Erfurt_Wrapper::RESULT_HAS_NS, $wrapperStatus)) {
+                        if (in_array(Erfurt_Wrapper::RESULT_HAS_NS, $wrapperResult['status_codes'])) {
                             $namespaces = $wrapperResult['ns'];
                             
                             $erfurtNamespaces = Erfurt_App::getInstance()->getNamespaces();
@@ -946,6 +941,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
                                 }
                             }
                         }
+                        
+                        return $this->_sendResponse(
+                            true, 
+                            'Data was found for the given URI. Statements were added.', 
+                            OntoWiki_Message::INFO
+                        );
                     } else {
                         return $this->_sendResponse(
                             true, 
