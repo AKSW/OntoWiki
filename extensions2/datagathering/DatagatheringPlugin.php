@@ -521,7 +521,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         if (isset($this->_privateConfig->rewrite)) {
             $rulesArray = $this->_privateConfig->rewrite->toArray();
             foreach ($rulesArray as $ruleId => $ruleSpec) {
-                $proxyUri = preg_replace($ruleSpec['pattern'], $ruleSpec['replacement'], $uri);
+                $proxyUri = @preg_replace($ruleSpec['pattern'], $ruleSpec['replacement'], $uri);
                 if ($proxyUri !== $uri) {
                     return $proxyUri;
                 }

@@ -275,7 +275,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // if we need to show implicit elements
         // generate additional query for them
-        echo $showImplicit==true ? "true": "false";
+        //echo $showImplicit==true ? "true": "false";
         if($showImplicit){
             // new query for regular event
             if($setup->state->lastEvent != "search"){
