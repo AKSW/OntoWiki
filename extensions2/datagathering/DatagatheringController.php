@@ -742,7 +742,14 @@ class DatagatheringController extends OntoWiki_Controller_Component
             return;
         }
 
-        $wrapperResult = $wrapper->run($r, $this->_graphUri);
+        try {
+            $wrapperResult = $wrapper->run($r, $this->_graphUri);
+        } catch (Erfurt_Wrapper_Exception $e) {
+            return $this->_sendResponse(false, 'No data was imported: ' . $e->getMessage(), OntoWiki_Message::ERROR);
+        }
+        
+        
+        
         if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
@@ -971,10 +978,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 new OntoWiki_Message($message, $messageType)
             );
         }
-        
+
         $this->_response->setHeader('Content-Type', 'application/json', true);
         $this->_response->setBody(json_encode($returnValue));
-        $this->_response->sendResponse();
+        //$this->_response->sendResponse();
     }
     
     // ------------------------------------------------------------------------

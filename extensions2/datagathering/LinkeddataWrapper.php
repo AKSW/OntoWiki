@@ -238,6 +238,9 @@ class LinkeddataWrapper extends Erfurt_Wrapper
             Erfurt_Wrapper::RESULT_HAS_ADD, 
             Erfurt_Wrapper::RESULT_HAS_NS
         );
+        
+        $uri = $r->getUri();
+        
         $fullResult['status_description'] = "Linked Data found for URI $uri";
         $fullResult['ns'] = $ns;
         $fullResult['add'] = $data;
@@ -329,6 +332,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         
         switch ($contentType) {
             case 'application/rdf+xml':
+            case 'application/xml': // Hack for lsi urns
             case 'text/plain':
                 $type = 'rdfxml';
                 break;
