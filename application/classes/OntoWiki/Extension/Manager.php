@@ -101,12 +101,16 @@ class Ontowiki_Extension_Manager {
             $extensionPath .= DIRECTORY_SEPARATOR;
         }
         $this->_extensionPath = $extensionPath;
-
+        
+        OntoWiki_Module_Registry::reset();
+        //OntoWiki_Module_Registry::getInstance()->resetInstance();
         $this->_moduleRegistry = OntoWiki_Module_Registry::getInstance();
         $this->_moduleRegistry->setExtensionPath($extensionPath);
 
         //TODO plugin & wrapper registry? needed anymore? why split it?
+        Erfurt_Wrapper_Registry::reset();
         $this->_wrapperRegistry = Erfurt_Wrapper_Registry::getInstance();
+        
 
         $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
 
@@ -467,7 +471,6 @@ class Ontowiki_Extension_Manager {
                 }
             }
         }
-
     }
 
     /**
@@ -536,7 +539,7 @@ class Ontowiki_Extension_Manager {
                 $config = unserialize(serialize($config)) ; //dont touch the original config
                 $config->merge($config->modules->{$moduleName});
             }
-        }
+        } 
 
         if (isset($config->context) && is_string($config->context)) {
             $contexts = array($config->context);
@@ -562,11 +565,12 @@ class Ontowiki_Extension_Manager {
     protected function _addWrapper($filename, $wrapperPath, $config)
     {
         $owApp = OntoWiki::getInstance();
-    	$pluginManager = $owApp->erfurt->getWrapperManager(false);
-        $pluginManager->addWrapperExternally(
+    	$wrapperManager = $owApp->erfurt->getWrapperManager(false);
+        $wrapperManager->addWrapperExternally(
                 strtolower(substr($filename,0,strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))), 
                 $wrapperPath,
-                isset($config->private)?$config->private:array());
+                isset($config->private) ? $config->private : new Zend_Config(array(), true)
+        );
     }
 
 

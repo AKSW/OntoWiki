@@ -67,8 +67,7 @@ class ResourceUriGenerator {
     const FORMAT_SPARQL = 'sparql';
     
     /**
-     * 
-     * Enter description here ...
+     * constructor
      * @param $resourceUri
      * @param $defaultModel
      * @param $configPath
@@ -81,22 +80,10 @@ class ResourceUriGenerator {
         } else {
             $this->_owApp = $ow;
         }
-        
-        // check for configuration in specific path
-        if ( $configPath === null || !(is_string($configPath)) ) {
-            // rebuild default path to plugin.ini
-            $configPath = str_replace(__CLASS__ . '.php','',__FILE__);
-            $configPath = substr($configPath,0,sizeof($configPath) - 9);
-            $configPath .= 'plugin.ini';
-        } else {
-            // do nothing
-        }
 
-        if (is_readable($configPath)) {
-            $this->_config = new Zend_Config_Ini($configPath,'private');
-        } else {
-            throw new InvalidArgumentException('ResourceUriGenerator can\'t load configuration from : ' . $configPath);
-        }
+        //get config
+        $config = $this->_owApp->extensionManager->getExtensionConfig("resourcecreationuri");
+        $this->_config = $config->private;
         
         // check for defaultModel to work on
         if ($defaultModel === null && $this->_owApp->selectedModel !== null) {
@@ -113,8 +100,7 @@ class ResourceUriGenerator {
     }
     
     /**
-     * 
-     * Enter description here ...
+     * set a new defaultmodel in which the resources should be created
      * @param $defaultModel
      */
     public function setDefaultModel($defaultModel) {
@@ -420,7 +406,6 @@ class ResourceUriGenerator {
     
     /**
      * Method that counts already existing distinct datasets for given uri
-     * 
      * 
      * @param $uri uri string
      * @return int distinct existing datasets

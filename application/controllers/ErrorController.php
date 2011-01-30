@@ -33,6 +33,19 @@ class ErrorController extends Zend_Controller_Action
                 default:
                     // don't change headers
             }
+            
+            switch (true) {
+                case ($exception instanceof OntoWiki_Http_Exception):
+                    $this->_helper->layout()->disableLayout();
+                    $this->_helper->viewRenderer->setNoRender();
+                    
+                    $response = $this->getResponse();
+                    $response->setHttpResponseCode($exception->getResponseCode());
+                    $response->setBody($exception->getResponseMessage());
+                    $response->sendResponse();
+                    
+                    return;
+            }
 
             // exception code determines whether error or info
             // see erfurt developer documentation

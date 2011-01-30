@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
+ * OntoWiki exception base class
+ *
+ * @category OntoWiki
+ * @package Menu
+ * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
+ */
+class OntoWiki_Http_Exception extends OntoWiki_Exception
+{
+    const ERROR_CODE_BASE = 3000;
+    
+    protected $_responseCode = 0;
+    
+    public function __construct($responseCode)
+    {
+        parent::__construct(
+            Zend_Http_Response::responseCodeAsText($responseCode), 
+            self::ERROR_CODE_BASE + (int)$responseCode
+        );
+        
+        $this->_responseCode = $responseCode;
+    }
+    
+    public function getResponseMessage()
+    {
+        return Zend_Http_Response::responseCodeAsText($this->_responseCode);
+    }   
+    
+    public function getResponseCode()
+    {
+        return $this->_responseCode;
+    }
+}

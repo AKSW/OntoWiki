@@ -36,12 +36,40 @@ class ComplexPattern {
      * @var Pattern Engine
      */
     private $_engine = null;
+    
+    /**
+     * Storing annotation in this attribute (term-state, pattern level ...) 
+     * @var array
+     */
+    private $_annotations = array();
 
     /**
      * Creates complex pattern initally
      */
     public function __construct() {
 
+    }
+    
+    /**
+     * Set annotation on pattern
+     * @param $key string
+     * @param $value mixed (string most likely)
+     */
+    public function setAnnotation($key, $value) {
+        $this->_annotations[$key] = $value;
+    }
+    
+    /**
+     * Get Annotation value
+     * @param $key string
+     * @return mixed (string most likely)
+     */
+    public function getAnnotation($key) {
+        if ( isset($this->_annotations[$key]) ) {
+            return $this->_annotations[$key];
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -105,7 +133,7 @@ class ComplexPattern {
         $data['desc'] = $this->getDescription();
 
         if ($asJson) {
-            return json_encode($data);
+            return Zend_Json::encode($data);
         } else {
             return $data;
         }

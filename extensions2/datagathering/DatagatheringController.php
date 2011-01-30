@@ -117,7 +117,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $this->_syncModelUri = $this->_privateConfig->syncModelUri;
         $this->_syncModelHelperBase = $this->_privateConfig->syncModelHelperBase;
         
-        $this->_properties = $this->_privateConfig->properties->toArray();
+        //$this->_properties = $this->_privateConfig->properties->toArray();
         
         $this->_wrapperRegisty = Erfurt_Wrapper_Registry::getInstance();
         
@@ -659,7 +659,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      * wrapper - Optional parameter, which contains the name of the wrapper 
      *           to use. If not given linkeddata is used as default.
      */
-    public function testAction()
+    /*public function testAction()
     {
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
@@ -685,6 +685,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         echo json_encode($result);
         exit; 
     }
+    */
     
     /**
      * Imports data available for a given URI and wrapper name.
@@ -696,42 +697,62 @@ class DatagatheringController extends OntoWiki_Controller_Component
      */
     public function importAction()
     {
+        // Disable rendering
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout()->disableLayout();
+        
+        // We require GET requests here.
+        if (!$this->_request->isGet()) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            return;
+        }
+    
+        // uri param is required.
         if (!isset($this->_request->uri)) {
-            $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
-            echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            return;
         }
         $uri = urldecode($this->_request->uri);
-        
+        $r = new Erfurt_Rdf_Resource($uri);
+        $r->setLocator($this->_getProxyUri($uri));
+            
+        if (null === $this->_graphUri) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            return;
+        }
+            
+        // Try to instanciate the requested wrapper
+        $wrapper = null;
+        $wrapperName = 'linkeddata';
         if (isset($this->_request->wrapper)) {
             $wrapperName = $this->_request->wrapper;
-        } else {
-            $wrapperName = 'linkeddata';
-        }
-       
+        } 
         try {
-            $store = Erfurt_App::getInstance()->getStore();
-       
-            $wrapper = $this->_wrapperRegisty->getWrapperInstance($wrapperName);
-            $hasData = $wrapper->isAvailable($uri, $this->_graphUri);
+            $wrapper = Erfurt_Wrapper_Registry::getInstance()->getWrapperInstance($wrapperName);
+        } catch (Erfurt_Wrapper_Exception $e) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            return;
+        }
 
-            $wrapperResult = false;
-            if ($hasData) {
-                $wrapperResult = $wrapper->run($uri, $this->_graphUri);
-            }
-        } catch (Exception $e) {
-            $wrapperResult = false;
+        // Check whether user is allowed to write the model.
+        $store = $this->_erfurt->getStore();
+        $model = $store->getModel($this->_graphUri);
+        if (!$model || !$model->isEditable()) {
+            $this->_response->setException(new OntoWiki_Http_Exception(403));
+            return;
+        }
+
+        try {
+            $wrapperResult = $wrapper->run($r, $this->_graphUri);
+        } catch (Erfurt_Wrapper_Exception $e) {
+            return $this->_sendResponse(false, 'No data was imported: ' . $e->getMessage(), OntoWiki_Message::ERROR);
         }
         
-        $translate = $this->_owApp->translate;
         
-        if ($wrapperResult !== false) {
-            $retVal = true;
-            
+        
+        if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
-                $wrapperStatus = $wrapperResult['status_codes'];
-                
-                if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperStatus)) {
+                if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
                     $wrapperAdd = $wrapperResult['add'];
 
                     $stmtBeforeCount = $store->countWhereMatches(
@@ -750,6 +771,143 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     
                     // Start action, add statements, finish action.
                     $versioning->startAction($actionSpec);
+                    
+                    // TODO handle configuration for import...
+                    if (isset($this->_privateConfig->fetch->allData) && ((boolean)$this->_privateConfig->fetch->allData === true)) {
+                        // Keep all data...
+                        $wrapperAdd = $wrapperAdd;
+                    } else {
+                        // Only use those parts of the data, that have the resource URI as subject.
+                        if (isset($wrapperAdd[$uri])) {
+                            $wrapperAdd = array(
+                                $uri => $wrapperAdd[$uri]
+                            );
+                        } else {
+                            $wrapperAdd = array();
+                        }
+                        
+                        // We also need to remove all blank node objects
+                        $newResult = array();
+                        foreach ($wrapperAdd as $s=>$pArray) {
+                            foreach ($pArray as $p=>$oArray) {
+                                foreach ($oArray as $oSpec) {
+                                    if ($oSpec['type'] !== 'bnode') {
+                                        if (!isset($newResult[$s])) {
+                                            $newResult[$s] = array();
+                                        }
+                                        if (!isset($newResult[$s][$p])) {
+                                            $newResult[$s][$p] = array();
+                                        }
+                                        $newResult[$s][$p][] = $oSpec; 
+                                    }
+                                }
+                            }
+                        }
+                        $wrapperAdd = $newResult;
+                    }
+
+                    $presetMatch = false;
+                    if (isset($this->_privateConfig->fetch->preset)) {
+                        foreach ($this->_privateConfig->fetch->preset->toArray() as $i=>$preset) {
+                            if ($this->_matchUri($preset['match'], $uri)) {
+                                $presetMatch = $i;
+                                break;
+                            }
+                        }
+                    }
+
+                    $data = $wrapperAdd;
+                    $result = null;
+                    if ($presetMatch !== false) {
+                        // Use the preset.
+                        $presets = $this->_privateConfig->fetch->preset->toArray();
+
+                        if (isset($presets[$presetMatch]['mode']) && $presets[$presetMatch]['mode'] === 'none') {
+                            // Start with an empty result.
+                            $result = array();
+                            if (isset($presets[$presetMatch]['exception'])) {
+                                foreach ($presets[$presetMatch]['exception'] as $exception) {
+                                    if (isset($data[$uri][$exception])) {
+                                        if (!isset($result[$uri])) {
+                                            $result[$uri] = array();
+                                        }
+                                        if (!isset($result[$uri][$exception])) {
+                                            $result[$uri][$exception] = array();
+                                        }
+
+                                        foreach ($data[$uri][$exception] as $o) {
+                                            if ($o['type'] === 'literal') {
+                                                if (isset($presets[$presetMatch]['lang'])) {
+                                                    foreach ($presets[$presetMatch]['lang'] as $lang) {
+                                                        if (isset($o['lang']) && $o['lang'] === $lang) {
+                                                            $result[$uri][$exception][] = $o;
+                                                        }
+                                                    }
+                                                } else {
+                                                    $result[$uri][$exception][] = $o;
+                                                }
+                                            } else {
+                                                $result[$uri][$exception][] = $o;
+                                            }
+                                        }
+
+                                        if (isset($presets[$presetMatch]['lang'])) {
+                                            if (count($result[$uri][$exception]) === 0) {
+                                                foreach ($data[$uri][$exception] as $o) {
+                                                    if (!isset($o['lang'])) {
+                                                        $result[$uri][$exception][] = $o;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }   
+                        } else {
+                            // Use the default rule.
+
+                            // Start with all data.
+                            $result = $data;
+                            if (isset($presets[$presetMatch]['exception'])) {
+                                foreach ($presets[$presetMatch]['exception'] as $exception) {
+                                    if (isset($data[$uri][$exception])) {
+                                        if (isset($result[$uri][$exception])) {
+                                            unset($result[$uri][$exception]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (isset($this->_privateConfig->fetch->default->mode) && $this->_privateConfig->fetch->default->mode === 'none') {
+                            // Start with an empty result.
+                            $result = array();
+                            if (isset($this->_privateConfig->fetch->default->exception)) {
+                                foreach ($this->_privateConfig->fetch->default->exception->toArray() as $exception) {
+                                    if (isset($data[$uri][$exception])) {
+                                        if (!isset($result[$uri])) {
+                                            $result[$uri] = array();
+                                        } 
+                                            $result[$uri][$exception] = $data[$uri][$exception];
+                                    }
+                                }
+                            }
+                        } else {
+                            // Start with all data.
+                            $result = $data;
+                            if (isset($this->_privateConfig->fetch->default->exception)) {
+                                foreach ($this->_privateConfig->fetch->default->exception->toArray() as $exception) {
+                                    if (isset($data[$uri][$exception])) {
+                                        if (isset($result[$uri][$exception])) {
+                                            unset($result[$uri][$exception]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $wrapperAdd = $result;
 
                     $store->addMultipleStatements($this->_graphUri, $wrapperAdd);
                     $versioning->endAction();
@@ -763,14 +921,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     $stmtAddCount = $stmtAfterCount - $stmtBeforeCount;
 
                     if ($stmtAddCount > 0) {
-                        $message = $translate->_('Data was found for the given URI. %1$d statements were added.');
-                        
-                        $this->_owApp->appendMessage(
-                            new OntoWiki_Message(sprintf($message, $stmtAddCount), OntoWiki_Message::SUCCESS)
-                        );
-
+// TODO test ns
                         // If we added some statements, we check for additional namespaces and add them.
-                        if (in_array(Erfurt_Wrapper::RESULT_HAS_NS, $wrapperStatus)) {
+                        if (in_array(Erfurt_Wrapper::RESULT_HAS_NS, $wrapperResult['status_codes'])) {
                             $namespaces = $wrapperResult['ns'];
                             
                             $erfurtNamespaces = Erfurt_App::getInstance()->getNamespaces();
@@ -788,45 +941,49 @@ class DatagatheringController extends OntoWiki_Controller_Component
                                 }
                             }
                         }
-                    } else {
-                        $message = $translate->_('Data was found for the given URI but no statements were added.');
                         
-                        $this->_owApp->appendMessage(
-                            new OntoWiki_Message($message, OntoWiki_Message::INFO)
+                        return $this->_sendResponse(
+                            true, 
+                            'Data was found for the given URI. Statements were added.', 
+                            OntoWiki_Message::INFO
+                        );
+                    } else {
+                        return $this->_sendResponse(
+                            true, 
+                            'Data was found for the given URI but no statements were added.', 
+                            OntoWiki_Message::INFO
                         );
                     }
                 } else {
-                    $message = $translate->_('No data returned for the given URI by wrapper.');
-                    
-                    $this->_owApp->appendMessage(
-                        new OntoWiki_Message($message, OntoWiki_Message::INFO)
+                    return $this->_sendResponse(
+                        true, 
+                        'No data returned for the given URI by wrapper.', 
+                        OntoWiki_Message::INFO
                     );
                 }
             } else {
-                $retVal = false;
-                $message = $translate->_('No data was imported.');
-                
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message($message, OntoWiki_Message::ERROR)
-                );
-            }
-            
-            
+                return $this->_sendResponse(false, 'No data was imported.', OntoWiki_Message::ERROR);
+            }   
         } else {
-            $retVal = false;
-            
-            $message = $translate->_('No data was imported.');
-            
-            $this->_owApp->appendMessage(
-                new OntoWiki_Message($message, OntoWiki_Message::ERROR)
-            );
+            return $this->_sendResponse(false, 'No data was imported.', OntoWiki_Message::ERROR);
         }
-        
-        $this->_response->setHeader('Content-Type', 'application/json', true);
-        echo json_encode($retVal);
-        exit;
     }
     
+    private function _sendResponse($returnValue, $message = null, $messageType = OntoWiki_Message::SUCCESS)
+    {
+        if (null !== $message) {
+            $translate = $this->_owApp->translate;
+            
+            $message = $translate->_($message);
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message($message, $messageType)
+            );
+        }
+
+        $this->_response->setHeader('Content-Type', 'application/json', true);
+        $this->_response->setBody(json_encode($returnValue));
+        //$this->_response->sendResponse();
+    }
     
     // ------------------------------------------------------------------------
     // --- Statement sync related methods -------------------------------------
@@ -837,7 +994,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      * by an user with editing rights on the local config model or with model
      * management rights.
      */
-    public function initAction()
+    /*public function initAction()
     {
         try {
             $syncModel = $this->_getSyncModel();
@@ -862,6 +1019,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             exit;
         }
     }
+    */
     
     /**
      * This service allows to configure a resource for sync.
@@ -870,7 +1028,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      * 
      * wrapper - Optional wrapper parameter. Default is linked data.
      */ 
-    public function configAction()
+    /*public function configAction()
     {
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
@@ -1050,6 +1208,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 		$this->view->formClass     = 'simple-input input-justify-left';
 		$this->view->formName      = 'config';
     }
+    */
     
     /**
      * Executes a sync iff a sync is configured for the given resource.
@@ -1059,7 +1218,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      * wrapper - Optional parameter containing a specific wrapper. 
      *           Otherwise all matching sync actions are executed.
      */
-    public function syncAction()
+    /*public function syncAction()
     {
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
@@ -1142,6 +1301,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             }
         }
     }
+    */
     
     /**
      * This service returns the date/time of the last modification of the given
@@ -1157,7 +1317,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      * On success returns the date/time of the last sync, as well as the 
      * date/time of the last modification of the resource.
      */
-    public function modifiedAction()
+    /*public function modifiedAction()
     {
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
@@ -1269,7 +1429,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 exit;
             }
         }
-    }
+    }*/
     
     /**
      * Filters a result regarding the configured sparql query.
@@ -1357,6 +1517,26 @@ class DatagatheringController extends OntoWiki_Controller_Component
         return $wrapperResult;
     }
     
+    
+    
+    
+    
+    private function _getProxyUri($uri)
+    {
+        // If at least one rewrite rule is defined, we iterate through them.
+        if (isset($this->_privateConfig->rewrite)) {
+            $rulesArray = $this->_privateConfig->rewrite->toArray();
+            foreach ($rulesArray as $ruleId => $ruleSpec) {
+                $proxyUri = preg_replace($ruleSpec['pattern'], $ruleSpec['replacement'], $uri);
+                if ($proxyUri !== $uri) {
+                    return $proxyUri;
+                }
+            }
+        }
+               
+        return null;
+    }
+    
     /**
      * Returns all sync configs for the given parameters or false, if no such exists.
      * 
@@ -1366,7 +1546,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
      * 
      * @return array|false
      */
-    private function _getSyncConfig($uri, $wrapperName = null, $modelUri = null)
+// TODO Remove?
+    /*private function _getSyncConfig($uri, $wrapperName = null, $modelUri = null)
     {
         $hash = md5($uri . (string)$wrapperName . (string)$modelUri);
         
@@ -1448,14 +1629,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
         
         return $this->_syncConfig[$hash];
-    }
+    }*/
     
     /**
      * Checks whether the sync model is available and imports it if needed.
      * 
      * @return Erfurt_Rdf_Model
      */
-    private function _getSyncModel()
+// TODO Remove?
+    /*private function _getSyncModel()
     {
         $store = Erfurt_App::getInstance()->getStore();
         
@@ -1496,11 +1678,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
         
         return $syncModel;
     }
+    */
     
     /**
      * Executes the sync.
      */
-    private function _sync($uri, $wrapperName, $modelUri)
+// TODO Remove or make usable
+    /*private function _sync($uri, $wrapperName, $modelUri)
     {
         $store = Erfurt_App::getInstance()->getStore();
         
@@ -1594,5 +1778,18 @@ class DatagatheringController extends OntoWiki_Controller_Component
         
         // If we reach this point, the sync was successful.
         return self::SYNC_SUCCESS;
+    }*/
+    
+    private function _matchUri($pattern, $uri)
+    {
+        if ((substr($pattern, 0, 7) !== 'http://')) {
+            $pattern = 'http://' . $pattern;
+        }
+        
+        if ((substr($uri, 0, strlen($pattern)) === $pattern)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
