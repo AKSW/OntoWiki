@@ -429,7 +429,13 @@ function createInstanceFromClassURI(type, dataCallback) {
                cancelButtonTitle: 'Cancel',
                title: 'Create New Instance of ' + type,  
                autoParse: false, 
-               showPropertyButton: false
+               showPropertyButton: true, 
+               onSubmitSuccess: function () {
+                   // HACK: reload whole page after 1000 ms
+                   window.setTimeout(function () {
+                       window.location.href = window.location.href;
+                   }, 500);
+               }
            });
            
            RDFauthor.start();
@@ -464,7 +470,13 @@ function editResourceFromURI(resource) {
                 cancelButtonTitle: 'Cancel',
                 title: 'Edit Resource ' + resource,  
                 autoParse: false, 
-                showPropertyButton: false
+                showPropertyButton: true, 
+                onSubmitSuccess: function () {
+                    // HACK: reload whole page after 1000 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
+                    }, 500);
+                }
             });
 
             RDFauthor.start();

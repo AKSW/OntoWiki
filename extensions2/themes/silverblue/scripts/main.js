@@ -279,8 +279,8 @@ $(document).ready(function() {
                         
                         // HACK: reload whole page after 1000 ms
                         window.setTimeout(function () {
-                            // window.location.href = window.location.href;
-                        }, 1000);
+                            window.location.href = window.location.href;
+                        }, 500);
                     }, 
                     onCancel: function () {
                         $('.edit').each(function() {
