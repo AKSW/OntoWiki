@@ -662,6 +662,7 @@ class ServiceController extends Zend_Controller_Action
         // writeback
         $delete = $event->deleteData;
         $insert = $event->insertData;
+        $changes = isset($event->changes) ? $event->changes : null;
 
         // delete
         if ($deleteModel && $deleteModel->isEditable()) {
@@ -705,6 +706,11 @@ class ServiceController extends Zend_Controller_Action
                 $response->sendResponse();
                 exit;
             }
+        }
+        
+        if ($changes) {
+            $response->setHeader('Content-Type', 'application/json');
+            $response->setBody(json_encode($changes));
         }
     }
     

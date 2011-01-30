@@ -342,7 +342,16 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel',
                     title: 'Create New Resource by Cloning ' + selectedResource.title,  
                     autoParse: false, 
-                    showPropertyButton: true
+                    showPropertyButton: true, 
+                    onSubmitSuccess: function (responseData) {
+                        var newLocation = responseData.changed 
+                                        ? responseData.changed 
+                                        : window.location.href;
+                        // HACK: reload whole page after 1000 ms
+                        window.setTimeout(function () {
+                            window.location.href = newLocation;
+                        }, 500);
+                    }
                 });
                 
                 RDFauthor.start();

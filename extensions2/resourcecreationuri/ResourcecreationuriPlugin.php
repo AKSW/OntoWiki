@@ -44,6 +44,8 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
         $this->deleteModel  = $event->deleteModel;
         $this->deleteData   = $event->deleteData;
         
+        $flag = false;
+        
         // SPARQL/Update can be DELETE only
         // $insertModel is null in this case
         if ($this->insertModel instanceof Erfurt_Rdf_Model) {
@@ -67,6 +69,7 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
                     $temp[$newUri][$p] = $o;
                 }
                 $this->insertData = $temp;
+                $flag = true;
             } else {
                 //do nothing
             }
@@ -77,7 +80,12 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
         $event->insertData  = $this->insertData;
         $event->deleteModel = $this->deleteModel;
         $event->deleteData  = $this->deleteData;
-    
+        
+        if ($flag) {
+            $event->changes = array(
+                'original' => $subjectUri, 
+                'changed'  => $newUri, 
+            );
+        }
     }
-    
 }
