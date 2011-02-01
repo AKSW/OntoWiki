@@ -344,9 +344,12 @@ $(document).ready(function() {
                     autoParse: false, 
                     showPropertyButton: true, 
                     onSubmitSuccess: function (responseData) {
-                        var newLocation = responseData.changed 
-                                        ? responseData.changed 
-                                        : window.location.href;
+                        var newLocation;
+                        if (responseData && responseData.changed) {
+                            newLocation = resourceURL(responseData.changed);
+                        } else {
+                            // newLocation = window.location.href;
+                        }
                         // HACK: reload whole page after 1000 ms
                         window.setTimeout(function () {
                             window.location.href = newLocation;

@@ -487,6 +487,19 @@ function editResourceFromURI(resource) {
     });
 }
 
+/**
+ * Creates a new internal OntoWiki URL for the given resource URI.
+ * @return string
+ */
+function resourceURL(resourceURI) {
+    if (resourceURI.indexOf(urlBase) === 0) {
+        // URL base is a prefix of requested resource URL
+        return resourceURI;
+    }
+    
+    return urlBase + 'view/?r=' + encodeURLComponent(resourceURI);
+}
+
 /*
  * Edit a complete OW property view property section
  */
