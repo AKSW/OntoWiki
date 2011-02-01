@@ -1,11 +1,11 @@
 $(document).ready(function() {
 	$("#savequerybutton").unbind("click");
         $("#savequerybutton").click(function(){
-		var box = $("#savebox");
-		if(box.hasClass("querybuilder")){
+		var box = $("#editortype");
+		if(box.val() == "querybuilder"){
 			$.get(urlBase+"querybuilder/updatesparql", {json: $('#hidden_json').val() , limit: $("#limit").val()}, function(query){
 				$.ajax({
-				  url: urlBase + "querybuilding/savequery",
+				  url: urlBase + "queries/savequery",
 				  type: "POST",
 			      data: ({
 					json: $('#hidden_json').val(),
@@ -26,7 +26,7 @@ $(document).ready(function() {
 
 			});
 						
-		} else if(box.hasClass("graphicalquerybuilder")){
+		} else if(box.val() == "graphicalquerybuilder"){
 			if (!GQB.view.selectedViewClass) {alert(GQB.translate("noPatternSelMsg"));return;}
 			var modelPattern = GQB.view.selectedViewClass.parentViewPattern.modelPattern;
 			if (!modelPattern) return;  // sollte nicht passieren, ist schwerer Fehler
@@ -34,9 +34,9 @@ $(document).ready(function() {
 			modelPattern.description= $('#qdesc').val();
 			modelPattern.save();
 	
-		} else if(box.hasClass("queryeditor")){
+		} else if(box.val() == "queryeditor"){
 			$.ajax({
-				  url: urlBase + "querybuilding/savequery",
+				  url: urlBase + "queries/savequery",
 				  type: "POST",
 			      data: ({
 					json: "",

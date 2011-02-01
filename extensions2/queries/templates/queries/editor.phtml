@@ -1,26 +1,10 @@
 <?php
 
 /**
- * OntoWiki query template
+ * OntoWiki query editor template
  */
-
 ?>
-<?php 
-$this->placeholder('main.window.innerwindows')->append($this->module('sparqloptions'));
-$this->placeholder('main.window.innerwindows')->append($this->module('queryeditorfromsetter'));
-if(class_exists("QuerybuildingHelper") && $this->writeable){
-	$this->placeholder('main.window.innerwindows')->append(
-	        $this->partial('partials/window.phtml', array(
-	                'headinglevel' => 2,
-	                'title'        => $this->_('Save Query'),
-	                'content'      => $this->partial('partials/savepartial.phtml'),
-	                'cssClasses'   => 'queryeditor',
-	                'cssId'        => 'savebox'
-	        ))
-	); 
-}
-?>
-
+<input id="editortype" type="hidden" value="queryeditor" />
 <p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
     <?php $i = 0; ?>
     <?php foreach ($this->prefixes as $prefix => $namespace): ?>

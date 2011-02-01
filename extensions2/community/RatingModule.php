@@ -42,7 +42,7 @@ class RatingModule extends OntoWiki_Module {
                     ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
                     ?rating ns0:note ?note.
                     ?rating ns0:has_creator ?creator}
-                
+
               ');
 
         $results =  $this->_store->sparqlQuery($query);
@@ -93,9 +93,13 @@ class RatingModule extends OntoWiki_Module {
     }
 
     public function shouldShow() {
-    // the rating action is displayed only for registered users
-    // and if set in the module.ini file only for predefined resources
+        // show only if enabled in private config
+        if ($this->_privateConfig->enableRating == false) {
+            return false;
+        }
 
+        // the rating action is displayed only for registered users
+        // and if set in the module.ini file only for predefined resources
         if($this->_owApp->getUser()->getUsername()=='Anonymous' || !$this->typeAllowed()) {
             return false;
         }
@@ -106,7 +110,7 @@ class RatingModule extends OntoWiki_Module {
 
 
     private function typeAllowed() {
-        
+
         if($this->_privateConfig->ratingClass)
         {
         $classArray = $this->_privateConfig->ratingClass->toArray();

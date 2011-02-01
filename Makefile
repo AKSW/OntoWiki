@@ -9,25 +9,25 @@ default:
 
 pull:
 	@hg --repository . pull
-	@hg --repository libraries/Erfurt pull
-	@hg --repository libraries/RDFauthor pull
+	@hg --config web.cacerts= --repository libraries/Erfurt pull
+	@hg --config web.cacerts= --repository libraries/RDFauthor pull
 
 update: pull
 	@echo "\nOntoWiki"
 	hg --repository . update
 	@echo "\nErfurt"
-	hg --repository libraries/Erfurt update
+	hg --config web.cacerts= --repository libraries/Erfurt update
 	@echo "\nRDFauthor"
-	hg --repository libraries/RDFauthor update
+	hg --config web.cacerts= --repository libraries/RDFauthor update
 
 force-update: pull
 	@echo "I force the update of the subrepos ..."
 	@echo "\nOntoWiki"
-	hg --repository . update
+	hg --repository . update -c
 	@echo "\nErfurt"
-	hg --repository libraries/Erfurt update -c
+	hg --config web.cacerts= --repository libraries/Erfurt update -c
 	@echo "\nRDFauthor"
-	hg --repository libraries/RDFauthor update -c
+	hg --config web.cacerts= --repository libraries/RDFauthor update -c
 
 status:
 	hg --repository . status

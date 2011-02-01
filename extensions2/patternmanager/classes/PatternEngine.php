@@ -243,8 +243,10 @@ class PatternEngine {
     
     /**
      * 
-     * @param unknown_type $pattern
-     * @param unknown_type $format
+     * @param ComplexPattern | BasicPattern $pattern
+     * @param string $format
+     * 
+     * @return boolean
      */
     public function saveToStore($pattern, $format = 'rdf') {
 
@@ -265,9 +267,12 @@ class PatternEngine {
     }
     
     /**
+     * Load pattern from store by id
      * 
-     * @param $id
-     * @param $format
+     * @param $id pattern id
+     * @param $format pattern format on storage
+     * 
+     * @return ComplexPattern | BasicPattern
      */
     public function loadFromStore($id, $format = 'rdf') {
         
@@ -302,6 +307,17 @@ class PatternEngine {
         $cpatternDesc  = $pattern->getDescription();
         $cpatternUri = $schema['ComplexPattern'] . '/' . md5($cpatternLabel);
         
+        foreach ( $this->_privateConfig->rdf->annotate as $key => $el ) {
+            if ( $pattern->getAnnotation($key) !== null ) {
+                $stmt[ $cpatternUri ][ $el ] = array(
+                    'type' => 'literal',
+                    'value' => $pattern->getAnnotation($key),
+                );
+            } else {
+                // don't set
+            }
+        }
+        
         $stmt[ $cpatternUri ][ EF_RDFS_LABEL ][] = array(
         	'type' => 'literal' ,
         	'value' => $cpatternLabel
@@ -316,7 +332,7 @@ class PatternEngine {
         	'type' => 'uri' ,
         	'value' => $schema['ComplexPattern']
         );
-        
+
         // iterate over subpatterns (which are basic patterns with sequence id)
         foreach ($pattern->getElements() as $i => $basicPattern) {
             
@@ -326,7 +342,7 @@ class PatternEngine {
             $patternLabel =  $basicPattern->getLabel();
             $patternDesc  = $basicPattern->getDescription();
             $patternUri = $schema['BasicPattern'] . '/' . md5($basicPattern->toArray(true));
-            
+
             $stmt[ $patternUri ][ EF_RDFS_LABEL ][] = array( 
             	'type' => 'literal' ,
             	'value' => $patternLabel
@@ -443,7 +459,7 @@ class PatternEngine {
             
             
             $subPatternLabel = $i . ' - ' . $patternLabel;
-            $subPatternUri   = $schema['BasicPattern'] . '/' . md5($subPatternLabel);
+            $subPatternUri   = $schema['SubPattern'] . '/' . md5($i . $patternUri);
             
             $stmt[ $subPatternUri ][ EF_RDF_TYPE ][] =
                 array('type' => 'uri' , 'value' => $schema['SubPattern']);
@@ -467,12 +483,55 @@ class PatternEngine {
         	FILTER (' . $filter . ') }';
 
         $data = $this->_store->sparqlQuery($query);
-        
         foreach ($data as $row) {
             unset($stmt[$row['s']]);
         }
-
-        $this->_store->addMultipleStatements( $this->_privateConfig->storeModel, $stmt, false);
+        
+        try {
+            $ret = $this->_store->addMultipleStatements(
+                $this->_privateConfig->storeModel,
+                $stmt,
+                false
+            );
+        } catch (Zend_Exception $ze) {
+            $ret = false;
+        }
+        
+        return array('return' => $ret, 'uri' => $cpatternUri);
+    }
+    
+    /**
+     * Delete a pattern from store (by id)
+     * 
+     * @param unknown_type $id
+     * @param unknown_type $type
+     */
+    public function deleteFromStore($id, $format = 'rdf') {
+        // check ac if readable access allowed
+        if (!$this->_ac->isActionAllowed(PatternEngineAc::RIGHT_EDIT_STR)) {
+            $place = ' Class: ' . __CLASS__ . ' Method: ' . __METHOD__ . PHP_EOL;
+            $message = ' Action not allowed: ' . PatternEngineAc::RIGHT_EDIT_STR . PHP_EOL;
+            throw new Exception('AC Exception.' . $message . $place);
+        } else {
+            switch ($format) {
+	            case 'rdf' :
+	                return $this->deleteFromStoreAsRdf($id);
+	            default :
+	                throw new Exception('Format for pattern serialization unsupported');
+	        }
+        }
+    }
+    
+    /**
+     * Delete statements with uri as subject
+     * (normally this is "delete resource" operation)
+     * 
+     * @param string $uri
+     * 
+     * @return boolean | int
+     */
+    public function deleteFromStoreAsRdf($uri) {
+        return $this->_store->deleteMatchingStatements( $this->_privateConfig->storeModel, $uri, null, null);
     }
     
     /**
@@ -765,6 +824,14 @@ class PatternEngine {
 
             $complexPattern->setElement((int)$sp[$schema['sequenceId']][0],$basicPattern);
             
+        }
+        
+        foreach ($this->_privateConfig->rdf->annotate as $key => $el) {
+            if ( isset($pdata[$el]) ) {
+                $complexPattern->setAnnotation($key,current($pdata[$el]));
+            } else {
+                // do nothing
+            }
         }
         
         return $complexPattern;

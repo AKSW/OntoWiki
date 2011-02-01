@@ -1,6 +1,6 @@
 <?php
 require_once 'OntoWiki/Plugin.php';
-require_once ONTOWIKI_ROOT . 'extensions/plugins/resourcecreationuri/classes/ResourceUriGenerator.php';
+require_once OntoWiki::getInstance()->extensionManager->getExtensionPath().'resourcecreationuri/classes/ResourceUriGenerator.php';
 
 /**
  * Plugin that tries to make nice uris if new resources are created.
@@ -44,6 +44,8 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
         $this->deleteModel  = $event->deleteModel;
         $this->deleteData   = $event->deleteData;
         
+        $flag = false;
+        
         // SPARQL/Update can be DELETE only
         // $insertModel is null in this case
         if ($this->insertModel instanceof Erfurt_Rdf_Model) {
@@ -67,6 +69,7 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
                     $temp[$newUri][$p] = $o;
                 }
                 $this->insertData = $temp;
+                $flag = true;
             } else {
                 //do nothing
             }
@@ -77,7 +80,12 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
         $event->insertData  = $this->insertData;
         $event->deleteModel = $this->deleteModel;
         $event->deleteData  = $this->deleteData;
-    
+        
+        if ($flag) {
+            $event->changes = array(
+                'original' => $subjectUri, 
+                'changed'  => $newUri, 
+            );
+        }
     }
-    
 }

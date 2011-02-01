@@ -102,6 +102,14 @@ class OntoWiki_Module_Registry
         $this->_moduleStates = array();
         $this->_moduleOrder  = array();
     }
+    
+    public static function reset()
+    {
+        if (null !== self::$_instance) {
+            self::$_instance->resetInstance();
+        }
+        self::$_instance = null;
+    }
 
     /**
      * Sets the path where modules are to be found
@@ -167,6 +175,8 @@ class OntoWiki_Module_Registry
 
             // register module
             $this->_modules[$moduleName] = $options;
+        } else if (in_array($moduleName, $this->_moduleOrder[$context])) {
+            throw new Exception("Module '$moduleName' is already registered for context '$context'.");
         }
 
         // set module order and context
@@ -204,9 +214,9 @@ class OntoWiki_Module_Registry
     public function disableModule($moduleName, $context = self::DEFAULT_CONTEXT)
     {
         if ($this->isModuleEnabled($moduleName)) {
-            $this->_modules[$moduleName]['enabled'] = false;
+            $this->_modules[$moduleName]->enabled = false;
         } else {
-            $this->register($moduleName, $context, array('enabled' => false));
+            $this->register($moduleName, $moduleName, $context, new Zend_Config(array('enabled' => false), true));
         }
 
         return $this;
@@ -283,6 +293,7 @@ class OntoWiki_Module_Registry
                 }
             }
         }
+        
         return $modules;
     }
 

@@ -236,6 +236,8 @@ class QueriesController extends OntoWiki_Controller_Component {
                 $this->view->header = $header;
             }
         }
+
+        //load js for sparql syntax highlighting
         $this->view->headScript()->prependFile($this->_componentUrlBase . 'resources/codemirror/js/codemirror.js');
         $this->view->headScript()->prependScript('var editor; $(document).ready(function(){
             editor = CodeMirror.fromTextArea("inputfield", {
@@ -246,14 +248,21 @@ class QueriesController extends OntoWiki_Controller_Component {
             $("a.submit").unbind("click");
             $("a.submit").click(function(){ $("#inputfield").text(editor.getCode()); $(this).parents("form:first").submit(); });
             });');
+
+        //fill in some placeholders
         $this->view->prefixes = $prefixes;
         $this->view->placeholder('sparql.result.format')->set($format);
         $this->view->placeholder('sparql.query.target')->set($this->_request->getParam('target', 'this'));
+        
+        //load modules
         $this->addModuleContext('main.window.queryeditor');
+        if($this->_privateConfig->general->enabled->saving){
+            $this->addModuleContext('main.window.savequery');
+        }
     }
 
     /**
-     * Action that will load existing Queries for listing
+     * Action that will show existing saved Queries
      */
     public function listqueryAction() {
         // set the active tab navigation
@@ -287,6 +296,9 @@ class QueriesController extends OntoWiki_Controller_Component {
         //print_r(OntoWiki::getInstance()->_properties);
     }
 
+    /**
+     * webservice to save a query
+     */
     public function savequeryAction() {
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'text/plain');
@@ -310,7 +322,7 @@ class QueriesController extends OntoWiki_Controller_Component {
             // checking whether any queries exist yet in this store
             $existingQueriesQuery = Erfurt_Sparql_SimpleQuery :: initWithString('SELECT *
                                  WHERE {
-                                 ?query <' . EF_RDF_TYPE . '> <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->$this->_privateConfig->saving->ClassUri) . '> .
+                                 ?query <' . EF_RDF_TYPE . '> <' . OntoWiki_Utils :: expandNamespace($this->_privateConfig->saving->ClassUri) . '> .
                                  }');
             $existingQueries = $storeGraph->sparqlQuery($existingQueriesQuery);
             if (empty($existingQueries)) {
@@ -405,6 +417,9 @@ class QueriesController extends OntoWiki_Controller_Component {
         exit;
     }
 
+    /**
+     * delete a saved query by uri
+     */
     public function deleteAction() {
         $store = OntoWiki::getInstance()->erfurt->getStore();
 
@@ -473,6 +488,10 @@ class QueriesController extends OntoWiki_Controller_Component {
         return null;
     }
 
+    /**
+     * set up db for query saving
+     * @param <type> $db
+     */
     private function insertInitials($db) {
         //add the "Pattern" Class
         $object['value'] = EF_RDFS_CLASS;
@@ -542,6 +561,8 @@ class QueriesController extends OntoWiki_Controller_Component {
      * Action to construct Queries, view their results, save them ...
      */
     public function manageAction() {
+        //TODO: to enable saving add a <input id="editortype" type="hidden" value="querybuilder" /> to the template
+
         // set the active tab navigation
         OntoWiki_Navigation::setActive('savedqueries', true);
 
@@ -561,7 +582,7 @@ class QueriesController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.menu')->set($menu->toArray());
 
         $include_base = $this->_componentUrlBase;
-        $this->view->headScript()->appendFile($this->_config->staticUrlBase . 'extensions/components/queries/resources/savepartial.js');
+        $this->view->headScript()->appendFile($include_base . 'resources/savepartial.js');
         $this->view->headScript()->appendFile($include_base . 'resources/jquery.autocomplete.min.js');
         $this->view->headScript()->appendFile($include_base . 'resources/jquery.json-1.3.min.js');
         $this->view->headScript()->appendFile($include_base . 'resources/json2.js');
@@ -720,7 +741,12 @@ class QueriesController extends OntoWiki_Controller_Component {
         return $array;
     }
 
+    /**
+     * display gqb
+     */
     public function displayAction() {
+        //TODO: to enable saving add a <input id="editortype" type="hidden" value="graphicalquerybuilder" /> to the template
+
         $include_base = $this->_componentUrlBase;
         $this->view->componentUrlBase = $this->_componentUrlBase;
         if ($this->_owApp->selectedModel != null) {

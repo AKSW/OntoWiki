@@ -73,3 +73,10 @@ p.abstract
     color:#666;
     font-size:1.5em;
 }
+
+/* after save options */
+div#pm-save_proceed {
+	text-align: center;
+	margin-top: 16px;
+	margin-bottom: 16px;
+}
