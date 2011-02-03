@@ -87,11 +87,6 @@ class OntoWiki_Module_Registry
         return self::$_instance;
     }
 
-    public static function reset()
-    {
-        self::$_instance = null;
-    }
-
     /**
      * Resets the instance to its initial state. Mainly used for
      * testing purposes.

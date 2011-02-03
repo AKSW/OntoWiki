@@ -17,6 +17,25 @@ class ServiceController extends Zend_Controller_Action
     protected $_config = null;
     
     /**
+     * @var Erfurt_Store
+     */
+    protected $_store = null;
+    
+    public function getStore()
+    {
+        if (!$this->_store) {
+            $this->_store = OntoWiki::getInstance()->erfurt->getStore();
+        }
+        
+        return $this->_store;
+    }
+    
+    public function setStore($store)
+    {
+        $this->_store = store;
+    }
+    
+    /**
      * Attempts an authentication to the underlying Erfurt framework via 
      * HTTP GET/POST parameters.
      * 
@@ -601,15 +620,15 @@ class ServiceController extends Zend_Controller_Action
      * @todo LOAD <> INTO <>, CLEAR GRAPH <>, CREATE[SILENT] GRAPH <>, DROP[ SILENT] GRAPH <>
      */
     public function updateAction()
-    {        
+    {
         // service controller needs no view renderer
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
         
-        $store       = OntoWiki::getInstance()->erfurt->getStore();
+        $store       = $this->getStore();
         $response    = $this->getResponse();
-        $namedGraph  = $this->_request->getParam('named-graph-uri', null);
+        $namedGraph  = $this->getRequest()->getParam('named-graph-uri', null);
         $insertGraph = null;
         $deleteGraph = null;
         $insertModel = null;
@@ -645,7 +664,7 @@ class ServiceController extends Zend_Controller_Action
                     if (defined('_OWDEBUG')) {
                         OntoWiki::getInstance()->logger->info('Could not instantiate models.');
                     }
-                    exit;
+                    return;
                 }
             }
             
@@ -657,20 +676,13 @@ class ServiceController extends Zend_Controller_Action
                     if (defined('_OWDEBUG')) {
                         OntoWiki::getInstance()->logger->info('Could not instantiate models.');
                     }
-                    exit;
+                    return;
                 }
             }
         } else {
             // no query, inserts and delete triples by JSON via param
             $insert = json_decode($this->_request->getParam('insert', '{}'), true);
             $delete = json_decode($this->_request->getParam('delete', '{}'), true);
-            
-            if ($this->_request->has('delete_hashed')) {
-                $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes(
-                    $namedGraph, 
-                    json_decode($this->_request->getParam('delete_hashed'), true));
-                $delete = array_merge_recursive($delete, $hashedObjectStatements);
-            }
             
             try {
                 $namedModel  = $store->getModel($namedGraph);
@@ -681,7 +693,14 @@ class ServiceController extends Zend_Controller_Action
                 if (defined('_OWDEBUG')) {
                     OntoWiki::getInstance()->logger->info('Could not instantiate models.');
                 }
-                exit;
+                return;
+            }
+            
+            if ($this->_request->has('delete_hashed')) {
+                $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes(
+                    $deleteModel, 
+                    json_decode($this->_request->getParam('delete_hashed'), true));
+                $delete = array_merge_recursive($delete, $hashedObjectStatements);
             }
         }
         
@@ -751,7 +770,7 @@ class ServiceController extends Zend_Controller_Action
                 $response->setRawHeader('HTTP/1.1 401 Unauthorized');
                 $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
                 $response->sendResponse();
-                exit;
+                return;
             }
         }
         
@@ -1143,111 +1162,5 @@ class ServiceController extends Zend_Controller_Action
         $response->setBody(json_encode($output));
         $response->sendResponse();
         exit;
-    }
-    
-    protected function _findStatementsForObjectsWithHashes($graphUri, $indexWithHashedObjects, $hashFunc = 'md5')
-    {
-        $queryOptions = array(
-            'result_format' => 'extended'
-        );
-        $result = array();
-        foreach ($indexWithHashedObjects as $subject => $predicates) {
-            foreach ($predicates as $predicate => $hashedObjects) {
-                $query = "SELECT ?o FROM <$graphUri> WHERE {<$subject> <$predicate> ?o .}";
-                $queryObj = Erfurt_Sparql_SimpleQuery::initWithString($query);
-                
-                if ($result = $this->_owApp->erfurt->getStore()->sparqlQuery($queryObj, $queryOptions)) {
-                    $bindings = $result['results']['bindings'];
-                    
-                    for ($i = 0, $max = count($bindings); $i < $max; $i++) {
-                        $currentObject = $bindings[$i]['o'];
-                        
-                        $objectString = $this->_buildLiteralString(
-                            $currentObject['value'], 
-                            isset($currentObject['datatype']) ? $currentObject['datatype'] : null, 
-                            isset($currentObject['lang']) ? $currentObject['lang'] : null);
-
-                        if ($hashFunc($objectString) === $hashedObjects[$i]) {
-                            // add current statement to result
-                            if (!isset($result[$subject])) {
-                                $result[$subject] = array();
-                            }
-                            if (!isset($result[$subject][$predicate])) {
-                                $result[$subject][$predicate] = array();
-                            }
-                            
-                            $objectSpec = array(
-                                'value' => $currentObject['value'], 
-                                'type'  => $currentObject['type'].replace('typed-', '')
-                            );
-                            if (isset($bindings[$i]['datatype'])) {
-                                $objectSpec['datatype'] = $currentObject['datatype'];
-                            } else if (isset($currentObject['lang'])) {
-                                $objectSpec['lang'] = $currentObject['lang'];
-                            }
-                            
-                            array_push($result[$subject][$predicate], $objectSpec);
-                        }
-                    }
-                }
-            }
-        }
-        
-        return $result;
-    }
-    
-    /**
-     * Builds a SPARQL-compatible literal string with long literals if necessary.
-     *
-     * @param string $value
-     * @param string|null $datatype
-     * @param string|null $lang
-     * @return string
-     */
-    protected static function _buildLiteralString($value, $datatype = null, $lang = null)
-    {
-        $longLiteral = false;
-        $quoteChar   = (strpos($value, '"') !== false) ? "'" : '"';
-        $value       = (string)$value;
-        
-        // datatype-specific treatment
-        switch ($datatype) {
-            case 'http://www.w3.org/2001/XMLSchema#boolean':
-                $search  = array('0', '1');
-                $replace = array('false', 'true');
-                $value   = str_replace($search, $replace, $value);
-                break;
-            case '':
-            case null:
-            case 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral':
-            case 'http://www.w3.org/2001/XMLSchema#string':
-                $value = addcslashes($value, $quoteChar);
-                
-                /** 
-                 * Check for characters not allowed in a short literal
-                 * {@link http://www.w3.org/TR/rdf-sparql-query/#rECHAR}
-                 * wrong: \t\b\n\r\f\\\"\\\' 
-                 */
-                if (preg_match('/[\\\r\n"]/', $value) > 0) {
-                    $longLiteral = true;
-                    $value = trim($value, "\n\r");
-                    // $value = str_replace("\x0A", '\n', $value);
-                }
-                break;
-        }
-        
-        // add short, long literal quotes respectively
-        $value = $quoteChar . ($longLiteral ? ($quoteChar . $quoteChar) : '')
-               . $value 
-               . $quoteChar . ($longLiteral ? ($quoteChar . $quoteChar) : '');
-        
-        // add datatype URI/lang tag
-        if (!empty($datatype)) {
-            $value .= '^^<' . (string)$datatype . '>';
-        } else if (!empty($lang)) {
-            $value .= '@' . (string)$lang;
-        }
-        
-        return $value;
     }
 }
