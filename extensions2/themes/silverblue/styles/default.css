@@ -1022,7 +1022,9 @@ input.submit,
 input.reset,
 ul.minibutton li a,
 li.minibutton a,
-a.minibutton {
+a.minibutton,
+.ui-state-default.ui-button
+{
 
   /*display: block;*/
   display:inline-block;
@@ -1050,7 +1052,9 @@ a.minibutton {
   cursor: pointer;
 }
 
-button {
+button,
+.ui-state-default.ui-button
+ {
   width: auto;
   overflow: visible;
 }
@@ -1059,7 +1063,9 @@ button,
 input.formbutton,
 input.button,
 input.submit,
-input.reset {
+input.reset,
+.ui-state-default.ui-button
+ {
 
   padding: 0.3em 0.5em 0.3em 0.5em;   /* Firefox */
   /* line-height: 1.7; */          /* Safari */
@@ -1086,7 +1092,9 @@ input.submit:hover,
 input.reset:hover,
 ul.minibutton li a:hover,
 li.minibutton a:hover,
-a.minibutton:hover {
+a.minibutton:hover,
+.ui-state-default.ui-button:hover
+ {
 
     border-right-color: #9aa6aa;
     border-bottom-color: #9aa6aa;
@@ -1124,7 +1132,9 @@ input.submit:focus,
 input.reset:focus,
 ul.minibutton li a:focus,
 li.minibutton a:focus,
-a.minibutton:focus {
+a.minibutton:focus,
+.ui-state-default.ui-button:focus
+  {
 
     border-right-color: #cdd7dd !important;
     border-bottom-color: #cdd7dd !important;
