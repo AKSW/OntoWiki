@@ -12,8 +12,9 @@ $queryObject->setProloguePart('
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX faun: <http://purl.org/net/faunistics#>
 PREFIX geof: <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
-SELECT ?LocationURI ?RecordURI ?RecordLabel ?RecordType ?FamilyComment ?FamilyLabel ?SpeciesLabel ?SpeciesURI ?FamilyURI ?citationSuffix
+SELECT ?LocationURI ?RecordURI ?RecordLabel ?RecordType ?FamilyComment ?FamilyLabel ?SpeciesLabel ?SpeciesURI ?FamilyURI ?citationSuffix  ?lat ?long
     ');
 
 $queryObject->setWherePart('
@@ -40,6 +41,11 @@ WHERE {
   ?GenusURI rdfs:label ?GenusLabel.
   ?FamilyURI rdfs:label ?FamilyLabel.
   ?FamilyURI rdfs:comment ?FamilyComment.
+  
+  OPTIONAL {
+    ?LocationURI geo:lat ?lat.
+    ?LocationURI geo:long ?long.
+  }
 }
     ');
 
@@ -56,6 +62,12 @@ $queryObject->setLimit('10000');
     </h2>
     <div class="block">
         <p><?php echo $this->partial('spiders/content.phtml', $templateData); ?></p>
+    </div>
+</div>
+<div class="box">
+    <h2>Map</h2>
+    <div class="block">
+        <div class="speciesmap">...</div>
     </div>
 </div>
 <div class="box">

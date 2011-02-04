@@ -2,7 +2,13 @@
     <td><?php echo $this->FamilyComment ?></td>
     <td><a href="<?php echo $this->SpeciesURI ?>"><?php echo $this->SpeciesLabel ?></a> <?php echo $this->citationSuffix ?></td>
     <td><a href="<?php echo $this->FamilyURI ?>"><?php echo $this->FamilyLabel ?></a></td>
-    <td><a href="<?php echo $this->LocationURI ?>"><?php echo $this->querylist_titleHelper->getTitle($this->LocationURI) ?></a></td>
+    <td><a  class="location"
+            about="<?php echo $this->LocationURI ?>"
+            href="<?php echo $this->LocationURI ?>"><?php echo $this->querylist_titleHelper->getTitle($this->LocationURI) ?>
+            <span class="lat" style="display: none"><?php echo $this->lat ?></span>
+            <span class="long" style="display: none"><?php echo $this->long ?></span>
+        </a>
+    </td>
     <?php if (isset($this->RecordLabel)) :?>
     <td><a href="<?php echo $this->RecordURI ?>"><?php echo $this->RecordLabel ?></a></td>
     <?php else: ?>
