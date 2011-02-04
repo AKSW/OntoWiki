@@ -8,7 +8,7 @@ function extensionOutline() {
     
     var even = true;
     $('div.extension:visible').each(function(){
-        title=$(this).find('h3').text();
+        title=$(this).find('.name').text();
         id=$(this).attr('id');
         if(even){
             target.append('<li><a title="' +title+ '" href="#' +id+ '">' +title+ '</a></li>');

@@ -23,7 +23,7 @@
                         realChange = true;
                     }
                     button.attr("selected", "true");
-                    button.css("background-color", "green");
+                    button.css("background-color", "#a0e876");
                     var slider = button.find("> .slider").eq(0);
                     slider.animate({left:0}, parseInt(100,10));
                     if(realChange && withCallback && options.onEnable && typeof options.onEnable == "function"){
@@ -37,9 +37,9 @@
                         realChange = true;
                     }
                     button.attr("selected", "false");
-                    button.css("background-color", "red");
+                    button.css("background-color", "#e95d46");
                     var slider = button.find("> .slider").eq(0);
-                    slider.animate({left:45 - slider.width()}, parseInt(100,10));
+                    slider.animate({left:button.width() - slider.width()}, parseInt(100,10));
                     if(realChange && withCallback && options.onDisable && typeof options.onDisable == "function"){
                         options.onDisable(button);
                     }
@@ -93,10 +93,10 @@
                     });
                     
                     container.click(function(){
-                        if((ref - slider.position().left) != 0){
-                            enable(container, true);
-                        } else  {
+                        if(container.attr('selected')=='true'){
                             disable(container, true);
+                        } else  {
+                            enable(container, true);
                         }
                     });
                     

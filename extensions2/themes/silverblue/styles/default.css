@@ -788,7 +788,7 @@ img.clickicon, a.clickicon img {
     font-size:16px !important; /* as long we cannot use svg */
     height:1em;
     width:1em;
-    vertical-align:text-bottom;
+    vertical-align:middle;
     background-color:transparent;
     background-position:center;
     background-repeat:no-repeat;
