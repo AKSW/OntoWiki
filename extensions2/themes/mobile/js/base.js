@@ -11,7 +11,7 @@ $(document).ready(function(){
     // prepare page on navigation done
     $(document).bind("navigation.done", function(){        
         // redraw page
-        $("#nav").page("destroy").page();
+        //$("#nav").page("destroy").page();
         
         // remove loader
         $.mobile.pageLoading(true);
@@ -150,7 +150,7 @@ $(document).ready(function(){
             $.mobile.pageLoading(true);
 
             // redraw page
-            $("#instance-list").page('destroy').page();
+            //$("#instance-list").page('destroy').page();
 
             // switch page
             $.mobile.changePage("#instance-list", "slide", false, true );
@@ -244,7 +244,7 @@ $(document).ready(function(){
             $.mobile.pageLoading(true);
 
             // redraw page
-            $("#instance-list").page('destroy').page();
+            //$("#instance-list").page('destroy').page();
 
             // switch page
             $.mobile.changePage("#instance-list", "slide", false, true );
