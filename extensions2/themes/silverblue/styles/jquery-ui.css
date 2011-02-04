@@ -74,7 +74,8 @@
     width:100%;
     position:relative; left:-0.2em; top:-0.2em;
     border-style:none none solid none;
-    padding:0.2em !important;
+    padding:0.3em 0.2em 0.2em 0.2em !important;
+    line-height:1;
 }
 .ui-widget-header a { color: #000000; }
 
@@ -103,13 +104,14 @@
 ----------------------------------*/
 
 /* states and images */
-.ui-icon { width: 16px; height: 16px; background-image: url(images-jqueryui/ui-icons_222222_256x240.png); }
-.ui-widget-content .ui-icon {background-image: url(images-jqueryui/ui-icons_222222_256x240.png); }
+.ui-icon { width: 16px; height: 16px; background-image: url(images-jqueryui/ui-icons_333333_256x240.png); }
+.ui-dialog-titlebar .ui-icon {background-image: url(images-jqueryui/ui-icons_ffffff_256x240.png); }
+/*.ui-widget-content .ui-icon {background-image: url(images-jqueryui/ui-icons_222222_256x240.png); }
 .ui-widget-header .ui-icon {background-image: url(images-jqueryui/ui-icons_222222_256x240.png); }
-.ui-state-default .ui-icon { background-image: url(images-jqueryui/ui-icons_333333_256x240.png); }
+.ui-state-default .ui-icon { background-image: url(images-jqueryui/ui-icons_333333_256x240.png); }*/
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(images-jqueryui/ui-icons_000000_256x240.png); }
-.ui-state-active .ui-icon {background-image: url(images-jqueryui/ui-icons_333333_256x240.png); }
-.ui-state-highlight .ui-icon {background-image: url(images-jqueryui/ui-icons_2e83ff_256x240.png); }
+/*.ui-state-active .ui-icon {background-image: url(images-jqueryui/ui-icons_333333_256x240.png); }*/
+/*.ui-state-highlight .ui-icon {background-image: url(images-jqueryui/ui-icons_2e83ff_256x240.png); }*/
 .ui-state-error .ui-icon, .ui-state-error-text .ui-icon {background-image: url(images-jqueryui/ui-icons_cd0a0a_256x240.png); }
 
 /* positioning */
@@ -360,6 +362,7 @@
 .ui-accordion .ui-accordion-header-active { border-bottom: 0 !important; }
 .ui-accordion .ui-accordion-header a { display: block; font-size: 1em; padding: .5em .5em .5em .7em; }
 .ui-accordion-icons .ui-accordion-header a { padding-left: 2.2em; }
+.ui-accordion-icons .ui-accordion-header { padding-left: 2.2em; }
 .ui-accordion .ui-accordion-header .ui-icon { position: absolute; left: .5em; top: 50%; margin-top: -8px; }
 .ui-accordion .ui-accordion-content { padding: 0.5em; border-top: 0; margin: -1px 0 0.2em 0; position: relative; top: 1px; margin-bottom: 2px; overflow: auto; display: none; zoom: 1; }
 .ui-accordion .ui-accordion-content-active { display: block; }/*
@@ -372,6 +375,13 @@
  * http://docs.jquery.com/UI/Autocomplete#theming
  */
 .ui-autocomplete { position: absolute; cursor: default; }
+.ui-autocomplete a { color:#333; overflow:hidden; border-top:dotted 1px #666; margin-top:0 !important; }
+.ui-autocomplete .ui-menu-item:first-child a { border-top:none; margin-top:1px !important; }
+.ui-autocomplete .ui-menu-item:first-child a.ui-state-hover,
+.ui-autocomplete .ui-menu-item:first-child a.ui-state-active { border-top:solid 1px #999; margin-top:0 !important; }
+.ui-autocomplete a span.resource-edit-source { float:right; font-size:0.8em; color:#666; margin-top:0.25em;}
+.ui-autocomplete a span.resource-edit-label { color:#000; }
+.ui-autocomplete a span.resource-edit-uri { display:block; clear:both; font-family: monospace; font-size: 0.8em; color:#666; width:30em;}
 
 /* workarounds */
 * html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */
@@ -475,7 +485,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  */
 .ui-dialog { position: absolute; padding: .2em; width: 300px; overflow: hidden; }
 .ui-dialog .ui-dialog-titlebar { padding: .5em 1em .3em; position: relative;  }
-.ui-dialog .ui-dialog-title { float: left; margin: .1em 16px .2em 0; }
+.ui-dialog .ui-dialog-title { float: left; margin: .1em 16px .2em 0.3em; }
 .ui-dialog .ui-dialog-titlebar-close { position: absolute; right: .3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
 .ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; }
 .ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { padding: 0; }
@@ -485,6 +495,9 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .ui-dialog .ui-dialog-buttonpane button { margin: .5em .4em .5em 0; cursor: pointer; }
 .ui-dialog .ui-resizable-se { width: 14px; height: 14px; right: 3px; bottom: 3px; }
 .ui-draggable .ui-dialog-titlebar { cursor: move; }
+
+.ui-widget-content.ui-dialog { border-color:#666; }
+.ui-widget-header.ui-dialog-titlebar { color:#fff; background-color:#999; border-color:#666; }
 
 /*
  * jQuery UI Slider 1.8.7
