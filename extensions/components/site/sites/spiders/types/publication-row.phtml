@@ -4,7 +4,7 @@
     <td><a href="<?php echo $this->FamilyURI ?>"><?php echo $this->FamilyLabel ?></a></td>
     <td><a  class="location"
             about="<?php echo $this->LocationURI ?>"
-            href="<?php echo $this->LocationURI ?>"><?php echo $this->querylist_titleHelper->getTitle($this->LocationURI) ?>
+            href="<?php echo $this->LocationURI ?>"><span class="name"><?php echo $this->querylist_titleHelper->getTitle($this->LocationURI) ?></span>
             <span class="lat" style="display: none"><?php echo $this->lat ?></span>
             <span class="long" style="display: none"><?php echo $this->long ?></span>
         </a>
