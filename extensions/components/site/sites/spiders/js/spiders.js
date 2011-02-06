@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('.checklist').dataTable( {
+    $('table.checklist').dataTable( {
     "sDom": '<"top"if>rt<"bottom"lp<"clear">',
             "bPaginate": false,
             "bLengthChange": true,
