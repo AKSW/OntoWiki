@@ -888,13 +888,14 @@ class ServiceController extends Zend_Controller_Action
                 $newProperty = array();
 
                 // return title from titleHelper
-                $newProperty['title'] = $titleHelper->getTitle($property['uri']);
+                $newProperty['label'] = $titleHelper->getTitle($property['uri']);
 
                 $pdata = $model->sparqlQuery('SELECT DISTINCT ?key ?value
                     WHERE {
                         <'.$property['uri'].'> ?key ?value
                         FILTER(
                          sameTerm(?key, <'.EF_RDF_TYPE.'>) ||
+                         sameTerm(?key, <'.EF_RDFS_DOMAIN.'>) ||
                          sameTerm(?key, <'.EF_RDFS_RANGE.'>)
                         )
                         FILTER(isUri(?value))
@@ -904,21 +905,28 @@ class ServiceController extends Zend_Controller_Action
                 if (!empty($pdata)) {
                     $types = array();
                     $ranges = array();
+                    $domains = array();
                     // prepare the data in arrays
                     foreach($pdata as $data) {
                         if ( ($data['key'] == EF_RDF_TYPE) && ($data['value'] != EF_RDF_PROPERTY) ) {
                             $types[] = $data['value'];
                         } elseif ($data['key'] == EF_RDFS_RANGE) {
                             $ranges[] = $data['value'];
+                        } elseif ($data['key'] == EF_RDFS_DOMAIN) {
+                            $domains[] = $data['value'];
                         }
                     }
 
                     if (!empty($types)) {
-                        $newProperty['types'] = $types;
+                        $newProperty['type'] = array_unique($types);
                     }
 
                     if (!empty($ranges)) {
-                        $newProperty['ranges'] = $ranges;
+                        $newProperty['range'] = array_unique($ranges);
+                    }
+                    
+                    if (!empty($domains)) {
+                        $newProperty['domain'] = array_unique($domains);
                     }
 
                 }
