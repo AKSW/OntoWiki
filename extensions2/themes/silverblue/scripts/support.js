@@ -431,10 +431,13 @@ function createInstanceFromClassURI(type, dataCallback) {
                 autoParse: false, 
                 showPropertyButton: true, 
                 onSubmitSuccess: function (responseData) {
-                    var newLocation = responseData.changed 
-                                    ? responseData.changed 
-                                    : window.location.href;
-                    // HACK: reload whole page after 1000 ms
+                    var newLocation;
+                    if (responseData && responseData.changed) {
+                        newLocation = resourceURL(responseData.changed);
+                    } else {
+                        newLocation = window.location.href;
+                    }
+                    // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
                         window.location.href = newLocation;
                     }, 500);
@@ -475,7 +478,7 @@ function editResourceFromURI(resource) {
                 autoParse: false, 
                 showPropertyButton: true, 
                 onSubmitSuccess: function () {
-                    // HACK: reload whole page after 1000 ms
+                    // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
                         window.location.href = window.location.href;
                     }, 500);
