@@ -499,8 +499,8 @@ function resourceURL(resourceURI) {
         // URL base is a prefix of requested resource URL
         return resourceURI;
     }
-    
-    return urlBase + 'view/?r=' + encodeURLComponent(resourceURI);
+
+    return urlBase + 'view/?r=' + encodeURIComponent(resourceURI);
 }
 
 /*
