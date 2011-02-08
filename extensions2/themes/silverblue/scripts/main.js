@@ -348,9 +348,9 @@ $(document).ready(function() {
                         if (responseData && responseData.changed) {
                             newLocation = resourceURL(responseData.changed);
                         } else {
-                            // newLocation = window.location.href;
+                            newLocation = window.location.href;
                         }
-                        // HACK: reload whole page after 1000 ms
+                        // HACK: reload whole page after 500 ms
                         window.setTimeout(function () {
                             window.location.href = newLocation;
                         }, 500);
