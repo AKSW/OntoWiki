@@ -75,7 +75,7 @@
                                     </li>
                                 <?php else: ?>
                                     <li property="<?php echo $currentPredicate['curi']; ?>" 
-                                        data-object-hash="<?php echo isset($entry['content']) ? md5($entry['content']) : md5($entry['object']); ?>"
+                                        data-object-hash="<?php echo $entry['object_hash']; ?>"
                                         content="<?php echo $this->escape(isset($entry['content']) ? $entry['content'] : $entry['object']); ?>"
                                         <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
                                             xml:lang="<?php echo $entry['lang']; ?>"

@@ -629,7 +629,7 @@ class ServiceController extends Zend_Controller_Action
                 $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes(
                     $namedGraph, 
                     json_decode($this->_request->getParam('delete_hashed'), true));
-                $delete = array_merge_recursive($delete, $hashedObjectStatements);
+                $delete = $hashedObjectStatements;
             }
             
             try {
@@ -1124,18 +1124,19 @@ class ServiceController extends Zend_Controller_Action
                 $query = "SELECT ?o FROM <$graphUri> WHERE {<$subject> <$predicate> ?o .}";
                 $queryObj = Erfurt_Sparql_SimpleQuery::initWithString($query);
                 
-                if ($result = $this->_owApp->erfurt->getStore()->sparqlQuery($queryObj, $queryOptions)) {
-                    $bindings = $result['results']['bindings'];
+                if ($queryResult = $this->_owApp->erfurt->getStore()->sparqlQuery($queryObj, $queryOptions)) {
+                    $bindings = $queryResult['results']['bindings'];
                     
                     for ($i = 0, $max = count($bindings); $i < $max; $i++) {
                         $currentObject = $bindings[$i]['o'];
                         
-                        $objectString = $this->_buildLiteralString(
+                        $objectString = Erfurt_Utils::buildLiteralString(
                             $currentObject['value'], 
                             isset($currentObject['datatype']) ? $currentObject['datatype'] : null, 
                             isset($currentObject['lang']) ? $currentObject['lang'] : null);
 
-                        if ($hashFunc($objectString) === $hashedObjects[$i]) {
+                        $hash = $hashFunc($objectString);
+                        if ($hash === $hashedObjects[$i]) {
                             // add current statement to result
                             if (!isset($result[$subject])) {
                                 $result[$subject] = array();
@@ -1146,7 +1147,7 @@ class ServiceController extends Zend_Controller_Action
                             
                             $objectSpec = array(
                                 'value' => $currentObject['value'], 
-                                'type'  => $currentObject['type'].replace('typed-', '')
+                                'type'  => str_replace('typed-', '', $currentObject['type'])
                             );
                             if (isset($bindings[$i]['datatype'])) {
                                 $objectSpec['datatype'] = $currentObject['datatype'];
@@ -1196,7 +1197,7 @@ class ServiceController extends Zend_Controller_Action
                  * {@link http://www.w3.org/TR/rdf-sparql-query/#rECHAR}
                  * wrong: \t\b\n\r\f\\\"\\\' 
                  */
-                if (preg_match('/[\\\r\n"]/', $value) > 0) {
+                if (preg_match('/[\x5c\r\n"]/', $value) > 0) {
                     $longLiteral = true;
                     $value = trim($value, "\n\r");
                     // $value = str_replace("\x0A", '\n', $value);
