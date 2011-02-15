@@ -629,7 +629,7 @@ class ServiceController extends Zend_Controller_Action
                 $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes(
                     $namedGraph, 
                     json_decode($this->_request->getParam('delete_hashed'), true));
-                $delete = $hashedObjectStatements;
+                $delete = array_merge_recursive($delete, $hashedObjectStatements);
             }
             
             try {
