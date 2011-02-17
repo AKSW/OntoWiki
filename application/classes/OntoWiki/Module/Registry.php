@@ -243,7 +243,10 @@ class OntoWiki_Module_Registry
         require_once $moduleFile;
         $moduleClass = ucfirst($moduleName)
                      . self::MODULE_CLASS_POSTFIX;
-        $module = new $moduleClass($moduleName, $context, $this->_modules[$moduleName]);
+        $module = null;
+        if (class_exists($moduleClass)) {
+            $module = new $moduleClass($moduleName, $context, $this->_modules[$moduleName]);
+        }
 
         return $module;
     }
