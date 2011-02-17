@@ -104,7 +104,7 @@
         <div id="topnav">
             <ul>
                 <!-- li><a href="#">Sitemap</a></li -->
-                <!-- li><a href="#">Contact Us</a></li -->
+                <li><a href="http://lod2.eu/WikiArticle/Contact.html">Contact</a></li>
                 <li><a href="http://lod2.eu/Article/Imprint.html">Imprint</a></li>
                 <li><a rel="nofollow" href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo urlencode($this->resourceUri) ?>">Log In/Edit</a></li>
             </ul>
@@ -184,6 +184,7 @@
             <div class="section">
                 <h3>Last Changes</h3>
                 <div class="section-content">
+                    <?php Erfurt_App::getInstance()->getVersioning()->setLimit(3); ?>
                     <?php echo $this->module('lastchanges', array('noChrome' => true)); ?>
                 </div>
             </div>
@@ -207,6 +208,7 @@
             <a href="http://www.yaml.de/" title="YAML is an (X)HTML/CSS framework for creating modern and flexible floated layouts."><abbr title="Yet Another Multicolumn Layout">YAML</abbr></a> and
             <a href="jquery.com" title="jQuery is a fast and concise JavaScript Library that simplifies HTML document traversing, event handling, animating, and Ajax interactions for rapid web development.">jQuery</a>.
             <a id="sfp-logo" href="#"><span class="hideme">publicly sponsored by Seventh Framework Program</span></a>
+            <a id="eu-logo" href="http://cordis.europa.eu/info-management/"><span class="hideme">co-funded by the European Union</span></a>
         </p>
         <!--p class="subline">
             This page is powered by

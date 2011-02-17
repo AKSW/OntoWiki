@@ -301,6 +301,17 @@
     background:url(./../img/logo-7fp.png) no-repeat top left #fff;
     outline:none;
   }
+
+  #eu-logo {
+    display: block;
+    position: absolute;
+    width: 71px;
+    height: 47px;
+    top: 86px;
+    right: 20px;
+    background: url(./../img/logo-eu.png) no-repeat top left #fff;
+    outline: none;
+  }
   
   #sfp-logo:after
   {
