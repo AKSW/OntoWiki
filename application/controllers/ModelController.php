@@ -820,11 +820,13 @@ class ModelController extends OntoWiki_Controller_Base
                 $this->view->namespacePrefixes['__default'] = $graph->getModelIri();
 
                 $infoUris = $this->_config->descriptionHelper->properties;
-
-                if(class_exists('FoafHelper') && strpos($graph->getModelIri(), 'foaf.rdf') !== false){
+                //echo (string)$resource;
+                $query = 'ASK FROM <'.(string)$resource.'> WHERE {<'.(string)$resource.'> a <http://xmlns.com/foaf/0.1/PersonalProfileDocument>}';
+                $q = Erfurt_Sparql_SimpleQuery::initWithString($query);
+                if($this->_owApp->extensionManager->isExtensionActive('foafprofileviewer') && $store->sparqlAsk($q) === true){
                     $this->view->showFoafLink = true;
-                    $this->view->foafLink = $this->_config->urlBase.'foaf/display';
-                }
+                    $this->view->foafLink = $this->_config->urlBase.'foafprofileviewer/display';
+                } 
 
                 $this->view->infoPredicates = array();
                 foreach ($infoUris as $infoUri) {
