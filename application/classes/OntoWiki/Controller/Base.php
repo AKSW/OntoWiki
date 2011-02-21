@@ -133,7 +133,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             $this->view->jsonVars .= '
             var selectedResource = {
                 URI: "' . (string)$this->_owApp->selectedResource . '", 
-                title: "' . (string)$this->_owApp->selectedResource->getTitle() . '", 
+                title: ' . json_encode((string)$this->_owApp->selectedResource->getTitle()) . ', 
                 graphURI: "' . (string)$this->_owApp->selectedModel . '"
             };
             var RDFAUTHOR_DEFAULT_SUBJECT = "' . (string)$this->_owApp->selectedResource . '";' . PHP_EOL;
@@ -146,11 +146,11 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             );
         }
 
-        if(isset($this->_config->meta)){
-            if(isset($this->_config->meta->Keywords)){
+        if (isset($this->_config->meta)){
+            if (isset($this->_config->meta->Keywords)){
                 $this->view->metaKeywords = $this->_config->meta->Keywords;
             } 
-            if(isset($this->_config->meta->Description)){
+            if (isset($this->_config->meta->Description)){
                 $this->view->metaDescription = $this->_config->meta->Description;
             }
         } 

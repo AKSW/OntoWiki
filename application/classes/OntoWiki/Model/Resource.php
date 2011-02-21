@@ -200,6 +200,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                     $value = array(
                         'content'  => null, 
                         'object'   => null, 
+                        'object_hash' => null,
                         'datatype' => null, 
                         'lang'     => null, 
                         'url'      => null, 
@@ -267,6 +268,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                         case 'literal':
                             // original (unmodified) for RDFa
                             $value['content'] = $row['object']['value'];
+                            $value['object_hash'] = md5(Erfurt_Utils::buildLiteralString($row['object']['value']));
 
                             /**
                              * @trigger onDisplayLiteralPropertyValue Triggered if a literal value of some 

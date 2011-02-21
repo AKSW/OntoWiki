@@ -61,13 +61,10 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                     if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
                         // In this case we allow the requesting party to authorize...
                         $response = $frontController->getResponse();
-                        
-                        $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                        $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
-                        $response->sendResponse();
-                        exit;
+                        $response->setException(new OntoWiki_Http_Exception(401));
+                        return;
                     }
-                    
+// TODO clean up (no exit!)  
                     // post error message
                     $ontoWiki->prependMessage(new OntoWiki_Message(
                         '<p>Could not instantiate model: ' . $e->getMessage() . '</p>' . 

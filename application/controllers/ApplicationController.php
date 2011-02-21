@@ -29,7 +29,7 @@ class ApplicationController extends OntoWiki_Controller_Base
         $cacheWritable = is_writable($this->_config->cache->path)
                        ? ' <span style="color:#aea">(writable)</span>'
                        : ' <span style="color:#eaa">(not writable!)</span>';
-        $logWritable = is_writable(_OWROOT . 'logs')
+        $logWritable = is_writable($this->_config->log->path)
                      ? ' <span style="color:#aea">(writable)</span>'
                      : ' <span style="color:#eaa">(not writable!)</span>';
         
@@ -55,24 +55,10 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Translation Caching' => ((bool)$this->_config->cache->translation == true) ? 'enabled' : 'disabled'
             ), 
             'Logging' => array(
-                'Path' => _OWROOT . rtrim($this->_config->log->path, '/') . $logWritable, 
+                'Path' => rtrim($this->_config->log->path, '/') . $logWritable, 
                 'Level'  => (bool)$this->_config->loglevel ? $this->_config->loglevel : 'disabled'
             )
         );
-        exec("hg",$hg);
-        if(file_exists(".hg") && $hg[0] == "Mercurial Distributed SCM"){ //check if the mercurial comand exists and ontowiki is a working directory
-            //echo exec("hg");
-            $cs_id = rtrim(exec("hg id -i"), "+");
-            //echo $revCmd;
-            exec("hg version", $version);
-            exec("hg log -r ".$cs_id, $log);
-
-            $data['Mercurial Versioning'] = array(
-              'Branch' => exec("hg branch"),
-              'Revision' => $log[0].", ".$log[3],
-              'Mercurial Version'  => $version[0]
-            );
-        }
         
         $this->view->data = $data;
     }
