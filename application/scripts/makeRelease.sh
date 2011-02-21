@@ -43,7 +43,7 @@ rm -rf $releaseDir/extensions.ext
 echo "Create and copy additional files and directories in $releaseDir"
 mkdir $releaseDir/cache $releaseDir/logs $releaseDir/uploads
 chmod 777 $releaseDir/cache $releaseDir/logs $releaseDir/uploads
-chmod 777 extensions2
+chmod 777 extensions
 
 echo "Download and unpack a Zend Framework"
 cd $releaseDir && make zend
