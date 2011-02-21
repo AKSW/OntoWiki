@@ -9,10 +9,12 @@
  * @license     http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author      Marvin Frommhold
  */
-require_once 'extensions2/patternmanager/classes/PatternEngine.php';
-require_once 'extensions2/patternmanager/classes/ComplexPattern.php';
-require_once 'extensions2/patternmanager/classes/BasicPattern.php';
-require_once 'extensions2/patternmanager/classes/PatternFunction.php';
+$ep = OntoWiki::getInstance()->extensionManager->getExtensionPath();
+require_once $ep.'patternmanager/classes/PatternEngine.php';
+require_once $ep.'patternmanager/classes/ComplexPattern.php';
+require_once $ep.'patternmanager/classes/BasicPattern.php';
+require_once $ep.'patternmanager/classes/PatternFunction.php';
+unset($ep);
 
 class evolutionJsonrpcAdapter {
 
