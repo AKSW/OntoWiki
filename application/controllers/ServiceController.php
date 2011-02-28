@@ -873,6 +873,7 @@ class ServiceController extends Zend_Controller_Action
             FILTER(
                 sameTerm(?propertyClass, <'.EF_OWL_OBJECT_PROPERTY.'>) ||
                 sameTerm(?propertyClass, <'.EF_OWL_DATATYPE_PROPERTY.'>) ||
+                sameTerm(?propertyClass, <'.EF_OWL_ONTOLOGY_PROPERTY.'>) ||
                 sameTerm(?propertyClass, <'.EF_RDF_PROPERTY.'>)
             )} LIMIT 200 ');
         if (!empty($properties)) {
