@@ -13,6 +13,14 @@
  */
 class ExconfController extends OntoWiki_Controller_Component {
 
+    public static final $EXTENSION_CLASS = "http://ns.ontowiki.net/Extensions/Extension";
+
+    protected $use_ftp = false;
+    protected $writeable = true;
+
+    protected $connection = null;
+    protected $sftp = null;
+
     public function __call($method, $args) {
         $this->_forward('list');
     }
@@ -20,6 +28,18 @@ class ExconfController extends OntoWiki_Controller_Component {
     public function  init() {
         parent::init();
         OntoWiki_Navigation::disableNavigation();
+        if(!is_writeable($modMan->getExtensionPath())){
+            $con = $this->ftpConnect();
+            if($con->connection == null){
+                $this->writeable = false;
+                $this->connection = false;
+                $this->sftp = false;
+            } else {
+                $this->use_ftp = true;
+                $this->connection = $con->connection;
+                $this->sftp = $con->sftp;
+            }
+        }
     }
 
     function listAction() {
@@ -162,6 +182,77 @@ class ExconfController extends OntoWiki_Controller_Component {
             //no rendering
             exit;
         }
+    }
+
+    public function exploreRepoAction(){
+        $repoUrl = $this->_privateConfig->repoUrl;
+        if(($otherRepo = $this->getParam("repoUrl")) != null){
+            $repoUrl = $otherRepo;
+        }
+        $this->view->repoUrl = $repoUrl;
+        $adapter = new Erfurt_Store_Adapter_Sparql(array("graphs"=>array($repoUrl)));
+        $store = new Erfurt_Store(array("adapterInstance"=>$adapter));
+
+        $extensions = $store->sparqlQuery(new Erfurt_Sparql_SimpleQuery("SELECT * FROM <".$repoUrl."> WHERE {?extension a <".  self::EXTENSION_CLASS.">}"));
+
+        var_dump($extensions);
+    }
+
+    public function installArchiveRemoteAction(){
+        $remoteFileHandle = fopen($url, 'r');
+        if ($remoteFileHandle) {
+            $localFilehandle = tmpfile();
+            while(!feof($remoteFileHandle)) {
+                fwrite($localFilehandle, fread($remoteFileHandle, 1024));
+            }
+            fclose($remoteFileHandle);
+            $filename = "TODO :)";
+            installArchive($filename, $localFilehandle);
+            fclose($localFilehandle); //deletes file
+        }
+    }
+
+    public function installArchiveUploadAction(){
+        if ($_FILES['install_from_file']['error'] == UPLOAD_ERR_OK) {
+            // upload ok, move file
+            //$fileUri  = $this->_request->getPost('file_uri');
+            $fileName = $_FILES['install_from_file']['name'];
+            $tmpName  = $_FILES['install_from_file']['tmp_name'];
+            $mimeType = $_FILES['install_from_file']['type'];
+            $localFilehandle = fopen($tmpName, 'r');
+            installArchive($fileName, $localFilehandle);
+            fclose($localFilehandle);
+        }
+    }
+
+    protected function installArchive($name, $fileHandle){
+        require_once './Archive.php';
+        
+    }
+
+    protected function checkForUpdates(){
+
+    }
+
+    /**
+     * Get the connection to ftp-server
+     *
+     * @param unknown_type $sftp
+     * @param unknown_type $connection
+     */
+    public function ftpConnect(){
+    	$username = $this->_privateConfig->ftp->username;
+    	$password = $this->_privateConfig->ftp->password;
+    	$hostname = $this->_privateConfig->ftp->hostname;
+    	$ssh2 = "ssh2.sftp://$username:$password@$hostname:22";
+    	$connection = ssh2_connect("$hostname", 22);
+    	ssh2_auth_password($connection, $username, $password);
+    	$sftp = ssh2_sftp($connection);
+
+        $ret = new stdClass();
+        $ret->connection = $connection;
+        $ret->sftp = $sftp;
+        return $ret;
     }
 }
 
