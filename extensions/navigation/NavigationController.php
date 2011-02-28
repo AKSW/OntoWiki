@@ -48,6 +48,9 @@ class NavigationController extends OntoWiki_Controller_Component
             throw new OntoWiki_Exception('Missing parameter m (model) and no selected model in session!');
             exit;
         }
+        // create title helper
+        $this->titleHelper = new OntoWiki_Model_TitleHelper($this->model);
+        
         // Model Based Access Control
         if (!$this->ac->isModelAllowed('view', $this->model->getModelIri()) ) {
             throw new Erfurt_Ac_Exception('You are not allowed to read this model.');
@@ -318,7 +321,6 @@ class NavigationController extends OntoWiki_Controller_Component
         if ($mode == "titleHelper"){
             //$this->_owApp->logger->info('TITLE HELPER.');
             //$this->_owApp->logger->info('TITLE HELPER REs: '.print_r($results,true));
-            $this->titleHelper = new OntoWiki_Model_TitleHelper($this->model);
             if (isset($results)){
                 foreach ($results as $result) {
                     //$this->_owApp->logger->info('TITLE HELPER: '.$result['resourceUri']);
@@ -502,7 +504,6 @@ class NavigationController extends OntoWiki_Controller_Component
 
     protected function _getTitle($uri, $mode, $setup){
         $name = '';
-        $this->titleHelper = new OntoWiki_Model_TitleHelper($this->model);
         // set default mode if none is set
         if (!isset($mode) || $mode == null) $mode = "baseName";
 
