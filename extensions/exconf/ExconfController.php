@@ -13,7 +13,7 @@
  */
 class ExconfController extends OntoWiki_Controller_Component {
 
-    public static final $EXTENSION_CLASS = "http://ns.ontowiki.net/Extensions/Extension";
+    const EXTENSION_CLASS = "http://ns.ontowiki.net/Extensions/Extension";
 
     protected $use_ftp = false;
     protected $writeable = true;
@@ -22,12 +22,17 @@ class ExconfController extends OntoWiki_Controller_Component {
     protected $sftp = null;
 
     public function __call($method, $args) {
+        echo "forward";
         $this->_forward('list');
     }
     
     public function  init() {
         parent::init();
         OntoWiki_Navigation::disableNavigation();
+        $ow = OntoWiki::getInstance();
+        $modMan = $ow->extensionManager;
+
+        //determine how to write to the filesystem
         if(!is_writeable($modMan->getExtensionPath())){
             $con = $this->ftpConnect();
             if($con->connection == null){
@@ -184,50 +189,116 @@ class ExconfController extends OntoWiki_Controller_Component {
         }
     }
 
-    public function exploreRepoAction(){
+    public function explorerepoAction(){
         $repoUrl = $this->_privateConfig->repoUrl;
         if(($otherRepo = $this->getParam("repoUrl")) != null){
             $repoUrl = $otherRepo;
         }
+        $graph = $this->_privateConfig->graph;
+        if(($otherRepo = $this->getParam("repoUrl")) != null){
+            $graph = $otherRepo;
+        }
         $this->view->repoUrl = $repoUrl;
-        $adapter = new Erfurt_Store_Adapter_Sparql(array("graphs"=>array($repoUrl)));
-        $store = new Erfurt_Store(array("adapterInstance"=>$adapter));
+        $adapter = new Erfurt_Store_Adapter_Sparql(array("serviceurl"=>$repoUrl, 'graphs'=>array('')));
+        $store = new Erfurt_Store(array("adapterInstance"=>$adapter), "sparql");
+        $rdfGraphObj = new Erfurt_Rdf_Model($graph);
 
-        $extensions = $store->sparqlQuery(new Erfurt_Sparql_SimpleQuery("SELECT * FROM <".$repoUrl."> WHERE {?extension a <".  self::EXTENSION_CLASS.">}"));
-
-        var_dump($extensions);
-    }
-
-    public function installArchiveRemoteAction(){
-        $remoteFileHandle = fopen($url, 'r');
-        if ($remoteFileHandle) {
-            $localFilehandle = tmpfile();
-            while(!feof($remoteFileHandle)) {
-                fwrite($localFilehandle, fread($remoteFileHandle, 1024));
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $listName = "extension";
+        if($listHelper->listExists($listName)){
+            $list = $listHelper->getList($listName);
+            $listHelper->addList($listName, $list, $this->view);
+        } else {
+            if($this->_owApp->selectedModel == null){
+                $this->_owApp->appendMessage(new OntoWiki_Message("your session timed out",  OntoWiki_Message::ERROR));
+                $this->_redirect($this->_config->baseUrl);
             }
-            fclose($remoteFileHandle);
-            $filename = "TODO :)";
-            installArchive($filename, $localFilehandle);
-            fclose($localFilehandle); //deletes file
+            $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array());
+            $list->addTypeFilter(self::EXTENSION_CLASS);
+            $listHelper->addListPermanently($listName, $list, $this->view);
         }
     }
 
-    public function installArchiveUploadAction(){
-        if ($_FILES['install_from_file']['error'] == UPLOAD_ERR_OK) {
+    public function installarchiveremoteAction(){
+        $url = "http://pop-imap-troubleshooter.googlecode.com/files/pop-imap-troubleshooter-2.0.1.tar.gz"; //test
+        $parsedUrl = parse_url($url);
+        $values = explode("/", $parsedUrl['path']);
+        if($values != false){
+            $new_values = array();
+            foreach($values as $v) {
+                if(!empty($v)) $new_values[]= $v;
+            }
+            $filename = $new_values[count($new_values)-1];
+            $fileStr = file_get_contents($url);
+            if($fileStr != false){
+                $tmp = sys_get_temp_dir();
+                if(!(substr($tmp, -1) == PATH_SEPARATOR)){
+                    $tmp .= PATH_SEPARATOR;
+                }
+                $tmpfname = tempnam($tmp, $filename);
+
+                $localFilehandle = fopen($tmpfname, "w+");
+                fwrite($localFilehandle, $fileStr);
+                rewind($localFilehandle);
+                
+                $this->installArchive($filename, $localFilehandle);
+                fclose($localFilehandle); //deletes file
+            }
+        }
+    }
+
+    public function archiveuploadformAction(){
+        $this->view->placeholder('main.window.title')->set('Upload new extension archive');
+        $this->view->formActionUrl = $this->_config->urlBase . 'exconf/installarchiveupload';
+        $this->view->formEncoding  = 'multipart/form-data';
+        $this->view->formClass     = 'simple-input input-justify-left';
+        $this->view->formMethod    = 'post';
+        $this->view->formName      = 'archiveupload';
+
+        $toolbar = $this->_owApp->toolbar;
+        $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Upload Archive', 'id' => 'archiveupload'))
+                ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel', 'id' => 'archiveupload'));
+        $this->view->placeholder('main.window.toolbar')->set($toolbar);
+
+    }
+
+    public function installarchiveuploadAction(){
+        if ($_FILES['archive_file']['error'] == UPLOAD_ERR_OK) {
             // upload ok, move file
             //$fileUri  = $this->_request->getPost('file_uri');
-            $fileName = $_FILES['install_from_file']['name'];
-            $tmpName  = $_FILES['install_from_file']['tmp_name'];
-            $mimeType = $_FILES['install_from_file']['type'];
+            $fileName = $_FILES['archive_file']['name'];
+            $tmpName  = $_FILES['archive_file']['tmp_name'];
+            $mimeType = $_FILES['archive_file']['type'];
             $localFilehandle = fopen($tmpName, 'r');
-            installArchive($fileName, $localFilehandle);
+            $this->installArchive($tmpName, $localFilehandle);
             fclose($localFilehandle);
-        }
+        } else {echo "error";}
     }
 
     protected function installArchive($name, $fileHandle){
-        require_once './Archive.php';
-        
+        require_once 'Archive.php';
+        $ext = mime_content_type($name);
+        switch ($ext){
+            case "application/zip":
+                $archive = new zip_file($name);
+                break;
+            case "application/x-bzip2":
+                $archive = new bzip_file($name);
+                break;
+            case "application/x-gzip":
+                $archive = new gzip_file($name);
+                break;
+            case "application/x-tar":
+                $archive = new tar_file($name);
+                break;
+        }
+        // Overwrite existing files
+        $ow = OntoWiki::getInstance();
+        $modMan = $ow->extensionManager;
+        $path = $modMan->getExtensionPath();
+        $archive->set_options(array('overwrite' => 1, 'basedir' => $path));
+        // Extract contents of archive to disk
+        $archive->extract_files();
     }
 
     protected function checkForUpdates(){
@@ -241,18 +312,25 @@ class ExconfController extends OntoWiki_Controller_Component {
      * @param unknown_type $connection
      */
     public function ftpConnect(){
-    	$username = $this->_privateConfig->ftp->username;
-    	$password = $this->_privateConfig->ftp->password;
-    	$hostname = $this->_privateConfig->ftp->hostname;
-    	$ssh2 = "ssh2.sftp://$username:$password@$hostname:22";
-    	$connection = ssh2_connect("$hostname", 22);
-    	ssh2_auth_password($connection, $username, $password);
-    	$sftp = ssh2_sftp($connection);
+        if(isset($this->_privateConfig->ftp)){
+            $username = $this->_privateConfig->ftp->username;
+            $password = $this->_privateConfig->ftp->password;
+            $hostname = $this->_privateConfig->ftp->hostname;
+            $ssh2 = "ssh2.sftp://$username:$password@$hostname:22";
+            $connection = ssh2_connect("$hostname", 22);
+            ssh2_auth_password($connection, $username, $password);
+            $sftp = ssh2_sftp($connection);
 
-        $ret = new stdClass();
-        $ret->connection = $connection;
-        $ret->sftp = $sftp;
-        return $ret;
+            $ret = new stdClass();
+            $ret->connection = $connection;
+            $ret->sftp = $sftp;
+            return $ret;
+        } else {
+            $ret = new stdClass();
+            $ret->connection = null;
+            $ret->sftp = null;
+            return $ret;
+        }
     }
 }
 
