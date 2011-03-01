@@ -209,10 +209,6 @@ class ExconfController extends OntoWiki_Controller_Component {
             $list = $listHelper->getList($listName);
             $listHelper->addList($listName, $list, $this->view);
         } else {
-            if($this->_owApp->selectedModel == null){
-                $this->_owApp->appendMessage(new OntoWiki_Message("your session timed out",  OntoWiki_Message::ERROR));
-                $this->_redirect($this->_config->baseUrl);
-            }
             $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array());
             $list->addTypeFilter(self::EXTENSION_CLASS);
             $listHelper->addListPermanently($listName, $list, $this->view);
