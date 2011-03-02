@@ -17,7 +17,7 @@
 ; In most cases you only need to change username, password
 ; and database name (dbname).
 
-store.backend           = zenddb             ; zenddb, virtuoso, comparer
+store.backend           = zenddb             ; zenddb, virtuoso, arc, comparer
 
 store.zenddb.dbname     = "ontowiki"
 store.zenddb.username   = "ow"
@@ -29,6 +29,12 @@ store.virtuoso.dsn         = vos505
 store.virtuoso.username    = "dba"
 store.virtuoso.password    = "dba"
 ;store.virtuoso.use_persistent_connection = true
+
+store.arc.dbname = "ontowiki_arc2"
+store.arc.username = "ow"
+store.arc.password = "ow"
+store.arc.host = "localhost"
+store.arc.store = "ef"
 
 store.comparer.reference         = virtuoso
 store.comparer.candidate         = zenddb
