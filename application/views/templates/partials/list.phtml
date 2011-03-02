@@ -114,14 +114,19 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
 <div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
 <div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
 
-<?php echo $this->partial('partials/'.$this->mainTemplate.'.phtml',
+<?php
+$other = new stdClass();
+$other->namespaces =$namespaces;
+$other->graphbase = $graphBase;
+echo $this->partial('partials/'.$this->mainTemplate.'.phtml',
                 array(
                     'instances'    => $instances,
                     'instanceData' => $instanceData,
                     'instanceInfo' => $instanceInfo,
                     'propertyInfo' => $propertyInfo,
-                    'other'        => array('namespaces'=>$namespaces, 'graphbase'=>$graphBase),
-                    'elementTemplate' => $this->elementTemplate
+                    'other'        => $other,
+                    'elementTemplate' => $this->elementTemplate,
+                    'start'        => $start
                 )
              );
 ?>
