@@ -195,16 +195,16 @@ class ExconfController extends OntoWiki_Controller_Component {
             $repoUrl = $otherRepo;
         }
         $graph = $this->_privateConfig->graph;
-        if(($otherRepo = $this->getParam("repoUrl")) != null){
-            $graph = $otherRepo;
+        if(($otherGraph = $this->getParam("graph")) != null){
+            $graph = $otherGraph;
         }
         $this->view->repoUrl = $repoUrl;
-        $adapter = new Erfurt_Store_Adapter_Sparql(array("serviceurl"=>$repoUrl, 'graphs'=>array('')));
+        $adapter = new Erfurt_Store_Adapter_Sparql(array("serviceurl"=>$repoUrl, 'graphs'=>array($graph)));
         $store = new Erfurt_Store(array("adapterInstance"=>$adapter), "sparql");
         $rdfGraphObj = new Erfurt_Rdf_Model($graph);
 
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
-        $listName = "extension";
+        $listName = "extensions";
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
             $listHelper->addList($listName, $list, $this->view);
