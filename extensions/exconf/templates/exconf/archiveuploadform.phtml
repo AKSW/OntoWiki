@@ -1,0 +1,8 @@
+<fieldset class="activeForm" id="upload">
+    <div>
+        <label for="file-input">
+            <?php echo sprintf($this->_('File (max. %1$sB)'), preg_replace('/([kMG])/', ' $1', min(array(ini_get('upload_max_filesize'), ini_get('post_max_size'))))) ?>
+        </label>
+        <input type="file" id="file-input" name="archive_file" />
+    </div>
+</fieldset>
