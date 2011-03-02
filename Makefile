@@ -5,7 +5,7 @@ default:
 	@echo "     'make force-update' ('hg pull' and 'hg update -c' for all repos)"
 	@echo "     'make status' ('hg status' for all repos)"
 	@echo "     'make branch-check' ('hg branch' for all repos)"
-	@echi "     'make libraries' ('hg clone' all subrepos - in case of an old mercurial)"
+	@echo "     'make libraries' ('hg clone' all subrepos - in case of an old mercurial)"
 	@echo "     'make zend' (download and install Zend under libraries)"
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
 
