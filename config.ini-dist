@@ -32,7 +32,7 @@ store.virtuoso.password    = "dba"
 
 store.comparer.reference         = virtuoso
 store.comparer.candidate         = zenddb
-store.comparer.ignoredMehods[]   = sparqlQuery
+store.comparer.ignoredMethods[]   = sparqlQuery
 
 ;;
 ; Frontend language
