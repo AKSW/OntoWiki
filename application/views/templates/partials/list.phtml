@@ -1,5 +1,4 @@
 <?php
-
 $start = microtime(true);
 $instances = $this->instances;
 
@@ -107,6 +106,10 @@ if ($instances->hasData()) {
         $timeMsg = sprintf($translate->translate('Query execution took %1$d ms.'), $time);
         $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
     }
+} else {
+    $instanceData = array();
+    $instanceInfo = array();
+    $propertyInfo = array();
 }
 $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));$url->setParam('init', true);
 ?>
@@ -115,9 +118,12 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
 <div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
 
 <?php
+//other contains template specific data
 $other = new stdClass();
 $other->namespaces =$namespaces;
 $other->graphbase = $graphBase;
+
+//call the requested template
 echo $this->partial('partials/'.$this->mainTemplate.'.phtml',
                 array(
                     'instances'    => $instances,

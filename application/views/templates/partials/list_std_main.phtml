@@ -1,0 +1,47 @@
+<?php $odd = true;
+    if ($this->instances->hasData()): ?>
+<table class="resource-list separated-vertical"
+        <?php foreach ($this->other->namespaces as $namespace => $prefix): ?>
+                   <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+                   <?php endforeach; ?>>
+        <?php if (!empty($this->propertyInfo)): ?>
+    <tr>
+        <!--th></th--><th></th><th></th>
+            <?php foreach ($this->propertyInfo as $property):  if($property['hidden']){continue;}?>
+        <th>
+            <a class="hasMenu Property"
+               about="<?php echo $property['uri'] ?>"
+               href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
+                <?php if ($property['inverse']): ?><sup>-1</sup><?php endif; ?>
+        </th>
+            <?php endforeach; ?>
+        <?php if(isset($this->additionalElementView)): ?>
+        <th>
+            Actions
+        </th>
+        <?php endif; ?>
+    </tr>
+            <?php endif; ?>
+            <?php $i = $this->start ?>
+        <?php foreach ($this->instanceInfo as $instanceUri => $instance){
+            echo $this->partial('partials/'.$this->elementTemplate.'.phtml',
+                array(
+                    'instanceUri'  => $instanceUri,
+                    'instance'     => $instance,
+                    'instanceData' => $this->instanceData,
+                    'instanceInfo' => $this->instanceInfo,
+                    'propertyInfo' => $this->propertyInfo,
+                    'other'        => $this->other,
+                    'odd'          => $odd,
+                    'i'            => $i
+                )
+             );
+            $odd = !$odd;
+            $i++;
+        } ?>
+</table>
+    <?php else: ?>
+<p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
+    <?php endif; ?>
+
+

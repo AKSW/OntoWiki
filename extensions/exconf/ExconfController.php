@@ -28,7 +28,18 @@ class ExconfController extends OntoWiki_Controller_Component {
     
     public function  init() {
         parent::init();
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki_Navigation::reset();
+        
+        OntoWiki_Navigation::register('list', array('route'      => null,
+            'controller' => 'exconf',
+            'action'     => 'list',
+            'name'   => 'List Installed'));
+        OntoWiki_Navigation::register('repo', array('route'      => null,
+            'controller' => 'exconf',
+            'action'     => 'explorerepo',
+            'name'   => 'Install from Repo'));
+
+
         $ow = OntoWiki::getInstance();
         $modMan = $ow->extensionManager;
 
@@ -55,8 +66,10 @@ class ExconfController extends OntoWiki_Controller_Component {
         $ow = OntoWiki::getInstance();
         if (!$this->_erfurt->getAc()->isActionAllowed('ExtensionConfiguration') && !$this->_request->isXmlHttpRequest()) {
             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("config not allowed for this user", OntoWiki_Message::ERROR));
+            $this->view->isAllowed = false;
             $extensions = array();
         } else {
+            $this->view->isAllowed = true;
             //get extension from manager
             $modMan = $ow->extensionManager;
             $extensions = $modMan->getExtensions();

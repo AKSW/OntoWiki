@@ -1,0 +1,25 @@
+<?php $odd = true;
+    if ($this->instances->hasData()): ?>
+<ul class="resource-list separated-vertical"
+    <?php foreach ($this->instanceInfo as $instanceUri => $instance){
+            echo $this->partial('partials/'.$this->elementTemplate.'.phtml',
+                array(
+                    'instanceUri'  => $instanceUri,
+                    'instance'     => $instance,
+                    'instanceData' => $this->instanceData,
+                    'instanceInfo' => $this->instanceInfo,
+                    'propertyInfo' => $this->propertyInfo,
+                    'other'        => $this->other,
+                    'odd'          => $odd,
+                    'i'            => $i
+                )
+             );
+            $odd = !$odd;
+            $i++;
+        } ?>
+</ul>
+    <?php else: ?>
+<p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
+    <?php endif; ?>
+
+
