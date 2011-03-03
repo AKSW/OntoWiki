@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rdf:RDF [
-  <!ENTITY ExtensionRepo "http://ns.aksw.org/Extensions/">
+  <!ENTITY ExtensionRepo "http://ns.ontowiki.net/Extensions/">
   <!ENTITY SysOnt "http://ns.ontowiki.net/SysOnt/">
   <!ENTITY dc "http://purl.org/dc/elements/1.1/">
   <!ENTITY doap "http://usefulinc.com/ns/doap#">
@@ -13,7 +13,7 @@
   <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
   <!ENTITY qf "http://ontowiki.net/">
 ]>
-<rdf:RDF xml:base="http://ns.ontowiki.net/Extensions/"
+<rdf:RDF xml:base="&ExtensionRepo;"
          xmlns:ExtensionRepo="&ExtensionRepo;"
          xmlns:SysOnt="&SysOnt;"
          xmlns:dc="&dc;"

@@ -36,11 +36,11 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         $lists = $this->_owApp->session->managedLists;
         
         if (key_exists($name, $lists)) {
-            $lists[$name]->setStore($this->_owApp->erfurt->getStore());
+            //$lists[$name]->setStore($this->_owApp->erfurt->getStore()); //after serialization the store is compromized
             return $lists[$name];
         }
         
-        throw new InvalidArgumentException("list was not found. this method was called unsafe, check with listExists() first");
+        throw new InvalidArgumentException("list was not found. check with listExists() first");
     }
     
     public function addListPermanently($name, OntoWiki_Model_Instances $list, Zend_View_Interface $view, $templateName = null){
