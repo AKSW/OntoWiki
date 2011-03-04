@@ -8,6 +8,7 @@ default:
 	@echo "     'make libraries' ('hg clone' all subrepos - in case of an old mercurial)"
 	@echo "     'make zend' (download and install Zend under libraries)"
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
+	@echo "     'make install' (-> make directories, zend and libraries)"
 
 pull:
 	@hg --repository . pull
@@ -59,3 +60,6 @@ libraries:
 directories:
 	mkdir -p logs cache
 	chmod 777 logs cache extensions
+
+install: directories zend libraries
+
