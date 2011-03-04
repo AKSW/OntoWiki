@@ -9,6 +9,7 @@ default:
 	@echo "     'make zend' (download and install Zend under libraries)"
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
 	@echo "     'make install' (-> make directories, zend and libraries)"
+	@echo "     'make clean' (deletes all log and cache files)"
 
 pull:
 	@hg --repository . pull
@@ -63,3 +64,5 @@ directories:
 
 install: directories zend libraries
 
+clean:
+	rm -rf cache/* logs/*
