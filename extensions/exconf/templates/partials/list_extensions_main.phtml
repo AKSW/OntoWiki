@@ -1,8 +1,8 @@
 <?php $odd = true;
     if ($this->instances->hasData()): ?>
-<ul class="resource-list separated-vertical"
+<ul class="resource-list seperated-vertical"
     <?php foreach ($this->instanceInfo as $instanceUri => $instance){
-            echo $this->partial('partials/'.$this->elementTemplate.'.phtml',
+            echo $this->partial('partials/list_extensions_element.phtml',
                 array(
                     'instanceUri'  => $instanceUri,
                     'instance'     => $instance,

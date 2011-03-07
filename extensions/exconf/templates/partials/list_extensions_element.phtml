@@ -1,6 +1,6 @@
 <li class="<?php echo $this->odd ? 'odd' : 'even'; ?>">
     <?php if($this->instance['type'] == 'uri'){ ?>
-            <a class="hasMenu expandable"
+            <a 
                about="<?php echo $this->instanceUri ?>"
                            <?php if(isset($this->instanceData[$this->instanceUri]['__TYPE'])) : ?>
                typeof="<?php echo $this->curie($this->instanceData[$this->instanceUri]['__TYPE'][0]['value']) ?>"

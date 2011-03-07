@@ -48,7 +48,10 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         $this->addList($name, $list, $view, $templateName);
     }
 
-    public function addList($listName, OntoWiki_Model_Instances $list, Zend_View_Interface $view, $templateName = null, $mainTemplate = 'list_std_main', $elementTemplate = 'list_std_element'){
+    public function addList($listName, OntoWiki_Model_Instances $list, Zend_View_Interface $view, $templateName = null, $mainTemplate = 'list_std_main', $other = null){
+        if($other === null ){
+            $other = new stdClass();
+        }
         $this->getResponse()->append('default',
             $view->partial('partials/list.phtml',
                 array(
@@ -56,7 +59,7 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
                     'instances'             => $list,
                     'additionalElementView' => $templateName,
                     'mainTemplate'          => $mainTemplate,
-                    'elementTemplate'       => $elementTemplate
+                    'other'                 => $other
                 )
              )
         );
