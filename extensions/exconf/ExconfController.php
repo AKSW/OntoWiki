@@ -203,6 +203,8 @@ class ExconfController extends OntoWiki_Controller_Component {
     }
 
     public function explorerepoAction(){
+        $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Explore Repo'));
+
         $repoUrl = $this->_privateConfig->repoUrl;
         if(($otherRepo = $this->getParam("repoUrl")) != null){
             $repoUrl = $otherRepo;
