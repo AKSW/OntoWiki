@@ -578,12 +578,16 @@ class ServiceController extends Zend_Controller_Action
         if (isset($this->_request->query)) {
             // we have a query, enter SPARQL/Update mode
             $query = $this->_request->getParam('query', '');
+            OntoWiki::getInstance()->logger->info('SPARQL/Update query: ' . $query);
             
             $matches = array();
             // insert
             preg_match('/INSERT\s+DATA(\s+INTO\s*<(.+)>)?\s*{\s*([^}]*)/i', $query, $matches);
             $insertGraph   = isset($matches[2]) ? $matches[2] : null;
             $insertTriples = isset($matches[3]) ? $matches[3] : '';
+            
+            OntoWiki::getInstance()->logger->info('SPARQL/Update insertGraph: ' . $insertGraph);
+            OntoWiki::getInstance()->logger->info('SPARQL/Update insertTriples: ' . $insertTriples);
             
             // delete
             preg_match('/DELETE\s+DATA(\s+FROM\s*<(.+)>)?\s*{\s*([^}]*)/i', $query, $matches);
