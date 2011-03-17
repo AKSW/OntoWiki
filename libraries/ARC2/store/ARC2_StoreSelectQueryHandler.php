@@ -36,7 +36,7 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     $this->infos['null_vars'] = array();
     $this->indexes = array();
     $this->pattern_order_offset = 0;
-    $q_sql = $this->getSQL();
+    $q_sql = $this->validateSqlQuery($this->getSQL());
 
     /* debug result formats */
     if ($rf == 'sql') return $q_sql;
@@ -44,6 +44,7 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     if ($rf == 'index') return $this->indexes;
     /* create intermediate results (ID-based) */
     $tmp_tbl = $this->createTempTable($q_sql);
+    
     /* join values */
     $r = $this->getFinalQueryResult($q_sql, $tmp_tbl);
     /* remove intermediate results */
@@ -53,12 +54,34 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     return $r;
   }
 
+  function validateSqlQuery($sql){
+      if(((strpos($sql,"SELECT") != false) || (strpos($sql,"SELECT") == 0)) && (strpos($sql,"FROM") == false)){
+          if(strpos($sql,"JOIN") != false){
+              $tmp = preg_split("#LEFT JOIN#", $sql);
+              $select = $tmp[0];
+              $from  = $tmp[1];
+              $query_exclude_select = "";
+              for($i = 2; $i < sizeof($tmp); $i++)
+              {
+                  $query_exclude_select .= " LEFT JOIN ".$tmp[$i];
+              }
+              $tmp = preg_split("#ON#", $from);
+              $from = $tmp[0];
+              return $select."FROM ".$from." ".$query_exclude_select;
+          }
+          else
+              return $sql;
+      }
+      else
+          return $sql;
+  }
+
   function getSQL() {
     $r = '';
     $nl = "\n";
-    $this->buildInitialIndexes();
+    $this->buildInitialIndexes();    
     foreach ($this->indexes as $i => $index) {
-      $this->index = array_merge($this->getEmptyIndex(), $index);
+      $this->index = array_merge($this->getEmptyIndex(), $index);      
       $this->analyzeIndex($this->getPattern('0'));
       $sub_r = $this->getQuerySQL();
       $r .= $r ? $nl . 'UNION' . $this->getDistinctSQL() . $nl : '';
@@ -267,7 +290,8 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
       }
       $this->index['triple_patterns'][] = $pattern['id'];
       /* joins */
-      if ($this->isOptionalPattern($id)) {
+      $opt = $this->isOptionalPattern($id);
+      if ($opt) {
         $this->index['left_join'][] = $id;
       }
       elseif (!$this->index['from']) {
@@ -391,7 +415,8 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     }
     if ($this->v('parent_id', '0', $pattern) == '0') {
       return 0;
-    }
+    }    
+    
     return $this->isOptionalPattern($pattern['parent_id']);
   }
 
@@ -436,17 +461,16 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     $nl = "\n";
     $where_sql = $this->getWHERESQL();  /* pre-fills $index['sub_joins'] $index['constraints'] */
     $order_sql = $this->getORDERSQL();  /* pre-fills $index['sub_joins'] $index['constraints'] */
-    return '' .
-      ($this->is_union_query ? 'SELECT' : 'SELECT' . $this->getDistinctSQL()) . $nl .
-      $this->getResultVarsSQL() . $nl . /* fills $index['sub_joins'] */
-      $this->getFROMSQL() . 
-      $this->getAllJoinsSQL() . 
-      $this->getWHERESQL() . 
-      $this->getGROUPSQL() . 
-      $this->getORDERSQL() . 
-      ($this->is_union_query ? '' : $this->getLIMITSQL()) .
-      $nl .
-    '';
+    $return = '';
+    $return .=  ($this->is_union_query ? 'SELECT' : 'SELECT' . $this->getDistinctSQL()) . $nl;
+    $return .=  $this->getResultVarsSQL() . $nl;
+    $return .=  $this->getFROMSQL();
+    $return .=  $this->getAllJoinsSQL();    
+    $return .=  $this->getWHERESQL();
+    $return .=  $this->getGROUPSQL();
+    $return .=  $this->getORDERSQL();
+    $return .=  ($this->is_union_query ? '' : $this->getLIMITSQL()) . $nl . '';
+    return $return;
   }
 
   /*  */
@@ -1597,7 +1621,7 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
       $sub_r_1 = $this->getExpressionSQL($arg_1, 'sameterm');
       $sub_r_2 = $this->getExpressionSQL($arg_2, 'sameterm');
       $op = $this->v('operator', '', $pattern);
-      $r = $sub_r_1 . ' ' . $op . '= ' . $sub_r_2; 
+      $r = $sub_r_1 . ' ' . $op . '= ' . $sub_r_2;
       return $r;
     }
     return '';
@@ -1772,6 +1796,7 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
         )';
       }
     }
+    
     /* create pos columns, id needed */
     if ($this->v('order_infos', array(), $this->infos['query'])) {
       $r .= $nl . ' ORDER BY _pos_';
