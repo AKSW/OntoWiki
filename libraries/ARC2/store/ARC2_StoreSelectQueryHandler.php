@@ -36,7 +36,7 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     $this->infos['null_vars'] = array();
     $this->indexes = array();
     $this->pattern_order_offset = 0;
-    $q_sql = $this->getSQL();
+    $q_sql = $this->validateSqlQuery($this->getSQL());
 
     /* debug result formats */
     if ($rf == 'sql') return $q_sql;
@@ -44,6 +44,7 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     if ($rf == 'index') return $this->indexes;
     /* create intermediate results (ID-based) */
     $tmp_tbl = $this->createTempTable($q_sql);
+
     /* join values */
     $r = $this->getFinalQueryResult($q_sql, $tmp_tbl);
     /* remove intermediate results */
@@ -51,6 +52,28 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
       $this->queryDB('DROP TABLE IF EXISTS ' . $tmp_tbl, $con);
     }
     return $r;
+  }
+
+  function validateSqlQuery($sql){
+      if(((strpos($sql,"SELECT") != false) || (strpos($sql,"SELECT") == 0)) && (strpos($sql,"FROM") == false)){
+          if(strpos($sql,"JOIN") != false){
+              $tmp = preg_split("#LEFT JOIN#", $sql);
+              $select = $tmp[0];
+              $from  = $tmp[1];
+              $query_exclude_select = "";
+              for($i = 2; $i < sizeof($tmp); $i++)
+              {
+                  $query_exclude_select .= " LEFT JOIN ".$tmp[$i];
+              }
+              $tmp = preg_split("#ON#", $from);
+              $from = $tmp[0];
+              return $select."FROM ".$from." ".$query_exclude_select;
+          }
+          else
+              return $sql;
+      }
+      else
+          return $sql;
   }
 
   function getSQL() {
