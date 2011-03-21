@@ -44,7 +44,7 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     if ($rf == 'index') return $this->indexes;
     /* create intermediate results (ID-based) */
     $tmp_tbl = $this->createTempTable($q_sql);
-    
+
     /* join values */
     $r = $this->getFinalQueryResult($q_sql, $tmp_tbl);
     /* remove intermediate results */
@@ -54,23 +54,36 @@ class ARC2_StoreSelectQueryHandler extends ARC2_StoreQueryHandler {
     return $r;
   }
 
+  /*
+   * workaround replaces the first LEFT JOIN with
+   * a FROM in a SELECT-query without a FROM
+   */
   function validateSqlQuery($sql){
-      if(((strpos($sql,"SELECT") != false) || (strpos($sql,"SELECT") == 0)) && (strpos($sql,"FROM") == false)){
+      if(strpos($sql,"FROM") == false){
           if(strpos($sql,"JOIN") != false){
-              $tmp = preg_split("#LEFT JOIN#", $sql);
-              $select = $tmp[0];
-              $from  = $tmp[1];
-              $query_exclude_select = "";
-              for($i = 2; $i < sizeof($tmp); $i++)
-              {
-                  $query_exclude_select .= " LEFT JOIN ".$tmp[$i];
+              try{
+                  $tmp = preg_split("#LEFT JOIN#", $sql);
+                  $select = $tmp[0];
+                  $from  = $tmp[1];
+                  $query_exclude_select = "";
+                  for($i = 2; $i < sizeof($tmp); $i++)
+                  {
+                      $query_exclude_select .= " LEFT JOIN ".$tmp[$i];
+                  }
+                  $tmp = preg_split("#ON#", $from);
+                  $from = $tmp[0];
+                  return $select."FROM ".$from." ".$query_exclude_select;
               }
-              $tmp = preg_split("#ON#", $from);
-              $from = $tmp[0];
-              return $select."FROM ".$from." ".$query_exclude_select;
+              catch(Exception $e){
+                  $this->addError($e->getMessage());
+                  return $sql;
+              }
+
           }
-          else
+          else{
+              $this->addError('SELECT-Query without FROM and without JOIN!');
               return $sql;
+          }
       }
       else
           return $sql;
