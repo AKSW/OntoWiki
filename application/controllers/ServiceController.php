@@ -466,7 +466,7 @@ class ServiceController extends Zend_Controller_Action
         
         $store    = OntoWiki::getInstance()->erfurt->getStore();
         $response = $this->getResponse();
-        
+
         // fetch params
         // TODO: support maxOccurs:unbound
         $queryString  = $this->_request->getParam('query', '');
@@ -475,7 +475,7 @@ class ServiceController extends Zend_Controller_Action
         }
         $defaultGraph = $this->_request->getParam('default-graph-uri', null);
         $namedGraph   = $this->_request->getParam('named-graph-uri', null);
-        
+          
         if (!empty($queryString)) {
             $query = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
 
@@ -486,7 +486,7 @@ class ServiceController extends Zend_Controller_Action
             if (null !== $namedGraph) {
                 $query->setFromNamed((array)$namedGraph);
             }
-
+ 
             // check graph availability
             $ac = Erfurt_App::getInstance()->getAc();
             foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
@@ -494,7 +494,7 @@ class ServiceController extends Zend_Controller_Action
                     if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
                         // In this case we allow the requesting party to authorize...
                         $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                        $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
+                        $response->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"');
                         $response->sendResponse();
                         exit;
                         
@@ -566,33 +566,52 @@ class ServiceController extends Zend_Controller_Action
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
-        
-        $store       = OntoWiki::getInstance()->erfurt->getStore();
-        $response    = $this->getResponse();
-        $namedGraph  = $this->_request->getParam('named-graph-uri', null);
-        $insertGraph = null;
-        $deleteGraph = null;
-        $insertModel = null;
-        $deleteModel = null;
+    
+        $store        = OntoWiki::getInstance()->erfurt->getStore();
+        $response     = $this->getResponse();
+        $defaultGraph = $this->_request->getParam('default-graph-uri', null);
+        $namedGraph   = $this->_request->getParam('named-graph-uri', null);
+        $insertGraph  = null;
+        $deleteGraph  = null;
+        $insertModel  = null;
+        $deleteModel  = null;
         
         if (isset($this->_request->query)) {
             // we have a query, enter SPARQL/Update mode
             $query = $this->_request->getParam('query', '');
             OntoWiki::getInstance()->logger->info('SPARQL/Update query: ' . $query);
-            
+
             $matches = array();
             // insert
             preg_match('/INSERT\s+DATA(\s+INTO\s*<(.+)>)?\s*{\s*([^}]*)/i', $query, $matches);
-            $insertGraph   = isset($matches[2]) ? $matches[2] : null;
+            $insertGraph   = (isset($matches[2]) && ($matches[2] !== '')) ? $matches[2] : null;
             $insertTriples = isset($matches[3]) ? $matches[3] : '';
-            
+
+            if ((null === $insertGraph) && ($insertTriples !== '')) {
+                if (null !== $defaultGraph) {
+                    $insertGraph = $defaultGraph;
+                }
+                if (null !== $namedGraph) {
+                    $insertGraph = $namedGraph;
+                }
+            }
+
             OntoWiki::getInstance()->logger->info('SPARQL/Update insertGraph: ' . $insertGraph);
             OntoWiki::getInstance()->logger->info('SPARQL/Update insertTriples: ' . $insertTriples);
             
             // delete
             preg_match('/DELETE\s+DATA(\s+FROM\s*<(.+)>)?\s*{\s*([^}]*)/i', $query, $matches);
-            $deleteGraph   = isset($matches[2]) ? $matches[2] : null;
+            $deleteGraph   = (isset($matches[2]) && ($matches[2] !== '')) ? $matches[2] : null;
             $deleteTriples = isset($matches[3]) ? $matches[3] : '';
+            
+            if ((null === $deleteGraph) && ($deleteTriples !== '')) {
+                if (null !== $defaultGraph) {
+                    $deleteGraph = $defaultGraph;
+                }
+                if (null !== $namedGraph) {
+                    $deleteGraph = $namedGraph;
+                }
+            }
             
             // TODO: normalize literals
             
@@ -713,7 +732,7 @@ class ServiceController extends Zend_Controller_Action
             if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
                 // In this case we allow the requesting party to authorize
                 $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
+                $response->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"');
                 $response->sendResponse();
                 exit;
             }
