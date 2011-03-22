@@ -4,6 +4,7 @@
  | By Devin Doucette
  | Copyright (c) 2005 Devin Doucette
  | Email: darksnoopy@shaw.ca
+ | see: http://www.phpclasses.org/package/945-PHP-Create-tar-gzip-bzip2-zip-extract-tar-gzip-bzip2-.html
  +--------------------------------------------------
  | Email bugs/suggestions to darksnoopy@shaw.ca
  +--------------------------------------------------
@@ -452,7 +453,8 @@ class tar_file extends archive
 				else if ($new = @fopen($file['name'], "wb"))
 				{
 					fwrite($new, fread($fp, $file['stat'][7]));
-					fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
+                                        // 0 throws a warning (?)
+					@fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
 					fclose($new);
 					chmod($file['name'], $file['stat'][2]);
 				}
@@ -461,8 +463,12 @@ class tar_file extends archive
 					$this->error[] = "Could not open {$file['name']} for writing.";
 					continue;
 				}
-				chown($file['name'], $file['stat'][4]);
-				chgrp($file['name'], $file['stat'][5]);
+                                // chown can only be done by root
+                                // and anyway: seems like this changes the owner of the extracted file to the owner of the compressed file -
+                                // why? does this even make sense? i commented it out
+				//chown($file['name'], $file['stat'][4]);
+				//chgrp($file['name'], $file['stat'][5]);
+                                chmod($file['name'], 0755);
 				touch($file['name'], $file['stat'][9]);
 				unset ($file);
 			}

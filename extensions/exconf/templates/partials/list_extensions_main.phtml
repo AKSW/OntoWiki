@@ -1,7 +1,23 @@
 <?php $odd = true;
+$configs = $this->other->configs;
+
+function isOlderVersion($v1, $v2){
+    echo $v1." ".$v2;
+    $v1Split = explode(".", $v1);
+    $v2Split = explode(".", $v2);
+    foreach ($v1Split as $key => $versionComponent) {
+       if(!isset ($v2Split[$key]) || intval($versionComponent) < intval($v2Split[$key])){
+           return true;
+       }
+    }
+    return false;
+}
     if ($this->instances->hasData()): ?>
-<ul class="resource-list seperated-vertical"
+<ol class="bullets-none separated">
     <?php foreach ($this->instanceInfo as $instanceUri => $instance){
+        //fixme
+        $parts = explode("/", $instanceUri);
+        $name = $parts[count($parts)-1]; //last part of the uri
             echo $this->partial('partials/list_extensions_element.phtml',
                 array(
                     'instanceUri'  => $instanceUri,
@@ -9,15 +25,17 @@
                     'instanceData' => $this->instanceData,
                     'instanceInfo' => $this->instanceInfo,
                     'propertyInfo' => $this->propertyInfo,
-                    'other'        => $this->other,
+                    'installed'        => isset($configs[$name]),
+                    'enabled'        =>  isset($configs[$name]) &&  $configs[$name]->enabled,
+                    'updateable'        => isset($configs[$name]) && ( isset($this->instanceData[$instanceUri]['latestVersion']) && isOlderVersion($configs[$name]->version, $this->instanceData[$instanceUri]['latestVersion'])),
                     'odd'          => $odd
                 )
              );
             $odd = !$odd;
         } ?>
-</ul>
+</ol>
     <?php else: ?>
-<p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
+<p class="messagebox info"><?php echo $this->_('No extensions found.') ?></p>
     <?php endif; ?>
 
 

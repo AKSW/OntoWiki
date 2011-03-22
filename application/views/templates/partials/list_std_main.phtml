@@ -9,6 +9,7 @@ $actions = new OntoWiki_Menu();
 $actions->setEntry('View', $actionMenu);
 $this->placeholder('main.window.menu')->set($actions->toArray());
 
+$instances = $this->instances;
 // get queries
 $resourceQuery =  $instances->getResourceQuery();
 //echo htmlentities($resourceQuery);

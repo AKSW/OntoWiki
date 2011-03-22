@@ -14,6 +14,12 @@
 class ExconfController extends OntoWiki_Controller_Component {
 
     const EXTENSION_CLASS = "http://ns.ontowiki.net/Extensions/Extension";
+    const EXTENSION_TITLE_PROPERTY = "http://www.w3.org/2000/01/rdf-schema#label"; //rdfs:label
+    const EXTENSION_NAME_PROPERTY = "http://rdfs.org/sioc/ns#name"; //rdfs:label
+    const EXTENSION_DESCRIPTION_PROPERTY = "http://purl.org/dc/elements/1.1/description"; //dc:description
+    const EXTENSION_LATESTVERSION_PROPERTY = "http://ns.ontowiki.net/Extensions/latestVersion";
+    const EXTENSION_LATESTRELEASELOCATION_PROPERTY = "http://ns.ontowiki.net/Extensions/latestReleaseLocation";
+
 
     protected $use_ftp = false;
     protected $writeable = true;
@@ -38,6 +44,10 @@ class ExconfController extends OntoWiki_Controller_Component {
             'controller' => 'exconf',
             'action'     => 'explorerepo',
             'name'   => 'Install from Repo'));
+        OntoWiki_Navigation::register('upload', array('route'      => null,
+            'controller' => 'exconf',
+            'action'     => 'archiveuploadform',
+            'name'   => 'Install from local upload'));
 
 
         $ow = OntoWiki::getInstance();
@@ -214,6 +224,11 @@ class ExconfController extends OntoWiki_Controller_Component {
             $graph = $otherGraph;
         }
         $this->view->repoUrl = $repoUrl;
+        $ow = OntoWiki::getInstance();
+        $manager        = $ow->extensionManager;
+        $configs = $manager->getExtensions();
+        $other = new stdClass();
+        $other->configs = $configs;
        
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = "extensions";
@@ -221,7 +236,7 @@ class ExconfController extends OntoWiki_Controller_Component {
             $list = $listHelper->getList($listName);
             $list->invalidate(); //remote repo may change data
             //$list->setStore($store); //TODO serialization replaces the store with the default store...
-            $listHelper->addList($listName, $list, $this->view, null, "list_extensions_main");
+            $listHelper->addList($listName, $list, $this->view, null, "list_extensions_main", $other);
         } else {
             $adapter = new Erfurt_Store_Adapter_Sparql(array("serviceurl"=>$repoUrl, 'graphs'=>array($graph)));
             $store = new Erfurt_Store(array("adapterInstance"=>$adapter), "sparql");
@@ -229,38 +244,47 @@ class ExconfController extends OntoWiki_Controller_Component {
 
             $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array());
             $list->addTypeFilter(self::EXTENSION_CLASS, null, array('withChilds'=>false));
-            $listHelper->addListPermanently($listName, $list, $this->view, null, "list_extensions_main", "list_extensions_element");
+            $list->addShownProperty(self::EXTENSION_NAME_PROPERTY, "name"); //internal name
+            $list->addShownProperty(self::EXTENSION_TITLE_PROPERTY, "title"); //pretty name
+            $list->addShownProperty(self::EXTENSION_DESCRIPTION_PROPERTY, "description");
+            $list->addShownProperty(self::EXTENSION_LATESTVERSION_PROPERTY, "latestVersion");
+            $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, "latestReleaseLocation");
+
+            $listHelper->addListPermanently($listName, $list, $this->view, null, "list_extensions_main", $other);
         }
     }
 
+    /**
+     * download a archive file from a remote webserver
+     */
     public function installarchiveremoteAction(){
-        $url = "http://pop-imap-troubleshooter.googlecode.com/files/pop-imap-troubleshooter-2.0.1.tar.gz"; //test
-        $parsedUrl = parse_url($url);
-        $values = explode("/", $parsedUrl['path']);
-        if($values != false){
-            $new_values = array();
-            foreach($values as $v) {
-                if(!empty($v)) $new_values[]= $v;
-            }
-            $filename = $new_values[count($new_values)-1];
+        $url = $this->getParam('url', "");
+        if($url == ""){
+            $ontoWiki->appendMessage(new OntoWiki_Message("parameter url needed.", OntoWiki_Message::ERROR));
+        } else {
             $fileStr = file_get_contents($url);
             if($fileStr != false){
                 $tmp = sys_get_temp_dir();
                 if(!(substr($tmp, -1) == PATH_SEPARATOR)){
                     $tmp .= PATH_SEPARATOR;
                 }
-                $tmpfname = tempnam($tmp, $filename);
+                $tmpfname = tempnam($tmp, "OW_downloadedArchive.zip");
 
                 $localFilehandle = fopen($tmpfname, "w+");
                 fwrite($localFilehandle, $fileStr);
                 rewind($localFilehandle);
-                
-                $this->installArchive($filename, $localFilehandle);
+
+                $this->installArchive($tmpfname);
                 fclose($localFilehandle); //deletes file
+            } else {
+                $ontoWiki->appendMessage(new OntoWiki_Message("could not download.", OntoWiki_Message::ERROR));
             }
         }
     }
 
+    /**
+     * display a upload form
+     */
     public function archiveuploadformAction(){
         $this->view->placeholder('main.window.title')->set('Upload new extension archive');
         $this->view->formActionUrl = $this->_config->urlBase . 'exconf/installarchiveupload';
@@ -276,6 +300,9 @@ class ExconfController extends OntoWiki_Controller_Component {
 
     }
 
+    /**
+     * handle a archive upload (from browser)
+     */
     public function installarchiveuploadAction(){
         if ($_FILES['archive_file']['error'] == UPLOAD_ERR_OK) {
             // upload ok, move file
@@ -283,36 +310,86 @@ class ExconfController extends OntoWiki_Controller_Component {
             $fileName = $_FILES['archive_file']['name'];
             $tmpName  = $_FILES['archive_file']['tmp_name'];
             $mimeType = $_FILES['archive_file']['type'];
-            $localFilehandle = fopen($tmpName, 'r');
-            $this->installArchive($tmpName, $localFilehandle);
-            fclose($localFilehandle);
+            $cachedir = ini_get('upload_tmp_dir');
+
+            $this->installArchive($cachedir.$tmpName);
+
         } else {echo "error";}
+
     }
 
-    protected function installArchive($name, $fileHandle){
-        require_once 'Archive.php';
-        $ext = mime_content_type($name);
+    /**
+     * handle a uploaded archive (from browser or remote webserver)
+     * extract it to extension dir
+     *
+     * @param <type> $filePath
+     * @param <type> $fileHandle
+     */
+    protected function installArchive($filePath){
+        require_once 'pclzip.lib.php';
+        $ext = mime_content_type($filePath);
+        $this->view->success = false;
+        function rrmdir($dir) {
+           if (is_dir($dir)) {
+             $objects = scandir($dir);
+             foreach ($objects as $object) {
+               if ($object != "." && $object != "..") {
+                 if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
+               }
+             }
+             reset($objects);
+             rmdir($dir);
+           }
+        }
+        $ontoWiki = OntoWiki::getInstance();
         switch ($ext){
             case "application/zip":
-                $archive = new zip_file($name);
+                $this->view->success = true;
+                $zip = new PclZip($filePath);
+
+                $modMan = $ontoWiki->extensionManager;
+                $path = $modMan->getExtensionPath();
+
+                //check the uploaded archive
+                $content = $zip->listContent();
+                $toplevelItem = null;
+                $tooManyTopLevelItems = false;
+                $sumBytes = 0;
+                foreach($content as $key => $item){
+                  $level = substr_count($item["filename"], '/');
+                  if($level == 1 && substr($item["filename"],-1, 1) == "/"){
+                      if($toplevelItem === null){
+                          $toplevelItem = $key;
+                      } else {
+                         $tooManyTopLevelItems = true;
+                         break;
+                      }
+                  }
+
+                  $sumBytes += $item["size"];
+                  if($sumBytes >= 10000000){
+                      break;
+                  }
+                }
+                // extract contents of archive to disk (extension dir)
+                if(!$tooManyTopLevelItems  && $sumBytes < 10000000){ //only one item at top level allowed and max. 10MioB
+                    $extensionName = substr($content[$toplevelItem]['filename'], -1);
+                    if(file_exists($path.$extensionName)){
+                        rrmdir($path.$extensionName);
+                    }
+                    $zip->extract(PCLZIP_OPT_PATH, $path);
+                    
+                    $ontoWiki->appendMessage(new OntoWiki_Message("extension installed.", OntoWiki_Message::SUCCESS));
+                } else {
+                    $ontoWiki->appendMessage(new OntoWiki_Message("uploaded archive was not accepted (must be < 10MB, and contain one folder).", OntoWiki_Message::ERROR));
+                }
                 break;
-            case "application/x-bzip2":
-                $archive = new bzip_file($name);
-                break;
-            case "application/x-gzip":
-                $archive = new gzip_file($name);
-                break;
-            case "application/x-tar":
-                $archive = new tar_file($name);
+            default :
+                $ontoWiki->appendMessage(new OntoWiki_Message("uploaded archive was not accepted (must be zip).", OntoWiki_Message::ERROR));
                 break;
         }
-        // Overwrite existing files
-        $ow = OntoWiki::getInstance();
-        $modMan = $ow->extensionManager;
-        $path = $modMan->getExtensionPath();
-        $archive->set_options(array('overwrite' => 1, 'basedir' => $path));
-        // Extract contents of archive to disk
-        $archive->extract_files();
+        $url = new OntoWiki_Url(array('controller'=>'exconf', 'action'=>'explorerepo'));
+        $this->_redirect($url);
     }
 
     protected function checkForUpdates(){
@@ -330,8 +407,8 @@ class ExconfController extends OntoWiki_Controller_Component {
             $username = $this->_privateConfig->ftp->username;
             $password = $this->_privateConfig->ftp->password;
             $hostname = $this->_privateConfig->ftp->hostname;
-            $ssh2 = "ssh2.sftp://$username:$password@$hostname:22";
-            $connection = ssh2_connect("$hostname", 22);
+            //$ssh2 = "ssh2.sftp://$username:$password@$hostname:22";
+            $connection = ssh2_connect($hostname, 22);
             ssh2_auth_password($connection, $username, $password);
             $sftp = ssh2_sftp($connection);
 
@@ -347,4 +424,3 @@ class ExconfController extends OntoWiki_Controller_Component {
         }
     }
 }
-

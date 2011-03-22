@@ -259,6 +259,7 @@ class ResourceController extends OntoWiki_Controller_Base {
         $url = new OntoWiki_Url();
         $this->view->redirectUrl = (string)$url;
 
+        $this->addModuleContext('main.window.list');
         $this->addModuleContext('main.window.instances');
     }
 
