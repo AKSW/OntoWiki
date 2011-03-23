@@ -1,3 +1,11 @@
+ontowiki (0.9.6-4) lod2; urgency=low
+
+  * a2enmod env
+  * depends on zend framework
+  * logs under /var/log/ontowiki
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 23 Mar 2011 16:00:43 +0100
+
 ontowiki (0.9.6-3) lod2; urgency=low
 
   * fix: a2enmod rewrite in postinst

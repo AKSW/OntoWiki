@@ -9,6 +9,10 @@
 #. /usr/share/dbconfig-common/dpkg/postinst.mysql
 #dbc_go ontowiki $@
 
+chown www-data:www-data /var/log/ontowiki
+
 a2enmod rewrite
+a2enmod env
 service apache2 restart
 
+#cp /etc/ontowiki/config.ini-dist /etc/ontowiki/config.ini
