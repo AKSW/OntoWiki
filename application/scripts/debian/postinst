@@ -1,0 +1,14 @@
+#!/bin/sh
+# postinst script for ontowiki
+#
+# see: dh_installdeb(1)
+
+# source debconf stuff
+#. /usr/share/debconf/confmodule
+# source dbconfig-common stuff
+#. /usr/share/dbconfig-common/dpkg/postinst.mysql
+#dbc_go ontowiki $@
+
+a2enmod rewrite
+service apache2 restart
+
