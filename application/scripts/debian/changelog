@@ -1,0 +1,17 @@
+ontowiki (0.9.6-3) lod2; urgency=low
+
+  * fix: a2enmod rewrite in postinst
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Tue, 22 Mar 2011 16:33:32 +0100
+
+ontowiki (0.9.6-2) lod2; urgency=low
+
+  * better postinst handling
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Tue, 22 Mar 2011 13:28:42 +0100
+
+ontowiki (0.9.6-1) lod2; urgency=low
+
+  * Initial debian release
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 02 Feb 2011 00:10:38 +0100

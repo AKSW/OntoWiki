@@ -1,0 +1,10 @@
+application     usr/share/ontowiki
+.htaccess       usr/share/ontowiki
+cache           usr/share/ontowiki
+CHANGELOG.txt   usr/share/ontowiki
+extensions      usr/share/ontowiki
+favicon.png     usr/share/ontowiki
+index.php       usr/share/ontowiki
+libraries       usr/share/ontowiki
+logs            usr/share/ontowiki
+debian/conf/*   etc/ontowiki
