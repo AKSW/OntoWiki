@@ -1,18 +1,13 @@
-#!/bin/sh
+#!/bin/sh -e
 # prerm script for ontowiki
 #
 # see: dh_installdeb(1)
 
-
-ONTOWIKICONF_DIR="/etc/ontowiki"
-ONTOWIKICONF_TARGET="/usr/share/ontowiki/config.ini"
-
-rm -f $ONTOWIKICONF_TARGET
-
-APACHECONF_DIR="/etc/apache2/conf.d"
-APACHECONF_SOURCE="/etc/ontowiki/apache.conf"
-APACHECONF_TARGET="$APACHECONF_DIR/ontowiki"
+echo "---- starting prerm $@"
 
 rm -f $APACHECONF_TARGET
 service apache2 restart
 
+#DEBHELPER#
+
+echo "---- ending prerm $@"

@@ -17,4 +17,4 @@ libraries/RDFauthor/libraries usr/share/ontowiki/libraries/RDFauthor
 libraries/RDFauthor/src usr/share/ontowiki/libraries/RDFauthor
 
 debian/conf/*   etc/ontowiki
-config.ini-dist etc/ontowiki
+debian/sql/*    usr/share/dbconfig-common/data/ontowiki/

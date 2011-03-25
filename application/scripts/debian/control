@@ -10,10 +10,8 @@ Vcs-Browser: http://code.google.com/p/ontowiki/source/list
 
 Package: ontowiki
 Architecture: all
-#Depends: ${shlibs:Depends}, ${misc:Depends}
-Depends: apache2, libapache2-mod-php5, php5-mysql | php5-mysqli, dbconfig-common, libzend-framework-php, libjs-jquery (>= 1.4.2)
+Depends: mysql-server, apache2, php5 | libapache2-mod-php5, php5-mysql | php5-mysqli, libzend-framework-php, libmarkdown-php, libjs-jquery (>= 1.4.2), pwgen, ${misc:Depends}
 Recommends: owcli
-Suggests: mysql-server
 Description: Semantic Data Wiki enabling the publication of RDF data
  OntoWiki is a tool providing support for agile, distributed knowledge
  engineering scenarios. OntoWiki facilitates the visual presentation of
@@ -32,3 +30,5 @@ Description: Semantic Data Wiki enabling the publication of RDF data
     MySQL database as well as on a Virtuoso Triple Store.
   * OntoWiki is easily extendible by you, since it features a sophisticated
     Extension System.
+ .
+ This package is part of the LOD2 Technology Stack.
