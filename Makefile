@@ -64,5 +64,15 @@ directories:
 
 install: directories zend libraries
 
+debianize:
+	rm extensions/markdown/parser/License.text
+	rm extensions/markdown/parser/PHP_Markdown_Readme.txt
+	rm extensions/markdown/parser/markdown.php
+	rm extensions/queries/resources/codemirror/LICENSE
+	rm extensions/themes/silverblue/scripts/libraries/jquery.js
+	rm libraries/RDFauthor/libraries/jquery.js
+	rm Makefile
+	@echo "now do: cp -R application/scripts/debian debian"
+
 clean:
 	rm -rf cache/* logs/*
