@@ -1,4 +1,39 @@
 <?php
+
+function checkRightsRec($dir) {
+   $right = is_writable($dir);
+   if ($right && is_dir($dir)) {
+     $objects = scandir($dir);
+     $curObjRight = false;
+     foreach ($objects as $object) {
+       if ($object != "." && $object != "..") {
+         $curObjRight = checkRightsRec($dir."/".$object);
+         if(!$curObjRight){
+             $right = false;
+         }
+       }
+     }
+   }
+   return $right;
+}
+function rrmdir($dir, $check = true) {
+   if($check){
+     if(!checkRightsRec($dir)){
+       return false;
+     }
+   }
+   if (is_dir($dir)) {
+     $objects = scandir($dir);
+     foreach ($objects as $object) {
+       if ($object != "." && $object != "..") {
+         if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object, false); else unlink($dir."/".$object);
+       }
+     }
+     reset($objects);
+     rmdir($dir);
+   }
+   return true;
+}
 /**
  * edit extension configuration via a gui
  *
@@ -162,7 +197,7 @@ class ExconfController extends OntoWiki_Controller_Component {
             } else  {
                     //react on post data
                     if(isset($this->_request->remove)){
-                        if(rmdir($dirPath)){
+                        if(rrmdir($dirPath)){
                             $this->_redirect($this->urlBase.'exconf/list');
                         } else {
                             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("extension could not be deleted", OntoWiki_Message::ERROR));
@@ -329,18 +364,7 @@ class ExconfController extends OntoWiki_Controller_Component {
         require_once 'pclzip.lib.php';
         $ext = mime_content_type($filePath);
         $this->view->success = false;
-        function rrmdir($dir) {
-           if (is_dir($dir)) {
-             $objects = scandir($dir);
-             foreach ($objects as $object) {
-               if ($object != "." && $object != "..") {
-                 if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
-               }
-             }
-             reset($objects);
-             rmdir($dir);
-           }
-        }
+        
         $ontoWiki = OntoWiki::getInstance();
         switch ($ext){
             case "application/zip":
@@ -373,12 +397,20 @@ class ExconfController extends OntoWiki_Controller_Component {
                 }
                 // extract contents of archive to disk (extension dir)
                 if(!$tooManyTopLevelItems  && $sumBytes < 10000000){ //only one item at top level allowed and max. 10MioB
-                    $extensionName = substr($content[$toplevelItem]['filename'], -1);
+                    $extensionName = substr($content[$toplevelItem]['filename'], 0, -1);
                     if(file_exists($path.$extensionName)){
                         rrmdir($path.$extensionName);
                     }
                     $zip->extract(PCLZIP_OPT_PATH, $path);
+
+                    //make all writable so the files are not so alienated (otherwise, they can only be deleted by www-data or root)
+                    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path.$extensionName),
+                                              RecursiveIteratorIterator::CHILD_FIRST);
+                    foreach ($iterator as $name => $handle) {
+                        chmod($handle->__toString(), 0777);
+                    }
                     
+                    $ontoWiki->appendMessage(new OntoWiki_Message($path.$extensionName, OntoWiki_Message::SUCCESS));
                     $ontoWiki->appendMessage(new OntoWiki_Message("extension installed.", OntoWiki_Message::SUCCESS));
                 } else {
                     $ontoWiki->appendMessage(new OntoWiki_Message("uploaded archive was not accepted (must be < 10MB, and contain one folder).", OntoWiki_Message::ERROR));

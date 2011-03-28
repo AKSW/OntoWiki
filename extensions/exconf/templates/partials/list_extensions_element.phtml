@@ -19,11 +19,9 @@
             if(!$this->installed){
                 $label = "install";
                 $action = true;
-            } else  {
-                if($this->updateable){
-                    $label = "update";
-                    $action = true;
-                }
+            } else if($this->updateable){
+                $label = "update";
+                $action = true;
             }
             if($action){
             ?>

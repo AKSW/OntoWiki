@@ -1,18 +1,8 @@
 <?php $odd = true;
 $configs = $this->other->configs;
 
-function isOlderVersion($v1, $v2){
-    echo $v1." ".$v2;
-    $v1Split = explode(".", $v1);
-    $v2Split = explode(".", $v2);
-    foreach ($v1Split as $key => $versionComponent) {
-       if(!isset ($v2Split[$key]) || intval($versionComponent) < intval($v2Split[$key])){
-           return true;
-       }
-    }
-    return false;
-}
-    if ($this->instances->hasData()): ?>
+
+if ($this->instances->hasData()): ?>
 <ol class="bullets-none separated">
     <?php foreach ($this->instanceInfo as $instanceUri => $instance){
         //fixme
@@ -25,9 +15,9 @@ function isOlderVersion($v1, $v2){
                     'instanceData' => $this->instanceData,
                     'instanceInfo' => $this->instanceInfo,
                     'propertyInfo' => $this->propertyInfo,
-                    'installed'        => isset($configs[$name]),
-                    'enabled'        =>  isset($configs[$name]) &&  $configs[$name]->enabled,
-                    'updateable'        => isset($configs[$name]) && ( isset($this->instanceData[$instanceUri]['latestVersion']) && isOlderVersion($configs[$name]->version, $this->instanceData[$instanceUri]['latestVersion'])),
+                    'installed'    => isset($configs[$name]),
+                    'enabled'      => isset($configs[$name]) && $configs[$name]->enabled,
+                    'updateable'   => isset($configs[$name]) && ( isset($this->instanceData[$instanceUri]['latestVersion']) && version_compare($configs[$name]->version, $this->instanceData[$instanceUri]['latestVersion'] === -1)),
                     'odd'          => $odd
                 )
              );
