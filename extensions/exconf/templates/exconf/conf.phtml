@@ -8,14 +8,14 @@ function array2form($confArr){
     <?php
     foreach($confArr as $key => $value){ ?>
         <tr>
-            <td width="15%"><input class="text" type="text" name="key" value ="<?php echo $key; ?>">&nbsp;<a class="removeProperty">-</a></td>
+            <td width="15%"><input class="text" type="text" name="key" value ="<?php echo $key; ?>">&nbsp;<a class="removeProperty" title="remove this property">-</a></td>
             <td>
                 <?php
                     if(!is_array($value)){
                         if(is_bool($value)){ ?>
-                            <input type="checkbox" name="value" class="togglebutton"<?php if($value){ ?>checked="checked"<?php } ?>>
+                            <div class="togglebutton" <?php if($value){ echo "selected=\"true\""; } ?>></div>
                         <?php } else { ?>
-                            <input class="text" type="text" name="value" value="<?php echo $value; ?>">&nbsp;<a class="splitProperty">&equiv;</a>
+                            <input class="text" type="text" name="value" value="<?php echo $value; ?>">&nbsp;<a class="splitProperty" title="split this value to an array">&equiv;</a>
                         <?php }
                     } else {
                         array2form($value);
@@ -26,17 +26,27 @@ function array2form($confArr){
     }
     ?>
     </table>
-    <a class="addProperty">+</a>
+    <a class="addProperty" title="add a property">+</a>
     <?php
 }
 $ow = OntoWiki::getInstance();
-$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('queries')."resources/jquery.dump.js");
+//$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('queries')."resources/jquery.dump.js");
 $this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/jquery.togglebutton.js");
 $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/togglebutton.css");
 $this->headScript()->appendScript('var exconfConfig = '.  json_encode($this->config).';
     $(document).ready(function(){
-        $("#topConfTable > tbody > tr:first > td > *:first").togglebutton();
+        function postToggle(button)
+        {
+            //no posting here, will be submitted with the form
+        }
 
+        $(".togglebutton").togglebutton(
+            {"onEnable":
+                postToggle,
+             "onDisable":
+                postToggle
+            }
+        );
         //handle the form myself
         $("div.toolbar a.button.submit").unbind("click");
         $("div.toolbar a.button.submit").click(function(){
@@ -112,11 +122,12 @@ function form2array(node){
 
 
 ?>
+    <p class="info">you can change values of your local config here. <br/>you can also change the structure of the config, but only do it when you really know what you are doing.</p>
 <form id="exConf" action="<?php echo $this->urlBase;?>">
     <table border="1" id="topConfTable">
         <tr>
             <td width="15%">enabled</td>
-            <td><input type="checkbox" <?php if($this->enabled){ ?>selected="true" checked="checked"<?php } ?>></td>
+            <td><div id="extEnabledSwitch" class="togglebutton" <?php if($this->enabled){ echo "selected=\"true\""; } ?>></div></td>
         </tr>
         <tr>
             <td width="15%">private</td>

@@ -203,20 +203,27 @@ class ExconfController extends OntoWiki_Controller_Component {
                             OntoWiki::getInstance()->appendMessage(new OntoWiki_Message("extension could not be deleted", OntoWiki_Message::ERROR));
                         }
                     }
+                    //the togglebuttons in the extension list action, send only a new enabled state
                     if(isset($this->_request->enabled)){
                         if(!file_exists($localIniPath)){
                             @touch($localIniPath);
+                            chmod($localIniPath, 0777);
                         }
                         $ini = new Zend_Config_Ini($localIniPath, null, array('allowModifications' => true));
                         $ini->enabled = $this->_request->getParam('enabled') == "true";
                         $writer = new Zend_Config_Writer_Ini(array());
                         $writer->write($localIniPath, $ini, true);
                     }
+                    // the conf action sends a complete config array as json
                     if(isset($this->_request->config)){
                         $arr = json_decode($this->_request->getParam('config'), true);
                         if($arr == null){
                             throw new OntoWiki_Exception("invalid json: ".$this->_request->getParam('config'));
                         } else {
+                            if(!file_exists($localIniPath)){
+                                @touch($localIniPath);
+                                chmod($localIniPath, 0777);
+                            }
                             //only modification of the private section and the enabled-property are allowed
                             foreach($arr as $key => $val){
                                 if($key != 'enabled' && $key != 'private'){
