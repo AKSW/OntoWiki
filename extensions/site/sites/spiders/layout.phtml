@@ -81,7 +81,6 @@
         <h2 id="page-heading"></h2>
     </div>
 
-
     <div class="grid_11">
         <?php echo $this->partial('spiders/main.phtml', $templateData) ?>
         <?php echo $this->partial('spiders/feed.phtml', $templateData) ?>
@@ -90,16 +89,12 @@
 
     <div class="grid_5">
         <div class="box">
-            <h2>Linking Resources</h2>
-            <?php echo $this->module('linkinghere', array('noChrome' => true)); ?>
-        </div>
-        <div class="box">
-            <h2>Nearby</h2>
-            <?php echo $this->module('similarinstances', array('noChrome' => true)); ?>
-        </div>
-        <div class="box">
             <h2>Last Changes</h2>
-            <?php echo $this->module('lastchanges', array('noChrome' => true)); ?>
+            <?php echo $this->module('lastchanges', new Zend_Config(array('noChrome' => true))); ?>
+        </div>
+        <div class="box">
+            <h2>Linking Resources</h2>
+            <?php echo $this->module('linkinghere', new Zend_Config(array('noChrome' => true))); ?>
         </div>
     </div>
 

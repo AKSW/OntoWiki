@@ -1,6 +1,7 @@
 <?php
-    $content = $this->module('feeds', array('noChrome' => true));
-    if ($content != "") :
+$moduleConfig = new Zend_Config(array('noChrome' => true));
+$content = $this->module('feeds', $moduleConfig);
+if ($content != "") :
 ?>
 <div class="box">
     <h2>NEWS</h2>
