@@ -10,7 +10,6 @@ fi
 
 releaseDirBase="ontowiki-$parameter"
 releaseZIP="./$releaseDirBase.zip"
-releaseTemp="/tmp/$releaseDirBase.hg"
 releaseDir="/tmp/$releaseDirBase"
 
 OWHG="https://ontowiki.googlecode.com/hg/"
@@ -22,51 +21,38 @@ then
   exit 1
 fi
 
-if [ ! -e "$releaseTemp" ]
+if [ ! -e "$releaseDir" ]
 then
-  echo "Checkout $OWHG to $releaseTemp"
-  hg clone $OWHG $releaseTemp || exit
+  echo "Checkout $OWHG to $releaseDir"
+  hg --config web.cacerts= clone $OWHG $releaseDir || exit
 else
-  echo "Try to update $releaseTemp (or exit on failure)"
-  hg pull $releaseTemp || exit
+  echo "Try to update $releaseDir (or exit on failure)"
+  hg --config web.cacerts= pull $releaseDir || exit
 fi
 
-cd $releaseTemp
+cd $releaseDir
 echo "update to OntoWiki-$parameter"
-hg update OntoWiki-$parameter || exit
+hg --config web.cacerts= update OntoWiki-$parameter || exit
+make update
 
-echo "Create the ZIP directory $releaseDir" 
-cp -R $releaseTemp/ontowiki/src $releaseDir || exit
-cp -R $releaseTemp/erfurt/src/Erfurt $releaseDir/libraries
-cp -R $releaseTemp/RDFauthor/ $releaseDir/libraries
-
-echo "Delete unwanted files and directories in $releaseTemp" 
+echo "Delete unwanted files and directories in $releaseDir"
 #rm -rf `find $releaseDir -name '.svn'`
-cd $releaseDir/extensions/components && rm -rf calendar graphicalquerybuilder querybuilder repositoryservices artistedit dllearner foafedit querybuilding containermanager easyinference freebedit cacheconfiguration dashboard plugins repository skos
-cd $releaseDir//extensions/modules && rm -rf containermanager dllearner easyinference keyboard rating skosrelations tabs tagcloud
-cd $releaseDir/extensions/plugins && rm -rf breadcrumbs easyinference isressourceeditingallowed sendmail
-#cd $releaseDir/extensions/themes && rm -rf flatcarbon
-cd $releaseDir/extensions/wrapper && rm -rf discogs iClient.php lastfm musicbrainz MusicWrapper.php
+rm -rf $releaseDir/.hg
+rm -rf $releaseDir/extensions.ext
 
-echo "Create and copy additional files and directories in $releaseTemp" 
-cp -R $releaseTemp/ontowiki/CHANGELOG $releaseDir || exit
-cp -R $releaseTemp/ontowiki/INSTALL* $releaseDir || exit
-cp -R $releaseTemp/ontowiki/LICENSE $releaseDir || exit
-cp -R $releaseTemp/ontowiki/TODO $releaseDir || exit
-mkdir $releaseDir/cache $releaseDir/logs $releaseDir/uploads 
+echo "Create and copy additional files and directories in $releaseDir"
+mkdir $releaseDir/cache $releaseDir/logs $releaseDir/uploads
 chmod 777 $releaseDir/cache $releaseDir/logs $releaseDir/uploads
-mv $releaseDir/htaccess-dist $releaseDir/.htaccess
+chmod 777 extensions
 
 echo "Download and unpack a Zend Framework"
-cd $releaseDir/libraries
-wget -q http://framework.zend.com/releases/ZendFramework-1.9.4/ZendFramework-1.9.4-minimal.tar.gz
-tar xzf ZendFramework-1.9.4-minimal.tar.gz
-mv ZendFramework-1.9.4-minimal/library/Zend .
-rm ZendFramework-1.9.4-minimal.tar.gz
-rm -rf ZendFramework-1.9.4-minimal
+cd $releaseDir && make zend
 
 echo "Create the ZIP ~/$releaseDirBase.zip"
 cd $releaseDir/.. && zip -q -9 -r ~/$releaseDirBase.zip $releaseDirBase
+
+echo "Create the tar.gz ~/$releaseDirBase.tar.gz"
+cd $releaseDir/.. && tar czf ~/$releaseDirBase.tar.gz $releaseDirBase
 
 echo "Create the 7zip ~/$releaseDirBase.7z"
 cd $releaseDir/.. && 7zr a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on ~/$releaseDirBase.7z $releaseDirBase >/dev/null
@@ -74,7 +60,6 @@ cd $releaseDir/.. && 7zr a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on ~/$release
 echo "Create the ZIP ~/$releaseDirBase-without-Zend.zip"
 rm -rf $releaseDir/libraries/Zend/ && cd $releaseDir/.. && zip -q -9 -r ~/$releaseDirBase-without-Zend.zip $releaseDirBase
 
-echo "Delete the release temp and release dir"
+echo "Delete the release dir"
 rm -rf $releaseDir
-rm -rf $releaseTemp
 

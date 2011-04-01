@@ -18,7 +18,7 @@ $resourceQuery =  $instances->getResourceQuery();
 $valueQuery = $instances->getQuery();
 //echo htmlentities($valueQuery);
 $config = Erfurt_App::getInstance()->getConfig();
-$permalink = new OntoWiki_Url().'/'.$instances->getPermalink();
+$permalink = $instances->getPermalink($this->listName);
 
 $graph = $this->instances->getGraph();
 $store = $this->instances->getStore();
@@ -36,8 +36,7 @@ $filter = $instances->getFilter();
 $filter_js = json_encode(is_array($filter) ? $filter : array());
 
 $this->headScript()->prependFile(
-        $config->staticUrlBase.
-        'extensions/modules/filter/resources/FilterAPI.js'
+        OntoWiki::getInstance()->extensionManager->getComponentUrl('filter') .'resources/FilterAPI.js'
 );
 $this->headScript()->prependScript(
         'function showPermaLink(){$("#permalink").slideToggle(400);}
@@ -109,8 +108,8 @@ if ($instances->hasData()) {
 $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));$url->setParam('init', true);
 ?>
 <div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
-<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $config->urlBase; ?>querybuilding/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
-<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $config->urlBase; ?>querybuilding/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
+<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
+<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
 
 <?php $odd = true;
     if ($instances->hasData()): ?>

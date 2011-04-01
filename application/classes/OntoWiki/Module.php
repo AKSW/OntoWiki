@@ -65,7 +65,7 @@ abstract class OntoWiki_Module
      * The module private config ([private] section from module.ini file) 
      * @var Zend_Config 
      */
-    protected $_privateConfig = null;
+    public $_privateConfig = null;
     
     /** 
      * The current request object
@@ -94,7 +94,7 @@ abstract class OntoWiki_Module
     /**
      * Constructor
      */
-    public function __construct($name, $context, $options)
+    public function __construct($name, $context, $config)
     {
         // init view
         if (null === $this->view) {
@@ -117,59 +117,17 @@ abstract class OntoWiki_Module
         
         $this->_name = $name;
         
-        // set script path if necessary
-        $modulesPath = ONTOWIKI_ROOT . $this->_config->extensions->modules;
-        // if (!in_array($modulesPath, $this->view->getScriptPaths())) {
-        //     $this->view->addScriptPath($modulesPath);
-        // }
-
-
-        // Parse the private config
-        // TODO: this was already done by the Module Manager. Why here again?
-        $configPath = $modulesPath . $name . '/';
-        $configFile =  $configPath . OntoWiki_Module_Manager::MODULE_CONFIG_FILE;
-        $localConfigFile = $configPath . OntoWiki_Module_Manager::MODULE_LOCAL_CONFIG_FILE;
-        if (is_readable($configFile)) {
-            try {
-                $this->_privateConfig = new Zend_Config_Ini(
-                        $configFile,
-                        OntoWiki_Module_Manager::CONFIG_PRIVATE_SECTION,
-                        array('allowModifications' => true)
-                        );
-
-                // merge the local.ini into the private config
-                if (is_readable($localConfigFile)) {
-                    $this->_privateConfig->merge(
-                        new Zend_Config_Ini(
-                            $localConfigFile, 
-                            OntoWiki_Module_Manager::CONFIG_PRIVATE_SECTION
-                        )
-                    );
-                }
-                
-                if (is_array($options)) {
-                    $this->_privateConfig->merge(
-                        new Zend_Config(
-                            $options, 
-                            array('allowModifications' => true)
-                        )
-                    );
-                }
-
-            } catch (Zend_Config_Exception $e) {
-                // no private config available
-            }
-        }
-        
-        // TODO: frickel ahead
         // set important script variables
         $this->view->themeUrlBase = $this->_config->themeUrlBase;
         $this->view->urlBase      = $this->_config->urlBase;
         $this->view->moduleUrl    = $this->_config->staticUrlBase 
-                                  . $this->_config->extensions->modules
-                                  . $this->_name . '/';
-        
-        // set context
+                                  . $this->_config->extensions->base
+                                  . $config->extensionName . '/';
+
+        // set the config
+        $this->_privateConfig = $config->private;
+
+        // set the context
         $this->setContext($context);
         
         // allow custom module initialization
@@ -197,9 +155,7 @@ abstract class OntoWiki_Module
      */
     public function render($template, $vars = array(), $spec = null)
     {
-        $template = $this->_name 
-                  . DIRECTORY_SEPARATOR 
-                  . $template 
+        $template = $template 
                   . $this->_templateSuffix;
         
         if (null === $spec) {

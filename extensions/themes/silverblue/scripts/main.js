@@ -247,6 +247,11 @@ $(document).ready(function() {
     
 //    $('.icon-edit').click(function() {return editProperty(this)});
     
+    // disable inline-editing for not readable models
+    if (typeof selectedGraph !== 'undefined' && !selectedGraph.editable) {
+        $('.icon-edit').closest('a').remove();
+    }
+    
     // edit mode
     $('.edit-enable').click(function() {
         var button = this;
@@ -275,7 +280,7 @@ $(document).ready(function() {
                         // HACK: reload whole page after 1000 ms
                         window.setTimeout(function () {
                             window.location.href = window.location.href;
-                        }, 1000);
+                        }, 500);
                     }, 
                     onCancel: function () {
                         $('.edit').each(function() {
@@ -287,7 +292,8 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel', 
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
                     viewOptions: {
-                        type: RDFAUTHOR_VIEW_MODE, 
+                        // no statements needs popover
+                        type: $('.section-mainwindows table.Resource').length ? RDFAUTHOR_VIEW_MODE : 'popover', 
                         container: function (statement) {
                             var element = RDFauthor.elementForStatement(statement);
                             var parent  = $(element).closest('div');
@@ -336,7 +342,19 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel',
                     title: 'Create New Resource by Cloning ' + selectedResource.title,  
                     autoParse: false, 
-                    showPropertyButton: true
+                    showPropertyButton: true, 
+                    onSubmitSuccess: function (responseData) {
+                        var newLocation;
+                        if (responseData && responseData.changed) {
+                            newLocation = resourceURL(responseData.changed);
+                        } else {
+                            newLocation = window.location.href;
+                        }
+                        // HACK: reload whole page after 500 ms
+                        window.setTimeout(function () {
+                            window.location.href = newLocation;
+                        }, 500);
+                    }
                 });
                 
                 RDFauthor.start();

@@ -31,7 +31,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         // only once and only when possible
         if (!$this->_isSetup &&
-            $ontoWiki->selectedModel instanceof Erfurt_Rdf_Model &&
             (
                 /*
                  *these are paramters that change the list
@@ -58,6 +57,17 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
                 //reset config from tag explorer
                 unset($session->cloudproperties);
+            }
+
+            //react on m parameter to set the selected model
+            if (isset($request->m)) {
+                
+                try {
+                    $model = $store->getModel($request->getParam('m', null, false));
+                    $ontoWiki->selectedModel = $model;
+                } catch (Erfurt_Store_Exception $e) {
+
+                }
             }
 
             $list = $listHelper->getLastList();
@@ -93,14 +103,13 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 
                 return json_decode($string);
             }
-            //echo $request->instancesconfig; exit;
-            //a shortcut for s param
+            
+            //a shortcut for search param
             if(isset($request->s)){
                 if(isset($request->instancesconfig)){
                     $config = _json_decode($request->instancesconfig);
                     if ($config == false) {
                         throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
-                        exit;
                     }
                 } else {
                     $config = new stdClass();
@@ -121,7 +130,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                     $config = _json_decode($request->instancesconfig);
                     if ($config == false) {
                         throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed): ' . $this->_request->setup);
-                        exit;
                     }
                 } else {
                     $config = new stdClass();
@@ -142,7 +150,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 $config = _json_decode($request->instancesconfig);
                 if ($config == false) {
                     throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed)');
-                    exit;
                 }
 
                 if (isset($config->shownProperties)) {
@@ -193,6 +200,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                 );
                             } else if($filter->mode == 'query') {
                                 try{
+                                    //echo $filter->query."   ";
                                     $query = Erfurt_Sparql_Query2::initFromString($filter->query);
                                     if(!($query instanceof  Exception)){
                                         $list->addTripleFilter(
@@ -200,6 +208,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                             isset($filter->id) ? $filter->id : null
                                         );
                                     }
+                                    //echo $query->getSparql();
                                 } catch (Erfurt_Sparql_ParserException $e){
                                     $ontoWiki->appendMessage("the query could not be parsed");
                                 }
@@ -235,8 +244,8 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 //strip of url parameters that modify the list
                 $url = new OntoWiki_Url(array(), null, array('init', 'instancesconfig', 's', 'p', 'limit', 'class', 'list'));
                 //redirect
-                header('Location: ' . $url);
-                exit;
+                $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+                $redirector->gotoUrl($url);
             }
         }
         

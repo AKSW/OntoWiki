@@ -1,0 +1,27 @@
+Sync Data with %1$s;Sync Data with %1$s
+Import Data with %1$s;Import Data with %1$s
+Configure Sync with %1$s;Configure Sync with %1$s
+This Resource is configured for Sync;This Resource is configured for Sync
+This Resource has changed since last sync;This Resource has changed since last sync
+Last Sync;Last Sync
+Last Modified;Last Modified
+Sync;Sync
+View Resource;View Resource
+Show/Hide Location Bar;Show/Hide Location Bar
+Local Search;Local Search
+Expanded QNames;Expanded QNames
+Sindice Search;Sindice Search
+Generated URI;Generated URI
+Data was found for the given URI. %1$d statements were added.;Data was found for the given URI. %1$d statements were added.
+Data was found for the given URI but no statements were added.;Data was found for the given URI but no statements were added.
+No data returned for the given URI by wrapper.;No data returned for the given URI by wrapper.
+No data was imported;No data was imported
+No existing sync configuration. Create one now by clicking the Save button.;No existing sync configuration. Create one now by clicking the Save button.
+Sync Configuration;Sync Configuration
+Model URI;Model URI
+Wrapper Name;Wrapper Name
+Resource URI;Resource URI
+Check for Updates;Check for Updates
+Sync Query;Sync Query
+HISTORY_ACTIONTYPE_1010;data import
+HISTORY_ACTIONTYPE_1020;resource synced

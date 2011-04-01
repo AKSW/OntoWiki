@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * OntoWiki account recovery template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @author Christoph Rieß <c.riess.dev@googlemail.com>
+ */
+
+?>
+<?php if ($this->success) { ?>
+
+    <?php switch ($this->phase) {
+    case 0: ?>
+        <fieldset class="activeForm" id="upload">
+            <div>
+                <label for="for"><?php echo $this->_('Username or email') . ' : '; ?></label>
+                <input type="text" class="text" id="for" name="for" />
+                <br class="clearall" />
+            </div>
+        </fieldset>
+    <?php break; ?>
+
+    <?php case 1: ?>
+        <p>
+            <?php $message = $this->_('You received a mail with further information for account %s. Please follow these instructions to reset your password.'); ?>
+            <?php echo sprintf($message, $this->identity); ?>
+        </p>
+    <?php break; ?>
+
+    <?php case 2: ?>
+        <fieldset class="activeForm" id="upload">
+            <div>
+                <label for="password_o"><?php echo $this->_('Password') ?></label>
+                <input class="text" id="password_o" type="password" name="password_o" />
+                <br class="clearall" />
+            </div>
+            <div>
+                <label for="password_r"><?php echo $this->_('Password (repeat)') ?></label>
+                <input class="text" id="password_r" type="password" name="password_r" />
+                <br class="clearall" />
+            </div>
+            <div>
+                <input type="hidden" name="hash" value="<?php echo $this->hash; ?>"/>
+                <br class="clearall" />
+            </div>
+        </fieldset>
+    <?php break; ?>
+
+    <?php case 3: ?>
+        <div><?php echo $this->_('You should able to login with your new password now.'); ?></div>
+    <?php break; ?>
+
+    <?php } ?>
+
+<?php } ?>

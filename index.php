@@ -58,10 +58,14 @@ date_default_timezone_set(@date_default_timezone_get());
 // TODO: check for AllowOverride All
 $rewriteEngineOn = false;
 
-// compatible with Virtuoso VAD
-if (function_exists('__virt_internal_dsn')) {
+if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
+    // used in .htaccess or in debian package config
     $rewriteEngineOn = true;
-}else if (function_exists('apache_get_modules')) {
+} else if (function_exists('__virt_internal_dsn')) {
+    // compatible with Virtuoso VAD
+    $rewriteEngineOn = true;
+} else if (function_exists('apache_get_modules')) {
+    // usually, we are not here
     if (in_array('mod_rewrite', apache_get_modules())) {
         // get .htaccess contents
         $htaccess = @file_get_contents(ONTOWIKI_ROOT . '.htaccess');

@@ -40,7 +40,7 @@ div.cmDiv {
 
 .clickMenu div.inner div.outerbox {
     margin: 0 4px 0 0;
-    right: 0;
+    left: 50% !important; /*right: 0;*/
     top: 0;
 }
 
@@ -63,7 +63,7 @@ div.cmDiv {
 }
 
 .clickMenu li.hover {
-    z-index: 100 !important; /* the hover z-index has to be below the normal one the hovering items may be drawn over a submenu */
+    z-index: 103 !important;
     border-color: #cdd7dd;
     background: url(./../images/layout-button-menu-hover-gradient.png) repeat-x bottom center #eff9ff;
 }

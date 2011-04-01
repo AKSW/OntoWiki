@@ -1,0 +1,42 @@
+Sync Data with %1$s;Daten mit %1$s synchronisieren
+Import Data with %1$s;Daten mit %1$s importieren
+Configure Sync with %1$s;Synchronisation mit %1$s konfigurieren
+This Resource is configured for Sync;Diese Ressource ist für eine Synchronisation konfiguriert
+This Resource has changed since last sync;Diese Ressource wurde seit der letzten Synchronisation aktualisiert
+Last Sync;Letze Synchronisation
+Last Modified;Zuletzt modifiziert
+Sync;Synchronisieren
+View Resource;Ressource anzeigen
+Show/Hide Location Bar;Adressleiste zeigen/verstecken
+Local Search;Lokale Suche
+Expanded QNames;Expandierte qualifizierte Bezeichner
+Sindice Search;Sindice Suche
+Generated URI;Automatisch generierte URI
+Data was found for the given URI. %1$d statements were added.;Daten wurden für die gegebene URI gefunden und es wurden %1$d Statements hinzugefügt.
+Data was found for the given URI but no statements were added.;Es wurden Daten für die gegebene URI gefunden, aber es wurden keine Statements hinzugefügt.
+No data returned for the given URI by wrapper.;Keine Daten für die gegebene URI vom Wrapper gefunden.
+No data was imported;Es wurden keine Daten importiert
+No existing sync configuration. Create one now by clicking the Save button.;Es existiert bisher keine Konfiguration. Sie können nun eine Konfiguration erstellen, durch klicken auf Speichern.
+Sync Configuration;Synchronisations-Konfiguration
+Model URI;Modell-URI
+Wrapper Name;Wrapper-Name
+Resource URI;Ressource URI
+Check for Updates;Auf Aktualisierungen prüfen
+Sync Query;Sync-Anfrage
+HISTORY_ACTIONTYPE_1010;Daten importiert
+HISTORY_ACTIONTYPE_1020;Ressource synchonisiert
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

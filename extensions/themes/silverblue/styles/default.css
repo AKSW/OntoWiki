@@ -2,7 +2,6 @@
   * default.css
   * Ontowiki main style sheet, advanced theme
   * @author: Michael Haschke
-  * @version: $Id: default.css 4249 2009-10-06 12:47:39Z jonas.brekle@gmail.com $
 
     CONTENT
     
@@ -52,6 +51,8 @@
   */
   
 /* @import url('default.dev.css'); - included extra with debug modus */
+
+@import url('jquery-ui.css');
 
 /* 1. Layout ---------------------------------------------------------------- */
 
@@ -787,7 +788,7 @@ img.clickicon, a.clickicon img {
     font-size:16px !important; /* as long we cannot use svg */
     height:1em;
     width:1em;
-    vertical-align:text-bottom;
+    vertical-align:middle;
     background-color:transparent;
     background-position:center;
     background-repeat:no-repeat;
@@ -806,6 +807,8 @@ img.clickicon, a.clickicon img {
 .icon-edit   { background-image:url(./../images/icons/edit.png); }
 .icon-list   { background-image:url(./../images/icons/list.png); }
 .icon-save   { background-image:url(./../images/icons/save.png); }
+.icon-copy   { background-image:url(./../images/icons/copy.png); }
+.icon-add    { background-image:url(./../images/icons/add.png); }
 
 .icon-arrow-first    { background-image:url(./../images/icons/arrow-first.png); }
 .icon-arrow-last     { background-image:url(./../images/icons/arrow-last.png); }
@@ -815,6 +818,11 @@ img.clickicon, a.clickicon img {
 .icon-arrow-up       { background-image:url(./../images/icons/arrow-up.png); }
 .icon-arrow-down     { background-image:url(./../images/icons/arrow-down.png); }
 .icon-arrow-bottom   { background-image:url(./../images/icons/arrow-bottom.png); }
+
+.icon-toggle-on   { background-image:url(./../images/icons/toggle-on.png); }
+.icon-toggle-off  { background-image:url(./../images/icons/toggle-off.png); }
+
+
 
 /* -- 2.5. Links ------------------------------------------------------------ */
 
@@ -1014,7 +1022,9 @@ input.submit,
 input.reset,
 ul.minibutton li a,
 li.minibutton a,
-a.minibutton {
+a.minibutton,
+.ui-state-default.ui-button
+{
 
   /*display: block;*/
   display:inline-block;
@@ -1042,7 +1052,9 @@ a.minibutton {
   cursor: pointer;
 }
 
-button {
+button,
+.ui-state-default.ui-button
+ {
   width: auto;
   overflow: visible;
 }
@@ -1051,7 +1063,9 @@ button,
 input.formbutton,
 input.button,
 input.submit,
-input.reset {
+input.reset,
+.ui-state-default.ui-button
+ {
 
   padding: 0.3em 0.5em 0.3em 0.5em;   /* Firefox */
   /* line-height: 1.7; */          /* Safari */
@@ -1078,7 +1092,9 @@ input.submit:hover,
 input.reset:hover,
 ul.minibutton li a:hover,
 li.minibutton a:hover,
-a.minibutton:hover {
+a.minibutton:hover,
+.ui-state-default.ui-button:hover
+ {
 
     border-right-color: #9aa6aa;
     border-bottom-color: #9aa6aa;
@@ -1116,7 +1132,9 @@ input.submit:focus,
 input.reset:focus,
 ul.minibutton li a:focus,
 li.minibutton a:focus,
-a.minibutton:focus {
+a.minibutton:focus,
+.ui-state-default.ui-button:focus
+  {
 
     border-right-color: #cdd7dd !important;
     border-bottom-color: #cdd7dd !important;
@@ -1848,7 +1866,7 @@ a.hasMenu:hover span.toggle {
 {
     display:block;
     /* wegen .window .contextmenu */
-    top:0 !important;
+    top:-0.25em !important;
     right:0 !important;
     bottom:auto !important;
     left:auto !important;
@@ -1997,7 +2015,72 @@ body.javascript-on tbody.closed tr.grouptitle th a.toggle:active {
     background-position: -10px center;
 }
 
-/* 5. Etcetera -------------------------------------------------------------- */
+/* 5. jQuery UI enhancements ------------------------------------------------ */
+
+/* Draggables */
+
+a.Resource.ui-draggable-dragging
+{
+    display:block;
+    position: absolute;
+    color:#000;
+    background:#dee8ee;
+    padding:0.25em;
+    border:solid 1px #cdd7dd;
+    -moz-box-shadow:0 0 0.5em #666;
+    -webkit-box-shadow:0 0 0.5em #666;
+    box-shadow:0 0 0.5em #666;
+    cursor: move;
+}
+
+a.ui-draggable-dragging.hasMenu span.toggle
+{
+    display:none;
+}
+
+/* Droppables */
+
+/* please use .ui-droppable-accepted-window for droppable div.window elements,
+   and .ui-droppable-accepted-destination for all outher elements in a window */
+
+.ui-droppable-accepted-destination *,
+.window.ui-droppable-accepted-window .content *
+{
+    background-color: transparent !important;
+    border-color:transparent !important;
+    background-image: none;
+}
+
+.ui-droppable-accepted-destination,
+.window.ui-droppable-accepted-window .content
+{
+    background-color: #dee8ee;
+    -moz-box-shadow:inset 0 0 1em #333;
+    -webkit-box-shadow:inset 0 0 1em #333;
+    box-shadow:inset 0 0 1em #333;
+}
+
+.window.ui-droppable-accepted-window h1.title
+{
+    background-color:#adb5ba !important;
+}
+
+.window.ui-droppable-accepted-window .cmDiv,
+.window.ui-droppable-accepted-window .cmDiv *
+{
+    background-color:#c5ced4 !important;
+}
+
+.window .content .ui-droppable-hovered,
+.window.ui-droppable-hovered .content
+{
+    background-color: #eff9ff;
+    -moz-box-shadow:inset 0 0 1.5em #333;
+    -webkit-box-shadow:inset 0 0 1em #333;
+    box-shadow:inset 0 0 1.5em #333;
+}
+
+/* 6. Etcetera -------------------------------------------------------------- */
 
 .hide {display: none !important;}
 
@@ -2022,7 +2105,7 @@ body.javascript-on tbody.closed tr.grouptitle th a.toggle:active {
 
 .ui-draggable { position:relative; z-index:998; }
 
-/* 6. Specials -------------------------------------------------------------- */
+/* 7. Specials -------------------------------------------------------------- */
 
 ul.hierarchy li > a, 
 ol.hierarchy li > a {

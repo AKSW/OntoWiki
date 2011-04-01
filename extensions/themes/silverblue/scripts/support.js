@@ -409,30 +409,42 @@ function createInstanceFromClassURI(type, dataCallback) {
 
     loadRDFauthor(function() {
         $.getJSON(serviceUri, {
-           mode: 'class',
-           uri: type
+            mode: 'class',
+            uri: type
         }, function(data) {
             // pass data through callback
             if (typeof dataCallback == 'function') {
                 data = dataCallback(data);
             }
 
-           // get default resource uri for subjects in added statements (issue 673)
-           // grab first object key
-           for (var subjectUri in data) {break;};
+            // get default resource uri for subjects in added statements (issue 673)
+            // grab first object key
+            for (var subjectUri in data) {break;};
            
-           // add statements to RDFauthor
-           populateRDFauthor(data, true, null, selectedGraph.URI);
+            // add statements to RDFauthor
+            populateRDFauthor(data, true, null, selectedGraph.URI);
            
-           RDFauthor.setOptions({
-               saveButtonTitle: 'Create Resource',
-               cancelButtonTitle: 'Cancel',
-               title: 'Create New Instance of ' + type,  
-               autoParse: false, 
-               showPropertyButton: false
-           });
+            RDFauthor.setOptions({
+                saveButtonTitle: 'Create Resource',
+                cancelButtonTitle: 'Cancel',
+                title: 'Create New Instance of ' + type,  
+                autoParse: false, 
+                showPropertyButton: true, 
+                onSubmitSuccess: function (responseData) {
+                    var newLocation;
+                    if (responseData && responseData.changed) {
+                        newLocation = resourceURL(responseData.changed);
+                    } else {
+                        newLocation = window.location.href;
+                    }
+                    // HACK: reload whole page after 500 ms
+                    window.setTimeout(function () {
+                        window.location.href = newLocation;
+                    }, 500);
+                }
+            });
            
-           RDFauthor.start();
+            RDFauthor.start();
         })
     });
 }
@@ -464,12 +476,31 @@ function editResourceFromURI(resource) {
                 cancelButtonTitle: 'Cancel',
                 title: 'Edit Resource ' + resource,  
                 autoParse: false, 
-                showPropertyButton: false
+                showPropertyButton: true, 
+                onSubmitSuccess: function () {
+                    // HACK: reload whole page after 500 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
+                    }, 500);
+                }
             });
 
             RDFauthor.start();
         })
     });
+}
+
+/**
+ * Creates a new internal OntoWiki URL for the given resource URI.
+ * @return string
+ */
+function resourceURL(resourceURI) {
+    if (resourceURI.indexOf(urlBase) === 0) {
+        // URL base is a prefix of requested resource URL
+        return resourceURI;
+    }
+
+    return urlBase + 'view/?r=' + encodeURIComponent(resourceURI);
 }
 
 /*

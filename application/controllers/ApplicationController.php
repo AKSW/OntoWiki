@@ -29,7 +29,7 @@ class ApplicationController extends OntoWiki_Controller_Base
         $cacheWritable = is_writable($this->_config->cache->path)
                        ? ' <span style="color:#aea">(writable)</span>'
                        : ' <span style="color:#eaa">(not writable!)</span>';
-        $logWritable = is_writable(_OWROOT . 'logs')
+        $logWritable = is_writable($this->_config->log->path)
                      ? ' <span style="color:#aea">(writable)</span>'
                      : ' <span style="color:#eaa">(not writable!)</span>';
         
@@ -45,9 +45,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Language' => $this->_config->languages->locale, 
             ), 
             'Paths' => array(
-                'Components Path'   => _OWROOT . rtrim($this->_config->extensions->components, '/'), 
-                'Modules Path'      => _OWROOT . rtrim($this->_config->extensions->modules, '/'), 
-                'Plug-ins Path'     => _OWROOT . rtrim($this->_config->extensions->plugins, '/'), 
+                'Extensions Path'     => _OWROOT . rtrim($this->_config->extensions->base, '/'),
                 'Translations Path' => _OWROOT . rtrim($this->_config->languages->path, '/'), 
                 'Themes Path'       => _OWROOT . rtrim($this->_config->themes->path, '/')
             ), 
@@ -57,7 +55,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Translation Caching' => ((bool)$this->_config->cache->translation == true) ? 'enabled' : 'disabled'
             ), 
             'Logging' => array(
-                'Path' => _OWROOT . rtrim($this->_config->log->path, '/') . $logWritable, 
+                'Path' => rtrim($this->_config->log->path, '/') . $logWritable, 
                 'Level'  => (bool)$this->_config->loglevel ? $this->_config->loglevel : 'disabled'
             )
         );

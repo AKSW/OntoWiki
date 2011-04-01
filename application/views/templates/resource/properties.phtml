@@ -74,10 +74,11 @@
                                            class="expandable hasMenu" href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
                                     </li>
                                 <?php else: ?>
-                                    <li property="<?php echo $currentPredicate['curi'] ?>" 
+                                    <li property="<?php echo $currentPredicate['curi']; ?>" 
+                                        data-object-hash="<?php echo $entry['object_hash']; ?>"
                                         content="<?php echo $this->escape(isset($entry['content']) ? $entry['content'] : $entry['object']); ?>"
                                         <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
-                                            xml:lang="<?php echo $entry['lang'] ?>"
+                                            xml:lang="<?php echo $entry['lang']; ?>"
                                         <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
                                             datatype="<?php echo $entry['datatype'] ?>"
                                         <?php endif; ?>

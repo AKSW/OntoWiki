@@ -1,0 +1,130 @@
+<?php
+/**
+ * OntoWiki filter module template
+ */
+$odd = true;
+?>
+<div id="filterbox">
+    <!--ul id="list"></ul-->
+    <form name="search" method="get" action="<?php echo $this->actionUrl ?>">
+	<p class="width98">
+		<label class="display-block" for="filtersearchtext-input"><?php echo $this->_('Search in list') ?></label>
+		<input class="text width99 inner-label" type="text" id="filtersearchtext-input" name="s" value="<?php echo $this->s ?>" />
+	</p>	
+    </form>
+    <?php if ($this->filter) : ?>
+    <?php $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r')) ?>
+    <?php echo $this->_('Active Filters') ?>:
+    <ul class="bullets-none separated">
+        <?php foreach ($this->filter as $filter) : 
+            if ( isset($filter['hidden'] ) && $filter['hidden'] ) {
+                continue;
+            }
+        ?>
+        <li id="<?php echo $filter['id'] ?>"
+            class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> filter has-contextmenu-area"
+            >
+            <?php if($filter['mode'] == "box"): ?>
+                <a  class="hasMenu"
+                    about="<?php echo $filter['property'] ?>"
+                    href="<?php echo (string) $linkurl->setParam('r', $filter['property'], true) ?>">
+                    <?php echo $this->titleHelper->getTitle($filter['property']) ?>
+                </a>
+                <?php if ($filter['isInverse']) : ?>
+                    <sup>-1</sup>
+                <?php endif ?>
+                <?php if ($filter['negate']) : ?> not <?php endif ?>
+                <?php echo $filter['filter'] ?>
+                <?php if ($filter['value1']) : ?>
+                    <?php if ($filter['valuetype'] == 'uri') : ?>
+                        <a  class="hasMenu"
+                            about="<?php echo $filter['value1']; ?>"
+                            href="<?php echo (string) $linkurl->setParam('r', $filter['value1'], true) ?>">
+                            <?php echo $this->titleHelper->getTitle($filter['value1']); ?>
+                        </a>
+                    <?php else : ?>
+                        <strong>"<?php echo $filter['value1'] ?>"</strong>
+                    <?php endif ?>
+                <?php endif ?>
+                <?php if ($filter['value2']) : ?>
+                    and
+                    <?php if ($filter['valuetype'] == 'uri') : ?>
+                        <a  class="hasMenu"
+                            about="<?php echo $filter['value2']; ?>"
+                            href="<?php echo (string) $linkurl->setParam('r', $filter['value2'], true) ?>">
+                            <?php echo $this->titleHelper->getTitle($filter['value2']); ?>
+                        </a>
+                    <?php else : ?>
+                        <strong>"<?php echo $filter['value2'] ?>"</strong>
+                    <?php endif ?>
+                <?php endif ?>
+
+            <?php endif; if($filter['mode'] == "rdfsclass") : ?>
+                    Type: <a  class="hasMenu"
+                        about="<?php echo $filter['rdfsclass']; ?>"
+                        href="<?php echo (string) $linkurl->setParam('r', $filter['rdfsclass'], true) ?>">
+                        <?php echo $this->titleHelper->getTitle($filter['rdfsclass']); ?>
+                    </a>
+            <?php endif; if($filter['mode'] == "search") : ?>
+                    Search: <?php echo $filter['searchText']; ?>
+            <?php endif; if($filter['mode'] == "triples") : ?>
+                    Base Query
+            <?php endif; ?>
+            <div class="contextmenu">
+                <span class="item delete">
+                    <span class="icon icon-close" title="Remove Filter">
+                        <span>Remove Filter</span>
+                    </span>
+                </span>
+            </div>
+        </li>
+        <?php endforeach ?>
+    </ul>
+    <?php endif ?>
+
+   
+    <div id="addFilterWindowOverlay">
+        <div class="window" id="addwindow">
+            <h2 class="title">Add Filter</h2>
+            <table>
+                <tr>
+                    <td>
+                        <select id="property" size="7">
+                            <?php foreach($this->properties as $key => $property){ ?>
+                            <option about="<?php echo $property['uri']; ?>" class="Resource"><?php echo $property["title"]; ?></option>
+                            <?php } ?>
+                            <?php foreach($this->inverseProperties as $key => $property){ ?>
+                            }
+                            <option about="<?php echo $property['uri']; ?>" class="Resource InverseProperty"><?php echo $property["title"]; ?> (inverse)</option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td style="vertical-align:middle">
+                        equals
+                    </td>
+                    <td>
+                        <select id="possiblevalues" size="7">
+                                <option>none loaded</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <div style="padding:10px;">
+                or<br/>
+                <input type="checkbox" id="negate"/> not
+                <select id="resttype">
+                        <option>contains</option>
+                        <option>larger</option>
+                        <option>smaller</option>
+                        <option>between</option>
+                        <option>bound</option>
+                </select>
+                <div id="valueboxes">
+                <input type="text" id="value1"/>
+                </div>
+                <formset><a id="add" class="button minibutton">set</a>
+                <a id="addwindowhide" class="button minibutton">cancel</a></formset>
+            </div>
+        </div>
+    </div>
+</div>

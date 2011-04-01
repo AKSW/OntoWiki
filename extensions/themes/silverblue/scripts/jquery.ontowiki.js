@@ -2,10 +2,8 @@
  * OntoWiki jQuery extensions
  *
  * @package    theme
- * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: jquery.ontowiki.js 4167 2009-09-14 12:51:57Z norman.heino $
  */
 (function($) {
     

@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * OntoWiki query editor template
+ */
+?>
+<input id="editortype" type="hidden" value="queryeditor" />
+<p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
+    <?php $i = 0; ?>
+    <?php foreach ($this->prefixes as $prefix => $namespace): ?>
+        <a href="<?php echo $namespace ?>" 
+           title="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
+    <?php endforeach ?>
+</p>
+<fieldset>
+    <div style="border: 1px solid black">
+    <textarea id="inputfield" class="width99 code-input" name="query"><?php echo $this->query ?></textarea>
+    </div>
+<?php if ($this->has('error')): ?>
+    <fieldset>
+        <div class="messagebox error"><?php echo $this->error ?></div>
+    </fieldset>
+<?php endif; ?>
+
+<?php if (isset($this->data)): ?>
+    <p class="messagebox info">
+        <?php echo sprintf($this->_('Query execution took %1$d ms.'), $this->time) ?>
+    </p>
+    <fieldset>
+        <?php if (is_array($this->data)): ?>
+            <?php 
+            if(class_exists("QuerybuildingHelper")){
+                echo $this->partial('partials/resultset.phtml', array('data' => $this->data, 'header' => $this->header, 'caption'=>'Results', 'urlBase' => $this->urlBase));
+            } else {
+            	echo $this->partial('partials/table.phtml', array('data' => $this->data, 'header' => $this->header));
+            }
+            ?>
+        <?php else: ?>
+            <pre><?php echo $this->escape($this->data) ?></pre>
+        <?php endif; ?>
+    </fieldset>
+<?php endif; ?>
+</fieldset>
+
+<script type="text/javascript">
+// make sure jQuery is included
+if (typeof jQuery != 'undefined') {
+    function insertModelUri() {
+        editor.setCode(editor.getCode() + '<<?php echo $this->modelUri ?>>');
+    }
+
+    function insertResourceUri() {
+        editor.setCode(editor.getCode()  + '<<?php echo (isset($this->resourceUri) ? $this->resourceUri : "") ?>>');
+    }
+}
+</script>
