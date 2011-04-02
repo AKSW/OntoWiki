@@ -1,0 +1,23 @@
+<?php
+# ?PublicationUri ?PublicationLabel ?LocationURI ?lat ?long
+?>
+<tr class="record">
+    <td><a href="<?php echo $this->PublicationUri ?>"><?php echo $this->PublicationLabel ?></a></td>
+    <td><a  class="location"
+            about="<?php echo $this->LocationURI ?>"
+            href="<?php echo $this->LocationURI ?>"><span class="name"><?php echo $this->querylist_titleHelper->getTitle($this->LocationURI) ?></span>
+            <span class="lat" style="display: none"><?php echo $this->lat ?></span>
+            <span class="long" style="display: none"><?php echo $this->long ?></span>
+        </a>
+    </td>
+    <?php if (isset($this->SourceURI)) :?>
+    <td><a href="<?php echo $this->SourceURI ?>"><?php echo $this->SourceLabel ?></a></td>
+    <?php else: ?>
+    <td></td>
+    <?php endif; ?>
+    <?php if (isset($this->RecordLabel)) :?>
+    <td><a href="<?php echo $this->RecordURI ?>"><?php echo $this->RecordLabel ?></a></td>
+    <?php else: ?>
+    <td></td>
+    <?php endif; ?>
+</tr>

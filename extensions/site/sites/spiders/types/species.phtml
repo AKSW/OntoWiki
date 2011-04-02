@@ -7,6 +7,25 @@ $templateData = array(
     'descriptionHelper' => $this->descriptionHelper
 );
 
+
+?>
+<div class="box">
+    <h2>
+        <?php echo $this->title ?>
+    </h2>
+    <div class="block">
+        <p><?php echo $this->partial('spiders/content.phtml', $templateData); ?></p>
+    </div>
+</div>
+<div class="box">
+    <h2>Map</h2>
+    <div class="block">
+        <div class="speciesmap">...</div>
+    </div>
+</div>
+
+<?php
+
 $queryObject = new Erfurt_Sparql_SimpleQuery();
 $queryObject->setProloguePart('
 PREFIX faun: <http://purl.org/net/faunistics#>
@@ -14,14 +33,96 @@ PREFIX geof: <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?RecordURI ?RecordType ?RecordLabel ?PublicationUri ?PublicationLabel ?SourceURI ?SourceLabel ?LocationURI ?lat ?long
+SELECT DISTINCT ?RecordURI ?RecordLabel ?PublicationUri ?PublicationLabel ?SourceURI ?SourceLabel ?LocationURI ?lat ?long
     ');
 
 $queryObject->setWherePart('
 WHERE
 {
   ?RecordURI faun:identifiesAs <'.$this->resourceUri.'>.
-  ?RecordURI a ?RecordType.
+  ?RecordURI a <http://purl.org/net/faunistics#OriginalRecord>.
+  OPTIONAL {
+    ?RecordURI rdfs:label ?RecordLabel.
+  }
+  ?RecordURI faun:publishedIn ?PublicationUri.
+  ?PublicationUri rdfs:label ?PublicationLabel.
+  OPTIONAL {
+    ?RecordURI faun:citedIn ?SourceURI.
+    ?SourceURI rdfs:label ?SourceLabel.
+  }
+
+  {
+  ?RecordURI faun:recordedAtLocation <http://db.caucasus-spiders.info/Area/152> .
+  ?RecordURI faun:recordedAtLocation ?LocationURI .
+  }
+  UNION
+  {
+  ?RecordURI faun:recordedAtLocation ?LocationURI .
+  ?LocationURI geof:within <http://db.caucasus-spiders.info/Area/152>.
+  }
+  UNION
+  {
+  ?RecordURI faun:recordedAtLocation ?LocationURI .
+  ?LocationURI geof:within ?l1.
+  ?l1 geof:within <http://db.caucasus-spiders.info/Area/152>.
+  }
+  UNION
+  {
+  ?RecordURI faun:recordedAtLocation ?LocationURI .
+  ?LocationURI geof:within ?l1.
+  ?l1 geof:within ?l2.
+  ?l2 geof:within <http://db.caucasus-spiders.info/Area/152>.
+  }
+
+  OPTIONAL {
+    ?LocationURI geo:lat ?lat.
+    ?LocationURI geo:long ?long.
+  }
+}
+    ');
+
+$queryObject->setLimit('10000');
+?>
+
+<div class="box">
+    <h2>Records</h2>
+    <div class="block">
+        <table class="checklist">
+            <thead>
+                <tr>
+                    <th>Publication</th>
+                    <th>Location</th>
+                    <th>Record / Label</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php echo $this->querylist($queryObject, 'spiders/types/species-row-original.phtml'); ?>
+            </tbody>
+        </table>
+        <p style="display: none">
+            <?php echo htmlentities( (string) $queryObject) ?>
+        </p>
+    </div>
+</div>
+
+
+<?php
+
+$queryObject = new Erfurt_Sparql_SimpleQuery();
+$queryObject->setProloguePart('
+PREFIX faun: <http://purl.org/net/faunistics#>
+PREFIX geof: <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?RecordURI ?RecordLabel ?PublicationUri ?PublicationLabel ?SourceURI ?SourceLabel ?LocationURI ?lat ?long
+    ');
+
+$queryObject->setWherePart('
+WHERE
+{
+  ?RecordURI faun:identifiesAs <'.$this->resourceUri.'>.
+  ?RecordURI a <http://purl.org/net/faunistics#CitedRecord>.
   OPTIONAL {
     ?RecordURI rdfs:label ?RecordLabel.
   }
@@ -65,22 +166,9 @@ WHERE
 $queryObject->setLimit('10000');
 
 ?>
+
 <div class="box">
-    <h2>
-        <?php echo $this->title ?>
-    </h2>
-    <div class="block">
-        <p><?php echo $this->partial('spiders/content.phtml', $templateData); ?></p>
-    </div>
-</div>
-<div class="box">
-    <h2>Map</h2>
-    <div class="block">
-        <div class="speciesmap">...</div>
-    </div>
-</div>
-<div class="box">
-    <h2>Records</h2>
+    <h2>References to Records</h2>
     <div class="block">
         <table class="checklist">
             <thead>
@@ -89,11 +177,10 @@ $queryObject->setLimit('10000');
                     <th>Location</th>
                     <th>Source</th>
                     <th>Record / Label</th>
-                    <th>Type</th>
                 </tr>
             </thead>
             <tbody>
-                <?php echo $this->querylist($queryObject, 'spiders/types/species-row.phtml'); ?>
+                <?php echo $this->querylist($queryObject, 'spiders/types/species-row-cited.phtml'); ?>
             </tbody>
         </table>
         <p style="display: none">

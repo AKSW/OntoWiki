@@ -10,23 +10,9 @@
             <span class="long" style="display: none"><?php echo $this->long ?></span>
         </a>
     </td>
-    <?php if (isset($this->SourceURI)) :?>
-    <td><a href="<?php echo $this->SourceURI ?>"><?php echo $this->SourceLabel ?></a></td>
-    <?php else: ?>
-    <td></td>
-    <?php endif; ?>
     <?php if (isset($this->RecordLabel)) :?>
     <td><a href="<?php echo $this->RecordURI ?>"><?php echo $this->RecordLabel ?></a></td>
     <?php else: ?>
     <td></td>
     <?php endif; ?>
-    <td>
-        <?php if ($this->RecordType == 'http://purl.org/net/faunistics#OriginalRecord') :?>
-        Original
-        <?php elseif ($this->RecordType == 'http://purl.org/net/faunistics#CitedRecord') :?>
-        Cited
-        <?php else: ?>
-        Unknown
-        <?php endif; ?>
-    </td>
 </tr>
