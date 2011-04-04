@@ -43,12 +43,12 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         throw new InvalidArgumentException("list was not found. check with listExists() first");
     }
     
-    public function addListPermanently($name, OntoWiki_Model_Instances $list, Zend_View_Interface $view, $templateName = null, $mainTemplate = 'list_std_main', $other = null){
+    public function addListPermanently($name, OntoWiki_Model_Instances $list, Zend_View_Interface $view, $mainTemplate = 'list_std_main', $other = null){
         $this->updateList($name, $list, true);
-        $this->addList($name, $list, $view, $templateName, $mainTemplate, $other);
+        $this->addList($name, $list, $view, $mainTemplate, $other);
     }
 
-    public function addList($listName, OntoWiki_Model_Instances $list, Zend_View_Interface $view, $templateName = null, $mainTemplate = 'list_std_main', $other = null){
+    public function addList($listName, OntoWiki_Model_Instances $list, Zend_View_Interface $view, $mainTemplate = 'list_std_main', $other = null){
         if($other === null ){
             $other = new stdClass();
         }
@@ -57,7 +57,6 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
                 array(
                     'listName'              => $listName,
                     'instances'             => $list,
-                    'additionalElementView' => $templateName,
                     'mainTemplate'          => $mainTemplate,
                     'other'                 => $other
                 )

@@ -278,7 +278,7 @@ class ExconfController extends OntoWiki_Controller_Component {
             $list = $listHelper->getList($listName);
             $list->invalidate(); //remote repo may change data
             //$list->setStore($store); //TODO serialization replaces the store with the default store...
-            $listHelper->addList($listName, $list, $this->view, null, "list_extensions_main", $other);
+            $listHelper->addList($listName, $list, $this->view, "list_extensions_main", $other);
         } else {
             $adapter = new Erfurt_Store_Adapter_Sparql(array("serviceurl"=>$repoUrl, 'graphs'=>array($graph)));
             $store = new Erfurt_Store(array("adapterInstance"=>$adapter), "sparql");
@@ -292,7 +292,7 @@ class ExconfController extends OntoWiki_Controller_Component {
             $list->addShownProperty(self::EXTENSION_LATESTVERSION_PROPERTY, "latestVersion");
             $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, "latestReleaseLocation");
 
-            $listHelper->addListPermanently($listName, $list, $this->view, null, "list_extensions_main", $other);
+            $listHelper->addListPermanently($listName, $list, $this->view, "list_extensions_main", $other);
         }
     }
 

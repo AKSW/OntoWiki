@@ -214,7 +214,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $opti
      *
      * @param $propertyUri The URI of the property
      * @param $propertyName Name to be used for the variable
-     * @return OntoWiki_Model_ResourceList
+     * @return OntoWiki_Model_Instances
      */
     public function addShownProperty ($propertyUri, $propertyName = null, $inverse = false, $datatype = null, $hidden = false)
     {
@@ -275,8 +275,8 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $opti
     }
 
     /**
-     *
-     * @param string> $key the uri
+     * remove a property that has been added before
+     * @param string $key the uri
      */
     public function removeShownProperty($key){
         if(isset($this->_shownProperties[$key])){

@@ -276,7 +276,7 @@ class QueriesController extends OntoWiki_Controller_Component {
         $listName = "queries";
         if ($listHelper->listExists($listName)) {
             $list = $listHelper->getList($listName);
-            $listHelper->addList($listName, $list, $this->view, "listqueryaction.phtml");
+            $listHelper->addList($listName, $list, $this->view, "list_queries_main");
         } else {
             $list = new OntoWiki_Model_Instances($store, $graph, array());
 
@@ -290,7 +290,7 @@ class QueriesController extends OntoWiki_Controller_Component {
             $list->addShownProperty($this->_privateConfig->saving->NumViewsUri, "numViews", false, null, false);
             $list->addShownProperty($this->_privateConfig->saving->CreatorUri, "creator", false, null, false);
 
-            $listHelper->addListPermanently($listName, $list, $this->view, "listqueryaction.phtml");
+            $listHelper->addListPermanently($listName, $list, $this->view, "list_queries_main");
         }
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Saved Queries'));
         //print_r(OntoWiki::getInstance()->_properties);
