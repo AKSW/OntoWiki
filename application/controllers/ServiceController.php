@@ -1173,7 +1173,7 @@ class ServiceController extends Zend_Controller_Action
                                 'value' => $currentObject['value'], 
                                 'type'  => str_replace('typed-', '', $currentObject['type'])
                             );
-                            if (isset($bindings[$i]['datatype'])) {
+                            if (isset($currentObject['datatype'])) {
                                 $objectSpec['datatype'] = $currentObject['datatype'];
                             } else if (isset($currentObject['xml:lang'])) {
                                 $objectSpec['lang'] = $currentObject['xml:lang'];
