@@ -68,13 +68,15 @@ if ($instances->hasData()) {
             $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
         }
     }
-    $thisActionUrl = new OntoWiki_Url().'/';
-    $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
-    $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
-    $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
-    $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
-    $statusBar->append($limit);
-    
+    if(!isset($count) || $count > 10 ){
+        $thisActionUrl = new OntoWiki_Url().'/';
+        $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
+        $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
+        $statusBar->append($limit);
+    }
+
     if (defined('_OWDEBUG')) {
         $timeMsg = sprintf($translate->translate('Query execution took %1$d ms.'), $time);
         $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));

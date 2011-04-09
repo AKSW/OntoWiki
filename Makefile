@@ -1,9 +1,15 @@
 default:
 	@echo "please use:"
-	@echo "     'make pull' ('hg pull' for all subrepos)"
-	@echo "     'make update' ('hg pull -u' for all subrepos)"
-	@echo "     'make branch-check' ('hg branch' for all subrepos)"
+	@echo "     'make pull' ('hg pull' for all repos)"
+	@echo "     'make update' ('hg pull' and 'hg update' for all repos)"
+	@echo "     'make force-update' ('hg pull' and 'hg update -c' for all repos)"
+	@echo "     'make status' ('hg status' for all repos)"
+	@echo "     'make branch-check' ('hg branch' for all repos)"
+	@echo "     'make libraries' ('hg clone' all subrepos - in case of an old mercurial)"
 	@echo "     'make zend' (download and install Zend under libraries)"
+	@echo "     'make directories' (create cache/log dir and chmod environment)"
+	@echo "     'make install' (-> make directories, zend and libraries)"
+	@echo "     'make clean' (deletes all log and cache files)"
 
 pull:
 	@hg --repository . pull
@@ -52,3 +58,21 @@ libraries:
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	hg clone https://rdfauthor.googlecode.com/hg/ libraries/RDFauthor
 
+directories:
+	mkdir -p logs cache
+	chmod 777 logs cache extensions
+
+install: directories zend libraries
+
+debianize:
+	rm extensions/markdown/parser/License.text
+	rm extensions/markdown/parser/PHP_Markdown_Readme.txt
+	rm extensions/markdown/parser/markdown.php
+	rm extensions/queries/resources/codemirror/LICENSE
+	rm extensions/themes/silverblue/scripts/libraries/jquery.js
+	rm libraries/RDFauthor/libraries/jquery.js
+	rm Makefile
+	@echo "now do: cp -R application/scripts/debian debian"
+
+clean:
+	rm -rf cache/* logs/*
