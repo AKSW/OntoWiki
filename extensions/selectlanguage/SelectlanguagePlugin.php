@@ -59,7 +59,10 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
 
         //writing the selected Language back into configuration
         if (!empty($selectedLanguage)) {
+
+            //Set Selected Language in the internal config object
             $this->owApp->config->languages->locale = $selectedLanguage;
+            //Set the Selected Language in the language Variable of the OntoWiki Object
             $this->owApp->language = $selectedLanguage;
         }
     }
