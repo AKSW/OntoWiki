@@ -31,7 +31,7 @@
     <!--script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery-fluid16.js"></script-->
     <script type="text/javascript" src="<?php echo $this->baseUri ?>/js/spiders.js"></script>
 
-    <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> :: Caucasus Spiders</title>
+    <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> :: Caucasian Spiders</title>
 </head>
 <body about="<?php echo $this->resourceUri?>">
 <?php
@@ -63,12 +63,18 @@
     <div class="clear"></div>
     <div class="grid_16">
         <ul class="nav main">
-            <?php foreach ($this->navigation as $navurl => $subnavi) : ?>
-            <li>
-                <a href="<?php echo $navurl ?>"><?php echo $this->descriptionHelper->getTitle($navurl) ?></a>
-                <ul><?php printNavi($subnavi, $this->descriptionHelper, 0); ?> </ul>
+            <li><a href="http://db.caucasus-spiders.info/Document/Checklists.html">Home</a></li>
+            <li><a href="http://db.caucasus-spiders.info/Area/152">Checklists: Caucasus</a>
+                <ul>
+                    <li><a href="http://db.caucasus-spiders.info/Area/100">Georgia</a></li>
+                    <li><a href="http://db.caucasus-spiders.info/Area/4">Azerbaijan</a></li>
+                    <li><a href="http://db.caucasus-spiders.info/Area/95">Armenia</a></li>
+                    <li><a href="http://db.caucasus-spiders.info/Area/865">North Caucasus</a></li>
+                </ul>
             </li>
-            <?php endforeach; ?>
+            <li><a href="http://caucasus-spiders.info/introduction/checklists/bibliography-2/">Literature</a></li>
+            <li><a href="http://caucasus-spiders.info/spider-habitats/">Spider Habitats</a></li>
+            <li><a href="http://caucasus-spiders.info/faq/">FAQ</a></li>
 
             <li class="secondary">
                 <a href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo $this->resourceUri ?>">OntoWiki</a>
