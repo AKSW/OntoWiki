@@ -160,6 +160,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->_valueQuery->addElement($optional);
         $this->_valueQuery->addProjectionVar($typeVar);
 
+        //set froms to the requested graph
+        $this->_valueQuery->addFrom((string)$model);
+        $this->_resourceQuery->addFrom((string)$model);
+
         //$this->updateValueQuery();
     }
 
@@ -202,11 +206,16 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
         }
     }
-    
+    /**
+     * redirect calls that ant be handled both to the resource and value query. currently only methods regarding the from are allowed
+     * @param string $name
+     * @param array $arguments
+     */
     public function  __call($name,  $arguments) {
-        if(strpos("From", $name) > 0){
-            call_user_func(array($this->_valueQuery, $arguments));
-            call_user_func(array($this->_resourceQuery, $arguments));
+        $allowedMethods = array("addFrom","addFroms","removeFrom","removeFroms","hasFrom","getFrom","getFroms","setFrom", "setFroms");
+        if(in_array($name, $allowedMethods)){
+            call_user_func(array($this->_valueQuery, $name), $arguments);
+            call_user_func(array($this->_resourceQuery, $name), $arguments);
         }
     }
 
