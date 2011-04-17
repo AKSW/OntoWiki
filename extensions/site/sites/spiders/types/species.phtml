@@ -10,11 +10,70 @@ $templateData = array(
 
 ?>
 <div class="box">
-    <h2>
-        <?php echo $this->title ?>
+    <h2 class="taxon">
+        <?php
+        echo '<strong>' . $this->title . '</strong>';
+        if (isset($this->description['http://purl.org/net/faunistics#citationSuffix'])) {
+            $suffix = $this->description['http://purl.org/net/faunistics#citationSuffix'][0]['value'];
+            echo ' ' . $suffix;
+        }
+        ?>
     </h2>
     <div class="block">
-        <p><?php echo $this->partial('spiders/content.phtml', $templateData); ?></p>
+<div class="article first">
+    <?php echo $this->partial('spiders/content.phtml', $templateData); ?>
+
+<?php
+$rdfsComment = 'http://www.w3.org/2000/01/rdf-schema#comment';
+if (isset($this->description[$rdfsComment])) {
+    $comment = $this->description[$rdfsComment][0]['value'];
+    echo '<p><strong>Comments:</strong> '.$comment.'</p>';
+}
+?>
+
+<p class="meta">
+<?php
+$model = OntoWiki::getInstance()->selectedModel;
+$subTaxonOf = 'http://purl.org/net/faunistics#subTaxonOf';
+$closure = Erfurt_App::getInstance()->getStore()->getTransitiveClosure((string) $model, $subTaxonOf, $this->resourceUri, false);
+$titleHelper = new OntoWiki_Model_TitleHelper($model);
+echo 'Taxa: ';
+$taxon = $closure[$this->resourceUri];
+while (isset($taxon['parent'])) {
+    $titleHelper->addResource( $taxon['parent'] );
+    if (isset($closure[$taxon['parent']])) {
+        $taxon = $closure[$taxon['parent']];
+    } else {
+        $taxon = null;
+    }
+}
+$taxon = $closure[$this->resourceUri];
+$first = true;
+while (isset($taxon['parent'])) {
+    $title = $titleHelper->getTitle( $taxon['parent'] );
+    if ($first == false) {
+        echo ' &lt;&lt; ';
+    }
+    echo "<a href='$taxon[parent]'>$title</a>";
+    $first = false;
+    if (isset($closure[$taxon['parent']])) {
+        $taxon = $closure[$taxon['parent']];
+    } else {
+        $taxon = null;
+    }
+}
+echo "<br/>";
+#var_dump($closure);
+
+$euroSpidersID = 'http://purl.org/net/faunistics#euroSpidersID';
+if (isset($this->description[$euroSpidersID])) {
+    $theId = $this->description[$euroSpidersID][0]['value'];
+    echo 'External Links: <a href="http://www.araneae.unibe.ch/datasheet.php?spec=' . $theId . '">araneae - Spiders of Europe</a> (determination)</br>';
+}
+?>                
+</p>
+
+    </div>
     </div>
 </div>
 <div class="box">

@@ -1,6 +1,6 @@
 <?php /* you can use $this->has() as a shortcut */ ?>
-<div class="article first">
 <?php if (isset($this->description['http://purl.org/dc/elements/1.1/description'])) : ?>
+<p>
     <?php echo $this->description['http://purl.org/dc/elements/1.1/description'][0]['value']; ?>
 </p>
 <?php elseif (isset($this->description['http://rdfs.org/sioc/ns#content'])) : ?>
@@ -8,12 +8,3 @@
     <?php echo $this->description['http://rdfs.org/sioc/ns#content'][0]['value']; ?>
 </p>
 <?php endif ?>
-
-<?php
-$euroSpidersID = 'http://purl.org/net/faunistics#euroSpidersID';
-if (isset($this->description[$euroSpidersID])) {
-    $theId = $this->description[$euroSpidersID][0]['value'];
-    echo '<p class="meta">External links: <a href="http://www.araneae.unibe.ch/datasheet.php?spec=' . $theId . '">EuroSpiders DB</a></p>';
-}
-?>
-</div>
