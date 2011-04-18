@@ -31,7 +31,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
-            $listHelper->addList($listName, $list, $this->view);
+            $listHelper->addList($listName, $list, $this->view, 'list_community_main', $this->_privateConfig);
         } else {
             $list = new OntoWiki_Model_Instances($store, $graph, array());
 
@@ -76,7 +76,7 @@ class CommunityController extends OntoWiki_Controller_Component {
                 
             }
 
-            $listHelper->addListPermanently($listName, $list, $this->view);
+            $listHelper->addListPermanently($listName, $list, $this->view, 'list_community_main', $this->_privateConfig);
         }
         $singleResource = true;
         if($this->_request->getParam('mode') === 'multi'){

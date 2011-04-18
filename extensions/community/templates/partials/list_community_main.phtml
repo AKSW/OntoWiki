@@ -1,0 +1,19 @@
+<ol>
+<?php $i=1; $odd = true;
+foreach ($this->instanceInfo as $instanceUri => $instance){
+            echo $this->partial('partials/list_community_item.phtml',
+                array(
+                    'instanceUri'  => $instanceUri,
+                    'instance'     => $instance,
+                    'instanceData' => $this->instanceData,
+                    'instanceInfo' => $this->instanceInfo,
+                    'propertyInfo' => $this->propertyInfo,
+                    'other'        => $this->other,
+                    'odd'          => $odd,
+                    'i'            => $i
+                )
+             );
+            $odd = !$odd;
+            $i++;
+        } ?>
+</ol>
