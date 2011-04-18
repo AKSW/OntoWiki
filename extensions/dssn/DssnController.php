@@ -16,7 +16,7 @@ class DssnController extends OntoWiki_Controller_Component {
         OntoWiki_Navigation::register('news', array('route'      => null,
             'controller' => 'dssn',
             'action'     => 'news',
-            'name'   => 'News'));
+            'name'   => 'News & Activities'));
         OntoWiki_Navigation::register('friends', array('route'      => null,
             'controller' => 'dssn',
             'action'     => 'friends',
@@ -29,7 +29,7 @@ class DssnController extends OntoWiki_Controller_Component {
     function newsAction() {
         $ow = OntoWiki::getInstance();
 
-        $this->view->placeholder('main.window.title')->set($ow->translate->_('News'));
+        $this->view->placeholder('main.window.title')->set($ow->translate->_('News & Activities'));
         $this->addModuleContext('main.window.dssn.news');
     }
 
