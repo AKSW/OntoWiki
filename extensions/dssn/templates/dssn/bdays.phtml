@@ -1,0 +1,15 @@
+<!-- start bdays template -->
+<ol class="dssn-bdays bullets-none separated">
+<?php foreach($this->birthdays as $bday) : ?>
+<?php $odd = 'odd' ?>
+    <li
+        title="<?php echo $bday['date'] ?>"
+        class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+        <a href="<?php echo $bday['resource'] ?>"> 
+            <img class="friend" src="<?php echo $bday['depiction'] ?>" />
+            <?php echo $bday['name'] ?>
+        </a> <?php echo $bday['label'] ?>
+    </li>
+<?php endforeach; ?>
+</ol>
+<!-- end bdays template -->
