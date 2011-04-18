@@ -1,4 +1,5 @@
 <?php
+
 class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helper_Abstract{
     protected $_owApp;
 
@@ -19,6 +20,7 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         }
         return null;
     }
+
     public function getLastListName(){
         return $this->_owApp->session->lastList;
     }
@@ -78,6 +80,22 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
     public function getAllLists(){
         return $this->_owApp->session->managedLists;
     }
+
+    public function removeAllLists(){
+        $this->_owApp->session->managedLists = array();
+    }
+
+    public function removeList($name){
+        $lists = $this->_owApp->session->managedLists;
+        
+        if (key_exists($name, $lists)) {
+            unset ($lists[$name]);
+        }
+       
+        throw new InvalidArgumentException("list was not found. check with listExists() first");
+    }
+
+
 }
 
 

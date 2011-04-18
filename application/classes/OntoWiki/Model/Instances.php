@@ -108,7 +108,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     /**
      * Constructor
      */
-public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array())
+    public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array())
     {
         parent::__construct($store, $model);
 
@@ -160,7 +160,22 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $opti
         $this->_valueQuery->addElement($optional);
         $this->_valueQuery->addProjectionVar($typeVar);
 
+        //set froms to the requested graph
+        $this->_valueQuery->addFrom((string)$model);
+        $this->_resourceQuery->addFrom((string)$model);
+
         //$this->updateValueQuery();
+    }
+
+    function __wakeUp(){
+        $this->_lang = NULL;
+    }
+
+    private function _getLanguage () {
+        if ($this->_lang == NULL) {
+            $this->_lang = OntoWiki::getInstance()->config->languages->locale;
+        }
+        return $this->_lang;
     }
     
     /**
@@ -191,11 +206,16 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $opti
             }
         }
     }
-    
+    /**
+     * redirect calls that ant be handled both to the resource and value query. currently only methods regarding the from are allowed
+     * @param string $name
+     * @param array $arguments
+     */
     public function  __call($name,  $arguments) {
-        if(strpos("From", $name) > 0){
-            call_user_func(array($this->_valueQuery, $arguments));
-            call_user_func(array($this->_resourceQuery, $arguments));
+        $allowedMethods = array("addFrom","addFroms","removeFrom","removeFroms","hasFrom","getFrom","getFroms","setFrom", "setFroms");
+        if(in_array($name, $allowedMethods)){
+            call_user_func(array($this->_valueQuery, $name), $arguments);
+            call_user_func(array($this->_resourceQuery, $name), $arguments);
         }
     }
 
@@ -1063,7 +1083,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $opti
 
                     // set default if event has not been handled
                     if (!$event->handled()) {
-                        $value = $titleHelper->getTitle($objectUri, $this->_lang);
+                        $value = $titleHelper->getTitle($objectUri, $this->_getLanguage());
                     }
                 } else {
                     // object is a literal
@@ -1276,7 +1296,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $opti
 
             $property['curi'] = OntoWiki_Utils::contractNamespace($property['uri']);
 
-            $property['title'] = $titleHelper->getTitle($property['uri'], $this->_lang);
+            $property['title'] = $titleHelper->getTitle($property['uri'], $this->_getLanguage());
 
             $propertyResults[] = $property;
         }
@@ -1349,10 +1369,9 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $opti
             $url->setParam($this->_defaultUrlParam['resource'],$uri,true);
             
             $resourceResults[$uri]['url'] = (string) $url;
-
             // title
             $resourceResults[$uri]['title'] =
-                $titleHelper->getTitle($uri, $this->_lang);
+                $titleHelper->getTitle($uri, $this->_getLanguage());
         }
         return $resourceResults;
     }
@@ -1387,6 +1406,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $opti
         }
 
         $this->_resourcesConverted = $this->convertResources($this->getShownResources());
+
         $this->_resourcesConvertedUptodate = true;
         return $this->_resourcesConverted;
     }

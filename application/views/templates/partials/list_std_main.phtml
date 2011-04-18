@@ -16,7 +16,8 @@ $resourceQuery =  $instances->getResourceQuery();
 $valueQuery = $instances->getQuery();
 //echo htmlentities($valueQuery);
 $permalink = $instances->getPermalink($this->listName);
-
+$config = Erfurt_App::getInstance()->getConfig();
+$urlBase = $config->urlBase;
 
 $this->headScript()->prependScript(
         'function showPermaLink(){$("#permalink").slideToggle(400);}
@@ -24,8 +25,8 @@ $this->headScript()->prependScript(
             function showvalQuery(){$("#valQuery").slideToggle(400);}');
 ?>
 <div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
-<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
-<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
+<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
+<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
 <?php
 //call subtemplate in a loop
     if ($this->instances->hasData()): ?>
