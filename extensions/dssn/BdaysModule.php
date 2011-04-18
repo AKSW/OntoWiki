@@ -1,5 +1,4 @@
 <?php
-
 /**
  * DSSN module – Next Birthdays
  *
@@ -79,7 +78,7 @@ class BdaysModule extends OntoWiki_Module
      */
     function getContents()
     {
-        $content = $this->render('dssn/bdays', $this->getBirthdays(), 'birthdays');
+        $content = $this->render('modules/bdays', $this->getBirthdays(), 'birthdays');
         return $content;
     }
 }
