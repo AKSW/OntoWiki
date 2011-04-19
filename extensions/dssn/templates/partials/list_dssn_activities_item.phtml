@@ -1,0 +1,17 @@
+<?php $item = $this->activity ?>
+<li class="dssn-activity <?php if ($this->odd) {echo "odd";} else {echo "even";} ?>">
+    <span class="subject">
+        <img class="avatar" src="<?php echo $item['actorAvatar'] ?>" />
+        <a href="<?php echo $item['actorUri'] ?>"><?php echo $item['actorLabel'] ?></a>
+    </span>
+    <span class="verb">
+        <?php echo $item['verbLabel'] ?> 
+        <a href="<?php echo $item['objectUri'] ?>"><?php echo $item['objectTypeLabel'] ?></a>
+    </span>
+    <span class="object">
+        <a href="<?php echo $item['objectUri'] ?>">
+            <img class="thumbnail" src="<?php echo $item['objectThumbnailUri'] ?>" />
+        </a>:
+        <span class="content"><?php echo $item['objectContent'] ?></span>
+    </span>
+</li>
