@@ -1,0 +1,38 @@
+<ol class="bullets-none separated">
+<?php
+$i=1; $odd = true;
+foreach ($this->instanceInfo as $instanceUri => $instance){
+
+    /* TODO: Prepare real data, cached :) */
+    $singlePostActivity      = array(
+        'actorUri'           => 'http://tim.ontowiki.net/foaf',
+        'actorLabel'         => 'Timofey Ermilov',
+        'actorAvatar'        => 'http://profile.ak.fbcdn.net/hprofile-ak-snc4/48908_1496846178_5513_q.jpg',
+        'verbLabel'          => 'posts the following',
+        'verbUri'            => 'http://xmlns.notu.be/aair#Posts',
+        'objectLabel'        => 'MILES MOSLEY "Voodoo Child"',
+        'objectThumbnailUri' => 'http://platform.ak.fbcdn.net/www/app_full_proxy.php?app=87741124305&v=1&size=p&cksum=672323b583d70fd614bb8c63e18b11a2&src=http%3A%2F%2Fi3.ytimg.com%2Fvi%2FVa3TRZ08L6o%2Fdefault.jpg',
+        'objectUri'          => 'http://www.youtube.com/watch?v=Va3TRZ08L6o',
+        'objectType'         => 'http://xmlns.notu.be/aair#Video',
+        'objectTypeLabel'    => 'Video',
+        'objectContent'      => 'Liked on www.youtube.com
+        more videos exclusively at http://www.milesmosley.com. Created by http://www.artjocks.com . shot by josh woolf and dhruv kumar'
+    );
+
+    echo $this->partial('partials/list_dssn_activities_item.phtml',
+        array(
+            'instanceUri'  => $instanceUri,
+            'instance'     => $instance,
+            'instanceData' => $this->instanceData,
+            'instanceInfo' => $this->instanceInfo,
+            'propertyInfo' => $this->propertyInfo,
+            'other'        => $this->other,
+            'odd'          => $odd,
+            'i'            => $i,
+            'activity'     => $singlePostActivity
+        )
+    );
+    $odd = !$odd;
+    $i++;
+} ?>
+</ol>
