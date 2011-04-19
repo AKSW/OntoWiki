@@ -24,8 +24,8 @@ class BdaysModule extends OntoWiki_Module
         /* nothing to do right now */
     }
 
-    /* 
-     * This fetches and sets the next 
+    /*
+     * This fetches and sets the next
      * TODO: real data please, and with object-cache :-)
      */
     public function setBirthdays() {
@@ -34,13 +34,13 @@ class BdaysModule extends OntoWiki_Module
             // resource will used to link to the friends page
             'resource' => 'http://sebastian.tramp.name',
             // titleHelper please
-            'name' => 'Sebastian Tramp', 
+            'name' => 'Sebastian Tramp',
             // do we need a pic gatewy to enforce small images?
-            'depiction' => 'http://www.gravatar.com/avatar/65628ed5c340e69a9ebdea271f21a4fe.png', 
+            'depiction' => 'http://www.gravatar.com/avatar/65628ed5c340e69a9ebdea271f21a4fe.png',
             // YYYY-MM-DD
-            'date' => '2010-09-29', 
+            'date' => '2010-09-29',
             // something similar as OntoWiki_Utils::dateDifference but for days in the future
-            'label' => 'in 5 days' 
+            'label' => 'in 5 days'
         );
 
         $this->birthdays = array();
@@ -52,7 +52,7 @@ class BdaysModule extends OntoWiki_Module
         //$this->birthdays = array();
     }
 
-    /* 
+    /*
      * returns the array of next birthdays
      */
     public function getBirthdays() {
@@ -62,10 +62,12 @@ class BdaysModule extends OntoWiki_Module
         return $this->birthdays;
     }
 
-    /*
-     * hide me if there are no birthdays ...
-     */
     public function shouldShow() {
+        // module can be turned off in extension config
+        if ($this->_privateConfig->modules->bdays != true) {
+            return false;
+        }
+        // module is not shown if there are no birthdays
         if (count($this->getBirthdays()) > 0) {
             return true;
         } else {
@@ -73,9 +75,6 @@ class BdaysModule extends OntoWiki_Module
         }
     }
 
-    /**
-     * Returns the content for the model list.
-     */
     function getContents()
     {
         $content = $this->render('modules/bdays', $this->getBirthdays(), 'birthdays');
