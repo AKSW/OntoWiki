@@ -543,8 +543,6 @@ class PatternmanagerController extends OntoWiki_Controller_Component {
             $listHelper->addList($listName, $list, $this->view, "list_pattern_main");
         } else {
             $list = new OntoWiki_Model_Instances($store, $graph, array());
-            $list->setDefaultUrl('resource', new OntoWiki_Url(array('controller' => 'patternmanager', 'action' => 'view'), array()));
-            $list->setDefaultUrlParamName('resource', 'pattern');
             $list->addTypeFilter($this->_privateConfig->rdf->ComplexPattern);
             $listHelper->addListPermanently($listName, $list, $this->view, "list_pattern_main");
         }
