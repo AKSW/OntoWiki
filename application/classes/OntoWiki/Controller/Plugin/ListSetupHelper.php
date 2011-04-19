@@ -218,6 +218,18 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                         }
                     }
                 }
+
+                if (isset($config->order)) {
+                    foreach ($config->order as $prop) {
+                        if ($prop->action == 'set') {
+                            if ($prop->mode == 'var') {
+                                $list->setOrderVar($prop->var);
+                            } else {
+                                $list->setOrderUri($prop->uri);
+                            }
+                        }
+                    }
+                }
             }
 
             if (isset($request->limit)){ // how many results per page
