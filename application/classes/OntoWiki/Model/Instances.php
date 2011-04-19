@@ -1338,8 +1338,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
 
             // URL
-            $url = $this->_defaultUrl['resource'];
-            $url->setParam($this->_defaultUrlParam['resource'],$uri,true);
+            $url = new OntoWiki_Url(array('controller'=>'resource','action'=>'properties'), array());
+            $url->r = $uri;
             
             $resourceResults[$uri]['url'] = (string) $url;
             // title
