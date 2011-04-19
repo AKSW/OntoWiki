@@ -1510,10 +1510,13 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         return $this;
     }
 
-    public function setOrderUri($uri) {
+    public function setOrderUri($uri, $asc = true) {
+        if(!is_bool($asc)){
+            $asc = true;
+        }
         foreach($this->_shownProperties as $prop){
             if($prop['uri'] == $uri){
-               $this->_valueQuery->getOrder()->setExpression($prop['var']);
+               $this->_valueQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
             }
         }
 
@@ -1521,9 +1524,18 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
     }
 
-    public function setOrderVar($var) {
+    public function setOrderVar($var, $asc = true) {
+        if(!is_bool($asc)){
+            $asc = true;
+        }
         if($var instanceof Erfurt_Sparql_Query2_Var){
-            $this->_valueQuery->getOrder()->setExpression($var);
+            $this->_valueQuery->getOrder()->setExpression(array('exp'=>$var,'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+        } else if(is_string($var)){
+            foreach($this->_shownProperties as $prop){
+            if($prop['varName'] == $var){
+                    $this->_valueQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+                }
+            }
         }
     }
 }

@@ -244,7 +244,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             } else {
                 $list->setOffset(0);
             }
-
+            
             //save to session
             $name = (isset($request->list) ? $request->list : "instances");
             $listHelper->updateList($name, $list, true);
