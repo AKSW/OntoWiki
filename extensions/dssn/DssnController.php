@@ -44,6 +44,18 @@ class DssnController extends OntoWiki_Controller_Component {
     }
 
     /*
+     * list and add friends / contacts tab
+     */
+    public function networkAction() {
+        $translate   = $this->_owApp->translate;
+        $store       = $this->_owApp->erfurt->getStore();
+        $model       = $this->_owApp->selectedModel;
+
+        $this->view->placeholder('main.window.title')->set($translate->_('Network'));
+        $this->addModuleContext('main.window.dssn.network');
+    }
+
+    /*
      * uses the listHelper to re-get / create the activity stream
      */
     private function createActivityList() {
@@ -123,16 +135,5 @@ class DssnController extends OntoWiki_Controller_Component {
         //var_dump((string) $list->getResourceQuery());
     }
 
-    /*
-     * list and add friends / contacts tab
-     */
-    public function networkAction() {
-        $translate   = $this->_owApp->translate;
-        $store       = $this->_owApp->erfurt->getStore();
-        $model       = $this->_owApp->selectedModel;
-
-        $this->view->placeholder('main.window.title')->set($translate->_('Network'));
-        $this->addModuleContext('main.window.dssn.network');
-    }
 }
 
