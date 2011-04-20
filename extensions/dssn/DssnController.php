@@ -135,5 +135,28 @@ class DssnController extends OntoWiki_Controller_Component {
         //var_dump((string) $list->getResourceQuery());
     }
 
+    private function createStatusActivity()
+    {
+        $activity = new DSSN_Activity;
+        $verb  = new DSSN_Activity_Verb_Post;
+        $activity->setVerb($verb);
+
+        $actor = new DSSN_Activity_Actor_User;
+        $actor->setUrl('http://sebastian.tramp.name');
+        $actor->setName('Sebastian Tramp');
+        $activity->setActor($actor);
+
+        $object = new DSSN_Activity_Object_Note;
+        $object->setContent('my feelings today ...');
+        $activity->setObject($object);
+
+        $context = new DSSN_Activity_Context_Time;
+        $context->setDate(time());
+        $activity->addContext($context);
+
+        $store->addMultipleStatements($activity->toRDF());
+    }
+
+
 }
 
