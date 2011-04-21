@@ -106,7 +106,7 @@ class DssnController extends OntoWiki_Controller_Component {
 
             $list->addTripleFilter($triplePattern);
 
-            // TODO: add FILTER (?published < "$now")
+            // TODO Jonas: add FILTER (?published < "$now")
             //$list->addFilter ($property, $isInverse, $propertyLabel, $filter, $value1 = null, $value2 = null, $valuetype = 'literal', $literaltype = null, $hidden = false, $id = null, $negate = false)
 
             // value query variables
@@ -115,7 +115,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addShownProperty($uris->activityObject, 'object');
             $list->addShownProperty($uris->activityVerb, 'verb');
 
-            // TODO: additional optional!! projection vars:
+            // TODO Jonas: additional optional!! projection vars:
             // ?actor  aair:avatar ?avatar (optional)
             // ?object a ?objectType (optional)
             // ?object aair:content ?content (optional)

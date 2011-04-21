@@ -4,7 +4,7 @@ $i=1; $odd = true;
 foreach ($this->instanceInfo as $instanceUri => $instance){
 
     $activityData = $this->instanceData[$instanceUri];
-    //var_dump($activityData);
+    var_dump($activityData);
     $activity = array( // mandatory attributes
         'actorUri'           => $activityData['actor'][0]['uri'],
         'actorLabel'         => $activityData['actor'][0]['value'],
@@ -25,6 +25,9 @@ foreach ($this->instanceInfo as $instanceUri => $instance){
     }
     if (!isset($activity['objectTypeLabel'])) {
         $activity['objectTypeLabel'] = $defaults->objectTypeLabel;
+    }
+    if (!isset($activity['objectThumbnail'])) {
+               $activity['objectThumbnail'] = 'http://images.shrinktheweb.com/xino.php?stwembed=1&stwu=adb83&stwinside=1&stwsize=sm&stwurl=' . $activity['objectUri']; // this does not work
     }
 
     echo $this->partial('partials/list_dssn_activities_item.phtml',
