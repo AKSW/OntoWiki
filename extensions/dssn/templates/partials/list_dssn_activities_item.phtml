@@ -1,5 +1,5 @@
 <?php $item = $this->activity ?>
-<li class="dssn-activity <?php if ($this->odd) {echo "odd";} else {echo "even";} ?>">
+<li class="has-contextmenu-area dssn-activity <?php if ($this->odd) {echo "odd";} else {echo "even";} ?>">
     <span class="subject">
         <a href="<?php echo $item['actorUri'] ?>">
             <img class="avatar" src="<?php echo $item['actorAvatar'] ?>" />
@@ -22,4 +22,10 @@
         <span class="content"><?php echo $item['objectContent'] ?></span>
         <?php endif; ?>
     </span>
+<div class="contextmenu">
+    <a class="item rdfauthor-edit-property vt-p" onclick="dssnActivityOptions(event);">
+        <span class="icon icon-edit" title="Options"><span>Options</span></span>
+    </a>
+</div>
+
 </li>

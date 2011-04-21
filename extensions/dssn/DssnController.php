@@ -24,10 +24,10 @@ class DssnController extends OntoWiki_Controller_Component {
             'controller' => 'dssn',
             'action'     => 'network',
             'name'       => 'Network' ));
-
+        
         // add dssn specific styles and javascripts
-        $this->view->headLink()->appendStylesheet($this->_componentUrlBase . 'js/dssn.js');
         $this->view->headLink()->appendStylesheet($this->_componentUrlBase . 'css/dssn.css');
+        $this->view->headScript()->appendFile($this->_componentUrlBase . 'js/dssn.js');
     }
 
     /*

@@ -27,7 +27,7 @@ foreach ($this->instanceInfo as $instanceUri => $instance){
         $activity['objectTypeLabel'] = $defaults->objectTypeLabel;
     }
     if (!isset($activity['objectThumbnail'])) {
-        $activity['objectThumbnail'] = 'http://cligs.websnapr.com/?size=s&url=' . $activity['objectUri']; 
+        $activity['objectThumbnail'] = 'http://cligs.websnapr.com/?size=t&url=' . $activity['objectUri']; 
     }
 
     // should we use different templates for different activity types here?
