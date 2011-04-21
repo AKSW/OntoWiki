@@ -27,9 +27,10 @@ foreach ($this->instanceInfo as $instanceUri => $instance){
         $activity['objectTypeLabel'] = $defaults->objectTypeLabel;
     }
     if (!isset($activity['objectThumbnail'])) {
-               $activity['objectThumbnail'] = 'http://images.shrinktheweb.com/xino.php?stwembed=1&stwu=adb83&stwinside=1&stwsize=sm&stwurl=' . $activity['objectUri']; // this does not work
+        $activity['objectThumbnail'] = 'http://cligs.websnapr.com/?size=s&url=' . $activity['objectUri']; 
     }
 
+    // should we use different templates for different activity types here?
     echo $this->partial('partials/list_dssn_activities_item.phtml',
         array(
             'odd'          => $odd,
