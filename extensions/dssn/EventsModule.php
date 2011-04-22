@@ -16,7 +16,7 @@ class EventsModule extends OntoWiki_Module
 
     public function getTitle()
     {
-        return 'Upcoming ...';
+        return 'Upcoming Events';
     }
 
     public function init()
@@ -79,7 +79,8 @@ class EventsModule extends OntoWiki_Module
     {
         $content = array (
             'Birthdays' => $this->render('modules/events-bdays', $this->getBirthdays(), 'birthdays'),
-            'Events' => $this->render('modules/events-other', false, 'others')
+            'Parties' => $this->render('modules/events-other', false, 'parties'),
+            'Other' => $this->render('modules/events-other', false, 'others')
         );
         return $content;
     }
