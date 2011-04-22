@@ -11,7 +11,7 @@ class ActivityfilterModule extends OntoWiki_Module
 {
     public function getTitle()
     {
-        return 'Filter Activities';
+        return 'Filter and Search Activities';
     }
 
     public function init()
