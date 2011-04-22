@@ -3,11 +3,11 @@
  * DSSN module – Next Birthdays
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_bdays
+ * @package    OntoWiki_extensions_modules_events
  * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class BdaysModule extends OntoWiki_Module
+class EventsModule extends OntoWiki_Module
 {
     /*
      * array of next birthdays or null if not fetched yet
@@ -16,7 +16,7 @@ class BdaysModule extends OntoWiki_Module
 
     public function getTitle()
     {
-        return 'Next Birthdays';
+        return 'Upcoming ...';
     }
 
     public function init()
@@ -64,7 +64,7 @@ class BdaysModule extends OntoWiki_Module
 
     public function shouldShow() {
         // module can be turned off in extension config
-        if ($this->_privateConfig->modules->bdays != true) {
+        if ($this->_privateConfig->modules->events != true) {
             return false;
         }
         // module is not shown if there are no birthdays
@@ -77,7 +77,10 @@ class BdaysModule extends OntoWiki_Module
 
     function getContents()
     {
-        $content = $this->render('modules/bdays', $this->getBirthdays(), 'birthdays');
+        $content = array (
+            'Birthdays' => $this->render('modules/events-bdays', $this->getBirthdays(), 'birthdays'),
+            'Events' => $this->render('modules/events-other', false, 'others')
+        );
         return $content;
     }
 }
