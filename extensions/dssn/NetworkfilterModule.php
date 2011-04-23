@@ -1,17 +1,17 @@
 <?php
 /**
- * DSSN module – Make Friends
+ * DSSN module – Network / Friends Filter
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_bdays
+ * @package    OntoWiki_extensions_modules_networkfilter
  * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class MakefriendsModule extends OntoWiki_Module
+class NetworkfilterModule extends OntoWiki_Module
 {
     public function getTitle()
     {
-        return 'Search Contacts / Make new Friends :-)';
+        return 'Filter your Network';
     }
 
     public function init()
@@ -21,7 +21,7 @@ class MakefriendsModule extends OntoWiki_Module
 
     public function shouldShow() {
         // module can be turned off in extension config
-        if ($this->_privateConfig->modules->makefriends != true) {
+        if ($this->_privateConfig->modules->networkfilter != true) {
             return false;
         }
         return true;
@@ -29,7 +29,7 @@ class MakefriendsModule extends OntoWiki_Module
 
     function getContents()
     {
-        $content = $this->render('modules/makefriends', false, 'makefriends');
+        $content = $this->render('modules/networkfilter', false, 'networkfilter');
         return $content;
     }
 }
