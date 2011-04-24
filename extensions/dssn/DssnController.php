@@ -24,10 +24,40 @@ class DssnController extends OntoWiki_Controller_Component {
             'controller' => 'dssn',
             'action'     => 'network',
             'name'       => 'Network' ));
+        OntoWiki_Navigation::register('profile', array(
+            'route'      => null,
+            'controller' => 'dssn',
+            'action'     => 'profile',
+            'name'       => 'Profile' ));
+        OntoWiki_Navigation::register('setup', array(
+            'route'      => null,
+            'controller' => 'dssn',
+            'action'     => 'setup',
+            'name'       => 'Setup' ));
         
         // add dssn specific styles and javascripts
         $this->view->headLink()->appendStylesheet($this->_componentUrlBase . 'css/dssn.css');
         $this->view->headScript()->appendFile($this->_componentUrlBase . 'js/dssn.js');
+    }
+
+    /*
+     * Setup / Configuration
+     */
+    public function setupAction() {
+        $translate  = $this->_owApp->translate;
+
+        $this->view->placeholder('main.window.title')->set($translate->_('Setup / Configure your DSSN Client'));
+        $this->addModuleContext('main.window.dssn.setup');
+    }
+
+    /*
+     * Profile View / Editor
+     */
+    public function profileAction() {
+        $translate  = $this->_owApp->translate;
+
+        $this->view->placeholder('main.window.title')->set($translate->_('Profile Viewer / Editor'));
+        $this->addModuleContext('main.window.dssn.profile');
     }
 
     /*
