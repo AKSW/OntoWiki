@@ -11,6 +11,9 @@ class DssnController extends OntoWiki_Controller_Component {
 
     public function init() {
         parent::init();
+    
+        // register DSSN classes
+        $this->registerLibrary();
 
         // create the navigation tabs
         OntoWiki_Navigation::reset();
@@ -41,6 +44,18 @@ class DssnController extends OntoWiki_Controller_Component {
     }
 
     /*
+     * This adds a new path and namespace to the autoloader
+     */
+    public function registerLibrary()
+    {
+        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries';
+        set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
+        //  see http://framework.zend.com/manual/en/zend.loader.load.html
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        $autoloader->registerNamespace('DSSN_'); 
+    }
+
+    /*
      * Setup / Configuration
      */
     public function setupAction() {
@@ -48,6 +63,10 @@ class DssnController extends OntoWiki_Controller_Component {
 
         $this->view->placeholder('main.window.title')->set($translate->_('Setup / Configure your DSSN Client'));
         $this->addModuleContext('main.window.dssn.setup');
+
+        //var_dump( get_include_path()); return;
+        $ttt = $this->createStatusActivity();
+        var_dump($ttt);
     }
 
     /*
@@ -180,11 +199,13 @@ class DssnController extends OntoWiki_Controller_Component {
         $object->setContent('my feelings today ...');
         $activity->setObject($object);
 
-        $context = new DSSN_Activity_Context_Time;
-        $context->setDate(time());
-        $activity->addContext($context);
+        //$context = new DSSN_Activity_Context_Time;
+        //$context->setDate(time());
+        //$activity->addContext($context);
 
-        $store->addMultipleStatements($activity->toRDF());
+        return $activity;
+
+        //$store->addMultipleStatements($activity->toRDF());
     }
 
 

@@ -10,11 +10,71 @@
 class DSSN_Activity_Actor
 {
     private $name  = null;
-    private $uri   = null;
+    private $url   = null;
     private $email = null;
     
     function __construct()
     {
         // code...
+    }
+ 
+    /**
+     * Get url.
+     *
+     * @return url.
+     */
+    function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set url.
+     *
+     * @param url the value to set.
+     */
+    function setUrl($url)
+    {
+        $this->url = $url;
+    }
+
+    /**
+     * Get email.
+     *
+     * @return email.
+     */
+    function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set email.
+     *
+     * @param email the value to set.
+     */
+    function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * Get name.
+     *
+     * @return name.
+     */
+    function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set name.
+     *
+     * @param name the value to set.
+     */
+    function setName($name)
+    {
+        $this->name = $name;
     }
 }
