@@ -1,3 +1,14 @@
+/**
+ * distributed semantic social network client (JavaScript components)
+ *
+ * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ *
+ */
+
+/*jslint white: true, onevar: true, undef: true, nomen: true, regexp: true, plusplus: true, bitwise: true, newcap: true, maxerr: 50, indent: 4 */
+/*global $: true, document: true*/
+
 /*
  * Creates a menu which offers different Activity Actions
  * - Comment this activity
@@ -13,8 +24,8 @@
  * - Ignore 'shared the following' activities from User1
  * -
  */
-function dssnActivityOptions (event) {
-    alert('create menu here');
+function dssnActivityOptions(event) {
+    //alert('create menu here');
     event.preventDefault();
 }
 
@@ -22,12 +33,13 @@ function dssnActivityOptions (event) {
  * A generic callback used by dssnSendActivity
  * - adds an info paragraph to the form (context)
  */
-function dssnSendActivityCallback (jqXHR, textStatus, context) {
+function dssnSendActivityCallback(jqXHR, textStatus, context) {
+    var text, boxClass, html;
     // remove the spinner and de-focus the input field
     $(context).find('input.dssn').removeClass('is-processing').blur();
 
     // add information paragraph
-    if (textStatus == 'success') {
+    if (textStatus === 'success') {
         text     = 'Activity successfully sent';
         boxClass = 'success';
     } else {
@@ -41,9 +53,10 @@ function dssnSendActivityCallback (jqXHR, textStatus, context) {
 /*
  * send a new activity async to save
  */
-function dssnSendActivity (event) {
+function dssnSendActivity(event) {
+    var target, form, url, data;
     // do not send until user pressed enter
-    if (event.which == 13) {
+    if (event.which === 13) {
         target = $(event.target);
         form   = target.parents('form');
         url    = $(form).attr('action');
@@ -58,7 +71,7 @@ function dssnSendActivity (event) {
             url: url,
             data: data,
             complete: function (jqXHR, textStatus) {
-                dssnSendActivityCallback (jqXHR, textStatus, this);
+                dssnSendActivityCallback(jqXHR, textStatus, this);
             }
         });
 
@@ -69,9 +82,9 @@ function dssnSendActivity (event) {
 /*
  * assign events to DOM nodes
  */
-$(document).ready(function() {
+$(document).ready(function () {
     // all input elements in dssn activity forms
-    $('input.dssn')
-        .keypress(function(event) { dssnSendActivity(event); });
+    $('input.dssn').keypress(function (event) {
+        dssnSendActivity(event);
+    });
 });
-
