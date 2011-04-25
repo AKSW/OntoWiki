@@ -29,7 +29,7 @@ class NetworkfilterModule extends OntoWiki_Module
 
     function getContents()
     {
-        $content = $this->render('modules/networkfilter', false, 'networkfilter');
+        $content = $this->render('modules/networkfilter', false, 'data');
         return $content;
     }
 }

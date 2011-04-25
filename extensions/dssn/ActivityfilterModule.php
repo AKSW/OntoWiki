@@ -29,7 +29,7 @@ class ActivityfilterModule extends OntoWiki_Module
 
     function getContents()
     {
-        $content = $this->render('modules/activityfilter', false, 'activityfilter');
+        $content = $this->render('modules/activityfilter', false, 'data');
         return $content;
     }
 }

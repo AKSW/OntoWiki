@@ -29,7 +29,7 @@ class MakefriendsModule extends OntoWiki_Module
 
     function getContents()
     {
-        $content = $this->render('modules/makefriends', false, 'makefriends');
+        $content = $this->render('modules/makefriends', false, 'data');
         return $content;
     }
 }

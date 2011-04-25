@@ -23,17 +23,23 @@ class ShareitModule extends OntoWiki_Module
         // module can be turned off in extension config
         if ($this->_privateConfig->modules->shareit != true) {
             return false;
+        } else {
+            return true;
         }
-        return true;
     }
 
     function getContents()
     {
+        // prepare template data
+        $data    = new stdClass();
+        $formUrl = new OntoWiki_Url( array('controller' => 'dssn', 'action' => 'add'), array() );
+        $data->formUrl = (string) $formUrl;
+
         $content = array(
-            'Status' => $this->render('modules/shareit-status', false, 'shareit'),
-            'Foto'   => $this->render('modules/shareit-foto', false, 'shareit'),
-            'Link'   => $this->render('modules/shareit-link', false, 'shareit'),
-            'Video'  => $this->render('modules/shareit-video', false, 'shareit')
+            'Status' => $this->render('modules/shareit-status', $data, 'data'),
+            'Foto'   => $this->render('modules/shareit-foto',   $data, 'data'),
+            'Link'   => $this->render('modules/shareit-link',   $data, 'data'),
+            'Video'  => $this->render('modules/shareit-video',  $data, 'data')
         );
         return $content;
     }
