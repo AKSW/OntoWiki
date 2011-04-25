@@ -1,11 +1,3 @@
-//main dssn script
-
-$(document).ready(function() {
-    // all input elements in dssn activity forms
-    $('input.dssn')
-        .keypress(function(event) { dssnSendActivity(event); });
-});
-
 /*
  * Creates a menu which offers different Activity Actions
  * - Comment this activity
@@ -24,6 +16,26 @@ $(document).ready(function() {
 function dssnActivityOptions (event) {
     alert('create menu here');
     event.preventDefault();
+}
+
+/*
+ * A generic callback used by dssnSendActivity
+ * - adds an info paragraph to the form (context)
+ */
+function dssnSendActivityCallback (jqXHR, textStatus, context) {
+    // remove the spinner and de-focus the input field
+    $(context).find('input.dssn').removeClass('is-processing').blur();
+
+    // add information paragraph
+    if (textStatus == 'success') {
+        text     = 'Activity successfully sent';
+        boxClass = 'success';
+    } else {
+        text     = 'Activity NOT sent (' + textStatus + ')';
+        boxClass = 'error';
+    }
+    html = '<p class="messagebox ' + boxClass + '">' + text + '</p>';
+    $(context).append(html);
 }
 
 /*
@@ -55,22 +67,11 @@ function dssnSendActivity (event) {
 }
 
 /*
- * A generic callback used by dssnSendActivity
- * - adds an info paragraph to the form (context)
+ * assign events to DOM nodes
  */
-function dssnSendActivityCallback (jqXHR, textStatus, context) {
-    // remove the spinner and de-focus the input field
-    $(context).find('input.dssn').removeClass('is-processing').blur();
-
-    // add information paragraph
-    if (textStatus == 'success') {
-        text     = 'Activity successfully sent';
-        boxClass = 'success';
-    } else {
-        text     = 'Activity NOT sent (' + textStatus + ')';
-        boxClass = 'error';
-    }
-    html = '<p class="messagebox ' + boxClass + '">' + text + '</p>'
-    $(context).append(html);
-}
+$(document).ready(function() {
+    // all input elements in dssn activity forms
+    $('input.dssn')
+        .keypress(function(event) { dssnSendActivity(event); });
+});
 
