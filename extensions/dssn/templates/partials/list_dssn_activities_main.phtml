@@ -1,3 +1,6 @@
+<?php if(count($this->instanceInfo) == 0) { ?>
+<p class="messagebox info">no recent activities found</p>
+<?php } else { ?>
 <ol class="bullets-none separated">
 <?php
 $i=1; $odd = true;
@@ -42,3 +45,4 @@ foreach ($this->instanceInfo as $instanceUri => $instance){
     $i++;
 } ?>
 </ol>
+<?php } ?>

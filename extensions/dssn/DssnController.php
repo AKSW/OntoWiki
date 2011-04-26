@@ -157,7 +157,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addTripleFilter($triplePattern);
 
             // add FILTER (?published < now)
-            $list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) time(), null, 'literal');
+            $list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) time(), null, 'literal', 'int');
 
             // value query variables
             $list->addShownProperty($uris->published, 'published');
@@ -203,9 +203,14 @@ class DssnController extends OntoWiki_Controller_Component {
 
             // add the list to the session
             $helper->addListPermanently($name, $list, $this->view, $template, $config);
+            //echo htmlentities($list->getResourceQuery()).'<br/>';
+            //echo htmlentities($list->getQuery());
         } else {
             // catch the name list from the session
             $list = $helper->getList($name);
+            echo htmlentities($list->getResourceQuery()).'<br/>';
+            echo htmlentities($list->getQuery());
+            
             // re-add the list to the page
             $helper->addList($name, $list, $this->view, $template, $config);
         }
