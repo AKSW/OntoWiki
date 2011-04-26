@@ -128,35 +128,36 @@ class DssnController extends OntoWiki_Controller_Component {
 
             // build the triple pattern
             $triplePattern = array();
+            $resVar = $list->getResourceVar();
 
             // ?s atom:published ?published (bound)
             $publishedVar = new Erfurt_Sparql_Query2_Var('published');
             $publishedIri = new Erfurt_Sparql_Query2_IriRef($uris->published);
             $triplePattern[] = new Erfurt_Sparql_Query2_Triple(
-                $list->getResourceVar(), $publishedIri, $publishedVar);
+                $resVar, $publishedIri, $publishedVar);
 
             // ?s aair:activityVerb ?verb (bound)
             $verbVar = new Erfurt_Sparql_Query2_Var('verb');
             $verbIri = new Erfurt_Sparql_Query2_IriRef($uris->activityVerb);
             $triplePattern[] = new Erfurt_Sparql_Query2_Triple(
-                $list->getResourceVar(), $verbIri, $verbVar);
+                $resVar, $verbIri, $verbVar);
 
             // ?s aair:activityActor ?actor (bound)
             $actorVar = new Erfurt_Sparql_Query2_Var('actor');
             $actorIri = new Erfurt_Sparql_Query2_IriRef($uris->activityActor);
             $triplePattern[] = new Erfurt_Sparql_Query2_Triple(
-                $list->getResourceVar(), $actorIri, $actorVar);
+                $resVar, $actorIri, $actorVar);
 
             // ?s aair:activityObject ?object (bound)
             $objectVar = new Erfurt_Sparql_Query2_Var('object');
             $objectIri = new Erfurt_Sparql_Query2_IriRef($uris->activityObject);
             $triplePattern[] = new Erfurt_Sparql_Query2_Triple(
-                $list->getResourceVar(), $objectIri, $objectVar);
+                $resVar, $objectIri, $objectVar);
 
             $list->addTripleFilter($triplePattern);
 
-            // TODO Jonas: add FILTER (?published < "$now")
-            //$list->addFilter ($property, $isInverse, $propertyLabel, $filter, $value1 = null, $value2 = null, $valuetype = 'literal', $literaltype = null, $hidden = false, $id = null, $negate = false)
+            // add FILTER (?published < now)
+            $list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) time(), null, 'literal');
 
             // value query variables
             $list->addShownProperty($uris->published, 'published');
@@ -164,11 +165,38 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addShownProperty($uris->activityObject, 'object');
             $list->addShownProperty($uris->activityVerb, 'verb');
 
-            // TODO Jonas: additional optional!! projection vars:
-            // ?actor  aair:avatar ?avatar (optional)
-            // ?object a ?objectType (optional)
-            // ?object aair:content ?content (optional)
-            // ?object aair:thumbnail ?thumbnail (optional)
+            // add complex shown properties (indirect)
+            // ?actor  aair:avatar ?avatar
+            $prop1 = array();
+            $prop1[] = new Erfurt_Sparql_Query2_Triple($resVar, $actorIri, $actorVar); //this triple is a duplicate, but will be optimized out and may be cleaner that way
+            $avatarIri = new Erfurt_Sparql_Query2_IriRef($uris->avatar);
+            $avatarVar = new  Erfurt_Sparql_Query2_Var('avatar');
+            $prop1[] = new Erfurt_Sparql_Query2_Triple($actorVar, $avatarIri, $avatarVar);
+            $list->addShownPropertyCustom($prop1, $avatarVar);
+
+            // ?object a ?objectType
+            $prop2 = array();
+            $prop2[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
+            $typeIri = new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE);
+            $typeVar = new  Erfurt_Sparql_Query2_Var('objectType');
+            $prop2[] = new Erfurt_Sparql_Query2_Triple($objectVar, $typeIri, $typeVar);
+            $list->addShownPropertyCustom($prop2, $typeVar);
+
+            // ?object aair:content ?content
+            $prop3 = array();
+            $prop3[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
+            $contentIri = new Erfurt_Sparql_Query2_IriRef($uris->content);
+            $contentVar = new  Erfurt_Sparql_Query2_Var('content');
+            $prop3[] = new Erfurt_Sparql_Query2_Triple($objectVar, $contentIri, $contentVar);
+            $list->addShownPropertyCustom($prop3, $contentVar);
+
+            // ?object aair:thumbnail ?thumbnail
+            $prop4 = array();
+            $prop4[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
+            $thumbnailIri = new Erfurt_Sparql_Query2_IriRef($uris->thumbnail);
+            $thumbnailVar = new  Erfurt_Sparql_Query2_Var('thumbnail');
+            $prop4[] = new Erfurt_Sparql_Query2_Triple($objectVar, $thumbnailIri, $thumbnailVar);
+            $list->addShownPropertyCustom($prop4, $thumbnailVar);
 
             // add order by published timestamp
             $list->setOrderVar($publishedVar, false);
