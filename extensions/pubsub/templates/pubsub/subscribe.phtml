@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * OntoWiki sync config template
+ */
+
+?>
+
+<?php if (!isset($this->errorFlag) || $this->errorFlag === false): ?>
+<fieldset>
+    <div class="row-input">
+        <label for="modeluri"><?php echo $this->_('Topic URL') ?></label>
+        <input class="text" id="modeluri" type="text" name="topic" />
+        <br class="clearall" />
+    </div>
+</fieldset>
+
+<?php endif; ?>
+
