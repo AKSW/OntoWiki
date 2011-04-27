@@ -33,7 +33,7 @@ class PubsubPlugin extends OntoWiki_Plugin
 	    
 	    $hubs = $this->_privateConfig->hubUrls->toArray();
 	    $topics = array(
-	       $owApp->config->urlBase . "history/feed?m=".$mParam//?r=$rParam&m=$mParam"
+	       $owApp->config->urlBase . "history/feed?r=".$mParam//?r=$rParam&m=$mParam"
 	    );
 	    
 	    $publisher = new Zend_Feed_Pubsubhubbub_Publisher;
