@@ -23,7 +23,7 @@ class PubsubController extends OntoWiki_Controller_Component
     public function subscribeAction()
     {
         if (!empty($_GET['topic'])) {
-            $owApp->logger->debug('No topic! Nothig to subscribe..'); 
+            $this->_owApp->logger->debug('No topic! Nothig to subscribe..'); 
             return;
         }
     
@@ -40,20 +40,18 @@ class PubsubController extends OntoWiki_Controller_Component
         $subscriber->setCallbackUrl($callbackUrl);
         $subscriber->subscribeAll();
         
-        $owApp->logger->debug('Subscribed to pubsub '.$topicUrl.' ok..'); 
+        $this->_owApp->logger->debug('Subscribed to pubsub '.$topicUrl.' ok..'); 
     }
     
     public function callbackAction()
     {
-        $owApp = OntoWiki::getInstance();
-    
         $storage = new Zend_Feed_Pubsubhubbub_Model_Subscription;
         $callback = new Zend_Feed_Pubsubhubbub_Subscriber_Callback;
         $callback->setStorage($storage);
         $callback->handle();
         $callback->sendResponse();
         
-        $owApp->logger->debug('Handeling pubsub callback..'); 
+        $this->_owApp->logger->debug('Handeling pubsub callback..'); 
         
         /**
         * Check if the callback resulting in the receipt of a feed update.
@@ -64,7 +62,7 @@ class PubsubController extends OntoWiki_Controller_Component
         if ($callback->hasFeedUpdate()) {
             $feedString = $callback->getFeedUpdate();
             
-            $owApp->logger->debug('Got new feed from pubsub: '.$feedString);
+            $this->_owApp->logger->debug('Got new feed from pubsub: '.$feedString);
         }
     }
     

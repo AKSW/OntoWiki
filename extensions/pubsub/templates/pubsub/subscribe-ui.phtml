@@ -12,8 +12,9 @@
     $(document).ready(function(){
         $("#save_btn").click(function(){
             var url = urlBase + "pubsub/subscribe?topic="+encodeURIComponent( $("#modeluri").val() );
-            console.log(url);
-            //$.get(
+            $.get(url, function(data){
+                console.log(data);
+            });
         });
     });
 </script>
