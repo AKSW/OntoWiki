@@ -11,10 +11,10 @@ class PubsubPlugin extends OntoWiki_Plugin
 	
 	public function onAddMultipleStatements($event)
 	{
-	    $statements = $event->statements;
-	    foreach ($statements as $subject => $predicatesArray) {
+	    //$statements = $event->statements;
+	    //foreach ($statements as $subject => $predicatesArray) {
             $this->_notify($subject);
-	    }
+	    //}
 	}
 	
 	public function onDeleteMultipleStatements($event)
