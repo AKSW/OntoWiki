@@ -9,9 +9,10 @@
  */
 class DSSN_Activity extends DSSN_Resource
 {
-    private $actor  = null;
-    private $verb   = null;
-    private $object = null;
+    private $actor     = null;
+    private $verb      = null;
+    private $object    = null;
+    private $published = null;
 
 
     public function getSubResources()
@@ -46,9 +47,28 @@ EndOfTemplate;
         return $vars;
     }
 
-    public function toAtom()
+    /**
+     * Get published.
+     *
+     * @return published.
+     */
+    public function getPublished()
     {
-        // code...
+        /* set to current time if not set by now */
+        if ($this->published == null) {
+            $this->setPublished(date('c', time()));
+        }
+        return $this->published;
+    }
+
+    /**
+     * Set published.
+     *
+     * @param published the value to set (as ISO 8601 dateTime string).
+     */
+    public function setPublished($published)
+    {
+        $this->published = $published;
     }
 
     /**

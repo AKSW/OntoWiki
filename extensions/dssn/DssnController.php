@@ -52,12 +52,11 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.title')->set($translate->_('Setup / Configure your DSSN Client'));
         $this->addModuleContext('main.window.dssn.setup');
 
-        //var_dump( get_include_path()); return;
-        $ttt = $this->createStatusActivity();
-        xdebug_var_dump($ttt->toRDF());
+        $activity = DSSN_Activity_Factory::newExample();
+        var_dump($activity->toRDF());
 
-        $model  = $this->_owApp->selectedModel;
-        $store  = $this->_owApp->erfurt->getStore();
+        //$model  = $this->_owApp->selectedModel;
+        //$store  = $this->_owApp->erfurt->getStore();
         //$store->addMultipleStatements((string) $model, $activity->toRDF());
     }
 
@@ -92,20 +91,35 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
-
-        $store     = OntoWiki::getInstance()->erfurt->getStore();
-        $request   = $this->_request;
+        
         $response  = $this->getResponse();
-        $model     = $this->_owApp->selectedModel;
-        $translate = $this->_owApp->translate;
-        $output    = null;
+        $output    = false;
 
-        var_dump($request);
+        try {
+            $factory  = new DSSN_Activity_Factory($this->_owApp);
+            $activity = $factory->newFromShareItModule($this->_request);
+
+            $model  = $this->_owApp->selectedModel;
+            $store  = $this->_owApp->erfurt->getStore();
+            $store->addMultipleStatements((string) $model, $activity->toRDF());
+
+            $output   = array (
+                'message' => 'Activity saved',
+                'class'   => 'success'
+            );
+        } catch (Exception $e) {
+            // encode the exception for http response
+            $output = array (
+                'message' => $e->getMessage(),
+                'class'   => 'error'
+            );
+            $response->setRawHeader('HTTP/1.1 500 Internal Server Error'); 
+        }
 
         // send the response
         //$response->setHeader('Content-Type', 'application/json');
-        //$response->setBody(json_encode($output));
-        //$response->sendResponse();
+        $response->setBody(json_encode($output));
+        $response->sendResponse();
         exit;
     }
 
@@ -245,32 +259,6 @@ class DssnController extends OntoWiki_Controller_Component {
         }
         //var_dump((string) $list->getResourceQuery());
     }
-
-    /*
-     * delete me, I am a test method
-     */
-    private function createStatusActivity()
-    {
-        $activity = new DSSN_Activity;
-        $verb  = new DSSN_Activity_Verb_Post;
-        $activity->setVerb($verb);
-
-        $actor = new DSSN_Activity_Actor_User('http://sebastian.tramp.name');
-        $actor->setName('Sebastian Tramp');
-        $activity->setActor($actor);
-
-        $object = new DSSN_Activity_Object_Note;
-        $object->setContent('my feelings today ...');
-        $activity->setObject($object);
-
-        //$context = new DSSN_Activity_Context_Time;
-        //$context->setDate(time());
-        //$activity->addContext($context);
-
-        return $activity;
-
-    }
-
 
 }
 

@@ -27,14 +27,15 @@ function dssnSendActivityCallback (jqXHR, textStatus, context) {
     $(context).find('input.dssn').removeClass('is-processing').blur();
 
     // add information paragraph
+    message  = jQuery.parseJSON(jqXHR.responseText).message;
     if (textStatus == 'success') {
         text     = 'Activity successfully sent';
         boxClass = 'success';
     } else {
-        text     = 'Activity NOT sent (' + textStatus + ')';
+        text     = 'Activity NOT sent (' + jqXHR.statusText + ')';
         boxClass = 'error';
     }
-    html = '<p class="messagebox ' + boxClass + '">' + text + '</p>';
+    html = '<p title="' + message + '" class="messagebox ' + boxClass + '">' + text + '</p>';
     $(context).append(html);
 }
 
@@ -56,6 +57,7 @@ function dssnSendActivity (event) {
             type: 'POST',
             context: form,
             url: url,
+            datatype: 'json',
             data: data,
             complete: function (jqXHR, textStatus) {
                 dssnSendActivityCallback (jqXHR, textStatus, this);
