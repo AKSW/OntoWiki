@@ -9,5 +9,4 @@
  */
 class DSSN_Activity_Actor_User extends DSSN_Activity_Actor
 {
-
 }

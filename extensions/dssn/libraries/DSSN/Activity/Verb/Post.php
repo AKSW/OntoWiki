@@ -9,9 +9,5 @@
  */
 class DSSN_Activity_Verb_Post extends DSSN_Activity_Verb
 {
-    function __construct()
-    {
-        // code...
-    }
 }
 

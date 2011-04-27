@@ -7,36 +7,10 @@
  * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class DSSN_Activity_Actor
+class DSSN_Activity_Actor extends DSSN_Resource
 {
     private $name  = null;
-    private $url   = null;
     private $email = null;
-    
-    function __construct()
-    {
-        // code...
-    }
- 
-    /**
-     * Get url.
-     *
-     * @return url.
-     */
-    function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * Set url.
-     *
-     * @param url the value to set.
-     */
-    function setUrl($url)
-    {
-        $this->url = $url;
-    }
 
     /**
      * Get email.

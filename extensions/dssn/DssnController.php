@@ -11,7 +11,7 @@ class DssnController extends OntoWiki_Controller_Component {
 
     public function init() {
         parent::init();
-    
+
         // register DSSN classes
         $this->registerLibrary();
 
@@ -37,22 +37,10 @@ class DssnController extends OntoWiki_Controller_Component {
             'controller' => 'dssn',
             'action'     => 'setup',
             'name'       => 'Setup' ));
-        
+
         // add dssn specific styles and javascripts
         $this->view->headLink()->appendStylesheet($this->_componentUrlBase . 'css/dssn.css');
         $this->view->headScript()->appendFile($this->_componentUrlBase . 'js/dssn.js');
-    }
-
-    /*
-     * This adds a new path and namespace to the autoloader
-     */
-    public function registerLibrary()
-    {
-        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries';
-        set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
-        //  see http://framework.zend.com/manual/en/zend.loader.load.html
-        $autoloader = Zend_Loader_Autoloader::getInstance();
-        $autoloader->registerNamespace('DSSN_'); 
     }
 
     /*
@@ -66,7 +54,11 @@ class DssnController extends OntoWiki_Controller_Component {
 
         //var_dump( get_include_path()); return;
         $ttt = $this->createStatusActivity();
-        var_dump($ttt);
+        xdebug_var_dump($ttt->toRDF());
+
+        $model  = $this->_owApp->selectedModel;
+        $store  = $this->_owApp->erfurt->getStore();
+        //$store->addMultipleStatements((string) $model, $activity->toRDF());
     }
 
     /*
@@ -93,6 +85,31 @@ class DssnController extends OntoWiki_Controller_Component {
     }
 
     /*
+     * add activity by post
+     */
+    public function addactivityAction() {
+        // service controller needs no view renderer
+        $this->_helper->viewRenderer->setNoRender();
+        // disable layout for Ajax requests
+        $this->_helper->layout()->disableLayout();
+
+        $store     = OntoWiki::getInstance()->erfurt->getStore();
+        $request   = $this->_request;
+        $response  = $this->getResponse();
+        $model     = $this->_owApp->selectedModel;
+        $translate = $this->_owApp->translate;
+        $output    = null;
+
+        var_dump($request);
+
+        // send the response
+        //$response->setHeader('Content-Type', 'application/json');
+        //$response->setBody(json_encode($output));
+        //$response->sendResponse();
+        exit;
+    }
+
+    /*
      * list and add friends / contacts tab
      */
     public function networkAction() {
@@ -102,6 +119,18 @@ class DssnController extends OntoWiki_Controller_Component {
 
         $this->view->placeholder('main.window.title')->set($translate->_('Network'));
         $this->addModuleContext('main.window.dssn.network');
+    }
+
+    /*
+     * This adds a new path and namespace to the autoloader
+     */
+    private function registerLibrary()
+    {
+        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries';
+        set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
+        // see http://framework.zend.com/manual/en/zend.loader.load.html
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        $autoloader->registerNamespace('DSSN_');
     }
 
     /*
@@ -210,21 +239,23 @@ class DssnController extends OntoWiki_Controller_Component {
             $list = $helper->getList($name);
             echo htmlentities($list->getResourceQuery()).'<br/>';
             echo htmlentities($list->getQuery());
-            
+
             // re-add the list to the page
             $helper->addList($name, $list, $this->view, $template, $config);
         }
         //var_dump((string) $list->getResourceQuery());
     }
 
+    /*
+     * delete me, I am a test method
+     */
     private function createStatusActivity()
     {
         $activity = new DSSN_Activity;
         $verb  = new DSSN_Activity_Verb_Post;
         $activity->setVerb($verb);
 
-        $actor = new DSSN_Activity_Actor_User;
-        $actor->setUrl('http://sebastian.tramp.name');
+        $actor = new DSSN_Activity_Actor_User('http://sebastian.tramp.name');
         $actor->setName('Sebastian Tramp');
         $activity->setActor($actor);
 
@@ -238,7 +269,6 @@ class DssnController extends OntoWiki_Controller_Component {
 
         return $activity;
 
-        //$store->addMultipleStatements($activity->toRDF());
     }
 
 
