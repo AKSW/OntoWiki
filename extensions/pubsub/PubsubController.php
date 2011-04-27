@@ -44,7 +44,7 @@ class PubsubController extends OntoWiki_Controller_Component
     }
     
     private function _getCallbackUrl(){
-        return $this->_owApp->config->urlBase . "pubsub/callback";
+        return $this->_owApp->config->urlBase . "pubsub/callback/";
     }
     
     public function callbackAction()
@@ -67,6 +67,8 @@ class PubsubController extends OntoWiki_Controller_Component
             $feedString = $callback->getFeedUpdate();
             
             $this->_owApp->logger->debug('Got new feed from pubsub: '.$feedString);
+        }else{
+            $this->_owApp->logger->debug('No feed updates from pubsub');
         }
     }
     
