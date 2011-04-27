@@ -76,12 +76,12 @@ class HistoryController extends OntoWiki_Controller_Component
         $feed = new Zend_Feed_Writer_Feed();
         $feed->setTitle($feedTitle);
         $feed->setLink($linkUrl);
-        $feed->setFeedLink($feedUrl, 'rss');
+        $feed->setFeedLink($feedUrl, 'atom');
+        $feed->addHub("http://pubsubhubbub.appspot.com/");
         $feed->addAuthor(array(
             'name' => 'OntoWiki',
             'uri'  => $feedUrl
         ));
-        $feed->setDescription("Ontowiki resource feed");
         $feed->setDateModified(time());
         
         foreach ($historyArray as $historyItem) {
@@ -105,7 +105,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $this->_helper->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
         
-        $out = $feed->export('rss');
+        $out = $feed->export('atom');
         echo $out;
         return;
 
