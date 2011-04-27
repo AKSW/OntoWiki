@@ -40,7 +40,7 @@ class PubsubController extends OntoWiki_Controller_Component
         $subscriber->setCallbackUrl($callbackUrl);
         $subscriber->subscribeAll();
         
-        $this->_owApp->logger->debug('Subscribed to pubsub '.$topicUrl.' ok..'); 
+        $this->_owApp->logger->debug('Subscribed to pubsub '.$hubsUrl.' for '.$topicUrl.' with callback '.$callbackURL); 
     }
     
     private function _getCallbackUrl(){
