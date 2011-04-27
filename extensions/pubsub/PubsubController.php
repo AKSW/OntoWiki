@@ -1,37 +1,12 @@
 <?php
 class PubsubController extends OntoWiki_Controller_Component
 {
-    public function subscribeAction()
+    public function subscribeuiAction()
     {
-        $hubUrl      = 'http://example.org'; 
-        $topicUrl    = $_GET['topic'];
-        $callbackUrl = $this->_getCallbackUrl();
-        
-        $storage = new SubscriptionModel();
-        
-        $subscriber = new Zend_Feed_Pubsubhubbub_Subscriber;
-        $subscriber->setStorage($storage);
-        $subscriber->addHubUrl($hubUrl);
-        $subscriber->setTopicUrl($topicUrl);
-        $subscriber->setCallbackUrl($callbackUrl);
-        $subscriber->subscribeAll();
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        if (!empty($_GET)) {
-            return;
-        }
-        
         OntoWiki_Navigation::disableNavigation();
         
         $toolbar = $this->_owApp->toolbar;
-		$toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save'))
+		$toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save', 'id' => 'save_btn'))
 		        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
 		$this->view->placeholder('main.window.toolbar')->set($toolbar);
         
@@ -44,10 +19,53 @@ class PubsubController extends OntoWiki_Controller_Component
 		$this->view->formClass     = 'simple-input input-justify-left';
 		$this->view->formName      = 'subsribe';
     }
+
+    public function subscribeAction()
+    {
+        if (!empty($_GET['topic'])) {
+            $owApp->logger->debug('No topic! Nothig to subscribe..'); 
+            return;
+        }
+    
+        $hubsUrl     = $this->_privateConfig->hubUrls->toArray(); 
+        $topicUrl    = $_GET['topic'];
+        $callbackUrl = $this->_getCallbackUrl();
+        
+        $storage = new Zend_Feed_Pubsubhubbub_Model_Subscription;// new SubscriptionModel();
+        
+        $subscriber = new Zend_Feed_Pubsubhubbub_Subscriber;
+        $subscriber->setStorage($storage);
+        $subscriber->addHubUrl($hubsUrl[0]);
+        $subscriber->setTopicUrl($topicUrl);
+        $subscriber->setCallbackUrl($callbackUrl);
+        $subscriber->subscribeAll();
+        
+        $owApp->logger->debug('Subscribed to pubsub '.$topicUrl.' ok..'); 
+    }
     
     public function callbackAction()
     {
+        $owApp = OntoWiki::getInstance();
+    
+        $storage = new Zend_Feed_Pubsubhubbub_Model_Subscription;
+        $callback = new Zend_Feed_Pubsubhubbub_Subscriber_Callback;
+        $callback->setStorage($storage);
+        $callback->handle();
+        $callback->sendResponse();
         
+        $owApp->logger->debug('Handeling pubsub callback..'); 
+        
+        /**
+        * Check if the callback resulting in the receipt of a feed update.
+        * Otherwise it was either a (un)sub verification request or invalid request.
+        * Typically we need do nothing other than add feed update handling - the rest
+        * is handled internally by the class.
+        */
+        if ($callback->hasFeedUpdate()) {
+            $feedString = $callback->getFeedUpdate();
+            
+            $owApp->logger->debug('Got new feed from pubsub: '.$feedString);
+        }
     }
     
 }
