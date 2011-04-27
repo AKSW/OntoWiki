@@ -33,6 +33,7 @@ class PubsubPlugin extends OntoWiki_Plugin
 	    
 	    $hubs = $this->_privateConfig->hubUrls->toArray();
 	    $topics = array(
+	        // http://tim.ontowiki.net/history/feed?r=http%3A%2F%2Ftim.ontowiki.net%2Ffoaf&amp;mUriEncoded
 	       $owApp->config->urlBase . "history/feed?r=".$mParam//?r=$rParam&m=$mParam"
 	    );
 	    
