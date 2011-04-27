@@ -5,23 +5,23 @@ class PubsubPlugin extends OntoWiki_Plugin
 {
     public function onAddStatement($event)
 	{	
-		$s = $event->statement['subject'];
-		$this->_notify($s);
+	    $s = $event->statement['subject'];
+	    $this->_notify($s);
 	}
 	
 	public function onAddMultipleStatements($event)
 	{
-		$statements = $event->statements;
-		foreach ($statements as $subject => $predicatesArray) {
+	    $statements = $event->statements;
+	    foreach ($statements as $subject => $predicatesArray) {
             $this->_notify($subject);
-		}
+	    }
 	}
 	
 	public function onDeleteMultipleStatements($event)
 	{
-		foreach ($event->statements as $subject => $predicatesArray) {
+	    foreach ($event->statements as $subject => $predicatesArray) {
             $this->_notify($subject);
-		}
+	    }
 	}
 	
 	private function _notify($resourceUri)
@@ -33,7 +33,7 @@ class PubsubPlugin extends OntoWiki_Plugin
 	    
 	    $hubs = $this->_privateConfig->hubUrls->toArray();
 	    $topics = array(
-	       $owApp->config->urlBase . "history/feed?m=$mParam";//?r=$rParam&m=$mParam"
+	       $owApp->config->urlBase . "history/feed?m=".$mParam//?r=$rParam&m=$mParam"
 	    );
 	    
 	    $publisher = new Zend_Feed_Pubsubhubbub_Publisher();

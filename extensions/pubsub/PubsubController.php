@@ -22,7 +22,7 @@ class PubsubController extends OntoWiki_Controller_Component
 
     public function subscribeAction()
     {
-        if (!empty($_GET['topic'])) {
+        if (empty($_GET['topic'])) {
             $this->_owApp->logger->debug('No topic! Nothig to subscribe..'); 
             return;
         }
@@ -41,6 +41,10 @@ class PubsubController extends OntoWiki_Controller_Component
         $subscriber->subscribeAll();
         
         $this->_owApp->logger->debug('Subscribed to pubsub '.$topicUrl.' ok..'); 
+    }
+    
+    private function _getCallbackUrl(){
+        return $this->_owApp->config->urlBase . "pubsub/callback";
     }
     
     public function callbackAction()

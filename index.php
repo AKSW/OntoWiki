@@ -93,6 +93,39 @@ if (!function_exists('class_alias')) {
     }
 }
 
+// -------------------------------------------------------------
+// setup temporary pubsubhubub DB
+// set up an adapter
+require_once 'Zend/Db.php';
+require_once 'Zend/Db/Table.php';
+$params = array (
+    'host'     => '127.0.0.1',
+    'username' => 'ow',
+    'password' => 'ow',
+    'dbname'   => 'ow'
+);
+$db = Zend_Db::factory('PDO_MYSQL', $params);
+Zend_Db_Table::setDefaultAdapter($db);
+
+$query = "CREATE TABLE IF NOT EXISTS `subscription` (
+  `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `topic_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hub_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_time` datetime DEFAULT NULL,
+  `lease_seconds` bigint(20) DEFAULT NULL,
+  `verify_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `secret` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `expiration_time` datetime DEFAULT NULL,
+  `subscription_state` varchar(12) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+$db->query($query);
+
+// ------------------------------------------------------------
+
+
+
+
 /** Zend_Application */
 require_once 'Zend/Application.php';
 
@@ -116,3 +149,13 @@ $event->bootstrap = $application->getBootstrap();
 $event->trigger();
 
 $application->run();
+
+
+
+
+
+
+
+
+
+
