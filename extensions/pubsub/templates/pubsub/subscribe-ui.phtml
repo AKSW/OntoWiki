@@ -13,7 +13,7 @@
         $("#save_btn").click(function(){
             var url = urlBase + "pubsub/subscribe?topic="+encodeURIComponent( $("#modeluri").val() );
             $.get(url, function(data){
-                console.log(data);
+                alert(data);
             });
         });
     });

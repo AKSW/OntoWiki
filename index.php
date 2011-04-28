@@ -116,13 +116,3 @@ $event->bootstrap = $application->getBootstrap();
 $event->trigger();
 
 $application->run();
-
-
-
-
-
-
-
-
-
-

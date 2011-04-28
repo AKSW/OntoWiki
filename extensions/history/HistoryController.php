@@ -14,7 +14,7 @@
 class HistoryController extends OntoWiki_Controller_Component
 {
     public function feedAction()
-    {
+    {    
         $model       = $this->_owApp->selectedModel;
         $resource    = $this->_owApp->selectedResource;
         $limit       = 20;
@@ -77,7 +77,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $feed->setTitle($feedTitle);
         $feed->setLink($linkUrl);
         $feed->setFeedLink($feedUrl, 'atom');
-        $feed->addHub("http://pubsubhubbub.appspot.com/");
+        //$feed->addHub("http://pubsubhubbub.appspot.com/");
         $feed->addAuthor(array(
             'name' => 'OntoWiki',
             'uri'  => $feedUrl
