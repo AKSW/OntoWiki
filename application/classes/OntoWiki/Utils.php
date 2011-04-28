@@ -148,21 +148,21 @@ class OntoWiki_Utils
 			}
 		} else if (is_string($start_timestamp)) {
 			if ($end_timestamp) {
-				if ($t = strtotime($start_timestamt)) {
+				if ($t = strtotime($start_timestamp)) {
 						$difference_seconds = $end_timestamp - $t ;
 				} else {
-					throw new Exception('Error while converting time string.');
+					throw new Exception('unexpected format of timestamp.');
 				}
 			} else {
 				$end_timestamp = time();
 				if ($t = strtotime($start_timestamp)) {
 						$difference_seconds = $end_timestamp - $t;
 				} else {
-					throw new Exception('Error while converting time string.');
+					throw new Exception('unexpected format of timestamp.');
 				}
 			}
 		} else {
-			throw new Exception('Error while converting time string.');
+			throw new Exception('unexpected type of timestamp. expected string or int, got '. gettype($start_timestamp) .' instead');
 		}
 		
 		// show e.g. 'moments ago' if time is less than one minute

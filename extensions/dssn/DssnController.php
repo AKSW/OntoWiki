@@ -200,7 +200,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addTripleFilter($triplePattern);
 
             // add FILTER (?published < now)
-            $list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) date(DATE_ATOM), null, 'literal', 'dateTime');
+            //$list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) date(DATE_ATOM), null, 'literal', 'dateTime');
 
             // value query variables
             $list->addShownProperty($uris->published, 'published');
