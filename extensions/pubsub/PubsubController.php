@@ -26,21 +26,22 @@ class PubsubController extends OntoWiki_Controller_Component
             $this->_owApp->logger->debug('No topic! Nothig to subscribe..'); 
             return;
         }
+        
+        require_once "lib/subscriber.php";
     
-        $hubsUrl     = $this->_privateConfig->hubUrls->toArray(); 
-        $topicUrl    = $_GET['topic'];
-        $callbackUrl = $this->_getCallbackUrl();
+        $hub_url     = $this->_privateConfig->hubUrl; 
+        $topic_url   = $_GET['topic'];
+        $callback_url = $this->_getCallbackUrl();
         
-        $storage = new Zend_Feed_Pubsubhubbub_Model_Subscription;// new SubscriptionModel();
+        // create a new subscriber
+        $s = new Subscriber($hub_url, $callback_url);
+
+        // subscribe to a feed
+        //$s->unsubscribe($feed);
+        echo "Subscribed!\n";
+        print_r(  $s->subscribe($topic_url) );//*/
         
-        $subscriber = new Zend_Feed_Pubsubhubbub_Subscriber;
-        $subscriber->setStorage($storage);
-        $subscriber->addHubUrl($hubsUrl[0]);
-        $subscriber->setTopicUrl($topicUrl);
-        $subscriber->setCallbackUrl($callbackUrl);
-        $subscriber->subscribeAll();
-        
-        $this->_owApp->logger->debug('Subscribed to pubsub '.$hubsUrl[0].' for '.$topicUrl.' with callback '.$callbackUrl); 
+        $this->_owApp->logger->debug('Subscribed to pubsub '.$hub_url.' for '.$topic_url.' with callback '.$callback_url); 
     }
     
     private function _getCallbackUrl(){
@@ -49,26 +50,14 @@ class PubsubController extends OntoWiki_Controller_Component
     
     public function callbackAction()
     {
-        $storage = new Zend_Feed_Pubsubhubbub_Model_Subscription;
-        $callback = new Zend_Feed_Pubsubhubbub_Subscriber_Callback;
-        $callback->setStorage($storage);
-        $callback->handle();
-        $callback->sendResponse();
-        
         $this->_owApp->logger->debug('Handeling pubsub callback..'); 
-        
-        /**
-        * Check if the callback resulting in the receipt of a feed update.
-        * Otherwise it was either a (un)sub verification request or invalid request.
-        * Typically we need do nothing other than add feed update handling - the rest
-        * is handled internally by the class.
-        */
-        if ($callback->hasFeedUpdate()) {
-            $feedString = $callback->getFeedUpdate();
-            
-            $this->_owApp->logger->debug('Got new feed from pubsub: '.$feedString);
+    
+        header('HTTP/1.0 200 OK');
+        if( isset( $_REQUEST['hub_challenge'] ) ){
+            // answer check
+            echo $_REQUEST['hub_challenge'];
         }else{
-            $this->_owApp->logger->debug('No feed updates from pubsub');
+            $this->_owApp->logger->debug('Got new feed from pubsub: '.print_r($_REQUEST,true));
         }
     }
     
