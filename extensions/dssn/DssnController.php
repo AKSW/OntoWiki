@@ -203,13 +203,13 @@ class DssnController extends OntoWiki_Controller_Component {
 
             // add the list to the session
             $helper->addListPermanently($name, $list, $this->view, $template, $config);
-            echo htmlentities($list->getResourceQuery()).'<br/>';
-            echo htmlentities($list->getQuery());
+            //echo htmlentities($list->getResourceQuery()).'<br/>';
+            //echo htmlentities($list->getQuery());
         } else {
             // catch the name list from the session
             $list = $helper->getList($name);
-            echo htmlentities($list->getResourceQuery()).'<br/>';
-            echo htmlentities($list->getQuery());
+            //echo htmlentities($list->getResourceQuery()).'<br/>';
+            //echo htmlentities($list->getQuery());
             
             // re-add the list to the page
             $helper->addList($name, $list, $this->view, $template, $config);
