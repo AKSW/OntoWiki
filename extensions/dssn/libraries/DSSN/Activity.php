@@ -7,33 +7,76 @@
  * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class DSSN_Activity
+class DSSN_Activity extends DSSN_Resource
 {
-    private $actor  = null;
-    private $verb   = null;
-    private $object = null;
+    private $actor     = null;
+    private $verb      = null;
+    private $object    = null;
+    private $published = null;
 
-    function __construct()
+
+    public function getSubResources()
     {
-        // code...
+        return array(
+            $this->getActor(),
+            $this->getVerb(),
+            $this->getObject()
+        );
     }
 
-    public function toRDF()
+    public function getTurtleTemplate()
     {
-        // code...
+        $now = date('c', time());
+        $template  = <<<EndOfTemplate
+            ?activityIri a aair:Activity ;
+                atom:published "$now"^^xsd:dateTime ;
+                aair:activityVerb   ?verbIri ;
+                aair:activityActor  ?actorIri ;
+                aair:activityObject ?objectIri .
+EndOfTemplate;
+        return $template;
     }
 
-    public function toAtom()
+    public function getTurtleTemplateVars()
     {
-        // code...
+        $vars                = array();
+        $vars['activityIri'] = $this->getIri();
+        $vars['verbIri']     = $this->getVerb()->getIri();
+        $vars['actorIri']    = $this->getActor()->getIri();
+        $vars['objectIri']   = $this->getObject()->getIri();
+        return $vars;
     }
- 
+
+    /**
+     * Get published.
+     *
+     * @return published.
+     */
+    public function getPublished()
+    {
+        /* set to current time if not set by now */
+        if ($this->published == null) {
+            $this->setPublished(date('c', time()));
+        }
+        return $this->published;
+    }
+
+    /**
+     * Set published.
+     *
+     * @param published the value to set (as ISO 8601 dateTime string).
+     */
+    public function setPublished($published)
+    {
+        $this->published = $published;
+    }
+
     /**
      * Get actor.
      *
      * @return actor.
      */
-    function getActor()
+    public function getActor()
     {
         return $this->actor;
     }
@@ -43,7 +86,7 @@ class DSSN_Activity
      *
      * @param actor the value to set.
      */
-    function setActor(DSSN_Activity_Actor $actor)
+    public function setActor(DSSN_Activity_Actor $actor)
     {
         $this->actor = $actor;
     }
@@ -53,7 +96,7 @@ class DSSN_Activity
      *
      * @return verb.
      */
-    function getVerb()
+    public function getVerb()
     {
         return $this->verb;
     }
@@ -63,7 +106,7 @@ class DSSN_Activity
      *
      * @param verb the value to set.
      */
-    function setVerb(DSSN_Activity_Verb $verb)
+    public function setVerb(DSSN_Activity_Verb $verb)
     {
         $this->verb = $verb;
     }
@@ -73,7 +116,7 @@ class DSSN_Activity
      *
      * @return object.
      */
-    function getObject()
+    public function getObject()
     {
         return $this->object;
     }
@@ -83,8 +126,9 @@ class DSSN_Activity
      *
      * @param object the value to set.
      */
-    function setObject(DSSN_Activity_Object $object)
+    public function setObject(DSSN_Activity_Object $object)
     {
         $this->object = $object;
     }
+
 }

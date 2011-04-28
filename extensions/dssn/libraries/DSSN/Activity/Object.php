@@ -7,7 +7,7 @@
  * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class DSSN_Activity_Object
+class DSSN_Activity_Object extends DSSN_Resource
 {
     private $name        = null;
     private $description = null;

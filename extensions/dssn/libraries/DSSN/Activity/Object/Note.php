@@ -9,13 +9,28 @@
  */
 class DSSN_Activity_Object_Note extends DSSN_Activity_Object
 {
-    private $content = null;
+    /*
+     * the content of the note is the status message
+     */
+    private $content = '';
 
-    function __construct()
+    public function getTurtleTemplate()
     {
-        // code...
+        /* default template only a rdf:type statement */
+        $template  = <<<EndOfTemplate
+            ?resource rdf:type ?type;
+                aair:content ?content. 
+EndOfTemplate;
+        return $template;
     }
- 
+    public function getTurtleTemplateVars()
+    {
+        $vars             = array();
+        $vars['resource'] = $this->getIri();
+        $vars['type']     = $this->getType();
+        $vars['content']  = $this->getContent();
+        return $vars;
+    }
     /**
      * Get content.
      *

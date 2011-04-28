@@ -32,7 +32,7 @@ class ShareitModule extends OntoWiki_Module
     {
         // prepare template data
         $data    = new stdClass();
-        $formUrl = new OntoWiki_Url( array('controller' => 'dssn', 'action' => 'add'), array() );
+        $formUrl = new OntoWiki_Url( array('controller' => 'dssn', 'action' => 'addactivity'), array() );
         $data->formUrl = (string) $formUrl;
 
         $content = array(

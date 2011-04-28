@@ -64,9 +64,12 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.title')->set($translate->_('Setup / Configure your DSSN Client'));
         $this->addModuleContext('main.window.dssn.setup');
 
-        //var_dump( get_include_path()); return;
-        $ttt = $this->createStatusActivity();
-        var_dump($ttt);
+        $activity = DSSN_Activity_Factory::newExample();
+        var_dump($activity->toRDF());
+
+        //$model  = $this->_owApp->selectedModel;
+        //$store  = $this->_owApp->erfurt->getStore();
+        //$store->addMultipleStatements((string) $model, $activity->toRDF());
     }
 
     /*
@@ -90,6 +93,46 @@ class DssnController extends OntoWiki_Controller_Component {
 
         // inserts the activity stream list
         $this->createActivityList();
+    }
+
+    /*
+     * add activity by post
+     */
+    public function addactivityAction() {
+        // service controller needs no view renderer
+        $this->_helper->viewRenderer->setNoRender();
+        // disable layout for Ajax requests
+        $this->_helper->layout()->disableLayout();
+        
+        $response  = $this->getResponse();
+        $output    = false;
+
+        try {
+            $factory  = new DSSN_Activity_Factory($this->_owApp);
+            $activity = $factory->newFromShareItModule($this->_request);
+
+            $model  = $this->_owApp->selectedModel;
+            $store  = $this->_owApp->erfurt->getStore();
+            $store->addMultipleStatements((string) $model, $activity->toRDF());
+
+            $output   = array (
+                'message' => 'Activity saved',
+                'class'   => 'success'
+            );
+        } catch (Exception $e) {
+            // encode the exception for http response
+            $output = array (
+                'message' => $e->getMessage(),
+                'class'   => 'error'
+            );
+            $response->setRawHeader('HTTP/1.1 500 Internal Server Error'); 
+        }
+
+        // send the response
+        //$response->setHeader('Content-Type', 'application/json');
+        $response->setBody(json_encode($output));
+        $response->sendResponse();
+        exit;
     }
 
     /*
