@@ -11,9 +11,12 @@ class DssnController extends OntoWiki_Controller_Component {
 
     public function init() {
         parent::init();
-    
+
         // register DSSN classes
         $this->registerLibrary();
+
+        // check for model etc.
+        //$this->setupWiki();
 
         // create the navigation tabs
         OntoWiki_Navigation::reset();
@@ -37,22 +40,10 @@ class DssnController extends OntoWiki_Controller_Component {
             'controller' => 'dssn',
             'action'     => 'setup',
             'name'       => 'Setup' ));
-        
+
         // add dssn specific styles and javascripts
         $this->view->headLink()->appendStylesheet($this->_componentUrlBase . 'css/dssn.css');
         $this->view->headScript()->appendFile($this->_componentUrlBase . 'js/dssn.js');
-    }
-
-    /*
-     * This adds a new path and namespace to the autoloader
-     */
-    public function registerLibrary()
-    {
-        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries';
-        set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
-        //  see http://framework.zend.com/manual/en/zend.loader.load.html
-        $autoloader = Zend_Loader_Autoloader::getInstance();
-        $autoloader->registerNamespace('DSSN_'); 
     }
 
     /*
@@ -148,12 +139,38 @@ class DssnController extends OntoWiki_Controller_Component {
     }
 
     /*
+     * checks for user/model etc. (and creates them if needed)
+     */
+    private function setupWiki()
+    {
+        $ow    = $this->_owApp;
+        $store = $ow->erfurt->getStore();
+        $model = $ow->electedModel;
+        $webid = $ow->user->getUri();
+        if (!isset($model)) {
+            echo $webid;
+        }
+    }
+
+    /*
+     * This adds a new path and namespace to the autoloader
+     */
+    private function registerLibrary()
+    {
+        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries';
+        set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
+        // see http://framework.zend.com/manual/en/zend.loader.load.html
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        $autoloader->registerNamespace('DSSN_');
+        DSSN_Utils::setConstants();
+    }
+
+    /*
      * uses the listHelper to re-get / create the activity stream
      */
     private function createActivityList() {
         // tool setup
         $config = $this->_privateConfig;
-        $uris   = $config->uris;
         $store  = $this->_owApp->erfurt->getStore();
         $model  = $this->_owApp->selectedModel;
         $helper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
@@ -167,7 +184,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $list = new OntoWiki_Model_Instances($store, $model, array());
 
             // restrict to activities
-            $list->addTypeFilter($uris->Activity);
+            $list->addTypeFilter(DSSN_AAIR_Activity);
 
             // build the triple pattern
             $triplePattern = array();
@@ -175,44 +192,45 @@ class DssnController extends OntoWiki_Controller_Component {
 
             // ?s atom:published ?published (bound)
             $publishedVar = new Erfurt_Sparql_Query2_Var('published');
-            $publishedIri = new Erfurt_Sparql_Query2_IriRef($uris->published);
+            $publishedIri = new Erfurt_Sparql_Query2_IriRef(DSSN_ATOM_published);
             $triplePattern[] = new Erfurt_Sparql_Query2_Triple(
                 $resVar, $publishedIri, $publishedVar);
 
             // ?s aair:activityVerb ?verb (bound)
             $verbVar = new Erfurt_Sparql_Query2_Var('verb');
-            $verbIri = new Erfurt_Sparql_Query2_IriRef($uris->activityVerb);
+            $verbIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_activityVerb);
             $triplePattern[] = new Erfurt_Sparql_Query2_Triple(
                 $resVar, $verbIri, $verbVar);
 
             // ?s aair:activityActor ?actor (bound)
             $actorVar = new Erfurt_Sparql_Query2_Var('actor');
-            $actorIri = new Erfurt_Sparql_Query2_IriRef($uris->activityActor);
+            $actorIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_activityActor);
             $triplePattern[] = new Erfurt_Sparql_Query2_Triple(
                 $resVar, $actorIri, $actorVar);
 
             // ?s aair:activityObject ?object (bound)
             $objectVar = new Erfurt_Sparql_Query2_Var('object');
-            $objectIri = new Erfurt_Sparql_Query2_IriRef($uris->activityObject);
+            $objectIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_activityObject);
             $triplePattern[] = new Erfurt_Sparql_Query2_Triple(
                 $resVar, $objectIri, $objectVar);
 
             $list->addTripleFilter($triplePattern);
 
             // add FILTER (?published < now)
-            //$list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) date(DATE_ATOM), null, 'literal', 'dateTime');
+            //$list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) time(), null, 'literal', 'int');
 
             // value query variables
-            $list->addShownProperty($uris->published, 'published');
-            $list->addShownProperty($uris->activityActor, 'actor');
-            $list->addShownProperty($uris->activityObject, 'object');
-            $list->addShownProperty($uris->activityVerb, 'verb');
+            $list->addShownProperty(DSSN_ATOM_published, 'published');
+            $list->addShownProperty(DSSN_AAIR_activityActor, 'actor');
+            $list->addShownProperty(DSSN_AAIR_activityObject, 'object');
+            $list->addShownProperty(DSSN_AAIR_activityVerb, 'verb');
 
+            if (false) {
             // add complex shown properties (indirect)
             // ?actor  aair:avatar ?avatar
             $prop1 = array();
             $prop1[] = new Erfurt_Sparql_Query2_Triple($resVar, $actorIri, $actorVar); //this triple is a duplicate, but will be optimized out and may be cleaner that way
-            $avatarIri = new Erfurt_Sparql_Query2_IriRef($uris->avatar);
+            $avatarIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_avatar);
             $avatarVar = new  Erfurt_Sparql_Query2_Var('avatar');
             $prop1[] = new Erfurt_Sparql_Query2_Triple($actorVar, $avatarIri, $avatarVar);
             $list->addShownPropertyCustom($prop1, $avatarVar);
@@ -228,7 +246,7 @@ class DssnController extends OntoWiki_Controller_Component {
             // ?object aair:content ?content
             $prop3 = array();
             $prop3[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
-            $contentIri = new Erfurt_Sparql_Query2_IriRef($uris->content);
+            $contentIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_content);
             $contentVar = new  Erfurt_Sparql_Query2_Var('content');
             $prop3[] = new Erfurt_Sparql_Query2_Triple($objectVar, $contentIri, $contentVar);
             $list->addShownPropertyCustom($prop3, $contentVar);
@@ -236,10 +254,11 @@ class DssnController extends OntoWiki_Controller_Component {
             // ?object aair:thumbnail ?thumbnail
             $prop4 = array();
             $prop4[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
-            $thumbnailIri = new Erfurt_Sparql_Query2_IriRef($uris->thumbnail);
+            $thumbnailIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_thumbnail);
             $thumbnailVar = new  Erfurt_Sparql_Query2_Var('thumbnail');
             $prop4[] = new Erfurt_Sparql_Query2_Triple($objectVar, $thumbnailIri, $thumbnailVar);
             $list->addShownPropertyCustom($prop4, $thumbnailVar);
+            }
 
             // add order by published timestamp
             $list->setOrderVar($publishedVar, false);
@@ -253,37 +272,12 @@ class DssnController extends OntoWiki_Controller_Component {
             $list = $helper->getList($name);
             //echo htmlentities($list->getResourceQuery()).'<br/>';
             //echo htmlentities($list->getQuery());
-            
+
             // re-add the list to the page
             $helper->addList($name, $list, $this->view, $template, $config);
         }
         //var_dump((string) $list->getResourceQuery());
     }
-
-    private function createStatusActivity()
-    {
-        $activity = new DSSN_Activity;
-        $verb  = new DSSN_Activity_Verb_Post;
-        $activity->setVerb($verb);
-
-        $actor = new DSSN_Activity_Actor_User;
-        $actor->setUrl('http://sebastian.tramp.name');
-        $actor->setName('Sebastian Tramp');
-        $activity->setActor($actor);
-
-        $object = new DSSN_Activity_Object_Note;
-        $object->setContent('my feelings today ...');
-        $activity->setObject($object);
-
-        //$context = new DSSN_Activity_Context_Time;
-        //$context->setDate(time());
-        //$activity->addContext($context);
-
-        return $activity;
-
-        //$store->addMultipleStatements($activity->toRDF());
-    }
-
 
 }
 

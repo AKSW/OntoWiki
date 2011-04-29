@@ -1,15 +1,4 @@
 <?php
-
-/*
- * DSSN namespace constants
- */
-define('DSSN_AAIR_NS', 'http://xmlns.notu.be/aair#');
-define('DSSN_RDF_NS',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-define('DSSN_RDFS_NS', 'http://www.w3.org/2000/01/rdf-schema#');
-define('DSSN_FOAF_NS', 'http://xmlns.com/foaf/0.1/');
-define('DSSN_ATOM_NS', 'http://www.w3.org/2005/Atom/');
-define('DSSN_XSD_NS', 'http://www.w3.org/2001/XMLSchema#');
-
 /**
  * A DSSN Resource object
  *
@@ -22,19 +11,24 @@ abstract class DSSN_Resource
 {
     private $iri = null;
 
-    public $namespaces = array(
-        'aair' => DSSN_AAIR_NS,
-        'rdf'  => DSSN_RDF_NS,
-        'rdfs' => DSSN_RDFS_NS,
-        'foaf' => DSSN_FOAF_NS,
-        'atom' => DSSN_ATOM_NS,
-        'xsd'  => DSSN_XSD_NS,
-    );
-
+    public $namespaces = array();
+   
     public function __construct($iri = null) {
+        DSSN_Utils::setConstants();
+
         if ($iri != null) {
             $this->iri = (string) $iri;
         }
+
+        $this->namespaces = array(
+            'aair' => DSSN_AAIR_NS,
+            'rdf'  => DSSN_RDF_NS,
+            'rdfs' => DSSN_RDFS_NS,
+            'foaf' => DSSN_FOAF_NS,
+            'atom' => DSSN_ATOM_NS,
+            'xsd'  => DSSN_XSD_NS,
+        );
+
     }
 
     /*
@@ -43,7 +37,7 @@ abstract class DSSN_Resource
     public function getType()
     {
         switch (get_class($this)) {
-            case 'DSSN_Activity_Verb_Post':    return DSSN_AAIR_NS . 'Post';
+            case 'DSSN_Activity_Verb_Post':    return DSSN_AAIR_NS . 'Verb';
             case 'DSSN_Activity_Verb_Share':   return DSSN_AAIR_NS . 'Share';
             case 'DSSN_Activity_Object_Note':  return DSSN_AAIR_NS . 'Note';
             case 'DSSN_Activity_Actor_User':   return DSSN_AAIR_NS . 'User';

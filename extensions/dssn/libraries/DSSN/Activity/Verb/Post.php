@@ -9,5 +9,8 @@
  */
 class DSSN_Activity_Verb_Post extends DSSN_Activity_Verb
 {
+    public function __construct() {
+        $this->setIri(DSSN_AAIR_NS . 'Post');
+    }
 }
 
