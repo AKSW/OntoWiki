@@ -50,14 +50,19 @@ class PubsubController extends OntoWiki_Controller_Component
     
     public function callbackAction()
     {
+        $this->_helper->layout()->disableLayout();
+    
         $this->_owApp->logger->debug('Handeling pubsub callback..'); 
+        
+        $this->_owApp->logger->debug('Data from hub: '.print_r($_REQUEST,true));
     
         header('HTTP/1.0 200 OK');
         if( isset( $_REQUEST['hub_challenge'] ) ){
             // answer check
             echo $_REQUEST['hub_challenge'];
+            $this->_owApp->logger->debug('Got verify request from pubsub');
         }else{
-            $this->_owApp->logger->debug('Got new feed from pubsub: '.print_r($_REQUEST,true));
+            $this->_owApp->logger->debug('Got new feed from pubsub');
         }
     }
     

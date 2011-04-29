@@ -15,7 +15,7 @@ class Subscriber {
     protected $callback_url;
     protected $credentials;
     // accepted values are "async" and "sync"
-    protected $verify = "async"; 
+    protected $verify = "sync"; 
     protected $verify_token;
     protected $lease_seconds;
     
