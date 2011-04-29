@@ -11,24 +11,12 @@ abstract class DSSN_Resource
 {
     private $iri = null;
 
-    public $namespaces = array();
-   
     public function __construct($iri = null) {
         DSSN_Utils::setConstants();
 
         if ($iri != null) {
             $this->iri = (string) $iri;
         }
-
-        $this->namespaces = array(
-            'aair' => DSSN_AAIR_NS,
-            'rdf'  => DSSN_RDF_NS,
-            'rdfs' => DSSN_RDFS_NS,
-            'foaf' => DSSN_FOAF_NS,
-            'atom' => DSSN_ATOM_NS,
-            'xsd'  => DSSN_XSD_NS,
-        );
-
     }
 
     /*
@@ -120,7 +108,7 @@ EndOfTemplate;
     {
         // https://github.com/semsol/arc2/wiki/Turtle-Templates
         require_once('ARC2/ARC2.php');
-        $arc2obj = ARC2::getResource( array('ns' => $this->namespaces) ); /* any component will do */
+        $arc2obj = ARC2::getResource( array('ns' => DSSN_Utils::getNamespaces() ) ); /* any component will do */
 
         /* generate the index from the object template and the variables */
         $template = $this->getTurtleTemplate();

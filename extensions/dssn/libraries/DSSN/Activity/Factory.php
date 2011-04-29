@@ -37,7 +37,7 @@ class DSSN_Activity_Factory
         } else {
             switch ($type) {
                 case 'status':
-                    $activity = $this->newStatus($request);
+                    $activity = $this->newStatus((string) $request->getParam('share-status'));
                     //$activity = $this->newExample();
                     break;
                 default:
@@ -48,10 +48,12 @@ class DSSN_Activity_Factory
         return $activity;
     }
 
-    public function newStatus($request)
+    /*
+     * creates a new status note from the current ontowiki user
+     */
+    public function newStatus($content = null, $actorIri = null)
     {
-        $content = $request->getParam('share-status');
-        if ($content == '') {
+        if ($content == null) {
             throw new Exception('request error: no content given');
         } else {
             $activity = new DSSN_Activity;
@@ -61,15 +63,20 @@ class DSSN_Activity_Factory
             $object->setContent($content);
             $activity->setObject($object);
 
-            $actorIri = $this->ontowiki->user->getUri();
-            $actor = new DSSN_Activity_Actor_User($actorIri);
-            $activity->setActor($actor);
+            if ($actorIri == null) {
+                $actorIri = (string) $this->ontowiki->user->getUri();
+            }
+            $activity->setActor($actorIri);
             return $activity;
         }
     }
 
-    public function newExample()
+    /*
+     * creates a static example
+     */
+    static public function newExample()
     {
+        DSSN_Utils::setConstants();
         $activity = new DSSN_Activity;
         $verb  = new DSSN_Activity_Verb_Post;
         $activity->setVerb($verb);

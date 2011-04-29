@@ -51,4 +51,5 @@ class DSSN_Activity_Actor extends DSSN_Resource
     {
         $this->name = $name;
     }
+
 }

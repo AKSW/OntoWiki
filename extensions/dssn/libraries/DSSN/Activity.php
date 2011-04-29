@@ -84,11 +84,19 @@ EndOfTemplate;
     /**
      * Set actor.
      *
-     * @param actor the value to set.
+     * @note  if an IRI string is given a DSSN_Activity_Actor_User is created
+     * @param actor is a DSSN_Activity_Actor object or an IRI string
      */
-    public function setActor(DSSN_Activity_Actor $actor)
+    public function setActor ($actor = null)
     {
-        $this->actor = $actor;
+        if (is_string($actor)) {
+            $actor = new DSSN_Activity_Actor_User($actor);
+        }
+        if ($actor instanceof DSSN_Activity_Actor) {
+            $this->actor = $actor;
+        } else {
+            throw Exception ('setActor needs an DSSN_Activity_Actor or an IRI string as parameter');
+        }
     }
 
     /**

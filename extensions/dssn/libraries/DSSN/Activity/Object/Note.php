@@ -18,8 +18,9 @@ class DSSN_Activity_Object_Note extends DSSN_Activity_Object
     {
         /* default template only a rdf:type statement */
         $template  = <<<EndOfTemplate
-            ?resource rdf:type ?type;
-                aair:content ?content. 
+            ?resource rdf:type ?type ;
+                rdfs:label ?content ;
+                aair:content ?content .
 EndOfTemplate;
         return $template;
     }
