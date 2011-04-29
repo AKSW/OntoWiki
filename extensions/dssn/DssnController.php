@@ -11,7 +11,7 @@ class DssnController extends OntoWiki_Controller_Component {
 
     public function init() {
         parent::init();
-
+    
         // register DSSN classes
         $this->registerLibrary();
 
@@ -37,10 +37,22 @@ class DssnController extends OntoWiki_Controller_Component {
             'controller' => 'dssn',
             'action'     => 'setup',
             'name'       => 'Setup' ));
-
+        
         // add dssn specific styles and javascripts
         $this->view->headLink()->appendStylesheet($this->_componentUrlBase . 'css/dssn.css');
         $this->view->headScript()->appendFile($this->_componentUrlBase . 'js/dssn.js');
+    }
+
+    /*
+     * This adds a new path and namespace to the autoloader
+     */
+    public function registerLibrary()
+    {
+        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries';
+        set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
+        //  see http://framework.zend.com/manual/en/zend.loader.load.html
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        $autoloader->registerNamespace('DSSN_'); 
     }
 
     /*
@@ -136,18 +148,6 @@ class DssnController extends OntoWiki_Controller_Component {
     }
 
     /*
-     * This adds a new path and namespace to the autoloader
-     */
-    private function registerLibrary()
-    {
-        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries';
-        set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
-        // see http://framework.zend.com/manual/en/zend.loader.load.html
-        $autoloader = Zend_Loader_Autoloader::getInstance();
-        $autoloader->registerNamespace('DSSN_');
-    }
-
-    /*
      * uses the listHelper to re-get / create the activity stream
      */
     private function createActivityList() {
@@ -200,7 +200,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addTripleFilter($triplePattern);
 
             // add FILTER (?published < now)
-            $list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) time(), null, 'literal', 'int');
+            //$list->addFilter ($uris->published, false, "filterPublished", "smaller", (string) date(DATE_ATOM), null, 'literal', 'dateTime');
 
             // value query variables
             $list->addShownProperty($uris->published, 'published');
@@ -251,14 +251,39 @@ class DssnController extends OntoWiki_Controller_Component {
         } else {
             // catch the name list from the session
             $list = $helper->getList($name);
-            echo htmlentities($list->getResourceQuery()).'<br/>';
-            echo htmlentities($list->getQuery());
-
+            //echo htmlentities($list->getResourceQuery()).'<br/>';
+            //echo htmlentities($list->getQuery());
+            
             // re-add the list to the page
             $helper->addList($name, $list, $this->view, $template, $config);
         }
         //var_dump((string) $list->getResourceQuery());
     }
+
+    private function createStatusActivity()
+    {
+        $activity = new DSSN_Activity;
+        $verb  = new DSSN_Activity_Verb_Post;
+        $activity->setVerb($verb);
+
+        $actor = new DSSN_Activity_Actor_User;
+        $actor->setUrl('http://sebastian.tramp.name');
+        $actor->setName('Sebastian Tramp');
+        $activity->setActor($actor);
+
+        $object = new DSSN_Activity_Object_Note;
+        $object->setContent('my feelings today ...');
+        $activity->setObject($object);
+
+        //$context = new DSSN_Activity_Context_Time;
+        //$context->setDate(time());
+        //$activity->addContext($context);
+
+        return $activity;
+
+        //$store->addMultipleStatements($activity->toRDF());
+    }
+
 
 }
 
