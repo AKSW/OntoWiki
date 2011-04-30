@@ -11,7 +11,6 @@ class DSSN_Activity_Object extends DSSN_Resource
 {
     private $name        = null;
     private $description = null;
-    private $url         = null;
 
     function __construct()
     {
@@ -56,26 +55,6 @@ class DSSN_Activity_Object extends DSSN_Resource
     function setDescription($description)
     {
         $this->description = $description;
-    }
-
-    /**
-     * Get url.
-     *
-     * @return url.
-     */
-    function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * Set url.
-     *
-     * @param url the value to set.
-     */
-    function setUrl($url)
-    {
-        $this->url = $url;
     }
 
 }

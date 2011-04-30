@@ -20,6 +20,42 @@ abstract class DSSN_Resource
     }
 
     /*
+     * imports all literal values of an resource to the object
+     * note: iri must be set before this
+     */
+    public function importLiterals(DSSN_Model $model) {
+    }
+
+    /*
+     * return an DSSN object based on a RDF type
+     */
+    static public function initFromType($typeIri = null) {
+        DSSN_Utils::setConstants();
+        if ($typeIri == null) {
+            throw new Exception('need a IRI string as first parameter');
+        } else {
+            switch ($typeIri) {
+            case DSSN_AAIR_NS . 'User':
+                return new DSSN_Activity_Actor_User;
+                break;
+            case DSSN_AAIR_NS . 'Note':
+                return new DSSN_Activity_Object_Note;
+                break;
+            case DSSN_AAIR_NS . 'Post':
+                return new DSSN_Activity_Verb_Post;
+                break;
+            case DSSN_AAIR_NS . 'Share':
+                return new DSSN_Activity_Verb_Share;
+                break;
+            default:
+                throw new Exception("Unknown rdf:type $typeIri for factory");
+                break;
+            }
+        }
+    } 
+
+
+    /*
      * return the URI string of the RDF type of the resource
      */
     public function getType()

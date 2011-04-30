@@ -17,7 +17,7 @@ class DSSN_Activity_Actor extends DSSN_Resource
      *
      * @return email.
      */
-    function getEmail()
+    public function getEmail()
     {
         return $this->email;
     }
@@ -27,7 +27,7 @@ class DSSN_Activity_Actor extends DSSN_Resource
      *
      * @param email the value to set.
      */
-    function setEmail($email)
+    public function setEmail($email)
     {
         $this->email = $email;
     }
@@ -37,7 +37,7 @@ class DSSN_Activity_Actor extends DSSN_Resource
      *
      * @return name.
      */
-    function getName()
+    public function getName()
     {
         return $this->name;
     }
@@ -47,7 +47,7 @@ class DSSN_Activity_Actor extends DSSN_Resource
      *
      * @param name the value to set.
      */
-    function setName($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
