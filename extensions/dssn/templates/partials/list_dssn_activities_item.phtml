@@ -1,17 +1,26 @@
-<?php $item = $this->activity ?>
+<?php
+$activity = $this->activity;
+$actor    = $activity->getActor();
+$verb     = $activity->getVerb();
+$object   = $activity->getObject();
+?>
 <li class="has-contextmenu-area dssn-activity <?php if ($this->odd) {echo "odd";} else {echo "even";} ?>">
     <span class="subject">
-        <a href="<?php echo $item['actorUri'] ?>">
-            <img class="avatar" src="<?php echo $item['actorAvatar'] ?>" />
-            <?php echo $item['actorLabel'] ?>
+        <img class="avatar" src="<?php echo $actor->getAvatar(); ?>" />
+        <a href="<?php echo $actor->getIri() ?>">
+            <?php echo $actor->getName() ?>
         </a>
     </span>
     <span class="verb">
-        <?php echo $item['verbLabel'] ?> 
-        <a href="<?php echo $item['objectUri'] ?>"><?php echo $item['objectTypeLabel'] ?></a>
+        <?php echo $verb->getLabel() ?> the following
+        <a href="<?php echo $object->getIri() ?>"><?php echo $object->getTypeLabel() ?></a>
     </span>
-    <span title="<?php echo $item['published'] ?>" class="published"><?php echo $item['publishedLabel'] ?></span>:
+    <span title="<?php echo $activity->getPublished() ?>" class="published"><?php echo $activity->getPublishedLabel() ?></span>:
     <span class="object">
+<?php if ($object instanceof DSSN_Activity_Object_Note) : ?>
+        <span class="content"><?php echo $object->getContent() ?></span>
+<?php else : ?>
+    <?php /*
         <a href="<?php echo $item['objectUri'] ?>"><?php echo $item['objectUri'] ?></a>
         <?php if(isset($item['objectThumbnail'])) :?>
         <a href="<?php echo $item['objectUri'] ?>">
@@ -21,6 +30,8 @@
         <?php if(isset($item['objectContent'])) :?>
         <span class="content"><?php echo $item['objectContent'] ?></span>
         <?php endif; ?>
+*/ ?>
+<?php endif ?>
     </span>
 <div class="contextmenu">
     <a class="item rdfauthor-edit-property" onclick="dssnActivityOptions(event);">

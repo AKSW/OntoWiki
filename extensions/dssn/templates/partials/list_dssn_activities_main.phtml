@@ -5,39 +5,14 @@
 <?php
 $i=1; $odd = true;
 foreach ($this->instanceInfo as $instanceUri => $instance){
-
-    $activityData = $this->instanceData[$instanceUri];
-    //var_dump($activityData);
-    $activity = array( // mandatory attributes
-        'actorUri'           => $activityData['actor'][0]['uri'],
-        'actorLabel'         => $activityData['actor'][0]['value'],
-        'published'          => $activityData['published'][0]['value'],
-        'publishedLabel'     => OntoWiki_Utils::dateDifference($activityData['published'][0]['value'], null, 3),
-        'verbLabel'          => $activityData['verb'][0]['value'],
-        'verbUri'            => $activityData['verb'][0]['uri'],
-        'objectUri'          => $activityData['object'][0]['uri'],
-        'objectLabel'        => $activityData['object'][0]['value']
-    );
-    
-    // TODO: fill in optional data here
-
-    // assign default values for some optionals
-    $defaults = $this->other->defaults;
-    if (!isset($activity['actorAvatar'])) {
-        $activity['actorAvatar'] = $defaults->actorAvatar;
-    }
-    if (!isset($activity['objectTypeLabel'])) {
-        $activity['objectTypeLabel'] = $defaults->objectTypeLabel;
-    }
-    if (!isset($activity['objectThumbnail'])) {
-        $activity['objectThumbnail'] = 'http://cligs.websnapr.com/?size=t&url=' . $activity['objectUri']; 
-    }
-
+    $factory = new DSSN_Activity_Factory(OntoWiki::getInstance());
+    $activity = $factory->getFromStore($instanceUri);
     // should we use different templates for different activity types here?
     echo $this->partial('partials/list_dssn_activities_item.phtml',
         array(
             'odd'          => $odd,
             'i'            => $i,
+            'instanceInfo' => $this->instanceInfo,
             'activity'     => $activity
         )
     );
@@ -46,3 +21,4 @@ foreach ($this->instanceInfo as $instanceUri => $instance){
 } ?>
 </ol>
 <?php } ?>
+

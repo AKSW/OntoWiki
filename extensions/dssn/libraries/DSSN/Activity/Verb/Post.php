@@ -12,5 +12,14 @@ class DSSN_Activity_Verb_Post extends DSSN_Activity_Verb
     public function __construct() {
         $this->setIri(DSSN_AAIR_NS . 'Post');
     }
+    
+    /**
+     * Get label.
+     * a label in past form (user LABEL the following)
+     */
+    function getLabel()
+    {
+        return 'posted';
+    }
 }
 

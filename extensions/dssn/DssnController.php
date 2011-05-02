@@ -180,7 +180,8 @@ class DssnController extends OntoWiki_Controller_Component {
         $name     = "dssn-activities";
         $template = "list_dssn_activities_main";
 
-        if(!$helper->listExists($name)) {
+        //if(!$helper->listExists($name)) {
+        if(true) {
             // create a new list from scratch if we do not have one
             $list = new OntoWiki_Model_Instances($store, $model, array());
 
@@ -264,7 +265,6 @@ class DssnController extends OntoWiki_Controller_Component {
 
             // add order by published timestamp
             $list->setOrderVar($publishedVar, true);
-
             // add the list to the session
             $helper->addListPermanently($name, $list, $this->view, $template, $config);
         } else {
@@ -273,8 +273,8 @@ class DssnController extends OntoWiki_Controller_Component {
             // re-add the list to the page
             $helper->addList($name, $list, $this->view, $template, $config);
         }
-        var_dump((string) $list->getResourceQuery());
-        var_dump((string) $list->getQuery());
+        //var_dump((string) $list->getResourceQuery());
+        //var_dump((string) $list->getQuery());
     }
 
 }

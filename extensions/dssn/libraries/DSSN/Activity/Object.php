@@ -12,11 +12,16 @@ class DSSN_Activity_Object extends DSSN_Resource
     private $name        = null;
     private $description = null;
 
-    function __construct()
-    {
-        // code...
+    public function getDirectImports() {
+        $myImports = array (
+            DSSN_AAIR_name   => 'setName',
+            DSSN_RDFS_label  => 'setName'
+        );
+        //return $myImports;
+        $parentImports = parent::getDirectImports();
+        return array_merge($myImports, $parentImports);
     }
- 
+
     /**
      * Get name.
      *
@@ -57,4 +62,13 @@ class DSSN_Activity_Object extends DSSN_Resource
         $this->description = $description;
     }
 
+    /**
+     * Get typeLabel.
+     *
+     * @return typeLabel.
+     */
+    function getTypeLabel()
+    {
+        return 'object';
+    }
 }

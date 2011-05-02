@@ -14,16 +14,13 @@ class DSSN_Activity_Object_Note extends DSSN_Activity_Object
      */
     private $content = '';
 
-    public function importLiterals(DSSN_Model $model) {
-        $iri = $this->getIri();
-        if ($model->countSP( $iri, DSSN_AAIR_content) != 1) {
-            throw new Exception('need exactly ONE aair:content statement');
-        } else {
-            $content = $model->getValue($iri, DSSN_AAIR_content);
-            $this->setContent($content);
-        }
+    public function getDirectImports() {
+        $myImports = array (
+            DSSN_AAIR_content   => 'setContent',
+        );
+        $parentImports = parent::getDirectImports();
+        return array_merge($myImports, $parentImports);
     }
-    
     public function getTurtleTemplate()
     {
         /* default template only a rdf:type statement */
@@ -61,4 +58,10 @@ EndOfTemplate;
     {
         $this->content = $content;
     }
+
+    function getTypeLabel()
+    {
+        return 'status / note';
+    }
+
 }

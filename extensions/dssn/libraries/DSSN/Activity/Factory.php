@@ -26,7 +26,6 @@ class DSSN_Activity_Factory
         //$translate = $this->ontowiki->translate;
     }
 
-
     /*
      * fetch a resource from the store
      */
@@ -94,7 +93,7 @@ EndOfTemplate;
                     $model->getValue($actorIri, DSSN_RDF_type)
                 );
                 $actor->setIri($actorIri);
-                $actor->importLiterals($model);
+                $actor->fetchDirectImports($model);
                 $return->setActor($actor);
             } else {
                 throw new Exception('need at least one rdf:type statement');
@@ -111,7 +110,7 @@ EndOfTemplate;
                     $model->getValue($objectIri, DSSN_RDF_type)
                 );
                 $object->setIri($objectIri);
-                $object->importLiterals($model);
+                $object->fetchDirectImports($model);
                 $return->setObject($object);
             } else {
                 throw new Exception('need at least one rdf:type statement');
@@ -125,7 +124,7 @@ EndOfTemplate;
             $verbIri   = $model->getValue($iri, DSSN_AAIR_activityVerb);
             $verb = DSSN_Resource::initFromType($verbIri);
             $verb->setIri($verbIri);
-            $verb->importLiterals($model);
+            $verb->fetchDirectImports($model);
             $return->setVerb($verb);
         }
         
@@ -143,7 +142,11 @@ EndOfTemplate;
         } else {
             switch ($type) {
                 case 'status':
-                    $activity = $this->newStatus((string) $request->getParam('share-status'));
+                    $activity = $this->newStatus(
+                        (string) $request->getParam('share-status'),
+                        (string) $this->ontowiki->user->getUri(),
+                        (string) $this->ontowiki->user->getUsername()
+                    );
                     //$activity = $this->newExample();
                     break;
                 default:
@@ -157,7 +160,7 @@ EndOfTemplate;
     /*
      * creates a new status note from the current ontowiki user
      */
-    public function newStatus($content = null, $actorIri = null)
+    public function newStatus($content = null, $actorIri = null, $actorName = null)
     {
         if ($content == null) {
             throw new Exception('request error: no content given');
@@ -169,10 +172,16 @@ EndOfTemplate;
             $object->setContent($content);
             $activity->setObject($object);
 
+            $actor = new DSSN_Activity_Actor_User;
             if ($actorIri == null) {
                 $actorIri = (string) $this->ontowiki->user->getUri();
             }
-            $activity->setActor($actorIri);
+            if ($actorName == null) {
+                $actorName = (string) $this->ontowiki->user->getGetUsername();
+            }
+            $actor->setIri($actorIri);
+            $actor->setName($actorName);
+            $activity->setActor($actor);
             return $activity;
         }
     }

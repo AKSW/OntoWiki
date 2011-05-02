@@ -70,6 +70,16 @@ EndOfTemplate;
         }
         return $this->published;
     }
+    
+    /**
+     * Get published label as nice diff string.
+     *
+     * @return string
+     */
+    public function getPublishedLabel()
+    {
+        return OntoWiki_Utils::dateDifference($this->getPublished(), null, 3);
+    }
 
     /**
      * Set published.
