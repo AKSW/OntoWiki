@@ -112,6 +112,11 @@ class HistoryController extends OntoWiki_Controller_Component
 		$this->getResponse()->setHeader("Content-Type", "application/atom+xml");
         
         $out = $feed->export('atom');
+		
+		$pattern = '/updated>\n(.+?)link rel="alternate"/';
+		$replace = "updated>\n$1link";
+		$out = preg_replace($pattern, $replace, $out);
+		
         echo $out;
 		
 		
