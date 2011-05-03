@@ -109,6 +109,7 @@ class HistoryController extends OntoWiki_Controller_Component
         
         $this->_helper->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
+		$this->getResponse()->setHeader("Content-Type", "application/atom+xml");
         
         $out = $feed->export('atom');
         echo $out;
