@@ -100,35 +100,7 @@ class HistoryController extends OntoWiki_Controller_Component
 			
 			$content = "";
 			$result = $this->getActionTriple($historyItem['id']);
-			$content .= "<added>";
-			foreach ($result['added'] as $arr){
-				$content .= "<triple>";
-				$content .= current($arr);
-				$content .= next($arr);
-				$content .= next($arr);
-				$content .= "</triple>"; 
-			}
-			$content .= "</added>";
-			
-			$content .= "<deleted>";
-			foreach ($result['deleted'] as $arr){
-				$content .= "<triple>";
-				$content .= current($arr);
-				$content .= next($arr);
-				$content .= next($arr);
-				$content .= "</triple>"; 
-			}
-			$content .= "</deleted>";
-			
-			$content .= "<other>";
-			foreach ($result['other'] as $arr){
-				$content .= "<triple>";
-				$content .= current($arr);
-				$content .= next($arr);
-				$content .= next($arr);
-				$content .= "</triple>"; 
-			}
-			$content .= "</other>";		
+			$content .= json_encode($result);	
 				
             $entry->setContent( htmlentities($content) );
             
