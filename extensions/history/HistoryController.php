@@ -89,7 +89,7 @@ class HistoryController extends OntoWiki_Controller_Component
             
             $entry = $feed->createEntry();
             $entry->setTitle($title);
-            $entry->setLink($this->_config->urlBase . 'view?r='.$rUriEncoded);
+            $entry->setLink($this->_config->urlBase . 'view?r='.$rUriEncoded."&id=".$historyItem['id']);
             $entry->addAuthor(array(
                 'name' => $userArray[$historyItem['useruri']],
                 'uri'  => $historyItem['useruri']
@@ -97,7 +97,40 @@ class HistoryController extends OntoWiki_Controller_Component
             $entry->setDateModified($historyItem['tstamp']);
             $entry->setDateCreated($historyItem['tstamp']);
             $entry->setDescription($title);
-            $entry->setContent($title);
+			
+			$content = "";
+			$result = $this->getActionTriple($historyItem['id']);
+			$content .= "<added>";
+			foreach ($result['added'] as $arr){
+				$content .= "<triple>";
+				$content .= current($arr);
+				$content .= next($arr);
+				$content .= next($arr);
+				$content .= "</triple>"; 
+			}
+			$content .= "</added>";
+			
+			$content .= "<deleted>";
+			foreach ($result['deleted'] as $arr){
+				$content .= "<triple>";
+				$content .= current($arr);
+				$content .= next($arr);
+				$content .= next($arr);
+				$content .= "</triple>"; 
+			}
+			$content .= "</deleted>";
+			
+			$content .= "<other>";
+			foreach ($result['other'] as $arr){
+				$content .= "<triple>";
+				$content .= current($arr);
+				$content .= next($arr);
+				$content .= next($arr);
+				$content .= "</triple>"; 
+			}
+			$content .= "</other>";		
+				
+            $entry->setContent( htmlentities($content) );
             
             $feed->addEntry($entry);
         }
@@ -107,7 +140,12 @@ class HistoryController extends OntoWiki_Controller_Component
         
         $out = $feed->export('atom');
         echo $out;
+		
+		
         return;
+		// Do we need this stuff below?
+		// ----------------------------
+
 
         $this->view->userArray = $userArray;
         $this->view->idArray = $idArray;
@@ -427,7 +465,31 @@ class HistoryController extends OntoWiki_Controller_Component
         $this->_helper->layout()->disableLayout();
         $this->view->isEmpty = true;
 
-        // enabling versioning
+        $results = $this->getActionTriple($actionID);
+		if( $results != null ) $this->view->isEmpty = false;
+
+        $this->view->translate      = $this->_owApp->translate;
+        $this->view->actionID       = $actionID;
+        $this->view->stAddArray     = $results['added'];
+        $this->view->stDelArray     = $results['deleted'];
+        $this->view->stOtherArray   = $results['other'];
+
+    }
+	
+	private function toFlatArray($serializedString) {
+        $walkArray = unserialize($serializedString);
+        foreach ($walkArray as $subject => $a)  {
+            foreach ($a as $predicate => $b) {
+                foreach ($b as $object) {
+                    return array($subject, $predicate, $object['value']);
+                }
+            }
+        }
+    }
+
+
+	private function getActionTriple($actionID){
+		// enabling versioning
         $versioning = $this->_erfurt->getVersioning();
 
         $detailsArray = $versioning->getDetailsForAction($actionID);
@@ -436,36 +498,25 @@ class HistoryController extends OntoWiki_Controller_Component
         $stDelArray     = array();
         $stOtherArray   = array();
 
-        function toFlatArray($serializedString) {
-            $walkArray = unserialize($serializedString);
-            foreach ($walkArray as $subject => $a)  {
-                foreach ($a as $predicate => $b) {
-                    foreach ($b as $object) {
-                        return array($subject, $predicate, $object['value']);
-                    }
-                }
-            }
-        }
-
+        
         foreach ($detailsArray as $entry) {
-            $this->view->isEmpty = false;
             $type = (int) $entry['action_type'];
             if ( $type        === Erfurt_Versioning::STATEMENT_ADDED ) {
-                $stAddArray[]   = toFlatArray($entry['statement_hash']);
+                $stAddArray[]   = $this->toFlatArray($entry['statement_hash']);
             } elseif ( $type  === Erfurt_Versioning::STATEMENT_REMOVED ) {
-                $stDelArray[]   = toFlatArray($entry['statement_hash']);
+                $stDelArray[]   = $this->toFlatArray($entry['statement_hash']);
             } else {
-                $stOtherArray[] = toFlatArray($entry['statement_hash']);
+                $stOtherArray[] = $this->toFlatArray($entry['statement_hash']);
             }
         }
-
-        $this->view->translate      = $this->_owApp->translate;
-        $this->view->actionID       = $actionID;
-        $this->view->stAddArray     = $stAddArray;
-        $this->view->stDelArray     = $stDelArray;
-        $this->view->stOtherArray   = $stOtherArray;
-
-    }
+		
+		return array(
+			'id' => $actionID,
+			'added' => $stAddArray,
+			'deleted' => $stDelArray,
+			'other' => $stOtherArray
+		);
+	}
 
     /**
      * Shortcut for adding messages
