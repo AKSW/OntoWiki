@@ -1552,11 +1552,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         }
         foreach($this->_shownProperties as $prop){
             if($prop['uri'] == $uri){
-               $this->_valueQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+               $this->_resourceQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
             }
         }
 
-        $this->_valueQuery->getOrder()->setExpression($order);
+        $this->_resourceQuery->getOrder()->setExpression($order);
 
     }
 
@@ -1565,11 +1565,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $asc = true;
         }
         if($var instanceof Erfurt_Sparql_Query2_Var){
-            $this->_valueQuery->getOrder()->setExpression(array('exp'=>$var,'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+            $this->_resourceQuery->getOrder()->setExpression(array('exp'=>$var,'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
         } else if(is_string($var)){
             foreach($this->_shownProperties as $prop){
             if($prop['varName'] == $var){
-                    $this->_valueQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+                    $this->_resourceQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
                 }
             }
         }
