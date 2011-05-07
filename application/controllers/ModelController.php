@@ -642,7 +642,7 @@ class ModelController extends OntoWiki_Controller_Base
         
         // create graph
         if ($createGraph) {
-            $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $postData['type']);
+            $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, (isset($postData['type']) ? $postData['type'] : Erfurt_Store::MODEL_TYPE_OWL));
         }
         
         // import statements
@@ -653,6 +653,7 @@ class ModelController extends OntoWiki_Controller_Base
                 // graph had been created: delete it
                 $this->_erfurt->getStore()->deleteModel($newModelUri);
             }
+            echo "exception".$e;
             // re-throw
             throw new OntoWiki_Controller_Exception("Graph '<$postData[modelUri]>' could not be imported: " . $e->getMessage());
         }
