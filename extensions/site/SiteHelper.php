@@ -277,15 +277,19 @@ class SiteHelper extends OntoWiki_Component_Helper
                 $subQuery = '
                     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                     PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
-                    SELECT ?subConcept ?altLabel
+                    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                    SELECT ?subConcept ?altLabel ?page
                     FROM <' . (string)$model . '>
                     WHERE {
                         ?subConcept skos:broader <' . $topConcept->uri . '>
                         OPTIONAL {
-                            ?subConcept sysont:order ?order
+                            ?subConcept sysont:order ?order .
                         }
                         OPTIONAL {
-                            ?subConcept skos:altLabel ?altLabel
+                            ?subConcept skos:altLabel ?altLabel .
+                        }
+                        OPTIONAL {
+                          ?subConcept foaf:page ?page .
                         }
                     }
                     ORDER BY ASC(?order)
@@ -299,6 +303,10 @@ class SiteHelper extends OntoWiki_Component_Helper
 
                         if ($subConceptRow['altLabel'] != null) {
                             $subConcept->altLabel = $subConceptRow['altLabel'];
+                        }
+
+                        if ($subConceptRow['page'] != null) {
+                            $subConcept->page = $subConceptRow['page'];
                         }
                         
                         $titleHelper->addResource($subConcept->uri);                        

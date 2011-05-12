@@ -72,7 +72,10 @@
             <ul class="depth_<?php echo $depth; ?>">
                 <?php foreach ($navi as $navitem) :?>
                 <li>
-                    <a href="<?php echo $view->url($navitem->uri) ?>">
+                    <?php
+                    $url = isset($navitem->page) ? $navitem->page : $view->url($navitem->uri);
+                    ?>
+                    <a href="<?php echo $url; ?>">
                         <?php
                             /* for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";}*/
                             if (isset($navitem->altLabel)) {
