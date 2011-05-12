@@ -7,7 +7,8 @@
     }
     
     $content = trim($this->module('feeds', $moduleOptions));
-    $content = str_replace('h3>', 'h4>', $content);
+    $content = str_replace('<h3', '<h4', $content);
+    $content = str_replace('</h3', '</h4', $content);
 ?>
 
 <?php if (!empty($content)): ?>
