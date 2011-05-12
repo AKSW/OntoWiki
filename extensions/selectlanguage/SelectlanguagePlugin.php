@@ -13,8 +13,7 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
         $this->owApp = OntoWiki::getInstance();
     }
 
-
-    public function createMenu() {
+    public function onBeforeInitController() {
         // Translation hack in order to enable the plugin to translate...
         $translate = $this->owApp->translate;
         $translate->addTranslation(
@@ -24,12 +23,8 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
         );
         $locale = $this->owApp->getConfig()->languages->locale;
         $translate->setLocale($locale);
-
-
-
-        //Adding MenuEntries on the basis of the private plugin configuration
+ 
         $appMenu    = OntoWiki_Menu_Registry::getInstance()->getMenu('application');
-        #var_dump($appMenu);die;
         $extrasMenu = $appMenu->getSubMenu('Extras');
         $lanMenuEntry      = $translate->_('Select Language', $this->owApp->config->languages->locale);
         $lanMenue = new OntoWiki_Menu();
@@ -49,32 +44,26 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
         $extrasMenu->setEntry($lanMenuEntry, $lanMenue);
     }
 
-    //TODO: language is not available over request borders
-    public function onBeforeInitController($event) {
+    public function onPostBootstrap($event) {
 
         $request = new OntoWiki_Request();
-        $config = $this->owApp->getConfig();
+        $requestedLanguage = $request->getParam("lang");
+        $selectedLanguage = "";
 
-        $selLang = "";
-        $reqLang = $request->getParam("lang");
-        if (!empty($reqLang)) {
-            $selLang =  $reqLang;
+        if (!empty($requestedLanguage)) {
+            $selectedLanguage = $requestedLanguage;
+            $_SESSION['selectedLanguage'] = $requestedLanguage;
         } else if (!empty($_SESSION['selectedLanguage'])) {
-            $selLang = $_SESSION['selectedLanguage'];
+            $selectedLanguage = $_SESSION['selectedLanguage'];
         }
 
-        if (!empty( $reqLang)) {
-            $_SESSION['selectedLanguage'] =  $reqLang;
-        }
+        //writing the selected Language back into configuration
+        if (!empty($selectedLanguage)) {
 
-        if (!empty( $selLang)) {
-            $config->languages->locale = $selLang;
+            //Set Selected Language in the internal config object
+            $this->owApp->config->languages->locale = $selectedLanguage;
+            //Set the Selected Language in the language Variable of the OntoWiki Object
+            $this->owApp->language = $selectedLanguage;
         }
-
-        //Menu is created at last, because link of languages should created after languageselection
-        $this->createMenu();
     }
-
-
-
 }

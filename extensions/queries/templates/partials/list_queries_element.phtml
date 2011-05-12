@@ -1,0 +1,33 @@
+<li class="<?php echo $this->odd ? 'odd' : 'even'; ?>">
+    <?php if($this->instance['type'] == 'uri'){
+        $entry = $this->instanceData[$this->instanceUri];
+        
+        ?>
+        <div class="has-contextmenu-area" id="<?php echo $name; ?>">
+            <h3><span class="name"><?php echo $this->instanceUri ?></span></h3>
+            <p class="description"><?php echo $this->instanceData[$this->instanceUri]['description'][0]['value']; ?></p>
+            <?php
+            //always show link to queryeditor
+            $label = $entry["generator"][0]["value"];
+            $QEurl = new OntoWiki_Url(array('controller' => 'queries', 'action'=>'editor'), array());
+            $QEurl->immediate = "true";
+            $QEurl->query = $entry['query'][0]["value"];
+            ?><a class="minibutton button"href="<?php echo $QEurl; ?>">Editor</a><?php
+            
+            //if possible show link to original editor
+            if($label == "qb") {
+                $url = new OntoWiki_Url(array('controller' => 'querybuilder', 'action'=>'manage'), array());
+                $url->patterns = $entry["json"][0]["value"];
+                ?> <a class="minibutton button"href="<?php echo $url; ?>"><?php echo $label; ?></a> <?php
+            } elseif ($label == "gqb") {
+                $url = new OntoWiki_Url(array('controller' => 'graphicalquerybuilder', 'action'=>'display'), array());
+                $url->open = "true";
+                $url->queryuri = $entry["query"][0]["value"];
+                ?> <a class="minibutton button"href="<?php echo $url; ?>"><?php echo $label; ?></a> <?php
+            }
+            ?>
+           <?php
+        }
+        ?>
+        </div>
+    </li>

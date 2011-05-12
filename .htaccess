@@ -11,6 +11,12 @@
 # rewriting by enabling mod_rewrite in your apache config.
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # This gives ontowiki an easy hint that rewrite is enabled
+    <IfModule mod_env.c>
+        SetEnv ONTOWIKI_APACHE_MOD_REWRITE_ENABLED 1
+    </IfModule>
+
     RewriteRule !((extensions|libraries).*|\.(js|ico|gif|jpg|png|css|php|swf|json))$ index.php
     
     # Set RewriteBase only if your OntoWiki folder is not located in your web server's root dir.

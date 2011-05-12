@@ -1,0 +1,14 @@
+<li class="<?php if($this->odd){echo "odd";} else {echo "even";} ?>">
+    <?php if($this->instance['type'] == 'uri'){
+        $entry = $this->instanceData[$this->instanceUri];
+
+        ?>
+        <div class="community-item">
+            <h3  class="name"><a href="<?php echo $this->instance['url'] ?>"><?php echo $this->instance['title'] ?></a></h3>
+            <p class="creator"><a href="<?php echo $this->instanceData[$this->instanceUri]['creator'][0]['url'] ?>"><?php echo $this->instanceData[$this->instanceUri]['creator'][0]['value']; ?></a> said</p>
+            <p class="val"><?php echo $this->instanceData[$this->instanceUri]['content'][0]['value']; ?></p>
+            <?php if(isset($this->instanceData[$this->instanceUri]['about'])){ ?><p class="about">about <a href="<?php echo $this->instanceData[$this->instanceUri]['about'][0]['url']; ?>"><?php echo $this->instanceData[$this->instanceUri]['about'][0]['value']; ?></a></p><?php } ?>
+            <p class="date"><?php echo time_duration(time() - strtotime($this->instanceData[$this->instanceUri]['date'][0]['value'])); ?> ago</p>
+        </div>
+    <?php } ?>
+</li>

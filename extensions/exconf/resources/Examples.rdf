@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+  <!ENTITY ExtensionRepo "http://ns.ontowiki.net/Extensions/">
+  <!ENTITY SysOnt "http://ns.ontowiki.net/SysOnt/">
+  <!ENTITY dc "http://purl.org/dc/elements/1.1/">
+  <!ENTITY doap "http://usefulinc.com/ns/doap#">
+  <!ENTITY foaf "http://xmlns.com/foaf/0.1/">
+  <!ENTITY ns "http://rdfs.org/sioc/ns#">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY terms "http://purl.org/dc/terms/">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+  <!ENTITY qf "http://ontowiki.net/">
+]>
+<rdf:RDF xml:base="&ExtensionRepo;"
+         xmlns:ExtensionRepo="&ExtensionRepo;"
+         xmlns:SysOnt="&SysOnt;"
+         xmlns:dc="&dc;"
+         xmlns:doap="&doap;"
+         xmlns:foaf="&foaf;"
+         xmlns:ns="&ns;"
+         xmlns:owl="&owl;"
+         xmlns:rdf="&rdf;"
+         xmlns:rdfs="&rdfs;"
+         xmlns:terms="&terms;"
+         xmlns:qf="&qf;">
+         
+<!-- Ontology Information -->
+<owl:Ontology rdf:about=""
+                rdfs:label="Extension Repopository"
+                owl:versionInfo="0.4">
+    <rdfs:comment xml:lang="en">OWL for the Miniworld of the Extension Repository Scheme</rdfs:comment>
+    <owl:imports>
+      <owl:Ontology rdf:about="http://rdfs.org/sioc/ns#"/>
+    </owl:imports>
+    <owl:imports>
+      <owl:Ontology rdf:about="http://usefulinc.com/ns/doap#"/>
+    </owl:imports>
+  </owl:Ontology>
+
+<!-- Classes -->
+  <owl:Class rdf:about="Extension"
+             rdfs:label="Extension">
+    <rdfs:comment>a Extension pluggable script that interacts with Ontowiki to provide a certain, usually very specific, function "on demand".</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="&doap;Project"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="&ns;User"/>
+  <owl:Class rdf:about="&doap;Project"/>
+  <owl:Class rdf:about="&doap;Version"/>
+  <owl:Class rdf:about="&rdfs;Literal"/>
+  <owl:Class rdf:about="&foaf;Person"/>
+
+<!-- Datatypes -->
+  <rdfs:Datatype rdf:about="&xsd;dateTime"/>
+  <rdfs:Datatype rdf:about="&xsd;string"/>
+
+<!-- Annotation Properties -->
+  <owl:AnnotationProperty rdf:about="&rdfs;comment"/>
+  <owl:AnnotationProperty rdf:about="&rdfs;label"/>
+  <owl:AnnotationProperty rdf:about="&owl;versionInfo"/>
+
+<!-- Datatype Properties -->
+  <owl:DatatypeProperty rdf:about="&SysOnt;userPassword">
+    <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+    <rdfs:comment xml:lang="en">Every developer must have a password together with nickname for the authentificaiton</rdfs:comment>
+    <rdfs:domain rdf:resource="&ns;User"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="&dc;description"/>
+  <owl:DatatypeProperty rdf:about="&terms;modified">
+    <rdfs:comment xml:lang="en">time of last metadata change of the Extension</rdfs:comment>
+    <rdfs:range rdf:resource="&xsd;dateTime"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="&ns;first_name">
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="&ns;last_name"/>
+  <owl:DatatypeProperty rdf:about="&ns;name"/>
+  <owl:DatatypeProperty rdf:about="&doap;fileRelase"/>
+  <owl:DatatypeProperty rdf:about="&doap;revision"/>
+
+<!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="excludes"
+                      rdfs:label="excludes">
+    <rdfs:comment>mark extensions that can not coexist with this one. maybe because they are interchangeable but contradictionary.</rdfs:comment>
+    <rdfs:domain rdf:resource="Extension"/>
+    <rdfs:range rdf:resource="&doap;Project"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="requires"
+                      rdfs:label="requires">
+    <rdf:type rdf:resource="&owl;TransitiveProperty"/>
+    <rdfs:comment>mark extensions that are needed by this extension to work properly.</rdfs:comment>
+    <rdfs:domain rdf:resource="Extension"/>
+    <rdfs:range rdf:resource="&doap;Project"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="&ns;account_of"/>
+  <owl:ObjectProperty rdf:about="&doap;developer"/>
+  <owl:ObjectProperty rdf:about="&doap;release"/>
+
+
+<!-- Instances -->
+
+  <owl:Thing rdf:about="#string"/>
+  <ns:User rdf:about="account_1"
+           rdfs:label="The account of developer_1">
+    <SysOnt:userPassword rdf:datatype="&xsd;string">qiufeng</SysOnt:userPassword>
+    <ns:account_of>
+      <foaf:Person rdf:about="developer_1"/>
+    </ns:account_of>
+    <ns:first_name rdf:datatype="&xsd;string">Feng</ns:first_name>
+    <ns:last_name rdf:datatype="&xsd;string">Qiu</ns:last_name>
+    <foaf:accountName rdf:datatype="&xsd;string">account_1</foaf:accountName>
+  </ns:User>
+
+  <ns:User rdf:about="account_2"
+           rdfs:label="The account of developer_2">
+    <SysOnt:userPassword rdf:datatype="&xsd;string">qiufeng</SysOnt:userPassword>           
+    <ns:account_of rdf:resource="developer_2"/>
+    <ns:first_name rdf:datatype="&xsd;string">Aric</ns:first_name>
+    <ns:last_name rdf:datatype="&xsd;string">Qiu</ns:last_name>
+    <foaf:accountName rdf:datatype="&xsd;string">account_1</foaf:accountName>
+  </ns:User>
+  
+  <ns:User rdf:about="account_3"
+           rdfs:label="The account of Maier Christian">
+    <SysOnt:userPassword rdf:datatype="&xsd;string">informatik</SysOnt:userPassword>
+    <ns:account_of>
+      <foaf:Person rdf:about="maier_christian"/>
+    </ns:account_of>
+    <ns:first_name rdf:datatype="&xsd;string">Christian</ns:first_name>
+    <ns:last_name rdf:datatype="&xsd;string">Maier</ns:last_name>
+    <foaf:accountName rdf:datatype="&xsd;string">account_3</foaf:accountName>
+  </ns:User>
+
+  <foaf:Person rdf:about="developer_1"
+               rdfs:label="the first developer of plugins"/>
+  <foaf:Person rdf:about="developer_2"
+               rdfs:label="The second developer for the plugins"/>
+  <foaf:Person rdf:about="maier_christian"
+               rdfs:label="Maier Christian, a developer of the plugins for Ontowiki"/>
+               
+  <ExtensionRepo:Extension rdf:about="test_plugin_1"
+                            rdfs:label="The first testplugin">
+    <dc:description rdf:datatype="&xsd;string">This is a very very very very very svery very very very very very very very very short desciption for test_plugin_1</dc:description>
+    <terms:modified rdf:datatype="&xsd;dateTime">2009-03-15T13:00:00.000</terms:modified>
+    <ns:has_owner>
+      <ns:User rdf:about="account_1"/>
+    </ns:has_owner>
+    <ns:name rdf:datatype="&xsd;string">test_plugin_1</ns:name>
+    <doap:developer rdf:resource="developer_1"/>
+    <doap:release rdf:resource="p1_v1"/>
+  </ExtensionRepo:Extension>
+
+  <ExtensionRepo:Extension rdf:about="test_plugin_2"
+                            rdfs:label="The second test plugin">
+    <ExtensionRepo:requires rdf:resource="test_plugin_1"/>
+    <dc:description rdf:datatype="&xsd;string">This is a very svery very very very very svery very very very very very very short description for test_plugin_2</dc:description>
+    <terms:modified rdf:datatype="&xsd;dateTime">2009-03-15T12:51:36.000</terms:modified>
+    <ns:has_owner>
+      <ns:User rdf:about="account_2"/>
+    </ns:has_owner>
+    <ns:name rdf:datatype="&xsd;string">test_plugin_2</ns:name>
+    <doap:developer rdf:resource="developer_2"/>
+    <doap:release rdf:resource="p2_v1"/>
+  </ExtensionRepo:Extension>
+
+  <ExtensionRepo:Extension rdf:about="test_plugin_3"
+                            rdfs:label="The third test plugin">
+    <ExtensionRepo:excludes rdf:resource="test_plugin_1"/>
+    <dc:description rdf:datatype="&xsd;string">This is a very very svery very very very very svery very very very very very very short description for test_plugin_3</dc:description>
+    <terms:modified rdf:datatype="&xsd;dateTime">2009-03-15T12:51:36.000</terms:modified>
+    <ns:has_owner>
+      <ns:User rdf:about="account_1"/>
+    </ns:has_owner>
+    <ns:name rdf:datatype="&xsd;string">test_plugin_3</ns:name>
+    <doap:developer rdf:resource="developer_1"/>
+    <doap:release rdf:resource="p3_v1"/>
+  </ExtensionRepo:Extension>
+  
+  
+  <ExtensionRepo:Extension rdf:about="audiolink"
+                            rdfs:label="Audiolink">
+    <dc:description rdf:datatype="&xsd;string">A plugin that renders values of certain properties as audio.</dc:description>
+    <terms:modified rdf:datatype="&xsd;dateTime">2009-05-02T13:00:00.000</terms:modified>
+    <ns:has_owner>
+      <ns:User rdf:about="account_3"/>
+    </ns:has_owner>
+    <ns:name rdf:datatype="&xsd;string">audiolink</ns:name>
+    <doap:developer rdf:resource="maier_christian"/>
+    <doap:release rdf:resource="http://ns.ontowiki.net/audiolink/v1"/>
+  </ExtensionRepo:Extension>
+  
+  <ExtensionRepo:Extension rdf:about="videolink"
+                            rdfs:label="Videolink">
+    <dc:description rdf:datatype="&xsd;string">A plugin that renders values of certain properties as video.</dc:description>
+    <terms:modified rdf:datatype="&xsd;dateTime">2009-05-02T13:00:00.000</terms:modified>
+    <ns:has_owner>
+      <ns:User rdf:about="account_3"/>
+    </ns:has_owner>
+    <ns:name rdf:datatype="&xsd;string">videolink</ns:name>
+    <doap:developer rdf:resource="maier_christian"/>
+    <doap:release rdf:resource="http://ns.ontowiki.net/videolink/v1"/>
+  </ExtensionRepo:Extension>
+
+
+  <doap:Version rdf:about="p1_v1"
+                rdfs:label="Version of test plugin 1">
+    <doap:file-release rdf:datatype="&doap;anyURI">http://stinfwww.informatik.uni-leipzig.de/~bss03kpx/testplugin1.zip</doap:file-release>
+    <doap:revision rdf:datatype="&xsd;string">1.0</doap:revision>
+    <qf:tag rdf:datatype="&xsd;string">Test</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Plugin</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Ontowiki</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Extension</qf:tag>
+  </doap:Version>
+
+  <doap:Version rdf:about="p2_v1"
+                rdfs:label="Version of test plugin 2">
+    <doap:file-release rdf:datatype="&doap;anyURI">http://stinfwww.informatik.uni-leipzig.de/~bss03kpx/testplugin2.zip</doap:file-release>
+    <doap:revision rdf:datatype="&xsd;string">1.0</doap:revision>
+    <qf:tag rdf:datatype="&xsd;string">Test</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Plugin</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Ontowiki</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Extension</qf:tag>
+  </doap:Version>
+
+  <doap:Version rdf:about="p3_v1"
+                rdfs:label="Version of test plugin 3">
+    <doap:file-release rdf:datatype="&doap;anyURI">http://stinfwww.informatik.uni-leipzig.de/~bss03kpx/testplugin3.zip</doap:file-release>
+    <doap:revision rdf:datatype="&xsd;string">1.0</doap:revision>
+    <qf:tag rdf:datatype="&xsd;string">Test</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Plugin</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Ontowiki</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Extension</qf:tag>
+  </doap:Version>
+  
+  <doap:Version rdf:about="http://ns.ontowiki.net/audiolink/v1"
+                rdfs:label="release of extension audiolink">
+    <doap:file-release rdf:datatype="&doap;anyURI">http://stinfwww.informatik.uni-leipzig.de/~bss03kpx/audiolink.zip</doap:file-release>
+    <doap:revision rdf:datatype="&xsd;string">1.0</doap:revision>
+    <qf:tag rdf:datatype="&xsd;string">Audio</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Plugin</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Ontowiki</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Extension</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Link</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Christian</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Maier</qf:tag>
+  </doap:Version>
+  
+  <doap:Version rdf:about="http://ns.ontowiki.net/videolink/v1"
+                rdfs:label="release of extension videolink">
+    <doap:file-release rdf:datatype="&doap;anyURI">http://stinfwww.informatik.uni-leipzig.de/~bss03kpx/videolink.zip</doap:file-release>
+    <doap:revision rdf:datatype="&xsd;string">1.0</doap:revision>
+    <qf:tag rdf:datatype="&xsd;string">Video</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Plugin</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Ontowiki</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Extension</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Link</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Christian</qf:tag>
+    <qf:tag rdf:datatype="&xsd;string">Maier</qf:tag>
+  </doap:Version>
+  
+</rdf:RDF>
+

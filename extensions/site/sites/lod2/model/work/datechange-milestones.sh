@@ -1,3 +1,4 @@
+#!/bin/sh
 sed s/lod2:deadline\ \"6\"./lod2:deadline\ \"2011-02-28\"\^\^xsd:date./ milestones.n3 >milestones.tmp; mv milestones.tmp milestones.n3
 sed s/lod2:deadline\ \"8\"./lod2:deadline\ \"2011-04-30\"\^\^xsd:date./ milestones.n3 >milestones.tmp; mv milestones.tmp milestones.n3
 sed s/lod2:deadline\ \"12\"./lod2:deadline\ \"2011-08-31\"\^\^xsd:date./ milestones.n3 >milestones.tmp; mv milestones.tmp milestones.n3

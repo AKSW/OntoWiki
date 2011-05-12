@@ -170,8 +170,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
            $config->log->level = 7;
         }
 
-
-
         return $config;
     }
 

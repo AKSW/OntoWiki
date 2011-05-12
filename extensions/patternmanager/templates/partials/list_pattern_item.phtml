@@ -1,12 +1,11 @@
+<li>
+<?php echo $this->instance['title']?><br/>
 <?php
-
     // get ac from top-view element (view helpers workaround)
     $ac = $this->getHelper('Partial')->view->ac;
-    $entry = $this->element['resourceUri'][0]['uri'];
-
-?>
-<?php if ($ac->isActionAllowed(PatternEngineAc::RIGHT_VIEW_STR)) : ?>
-<?php 
+    $entry = $this->instance['value'];
+ if ($ac->isActionAllowed(PatternEngineAc::RIGHT_VIEW_STR)) : ?>
+<?php
     $viewPatternUrl = new OntoWiki_Url(
 	    array('controller' => 'patternmanager', 'action' => 'view'),
 	    array()
@@ -25,3 +24,5 @@
 ?>
 <a class="minibutton" href="<?php echo $execPatternUrl; ?>"><?php echo $this->_('execute pattern'); ?></a>
 <?php endif; ?>
+</li>
+

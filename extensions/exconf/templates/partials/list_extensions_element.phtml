@@ -1,0 +1,38 @@
+<li class="<?php echo $this->odd ? 'odd' : 'even'; ?>">
+    <?php if($this->instance['type'] == 'uri'){       
+        $title = $this->instanceData[$this->instanceUri]['title'][0]['value'];
+        $name = $this->instanceData[$this->instanceUri]['name'][0]['value'];
+        if(isset($this->instanceData[$this->instanceUri]['latestReleaseLocation'])){
+           $location = $this->instanceData[$this->instanceUri]['latestReleaseLocation'][0]['uri'];
+        } else {
+           $location = null;
+        }
+        //var_dump( $this->instanceData[$this->instanceUri]);
+        ?>
+            <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
+                <h3><span class="name"><?php echo $title ?></span></h3>
+            <p class="description"><?php echo $this->instanceData[$this->instanceUri]['description'][0]['value']; ?></p>
+            <?php
+            $url = new OntoWiki_Url(array('controller' => 'exconf', 'action'=>'installarchiveremote'));
+            $url->url = $location;
+            $action = false;
+            if(!$this->installed){
+                $label = "install";
+                $action = true;
+            } else if($this->updateable){
+                $label = "update";
+                $action = true;
+            }
+            if($action){
+            ?>
+            <a class="minibutton button"href="<?php echo $url; ?>"><?php echo $label; ?></a>
+            <?php
+            } else {
+              ?>
+            <p class="info">installed and updated</p>
+            <?php
+            }
+        }
+        ?>
+        </div>
+    </li>

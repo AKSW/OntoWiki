@@ -1,3 +1,4 @@
+#!/bin/sh
 sed s/lod2:deliveryDate\ \"M1\"./lod2:deliveryDate\ \"2010-09-30\^\^xsd:date\"./ deliverables.n3 >deliverables.tmp; mv deliverables.tmp deliverables.n3
 sed s/lod2:deliveryDate\ \"M2\"./lod2:deliveryDate\ \"2010-10-31\^\^xsd:date\"./ deliverables.n3 >deliverables.tmp; mv deliverables.tmp deliverables.n3
 sed s/lod2:deliveryDate\ \"M3\"./lod2:deliveryDate\ \"2010-11-30\^\^xsd:date\"./ deliverables.n3 >deliverables.tmp; mv deliverables.tmp deliverables.n3

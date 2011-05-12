@@ -1,8 +1,11 @@
 <?php
+if($this->isAllowed){
 $ow = OntoWiki::getInstance();
 $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/exconf.css");
 $this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/exconf.js");
 $this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/togglebutton.css");
+
 ?>
 <div class="view_extended">
 <form id="show_extension">
@@ -21,8 +24,7 @@ $this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')
         <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
                 <h3><span class="name"><?php echo $extension->name; ?></span>
                     <?php
-                        if (isset($extension->author))
-                        {
+                        if (isset($extension->author)) {
                             echo '<em class="author">by '.(isset($extension->authorUrl)?'<a href="'.$extension->authorUrl.'">'.$extension->author.'</a>':$extension->author).'</em>';
                         }
                     ?>
@@ -56,3 +58,4 @@ $odd = !$odd;
 ?>
 </ol>
 </div>
+<?php } ?>

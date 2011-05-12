@@ -3,7 +3,7 @@
 /**
  * OntoWiki resource list model class.
  *
- * Represents a list of resources (of a certain rdf:type) and their properties.
+ * Represents a list of resources (specified by filters) and their properties.
  * 
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -16,38 +16,9 @@
  */
 class OntoWiki_Model_Instances extends OntoWiki_Model
 {
-    protected $mode;
-    const modeType = "type"; 
-    const modeSearch = "search";
-    const modeGiven = "given";
-    const modeAll = "all";
-
-    //search
-    protected $searchText;
-
-    //all
+    //all triple (?s ?p ?o). is added and removed to the resorceQuery on demand, but always stored here
     protected $allTriple;
 
-    /**
-     *  rdf:type for the resources of interest
-     * @var string
-     */
-    protected $_type = null;
-    /**
-     *  array of subclasses of $_type
-     * @var array
-     */
-    protected $_subClasses = array();
-    /**
-     *  rdf:type for the resources of interest
-     * @var Erfurt_Sparql_Query2_IriRef
-     */
-    protected $_memberPredicate = null;
-    
- 
-    protected $_allProperties;
-    protected $_allPropertiesUptodate  = false;
-    
     /**
      * Properties whose values are to be fetched for each resource.
      * @var array
@@ -72,16 +43,22 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_resources;
     protected $_resourcesUptodate = false;
+
+    /**
+     *
+     * @var array transformed
+     */
     protected $_resourcesConverted;
     protected $_resourcesConvertedUptodate = false;
+
     /**
      * 
-     * @var Erfurt_Sparql_Query2_Var
+     * @var Erfurt_Sparql_Query2_Var the var that is used in the resourcequery to bind all uri of list elements
      */
     protected $_resourceVar = null;
 
     /**
-     * @var array
+     * @var array stores all configured filters
      */
     protected $_filter = array();
 
@@ -93,7 +70,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_resultsUptodate = false;
     
     /**
-     * @var Erfurt_Sparql_Query2
+     * @var Erfurt_Sparql_Query2 the manged query that selects the resources in the list
      */
     protected $_resourceQuery = null;
     /**
@@ -102,18 +79,13 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_valueQuery = null;
     protected $_valueQueryResourceFilter = null;
 
-    protected $_aboutHash;
-    
-    protected $_defaultUrl = array();
-    protected $_defaultUrlParam = array();
-
     /**
      * Constructor
      */
-public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $options = array())
+    public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array())
     {
-        parent::__construct($store, $graph);
-        
+        parent::__construct($store, $model);
+
         $this->_defaultUrl['resource']      = new OntoWiki_Url(array('route' => 'properties'), array());
         $this->_defaultUrlParam['resource'] = 'r';
         
@@ -144,10 +116,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             )
         );
 
-        //echo 'resource query: <pre>';
-        //echo htmlentities($this->_resourceQuery);
-        //echo '</pre>'; exit;
-
         //build value query
         $this->_valueQuery = new Erfurt_Sparql_Query2();
 
@@ -166,7 +134,22 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         $this->_valueQuery->addElement($optional);
         $this->_valueQuery->addProjectionVar($typeVar);
 
+        //set froms to the requested graph
+        $this->_valueQuery->addFrom((string)$model);
+        $this->_resourceQuery->addFrom((string)$model);
+
         //$this->updateValueQuery();
+    }
+
+    function __wakeUp(){
+        $this->_lang = NULL;
+    }
+
+    private function _getLanguage () {
+        if ($this->_lang == NULL) {
+            $this->_lang = OntoWiki::getInstance()->config->languages->locale;
+        }
+        return $this->_lang;
     }
     
     /**
@@ -197,23 +180,18 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             }
         }
     }
-    
+    /**
+     * redirect calls that ant be handled both to the resource and value query. currently only methods regarding the from are allowed
+     * @param string $name
+     * @param array $arguments
+     */
     public function  __call($name,  $arguments) {
-        if(strpos("From", $name) > 0){
-            call_user_func(array($this->_valueQuery, $arguments));
-            call_user_func(array($this->_resourceQuery, $arguments));
+        $allowedMethods = array("addFrom","addFroms","removeFrom","removeFroms","hasFrom","getFrom","getFroms","setFrom", "setFroms");
+        if(in_array($name, $allowedMethods)){
+            call_user_func(array($this->_valueQuery, $name), $arguments);
+            call_user_func(array($this->_resourceQuery, $name), $arguments);
         }
     }
-
-    public function setAboutHash($hash){
-        $this->_aboutHash = $hash;
-        return $this;
-    }
-
-    public function getAboutHash(){
-        return $this->_aboutHash;
-    }
-
 
    /**
     * add ?resourceUri ?p ?o to the query
@@ -230,7 +208,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
      *
      * @param $propertyUri The URI of the property
      * @param $propertyName Name to be used for the variable
-     * @return OntoWiki_Model_ResourceList
+     * @return OntoWiki_Model_Instances
      */
     public function addShownProperty ($propertyUri, $propertyName = null, $inverse = false, $datatype = null, $hidden = false)
     {
@@ -286,17 +264,13 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         );
         $this->_valuesUptodate = false; // getValues will not use the cache next time
         $this->_resultsUptodate = false;
-
-        //echo 'add shown property: <pre>';
-        //echo htmlentities($this->_valueQuery);
-        //echo '</pre>';
         
         return $this;
     }
 
     /**
-     *
-     * @param string> $key the uri
+     * remove a property that has been added before
+     * @param string $key the uri
      */
     public function removeShownProperty($key){
         if(isset($this->_shownProperties[$key])){
@@ -315,15 +289,15 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
     public function getResults ()
     {
         $this->updateValueQuery();
-        //echo htmlentities($this->_valueQuery);
+        
         if (!$this->_resultsUptodate) {
-            $this->_results = $this->_model->sparqlQuery(
+            $this->_results = $this->_store->sparqlQuery(
                 $this->_valueQuery, 
                 array('result_format' => 'extended')
             );
             $this->_resultsUptodate = true;
         }
-        //echo '<pre>'; print_r($this->_results); echo '</pre>'; exit;
+
         return $this->_results;
     }
     
@@ -352,7 +326,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             }
         }
         $prop = new Erfurt_Sparql_Query2_IriRef($property);
-        //echo "<pre>"; print_r($parts);echo "</pre>"; exit;
         if(!empty($value1)){
             switch($valuetype) {
                 case 'uri':
@@ -608,9 +581,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
              'objects'          => array($triple, isset($filterObj) ? $filterObj : null)
         );
 
-        //print_r($this->_filter[$id]);
-
-        //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
         $this->invalidate();
         return $id;
     }
@@ -625,7 +595,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             foreach($this->_filter[$id]['objects'] as $obj){
                 if($obj instanceof Erfurt_Sparql_Query2_ElementHelper){
                     $obj->remove($this->_resourceQuery);
-                    //echo "removed: ".$obj;
                 }
             }
 
@@ -636,7 +605,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
                 $this->addAllTriple();
             }
 
-            //echo '<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
             $this->invalidate();
             return $this;
         }
@@ -671,7 +639,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         $options['mode'] = 'instances';
         $options['type'] = $type;
         $options['memberPredicate'] = EF_RDF_TYPE;
-        $options['withChilds'] = true;
+        $options['withChilds'] = isset($option['withChilds']) ? $option['withChilds'] : true;
 
         $options['hierarchyUp'] = EF_RDFS_SUBCLASSOF;
         $options['hierarchyIsInverse'] = true;
@@ -692,7 +660,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         $type = new Erfurt_Sparql_Query2_IriRef($options['type']);
         if ($options['withChilds']) {
-            $this->_subClasses =
+            $subClasses =
                 array_keys(
                     // get subclasses:
                     $this->_store->getTransitiveClosure(
@@ -703,10 +671,10 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
                     )
                 );
         } else if(isset($options['subtypes'])){ //dont query, take the given. maybe the new navigation can use this
-            $this->_subClasses = $options['subtypes'];
+            $subClasses = $options['subtypes'];
         }
 
-        if (count($this->_subClasses)>1) {
+        if (count($subClasses)>1) {
             // there are subclasses. "1" because the class itself is somehow included in the subclasses...
             $typeVar = new Erfurt_Sparql_Query2_Var($type);
             $triple = $this->_resourceQuery->addTriple(
@@ -715,7 +683,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
                 $typeVar);
 
             $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
-            foreach ($this->_subClasses as $subclass) {
+            foreach ($subClasses as $subclass) {
                 $or->addElement(
                     new Erfurt_Sparql_Query2_sameTerm(
                         $typeVar,
@@ -730,7 +698,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             $triple = $this->_resourceQuery->addTriple(
                 $this->_resourceVar,
                 $member_predicate,
-                new Erfurt_Sparql_Query2_IriRef($this->_subClasses[0])
+                new Erfurt_Sparql_Query2_IriRef($type->getIri())
             );
         }
 
@@ -743,12 +711,9 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
              'objects'           => array($triple, isset($filterObj) ? $filterObj : null)
         );
 
-        //print_r($this->_filter[$id]);
-
         //these filters bring there own triple
         $this->allTriple->remove($this->_resourceQuery);
 
-        //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
         $this->invalidate();
         return $id;
     }
@@ -777,7 +742,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         foreach($pattern as $element){
             if(method_exists($element, 'getVars')){
                 $vars = array_merge($vars, $element->getVars());
-            } //else echo "missing getVars() in: ".get_class($element);
+            } 
         }
         $count = count($this->_filter);
         foreach($vars as $var){
@@ -795,16 +760,11 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
              'objects'           => $pattern
         );
 
-        //print_r($this->_filter[$id]);
-
         //these filters bring there own triple
         $this->allTriple->remove($this->_resourceQuery);
 
         $this->invalidate();
-        $this->searchText = $str;
-
-        //echo 'new resource query<pre>'; echo htmlentities($this->_resourceQuery); echo '</pre>';
-        //exit;
+        
         return $id;
     }
 
@@ -1024,13 +984,10 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         if (empty($this->_resources)) {
             return array();
         }
-        //echo htmlentities($this->_valueQuery);
-
+        
         $this->getResults();
 
-        //print_r($this->_results);
         $result = $this->_results['bindings'];
-        
         
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
 
@@ -1099,7 +1056,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
                     // set default if event has not been handled
                     if (!$event->handled()) {
-                        $value = $titleHelper->getTitle($objectUri, $this->_lang);
+                        $value = $titleHelper->getTitle($objectUri, $this->_getLanguage());
                     }
                 } else {
                     // object is a literal
@@ -1155,7 +1112,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             }
         }
 
-        //echo 'converted values: <pre>';  print_r($valueResults);  echo '</pre>';
         $this->_values = $valueResults;
         $this->_valuesUptodate = true;
 
@@ -1206,10 +1162,9 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             return array();
         }
 
-        //echo 'call to getAllProperties(inverse = '.($inverse?"true":"false").")";
         $query = $this->getAllPropertiesQuery($inverse);
 
-        $results = $this->_model->sparqlQuery(
+        $results = $this->_store->sparqlQuery(
             $query,
             array('result_format' => 'extended')
         );
@@ -1269,9 +1224,9 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             )
         );
         $query->addProjectionVar($valueVar);
-        $results = $this->_model->sparqlQuery(
+        $results = $this->_store->sparqlQuery(
             $query,
-            array('result_format' => 'extended')
+            array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED)
         );
 
         $values = array();
@@ -1314,7 +1269,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
             $property['curi'] = OntoWiki_Utils::contractNamespace($property['uri']);
 
-            $property['title'] = $titleHelper->getTitle($property['uri'], $this->_lang);
+            $property['title'] = $titleHelper->getTitle($property['uri'], $this->_getLanguage());
 
             $propertyResults[] = $property;
         }
@@ -1366,7 +1321,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
      */
     public function convertResources ($resources)
     {
-        
         // add titles
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
         $uris = array();
@@ -1384,25 +1338,23 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
             }
 
             // URL
-            $url = $this->_defaultUrl['resource'];
-            $url->setParam($this->_defaultUrlParam['resource'],$uri,true);
+            $url = new OntoWiki_Url(array('controller'=>'resource','action'=>'properties'), array());
+            $url->r = $uri;
             
             $resourceResults[$uri]['url'] = (string) $url;
-
             // title
             $resourceResults[$uri]['title'] =
-                $titleHelper->getTitle($uri, $this->_lang);
+                $titleHelper->getTitle($uri, $this->_getLanguage());
         }
         return $resourceResults;
     }
     
     public function getShownResources ()
     {
-        //echo htmlentities($this->_resourceQuery);
         if (!$this->_resourcesUptodate) {
-            $result = $this->_model->sparqlQuery(
+            $result = $this->_store->sparqlQuery(
                 $this->_resourceQuery,
-                array('result_format' => 'extended')
+                array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED)
             );
 
             $this->_resources = array();
@@ -1427,6 +1379,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         }
 
         $this->_resourcesConverted = $this->convertResources($this->getShownResources());
+
         $this->_resourcesConvertedUptodate = true;
         return $this->_resourcesConverted;
     }
@@ -1514,7 +1467,6 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         $this->_shownPropertiesConvertedUptodate = false;
         $this->_resultsUptodate = false;
         $this->_valuesUptodate = false;
-        $this->_allPropertiesUptodate  = false;
         $this->_valueQueryUptodate = false;
         return $this;
     }
@@ -1531,8 +1483,7 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
         } 
         
         $resources = $this->getShownResources();
-        //echo 'resources: <pre>'; print_r($resources); echo '</pre>';
-
+        
         foreach ($resources as $key => $resource) {
             $resources[$key] =
                 new Erfurt_Sparql_Query2_SameTerm(
@@ -1556,27 +1507,36 @@ public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $graph, $opti
 
         $this->_valueQueryUptodate = true;
 
-        //echo 'updated value query: <pre>';
-        //echo htmlentities($this->_valueQuery);
-        //echo '</pre>';
-        
         return $this;
     }
 
-    /**
-     * get the last text that has been searched for
-     * @return string
-     */
-    public function getSearchText(){
-        return $this->searchText;
+    public function setOrderUri($uri, $asc = true) {
+        if(!is_bool($asc)){
+            $asc = true;
+        }
+        foreach($this->_shownProperties as $prop){
+            if($prop['uri'] == $uri){
+               $this->_valueQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+            }
+        }
+
+        $this->_valueQuery->getOrder()->setExpression($order);
+
     }
-    
-    public function setDefaultUrl($key, $value) {
-        $this->_defaultUrl[(string) $key] = $value;    
-    }
-    
-    public function setDefaultUrlParamName($key, $value) {
-        $this->_defaultUrlParam[(string)$key] = $value;
+
+    public function setOrderVar($var, $asc = true) {
+        if(!is_bool($asc)){
+            $asc = true;
+        }
+        if($var instanceof Erfurt_Sparql_Query2_Var){
+            $this->_valueQuery->getOrder()->setExpression(array('exp'=>$var,'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+        } else if(is_string($var)){
+            foreach($this->_shownProperties as $prop){
+            if($prop['varName'] == $var){
+                    $this->_valueQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+                }
+            }
+        }
     }
 }
 

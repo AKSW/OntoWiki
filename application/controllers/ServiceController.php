@@ -466,7 +466,7 @@ class ServiceController extends Zend_Controller_Action
         
         $store    = OntoWiki::getInstance()->erfurt->getStore();
         $response = $this->getResponse();
-        
+
         // fetch params
         // TODO: support maxOccurs:unbound
         $queryString  = $this->_request->getParam('query', '');
@@ -475,7 +475,7 @@ class ServiceController extends Zend_Controller_Action
         }
         $defaultGraph = $this->_request->getParam('default-graph-uri', null);
         $namedGraph   = $this->_request->getParam('named-graph-uri', null);
-        
+          
         if (!empty($queryString)) {
             $query = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
 
@@ -486,7 +486,7 @@ class ServiceController extends Zend_Controller_Action
             if (null !== $namedGraph) {
                 $query->setFromNamed((array)$namedGraph);
             }
-
+ 
             // check graph availability
             $ac = Erfurt_App::getInstance()->getAc();
             foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
@@ -494,7 +494,7 @@ class ServiceController extends Zend_Controller_Action
                     if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
                         // In this case we allow the requesting party to authorize...
                         $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                        $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
+                        $response->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"');
                         $response->sendResponse();
                         exit;
                         
@@ -566,29 +566,52 @@ class ServiceController extends Zend_Controller_Action
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
-        
-        $store       = OntoWiki::getInstance()->erfurt->getStore();
-        $response    = $this->getResponse();
-        $namedGraph  = $this->_request->getParam('named-graph-uri', null);
-        $insertGraph = null;
-        $deleteGraph = null;
-        $insertModel = null;
-        $deleteModel = null;
+    
+        $store        = OntoWiki::getInstance()->erfurt->getStore();
+        $response     = $this->getResponse();
+        $defaultGraph = $this->_request->getParam('default-graph-uri', null);
+        $namedGraph   = $this->_request->getParam('named-graph-uri', null);
+        $insertGraph  = null;
+        $deleteGraph  = null;
+        $insertModel  = null;
+        $deleteModel  = null;
         
         if (isset($this->_request->query)) {
             // we have a query, enter SPARQL/Update mode
             $query = $this->_request->getParam('query', '');
-            
+            OntoWiki::getInstance()->logger->info('SPARQL/Update query: ' . $query);
+
             $matches = array();
             // insert
             preg_match('/INSERT\s+DATA(\s+INTO\s*<(.+)>)?\s*{\s*([^}]*)/i', $query, $matches);
-            $insertGraph   = isset($matches[2]) ? $matches[2] : null;
+            $insertGraph   = (isset($matches[2]) && ($matches[2] !== '')) ? $matches[2] : null;
             $insertTriples = isset($matches[3]) ? $matches[3] : '';
+
+            if ((null === $insertGraph) && ($insertTriples !== '')) {
+                if (null !== $defaultGraph) {
+                    $insertGraph = $defaultGraph;
+                }
+                if (null !== $namedGraph) {
+                    $insertGraph = $namedGraph;
+                }
+            }
+
+            OntoWiki::getInstance()->logger->info('SPARQL/Update insertGraph: ' . $insertGraph);
+            OntoWiki::getInstance()->logger->info('SPARQL/Update insertTriples: ' . $insertTriples);
             
             // delete
             preg_match('/DELETE\s+DATA(\s+FROM\s*<(.+)>)?\s*{\s*([^}]*)/i', $query, $matches);
-            $deleteGraph   = isset($matches[2]) ? $matches[2] : null;
+            $deleteGraph   = (isset($matches[2]) && ($matches[2] !== '')) ? $matches[2] : null;
             $deleteTriples = isset($matches[3]) ? $matches[3] : '';
+            
+            if ((null === $deleteGraph) && ($deleteTriples !== '')) {
+                if (null !== $defaultGraph) {
+                    $deleteGraph = $defaultGraph;
+                }
+                if (null !== $namedGraph) {
+                    $deleteGraph = $namedGraph;
+                }
+            }
             
             // TODO: normalize literals
             
@@ -709,7 +732,7 @@ class ServiceController extends Zend_Controller_Action
             if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
                 // In this case we allow the requesting party to authorize
                 $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                $response->setHeader('WWW-Authenticate', 'FOAF+SSL');
+                $response->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"');
                 $response->sendResponse();
                 exit;
             }
@@ -1134,10 +1157,10 @@ class ServiceController extends Zend_Controller_Action
                         $objectString = Erfurt_Utils::buildLiteralString(
                             $currentObject['value'], 
                             isset($currentObject['datatype']) ? $currentObject['datatype'] : null, 
-                            isset($currentObject['lang']) ? $currentObject['lang'] : null);
+                            isset($currentObject['xml:lang']) ? $currentObject['xml:lang'] : null);
 
                         $hash = $hashFunc($objectString);
-                        if ($hash === $hashedObjects[$i]) {
+                        if (in_array($hash, $hashedObjects)) {
                             // add current statement to result
                             if (!isset($result[$subject])) {
                                 $result[$subject] = array();
@@ -1150,10 +1173,10 @@ class ServiceController extends Zend_Controller_Action
                                 'value' => $currentObject['value'], 
                                 'type'  => str_replace('typed-', '', $currentObject['type'])
                             );
-                            if (isset($bindings[$i]['datatype'])) {
+                            if (isset($currentObject['datatype'])) {
                                 $objectSpec['datatype'] = $currentObject['datatype'];
-                            } else if (isset($currentObject['lang'])) {
-                                $objectSpec['lang'] = $currentObject['lang'];
+                            } else if (isset($currentObject['xml:lang'])) {
+                                $objectSpec['lang'] = $currentObject['xml:lang'];
                             }
                             
                             array_push($result[$subject][$predicate], $objectSpec);
@@ -1164,60 +1187,5 @@ class ServiceController extends Zend_Controller_Action
         }
         
         return $result;
-    }
-    
-    /**
-     * Builds a SPARQL-compatible literal string with long literals if necessary.
-     *
-     * @param string $value
-     * @param string|null $datatype
-     * @param string|null $lang
-     * @return string
-     */
-    protected static function _buildLiteralString($value, $datatype = null, $lang = null)
-    {
-        $longLiteral = false;
-        $quoteChar   = (strpos($value, '"') !== false) ? "'" : '"';
-        $value       = (string)$value;
-        
-        // datatype-specific treatment
-        switch ($datatype) {
-            case 'http://www.w3.org/2001/XMLSchema#boolean':
-                $search  = array('0', '1');
-                $replace = array('false', 'true');
-                $value   = str_replace($search, $replace, $value);
-                break;
-            case '':
-            case null:
-            case 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral':
-            case 'http://www.w3.org/2001/XMLSchema#string':
-                $value = addcslashes($value, $quoteChar);
-                
-                /** 
-                 * Check for characters not allowed in a short literal
-                 * {@link http://www.w3.org/TR/rdf-sparql-query/#rECHAR}
-                 * wrong: \t\b\n\r\f\\\"\\\' 
-                 */
-                if (preg_match('/[\x5c\r\n"]/', $value) > 0) {
-                    $longLiteral = true;
-                    $value = trim($value, "\n\r");
-                    // $value = str_replace("\x0A", '\n', $value);
-                }
-                break;
-        }
-        
-        // add short, long literal quotes respectively
-        $value = $quoteChar . ($longLiteral ? ($quoteChar . $quoteChar) : '')
-               . $value 
-               . $quoteChar . ($longLiteral ? ($quoteChar . $quoteChar) : '');
-        
-        // add datatype URI/lang tag
-        if (!empty($datatype)) {
-            $value .= '^^<' . (string)$datatype . '>';
-        } else if (!empty($lang)) {
-            $value .= '@' . (string)$lang;
-        }
-        
-        return $value;
     }
 }

@@ -1,0 +1,77 @@
+<?php $odd = true;
+
+// build menu
+$actionMenu = new OntoWiki_Menu();
+$actionMenu->setEntry('Toggle show Permalink', "javascript:showPermaLink()");
+$actionMenu->setEntry('Toggle show Resource Query',"javascript:showresQuery()");
+$actionMenu->setEntry('Toggle show Value Query', "javascript:showvalQuery()");
+$actions = new OntoWiki_Menu();
+$actions->setEntry('View', $actionMenu);
+$this->placeholder('main.window.menu')->set($actions->toArray());
+
+$instances = $this->instances;
+// get queries
+$resourceQuery =  $instances->getResourceQuery();
+//echo htmlentities($resourceQuery);
+$valueQuery = $instances->getQuery();
+//echo htmlentities($valueQuery);
+$permalink = $instances->getPermalink($this->listName);
+$config = Erfurt_App::getInstance()->getConfig();
+$urlBase = $config->urlBase;
+
+$this->headScript()->prependScript(
+        'function showPermaLink(){$("#permalink").slideToggle(400);}
+            function showresQuery(){$("#resQuery").slideToggle(400);}
+            function showvalQuery(){$("#valQuery").slideToggle(400);}');
+?>
+<div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
+<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
+<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
+<?php
+//call subtemplate in a loop
+    if ($this->instances->hasData()): ?>
+<table class="resource-list separated-vertical"
+        <?php foreach ($this->other->namespaces as $namespace => $prefix): ?>
+                   <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+                   <?php endforeach; ?>>
+        <?php if (!empty($this->propertyInfo)): ?>
+    <tr>
+        <!--th></th--><th></th><th></th>
+            <?php foreach ($this->propertyInfo as $property):  if($property['hidden']){continue;}?>
+        <th>
+            <a class="hasMenu Property"
+               about="<?php echo $property['uri'] ?>"
+               href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
+                <?php if ($property['inverse']): ?><sup>-1</sup><?php endif; ?>
+        </th>
+            <?php endforeach; ?>
+        <?php if(isset($this->additionalElementView)): ?>
+        <th>
+            Actions
+        </th>
+        <?php endif; ?>
+    </tr>
+            <?php endif; ?>
+            <?php $i = $this->start ?>
+        <?php foreach ($this->instanceInfo as $instanceUri => $instance){
+            echo $this->partial('partials/list_std_element.phtml',
+                array(
+                    'instanceUri'  => $instanceUri,
+                    'instance'     => $instance,
+                    'instanceData' => $this->instanceData,
+                    'instanceInfo' => $this->instanceInfo,
+                    'propertyInfo' => $this->propertyInfo,
+                    'other'        => $this->other,
+                    'odd'          => $odd,
+                    'i'            => $i
+                )
+             );
+            $odd = !$odd;
+            $i++;
+        } ?>
+</table>
+    <?php else: ?>
+<p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
+    <?php endif; ?>
+
+
