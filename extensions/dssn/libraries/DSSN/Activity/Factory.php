@@ -113,7 +113,8 @@ EndOfTemplate;
                 $object->fetchDirectImports($model);
                 $return->setObject($object);
             } else {
-                throw new Exception('need at least one rdf:type statement');
+                var_dump($model); exit;     
+                //throw new Exception('need at least one rdf:type statement for '.$objectIri);
             }
         }
 

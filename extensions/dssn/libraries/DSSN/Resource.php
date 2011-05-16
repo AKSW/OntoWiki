@@ -61,6 +61,9 @@ abstract class DSSN_Resource
             case DSSN_AAIR_NS . 'Share':
                 return new DSSN_Activity_Verb_Share;
                 break;
+            case DSSN_AAIR_NS . 'Site':
+                return new DSSN_Activity_Object_Site;
+                break;
             default:
                 throw new Exception("Unknown rdf:type $typeIri for factory");
                 break;
