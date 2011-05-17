@@ -45,6 +45,8 @@ class PubsubControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertController('pubsub');
         $this->assertAction('test');
         $this->assertResponseCode(200);
+        
+        $this->assertQueryContentContains('body', 'PubsubController is enabled');
     }
 }
 

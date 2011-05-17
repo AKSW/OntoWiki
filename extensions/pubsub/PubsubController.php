@@ -12,7 +12,7 @@ class PubsubController extends OntoWiki_Controller_Component
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
         
-        echo "PubsubController is enabled";
+        echo 'PubsubController is enabled';
     }
     
     public function subscribeuiAction()
