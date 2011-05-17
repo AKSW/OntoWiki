@@ -224,6 +224,7 @@ class ResourceController extends OntoWiki_Controller_Base {
         //begin view building
         $this->view->placeholder('main.window.title')->set('Resource List');
 
+        // rdfauthor on a list is not possible yet
         // TODO: check acl
         // build toolbar
         /*
