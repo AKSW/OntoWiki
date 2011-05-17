@@ -31,12 +31,19 @@ class ManchesterController extends OntoWiki_Controller_Component {
             $store  = $this->_owApp->erfurt->getStore();
             //$store->addMultipleStatements((string) $model, $activity->toRDF());
 
+            $classname = OntoWiki::getInstance()->selectedResource;
             $resource = $response->r;
             $manchester = $response->manchester;
 
+
+            $structuredOwl = $this->initParser($manchester);
+
+            $triples = $structuredOwl->toTriples();
+
             $output   = array (
                 'message' => 'class saved',
-                'class'   => 'success'
+                'class'   => 'success',
+                'out' => $triples
             );
         } catch (Exception $e) {
             // encode the exception for http response
@@ -53,5 +60,17 @@ class ManchesterController extends OntoWiki_Controller_Component {
         $response->sendResponse();
         exit;
     }
+
+    private function initParser($inputQuery) {
+        require_once 'antlr/Php/antlr.php';
+        $input = new ANTLRStringStream($inputQuery);
+        $lexer = new Erfurt_Syntax_ManchesterLexer($input);
+        $tokens = new CommonTokenStream($lexer);
+        $parser = new Erfurt_Syntax_ManchesterParser($tokens);
+
+        // call the correct parser method (currently it's classFrame)
+        return $parser->classFrame();
+    }
+
 
 }
