@@ -17,7 +17,7 @@ $object   = $activity->getObject();
     </span>
     <span title="<?php echo $activity->getPublished() ?>" class="published"><?php echo $activity->getPublishedLabel() ?></span>:
     <span class="object">
-<?php if ($object instanceof DSSN_Activity_Object_Note) : ?>
+<?php if ($object instanceof DSSN_Activity_Object_Note || $object instanceof DSSN_Activity_Object_Site) : ?>
         <span class="content"><?php echo $object->getContent() ?></span>
 <?php else : ?>
     <?php /*
