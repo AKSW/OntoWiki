@@ -3,9 +3,12 @@ class HubSubscriptionModel
 {
     const MAX_RETRIES = 10;
     
+    static $testMode = false;
+    static $testData = array();
+    
     public function addSubscription($data = array())
     {
-        $this->_checkData();
+        $this->_checkData($data);
         $this->_checkTable();
         
         $created = time();
@@ -33,7 +36,15 @@ class HubSubscriptionModel
             0
         );';
         
-        $this->_sqlQuery($sql);
+        if (!self::$testMode) {
+            $this->_sqlQuery($sql);
+        } else {
+            $data['created_time'] = $created;
+            $data['expiration_time'] = $expirationTime;
+            $data['subscription_state'] = 'pending';
+            
+            self::$testData[] = $data;
+        }
     }
     
     public function hasSubscription($data = array())
@@ -53,7 +64,17 @@ class HubSubscriptionModel
         $sql = 'SELECT count(*) FROM `ef_pubsub_hubsubscription` WHERE `topic_url` = "' . $topic . '" AND 
         `callback_url` = "' . $callback . '"';
         
-        return (boolean)$this->_sqlQuery($sql);
+        if (!self::$testMode) {
+            return (boolean)$this->_sqlQuery($sql);
+        } else {
+            foreach (self::$testData as $i=>$spec) {
+                if (($spec['hub.topic'] === $data['hub.topic']) && ($spec['hub.callback'] === $data['hub.callback'])) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
     }
     
     public function deleteSubscription($data = array())
@@ -73,7 +94,16 @@ class HubSubscriptionModel
         $sql = 'DELETE FROM `ef_pubsub_hubsubscription` WHERE `topic_url` = "' . $topic . '" AND 
         `callback_url` = "' . $callback . '"';
         
-        $this->_sqlQuery($sql);
+        if (!self::$testMode) {
+            $this->_sqlQuery($sql);
+        } else {
+            foreach (self::$testData as $i=>$spec) {
+                if (($spec['hub.topic'] === $data['hub.topic']) && ($spec['hub.callback'] === $data['hub.callback'])) {
+                    unset(self::$testData[$i]);
+                    break;
+                }
+            }
+        }
     }
     
     public function updateSubscription($data = array())
@@ -108,7 +138,23 @@ class HubSubscriptionModel
         
         $sql = 'UPDATE `ef_pubsub_hubsubscription` SET ' . implode(', ', $updatesUnited) . ' WHERE `topic_url` = "' . $topic . '" AND `callback_url` = "' . $callback . '"';
         
-        $this->_sqlQuery($sql);
+        if (!self::$testMode) {
+            $this->_sqlQuery($sql);
+        } else {
+            foreach (self::$testData as $i=>$spec) {
+                if (($spec['hub.topic'] === $data['hub.topic']) && ($spec['hub.callback'] === $data['hub.callback'])) {
+                    $matchingData = self::$testData[$i];
+                    foreach ($updateKeys as $j=>$key) {
+                        if ($key === 'number_of_retries') {
+                            $matchingData[$key] = $matchingData[$key] + 1;
+                        }
+                        
+                        
+                    }
+                    break;
+                }
+            }
+        }
     }
     
     public function getSubscriptionsForTopic($topicUrl)
@@ -117,6 +163,17 @@ class HubSubscriptionModel
         
         $sql = 'SELECT * FROM `ef_pubsub_hubsubscription`
         WHERE `subscription_state` = "active" AND `topic_url` = "' . $topicUrl . '"';
+        
+        if (self::$testMode) {
+            $result = array();
+            foreach (self::$testData as $i=>$spec) {
+                if (($spec['hub.topic'] === $data['hub.topic']) && ($spec['subscription_state'] === 'active')) {
+                    $result[] = $spec;
+                }
+            }
+            
+            return $result;
+        }
         
         $retVal = array();
         $result = $this->_sqlQuery($sql);
@@ -142,6 +199,17 @@ class HubSubscriptionModel
         $sql = 'SELECT * FROM `ef_pubsub_hubsubscription` 
         WHERE `verify_token` = "async" AND `subscription_state` = "pending" ORDER BY `number_of_retries` ASC';
         
+        if (self::$testMode) {
+            $result = array();
+            foreach (self::$testData as $i=>$spec) {
+                if (($spec['verify_token'] === 'async') && ($spec['subscription_state'] === 'pending')) {
+                    $result[] = $spec;
+                }
+            }
+            
+            return $result;
+        }
+        
         $retVal = array();
         $result = $this->_sqlQuery($sql);
         foreach ($result as $row) {
@@ -166,7 +234,15 @@ class HubSubscriptionModel
         $sql = 'DELETE FROM  `ef_pubsub_hubsubscription`
         WHERE `subscription_state` = "pending" AND `number_of_retries` >= ' . self::MAX_RETRIES;
         
-        $this->_sqlQuery($sql);
+        if (!self::$testMode) {
+            $this->_sqlQuery($sql);
+        } else {
+            foreach (self::$testData as $i=>$spec) {
+                if (($spec['number_of_retries'] >= self::MAX_RETRIES) && ($spec['subscription_state'] === 'pending')) {
+                    unset(self::$testData[$i]);
+                }
+            }
+        }
     }
     
     private function _checkTable()
@@ -187,7 +263,9 @@ class HubSubscriptionModel
           PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
         
-        $this->_store->sqlQuery($tableSql);
+        if (!self::$testMode) {
+            $this->_store->sqlQuery($tableSql);
+        }
     }
     
     private function _checkData($data)
