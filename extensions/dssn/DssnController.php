@@ -8,6 +8,8 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class DssnController extends OntoWiki_Controller_Component {
+    
+    public $listname = "dssn-activities";
 
     public function init() {
         parent::init();
@@ -81,10 +83,11 @@ class DssnController extends OntoWiki_Controller_Component {
         $translate  = $this->_owApp->translate;
 
         $this->view->placeholder('main.window.title')->set($translate->_('News & Activities'));
-        $this->addModuleContext('main.window.dssn.news');
-
+        
         // inserts the activity stream list
         $this->createActivityList();
+        
+        $this->addModuleContext('main.window.dssn.news');
     }
 
     /*
@@ -177,11 +180,53 @@ class DssnController extends OntoWiki_Controller_Component {
         $helper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
 
         // list parameters
-        $name     = "dssn-activities";
+        $listname     = $this->listname;
         $template = "list_dssn_activities_main";
+        
+        //react on filter activity module requests
+        $name = $this->getParam("name");
+        $value = $this->getParam("value");
+        
+        if($name !== null && $value !== null && $helper->listExists($listname)){
+            $list = $helper->getList($listname);
+            switch ($name){
+                case "activityverb":
+                    if (!empty($_SESSION['DSSN_activityverb'])) {
+                        $splitted= explode("/", $_SESSION['DSSN_activityverb']);
+                        $id = $splitted[0];
+                        $list->removeFilter($id);
+                    } 
+                    if($value !== "all"){
+                        $parts= explode("/",$value,2);
+                        $uriparts =  explode("/",$parts[1]);
+                        $label = end($uriparts);
+                        $id = $list->addFilter(DSSN_AAIR_activityVerb, false, $label, "equals", $value, null, "uri");
+                        $_SESSION['DSSN_activityverb'] = $id."/".$value;
+                    } else {
+                        $_SESSION['DSSN_activityverb'] = "all"; 
+                    }
+                    break;
+                case "objecttype":
+                    if (!empty($_SESSION['DSSN_objecttype'])) {
+                        $splitted= explode("/", $_SESSION['DSSN_objecttype']);
+                        $id = $splitted[0];
+                      $list->removeFilter($id);
+                    } 
+                    if($value !== "all"){
+                        $triples = array(
+                            new Erfurt_Sparql_Query2_Triple(new Erfurt_Sparql_Query2_Var('object'), new Erfurt_Sparql_Query2_IriRef(DSSN_RDF_type), new Erfurt_Sparql_Query2_IriRef($value))
+                        );
+                        $id = $list->addTripleFilter($triples);
+                        $_SESSION['DSSN_objecttype'] = $id."/".$value;
+                    } else {
+                        $_SESSION['DSSN_objecttype'] = "all"; 
+                    }
+                    break;
+            }
+        } 
 
-        //if(!$helper->listExists($name)) {
-        if(true) {
+        //get the activities    
+        if(!$helper->listExists($listname)) {
             // create a new list from scratch if we do not have one
             $list = new OntoWiki_Model_Instances($store, $model, array());
 
@@ -266,16 +311,18 @@ class DssnController extends OntoWiki_Controller_Component {
             // add order by published timestamp
             $list->setOrderVar($publishedVar, true);
             // add the list to the session
-            $helper->addListPermanently($name, $list, $this->view, $template, $config);
+            $helper->addListPermanently($listname, $list, $this->view, $template, $config);
         } else {
             // catch the name list from the session
-            $list = $helper->getList($name);
+            $list = $helper->getList($listname);
             // re-add the list to the page
-            $helper->addList($name, $list, $this->view, $template, $config);
+            $helper->addList($listname, $list, $this->view, $template, $config);
         }
+        
         //var_dump((string) $list->getResourceQuery());
         //var_dump((string) $list->getQuery());
     }
-
+    
+    
 }
 
