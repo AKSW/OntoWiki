@@ -31,6 +31,9 @@ class ManchesterController extends OntoWiki_Controller_Component {
             $store  = $this->_owApp->erfurt->getStore();
             //$store->addMultipleStatements((string) $model, $activity->toRDF());
 
+            $resource = $response->r;
+            $manchester = $response->manchester;
+
             $output   = array (
                 'message' => 'class saved',
                 'class'   => 'success'
