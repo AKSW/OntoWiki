@@ -24,6 +24,7 @@ class ManchesterController extends OntoWiki_Controller_Component {
         $this->_helper->layout()->disableLayout();
 
         $response  = $this->getResponse();
+        $request   = $this->_request;
         $output    = false;
 
         try {
@@ -32,9 +33,8 @@ class ManchesterController extends OntoWiki_Controller_Component {
             //$store->addMultipleStatements((string) $model, $activity->toRDF());
 
             $classname = OntoWiki::getInstance()->selectedResource;
-            $resource = $response->r;
-            $manchester = $response->manchester;
-
+            //$resource = $response->r;
+            $manchester = $request->manchester;
 
             $structuredOwl = $this->initParser($manchester);
 
