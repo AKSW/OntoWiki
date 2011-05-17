@@ -7,6 +7,14 @@ class PubsubController extends OntoWiki_Controller_Component
     const DEFAULT_LEASE_SECONDS = 2592000; // 30 days
     const CHALLENGE_SALT= 'csaiojwef89456nucekljads8tv589ncefn4c5m90ikdf9df5s';
     
+    public function testAction()
+    {
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout()->disableLayout();
+        
+        echo "PubsubController is enabled";
+    }
+    
     public function subscribeuiAction()
     {
         OntoWiki_Navigation::disableNavigation();
@@ -135,7 +143,7 @@ class PubsubController extends OntoWiki_Controller_Component
              $this->_response->setException(new OntoWiki_Http_Exception(400));
              return;
          }
-         $params['hub.verify'] = $verify
+         $params['hub.verify'] = $verify;
          
          // optional: hub.lease_seconds
          $leaseSeconds = null;
@@ -165,6 +173,7 @@ class PubsubController extends OntoWiki_Controller_Component
              if ($params['hub.mode'] === 'subscribe') {
                  $this->_response->setException(new OntoWiki_Http_Exception(500));
                  return;
+             }
          }
          
          // Subscribe/Unsubscribe
@@ -187,7 +196,6 @@ class PubsubController extends OntoWiki_Controller_Component
          $this->_scheduleVerification();
          $this->_response->setHttpResponseCode(202);
          return $this->_response->sendResponse();
-         
      }
      
      public function hubperformasyncverifies()

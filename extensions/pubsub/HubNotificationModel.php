@@ -57,7 +57,7 @@ class HubNotificationModel
             $updatesUnited[] = $key . ' = ' . $updateValues[$i];
         }
         
-        $sql = 'UPDATE `ef_pubsub_hubnotification` SET ' . implode(', ', $updatesUnited) ' WHERE `publisher_url` = "' . $url . '"';
+        $sql = 'UPDATE `ef_pubsub_hubnotification` SET ' . implode(', ', $updatesUnited) . ' WHERE `publisher_url` = "' . $url . '"';
         
         $this->_sqlQuery($sql);        
     }
@@ -85,7 +85,7 @@ class HubNotificationModel
     private function _checkTable()
     {
         $tableSql = 'CREATE TABLE IF NOT EXISTS `ef_pubsub_hubnotification` (
-          `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+          `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
           `publisher_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `last_fetched` datetime DEFAULT NULL,
           `notification_time` datetime DEFAULT NULL,

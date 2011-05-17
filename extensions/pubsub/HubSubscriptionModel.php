@@ -106,7 +106,7 @@ class HubSubscriptionModel
         
         $this->_checkTable();
         
-        $sql = 'UPDATE `ef_pubsub_hubsubscription` SET ' . implode(', ', $updatesUnited) ' WHERE `topic_url` = "' . $topic . '" AND `callback_url` = "' . $callback . '"';
+        $sql = 'UPDATE `ef_pubsub_hubsubscription` SET ' . implode(', ', $updatesUnited) . ' WHERE `topic_url` = "' . $topic . '" AND `callback_url` = "' . $callback . '"';
         
         $this->_sqlQuery($sql);
     }
@@ -172,7 +172,7 @@ class HubSubscriptionModel
     private function _checkTable()
     {
         $tableSql = 'CREATE TABLE IF NOT EXISTS `ef_pubsub_hubsubscription` (
-          `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+          `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
           `topic_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `callback_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `created_time` datetime DEFAULT NULL,
