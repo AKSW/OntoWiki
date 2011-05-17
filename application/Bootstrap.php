@@ -75,6 +75,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $extensionPathBase = $config->staticUrlBase
                         . $config->extensions->base;
 
+        OntoWiki_Navigation::reset();
+
         $extensionManager = new OntoWiki_Extension_Manager($extensionPath);
         $extensionManager->setTranslate($translate)
                          ->setComponentUrlBase($extensionPathBase);

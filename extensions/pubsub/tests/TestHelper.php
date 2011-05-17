@@ -13,7 +13,6 @@ define('_OWROOT', ONTOWIKI_ROOT);
 
 // add libraries to include path
 $includePath  = get_include_path()                              . PATH_SEPARATOR;
-$includePath .= '/usr/lib/php/'                                 . PATH_SEPARATOR;
 $includePath .= _TESTROOT                                       . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'application/classes/'          . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'libraries/'                    . PATH_SEPARATOR;
