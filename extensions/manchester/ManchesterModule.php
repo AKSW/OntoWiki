@@ -25,7 +25,7 @@ class ManchesterModule extends OntoWiki_Module
     }
 
     /**
-     * Returns the content for the model list.
+     * Returns the content 
      */
     function getContents()
     {
@@ -36,16 +36,14 @@ class ManchesterModule extends OntoWiki_Module
             array( (string) $from), (string) $classname
         );
 
-        $manchesterString = ((string)$structured);
-        return $manchesterString;
+        $data = new StdClass();
+        $formUrl = new OntoWiki_Url( array('controller' => 'manchester', 'action' => 'post'), array() );
 
-        //$structuredFromString = Erfurt_Owl_Structured_Util_ManchesterHelper::initFromString($manchesterString);
-        //var_dump($structuredFromString->toTriples());
+        $data->formUrl = (string) $formUrl;
+        $data->manchesterString = (string) $structured;
 
-
-        //$newString = "Class: ns0:Allokation SubClassOf: ns0:Transportnetzbetreiber";
-        //$newStructuredFromString = Erfurt_Owl_Structured_Util_ManchesterHelper::initFromString($newString);
-        //var_dump($newStructuredFromString->toTriples());
-        //return "ttt";
+        $content = $this->render('modules/manchester', $data, 'data');
+        return $content;
     }
+
 }

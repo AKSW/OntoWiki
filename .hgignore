@@ -12,6 +12,7 @@ debian
 config.ini
 nbproject
 cache
+libraries/Erfurt
 libraries/Zend
 libraries/ZendFramework-1.*
 BlogPost
