@@ -25,8 +25,12 @@ class WeblinkPlugin extends OntoWiki_Plugin
     
     public function onDisplayLiteralPropertyValue($event)
     {
-        if ( (array_key_exists($event->property, $this->_properties)) && (Zend_Uri::check($event->value) ) ){
-            return '<a href="' . $event->value . '">' . OntoWiki_Utils::shorten($event->value, 60) . '</a>';
+        try{
+            if ( (array_key_exists($event->property, $this->_properties)) && (Zend_Uri::check($event->value) ) ){
+                return '<a href="' . $event->value . '">' . OntoWiki_Utils::shorten($event->value, 60) . '</a>';
+            }
+        } catch(Exception $e){
+
         }
     }
 }

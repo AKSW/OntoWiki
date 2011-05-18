@@ -1,0 +1,106 @@
+<tr class="<?php echo $this->odd ? 'odd' : 'even'; ?>">
+        <!--td class="selector">
+            <input type="checkbox" id="selector-<?php echo $this->i ?>" name="r[]" value="<?php echo $this->instanceUri ?>"/>
+        </td-->
+        <td class="enumeration"><label for="selector-<?php echo $this->i ?>"><?php echo $this->i ?>.</label></td>
+        <td>
+            <?php if($this->instance['type'] == 'uri'){ ?>
+            <a class="hasMenu expandable"
+               about="<?php echo $this->instanceUri ?>"
+                           <?php if(isset($this->instanceData[$this->instanceUri]['__TYPE'])) : ?>
+               typeof="<?php echo $this->curie($this->instanceData[$this->instanceUri]['__TYPE'][0]['value']) ?>"
+                               <?php endif; ?>
+               href="<?php echo $this->instance['url']?>">
+                        <?php echo $this->instance['title'] ?>
+            </a>
+            <br />
+                        <?php if (isset($this->instanceData[$this->instanceUri]) && isset($this->instanceData[$this->instanceUri]['__TYPE'])): ?>
+                            <?php if (count($this->instanceData[$this->instanceUri]['__TYPE']) > 1): ?>
+                                <?php $j = 0;
+                                $count = count($this->instanceData[$this->instanceUri]['__TYPE']) ?>
+                                <?php foreach ($this->instanceData[$this->instanceUri]['__TYPE'] as $type): ?>
+                                    <?php echo $type['value'] . ($count > ++$j ? ', ' : '') ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <?php echo $this->instanceData[$this->instanceUri]['__TYPE'][0]['value'] ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+            <?php } else { ?>
+                <?php echo $this->instance['title'] ?><br/>
+                Literal
+            <?php } ?>
+        </td>
+                        <?php foreach ($this->propertyInfo as $property):
+                            if($property['hidden']){continue;} ?>
+        <td>
+                            <?php if (array_key_exists($this->instanceUri, $this->instanceData) &&
+                        array_key_exists($property['varName'], $this->instanceData[$this->instanceUri]) &&
+                                        !empty($this->instanceData[$this->instanceUri][$property['varName']])): ?>
+                                    <?php if (count($this->instanceData[$this->instanceUri][$property['varName']]) > 1): ?>
+                            <ul class="bullets-none has-contextmenu-area">
+                                        <?php $i=0;
+                                        foreach ($this->instanceData[$instanceUri][$property['varName']] as $value): ?>
+                                                        <?php $i++; if($i==OW_SHOW_MAX+1) {
+                                                            ?>&hellip;<?php
+                                                            break;
+                                                        }
+                                                        if($i==2){
+                                                        ?>
+
+                                                            <div class="contextmenu">
+                                                                <a class="item"
+                                                                   href="<?php $url->setParam('instancesconfig', json_encode(array('filter'=>array(array(
+                                                                       'id'=>'moreValues','action'=>'add','mode'=>'box',
+                                                                       'property'=>$property['uri'],
+                                                                       'isInverse'=> !$property['inverse'],
+                                                                       'filter' => 'equals',
+                                                                       'value1' => $instanceUri,
+                                                                       'valuetype'=>'uri'
+                                                                       )))));
+                                                                    echo $url; ?>">
+                                                                <span class="icon icon-list" title="Show as List">
+                                                                    <span>Show as List</span>
+                                                                 </span>
+                                                                </a>
+                                                            </div>
+                                                            <?php
+
+                                                        }
+                                                        if (isset($value['url']) && $value['url'] !== null): ?>
+                    <li>
+                        <a class="hasMenu" href="<?php echo $value['url'] ?>" resource="<?php echo $value['uri'] ?>"><?php
+                                echo $value['value']
+                                                    ?></a>
+                    </li>
+                                                <?php else: ?>
+                    <li content="<?php echo $this->escape($value['value']) ?>"><?php echo $value['value'] ?></li>
+                            <?php endif; ?>
+                                        <?php
+
+                        endforeach;?>
+
+            </ul>
+                    <?php else: ?>
+                        <?php if ($this->instanceData[$this->instanceUri][$property['varName']][0]['url']): ?>
+            <a about="<?php echo $this->instanceUri ?>"
+               class="hasMenu"
+               rel="<?php echo $this->curie($property['uri']) ?>"
+               resource="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['uri'] ?>"
+               href="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['url'] ?>">
+                            <?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['value'] ?>
+            </a>
+                                    <?php else: ?>
+            <span about="<?php echo $this->instanceUri ?>" property="<?php echo $this->curie($property['uri']) ?>" content="<?php echo $this->escape($this->instanceData[$this->instanceUri][$property['varName']][0]['uri']) ?>">
+                            <?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['value'] ?>
+            </span>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                <?php endif; ?>
+        </td>
+            <?php endforeach; ?>
+        <?php if(isset($this->additionalElementView) && $this->additionalElementView != null && is_string($this->additionalElementView) && !empty($this->additionalElementView)): ?>
+        <td>
+            <?php echo $this->partial('partials/'.$this->additionalElementView, array('element'=>$this->instanceData[$this->instanceUri])); ?>
+        </td>
+        <?php endif; ?>
+    </tr>

@@ -214,7 +214,7 @@ class ResourceController extends OntoWiki_Controller_Base {
             $listHelper->addList($listName, $list, $this->view);
         } else {
             if($this->_owApp->selectedModel == null){
-                $this->_owApp->appendMessage(new OntoWiki_Message("your session timed out",  OntoWiki_Message::ERROR));
+                $this->_owApp->appendMessage(new OntoWiki_Message("your session timed out. select a model",  OntoWiki_Message::ERROR));
                 $this->_redirect($this->_config->baseUrl);
             }
             $list = new OntoWiki_Model_Instances($store, $this->_owApp->selectedModel, array());
@@ -259,6 +259,7 @@ class ResourceController extends OntoWiki_Controller_Base {
         $url = new OntoWiki_Url();
         $this->view->redirectUrl = (string)$url;
 
+        $this->addModuleContext('main.window.list');
         $this->addModuleContext('main.window.instances');
     }
 

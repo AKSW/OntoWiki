@@ -1157,10 +1157,10 @@ class ServiceController extends Zend_Controller_Action
                         $objectString = Erfurt_Utils::buildLiteralString(
                             $currentObject['value'], 
                             isset($currentObject['datatype']) ? $currentObject['datatype'] : null, 
-                            isset($currentObject['lang']) ? $currentObject['lang'] : null);
+                            isset($currentObject['xml:lang']) ? $currentObject['xml:lang'] : null);
 
                         $hash = $hashFunc($objectString);
-                        if ($hash === $hashedObjects[$i]) {
+                        if (in_array($hash, $hashedObjects)) {
                             // add current statement to result
                             if (!isset($result[$subject])) {
                                 $result[$subject] = array();
@@ -1173,10 +1173,10 @@ class ServiceController extends Zend_Controller_Action
                                 'value' => $currentObject['value'], 
                                 'type'  => str_replace('typed-', '', $currentObject['type'])
                             );
-                            if (isset($bindings[$i]['datatype'])) {
+                            if (isset($currentObject['datatype'])) {
                                 $objectSpec['datatype'] = $currentObject['datatype'];
-                            } else if (isset($currentObject['lang'])) {
-                                $objectSpec['lang'] = $currentObject['lang'];
+                            } else if (isset($currentObject['xml:lang'])) {
+                                $objectSpec['lang'] = $currentObject['xml:lang'];
                             }
                             
                             array_push($result[$subject][$predicate], $objectSpec);
@@ -1187,60 +1187,5 @@ class ServiceController extends Zend_Controller_Action
         }
         
         return $result;
-    }
-    
-    /**
-     * Builds a SPARQL-compatible literal string with long literals if necessary.
-     *
-     * @param string $value
-     * @param string|null $datatype
-     * @param string|null $lang
-     * @return string
-     */
-    protected static function _buildLiteralString($value, $datatype = null, $lang = null)
-    {
-        $longLiteral = false;
-        $quoteChar   = (strpos($value, '"') !== false) ? "'" : '"';
-        $value       = (string)$value;
-        
-        // datatype-specific treatment
-        switch ($datatype) {
-            case 'http://www.w3.org/2001/XMLSchema#boolean':
-                $search  = array('0', '1');
-                $replace = array('false', 'true');
-                $value   = str_replace($search, $replace, $value);
-                break;
-            case '':
-            case null:
-            case 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral':
-            case 'http://www.w3.org/2001/XMLSchema#string':
-                $value = addcslashes($value, $quoteChar);
-                
-                /** 
-                 * Check for characters not allowed in a short literal
-                 * {@link http://www.w3.org/TR/rdf-sparql-query/#rECHAR}
-                 * wrong: \t\b\n\r\f\\\"\\\' 
-                 */
-                if (preg_match('/[\x5c\r\n"]/', $value) > 0) {
-                    $longLiteral = true;
-                    $value = trim($value, "\n\r");
-                    // $value = str_replace("\x0A", '\n', $value);
-                }
-                break;
-        }
-        
-        // add short, long literal quotes respectively
-        $value = $quoteChar . ($longLiteral ? ($quoteChar . $quoteChar) : '')
-               . $value 
-               . $quoteChar . ($longLiteral ? ($quoteChar . $quoteChar) : '');
-        
-        // add datatype URI/lang tag
-        if (!empty($datatype)) {
-            $value .= '^^<' . (string)$datatype . '>';
-        } else if (!empty($lang)) {
-            $value .= '@' . (string)$lang;
-        }
-        
-        return $value;
     }
 }

@@ -1,0 +1,25 @@
+<?php $odd = true;
+if ($this->instances->hasData()): ?>
+<ol class="bullets-none separated">
+    <?php foreach ($this->instanceInfo as $instanceUri => $instance){
+        //fixme
+        $parts = explode("/", $instanceUri);
+        $name = $parts[count($parts)-1]; //last part of the uri
+            echo $this->partial('partials/list_queries_element.phtml',
+                array(
+                    'instanceUri'  => $instanceUri,
+                    'instance'     => $instance,
+                    'instanceData' => $this->instanceData,
+                    'instanceInfo' => $this->instanceInfo,
+                    'propertyInfo' => $this->propertyInfo,
+                    'odd'          => $odd
+                )
+             );
+            $odd = !$odd;
+        } ?>
+</ol>
+    <?php else: ?>
+<p class="messagebox info"><?php echo $this->_('No queries found.') ?></p>
+    <?php endif; ?>
+
+

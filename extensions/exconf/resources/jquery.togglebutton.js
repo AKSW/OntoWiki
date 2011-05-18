@@ -1,9 +1,9 @@
 /*
- ### 
+  turn a div or checkbox into a sliding toggle switch (like the apple controlls)
 */
 
 /*# AVOID COLLISIONS #*/
-;if(window.jQuery) (function($){
+if(window.jQuery) (function($){
 /*# AVOID COLLISIONS #*/
 
 	// plugin initialization

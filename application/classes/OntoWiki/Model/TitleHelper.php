@@ -319,8 +319,11 @@ class OntoWiki_Model_TitleHelper
 
             // add if we don't have this URI (but logg)
             if (!array_key_exists($resourceUri, (array)$this->_resources)) {
-                $logger = OntoWiki::getInstance()->logger;
-                $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
+
+                if (defined('_OWDEBUG')) {
+                    $logger = OntoWiki::getInstance()->logger;
+                    $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
+                }
                 $this->addResource($resourceUri);
             }
 
@@ -489,10 +492,10 @@ class OntoWiki_Model_TitleHelper
             if (!in_array($resourceVariable, $head['vars'])) {
                 return;
             }
-
-            $logger = OntoWiki::getInstance()->logger;
-            $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
-
+            if (defined('_OWDEBUG')) {
+                $logger = OntoWiki::getInstance()->logger;
+                $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
+            }
 
             foreach ($bindings as $row) {
                 // get the resource URI
