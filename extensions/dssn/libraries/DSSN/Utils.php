@@ -71,7 +71,7 @@ class DSSN_Utils
              * DSSN resource constants
              */
             define('DSSN_ATOM_published' , DSSN_ATOM_NS . 'published');
-            
+
             define('DSSN_AAIR_Activity'       , DSSN_AAIR_NS . 'Activity');
             define('DSSN_AAIR_activityActor'  , DSSN_AAIR_NS . 'activityActor');
             define('DSSN_AAIR_activityVerb'   , DSSN_AAIR_NS . 'activityVerb');
@@ -80,7 +80,7 @@ class DSSN_Utils
             define('DSSN_AAIR_content'        , DSSN_AAIR_NS . 'content');
             define('DSSN_AAIR_name'           , DSSN_AAIR_NS . 'name');
             define('DSSN_AAIR_thumbnail'      , DSSN_AAIR_NS . 'thumbnail');
-            
+
             define('DSSN_RDF_type'  , DSSN_RDF_NS . 'type');
             define('DSSN_RDFS_label'  , DSSN_RDFS_NS . 'label');
             define('DSSN_FOAF_name' , DSSN_FOAF_NS . 'name');
@@ -102,5 +102,22 @@ class DSSN_Utils
         );
         return $namespaces;
     }
+
+    /**
+     * Get all values from specific key in a multidimensional array
+     * http://de3.php.net/manual/de/function.array-values.php#103905
+     *
+     * @param $key string
+     * @param $arr array
+     * @return null|string|array
+     */
+    static public function array_value_recursive($key, array $arr){
+        $val = array();
+        array_walk_recursive($arr, function($v, $k) use($key, &$val){
+            if($k == $key) array_push($val, $v);
+        });
+        return count($val) > 1 ? $val : array_pop($val);
+    }
+
 
 }
