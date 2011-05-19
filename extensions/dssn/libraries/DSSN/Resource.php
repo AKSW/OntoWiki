@@ -54,7 +54,6 @@ abstract class DSSN_Resource
         } elseif (is_string($typeIris)) {
             $typeIris = array( 0 => $typeIris);
         }
-        var_dump($typeIris); 
 
         if ($typeIris == null) {
             throw new Exception('need at least one IRI string as first parameter');
@@ -82,7 +81,7 @@ abstract class DSSN_Resource
             // throw an error if there is no suitable type
             throw new Exception("Unknown rdf:type $iri for factory");
         }
-    } 
+    }
 
 
     /*
@@ -188,7 +187,7 @@ EndOfTemplate;
                 $index = ARC2::getMergedIndex($index, $resourceIndex);
             }
         }
-        
+
         //$turtle = $obj->toTurtle($index);
         return $index;
     }
