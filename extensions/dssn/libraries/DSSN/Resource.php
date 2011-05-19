@@ -41,33 +41,46 @@ abstract class DSSN_Resource
     }
 
     /*
-     * return an DSSN object based on a RDF type
+     * return an DSSN object based on a RDF type (can be an array)
+     * typeIris is a string of one IRI or an array from DSSN_Resource::getValues();
      */
-    static public function initFromType($typeIri = null) {
+    static public function initFromType($typeIris = null) {
+
         DSSN_Utils::setConstants();
-        if ($typeIri == null) {
-            throw new Exception('need a IRI string as first parameter');
+
+        if (is_array($typeIris)) {
+            $typeIris = DSSN_Utils::array_value_recursive('value', $typeIris);
+            // if there are no values -> it is null here
+        } elseif (is_string($typeIris)) {
+            $typeIris = array( 0 => $typeIris);
+        }
+        var_dump($typeIris); 
+
+        if ($typeIris == null) {
+            throw new Exception('need at least one IRI string as first parameter');
         } else {
-            switch ($typeIri) {
-            case DSSN_AAIR_NS . 'User':
-                return new DSSN_Activity_Actor_User;
-                break;
-            case DSSN_AAIR_NS . 'Note':
-                return new DSSN_Activity_Object_Note;
-                break;
-            case DSSN_AAIR_NS . 'Post':
-                return new DSSN_Activity_Verb_Post;
-                break;
-            case DSSN_AAIR_NS . 'Share':
-                return new DSSN_Activity_Verb_Share;
-                break;
-            case DSSN_AAIR_NS . 'Site':
-                return new DSSN_Activity_Object_Site;
-                break;
-            default:
-                throw new Exception("Unknown rdf:type $typeIri for factory");
-                break;
+            foreach ($typeIris as $index => $iri) {
+                switch ($iri) {
+                case DSSN_AAIR_NS . 'User':
+                    return new DSSN_Activity_Actor_User;
+                    break;
+                case DSSN_AAIR_NS . 'Note':
+                    return new DSSN_Activity_Object_Note;
+                    break;
+                case DSSN_AAIR_NS . 'Post':
+                    return new DSSN_Activity_Verb_Post;
+                    break;
+                case DSSN_AAIR_NS . 'Share':
+                    return new DSSN_Activity_Verb_Share;
+                    break;
+                case DSSN_AAIR_NS . 'Site':
+                    return new DSSN_Activity_Object_Site;
+                    break;
+                }
             }
+
+            // throw an error if there is no suitable type
+            throw new Exception("Unknown rdf:type $iri for factory");
         }
     } 
 
