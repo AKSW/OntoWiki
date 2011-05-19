@@ -147,7 +147,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $port        = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80') 
                      ? (':' . $_SERVER['SERVER_PORT']) 
                      : '';
-        $urlBase     = sprintf('%s://%s%s%s', $protocol, isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', $port, $rewriteBase);
+        $urlBase     = sprintf('%s://%s%s%s', 
+                               $protocol, 
+                               isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', 
+                               $port, 
+                               $rewriteBase);
         
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);
@@ -174,8 +178,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             // log everything
             $config->log->level = 7;
         }
-
-
 
         return $config;
     }
@@ -318,6 +320,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                ? $session->lastRoute
                : $config->route->default->name;
 
+        // Reset navigation for multiple boostraping (tests)
+        OntoWiki_Navigation::reset();
+
         // register with navigation
         if (isset($config->routes->{$route})) {
             extract($config->routes->{$route}->defaults->toArray());
@@ -344,6 +349,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
 
+        OntoWiki::reset();
         $ontoWiki = OntoWiki::getInstance();
         $ontoWiki->language = isset($config->languages->locale) ? $config->languages->locale : null;
         $ontoWiki->config   = $config;

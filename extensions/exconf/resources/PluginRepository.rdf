@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+  <!ENTITY ExtensionRepo "http://ns.ontowiki.net/Extensions/">
+  <!ENTITY SysOnt "http://ns.ontowiki.net/SysOnt/">
+  <!ENTITY dc "http://purl.org/dc/elements/1.1/">
+  <!ENTITY doap "http://usefulinc.com/ns/doap#">
+  <!ENTITY foaf "http://xmlns.com/foaf/0.1/">
+  <!ENTITY ns "http://rdfs.org/sioc/ns#">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY terms "http://purl.org/dc/terms/">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+]>
+<rdf:RDF xml:base="&ExtensionRepo;"
+         xmlns:ExtensionRepo="&ExtensionRepo;"
+         xmlns:SysOnt="&SysOnt;"
+         xmlns:dc="&dc;"
+         xmlns:doap="&doap;"
+         xmlns:foaf="&foaf;"
+         xmlns:ns="&ns;"
+         xmlns:owl="&owl;"
+         xmlns:rdf="&rdf;"
+         xmlns:rdfs="&rdfs;"
+         xmlns:terms="&terms;">
+
+<!-- Ontology Information -->
+  <owl:Ontology rdf:about=""
+                rdfs:label="Extension Repopository"
+                owl:versionInfo="0.4">
+    <rdfs:comment xml:lang="en">OWL for the Miniworld of the Extension Repository Scheme</rdfs:comment>
+    <owl:imports>
+      <owl:Ontology rdf:about="http://rdfs.org/sioc/ns#"/>
+    </owl:imports>
+    <owl:imports>
+      <owl:Ontology rdf:about="http://usefulinc.com/ns/doap#"/>
+    </owl:imports>
+  </owl:Ontology>
+
+<!-- Classes -->
+  <owl:Class rdf:about="Extension"
+             rdfs:label="Extension">
+    <rdfs:comment>a Extension pluggable script that interacts with Ontowiki to provide a certain, usually very specific, function "on demand".</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="&doap;Project"/>
+  </owl:Class>
+
+  <owl:Class rdf:about="&ns;User"/>
+  <owl:Class rdf:about="&doap;Project"/>
+  <owl:Class rdf:about="&doap;Version"/>
+  <owl:Class rdf:about="&rdfs;Literal"/>
+  <owl:Class rdf:about="&foaf;Person"/>
+
+<!-- Datatypes -->
+  <rdfs:Datatype rdf:about="&xsd;dateTime"/>
+  <rdfs:Datatype rdf:about="&xsd;string"/>
+
+<!-- Annotation Properties -->
+  <owl:AnnotationProperty rdf:about="&rdfs;comment"/>
+  <owl:AnnotationProperty rdf:about="&rdfs;label"/>
+  <owl:AnnotationProperty rdf:about="&owl;versionInfo"/>
+
+<!-- Datatype Properties -->
+  <owl:DatatypeProperty rdf:about="&SysOnt;userPassword">
+    <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+    <rdfs:comment xml:lang="en">Every developer must have a password together with nickname for the authentificaiton</rdfs:comment>
+    <rdfs:domain rdf:resource="&ns;User"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="&dc;description"/>
+  <owl:DatatypeProperty rdf:about="&terms;modified">
+    <rdfs:comment xml:lang="en">time of last metadata change of the Extension</rdfs:comment>
+    <rdfs:range rdf:resource="&xsd;dateTime"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="&ns;first_name">
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="&ns;last_name"/>
+  <owl:DatatypeProperty rdf:about="&ns;name"/>
+  <owl:DatatypeProperty rdf:about="&doap;fileRelase"/>
+  <owl:DatatypeProperty rdf:about="&doap;revision"/>
+
+<!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="excludes"
+                      rdfs:label="excludes">
+    <rdfs:comment>mark extensions that can not coexist with this one. maybe because they are interchangeable but contradictionary.</rdfs:comment>
+    <rdfs:domain rdf:resource="Extension"/>
+    <rdfs:range rdf:resource="&doap;Project"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="requires"
+                      rdfs:label="requires">
+    <rdf:type rdf:resource="&owl;TransitiveProperty"/>
+    <rdfs:comment>mark extensions that are needed by this extension to work properly.</rdfs:comment>
+    <rdfs:domain rdf:resource="Extension"/>
+    <rdfs:range rdf:resource="&doap;Project"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="&ns;account_of"/>
+  <owl:ObjectProperty rdf:about="&doap;developer"/>
+  <owl:ObjectProperty rdf:about="&doap;release"/>
+
+<!-- Instances -->
+  
+</rdf:RDF>

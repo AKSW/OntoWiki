@@ -71,11 +71,10 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         parent::setUp();
     }
     
+    // ------------------------------------------------------------------------
+    // Auth Action
+    // ------------------------------------------------------------------------
     
-    
-    # ################
-    # AUTH ACTION ####
-    # ################
     public function testCallWithoutActionShouldPullFromIndexAction()
     {
         $this->dispatch('/service');
@@ -198,9 +197,9 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertResponseCode(401);
     }
     
-    # ##################
-    # SPARQL ACTION ####
-    # ##################
+    // ------------------------------------------------------------------------
+    // SPARQL Action
+    // ------------------------------------------------------------------------
     
     /**
      * No parameter, no action!
@@ -219,7 +218,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     }
     
     /**
-     * No authentification, but with an query. OW should used Anonymous.
+     * No authentification, but with a query. OW should use Anonymous.
      * 
      * @test
      */
@@ -242,6 +241,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
      * No auth, valid query. Expected XML.
      * @test
      */
+     /*
     public function sparqlNoAuthWithValidQueryResultAsXML()
     {        
         // Send invalid query
@@ -266,13 +266,15 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
 </sparql>
 ';
         
-        $this->assertEquals ( $expected, $this->response->getBody () );
+        $this->assertEquals ($expected, $this->response->getBody());
     }
+    */
     
     /**
      * No auth, valid query. Expected JSON.
      * @test
      */
+     /*
     public function sparqlNoAuthWithValidQueryResultAsJSON()
     {        
         // Send invalid query
@@ -294,6 +296,34 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $expected = '{"head":{"vars":["s"]},"bindings":[],"results":{"bindings":[]}}';
         
         $this->assertEquals ( $expected, $this->response->getBody () );
+    }
+    */
+    
+    // ------------------------------------------------------------------------
+    // Update Action
+    // ------------------------------------------------------------------------
+    
+    /**
+     * @test
+     */
+    public function testUpdateDoesNothingWithEmptyParameters()
+    {
+        $this->request->setMethod('POST')
+                      ->setPost(array('insert' => '{}', 'delete' => '{}'));
+        
+
+        
+        $storeMock = $this->getMock('Erfurt_Store');
+        $storeMock->expects($this->any())
+                  ->method('getModel')
+                  ->will($this->returnValue($modelMock));
+        
+        Erfurt_App::setStore();
+        
+        $this->dispatch('/service/update');
+        
+        $this->assertController('service');
+        $this->assertAction('update');
     }
 }
 

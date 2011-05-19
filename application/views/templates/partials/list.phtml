@@ -1,35 +1,20 @@
 <?php
-
 $start = microtime(true);
 $instances = $this->instances;
-
-// build menu
-$actionMenu = new OntoWiki_Menu();
-$actionMenu->setEntry('Toggle show Permalink', "javascript:showPermaLink()");
-$actionMenu->setEntry('Toggle show Resource Query',"javascript:showresQuery()");
-$actionMenu->setEntry('Toggle show Value Query', "javascript:showvalQuery()");
-$actions = new OntoWiki_Menu();
-$actions->setEntry('View', $actionMenu);
-$this->placeholder('main.window.menu')->set($actions->toArray());
-
-// get queries
-$resourceQuery =  $instances->getResourceQuery();
-//echo htmlentities($resourceQuery);
-$valueQuery = $instances->getQuery();
-//echo htmlentities($valueQuery);
-$config = Erfurt_App::getInstance()->getConfig();
-$permalink = $instances->getPermalink($this->listName);
 
 $graph = $this->instances->getGraph();
 $store = $this->instances->getStore();
 
 // prepare namespaces
-$namespaces = $graph->getNamespaces();
+try{
+    $namespaces = $graph->getNamespaces();
+} catch (Exception $e){
+    $namespaces = array();
+}
 $graphBase  = $graph->getBaseUri();
 if (!array_key_exists($graphBase, $namespaces)) {
     $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
 }
-$namespaces = $namespaces;
 
 //data for filter module
 $filter = $instances->getFilter();
@@ -38,17 +23,6 @@ $filter_js = json_encode(is_array($filter) ? $filter : array());
 $this->headScript()->prependFile(
         OntoWiki::getInstance()->extensionManager->getComponentUrl('filter') .'resources/FilterAPI.js'
 );
-$this->headScript()->prependScript(
-        'function showPermaLink(){$("#permalink").slideToggle(400);}
-            function showresQuery(){$("#resQuery").slideToggle(400);}
-            function showvalQuery(){$("#valQuery").slideToggle(400);}
-             var reloadUrl = "'.
-        new OntoWiki_Url(array()). // url to reload -> without config params
-        '";
-            var filtersFromSession = ' . $filter_js.';
-            var listName = "'.$this->listName.'";'
-        );
-
 if ($instances->hasData()) {
     $instanceInfo = $instances->getResources();
     $instanceData = $instances->getValues();
@@ -72,7 +46,8 @@ if ($instances->hasData()) {
     } else {
         $page = 1;
     }
-    
+    $config = Erfurt_App::getInstance()->getConfig();
+
     if($graph->getOption($config->sysont->properties->isLarge)) {
         $statusBar->append(OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName));
     } else {
@@ -93,161 +68,47 @@ if ($instances->hasData()) {
             $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
         }
     }
-    $thisActionUrl = new OntoWiki_Url().'/';
-    $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
-    $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
-    $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
-    $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
-    $statusBar->append($limit);
-    
+    if(!isset($count) || $count > 10 ){
+        $thisActionUrl = new OntoWiki_Url().'/';
+        $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
+        $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
+        $statusBar->append($limit);
+    }
+
     if (defined('_OWDEBUG')) {
         $timeMsg = sprintf($translate->translate('Query execution took %1$d ms.'), $time);
         $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
     }
+} else {
+    $instanceData = array();
+    $instanceInfo = array();
+    $propertyInfo = array();
 }
 $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));$url->setParam('init', true);
+$this->headScript()->prependScript(
+        'var reloadUrl = "'.
+        new OntoWiki_Url(array()). // url to reload -> without config params
+        '";
+            var filtersFromSession = ' . $filter_js.';
+            var listName = "'.$this->listName.'";'
+        );
+//other contains template specific data
+$other = $this->other;
+$other->namespaces =$namespaces;
+$other->graphbase = $graphBase;
+
+//call the requested template
+echo $this->partial('partials/'.$this->mainTemplate.'.phtml',
+                array(
+                    'instances'    => $instances,
+                    'instanceData' => $instanceData,
+                    'instanceInfo' => $instanceInfo,
+                    'propertyInfo' => $propertyInfo,
+                    'other'        => $other,
+                    'listName'    => $this->listName,
+                    'start'        => $start
+                )
+             );
 ?>
-<div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
-<div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
-<div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $config->urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
-
-<?php $odd = true;
-    if ($instances->hasData()): ?>
-<table class="resource-list separated-vertical"
-        <?php foreach ($namespaces as $namespace => $prefix): ?>
-                   <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
-                   <?php endforeach; ?>>
-        <?php if (!empty($propertyInfo)): ?>
-    <tr>
-        <!--th></th--><th></th><th></th>
-            <?php foreach ($propertyInfo as $property):  if($property['hidden']){continue;}?>
-        <th>
-            <a class="hasMenu Property"
-               about="<?php echo $property['uri'] ?>"
-               href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
-                <?php if ($property['inverse']): ?><sup>-1</sup><?php endif; ?>
-        </th>
-            <?php endforeach; ?>
-        <?php if(isset($this->additionalElementView)): ?>
-        <th>
-            Actions
-        </th>
-        <?php endif; ?>
-    </tr>
-            <?php endif; ?>
-            <?php $i = 0 ?>
-        <?php foreach ($instanceInfo as $instanceUri => $instance): ?>
-    <tr class="<?php echo $odd ? 'odd' : 'even';
-            $odd = !$odd; ?>">
-        <!--td class="selector">
-            <input type="checkbox" id="selector-<?php echo ++$i ?>" name="r[]" value="<?php echo $instanceUri ?>"/>
-        </td-->
-        <td class="enumeration"><label for="selector-<?php echo $i ?>"><?php echo $start++ ?>.</label></td>
-        <td>
-            <?php if($instance['type'] == 'uri'){ ?>
-            <a class="hasMenu expandable"
-               about="<?php echo $instanceUri ?>"
-                           <?php if(isset($instanceData[$instanceUri]['__TYPE'])) : ?>
-               typeof="<?php echo $this->curie($instanceData[$instanceUri]['__TYPE'][0]['value']) ?>"
-                               <?php endif; ?>
-               href="<?php echo $instance['url']?>">
-                        <?php echo $instance['title'] ?>
-            </a>
-            <br />
-                        <?php if (isset($instanceData[$instanceUri]) && isset($instanceData[$instanceUri]['__TYPE'])): ?>
-                            <?php if (count($instanceData[$instanceUri]['__TYPE']) > 1): ?>
-                                <?php $j = 0;
-                                $count = count($instanceData[$instanceUri]['__TYPE']) ?>
-                                <?php foreach ($instanceData[$instanceUri]['__TYPE'] as $type): ?>
-                                    <?php echo $type['value'] . ($count > ++$j ? ', ' : '') ?>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <?php echo $instanceData[$instanceUri]['__TYPE'][0]['value'] ?>
-                            <?php endif; ?>
-                        <?php endif; ?>
-            <?php } else { ?>
-                <?php echo $instance['title'] ?><br/>
-                Literal
-            <?php } ?>
-        </td>
-                        <?php foreach ($propertyInfo as $property):
-                            if($property['hidden']){continue;} ?>
-        <td> 
-                            <?php if (array_key_exists($instanceUri, $instanceData) &&
-                        array_key_exists($property['varName'], $instanceData[$instanceUri]) &&
-                                        !empty($instanceData[$instanceUri][$property['varName']])): ?>
-                                    <?php if (count($instanceData[$instanceUri][$property['varName']]) > 1): ?>
-                            <ul class="bullets-none has-contextmenu-area">
-                                        <?php $i=0;
-                                        foreach ($instanceData[$instanceUri][$property['varName']] as $value): ?>
-                                                        <?php $i++; if($i==OW_SHOW_MAX+1) {
-                                                            ?>&hellip;<?php 
-                                                            break;
-                                                        }
-                                                        if($i==2){
-                                                        ?>
-
-                                                            <div class="contextmenu">
-                                                                <a class="item"
-                                                                   href="<?php $url->setParam('instancesconfig', json_encode(array('filter'=>array(array(
-                                                                       'id'=>'moreValues','action'=>'add','mode'=>'box',
-                                                                       'property'=>$property['uri'],
-                                                                       'isInverse'=> !$property['inverse'],
-                                                                       'filter' => 'equals',
-                                                                       'value1' => $instanceUri,
-                                                                       'valuetype'=>'uri'
-                                                                       )))));
-                                                                    echo $url; ?>">
-                                                                <span class="icon icon-list" title="Show as List">
-                                                                    <span>Show as List</span>
-                                                                 </span>
-                                                                </a>
-                                                            </div>
-                                                            <?php
-                                                            
-                                                        } 
-                                                        if (isset($value['url']) && $value['url'] !== null): ?>
-                    <li>
-                        <a class="hasMenu" href="<?php echo $value['url'] ?>" resource="<?php echo $value['uri'] ?>"><?php
-                                echo $value['value']
-                                                    ?></a>
-                    </li>
-                                                <?php else: ?>
-                    <li content="<?php echo $this->escape($value['value']) ?>"><?php echo $value['value'] ?></li>
-                            <?php endif; ?>
-                                        <?php 
-                                        
-                        endforeach;?>
-                        
-            </ul>
-                    <?php else: ?>
-                        <?php if ($instanceData[$instanceUri][$property['varName']][0]['url']): ?>
-            <a about="<?php echo $instanceUri ?>"
-               class="hasMenu"
-               rel="<?php echo $this->curie($property['uri']) ?>"
-               resource="<?php echo $instanceData[$instanceUri][$property['varName']][0]['uri'] ?>"
-               href="<?php echo $instanceData[$instanceUri][$property['varName']][0]['url'] ?>">
-                            <?php echo $instanceData[$instanceUri][$property['varName']][0]['value'] ?>
-            </a>
-                                    <?php else: ?>
-            <span about="<?php echo $instanceUri ?>" property="<?php echo $this->curie($property['uri']) ?>" content="<?php echo $this->escape($instanceData[$instanceUri][$property['varName']][0]['uri']) ?>">
-                            <?php echo $instanceData[$instanceUri][$property['varName']][0]['value'] ?>
-            </span>
-                        <?php endif; ?>
-                        <?php endif; ?>
-                <?php endif; ?>
-        </td>
-            <?php endforeach; ?>
-        <?php if(isset($this->additionalElementView) && $this->additionalElementView != null && is_string($this->additionalElementView) && !empty($this->additionalElementView)): ?>
-        <td>
-            <?php echo $this->partial('partials/'.$this->additionalElementView, array('element'=>$instanceData[$instanceUri])); ?>
-        </td>
-        <?php endif; ?>
-    </tr>
-        <?php endforeach; ?>
-</table>
-    <?php else: ?>
-<p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
-    <?php endif; ?>
-
-

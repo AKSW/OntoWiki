@@ -642,7 +642,7 @@ class ModelController extends OntoWiki_Controller_Base
         
         // create graph
         if ($createGraph) {
-            $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $postData['type']);
+            $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, (isset($postData['type']) ? $postData['type'] : Erfurt_Store::MODEL_TYPE_OWL));
         }
         
         // import statements
@@ -653,6 +653,7 @@ class ModelController extends OntoWiki_Controller_Base
                 // graph had been created: delete it
                 $this->_erfurt->getStore()->deleteModel($newModelUri);
             }
+            echo "exception".$e;
             // re-throw
             throw new OntoWiki_Controller_Exception("Graph '<$postData[modelUri]>' could not be imported: " . $e->getMessage());
         }
@@ -820,11 +821,13 @@ class ModelController extends OntoWiki_Controller_Base
                 $this->view->namespacePrefixes['__default'] = $graph->getModelIri();
 
                 $infoUris = $this->_config->descriptionHelper->properties;
-
-                if(class_exists('FoafHelper') && strpos($graph->getModelIri(), 'foaf.rdf') !== false){
+                //echo (string)$resource;
+                $query = 'ASK FROM <'.(string)$resource.'> WHERE {<'.(string)$resource.'> a <http://xmlns.com/foaf/0.1/PersonalProfileDocument>}';
+                $q = Erfurt_Sparql_SimpleQuery::initWithString($query);
+                if($this->_owApp->extensionManager->isExtensionActive('foafprofileviewer') && $store->sparqlAsk($q) === true){
                     $this->view->showFoafLink = true;
-                    $this->view->foafLink = $this->_config->urlBase.'foaf/display';
-                }
+                    $this->view->foafLink = $this->_config->urlBase.'foafprofileviewer/display';
+                } 
 
                 $this->view->infoPredicates = array();
                 foreach ($infoUris as $infoUri) {

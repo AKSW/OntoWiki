@@ -326,5 +326,10 @@ class OntoWiki
         
         return $this;
     }
+    
+    public static function reset()
+    {
+        self::$_instance = null;
+    }
 }
 

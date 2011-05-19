@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 for model in `owcli -l`
 do
