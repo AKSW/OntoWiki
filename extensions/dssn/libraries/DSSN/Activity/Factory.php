@@ -29,16 +29,18 @@ class DSSN_Activity_Factory
     /*
      * fetch a resource from the store
      */
-    public function getFromStore($iri = null)
+    public function getFromStore($iri = null, $model = null)
     {
         if ($iri == null) {
             throw new Exception('getFromStore needs an IRI string');
         }
 
-        $store     = $this->ontowiki->erfurt->getStore();
-        $model     = $this->ontowiki->selectedModel;
-        if (!$model) {
-            throw new Exception('getFromStore needs a selected model');
+        if ($model == null) {
+            $store     = $this->ontowiki->erfurt->getStore();
+            $model     = $this->ontowiki->selectedModel;
+        }
+        if (!$model instanceof Erfurt_Rdf_Model){
+            throw new Exception('getFromStore needs a model');
         }
 
         // query for the activity (Q: restrict ?p here? actor can be big!)
@@ -90,7 +92,7 @@ EndOfTemplate;
             $actorIri   = $model->getValue($iri, DSSN_AAIR_activityActor);
             if ($model->hasSP($actorIri, DSSN_RDF_type)) {
                 $actor = DSSN_Resource::initFromType(
-                    $model->getValue($actorIri, DSSN_RDF_type)
+                    $model->getValues($actorIri, DSSN_RDF_type)
                 );
                 $actor->setIri($actorIri);
                 $actor->fetchDirectImports($model);
@@ -99,7 +101,7 @@ EndOfTemplate;
                 throw new Exception('need at least one rdf:type statement');
             }
         }
-        
+
         // check for object, use factory and set object to activity
         if ($model->countSP( $iri, DSSN_AAIR_activityObject) != 1) {
             throw new Exception('need exactly ONE aair:activityObject statement');
@@ -113,7 +115,7 @@ EndOfTemplate;
                 $object->fetchDirectImports($model);
                 $return->setObject($object);
             } else {
-                var_dump($model); exit;     
+                var_dump($model); exit;
                 //throw new Exception('need at least one rdf:type statement for '.$objectIri);
             }
         }
@@ -128,7 +130,7 @@ EndOfTemplate;
             $verb->fetchDirectImports($model);
             $return->setVerb($verb);
         }
-        
+
         return $return;
     }
 
