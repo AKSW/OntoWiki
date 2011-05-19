@@ -8,8 +8,13 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class DssnController extends OntoWiki_Controller_Component {
-    
+
     public $listname = "dssn-activities";
+
+    /*
+     * working model for dssn
+     */
+    public $model = false;
 
     public function init() {
         parent::init();
@@ -18,7 +23,7 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->registerLibrary();
 
         // check for model etc.
-        //$this->setupWiki();
+        $this->setupWiki();
 
         // create the navigation tabs
         OntoWiki_Navigation::reset();
@@ -61,7 +66,7 @@ class DssnController extends OntoWiki_Controller_Component {
         $activity = $factory->getFromStore('http://example.org/Activities/e21c7abc6a9b97e8edd30508fede5384');
         var_dump($activity->toRDF());
 
-        //$model  = $this->_owApp->selectedModel;
+        //$model  = $this->model;
         //$store  = $this->_owApp->erfurt->getStore();
         //$store->addMultipleStatements((string) $model, $activity->toRDF());
     }
@@ -83,10 +88,10 @@ class DssnController extends OntoWiki_Controller_Component {
         $translate  = $this->_owApp->translate;
 
         $this->view->placeholder('main.window.title')->set($translate->_('News & Activities'));
-        
+
         // inserts the activity stream list
         $this->createActivityList();
-        
+
         $this->addModuleContext('main.window.dssn.news');
     }
 
@@ -98,7 +103,7 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
-        
+
         $response  = $this->getResponse();
         $output    = false;
 
@@ -106,7 +111,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $factory  = new DSSN_Activity_Factory($this->_owApp);
             $activity = $factory->newFromShareItModule($this->_request);
 
-            $model  = $this->_owApp->selectedModel;
+            $model  = $this->model;
             $store  = $this->_owApp->erfurt->getStore();
             $store->addMultipleStatements((string) $model, $activity->toRDF());
 
@@ -120,7 +125,7 @@ class DssnController extends OntoWiki_Controller_Component {
                 'message' => $e->getMessage(),
                 'class'   => 'error'
             );
-            $response->setRawHeader('HTTP/1.1 500 Internal Server Error'); 
+            $response->setRawHeader('HTTP/1.1 500 Internal Server Error');
         }
 
         // send the response
@@ -136,7 +141,7 @@ class DssnController extends OntoWiki_Controller_Component {
     public function networkAction() {
         $translate   = $this->_owApp->translate;
         $store       = $this->_owApp->erfurt->getStore();
-        $model       = $this->_owApp->selectedModel;
+        $model       = $this->model;
 
         $this->view->placeholder('main.window.title')->set($translate->_('Network'));
         $this->addModuleContext('main.window.dssn.network');
@@ -147,12 +152,26 @@ class DssnController extends OntoWiki_Controller_Component {
      */
     private function setupWiki()
     {
-        $ow    = $this->_owApp;
-        $store = $ow->erfurt->getStore();
-        $model = $ow->electedModel;
-        $webid = $ow->user->getUri();
-        if (!isset($model)) {
-            echo $webid;
+        $ow          = OntoWiki::getInstance();
+        $store       = $ow->erfurt->getStore();
+        $this->model = $ow->selectedModel;
+        $webid       = $ow->user->getUri();
+
+        if (!isset($this->model)) {
+            try {
+                $this->model = $store->getModel($webid);
+                $ow->selectedModel = $this->model;
+            } catch (Exception $e) {
+                try {
+                    $newModel = $store->getNewModel($webid);
+                    $this->model = $newModel;
+                    $ow->selectedModel = $store->getModel($webid);
+                    die('There is no space available for you here:' . $message);
+                } catch (Exception $e) {
+                    $message = $e->getMessage();
+                    die('There is no space available for you here:' . $message);
+                }
+            }
         }
     }
 
@@ -176,17 +195,17 @@ class DssnController extends OntoWiki_Controller_Component {
         // tool setup
         $config = $this->_privateConfig;
         $store  = $this->_owApp->erfurt->getStore();
-        $model  = $this->_owApp->selectedModel;
+        $model  = $this->model;
         $helper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
 
         // list parameters
         $listname     = $this->listname;
         $template = "list_dssn_activities_main";
-        
+
         //react on filter activity module requests
         $name = $this->getParam("name");
         $value = $this->getParam("value");
-        
+
         if($name !== null && $value !== null && $helper->listExists($listname)){
             $list = $helper->getList($listname);
             switch ($name){
@@ -195,7 +214,7 @@ class DssnController extends OntoWiki_Controller_Component {
                         $splitted= explode("/", $_SESSION['DSSN_activityverb']);
                         $id = $splitted[0];
                         $list->removeFilter($id);
-                    } 
+                    }
                     if($value !== "all"){
                         $parts= explode("/",$value,2);
                         $uriparts =  explode("/",$parts[1]);
@@ -203,29 +222,33 @@ class DssnController extends OntoWiki_Controller_Component {
                         $id = $list->addFilter(DSSN_AAIR_activityVerb, false, $label, "equals", $value, null, "uri");
                         $_SESSION['DSSN_activityverb'] = $id."/".$value;
                     } else {
-                        $_SESSION['DSSN_activityverb'] = "all"; 
+                        $_SESSION['DSSN_activityverb'] = "all";
                     }
                     break;
-                case "objecttype":
-                    if (!empty($_SESSION['DSSN_objecttype'])) {
-                        $splitted= explode("/", $_SESSION['DSSN_objecttype']);
+                case "activityobject":
+                    if (!empty($_SESSION['DSSN_activityobject'])) {
+                        $splitted= explode("/", $_SESSION['DSSN_activityobject']);
                         $id = $splitted[0];
-                      $list->removeFilter($id);
-                    } 
+                        $list->removeFilter($id);
+                    }
                     if($value !== "all"){
                         $triples = array(
-                            new Erfurt_Sparql_Query2_Triple(new Erfurt_Sparql_Query2_Var('object'), new Erfurt_Sparql_Query2_IriRef(DSSN_RDF_type), new Erfurt_Sparql_Query2_IriRef($value))
+                            new Erfurt_Sparql_Query2_Triple(
+                                new Erfurt_Sparql_Query2_Var('object'),
+                                new Erfurt_Sparql_Query2_IriRef(DSSN_RDF_type),
+                                new Erfurt_Sparql_Query2_IriRef($value)
+                            )
                         );
                         $id = $list->addTripleFilter($triples);
-                        $_SESSION['DSSN_objecttype'] = $id."/".$value;
+                        $_SESSION['DSSN_activityobject'] = $id."/".$value;
                     } else {
-                        $_SESSION['DSSN_objecttype'] = "all"; 
+                        $_SESSION['DSSN_activityobject'] = "all";
                     }
                     break;
             }
-        } 
+        }
 
-        //get the activities    
+        //get the activities
         if(!$helper->listExists($listname)) {
             // create a new list from scratch if we do not have one
             $list = new OntoWiki_Model_Instances($store, $model, array());
@@ -273,43 +296,42 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addShownProperty(DSSN_AAIR_activityVerb, 'verb');
 
             // currently, indirect properties do not work :-(
-            if (false) {
-            // add complex shown properties (indirect)
-            // ?actor  aair:avatar ?avatar
-            $prop1 = array();
-            $prop1[] = new Erfurt_Sparql_Query2_Triple($resVar, $actorIri, $actorVar); //this triple is a duplicate, but will be optimized out and may be cleaner that way
-            $avatarIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_avatar);
-            $avatarVar = new  Erfurt_Sparql_Query2_Var('avatar');
-            $prop1[] = new Erfurt_Sparql_Query2_Triple($actorVar, $avatarIri, $avatarVar);
-            $list->addShownPropertyCustom($prop1, $avatarVar);
+            //// add complex shown properties (indirect)
+            //// ?actor  aair:avatar ?avatar
+            //$prop1 = array();
+            //$prop1[] = new Erfurt_Sparql_Query2_Triple($resVar, $actorIri, $actorVar); //this triple is a duplicate, but will be optimized out and may be cleaner that way
+            //$avatarIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_avatar);
+            //$avatarVar = new  Erfurt_Sparql_Query2_Var('avatar');
+            //$prop1[] = new Erfurt_Sparql_Query2_Triple($actorVar, $avatarIri, $avatarVar);
+            //$list->addShownPropertyCustom($prop1, $avatarVar);
 
-            // ?object a ?objectType
-            $prop2 = array();
-            $prop2[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
-            $typeIri = new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE);
-            $typeVar = new  Erfurt_Sparql_Query2_Var('objectType');
-            $prop2[] = new Erfurt_Sparql_Query2_Triple($objectVar, $typeIri, $typeVar);
-            $list->addShownPropertyCustom($prop2, $typeVar);
+            //// ?object a ?objectType
+            //$prop2 = array();
+            //$prop2[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
+            //$typeIri = new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE);
+            //$typeVar = new  Erfurt_Sparql_Query2_Var('objectType');
+            //$prop2[] = new Erfurt_Sparql_Query2_Triple($objectVar, $typeIri, $typeVar);
+            //$list->addShownPropertyCustom($prop2, $typeVar);
 
-            // ?object aair:content ?content
-            $prop3 = array();
-            $prop3[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
-            $contentIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_content);
-            $contentVar = new  Erfurt_Sparql_Query2_Var('content');
-            $prop3[] = new Erfurt_Sparql_Query2_Triple($objectVar, $contentIri, $contentVar);
-            $list->addShownPropertyCustom($prop3, $contentVar);
+            //// ?object aair:content ?content
+            //$prop3 = array();
+            //$prop3[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
+            //$contentIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_content);
+            //$contentVar = new  Erfurt_Sparql_Query2_Var('content');
+            //$prop3[] = new Erfurt_Sparql_Query2_Triple($objectVar, $contentIri, $contentVar);
+            //$list->addShownPropertyCustom($prop3, $contentVar);
 
-            // ?object aair:thumbnail ?thumbnail
-            $prop4 = array();
-            $prop4[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
-            $thumbnailIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_thumbnail);
-            $thumbnailVar = new  Erfurt_Sparql_Query2_Var('thumbnail');
-            $prop4[] = new Erfurt_Sparql_Query2_Triple($objectVar, $thumbnailIri, $thumbnailVar);
-            $list->addShownPropertyCustom($prop4, $thumbnailVar);
-            }
+            //// ?object aair:thumbnail ?thumbnail
+            //$prop4 = array();
+            //$prop4[] = new Erfurt_Sparql_Query2_Triple($resVar, $objectIri, $objectVar); // also duplicate
+            //$thumbnailIri = new Erfurt_Sparql_Query2_IriRef(DSSN_AAIR_thumbnail);
+            //$thumbnailVar = new  Erfurt_Sparql_Query2_Var('thumbnail');
+            //$prop4[] = new Erfurt_Sparql_Query2_Triple($objectVar, $thumbnailIri, $thumbnailVar);
+            //$list->addShownPropertyCustom($prop4, $thumbnailVar);
 
             // add order by published timestamp
             $list->setOrderVar($publishedVar, true);
+
             // add the list to the session
             $helper->addListPermanently($listname, $list, $this->view, $template, $config);
         } else {
@@ -318,11 +340,11 @@ class DssnController extends OntoWiki_Controller_Component {
             // re-add the list to the page
             $helper->addList($listname, $list, $this->view, $template, $config);
         }
-        
+
         //var_dump((string) $list->getResourceQuery());
         //var_dump((string) $list->getQuery());
     }
-    
-    
+
+
 }
 
