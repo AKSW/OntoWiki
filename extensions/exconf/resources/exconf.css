@@ -1,0 +1,137 @@
+/* 
+    Document   : exconf
+    Created on : 03.02.2011, 19:29:44
+    Author     : haschek
+    Description:
+        defines special elements for the extension configurator
+*/
+
+#show_extension input, legend
+{
+    position:absolute;
+    left:-5000em;
+}
+
+#show_extension fieldset
+{
+    margin-top: 0.5em;
+    list-style: none;
+    margin-left: 0;
+    padding: 0 0.5em;
+    overflow:hidden;
+    border-bottom:solid 1px #666;
+    position:relative;
+}
+
+#show_extension label
+{
+    float: left;
+    white-space: nowrap;
+    display: block;
+    position: relative;
+    top: 0.1em;
+    border-color: #999;
+    border-bottom-color: #666;
+    border-width: 1px 1px 0.1em 1px;
+    border-style: solid;
+    border-left-style: none;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    color: #333;
+    background: url(./../../themes/silverblue/images/layout-tab-gradient.png) repeat-x bottom center #dfdfdf;
+    cursor: pointer;
+}
+
+#show_extension fieldset legend + input + label
+{
+    border-left-style: solid;
+
+}
+
+#show_extension label.active
+{
+    border-color: #666;
+    border-bottom: none;
+    padding-bottom: 0.6em;
+    background: url(./../../themes/silverblue/images/layout-tabactive-gradient.png) repeat-x top center #fff;
+    z-index: 1;
+    color: #333;
+    font-weight: bold;
+
+}
+
+#show_extension label.toggler_view
+{
+    float:right;
+    padding:0;
+    margin:0;
+    border:none;
+    width:45px;
+    height:25px;
+    position:absolute;
+    right:1em; top:50%; margin-top:-13px;
+    background:url(viewtoggler.png) no-repeat left top transparent;
+    text-indent: -5000em;
+    cursor:pointer;
+}
+
+#show_extension label.toggler_view:hover,
+.view_compact #show_extension label.toggler_view
+{
+    background-position:left bottom;
+}
+
+.view_compact #show_extension label.toggler_view:hover
+{
+    background-position:left top;
+}
+
+#extensions li
+{
+    padding:0.5em 0.5em 0.5em 1.5em;
+    position:relative;
+}
+
+#extensions li > .icon
+{
+    position:absolute;
+    left:0;
+    top:0.5em;
+}
+
+#extensions h3
+{
+    margin:0;
+    display:inline-block;
+}
+
+#extensions h3 em
+{
+    font-size: 0.8em;
+}
+
+li.compact div.extension > *
+{
+    display:none;
+}
+
+li.compact div.extension h3
+{
+    display:inline-block;
+    font-size:1em;
+    font-weight:bold;
+    padding-right: 0.25em;
+}
+
+li.compact div.extension h3 em
+{
+    display:none;
+}
+
+li.compact div.extension .togglebutton
+{
+    display:inline-block;
+}
+
+li.compact .togglebutton .slider { display:none; }
+

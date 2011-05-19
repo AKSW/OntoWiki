@@ -200,6 +200,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                     $value = array(
                         'content'  => null, 
                         'object'   => null, 
+                        'object_hash' => null,
                         'datatype' => null, 
                         'lang'     => null, 
                         'url'      => null, 
@@ -253,6 +254,10 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                         case 'typed-literal':
                             $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
                             $value['datatype'] = OntoWiki_Utils::compactUri($row['object']['datatype']);
+                            $literalString = Erfurt_Utils::buildLiteralString($row['object']['value'],
+                                                                              $row['object']['datatype']);
+                            $value['object_hash'] = md5($literalString);
+
                             $event->value    = $row['object']['value'];
                             $event->datatype = $row['object']['datatype'];
                             $event->property = $predicateUri;
@@ -267,6 +272,10 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                         case 'literal':
                             // original (unmodified) for RDFa
                             $value['content'] = $row['object']['value'];
+                            $literalString = Erfurt_Utils::buildLiteralString($row['object']['value'],
+                                                                              null,
+                                                                              isset($row['object']['xml:lang']) ? $row['object']['xml:lang'] : null);
+                            $value['object_hash'] = md5($literalString);
 
                             /**
                              * @trigger onDisplayLiteralPropertyValue Triggered if a literal value of some 

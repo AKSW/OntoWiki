@@ -1,0 +1,61 @@
+<?php
+if($this->isAllowed){
+$ow = OntoWiki::getInstance();
+$this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/exconf.css");
+$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/exconf.js");
+$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/togglebutton.css");
+
+?>
+<div class="view_extended">
+<form id="show_extension">
+    <fieldset><legend>Show extensions</legend>
+        <input id="showAll" type="radio" name="show" value="all" checked="checked"> <label for="showAll" class="active">All (<span id="numAll"><?php echo $this->numAll; ?></span>)</label>
+        <input id="showEnabled" type="radio" name="show" value="enabled"> <label for="showEnabled">Enabled (<span id="numEnabled"><?php echo $this->numEnabled; ?></span>)</label>
+        <input id="showDisabled" type="radio" name="show" value="disabled"> <label for="showDisabled">Disabled (<span id="numDisabled"><?php echo $this->numDisabled; ?></span>)</label>
+        <input id="viewCompact" type="checkbox" value="compact"/> <label title="Compact/Extended View" for="viewCompact" class="toggler_view">Compact view</label>
+    </fieldset>
+</form>
+<h2 class="onlyAural">Extensions</h2>
+<ol id="extensions" class="bullets-none separated">
+<?php $odd = false; foreach($this->extensions as $name => $extension){ ?>
+    <li class="<?php echo $odd ? "odd" : "even"; ?>">
+        <a class="toggle icon icon-arrow-down" title="Close"><span>Close</span></a>
+        <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
+                <h3><span class="name"><?php echo $extension->name; ?></span>
+                    <?php
+                        if (isset($extension->author)) {
+                            echo '<em class="author">by '.(isset($extension->authorUrl)?'<a href="'.$extension->authorUrl.'">'.$extension->author.'</a>':$extension->author).'</em>';
+                        }
+                    ?>
+                </h3>
+                <div class="togglebutton" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
+                <p class="description"><?php echo isset($extension->description) ? $extension->description : "Extension does not provide a description."; ?></p>
+                <div class="contextmenu">
+                <?php if(isset($extension->homepage)) : ?>
+                    <a href="<?php echo $extension->homepage ?>" class="item">
+                        <span title="Go to plugin homepage" class="icon icon-homepage">
+                            <span>Go to plugin homepage</span>
+                        </span>
+                    </a>
+                <?php endif; ?>
+                    <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>" class="item">
+                        <span title="Configure" class="icon icon-edit">
+                            <span>Configure</span>
+                        </span>
+                    </a>
+                    <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>&remove=1" class="item">
+                        <span title="Remove permanently" class="icon icon-delete">
+                            <span>Remove permanently</span>
+                        </span>
+                    </a>
+                </div>
+        </div>
+    </li>
+<?php 
+$odd = !$odd; 
+} 
+?>
+</ol>
+</div>
+<?php } ?>

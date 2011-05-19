@@ -1,0 +1,137 @@
+<?php
+function array2form($confArr){
+    if(count($confArr) == 0){
+        ?>&nbsp;[empty]&nbsp;<a class="addPropertyEmpty">+</a><?php
+        return;
+    }
+    ?> <table border="1">
+    <?php
+    foreach($confArr as $key => $value){ ?>
+        <tr>
+            <td width="15%"><input class="text" type="text" name="key" value ="<?php echo $key; ?>">&nbsp;<a class="removeProperty" title="remove this property">-</a></td>
+            <td>
+                <?php
+                    if(!is_array($value)){
+                        if(is_bool($value)){ ?>
+                            <div class="togglebutton" <?php if($value){ echo "selected=\"true\""; } ?>></div>
+                        <?php } else { ?>
+                            <input class="text" type="text" name="value" value="<?php echo $value; ?>">&nbsp;<a class="splitProperty" title="split this value to an array">&equiv;</a>
+                        <?php }
+                    } else {
+                        array2form($value);
+                    } ?>
+
+            </td>
+        </tr><?php
+    }
+    ?>
+    </table>
+    <a class="addProperty" title="add a property">+</a>
+    <?php
+}
+$ow = OntoWiki::getInstance();
+//$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('queries')."resources/jquery.dump.js");
+$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/jquery.togglebutton.js");
+$this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/togglebutton.css");
+$this->headScript()->appendScript('var exconfConfig = '.  json_encode($this->config).';
+    $(document).ready(function(){
+        function postToggle(button)
+        {
+            //no posting here, will be submitted with the form
+        }
+
+        $(".togglebutton").togglebutton(
+            {"onEnable":
+                postToggle,
+             "onDisable":
+                postToggle
+            }
+        );
+        //handle the form myself
+        $("div.toolbar a.button.submit").unbind("click");
+        $("div.toolbar a.button.submit").click(function(){
+            var arr = form2array($("#topConfTable"));
+            //$.dump(arr);
+            window.location = urlBase+"exconf/conf?name='.$this->name.'&config="+encodeURIComponent($.toJSON(arr));
+        });
+        
+        $(".addProperty").submit(function(){return false;});
+        $(".addProperty").live("click",function(){
+            var lastKey = $(this).parent().find(">table>tbody>tr:last>td:first>input").val();
+            var lastKeyInt = parseInt(lastKey);
+            if(!isNaN(lastKeyInt)){
+                var key = lastKeyInt+1;
+            } else {
+                var key = lastKey+"x";
+            }
+            $(this).prev().append("<tr><td width=\"15%\"><input class=\"text\" type=\"text\" name=\"key\" value=\""+key+"\">&nbsp;<a class=\"removeProperty\">-</a></td><td><input class=\"text\" type=\"text\" name=\"data\">&nbsp;<a class=\"splitProperty\">&equiv;</a></td></tr>");
+        });
+        $(".addPropertyEmpty").submit(function(){return false;});
+        $(".addPropertyEmpty").live("click",function(){
+            $(this).parent().html("<table border=\"1\"><tr><td width=\"15%\"><input class=\"text\" type=\"text\" name=\"key\" value=\"key\">&nbsp;<a class=\"removeProperty\">-</a></td><td><input class=\"text\" type=\"text\" name=\"data\" value =\"data\">&nbsp;<a class=\"splitProperty\">&equiv;</a></td></tr></table><a class=\"addProperty\">+</a>");
+        });
+        $(".removeProperty").submit(function(){return false;});
+        $(".removeProperty").live("click",function(){
+            if($(this).parent().parent().parent().children().size() == 1){
+                $(this).parent().parent().parent().parent().next().remove();
+                $(this).parent().parent().parent().parent().replaceWith("<input class=\"text\" type=\"text\" name=\"data\">&nbsp;<a class=\"splitProperty\">&equiv;</a>");
+            } else {
+                $(this).parent().parent().remove();
+            }
+        });
+        $(".splitProperty").submit(function(){return false;});
+        $(".splitProperty").live("click",function(){
+            $(this).prev().replaceWith("<table border=\"1\"><tr><td width=\"15%\"><input class=\"text\" type=\"text\" name=\"key\" value=\"key\">&nbsp;<a class=\"removeProperty\">-</a></td><td><input class=\"text\" type=\"text\" name=\"data\" value =\"data\">&nbsp;<a class=\"splitProperty\">&equiv;</a></td></tr></table><a class=\"addProperty\">+</a>");
+            $(this).remove();
+        });
+        
+    });
+    
+function form2array(node){
+    var arr = {};
+    node.find("> tbody > tr").each(function(){
+        var field = $(this);
+        var key = $(this).find(">td:first");
+        if($(key).find("input").is("input")){
+            var name = $(key).find("input").val();
+        } else {
+            var name = key.html();
+        }
+        var nameInt = parseInt(name);
+        if(!isNaN(nameInt)){
+            name = nameInt;
+        }
+        var value = $(this).find("> td").eq(1).find("> *:first");
+        if($(value).is("table")){
+            value = form2array(value);
+        } else if( $(value).text() == "[empty]+"){
+            value = {};
+        } else if( $(value).is("input[type=checkbox]")){
+            value = $(value).is(":checked");
+        } else if( $(value).is("div.togglebutton")){
+            value = ($(value).attr("selected") == "true");
+        } else if( $(value).is("input.text")){
+            value = $(value).val();
+        }
+        arr[name] = value;
+        
+    });
+    return arr;
+}');
+
+
+
+?>
+    <p class="info">you can change values of your local config here. <br/>you can also change the structure of the config, but only do it when you really know what you are doing.</p>
+<form id="exConf" action="<?php echo $this->urlBase;?>">
+    <table border="1" id="topConfTable">
+        <tr>
+            <td width="15%">enabled</td>
+            <td><div id="extEnabledSwitch" class="togglebutton" <?php if($this->enabled){ echo "selected=\"true\""; } ?>></div></td>
+        </tr>
+        <tr>
+            <td width="15%">private</td>
+            <td> <?php array2form($this->config); ?> </td>
+        </tr>
+    </table>
+</form>
