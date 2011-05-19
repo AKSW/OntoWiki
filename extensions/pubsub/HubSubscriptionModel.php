@@ -251,11 +251,11 @@ class HubSubscriptionModel
           `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
           `topic_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `callback_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-          `created_time` datetime DEFAULT NULL,
+          `created_time` int DEFAULT 0,
           `lease_seconds` bigint(20) DEFAULT NULL,
           `verify_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `secret` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-          `expiration_time` datetime DEFAULT NULL,
+          `expiration_time` int DEFAULT 0,
           `subscription_state` varchar(12) COLLATE utf8_unicode_ci DEFAULT NULL,
           `challenge` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `verify_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -264,7 +264,7 @@ class HubSubscriptionModel
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
         
         if (!self::$testMode) {
-            $this->_store->sqlQuery($tableSql);
+            $this->_sqlQuery($tableSql);
         }
     }
     

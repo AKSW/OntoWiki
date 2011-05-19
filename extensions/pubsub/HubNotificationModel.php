@@ -87,8 +87,8 @@ class HubNotificationModel
         $tableSql = 'CREATE TABLE IF NOT EXISTS `ef_pubsub_hubnotification` (
           `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
           `publisher_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-          `last_fetched` datetime DEFAULT NULL,
-          `notification_time` datetime DEFAULT NULL,
+          `last_fetched` int DEFAULT 0,
+          `notification_time` int DEFAULT 0,
           PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
         
