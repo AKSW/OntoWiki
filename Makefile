@@ -58,7 +58,7 @@ status:
 branch-check:
 	hg --repository . branch
 	hg --repository libraries/RDFauthor branch
-	cd libraries/Erfurt && git branch
+	cd libraries/Erfurt && git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`
 
 
 # libraries
