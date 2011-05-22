@@ -51,7 +51,10 @@ abstract class DSSN_Resource
         if (is_array($typeIris)) {
             $typeIris = DSSN_Utils::array_value_recursive('value', $typeIris);
             // if there are no values -> it is null here
-        } elseif (is_string($typeIris)) {
+            // if there is only one value -> it is a string here
+        }
+
+        if (is_string($typeIris)) {
             $typeIris = array( 0 => $typeIris);
         }
 
