@@ -62,9 +62,13 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.title')->set($translate->_('Setup / Configure your DSSN Client'));
         $this->addModuleContext('main.window.dssn.setup');
 
+        //$factory  = new DSSN_Activity_Factory($this->_owApp);
+        //$activity = $factory->getFromStore('http://example.org/Activities/e21c7abc6a9b97e8edd30508fede5384');
+        //var_dump($activity->toRDF());
+
         $factory  = new DSSN_Activity_Factory($this->_owApp);
         $activity = $factory->getFromStore('http://example.org/Activities/e21c7abc6a9b97e8edd30508fede5384');
-        var_dump($activity->toRDF());
+        //var_dump($activity->toRDF());
 
         //$model  = $this->model;
         //$store  = $this->_owApp->erfurt->getStore();

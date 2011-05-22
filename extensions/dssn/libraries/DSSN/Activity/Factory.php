@@ -150,14 +150,56 @@ EndOfTemplate;
                         (string) $this->ontowiki->user->getUri(),
                         (string) $this->ontowiki->user->getUsername()
                     );
-                    //$activity = $this->newExample();
+                    break;
+                case 'link':
+                    $activity = $this->newSharedLink(
+                        (string) $request->getParam('share-link-url'),
+                        (string) $request->getParam('share-link-name'),
+                        (string) $this->ontowiki->user->getUri(),
+                        (string) $this->ontowiki->user->getUsername()
+                    );
                     break;
                 default:
-                    throw new Exception('request error: unknown activity type');
+                    throw new Exception('request error: unknown activity type '.$type.' given.');
                     break;
             }
         }
+        var_dump($activity->toRDF());
         return $activity;
+    }
+
+    /*
+     * creates a new shared link activity
+     */
+    public function newSharedLink($targetUrl = null, $targetName = null, $actorIri = null, $actorName = null)
+    {
+        //throw new Exception("debug: $targetUrl, $targetName, $actorIri, $actorName");
+        if ($targetUrl == null) {
+            throw new Exception('request error: no target url given');
+        } elseif ($targetName == null) {
+            throw new Exception('request error: no target name given');
+        } else {
+            $activity = new DSSN_Activity;
+            $activity->setVerb(new DSSN_Activity_Verb_Share);
+
+            $object = new DSSN_Activity_Object_Bookmark;
+            $object->setIri($targetUrl);
+            $object->setLabel($targetName);
+            $object->setThumbnail('http://cligs.websnapr.com/?size=t&url='.$targetUrl);
+            $activity->setObject($object);
+
+            $actor = new DSSN_Activity_Actor_User;
+            if ($actorIri == null) {
+                $actorIri = (string) $this->ontowiki->user->getUri();
+            }
+            if ($actorName == null) {
+                $actorName = (string) $this->ontowiki->user->getGetUsername();
+            }
+            $actor->setIri($actorIri);
+            $actor->setName($actorName);
+            $activity->setActor($actor);
+            return $activity;
+        }
     }
 
     /*

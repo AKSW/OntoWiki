@@ -69,6 +69,9 @@ abstract class DSSN_Resource
                 case DSSN_AAIR_NS . 'Note':
                     return new DSSN_Activity_Object_Note;
                     break;
+                case DSSN_AAIR_NS . 'Bookmark':
+                    return new DSSN_Activity_Object_Bookmark;
+                    break;
                 case DSSN_AAIR_NS . 'Post':
                     return new DSSN_Activity_Verb_Post;
                     break;
@@ -93,11 +96,12 @@ abstract class DSSN_Resource
     public function getType()
     {
         switch (get_class($this)) {
-            case 'DSSN_Activity_Verb_Post':    return DSSN_AAIR_NS . 'Verb';
-            case 'DSSN_Activity_Verb_Share':   return DSSN_AAIR_NS . 'Share';
-            case 'DSSN_Activity_Object_Note':  return DSSN_AAIR_NS . 'Note';
-            case 'DSSN_Activity_Actor_User':   return DSSN_AAIR_NS . 'User';
-            case 'DSSN_Activity':              return DSSN_AAIR_NS . 'Activity';
+            case 'DSSN_Activity_Verb_Post':       return DSSN_AAIR_NS . 'Verb';
+            case 'DSSN_Activity_Verb_Share':      return DSSN_AAIR_NS . 'Share';
+            case 'DSSN_Activity_Object_Note':     return DSSN_AAIR_NS . 'Note';
+            case 'DSSN_Activity_Object_Bookmark': return DSSN_AAIR_NS . 'Bookmark';
+            case 'DSSN_Activity_Actor_User':      return DSSN_AAIR_NS . 'User';
+            case 'DSSN_Activity':                 return DSSN_AAIR_NS . 'Activity';
             default:
                 throw new Exception('Unknown class type IRI of object class '
                     . get_class($this) . '. Please add it to DSSN_Resource::getType.');
