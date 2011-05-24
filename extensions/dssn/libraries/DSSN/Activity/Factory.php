@@ -222,7 +222,7 @@ EndOfTemplate;
                 $actorIri = (string) $this->ontowiki->user->getUri();
             }
             if ($actorName == null) {
-                $actorName = (string) $this->ontowiki->user->getGetUsername();
+                $actorName = (string) $this->ontowiki->user->getUsername();
             }
             $actor->setIri($actorIri);
             $actor->setName($actorName);
