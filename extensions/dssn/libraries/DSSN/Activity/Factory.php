@@ -78,7 +78,6 @@ EndOfTemplate;
      */
     public function newFromModel($iri = null, DSSN_Model $model)
     {
-        //var_dump($model->getStatements()); return;
         if ($iri == null) {
             throw new Exception('getFromModel needs an IRI string');
         }
@@ -115,8 +114,7 @@ EndOfTemplate;
                 $object->fetchDirectImports($model);
                 $return->setObject($object);
             } else {
-                var_dump($model); exit;
-                //throw new Exception('need at least one rdf:type statement for '.$objectIri);
+                throw new Exception('need at least one rdf:type statement for '.$objectIri);
             }
         }
 
@@ -164,7 +162,6 @@ EndOfTemplate;
                     break;
             }
         }
-        var_dump($activity->toRDF());
         return $activity;
     }
 

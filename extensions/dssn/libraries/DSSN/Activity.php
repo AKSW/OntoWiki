@@ -48,7 +48,6 @@ class DSSN_Activity extends DSSN_Resource
         //$entry->setDateModified(new Zend_Date($this->getPublished()));
         //$entry->setDateCreated(new Zend_Date($this->getPublished()));
         //$feed->addEntry($entry);
-        //var_dump($feed->export('atom'));
 
         $dom = new DOMDocument('1.0', 'UTF-8');
         $entry = $dom->createElement('entry');
