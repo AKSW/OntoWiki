@@ -143,7 +143,6 @@ class DssnController extends OntoWiki_Controller_Component {
 
         //$factory  = new DSSN_Activity_Factory($this->_owApp);
         //$activity = $factory->getFromStore('http://example.org/Activities/e21c7abc6a9b97e8edd30508fede5384');
-        //var_dump($activity->toRDF());
 
         $factory  = new DSSN_Activity_Factory($this->_owApp);
         $activity = $factory->newStatus("test content");
@@ -334,7 +333,8 @@ class DssnController extends OntoWiki_Controller_Component {
         }
 
         //get the activities
-        if(!$helper->listExists($listname)) {
+        //if(!$helper->listExists($listname)) {
+        if(true) {
             // create a new list from scratch if we do not have one
             $list = new OntoWiki_Model_Instances($store, $model, array());
 
