@@ -43,6 +43,31 @@ EndOfTemplate;
         return $vars;
     }
 
+    /*
+     * returns a DOMElement object for the usage in an atom feed
+     */
+    public function toDomElement() {
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $author = $dom->createElement('author');
+
+        // author->name
+        $name = $dom->createElement('name', $this->getName());
+        $author->appendChild($name);
+        // author->uri
+        $uri = $dom->createElement('uri', $this->getIri());
+        $author->appendChild($uri);
+        // author->link
+        $link = $dom->createElement('link');
+        $link->setAttribute("rel", "alternate");
+        $link->setAttribute("type", "text/html");
+        $link->setAttribute("href", $this->getIri());
+        $author->appendChild($link);
+
+        $dom->appendChild($author);
+        //var_dump($dom->saveXML());
+        return $author;
+    }
+
     /**
      * Get avatar.
      *

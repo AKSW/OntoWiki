@@ -64,4 +64,8 @@ EndOfTemplate;
         return 'status / note';
     }
 
+    function getFeedType()
+    {
+        return 'note';
+    }
 }

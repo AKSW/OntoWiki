@@ -25,6 +25,7 @@ abstract class DSSN_Resource
     public function getDirectImports() {
         return array();
     }
+
     /*
      * imports all direct values of an resource to the object
      * note: iri must be set before this
@@ -89,7 +90,6 @@ abstract class DSSN_Resource
         }
     }
 
-
     /*
      * return the URI string of the RDF type of the resource
      */
@@ -109,6 +109,10 @@ abstract class DSSN_Resource
         }
     }
 
+
+    /*
+     * string representation is the IRI
+     */
     public function __toString()
     {
         return (string) $this->getIri();

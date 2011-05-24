@@ -15,6 +15,77 @@ class DSSN_Activity extends DSSN_Resource
     private $published = null;
 
 
+    /*
+     *
+     */
+    public function getTitle()
+    {
+        return "TODO: title";
+    }
+
+    /*
+     * exports an activity as an atom entry
+     */
+    public function toAtomEntry()
+    {
+        /*
+         * maybe later, we can write a Zend Feed Extension
+         * but quick and dirty now with DOM methods...
+         */
+        //$feed = new Zend_Feed_Writer_Feed;
+        //$feed->setTitle('test');
+        //$feed->setDateModified(time());
+        //$feed->setLink('http://www.example.com');
+        //$feed->setFeedLink('http://www.example.com/atom', 'atom');
+        //$entry = $feed->createEntry();
+        //$entry->setTitle($this->getTitle());
+        //$entry->setLink($this->getObject()->getIri());
+        //$entry->addAuthor(array(
+            //'name'  => $this->getActor()->getName(),
+            //'email' => $this->getActor()->getEmail(),
+            //'uri'   => $this->getActor()->getIri(),
+        //));
+        //$entry->setDateModified(new Zend_Date($this->getPublished()));
+        //$entry->setDateCreated(new Zend_Date($this->getPublished()));
+        //$feed->addEntry($entry);
+        //var_dump($feed->export('atom'));
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $entry = $dom->createElement('entry');
+
+        // entry->id
+        $id = $dom->createElement('id', $this->getIri());
+        $entry->appendChild($id);
+        // entry->title
+        $title = $dom->createElement('title', $this->getTitle());
+        $entry->appendChild($title);
+        // entry->published
+        $published = $dom->createElement('published', $this->getPublished());
+        $entry->appendChild($published);
+        // entry->link
+        $link = $dom->createElement('link');
+        $link->setAttribute("rel", "alternate");
+        $link->setAttribute("type", "text/html");
+        $link->setAttribute("href", $this->getIri());
+        $entry->appendChild($link);
+
+        // entry->author
+        $author = $this->getActor()->toDomElement();
+        $entry->appendChild($dom->importNode($author, true));
+
+        // entry->object
+        $object = $this->getObject()->toDomElement();
+        $entry->appendChild($dom->importNode($object, true));
+
+        // entry->verb
+        $verb = $this->getVerb()->toDomElement();
+        $entry->appendChild($dom->importNode($verb, true));
+
+        $dom->appendChild($entry);
+        return $entry;
+    }
+
+
     public function getSubResources()
     {
         return array(

@@ -21,5 +21,19 @@ class DSSN_Activity_Verb_Share extends DSSN_Activity_Verb
     {
         return 'shared';
     }
+
+    /**
+     * Get AtomIri
+     *
+     * http://activitystrea.ms/head/atom-activity.html#activity.verb
+     * An IRI reference that identifies the action of the activity. This value
+     * MUST be an absolute IRI, or a IRI relative to the base IRI of
+     * http://activitystrea.ms/schema/1.0/. An Activity construct MUST have
+     * exactly one verb.
+     */
+    function getAtomIri()
+    {
+        return 'share';
+    }
 }
 

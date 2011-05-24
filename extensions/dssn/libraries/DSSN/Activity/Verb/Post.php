@@ -12,7 +12,7 @@ class DSSN_Activity_Verb_Post extends DSSN_Activity_Verb
     public function __construct() {
         $this->setIri(DSSN_AAIR_NS . 'Post');
     }
-    
+
     /**
      * Get label.
      * a label in past form (user LABEL the following)
@@ -20,6 +20,20 @@ class DSSN_Activity_Verb_Post extends DSSN_Activity_Verb
     function getLabel()
     {
         return 'posted';
+    }
+
+    /**
+     * Get AtomIri
+     *
+     * http://activitystrea.ms/head/atom-activity.html#activity.verb
+     * An IRI reference that identifies the action of the activity. This value
+     * MUST be an absolute IRI, or a IRI relative to the base IRI of
+     * http://activitystrea.ms/schema/1.0/. An Activity construct MUST have
+     * exactly one verb.
+     */
+    function getAtomIri()
+    {
+        return 'post';
     }
 }
 

@@ -26,8 +26,20 @@ EndOfTemplate;
         $vars['label']    = $this->getLabel();
         return $vars;
     }
-    
-    /**
+
+    /*
+     * returns a DOMElement object for the usage in an atom feed
+     */
+    public function toDomElement() {
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $verb = $dom->createElementNS('http://activitystrea.ms/spec/1.0/', 'activity:verb', $this->getAtomIri());
+
+        $dom->appendChild($verb);
+        //var_dump($dom->saveXML());
+        return $verb;
+    }
+
+     /**
      * Get label.
      * a label in past form (user LABEL the following)
      */

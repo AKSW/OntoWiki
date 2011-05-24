@@ -80,4 +80,9 @@ EndOfTemplate;
     {
         $this->label = $label;
     }
+
+    function getFeedType()
+    {
+        return 'bookmark';
+    }
 }
