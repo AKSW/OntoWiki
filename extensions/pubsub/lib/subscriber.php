@@ -88,7 +88,6 @@ class Subscriber {
     
     // default http function that uses curl to post to the hub endpoint
     private function http($url, $post_string) {
-        
         // add any additional curl options here
         $options = array(CURLOPT_URL => $url,
                          CURLOPT_USERAGENT => "PubSubHubbub-Subscriber-PHP/1.0",

@@ -36,7 +36,34 @@ class PubsubController extends OntoWiki_Controller_Component
 
     public function subscribeAction()
     {
-        if (empty($_GET['topic'])) {
+        // We require POST requests here.
+        if (!$this->_request->isGet()) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            return;
+        }
+        
+        // No params, so we show the form
+        if (empty($_GET)) {
+            OntoWiki_Navigation::disableNavigation();
+
+            $toolbar = $this->_owApp->toolbar;
+            $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save'))
+                    ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
+            $this->view->placeholder('main.window.toolbar')->set($toolbar);
+
+            $translate  = $this->_owApp->translate;
+            $windowTitle = $translate->_('Subscribe to Feed');
+            $this->view->placeholder('main.window.title')->set($windowTitle);
+
+            $this->view->formActionUrl = $this->_config->urlBase . 'pubsub/subscribe';
+            $this->view->formMethod    = 'get';
+            $this->view->formClass     = 'simple-input input-justify-left';
+            $this->view->formName      = 'subsribe';
+            
+            return;
+        }
+        
+        if (!isset($_GET['topic'])) {
             $this->_owApp->logger->debug('No topic! Nothig to subscribe..'); 
             return;
         }
@@ -47,13 +74,17 @@ class PubsubController extends OntoWiki_Controller_Component
         $topic_url   = $_GET['topic'];
         $callback_url = $this->_getCallbackUrl();
 
+#var_dump($hub_url, $topic_url, $callback_url);exit;
+
         // create a new subscriber
         $s = new Subscriber($hub_url, $callback_url);
 
         // subscribe to a feed
         //$s->unsubscribe($feed);
         echo "Subscribed!\n";
+        echo '<pre>';
         print_r(  $s->subscribe($topic_url) );//*/
+        echo '</pre>';
 
         $this->_owApp->logger->debug('Subscribed to pubsub '.$hub_url.' for '.$topic_url.' with callback '.$callback_url); 
     }
@@ -85,82 +116,82 @@ class PubsubController extends OntoWiki_Controller_Component
      */
 
     public function hubsubscriptionAction()
-    {
+    { 
         // Disable rendering
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
 
         // We require POST requests here.
         if (!$this->_request->isPost()) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'Only POST allowed'));
             return;
         }
 
         $params = array();
 
         // hub.callback
-        if (!isset($_POST['hub.callback'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+        if (!isset($_POST['hub_callback'])) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.callback is missing'));
             return;
         }
-        $params['hub.callback'] = urldecode($_POST['hub.callback']);
+        $params['hub.callback'] = urldecode($_POST['hub_callback']);
         if (strrpos($params['hub.callback'], '#') !== false) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.callback is invalid'));
             return;
         }
 
         // hub.mode
-        if (!isset($_POST['hub.mode'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+        if (!isset($_POST['hub_mode'])) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.mode is missing'));
             return;
         }
-        $mode = $_POST['hub.mode'];
+        $mode = $_POST['hub_mode'];
         if (!(($mode === 'subscribe') || ($mode === 'unsubscribe'))) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.mode is invalid'));
             return;
         }
         $params['hub.mode'] = $mode;
 
         // hub.topic
-        if (!isset($_POST['hub.topic'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+        if (!isset($_POST['hub_topic'])) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.topic is missing'));
             return;
         }
-        $params['hub.topic'] = urldecode($_POST['hub.topic']);
+        $params['hub.topic'] = urldecode($_POST['hub_topic']);
         if (strrpos($params['hub.topic'], '#') !== false) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.topic is invalid'));
             return;
         }
 
         // hub verify
-        if (!isset($_POST['hub.verify'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+        if (!isset($_POST['hub_verify'])) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.verify is missing'));
             return;
         }
-        $verify = $_POST['hub.verify'];
+        $verify = $_POST['hub_verify'];
         // supported values for hub.verify: sync, async
         if (!(($verify === 'sync') || ($verify === 'async'))) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
+            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.verify is invalid'));
             return;
         }
         $params['hub.verify'] = $verify;
 
         // optional: hub.lease_seconds
         $leaseSeconds = null;
-        if (isset($_POST['hub.lease_seconds'])) {
-            $params['hub.lease_seconds'] = $_POST['hub.lease_seconds'];
+        if (isset($_POST['hub_lease_seconds'])) {
+            $params['hub.lease_seconds'] = $_POST['hub_lease_seconds'];
         }
 
         // optional: hub.secret (SHOULD only be provided when hub is behind HTTPS!)
         $secret = null;
-        if (isset($_POST['hub.secret'])) {
-            $params['hub.secret'] = urldecode($_POST['hub.secret']);
+        if (isset($_POST['hub_secret'])) {
+            $params['hub.secret'] = urldecode($_POST['hub_secret']);
         }
 
         // optional: hub.verify_token
         $verifyToken = null;
-        if (isset($_POST['hub.verify_token'])) {
-            $params['hub.verify_token'] = urldecode($_POST['hub.verify_token']);
+        if (isset($_POST['hub_verify_token'])) {
+            $params['hub.verify_token'] = urldecode($_POST['hub_verify_token']);
         }
 
         // Create a challenge for the verification 
@@ -174,7 +205,7 @@ class PubsubController extends OntoWiki_Controller_Component
         $hubModel = new HubSubscriptionModel();
         if ($hubModel->hasSubscription($params)) {
             if ($params['hub.mode'] === 'subscribe') {
-                $this->_response->setException(new OntoWiki_Http_Exception(500));
+                $this->_response->setException(new OntoWiki_Http_Exception(500, 'already subscribed'));
                 return;
             }
         }
@@ -191,7 +222,7 @@ class PubsubController extends OntoWiki_Controller_Component
                 return $this->_response->sendResponse();
             }
 
-            $this->_response->setException(new OntoWiki_Http_Exception(500));
+            $this->_response->setException(new OntoWiki_Http_Exception(500, 'verification (sync) failed'));
             return;
         }
 
@@ -234,22 +265,22 @@ class PubsubController extends OntoWiki_Controller_Component
         $params = array();
 
         // hub.mode
-        if (!isset($_POST['hub.mode'])) {
+        if (!isset($_POST['hub_mode'])) {
             $this->_response->setException(new OntoWiki_Http_Exception(400));
             return;
         }
-        $params['hub.mode'] = $_POST['hub.mode'];
+        $params['hub.mode'] = $_POST['hub_mode'];
         if (!($params['hub.mode'] === 'publish')) {
             $this->_response->setException(new OntoWiki_Http_Exception(400));
             return;
         }
 
         // hub.url (may be a string or an array)
-        if (!isset($_POST['hub.url'])) {
+        if (!isset($_POST['hub_url'])) {
             $this->_response->setException(new OntoWiki_Http_Exception(400));
             return;
         }
-        $url = $_POST['hub.url'];
+        $url = $_POST['hub_url'];
         if (is_string($url)) {
             $url = urldecode($url);
         } else if (is_array($url)) {

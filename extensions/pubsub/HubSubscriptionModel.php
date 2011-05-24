@@ -26,9 +26,9 @@ class HubSubscriptionModel
                 "' . $data['hub.topic'] . '",
                 "' . $data['hub.callback'] . '",
                 '  . $created . ',
-                '  . (isset($data['hub.lease_seconds']) ? $data['hub.lease_seconds'] : 'NULL' ) . ',
+                '  . ((isset($data['hub.lease_seconds']) && ($data['hub.lease_seconds'] != '')) ? $data['hub.lease_seconds'] : 'NULL' ) . ',
                 "' . (isset($data['hub.verify_token']) ? $data['hub.verify_token'] : 'NULL' ). '",
-                "' . (isset($data['hub.secret']) ? $data['hub.secret'] : 'NULL' ). '",
+                ' . (isset($data['hub.secret']) ? ('"'.$data['hub.secret'].'"') : 'NULL' ). ',
                 '  . $expirationTime . ',
                 "pending",
                 "' . $data['hub.challenge'] . '",
@@ -286,6 +286,11 @@ class HubSubscriptionModel
 
     private function _sqlQuery($sql)
     {
-        return Erfurt_App::getInstance()->getStore()->sqlQuery($sql);
+        $result = Erfurt_App::getInstance()->getStore()->sqlQuery($sql);
+        if ((count($result) === 1) && isset($result[0]['count(*)'])) {
+            return $result[0]['count(*)'];
+        }
+        
+        return $result;
     }
 }

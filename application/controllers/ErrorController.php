@@ -44,7 +44,7 @@ class ErrorController extends Zend_Controller_Action
                     $response->setBody($exception->getResponseMessage());
                     $response->sendResponse();
                     
-                    return;
+                    exit;
             }
 
             // exception code determines whether error or info
