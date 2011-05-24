@@ -33,7 +33,7 @@ class SubscriptionModel implements Zend_Feed_Pubsubhubbub_Model_SubscriptionInte
     private function _checkTable()
     {
         $tableSql = 'CREATE TABLE IF NOT EXISTS `ef_pubsub_subscription` (
-          `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+          `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
           `topic_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `hub_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `created_time` datetime DEFAULT NULL,
