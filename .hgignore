@@ -16,3 +16,4 @@ libraries/Erfurt
 libraries/Zend
 libraries/ZendFramework-1.*
 BlogPost
+extensions/dssn/libraries/lib-dssn-php

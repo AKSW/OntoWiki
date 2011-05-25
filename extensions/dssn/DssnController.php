@@ -264,7 +264,7 @@ class DssnController extends OntoWiki_Controller_Component {
      */
     private function registerLibrary()
     {
-        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries';
+        $newIncludePath = ONTOWIKI_ROOT . '/extensions/dssn/libraries/lib-dssn-php';
         set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
         // see http://framework.zend.com/manual/en/zend.loader.load.html
         $autoloader = Zend_Loader_Autoloader::getInstance();
