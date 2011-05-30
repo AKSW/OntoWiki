@@ -244,17 +244,22 @@ class DssnController extends OntoWiki_Controller_Component {
 
         if (!isset($this->model)) {
             try {
-                $this->model = $store->getModel($webid);
+                $models = $store->getAvailableModels(true);
+                if (isset($models[$webid])) {
+                    // try to load the webid model
+                    $this->model = $store->getModel($webid);
+                } elseif (isset($models[$this->_config->urlBase])) {
+                    // try to load the model which has sem urlBase URI
+                    $this->model = $store->getModel($this->_config->urlBase);
+                } else {
+                    // try to create a new model (url = webid)
+                    $newModel = $store->getNewModel($webid);
+                    $this->model = $store->getModel($webid);
+                }
                 $ow->selectedModel = $this->model;
             } catch (Exception $e) {
-                try {
-                    $newModel = $store->getNewModel($webid);
-                    $this->model = $newModel;
-                    $ow->selectedModel = $store->getModel($webid);
-                } catch (Exception $e) {
-                    $message = $e->getMessage();
-                    die('There is no space available for you here: ' . $message);
-                }
+                $message = $e->getMessage();
+                die('There is no space available for you here: ' . $message);
             }
         }
     }
