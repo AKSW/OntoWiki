@@ -1,38 +1,5 @@
-<?php
-$activity = $this->activity;
-$actor    = $activity->getActor();
-$verb     = $activity->getVerb();
-$object   = $activity->getObject();
-?>
 <li class="has-contextmenu-area dssn-activity <?php if ($this->odd) {echo "odd";} else {echo "even";} ?>">
-    <span class="subject">
-        <img class="avatar" src="<?php echo $actor->getAvatar(); ?>" />
-        <a href="<?php echo $actor->getIri() ?>">
-            <?php echo $actor->getName() ?>
-        </a>
-    </span>
-    <span class="verb">
-        <?php echo $verb->getLabel() ?> the following
-        <a href="<?php echo $object->getIri() ?>"><?php echo $object->getTypeLabel() ?></a>
-    </span>
-    <span title="<?php echo $activity->getPublished() ?>" class="published"><?php echo $activity->getPublishedLabel() ?></span>:
-    <span class="object">
-<?php if ($object instanceof DSSN_Activity_Object_Note || $object instanceof DSSN_Activity_Object_Site) : ?>
-        <span class="content"><?php echo $object->getContent() ?></span>
-<?php else : ?>
-    <?php /*
-        <a href="<?php echo $item['objectUri'] ?>"><?php echo $item['objectUri'] ?></a>
-        <?php if(isset($item['objectThumbnail'])) :?>
-        <a href="<?php echo $item['objectUri'] ?>">
-            <img class="thumbnail" src="<?php echo $item['objectThumbnail'] ?>" />
-        </a>
-        <?php endif; ?>
-        <?php if(isset($item['objectContent'])) :?>
-        <span class="content"><?php echo $item['objectContent'] ?></span>
-        <?php endif; ?>
-*/ ?>
-<?php endif ?>
-    </span>
+<?php $this->activity->toHtml(); ?>
 <div class="contextmenu">
     <a class="item rdfauthor-edit-property" onclick="dssnActivityOptions(event);">
         <span class="icon icon-edit" title="Options"><span>Options</span></span>
