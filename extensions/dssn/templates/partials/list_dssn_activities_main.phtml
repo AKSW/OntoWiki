@@ -4,9 +4,9 @@
 <ol class="bullets-none separated">
 <?php
 $i=1; $odd = true;
-foreach ($this->instanceInfo as $instanceUri => $instance){
+foreach ($this->instanceInfo as $instance){
     $factory = new DSSN_Activity_Factory(OntoWiki::getInstance());
-    $activity = $factory->getFromStore($instanceUri);
+    $activity = $factory->getFromStore($instance['uri']);
     // should we use different templates for different activity types here?
     echo $this->partial('partials/list_dssn_activities_item.phtml',
         array(

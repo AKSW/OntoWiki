@@ -53,10 +53,10 @@ $this->headScript()->prependScript(
     </tr>
             <?php endif; ?>
             <?php $i = $this->start ?>
-        <?php foreach ($this->instanceInfo as $instanceUri => $instance){
+        <?php foreach ($this->instanceInfo as $instance){
             echo $this->partial('partials/list_std_element.phtml',
                 array(
-                    'instanceUri'  => $instanceUri,
+                    'instanceUri'  => $instance['uri'],
                     'instance'     => $instance,
                     'instanceData' => $this->instanceData,
                     'instanceInfo' => $this->instanceInfo,

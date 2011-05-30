@@ -8,7 +8,7 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class DssnController extends OntoWiki_Controller_Component {
-
+    
     public $listname = "dssn-activities";
 
     /*
@@ -173,10 +173,14 @@ class DssnController extends OntoWiki_Controller_Component {
         $translate  = $this->_owApp->translate;
 
         $this->view->placeholder('main.window.title')->set($translate->_('News & Activities'));
-
+        
+        if($this->_owApp->selectedModel == null){
+            throw new OntoWiki_Exception("no model selected");
+        }
+        
         // inserts the activity stream list
         $this->createActivityList();
-
+        
         $this->addModuleContext('main.window.dssn.news');
     }
 
@@ -188,7 +192,7 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
-
+        
         $response  = $this->getResponse();
         $output    = false;
 
@@ -285,11 +289,11 @@ class DssnController extends OntoWiki_Controller_Component {
         // list parameters
         $listname     = $this->listname;
         $template = "list_dssn_activities_main";
-
+        
         //react on filter activity module requests
         $name = $this->getParam("name");
         $value = $this->getParam("value");
-
+        
         if($name !== null && $value !== null && $helper->listExists($listname)){
             $list = $helper->getList($listname);
             switch ($name){
@@ -298,7 +302,7 @@ class DssnController extends OntoWiki_Controller_Component {
                         $splitted= explode("/", $_SESSION['DSSN_activityverb']);
                         $id = $splitted[0];
                         $list->removeFilter($id);
-                    }
+                    } 
                     if($value !== "all"){
                         $parts= explode("/",$value,2);
                         $uriparts =  explode("/",$parts[1]);
@@ -306,7 +310,7 @@ class DssnController extends OntoWiki_Controller_Component {
                         $id = $list->addFilter(DSSN_AAIR_activityVerb, false, $label, "equals", $value, null, "uri");
                         $_SESSION['DSSN_activityverb'] = $id."/".$value;
                     } else {
-                        $_SESSION['DSSN_activityverb'] = "all";
+                        $_SESSION['DSSN_activityverb'] = "all"; 
                     }
                     break;
                 case "activityobject":
@@ -422,11 +426,12 @@ class DssnController extends OntoWiki_Controller_Component {
         } else {
             // catch the name list from the session
             $list = $helper->getList($listname);
+            echo htmlentities($list->getResourceQuery());
             // re-add the list to the page
             $helper->addList($listname, $list, $this->view, $template, $config);
         }
-
-        var_dump((string) $list->getResourceQuery());
+        
+        //var_dump((string) $list->getResourceQuery());
         //var_dump((string) $list->getQuery());
     }
 

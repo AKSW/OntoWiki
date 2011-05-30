@@ -25,7 +25,11 @@ $this->headScript()->prependFile(
 );
 if ($instances->hasData()) {
     $instanceInfo = $instances->getResources();
-    $instanceData = $instances->getValues();
+    if(!isset($this->other->disableValueQuery) || !$this->other->disableValueQuery){
+        $instanceData = $instances->getValues();
+    } else {
+         $instanceData = array();
+    }
     //echo '<pre>'; print_r($instanceData); echo '</pre>';
     
     $itemsOnPage = count($instanceData);

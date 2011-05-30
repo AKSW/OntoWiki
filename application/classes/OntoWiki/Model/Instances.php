@@ -1348,13 +1348,13 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     }
     
     /**
-     * get titles and build link-uris for a array of resource uris
+     * get titles and build link-urls (for a sparql result of the resource query)
      * @param array $resources an array of resource uris
      * @return array
      */
     public function convertResources ($resources)
     {
-        // add titles
+        // add titles first, seperatly
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
         $uris = array();
         foreach ($resources as $resource) {
@@ -1363,21 +1363,21 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $titleHelper->addResources($uris);
 
         $resourceResults = array();
-
+        echo "after conversion"."<br/>";
         foreach ($resources as $resource) {
-            $uri = $resource['value'];
-            if (!array_key_exists($uri, $resourceResults)) {
-                $resourceResults[$uri] = $resource;
-            }
-
-            // URL
+            $thisResource = $resource; 
+            $thisResource['uri'] = $resource['value'];
+            echo $resource['value']."<br/>";
+            // the URL to view this resource in detail
             $url = new OntoWiki_Url(array('controller'=>'resource','action'=>'properties'), array());
-            $url->r = $uri;
+            $url->r = $resource['value'];
             
-            $resourceResults[$uri]['url'] = (string) $url;
+            $thisResource['url'] = (string) $url;
             // title
-            $resourceResults[$uri]['title'] =
-                $titleHelper->getTitle($uri, $this->_getLanguage());
+            $thisResource['title'] =
+                $titleHelper->getTitle($resource['value'], $this->_getLanguage());
+            
+            $resourceResults[] = $thisResource;
         }
         return $resourceResults;
     }
@@ -1392,6 +1392,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $this->_resources = array();
             foreach ($result['bindings'] as $row) {
+                echo $row[$this->_resourceVar->getName()]['value']."<br/>";
                 $this->_resources[] = $row[$this->_resourceVar->getName()];
             }
             $this->_resourcesUptodate = true;
