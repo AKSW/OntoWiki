@@ -39,12 +39,19 @@ class PubsubPlugin extends OntoWiki_Plugin
         $hub_url = $this->_privateConfig->hubUrl;
         $topic_url = $owApp->config->urlBase . "history/feed?m=$model&r=$resource";
 
-        $p = new Publisher($hub_url);
-        if ($p->publish_update($topic_url)) {
-            $owApp->logger->debug('Successfully notified hubs (' . $hub_url. ') for topic (' . $topic_url . ').');
-        } else {
-            $owApp->logger->debug('Failed to notify hubs (' . $hub_url . ') for topics (' . $topic_url . ').');
-            $owApp->logger->debug( print_r($p->last_response(), true) );
-        }	    
+        
+        try {
+            $p = new Publisher($hub_url);
+            
+            if ($p->publish_update($topic_url)) {
+                $owApp->logger->debug('Successfully notified hubs (' . $hub_url. ') for topic (' . $topic_url . ').');
+            } else {
+                $owApp->logger->debug('Failed to notify hubs (' . $hub_url . ') for topics (' . $topic_url . ').');
+                //$owApp->logger->debug( print_r($p->last_response(), true) );
+            }
+        } catch (Exception $e) {
+            $owApp->logger->debug('Exception: (' . $hub_url . ') for topics (' . $topic_url . ').');
+        }
+        	    
     }
 }

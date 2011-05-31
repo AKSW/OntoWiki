@@ -65,7 +65,8 @@ class Publisher {
         $options = array(CURLOPT_URL => $url,
                          CURLOPT_POST => true,
                          CURLOPT_POSTFIELDS => $post_string,
-                         CURLOPT_USERAGENT => "PubSubHubbub-Publisher-PHP/1.0");
+                         CURLOPT_USERAGENT => "PubSubHubbub-Publisher-PHP/1.0",
+                         CURLOPT_RETURNTRANSFER => true);
 
     	$ch = curl_init();
     	curl_setopt_array($ch, $options);

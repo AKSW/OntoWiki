@@ -997,7 +997,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         $this->_response->setHeader('Content-Type', 'application/json', true);
         $this->_response->setBody(json_encode($returnValue));
-        //$this->_response->sendResponse();
+        $this->_response->sendResponse();
+        exit;
     }
     
     // ------------------------------------------------------------------------
