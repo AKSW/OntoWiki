@@ -1,5 +1,10 @@
-<li class="has-contextmenu-area dssn-activity <?php if ($this->odd) {echo "odd";} else {echo "even";} ?>">
-<?php $this->activity->toHtml(); ?>
+<li class="has-contextmenu-area foaf-person <?php if ($this->odd) {echo "odd";} else {echo "even";} ?>">
+ <span class="pic">
+        <img class="avatar" src="<?php echo $this->instanceData['depiction'][0]['uri']; ?>"  style="max-width:60px"/>
+    </span>
+    <span class="name">
+        <?php echo $this->instanceData['nick'][0]['uri']; ?>
+    </span>
 <div class="contextmenu">
     <a class="item rdfauthor-edit-property" onclick="dssnNetworkOptions(event);">
         <span class="icon icon-edit" title="Options"><span>Options</span></span>

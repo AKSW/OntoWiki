@@ -211,11 +211,12 @@ class DssnController extends OntoWiki_Controller_Component {
 
         $this->view->placeholder('main.window.title')->set($translate->_('Network'));
         
-        $res = $store->sparqlQuery('SELECT ?me FROM <'.$this->_owApp->selectedModel->getModelIri().'> WHERE {<'.$this->_owApp->selectedModel->getModelIri().'> a foaf:PersonalProfileDocument . <'.$this->_owApp->selectedModel->getModelIri().'> foaf:primaryTopic ?me}');
+        $res = $store->sparqlQuery('PREFIX foaf:<http://xmlns.com/foaf/0.1/> SELECT ?me FROM <'.$this->_owApp->selectedModel->getModelIri().'> WHERE {<'.$this->_owApp->selectedModel->getModelIri().'> a foaf:PersonalProfileDocument . <'.$this->_owApp->selectedModel->getModelIri().'> foaf:primaryTopic ?me}');
         if(is_array($res) && !empty ($res)){
-            $me = $res[0]['me'][0]['value'];
+            $me = $res[0]['me'];
         } else {
-            
+            $this->_sendResponse(false, "the model must contain a foaf profile", OntoWiki_Message::ERROR);
+            return;
         }
         $this->_handleNewFriend($me);
         
@@ -237,7 +238,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addTypeFilter(DSSN_FOAF_Person);
             
             //restrict to persons that i know
-            $list->addFilter(DSSN_FOAF_knows, true, "knows", "equal", $me, null, 'uri');
+            $list->addFilter(DSSN_FOAF_knows, true, "knows", "equals", $me, null, 'uri');
             
             //get properties            
             $list->addShownProperty(DSSN_FOAF_depiction);
@@ -257,6 +258,60 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->addModuleContext('main.window.dssn.network');
     }
     
+    
+    private function _handleNewFriend($me)
+    {
+        $store = $this->_erfurt->getStore(); 
+        if(($friendUri = $this->getParam("friend-input")) != null){
+            $importIntoGraphUri = $friendUri;
+            if($store->isModelAvailable($importIntoGraphUri)){
+                $this->_sendResponse(false, 'already imported', OntoWiki_Message::INFO);
+            } else {               
+                // create model
+                $graph = $store->getNewModel($importIntoGraphUri);
+                //hide
+                $graph->setOption($this->_config->sysont->properties->hidden, array(array(
+                            'value'    => 'true',
+                            'type'     => 'literal',
+                            'datatype' => EF_XSD_BOOLEAN
+                        )));
+                //declare import of new model to current
+                //$graph->setOption($this->_config->sysont->properties->hiddenImports, $importIntoGraphUri);
+                //connect me to that person
+                $store->addStatement($this->_owApp->selectedModel->getModelIri(), $me, DSSN_FOAF_knows, array('value'=>$friendUri, 'type'=>'uri'));
+                
+                //fill new model via linked data
+                require_once $this->_owApp->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
+                $res = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
+                
+                $err = true;
+                if($res == DatagatheringController::IMPORT_OK){
+                    $err = false;
+                    $this->_sendResponse(true,'Data was found for the given URI. Statements were added.', OntoWiki_Message::INFO);
+                } else if($res == DatagatheringController::IMPORT_WRAPPER_ERR){
+                    $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
+                } else if($res == DatagatheringController::IMPORT_NO_DATA){
+                    $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
+                } else if($res == DatagatheringController::IMPORT_WRAPPER_INSTANCIATION_ERR){
+                    $this->_sendResponse(false, 'could not get wrapper instance.', OntoWiki_Message::ERROR);
+                    //$this->_response->setException(new OntoWiki_Http_Exception(400));
+                } else if($res == DatagatheringController::IMPORT_NOT_EDITABLE){
+                    $this->_sendResponse(false, 'you cannot write to this model.', OntoWiki_Message::ERROR);
+                    //$this->_response->setException(new OntoWiki_Http_Exception(403));
+                } else if($res == DatagatheringController::IMPORT_WRAPPER_EXCEPTION){
+                    $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
+                } else {
+                    $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
+                }
+                
+                if($err){
+                    //rollback changes
+                    $store->deleteModel($importIntoGraphUri);
+                }
+            }
+        }
+    }
+
     private function _sendResponse($returnValue, $message = null, $messageType = OntoWiki_Message::SUCCESS)
     {
         if (null !== $message) {
@@ -267,138 +322,8 @@ class DssnController extends OntoWiki_Controller_Component {
                 new OntoWiki_Message($message, $messageType)
             );
         }
-
-        $this->_response->setBody($returnValue . " ". $message);
-        //$this->_response->sendResponse();
     }
     
-    private function _handleNewFriend($me)
-    {
-        if(($friendInput = $this->getParam("friend-input")) != null){
-            $importIntoGraphUri = $friendInput;
-            if($store->isModelAvailable($importIntoGraphUri)){
-                $this->_sendResponse(false, 'already imported', OntoWiki_Message::INFO);
-            } else {
-                $uri = urldecode($friendInput);
-                $r = new Erfurt_Rdf_Resource($uri);
-                $r->setLocator($uri);    
-                // Try to instanciate the requested wrapper
-                $wrapper = null;
-                $wrapperName = 'linkeddata';
-                try {
-                    $wrapper = Erfurt_Wrapper_Registry::getInstance()->getWrapperInstance($wrapperName);
-                } catch (Erfurt_Wrapper_Exception $e) {
-                    $this->_response->setException(new OntoWiki_Http_Exception(400));
-                    return;
-                }
-
-                // create model
-                $graph = $store->getNewModel($importIntoGraphUri);
-                //hide
-                $graph->setOption($this->_config->sysont->properties->hidden, array(array(
-                            'value'    => 'true',
-                            'type'     => 'literal',
-                            'datatype' => EF_XSD_BOOLEAN
-                        )));
-                //import
-                //$graph->setOption($this->_config->sysont->properties->hiddenImports, $importIntoGraphUri);
-                //connect
-                $store->addStatement($this->_owApp->selectedModel->getModelIri(), $me, DSSN_FOAF_knows, $friendInput);
-
-                try {
-                    $wrapperResult = $wrapper->run($r, $importIntoGraphUri);
-                } catch (Erfurt_Wrapper_Exception $e) {
-                    return $this->_sendResponse(false, 'No data was imported: ' . $e->getMessage(), OntoWiki_Message::ERROR);
-                }
-
-                if (is_array($wrapperResult)) {
-                    if (isset($wrapperResult['status_codes'])) {
-                        if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
-                            $wrapperAdd = $wrapperResult['add'];
-
-                            $stmtBeforeCount = $store->countWhereMatches(
-                                $this->_owApp->selectedModel->getModelIri(), 
-                                '{ ?s ?p ?o }',
-                                '*'
-                            );
-
-                            // Prepare versioning...
-                            $versioning = $this->_erfurt->getVersioning();
-                            $actionSpec = array(
-                                'type'        => self::VERSIONING_IMPORT_ACTION_TYPE,
-                                'modeluri'    => $importIntoGraphUri,
-                                'resourceuri' => $importIntoGraphUri
-                            );
-
-                            // Start action, add statements, finish action.
-                            $versioning->startAction($actionSpec);
-
-                            $data = $wrapperAdd;
-                            $result = array();
-                                      
-
-                            $store->addMultipleStatements($importIntoGraphUri, $wrapperAdd);
-                            $versioning->endAction();
-
-                            $stmtAfterCount = $store->countWhereMatches(
-                                    $this->_owApp->selectedModel->getModelIri(), 
-                                    '{ ?s ?p ?o }',
-                                    '*'
-                            );
-
-                            $stmtAddCount = $stmtAfterCount - $stmtBeforeCount;
-
-                            if ($stmtAddCount > 0) {
-                                // TODO test ns
-                                // If we added some statements, we check for additional namespaces and add them.
-                                if (in_array(Erfurt_Wrapper::RESULT_HAS_NS, $wrapperResult['status_codes'])) {
-                                    $namespaces = $wrapperResult['ns'];
-
-                                    $erfurtNamespaces = Erfurt_App::getInstance()->getNamespaces();
-
-                                    foreach ($namespaces as $ns => $prefix) {
-                                        try {
-                                            $erfurtNamespaces->addNamespacePrefix(
-                                                $importIntoGraphUri,
-                                                $prefix,
-                                                $ns,
-                                                false
-                                            );
-                                        } catch (Exception $e) {
-                                            // Ignore...
-                                        }
-                                    }
-                                }
-
-                                return $this->_sendResponse(
-                                    true, 
-                                    'Your friend was added', 
-                                    OntoWiki_Message::INFO
-                                );
-                            } else {
-                                return $this->_sendResponse(
-                                    true, 
-                                    'Data was found for the given URI but no statements were added.', 
-                                    OntoWiki_Message::INFO
-                                );
-                            }
-                        } else {
-                            return $this->_sendResponse(
-                                true, 
-                                'No data returned for the given URI by wrapper.', 
-                                OntoWiki_Message::INFO
-                            );
-                        }
-                    } else {
-                        return $this->_sendResponse(false, 'No data was imported.', OntoWiki_Message::ERROR);
-                    }   
-                } else {
-                    return $this->_sendResponse(false, 'No data was imported.', OntoWiki_Message::ERROR);
-                }
-            }
-        }
-    }
-
     /*
      * checks for user/model etc. (and creates them if needed)
      */

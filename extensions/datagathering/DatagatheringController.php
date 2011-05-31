@@ -785,6 +785,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         } catch (Erfurt_Wrapper_Exception $e) {
             return self::IMPORT_WRAPPER_EXCEPTION;
         }
+        
         if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
