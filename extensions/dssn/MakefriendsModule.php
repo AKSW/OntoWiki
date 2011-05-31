@@ -11,7 +11,7 @@ class MakefriendsModule extends OntoWiki_Module
 {
     public function getTitle()
     {
-        return 'Search Contacts / Make new Friends :-)';
+        return 'Search Contacts / Make new Friends';
     }
 
     public function init()
@@ -29,6 +29,7 @@ class MakefriendsModule extends OntoWiki_Module
 
     function getContents()
     {
+        $this->view->headScript()->appendFile($this->view->moduleUrl . 'js/makefriend.js');
         $content = $this->render('modules/makefriends', false, 'data');
         return $content;
     }

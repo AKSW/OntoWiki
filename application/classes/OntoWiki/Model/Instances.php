@@ -1363,11 +1363,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $titleHelper->addResources($uris);
 
         $resourceResults = array();
-        echo "after conversion"."<br/>";
         foreach ($resources as $resource) {
             $thisResource = $resource; 
             $thisResource['uri'] = $resource['value'];
-            echo $resource['value']."<br/>";
             // the URL to view this resource in detail
             $url = new OntoWiki_Url(array('controller'=>'resource','action'=>'properties'), array());
             $url->r = $resource['value'];
@@ -1392,7 +1390,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $this->_resources = array();
             foreach ($result['bindings'] as $row) {
-                echo $row[$this->_resourceVar->getName()]['value']."<br/>";
                 $this->_resources[] = $row[$this->_resourceVar->getName()];
             }
             $this->_resourcesUptodate = true;
