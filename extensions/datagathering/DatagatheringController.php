@@ -842,7 +842,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                     $presetMatch = false;
                     foreach ($presets as $i=>$preset) {
-                            if ($this->_matchUri($preset['match'], $uri)) {
+                            if (self::_matchUriStatic($preset['match'], $uri)) {
                                 $presetMatch = true;
                                 break;
                             }
@@ -1796,6 +1796,19 @@ class DatagatheringController extends OntoWiki_Controller_Component
     }*/
     
     private function _matchUri($pattern, $uri)
+    {
+        if ((substr($pattern, 0, 7) !== 'http://')) {
+            $pattern = 'http://' . $pattern;
+        }
+        
+        if ((substr($uri, 0, strlen($pattern)) === $pattern)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private static function _matchUriStatic($pattern, $uri)
     {
         if ((substr($pattern, 0, 7) !== 'http://')) {
             $pattern = 'http://' . $pattern;
