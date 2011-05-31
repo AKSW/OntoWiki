@@ -8,7 +8,7 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class DssnController extends OntoWiki_Controller_Component {
-    
+
     public $listname = "dssn-activities";
 
     /*
@@ -149,14 +149,14 @@ class DssnController extends OntoWiki_Controller_Component {
         $translate  = $this->_owApp->translate;
 
         $this->view->placeholder('main.window.title')->set($translate->_('News & Activities'));
-        
+
         if($this->_owApp->selectedModel == null){
             throw new OntoWiki_Exception("no model selected");
         }
-        
+
         // inserts the activity stream list
         $this->createActivityList();
-        
+
         $this->addModuleContext('main.window.dssn.news');
     }
 
@@ -168,7 +168,7 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
-        
+
         $response  = $this->getResponse();
         $output    = false;
 
@@ -204,13 +204,13 @@ class DssnController extends OntoWiki_Controller_Component {
      * list and add friends / contacts tab
      */
     public function networkAction() {
-        
+
         $translate   = $this->_owApp->translate;
         $store       = $this->_owApp->erfurt->getStore();
         $model       = $this->model;
 
         $this->view->placeholder('main.window.title')->set($translate->_('Network'));
-        
+
         $res = $store->sparqlQuery('PREFIX foaf:<http://xmlns.com/foaf/0.1/> SELECT ?me FROM <'.$this->_owApp->selectedModel->getModelIri().'> WHERE {<'.$this->_owApp->selectedModel->getModelIri().'> a foaf:PersonalProfileDocument . <'.$this->_owApp->selectedModel->getModelIri().'> foaf:primaryTopic ?me}');
         if(is_array($res) && !empty ($res)){
             $me = $res[0]['me'];
@@ -219,7 +219,7 @@ class DssnController extends OntoWiki_Controller_Component {
             return;
         }
         $this->_handleNewFriend($me);
-        
+
         $config = $this->_privateConfig;
         $store  = $this->_owApp->erfurt->getStore();
         $model  = $this->model;
@@ -228,19 +228,19 @@ class DssnController extends OntoWiki_Controller_Component {
         // list parameters
         $listname     = "list_dssn_network";
         $template = "list_dssn_network_main";
-            
-        //get the persons 
+
+        //get the persons
         if(!$helper->listExists($listname)) {
             // create a new list from scratch if we do not have one
             $list = new OntoWiki_Model_Instances($store, $model, array());
 
             // restrict to persons
             $list->addTypeFilter(DSSN_FOAF_Person);
-            
+
             //restrict to persons that i know
             $list->addFilter(DSSN_FOAF_knows, true, "knows", "equals", $me, null, 'uri');
-            
-            //get properties            
+
+            //get properties
             $list->addShownProperty(DSSN_FOAF_depiction);
             $list->addShownProperty(DSSN_FOAF_nick);
 
@@ -257,16 +257,16 @@ class DssnController extends OntoWiki_Controller_Component {
         //var_dump((string) $list->getQuery());
         $this->addModuleContext('main.window.dssn.network');
     }
-    
-    
+
+
     private function _handleNewFriend($me)
     {
-        $store = $this->_erfurt->getStore(); 
+        $store = $this->_erfurt->getStore();
         if(($friendUri = $this->getParam("friend-input")) != null){
             $importIntoGraphUri = $friendUri;
             if($store->isModelAvailable($importIntoGraphUri)){
                 $this->_sendResponse(false, 'already imported', OntoWiki_Message::INFO);
-            } else {               
+            } else {
                 // create model
                 $graph = $store->getNewModel($importIntoGraphUri);
                 //hide
@@ -279,11 +279,11 @@ class DssnController extends OntoWiki_Controller_Component {
                 //$graph->setOption($this->_config->sysont->properties->hiddenImports, $importIntoGraphUri);
                 //connect me to that person
                 $store->addStatement($this->_owApp->selectedModel->getModelIri(), $me, DSSN_FOAF_knows, array('value'=>$friendUri, 'type'=>'uri'));
-                
+
                 //fill new model via linked data
                 require_once $this->_owApp->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
                 $res = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
-                
+
                 $err = true;
                 if($res == DatagatheringController::IMPORT_OK){
                     $err = false;
@@ -303,7 +303,7 @@ class DssnController extends OntoWiki_Controller_Component {
                 } else {
                     $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
                 }
-                
+
                 if($err){
                     //rollback changes
                     $store->deleteModel($importIntoGraphUri);
@@ -316,14 +316,14 @@ class DssnController extends OntoWiki_Controller_Component {
     {
         if (null !== $message) {
             $translate = $this->_owApp->translate;
-            
+
             $message = $translate->_($message);
             $this->_owApp->appendMessage(
                 new OntoWiki_Message($message, $messageType)
             );
         }
     }
-    
+
     /*
      * checks for user/model etc. (and creates them if needed)
      */
@@ -382,11 +382,11 @@ class DssnController extends OntoWiki_Controller_Component {
         // list parameters
         $listname     = $this->listname;
         $template = "list_dssn_activities_main";
-        
+
         //react on filter activity module requests
         $name = $this->getParam("name");
         $value = $this->getParam("value");
-        
+
         if($name !== null && $value !== null && $helper->listExists($listname)){
             $list = $helper->getList($listname);
             switch ($name){
@@ -395,7 +395,7 @@ class DssnController extends OntoWiki_Controller_Component {
                         $splitted= explode("/", $_SESSION['DSSN_activityverb']);
                         $id = $splitted[0];
                         $list->removeFilter($id);
-                    } 
+                    }
                     if($value !== "all"){
                         $parts= explode("/",$value,2);
                         $uriparts =  explode("/",$parts[1]);
@@ -403,7 +403,7 @@ class DssnController extends OntoWiki_Controller_Component {
                         $id = $list->addFilter(DSSN_AAIR_activityVerb, false, $label, "equals", $value, null, "uri");
                         $_SESSION['DSSN_activityverb'] = $id."/".$value;
                     } else {
-                        $_SESSION['DSSN_activityverb'] = "all"; 
+                        $_SESSION['DSSN_activityverb'] = "all";
                     }
                     break;
                 case "activityobject":
@@ -523,7 +523,7 @@ class DssnController extends OntoWiki_Controller_Component {
             // re-add the list to the page
             $helper->addList($listname, $list, $this->view, $template, $config);
         }
-        
+
         //var_dump((string) $list->getResourceQuery());
         //var_dump((string) $list->getQuery());
     }
