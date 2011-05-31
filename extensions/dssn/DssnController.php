@@ -82,40 +82,18 @@ class DssnController extends OntoWiki_Controller_Component {
 
             $results = $model->sparqlQuery($query);
             if ($results) {
+                $feed = new DSSN_Activity_Feed();
+                $feed->setTitle('Activity Feed @ ' . $this->model . ' (OntoWiki)');
+                $feed->setLinkSelf($this->_config->urlBase . '/dssn/feed');
+                $feed->setLinkHtml($this->_config->urlBase . '/dssn/news');
+
                 $factory  = new DSSN_Activity_Factory($this->_owApp);
-                $dom      = new DOMDocument('1.0', 'UTF-8');
-
-                $feed  = $dom->createElementNS('http://www.w3.org/2005/Atom','feed');
-                // feed->title
-                $title = $dom->createElement('title', 'todo: feed title');
-                $feed->appendChild($title);
-
-                // feed->updated
-                $updated = $dom->createElement('updated', date('c', time()));
-                $feed->appendChild($updated);
-
-                // feed->link@self
-                $link1 = $dom->createElement('link');
-                $link1->setAttribute("rel", "self");
-                $link1->setAttribute("type", "application/xml+atom");
-                $link1->setAttribute("href", "http://localhost/ow/dssn/dssn/feed");
-                $feed->appendChild($link1);
-
-                // feed->link@self
-                $link2 = $dom->createElement('link');
-                $link2->setAttribute("type", "text/html");
-                $link2->setAttribute("href", "http://localhost/ow/dssn/");
-                $feed->appendChild($link2);
-
                 foreach ($results as $key => $result) {
                     $iri      = $result['resourceUri'];
                     $activity = $factory->getFromStore($iri, $model);
-                    $entry    = $activity->toAtomEntry();
-                    $feed->appendChild($dom->importNode($entry, true));
+                    $feed->addActivity($activity);
                 }
             }
-            $dom->appendChild($feed);
-            $output = $dom->saveXML();
 
         } catch (Exception $e) {
             // encode the exception for http response
@@ -126,9 +104,7 @@ class DssnController extends OntoWiki_Controller_Component {
         }
 
         // send the response
-        $response->setHeader('Content-Type', 'application/atom+xml');
-        $response->setBody($output);
-        $response->sendResponse();
+        $feed->send();
         exit;
     }
 
@@ -435,17 +411,22 @@ class DssnController extends OntoWiki_Controller_Component {
 
         if (!isset($this->model)) {
             try {
-                $this->model = $store->getModel($webid);
+                $models = $store->getAvailableModels(true);
+                if (isset($models[$webid])) {
+                    // try to load the webid model
+                    $this->model = $store->getModel($webid);
+                } elseif (isset($models[$this->_config->urlBase])) {
+                    // try to load the model which has sem urlBase URI
+                    $this->model = $store->getModel($this->_config->urlBase);
+                } else {
+                    // try to create a new model (url = webid)
+                    $newModel = $store->getNewModel($webid);
+                    $this->model = $store->getModel($webid);
+                }
                 $ow->selectedModel = $this->model;
             } catch (Exception $e) {
-                try {
-                    $newModel = $store->getNewModel($webid);
-                    $this->model = $newModel;
-                    $ow->selectedModel = $store->getModel($webid);
-                } catch (Exception $e) {
-                    $message = $e->getMessage();
-                    die('There is no space available for you here: ' . $message);
-                }
+                $message = $e->getMessage();
+                die('There is no space available for you here: ' . $message);
             }
         }
     }
