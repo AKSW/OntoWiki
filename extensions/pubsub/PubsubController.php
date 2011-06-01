@@ -16,35 +16,36 @@ class PubsubController extends OntoWiki_Controller_Component
         echo 'PubsubController is enabled';
     }
 
-    public function subscribeuiAction()
-    {
-        OntoWiki_Navigation::disableNavigation();
-
-        $toolbar = $this->_owApp->toolbar;
-        $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save', 'id' => 'save_btn'))
-            ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
-        $this->view->placeholder('main.window.toolbar')->set($toolbar);
-
-        $translate  = $this->_owApp->translate;
-        $windowTitle = $translate->_('Subscribe to Feed');
-        $this->view->placeholder('main.window.title')->set($windowTitle);
-
-        $this->view->formActionUrl = $this->_config->urlBase . 'pubsub/subscribe';
-        $this->view->formMethod    = 'get';
-        $this->view->formClass     = 'simple-input input-justify-left';
-        $this->view->formName      = 'subsribe';
-    }
+    // public function subscribeuiAction()
+    //     {
+    //         OntoWiki_Navigation::disableNavigation();
+    // 
+    //         $toolbar = $this->_owApp->toolbar;
+    //         $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save', 'id' => 'save_btn'))
+    //             ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
+    //         $this->view->placeholder('main.window.toolbar')->set($toolbar);
+    // 
+    //         $translate  = $this->_owApp->translate;
+    //         $windowTitle = $translate->_('Subscribe to Feed');
+    //         $this->view->placeholder('main.window.title')->set($windowTitle);
+    // 
+    //         $this->view->formActionUrl = $this->_config->urlBase . 'pubsub/subscribe';
+    //         $this->view->formMethod    = 'get';
+    //         $this->view->formClass     = 'simple-input input-justify-left';
+    //         $this->view->formName      = 'subsribe';
+    //     }
 
     public function subscribeAction()
     {
-        // We require POST requests here.
+        // We require GET requests here.
         if (!$this->_request->isGet()) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
-            return;
+            return $this->_exception(400, 'Only GET allowed for subscription');
         }
         
+        $get = $this->_request->getQuery();
+        
         // No params, so we show the form
-        if (empty($_GET)) {
+        if (empty($get)) {
             OntoWiki_Navigation::disableNavigation();
 
             $toolbar = $this->_owApp->toolbar;
@@ -64,57 +65,104 @@ class PubsubController extends OntoWiki_Controller_Component
             return;
         }
         
-        if (!isset($_GET['topic'])) {
-            $this->_owApp->logger->debug('No topic! Nothig to subscribe..'); 
+        if (!isset($get['topic']) || empty($get['topic'])) {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message('No topic! Nothing to subscribe..', OntoWiki_Message::ERROR)
+            );
+            $this->_log('No topic! Nothing to subscribe..'); 
             return;
         }
 
-        require_once "lib/subscriber.php";
-
-        $hub_url     = $this->_privateConfig->hubUrl; 
-        $topic_url   = $_GET['topic'];
-        $callback_url = $this->_getCallbackUrl();
-
-#var_dump($hub_url, $topic_url, $callback_url);exit;
-
-        // create a new subscriber
-        $s = new Subscriber($hub_url, $callback_url);
-
-        // subscribe to a feed
-        //$s->unsubscribe($feed);
-        echo "Subscribed!\n";
-        echo '<pre>';
-        print_r(  $s->subscribe($topic_url) );//*/
-        echo '</pre>';
-
-        $this->_owApp->logger->debug('Subscribed to pubsub '.$hub_url.' for '.$topic_url.' with callback '.$callback_url); 
-    }
-
-    private function _getCallbackUrl(){
-        return $this->_owApp->config->urlBase . "pubsub/callback/";
+        $success = false;
+        try {
+            require_once 'lib/subscriber.php';
+            
+            $hubUrl      = $this->_privateConfig->hubUrl; 
+            $topicUrl    = $get['topic'];
+            $callbackUrl = $this->_getCallbackUrl();
+            
+            $s = new Subscriber($hubUrl, $callbackUrl);
+            ob_start();
+            $response = $s->subscribe($topicUrl);
+            $result = ob_end_clean();
+            
+            $this->_log('Subscriber Result: ' . $result);
+            
+            if ($response !== false) {
+                $success = true;
+            }
+        } catch (Exception $e) {
+            $this->_log('Subscriber Exception: ' . $e->getMessage());
+        } 
+        
+        if ($success) {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message('Sucessfully subscribed', OntoWiki_Message::SUCCESS)
+            );
+        } else {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message('Subscription failed', OntoWiki_Message::ERROR)
+            );
+        }
     }
 
     public function callbackAction()
     {
+        // Disable rendering
+        $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
-
-        $this->_owApp->logger->debug('Handeling pubsub callback..'); 
-
-        $this->_owApp->logger->debug('Data from hub: '.print_r($_REQUEST,true));
-
-        header('HTTP/1.0 200 OK');
-        if( isset( $_REQUEST['hub_challenge'] ) ){
-            // answer check
-            echo $_REQUEST['hub_challenge'];
-            $this->_owApp->logger->debug('Got verify request from pubsub');
-        }else{
-            $this->_owApp->logger->debug('Got new feed from pubsub');
+        
+        if ($this->_request->isPost()) {
+            $this->_handleCallbackPost(); // Delivery
+        } else if ($this->_request->isGet()) {
+            $this->_handleCallbackGet(); // Verification
+        } else {
+            return $this->_exception(400, 'Callback only supports POST/GET requests');
         }
     }
+    
+    private function _handleCallbackPost()
+    {
+        $this->_log('Handling pubsub callback (delivery) now...');
+// TODO: support others than ATOM
+        // Make sure the content type is one of the supported.
+        return $this->_exception(500, 'NOT DONE YET!');
+    }
+    
+    private function _handleCallbackGet()
+    {
+// TODO: store subscriptions locally in order to check the params an be able to unsubscribe.    
+    
+        $this->_log('Handling pubsub callback (verification) now...');
+        
+        $get = $this->_request->getQuery();
+        
+        if (!isset($get['hub_mode'])) {
+            return $this->_exception(400, 'hub.mode parameter required');
+        }
+        
+        if (!isset($get['hub_topic'])) {
+            return $this->_exception(400, 'hub.topic parameter required');
+        }
+        
+        if (!isset($get['hub_challenge'])) {
+            return $this->_exception(400, 'hub.challenge parameter required');
+        }
+        $challenge = $get['hub_challenge'];
+        
+        if (!isset($get['hub_lease_seconds'])) {
+            return $this->_exception(400, 'hub.lease_seconds parameter required');
+        }
+        
+        $this->_response->setResonseBody($challenge);
+        $this->_response->setHttpResponseCode(200);
+        return $this->_response->sendResponse();   
+    }
+    
 
-/*
- * Hub related actions
- */
+/**********************************************************************************************************************/
+/*** Hub related actions **********************************************************************************************/
+/**********************************************************************************************************************/
     
     public function hubbubAction()
     {
@@ -134,9 +182,18 @@ class PubsubController extends OntoWiki_Controller_Component
         }
         $mode = $post['hub_mode'];
         if ($mode === 'publish') {
-            $this->_handleHubNotification($post);
+            try {
+                $this->_handleHubNotification($post);
+            } catch (Exception $e) {
+                return $this->_exception(400, $e->getMessage());
+            }
+            
         } else if (($mode === 'subscribe') ||($mode === 'unsubscribe')) {
-            $this->_handleHubSubscription($post);
+            try {
+                $this->_handleHubSubscription($post);
+            } catch (Exception $e) {
+                return $this->_exception(400, $e->getMessage());
+            }
         } else {
             return $this->_exception(400, 'hub.mode is invalid');
         }
@@ -171,16 +228,18 @@ class PubsubController extends OntoWiki_Controller_Component
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
 
-        $this->_log('Performing async verifications now');
-
         // fetch and deliver sheduled notifications
         $notificationModel = new HubNotificationModel();
         $notifications = $notificationModel->getNotifications();
 
+        $this->_log('Performing delivery now: ' . count($notifications) . ' notifications');
+
         $subscriptionModel = new HubSubscriptionModel();
 
-        foreach ($notifications as $notification) {
+        foreach ($notifications as $i=>$notification) {
             $subscriptions = $subscriptionModel->getSubscriptionsForTopic($notification['hub.url']);
+            
+            $this->_log(count($subscriptions) . ' subsriptions for notification ' . $i . ': ' . $notification['hub.url']);
 
             // TODO: Is the hub url correct here?
             $userAgent = 'OntoWiki Hub (+' . $this->_componentUrlBase . '; ' . count($subscriptions) . ' subscribers)';
@@ -203,6 +262,7 @@ class PubsubController extends OntoWiki_Controller_Component
             $status = $response->getStatus(); 
             if ($status === 200) {
                 $body = trim($response->getBody());
+                $this->_log('Notification payload: ' . $body);
                 // TODO: support alle Feed types... currently ATOM
 
                 // Deliver to all subscribers
@@ -433,17 +493,23 @@ class PubsubController extends OntoWiki_Controller_Component
         if (defined('PUBSUB_TEST_MODE')) {
             return;
         }
+        
+        $url = $this->_owApp->getUrlBase() . 'pubsub/hubperformasyncverifies';
 
-        $url = $this->_componentUrlBase . '/hubperformasyncverifies';
+        $this->_log('Scheduling verification now: ' . $url);
 
+        ob_start();
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
+        //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, 'curl');
         curl_setopt($ch, CURLOPT_TIMEOUT, 1);
         $result = curl_exec($ch);
         curl_close($ch);
+        $result = ob_get_clean();
+        
+        $this->_log('Scheduling result: ' . $result);
     }
 
     private function _scheduleDelivery()
@@ -452,16 +518,27 @@ class PubsubController extends OntoWiki_Controller_Component
             return;
         }
 
-        $url = $this->_componentUrlBase . '/hubdeliver';
+        $url = $this->_owApp->getUrlBase() . 'pubsub/hubdeliver';
 
+        $this->_log('Scheduling delivery now: ' . $url);
+
+        ob_start();
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
+        //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, 'curl');
         curl_setopt($ch, CURLOPT_TIMEOUT, 1);
         $result = curl_exec($ch);
         curl_close($ch);
+        $result = ob_get_clean();
+        
+        $this->_log('Scheduling result: ' . $result);
+    }
+    
+    private function _getCallbackUrl()
+    {
+        return $this->_owApp->getUrlBase() . "pubsub/callback/";
     }
     
     private function _log($msg)

@@ -4,7 +4,7 @@ class HubNotificationModel
     // TODO: If-Modified-Since, If-None-Match
     public function addNotification($data = array())
     {
-        $this->_checkData();
+        $this->_checkData($data);
         $this->_checkTable();
 
         $url = $data['hub.url'];
@@ -18,7 +18,7 @@ class HubNotificationModel
 
     public function hasNotification($data = array())
     {
-        $this->_checkData();
+        $this->_checkData($data);
         $this->_checkTable();
 
         $url = $data['hub.url'];
@@ -29,7 +29,7 @@ class HubNotificationModel
 
     public function deleteNotification($data = array())
     {
-        $this->_checkData();
+        $this->_checkData($data);
         $this->_checkTable();
 
         $url = $data['hub.url'];
@@ -40,7 +40,7 @@ class HubNotificationModel
 
     public function updateNotification($data = array())
     {
-        $this->_checkData();
+        $this->_checkData($data);
         $this->_checkTable();
 
         $url = $data['hub.url'];
@@ -85,14 +85,13 @@ class HubNotificationModel
     private function _checkTable()
     {
         $tableSql = 'CREATE TABLE IF NOT EXISTS `ef_pubsub_hubnotification` (
-            `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+            `id` int COLLATE utf8_unicode_ci PRIMARY KEY AUTO_INCREMENT,
             `publisher_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
             `last_fetched` int DEFAULT 0,
-            `notification_time` int DEFAULT 0,
-            PRIMARY KEY (`id`)
+            `notification_time` int DEFAULT 0
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
 
-        $this->_store->sqlQuery($tableSql);
+        $this->_sqlQuery($tableSql);
     }
 
     private function _checkData($data)
@@ -104,6 +103,11 @@ class HubNotificationModel
 
     private function _sqlQuery($sql)
     {
-        return Erfurt_App::getInstance()->getStore()->sqlQuery($sql);
+        $result = Erfurt_App::getInstance()->getStore()->sqlQuery($sql);
+        if ((count($result) === 1) && isset($result[0]['count(*)'])) {
+            return $result[0]['count(*)'];
+        }
+        
+        return $result;
     }
 }

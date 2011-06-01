@@ -3,8 +3,7 @@ require_once 'OntoWiki/Plugin.php';
 
 class PubsubPlugin extends OntoWiki_Plugin
 {
-// TODO: use real event name
-    public function onFeedChange($event)
+    public function onFeedDidChange($event)
     {
         $feedUrl = $event->feedUrl;
         $this->_notify($feedUrl);
@@ -33,12 +32,16 @@ class PubsubPlugin extends OntoWiki_Plugin
         // Execute the notification
         require_once "lib/publisher.php";
         try {
-            $p = new Publisher($hubUrl);
             
-            if ($p->publish_update($feedUrl)) {
-                $this->_log('Successfully notified hubs (' . $hubUrl. ') for topic (' . $feedUrl . ').');
+            ob_start();
+            $p = new Publisher($hubUrl);
+            $success = $p->publish_update($feedUrl);
+            $result = ob_get_clean();
+            
+            if ($success) {
+                $this->_log('Successfully notified hubs (' . $hubUrl. ') for topic (' . $feedUrl . ').' . $result);
             } else {
-                $this->_log('Failed to notify hubs (' . $hubUrl . ') for topics (' . $feedUrl . ').');
+                $this->_log('Failed to notify hubs (' . $hubUrl . ') for topics (' . $feedUrl . '): ' . $result);
             }
         } catch (Exception $e) {
             $this->_log('Exception: ' . $e->getMessage());
