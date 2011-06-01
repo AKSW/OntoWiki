@@ -478,4 +478,10 @@ class PubsubController extends OntoWiki_Controller_Component
         $result = curl_exec($ch);
         curl_close($ch);
     }
+    
+    private function _log($msg)
+    {
+        $logger = $this->_owApp->getCustomLogger('pubsub');
+        $logger->debug($msg);        
+    }
 }
