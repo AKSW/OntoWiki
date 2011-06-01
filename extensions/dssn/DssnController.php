@@ -67,6 +67,7 @@ class DssnController extends OntoWiki_Controller_Component {
         $output    = false;
 
         try {
+            // TODO: filter this query (activities by OW owner only)
             $query = Erfurt_Sparql_SimpleQuery::initWithString('
                 SELECT DISTINCT ?resourceUri
                 WHERE {
@@ -86,6 +87,7 @@ class DssnController extends OntoWiki_Controller_Component {
                 $feed->setTitle('Activity Feed @ ' . $this->model . ' (OntoWiki)');
                 $feed->setLinkSelf($this->_config->urlBase . '/dssn/feed');
                 $feed->setLinkHtml($this->_config->urlBase . '/dssn/news');
+                $feed->setLinkHub($this->_config->urlBase . '/pubsub/philhere');
 
                 $factory  = new DSSN_Activity_Factory($this->_owApp);
                 foreach ($results as $key => $result) {
@@ -184,6 +186,12 @@ class DssnController extends OntoWiki_Controller_Component {
                 'message' => 'Activity saved',
                 'class'   => 'success'
             );
+
+            // create an event so that the hub can send the data
+            $event = new Erfurt_Event('pubsub-onFeedChange');
+            $event->feedUrl = $this->_config->urlBase . '/dssn/feed';
+            $event->trigger();
+
         } catch (Exception $e) {
             // encode the exception for http response
             $output = array (
