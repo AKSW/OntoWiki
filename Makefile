@@ -101,3 +101,27 @@ debianize:
 	rm Makefile
 	@echo "now do: cp -R application/scripts/debian debian"
 
+
+# coding standard
+
+cs-install: cs-enable
+	pear install PHP_CodeSniffer
+
+cs-uninstall: cs-disable
+
+cs-enable:
+	./application/tests/CodeSniffer/add-hook.sh
+
+cs-disable:
+	./application/tests/CodeSniffer/remove-hook.sh
+
+cs-check-commit:
+	hg status -n -0 --include="*.php" | xargs --null phpcs --report=full --severity=7 -p -s --standard=application/tests/CodeSniffer/Standards/Ontowiki
+cs-check-commit-intensive:
+	hg status -n -0 --include="*.php" | xargs --null phpcs --report=full --severity=5 -p -s --standard=application/tests/CodeSniffer/Standards/Ontowiki
+
+cs-check-all:
+	phpcs --report=summary --extensions=php --severity=7 -s -p --standard=application/tests/CodeSniffer/Standards/Ontowiki *
+cs-check-all-intensive:
+	phpcs --report=summary --extensions=php --severity=5 -s -p --standard=application/tests/CodeSniffer/Standards/Ontowiki *
+
