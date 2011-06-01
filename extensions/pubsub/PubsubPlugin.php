@@ -27,19 +27,30 @@ class PubsubPlugin extends OntoWiki_Plugin
 
     private function _notify($resourceUri)
     {
-        require_once "lib/publisher.php";
-
-        $owApp = OntoWiki::getInstance(); 
-        $owApp->logger->debug('Resource: '.$resourceUri);
-
-
-        $resource = urlencode((string)$resourceUri);
-        $model = urlencode((string)$owApp->selectedModel);
-
-        $hub_url = $this->_privateConfig->hubUrl;
-        $topic_url = $owApp->config->urlBase . "history/feed?m=$model&r=$resource";
-
+        // Only notify if hub is set.
+        $hubUrl = $this->_privateConfig->hubUrl;
+        if (null == $hubUrl) {
+            return;
+        }
+        $this->_log('Using hub: ' . $hubUrl);
         
+        // Only notify for resources that are owned by the ow instance.
+        $owApp = OntoWiki::getInstance();
+        $urlBase = $owApp->getUrlBase();
+        if (!(substr($resourceUri, 0, strlen($urlBase)) === $urlBase)) {
+            return;
+        }
+
+        require_once "lib/publisher.php";
+        $rParam = urlencode((string)$resourceUri);
+        
+        // TODO: Use the activity feed here!
+        $mParam = urlencode((string)$owApp->selectedModel);
+        
+        $topicUrl = $owApp->getUrlBase() . "history/feed?m=$model&r=$resource";
+        $this->_log('Will notify hub for topic: ' . $topicUrl);
+        
+        // Execute the notification
         try {
             $p = new Publisher($hub_url);
             
