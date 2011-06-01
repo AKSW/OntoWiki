@@ -3,33 +3,19 @@ require_once 'OntoWiki/Plugin.php';
 
 class PubsubPlugin extends OntoWiki_Plugin
 {
-    public function onAddStatement($event)
-    {	
-        $s = $event->statement['subject'];	    
-        $this->_notify($s);
-    }
-
-    public function onAddMultipleStatements($event)
+// TODO: use real event name
+    public function onFeedChange($event)
     {
-        $statements = $event->statements;	    
-        foreach ($statements as $subject => $predicatesArray) {
-            $this->_notify($subject);
-            break;
-        }
+        $feedUrl = $event->feedUrl;
+        $this->_notify($feedUrl);
     }
-
-    public function onDeleteMultipleStatements($event)
-    {
-        foreach ($event->statements as $subject => $predicatesArray) {
-            $this->_notify($subject);
-        }
-    }
-
-    private function _notify($resourceUri)
+    
+    private function _notify($feedUrl)
     {
         // Only notify if hub is set.
         $hubUrl = $this->_privateConfig->hubUrl;
         if (null == $hubUrl) {
+            $this->_log('No hub configured');
             return;
         }
         $this->_log('Using hub: ' . $hubUrl);
@@ -37,33 +23,26 @@ class PubsubPlugin extends OntoWiki_Plugin
         // Only notify for resources that are owned by the ow instance.
         $owApp = OntoWiki::getInstance();
         $urlBase = $owApp->getUrlBase();
-        if (!(substr($resourceUri, 0, strlen($urlBase)) === $urlBase)) {
+        if (!(substr($feedUrl, 0, strlen($urlBase)) === $urlBase)) {
+            $this->_log('Pubsub notifications only supported for internal resources');
             return;
         }
-
-        require_once "lib/publisher.php";
-        $rParam = urlencode((string)$resourceUri);
         
-        // TODO: Use the activity feed here!
-        $mParam = urlencode((string)$owApp->selectedModel);
-        
-        $topicUrl = $owApp->getUrlBase() . "history/feed?m=$model&r=$resource";
-        $this->_log('Will notify hub for topic: ' . $topicUrl);
+        $this->_log('Will notify hub for feed: ' . $feedUrl);
         
         // Execute the notification
+        require_once "lib/publisher.php";
         try {
-            $p = new Publisher($hub_url);
+            $p = new Publisher($hubUrl);
             
-            if ($p->publish_update($topic_url)) {
-                $this->_log('Successfully notified hubs (' . $hub_url. ') for topic (' . $topic_url . ').');
+            if ($p->publish_update($feedUrl)) {
+                $this->_log('Successfully notified hubs (' . $hubUrl. ') for topic (' . $feedUrl . ').');
             } else {
-                $this->_log('Failed to notify hubs (' . $hub_url . ') for topics (' . $topic_url . ').');
-                //$owApp->logger->debug( print_r($p->last_response(), true) );
+                $this->_log('Failed to notify hubs (' . $hubUrl . ') for topics (' . $feedUrl . ').');
             }
         } catch (Exception $e) {
-            $this->_log('Exception: (' . $hub_url . ') for topics (' . $topic_url . ').');
+            $this->_log('Exception: ' . $e->getMessage());
         }
-        	    
     }
     
     private function _log($msg)

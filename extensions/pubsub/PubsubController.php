@@ -5,7 +5,8 @@ require_once 'HubNotificationModel.php';
 class PubsubController extends OntoWiki_Controller_Component
 {
     const DEFAULT_LEASE_SECONDS = 2592000; // 30 days
-    const CHALLENGE_SALT= 'csaiojwef89456nucekljads8tv589ncefn4c5m90ikdf9df5s';
+    const CHALLENGE_SALT        = 'csaiojwef89456nucekljads8tv589ncefn4c5m90ikdf9df5s';
+    const TEST_CHALLENGE        = 'TestChallenge'; 
 
     public function testAction()
     {
@@ -111,132 +112,45 @@ class PubsubController extends OntoWiki_Controller_Component
         }
     }
 
-    /**
-     * Hub related actions
-     */
-
-    public function hubsubscriptionAction()
-    { 
+/*
+ * Hub related actions
+ */
+    
+    public function hubbubAction()
+    {
         // Disable rendering
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
-
-        // We require POST requests here.
+        
+        // We require POST requests.
         if (!$this->_request->isPost()) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'Only POST allowed'));
-            return;
+            return $this->_exception(400, 'Only POST allowed');
         }
-
-        $params = array();
-
-        // hub.callback
-        if (!isset($_POST['hub_callback'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.callback is missing'));
-            return;
+        $post = $this->_request->getPost();
+        
+        // Check for hub.mode
+        if (!isset($post['hub_mode'])) {
+            return $this->_exception(400, 'hub.mode is missing');
         }
-        $params['hub.callback'] = urldecode($_POST['hub_callback']);
-        if (strrpos($params['hub.callback'], '#') !== false) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.callback is invalid'));
-            return;
+        $mode = $post['hub_mode'];
+        if ($mode === 'publish') {
+            $this->_handleHubNotification($post);
+        } else if (($mode === 'subscribe') ||($mode === 'unsubscribe')) {
+            $this->_handleHubSubscription($post);
+        } else {
+            return $this->_exception(400, 'hub.mode is invalid');
         }
-
-        // hub.mode
-        if (!isset($_POST['hub_mode'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.mode is missing'));
-            return;
-        }
-        $mode = $_POST['hub_mode'];
-        if (!(($mode === 'subscribe') || ($mode === 'unsubscribe'))) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.mode is invalid'));
-            return;
-        }
-        $params['hub.mode'] = $mode;
-
-        // hub.topic
-        if (!isset($_POST['hub_topic'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.topic is missing'));
-            return;
-        }
-        $params['hub.topic'] = urldecode($_POST['hub_topic']);
-        if (strrpos($params['hub.topic'], '#') !== false) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.topic is invalid'));
-            return;
-        }
-
-        // hub verify
-        if (!isset($_POST['hub_verify'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.verify is missing'));
-            return;
-        }
-        $verify = $_POST['hub_verify'];
-        // supported values for hub.verify: sync, async
-        if (!(($verify === 'sync') || ($verify === 'async'))) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400, 'hub.verify is invalid'));
-            return;
-        }
-        $params['hub.verify'] = $verify;
-
-        // optional: hub.lease_seconds
-        $leaseSeconds = null;
-        if (isset($_POST['hub_lease_seconds'])) {
-            $params['hub.lease_seconds'] = $_POST['hub_lease_seconds'];
-        }
-
-        // optional: hub.secret (SHOULD only be provided when hub is behind HTTPS!)
-        $secret = null;
-        if (isset($_POST['hub_secret'])) {
-            $params['hub.secret'] = urldecode($_POST['hub_secret']);
-        }
-
-        // optional: hub.verify_token
-        $verifyToken = null;
-        if (isset($_POST['hub_verify_token'])) {
-            $params['hub.verify_token'] = urldecode($_POST['hub_verify_token']);
-        }
-
-        // Create a challenge for the verification 
-        $challenge = uniqid(mt_rand(), true) . uniqid(mt_rand(), true) . self::CHALLENGE_SALT;
-        $challenge = md5($challenge);
-        $params['hub.challenge'] = $challenge;
-        if (defined('PUBSUB_TEST_MODE')) {
-            $params['hub.challenge'] = 'TestChallenge';
-        }
-
-        $hubModel = new HubSubscriptionModel();
-        if ($hubModel->hasSubscription($params)) {
-            if ($params['hub.mode'] === 'subscribe') {
-                $this->_response->setException(new OntoWiki_Http_Exception(500, 'already subscribed'));
-                return;
-            }
-        }
-
-        // Subscribe/Unsubscribe
-        if ($params['hub.mode'] === 'subscribe') {
-            $hubModel->addSubscription($params);
-        }
-
-        if ($params['hub.verify'] === 'sync') {
-            $success = $this->_hubSendVerificationRequest($params);
-            if ($success) {
-                $this->_response->setHttpResponseCode(204);
-                return $this->_response->sendResponse();
-            }
-
-            $this->_response->setException(new OntoWiki_Http_Exception(500, 'verification (sync) failed'));
-            return;
-        }
-
-        $this->_scheduleVerification();
-        $this->_response->setHttpResponseCode(202);
-        return $this->_response->sendResponse();
     }
-
+    
     public function hubperformasyncverifiesAction()
     {
+        // TODO: Make sure that only called from within the host
+        
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout()->disableLayout();
 
-        // TODO: Maker sure that only called from within the host
+        $this->_log('Performing async verifications now');
+
         $hubModel = new HubSubscriptionModel();
         $pending = $hubModel->getPendingAsyncVerifications();
         foreach ($pending as $params) {
@@ -247,70 +161,17 @@ class PubsubController extends OntoWiki_Controller_Component
         $this->_response->setHttpResponseCode(200);
         return $this->_response->sendResponse();
     }
-
-    public function hubpingAction()
-    {
-        // shedule retrieved topicURLs to be fetched and delivered
-
-        // Disable rendering
-        $this->_helper->viewRenderer->setNoRender();
-        $this->_helper->layout()->disableLayout();
-
-        // We require POST requests here.
-        if (!$this->_request->isPost()) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
-            return;
-        }
-
-        $params = array();
-
-        // hub.mode
-        if (!isset($_POST['hub_mode'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
-            return;
-        }
-        $params['hub.mode'] = $_POST['hub_mode'];
-        if (!($params['hub.mode'] === 'publish')) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
-            return;
-        }
-
-        // hub.url (may be a string or an array)
-        if (!isset($_POST['hub_url'])) {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
-            return;
-        }
-        $url = $_POST['hub_url'];
-        if (is_string($url)) {
-            $url = urldecode($url);
-        } else if (is_array($url)) {
-            $urlArray = array();
-            foreach ($url as $u) {
-                $urlArray[] = urldecode($u);
-            }
-            $url = $urlArray;
-        } else {
-            $this->_response->setException(new OntoWiki_Http_Exception(400));
-            return;
-        }
-        $params['hub.url'] = $url;
-
-        $notificationModel = new HubNotificationModel();
-        if (!$notificationModel->hasNotification($params)) {
-            $notificationModel->addNotification($params);
-        }
-
-        $this->_scheduleDelivery();
-
-        $this->_response->setHttpResponseCode(204);
-        return $this->_response->sendResponse();
-    }
-
+    
     public function hubdeliverAction()
     {
         // TODO: Maker sure that only called from within the host
         // TODO: X-Hub-On-Behalf-Of
         // TODO: Authenticated Content Distribution
+        
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout()->disableLayout();
+
+        $this->_log('Performing async verifications now');
 
         // fetch and deliver sheduled notifications
         $notificationModel = new HubNotificationModel();
@@ -355,12 +216,12 @@ class PubsubController extends OntoWiki_Controller_Component
                     $postClient->setHeaders('Content-Type', 'application/atom+xml');
                     $postClient->setRawData($body);
 
-                    $response = $client->request();
-                    $status = $response->getStatus();
-                    if (($status >= 200) && ($status < 300)) {
-                        // TODO: log
+                    $postResponse = $client->request();
+                    $postStatus = $postResponse->getStatus();
+                    if (($postStatus >= 200) && ($postStatus < 300)) {
+                        $this->_log('Delivery sucess: ' . $subscription['hub.callback']);
                     } else {
-                        // TODO: log
+                        $this->_log('Delivery failure: ' . $subscription['hub.callback']);
                     }
                 }
 
@@ -368,12 +229,136 @@ class PubsubController extends OntoWiki_Controller_Component
                 $notificationModel->deleteNotification($notification);
             } else if (status === 304) {
                 // Ignore
+                $this->_log('Ignored content as result of 304');
                 $notificationModel->deleteNotification($notification);
                 continue;
             } else {
-                // TODO: log?! remove?!
+                $this->_log('Unexpected status code: ' . $status);
+                $notificationModel->deleteNotification($notification);
+                continue;
             }
         }
+    }
+    
+    private function _handleHubSubscription($post)
+    {
+        $params = array();
+
+        // hub.mode
+        $params['hub.mode'] = $post['hub_mode'];
+
+        // hub.callback
+        if (!isset($post['hub_callback'])) {
+            return $this->_exception(400, 'hub.callback is missing');
+        }
+        $params['hub.callback'] = urldecode($post['hub_callback']);
+        if (strrpos($params['hub.callback'], '#') !== false) {
+            return $this->_exception(400, 'hub.callback is invalid');
+        }
+
+        // hub.topic
+        if (!isset($post['hub_topic'])) {
+            return $this->_exception(400, 'hub.topic is missing');
+        }
+        $params['hub.topic'] = urldecode($post['hub_topic']);
+        if (strrpos($params['hub.topic'], '#') !== false) {
+            return $this->_exception(400, 'hub.topic is invalid');
+        }
+
+        // hub verify
+        if (!isset($post['hub_verify'])) {
+            return $this->_exception(400, 'hub.verify is missing');
+        }
+        $verify = $post['hub_verify'];
+        // supported values for hub.verify: sync, async
+        if (!(($verify === 'sync') || ($verify === 'async'))) {
+            return $this->_exception(400, 'hub.verify is invalid');
+        }
+        $params['hub.verify'] = $verify;
+
+        // optional: hub.lease_seconds
+        if (isset($post['hub_lease_seconds'])) {
+            $params['hub.lease_seconds'] = $post['hub_lease_seconds'];
+        }
+
+        // optional: hub.secret (SHOULD only be provided when hub is behind HTTPS!)
+        if (isset($post['hub_secret'])) {
+            $params['hub.secret'] = urldecode($post['hub_secret']);
+        }
+
+        // optional: hub.verify_token
+        if (isset($post['hub_verify_token'])) {
+            $params['hub.verify_token'] = urldecode($post['hub_verify_token']);
+        }
+
+        // Create a challenge for the verification 
+        $challenge = uniqid(mt_rand(), true) . uniqid(mt_rand(), true) . self::CHALLENGE_SALT;
+        $challenge = md5($challenge);
+        $params['hub.challenge'] = $challenge;
+        if (defined('PUBSUB_TEST_MODE')) {
+            $params['hub.challenge'] = self::TEST_CHALLENGE;
+        }
+
+        $hubModel = new HubSubscriptionModel();
+        if ($hubModel->hasSubscription($params)) {
+            if ($params['hub.mode'] === 'subscribe') {
+                // TODO: Support refreshing of subscription here, as defined in protocol spec.
+                return $this->_exception(500, 'already subscribed');
+            }
+        }
+
+        // Subscribe/Unsubscribe
+        if ($params['hub.mode'] === 'subscribe') {
+            $hubModel->addSubscription($params);
+        }
+
+        if ($params['hub.verify'] === 'sync') {
+            $success = $this->_hubSendVerificationRequest($params);
+            if ($success) {
+                $this->_response->setHttpResponseCode(204);
+                return $this->_response->sendResponse();
+            }
+
+            // If we reach this, verification has failed (sync).
+            return $this->_exception(500, 'verification (sync) failed');
+        }
+
+        $this->_scheduleVerification();
+        $this->_response->setHttpResponseCode(202);
+        return $this->_response->sendResponse();
+    }
+
+    public function _handleHubNotification($post)
+    {
+        // shedule retrieved topicURLs to be fetched and delivered
+
+        $params = array();
+
+        // hub.url (may be a string or an array)
+        if (!isset($post['hub_url'])) {
+            return $this->_exception(400, 'hub.url is missing');
+        }
+        $url = $post['hub_url'];
+        if (is_string($url)) {
+            $url = urldecode($url);
+        } else if (is_array($url)) {
+            $urlArray = array();
+            foreach ($url as $u) {
+                $urlArray[] = urldecode($u);
+            }
+            $url = $urlArray;
+        }
+        $params['hub.url'] = $url;
+
+        $notificationModel = new HubNotificationModel();
+        if (!$notificationModel->hasNotification($params)) {
+            $notificationModel->addNotification($params);
+        }
+
+        $this->_scheduleDelivery();
+
+        $this->_response->setHttpResponseCode(204);
+        return $this->_response->sendResponse();
     }
 
     private function _hubSendVerificationRequest($params)
@@ -483,5 +468,15 @@ class PubsubController extends OntoWiki_Controller_Component
     {
         $logger = $this->_owApp->getCustomLogger('pubsub');
         $logger->debug($msg);        
+    }
+    
+    private function _exception($code, $debugMessage)
+    {
+        if (defined('_OWDEBUG')) {
+            $this->_log('OntoWiki_Http_Exception: ' . $code . ' ' . $debugMessage);
+            $this->_response->setException(new OntoWiki_Http_Exception($code, $debugMessage));
+        } else {
+            $this->_response->setException(new OntoWiki_Http_Exception($code));
+        }
     }
 }
