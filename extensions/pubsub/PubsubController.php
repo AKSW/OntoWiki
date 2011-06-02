@@ -276,12 +276,13 @@ class PubsubController extends OntoWiki_Controller_Component
                     $postClient->setHeaders('Content-Type', 'application/atom+xml');
                     $postClient->setRawData($body);
 
-                    $postResponse = $client->request();
+                    $postResponse = $postClient->request();
+                    $this->_log((string)$postResponse);
                     $postStatus = $postResponse->getStatus();
                     if (($postStatus >= 200) && ($postStatus < 300)) {
-                        $this->_log('Delivery sucess: ' . $subscription['hub.callback']);
+                        $this->_log('Delivery sucess (' . $postStatus . '): ' . $subscription['hub.callback']);
                     } else {
-                        $this->_log('Delivery failure: ' . $subscription['hub.callback']);
+                        $this->_log('Delivery failure (' . $postStatus . '): ' . $subscription['hub.callback']);
                     }
                 }
 
