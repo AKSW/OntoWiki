@@ -141,7 +141,7 @@ class PubsubController extends OntoWiki_Controller_Component
             $event->feedData = $atomData;
             $event->trigger();
         } catch (Exception $e) {
-            return $this->_exception(500, 'Error handling the delivery content.');
+            return $this->_exception(500, 'Error handling the delivery content: ' . $e->getMessage());
         }
         
 // TODO: Schedule event and return 202 Accepted here. Spec wants us to quickly return!

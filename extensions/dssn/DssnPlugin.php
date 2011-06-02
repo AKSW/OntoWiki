@@ -1,11 +1,24 @@
 <?php
 class DssnPlugin extends OntoWiki_Plugin
 {
+    private $_externalActivitiesModel = null;
+    private $_store = null;
+    
     public function init()
     {
         parent::init();
         
         $this->_registerLibrary();
+        
+        $ow = OntoWiki::getInstance();
+        $this->_store = $ow->erfurt->getStore();
+        $modelUri = $this->_privateConfig->plugin->externalActivitiesModel;
+        
+        if ($this->_store->isModelAvailable($modelUri)) {
+            $this->_externalActivitiesModel = $this->_store->getModel($modelUri);
+        } else {
+            $this->_externalActivitiesModel = $this->_store->getNewModel($modelUri, '', Erfurt_Store::MODEL_TYPE_OWL, false);
+        }
     }
     
     public function onExternalFeedDidChange($event)
@@ -14,7 +27,18 @@ class DssnPlugin extends OntoWiki_Plugin
         
         $feedObject = DSSN_Activity_Feed_Factory::newFromXml($event->feedData);
         foreach ($feedObject->getActivities() as $activity) {
-            $this->_log((string)$activity->toRdf());
+            // ob_start();
+            //             print_r($activity->toRDF());
+            //             $result = ob_get_clean();
+            //             $this->_log('RDF: '. $result);
+            
+            try {
+                $this->_store->addMultipleStatements((string)$this->_externalActivitiesModel, $activity->toRDF());
+                
+                $this->_log('Added external activity: ' . $activity);
+            } catch (Exception $e) {
+                $this->_log('Failed adding external activity: ' . $activity);
+            }
         }
     }
     

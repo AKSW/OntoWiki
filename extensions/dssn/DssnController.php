@@ -106,7 +106,7 @@ class DssnController extends OntoWiki_Controller_Component {
         // Send the response containing the feed.
         $this->_response->setHeader('Content-Type', 'application/atom+xml', true);
         $this->_response->setBody($feed->toXml());
-        return $this->_response->sendResponse();
+        return;
     }
 
     /*
