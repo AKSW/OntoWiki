@@ -56,7 +56,8 @@ class DssnController extends OntoWiki_Controller_Component {
     /*
      * activity stream atom feed action
      */
-    public function feedAction() {
+    public function feedAction() 
+    {
         // service controller needs no view renderer
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
@@ -102,9 +103,10 @@ class DssnController extends OntoWiki_Controller_Component {
             exit;
         }
 
-        // send the response
-        $feed->send();
-        exit;
+        // Send the response containing the feed.
+        $this->_response->setHeader('Content-Type', 'application/atom+xml', true);
+        $this->_response->setBody($feed->toXml());
+        return $this->_response->sendResponse();
     }
 
     /*
