@@ -3,7 +3,7 @@ require_once 'OntoWiki/Plugin.php';
 
 class PubsubPlugin extends OntoWiki_Plugin
 {
-    public function onFeedDidChange($event)
+    public function onInternalFeedDidChange($event)
     {
         $feedUrl = $event->feedUrl;
         $this->_notify($feedUrl);

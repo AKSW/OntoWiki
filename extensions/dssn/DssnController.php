@@ -180,7 +180,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $store  = $this->_owApp->erfurt->getStore();
             $store->addMultipleStatements((string) $model, $activity->toRDF());
 
-            $event = new Erfurt_Event('onFeedDidChange');
+            $event = new Erfurt_Event('onInternalFeedDidChange');
             $event->feedUrl = $this->_owApp->getUrlBase() . 'dssn/feed';
             $event->trigger();
 

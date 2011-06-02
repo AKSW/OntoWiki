@@ -7,7 +7,7 @@ class PubsubController extends OntoWiki_Controller_Component
     const DEFAULT_LEASE_SECONDS = 2592000; // 30 days
     const CHALLENGE_SALT        = 'csaiojwef89456nucekljads8tv589ncefn4c5m90ikdf9df5s';
     const TEST_CHALLENGE        = 'TestChallenge'; 
-
+    
     public function testAction()
     {
         $this->_helper->viewRenderer->setNoRender();
@@ -126,7 +126,28 @@ class PubsubController extends OntoWiki_Controller_Component
         $this->_log('Handling pubsub callback (delivery) now...');
 // TODO: support others than ATOM
         // Make sure the content type is one of the supported.
-        return $this->_exception(500, 'NOT DONE YET!');
+        $contentType = strtolower($this->_request->getHeader('Content-Type'));
+        if ($contentType !== 'application/atom+xml') {
+            return $this->_exception(400, 'Unsupported Content-Type');
+        }
+        
+        // We need the raw POST here.
+        $atomData = file_get_contents('php://input');
+        
+        // Create a new event.
+// TODO: Create naming schema for events!
+        try {
+            $event = new Erfurt_Event('onExternalFeedDidChange');
+            $event->feedData = $atomData;
+            $event->trigger();
+        } catch (Exception $e) {
+            return $this->_exception(500, 'Error handling the delivery content.');
+        }
+        
+// TODO: Schedule event and return 202 Accepted here. Spec wants us to quickly return!
+// TODO: X-Hub-On-Behalf-Of header.
+        $this->_response->setHttpResponseCode(204); // No Content
+        return $this->_response->sendResponse();
     }
     
     private function _handleCallbackGet()
@@ -277,8 +298,9 @@ class PubsubController extends OntoWiki_Controller_Component
                     $postClient->setRawData($body);
 
                     $postResponse = $postClient->request();
-                    $this->_log((string)$postResponse);
                     $postStatus = $postResponse->getStatus();
+                    // TODO: better log; log levels?
+                    $this->_log('Callback Response: ' . $postStatus . ' - ' . (string)$postResponse->getBody());
                     if (($postStatus >= 200) && ($postStatus < 300)) {
                         $this->_log('Delivery sucess (' . $postStatus . '): ' . $subscription['hub.callback']);
                     } else {
