@@ -738,8 +738,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 isset($this->_privateConfig->fetch->allData) && ((boolean)$this->_privateConfig->fetch->allData === true), 
                 !isset($this->_privateConfig->fetch->preset) ? array() : $this->_privateConfig->fetch->preset->toArray(), 
                 !isset($this->_privateConfig->fetch->default->exception) ? array() : $this->_privateConfig->fetch->default->exception->toArray(), 
-                $wrapperName);
-        
+                $wrapperName, $this->_privateConfig->fetch->default->mode);
+                
         if($res == self::IMPORT_OK){
             return $this->_sendResponse(true,'Data was found for the given URI. Statements were added.', OntoWiki_Message::INFO);
         } else if($res == self::IMPORT_WRAPPER_ERR){
@@ -820,7 +820,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         } else {
                             $wrapperAdd = array();
                         }
-                        
+                       
                         // We also need to remove all blank node objects
                         $newResult = array();
                         foreach ($wrapperAdd as $s=>$pArray) {
@@ -897,7 +897,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
                             }   
                         } else {
                             // Use the default rule.
-
                             // Start with all data.
                             $result = $data;
                             if (isset($presets[$presetMatch]['exception'])) {
@@ -922,7 +921,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
                                     $result[$uri][$exception] = $data[$uri][$exception];
                                 }
                             }
-                            
                         } else {
                             // Start with all data.
                             $result = $data;
@@ -936,7 +934,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         }
                     }
                     $wrapperAdd = $result;
-
                     $store->addMultipleStatements($graphUri, $wrapperAdd);
                     $versioning->endAction();
 

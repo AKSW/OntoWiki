@@ -90,8 +90,7 @@ class Subscriber {
     private function http($url, $post_string) {
         // add any additional curl options here
         $options = array(CURLOPT_URL => $url,
-                         CURLOPT_USERAGENT => "PubSubHubbub-Subscriber-PHP/1.0",
-                         CURLOPT_RETURNTRANSFER => true);
+                         CURLOPT_USERAGENT => "PubSubHubbub-Subscriber-PHP/1.0");
                          
         if ($post_string) {
             $options[CURLOPT_POST] = true;
@@ -107,7 +106,6 @@ class Subscriber {
         $response = curl_exec($ch);
         $info = curl_getinfo($ch);
         
-        echo "curl: ";
         print_r($response);
         
         // all good -- anything in the 200 range 

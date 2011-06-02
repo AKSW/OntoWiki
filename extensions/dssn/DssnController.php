@@ -56,7 +56,8 @@ class DssnController extends OntoWiki_Controller_Component {
     /*
      * activity stream atom feed action
      */
-    public function feedAction() {
+    public function feedAction() 
+    {
         // service controller needs no view renderer
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
@@ -77,10 +78,9 @@ class DssnController extends OntoWiki_Controller_Component {
                         ?resourceUri <http://xmlns.notu.be/aair#activityActor> ?actor .
                         ?resourceUri <http://xmlns.notu.be/aair#activityObject> ?object
                 }
-                ORDER BY ASC(?published)
+                ORDER BY DESC(?published)
                 LIMIT 10'
             );
-
             $results = $model->sparqlQuery($query);
             if ($results) {
                 $feed = new DSSN_Activity_Feed();
@@ -105,9 +105,10 @@ class DssnController extends OntoWiki_Controller_Component {
             exit;
         }
 
-        // send the response
-        $feed->send();
-        exit;
+        // Send the response containing the feed.
+        $this->_response->setHeader('Content-Type', 'application/atom+xml', true);
+        $this->_response->setBody($feed->toXml());
+        return;
     }
 
     /*
@@ -181,6 +182,10 @@ class DssnController extends OntoWiki_Controller_Component {
             $model  = $this->model;
             $store  = $this->_owApp->erfurt->getStore();
             $store->addMultipleStatements((string) $model, $activity->toRDF());
+
+            $event = new Erfurt_Event('onInternalFeedDidChange');
+            $event->feedUrl = $this->_owApp->getUrlBase() . 'dssn/feed';
+            $event->trigger();
 
             $output   = array (
                 'message' => 'Activity saved',
@@ -520,7 +525,7 @@ class DssnController extends OntoWiki_Controller_Component {
             //$list->addShownPropertyCustom($prop4, $thumbnailVar);
 
             // add order by published timestamp
-            $list->setOrderVar($publishedVar, true);
+            $list->setOrderVar($publishedVar, false);
 
             // add the list to the session
             $helper->addListPermanently($listname, $list, $this->view, $template, $config);
