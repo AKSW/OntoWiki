@@ -76,10 +76,9 @@ class DssnController extends OntoWiki_Controller_Component {
                         ?resourceUri <http://xmlns.notu.be/aair#activityActor> ?actor .
                         ?resourceUri <http://xmlns.notu.be/aair#activityObject> ?object
                 }
-                ORDER BY ASC(?published)
+                ORDER BY DESC(?published)
                 LIMIT 10'
             );
-
             $results = $model->sparqlQuery($query);
             if ($results) {
                 $feed = new DSSN_Activity_Feed();
@@ -516,7 +515,7 @@ class DssnController extends OntoWiki_Controller_Component {
             //$list->addShownPropertyCustom($prop4, $thumbnailVar);
 
             // add order by published timestamp
-            $list->setOrderVar($publishedVar, true);
+            $list->setOrderVar($publishedVar, false);
 
             // add the list to the session
             $helper->addListPermanently($listname, $list, $this->view, $template, $config);
