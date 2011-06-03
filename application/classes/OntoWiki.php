@@ -23,6 +23,8 @@
  */
 class OntoWiki
 {
+    const DEFAULT_LOG_IDENTIFIER = 'ontowiki';
+    
     // ------------------------------------------------------------------------
     // --- Properties
     // ------------------------------------------------------------------------
@@ -32,6 +34,12 @@ class OntoWiki
      * @var Zend_Application_Bootstrap_Bootstrap
      */
     protected $_bootstrap = null;
+    
+    /**
+     * A dictionary for custom logger objects.
+     * The key is the identifier for the logger.
+     */
+    protected $_customLogs = array();
     
     /** 
      * Array of properties
@@ -218,6 +226,52 @@ class OntoWiki
         }
         
         return self::$_instance;
+    }
+    
+    /**
+     * Returns a custom logger object.
+     * If the $identifier parameter is missing or is equal to the default log 
+     * identifier, the default logger object is returned.
+     *
+     * @param string $identifier (optional)
+     * @return Zend_Log
+     */
+    public function getCustomLogger($identifier = self::DEFAULT_LOG_IDENTIFIER)
+    {
+        if ($identifier === self::DEFAULT_LOG_IDENTIFIER) {
+            return $this->logger;
+        }
+        
+        if (isset($this->_customLogs[$identifier])) {
+            return $this->_customLogs[$identifier];
+        }
+        
+        
+        $config = $this->getConfig();
+        
+        // support absolute path
+        if (!(preg_match('/^(\w:[\/|\\\\]|\/)/', $config->log->path) === 1)) {
+            // prepend OntoWiki root for relative paths
+            $config->log->path = ONTOWIKI_ROOT . $config->log->path;
+        }
+
+        // initialize logger
+        if (is_writable($config->log->path) && ((boolean)$config->log->level !== false)) {
+            $levelFilter = new Zend_Log_Filter_Priority((int)$config->log->level, '<=');
+
+            $writer = new Zend_Log_Writer_Stream($config->log->path . $identifier . '.log');
+            $logger = new Zend_Log($writer);
+            $logger->addFilter($levelFilter);
+
+            $this->_customLogs[$identifier] = $logger;
+            return $logger;
+        }
+
+        // fallback to NULL logger
+        $writer = new Zend_Log_Writer_Null();
+        $logger = new Zend_Log($writer);
+
+        return $logger;
     }
     
     /**

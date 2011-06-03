@@ -44,7 +44,7 @@ class ErrorController extends Zend_Controller_Action
                     $response->setBody($exception->getResponseMessage());
                     $response->sendResponse();
                     
-                    return;
+                    exit;
             }
 
             // exception code determines whether error or info
@@ -62,7 +62,8 @@ class ErrorController extends Zend_Controller_Action
             $errorString = get_class($exception) . ': ' . 
                            $exception->getMessage() . '<br />' . 
                            $exception->getFile() . '@' . 
-                           $exception->getLine();
+                           $exception->getLine(). '<br/>Stacktrace:<br/>' .
+                           str_replace("\n", '<br/>', htmlentities($exception->getTraceAsString()));
         } else {
             $this->view->heading   = 'OntoWiki Error';
             $this->view->errorType = 'error';
