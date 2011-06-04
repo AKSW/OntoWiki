@@ -88,7 +88,7 @@ class DssnController extends OntoWiki_Controller_Component {
                 $feed->setTitle('Activity Feed @ ' . $this->model . ' (OntoWiki)');
                 $feed->setLinkSelf($this->_config->urlBase . 'dssn/feed');
                 $feed->setLinkHtml($this->_config->urlBase . 'dssn/news');
-                $feed->setLinkHub($this->_config->urlBase . 'pubsub/philhere');
+                $feed->setLinkHub($this->_config->urlBase . 'pubsub/hubbub');
 
                 $factory  = new DSSN_Activity_Factory($this->_owApp);
                 foreach ($results as $key => $result) {

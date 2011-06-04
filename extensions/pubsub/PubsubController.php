@@ -77,9 +77,30 @@ class PubsubController extends OntoWiki_Controller_Component
         try {
             require_once 'lib/subscriber.php';
             
-            $hubUrl      = $this->_privateConfig->hubUrl; 
             $topicUrl    = $get['topic'];
             $callbackUrl = $this->_getCallbackUrl();
+            
+            $hubUrl = null; 
+            try {
+                $feed = new Zend_Feed_Atom($topicUrl);
+                
+                $hubUrl = $feed->link('hub');
+                if (null == $hubUrl) {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message('Feed has no hub.', OntoWiki_Message::ERROR)
+                    );
+                    $this->_log('Feed has no hub: ' . $topicUrl); 
+                    return;
+                } else {
+                    $success = true;
+                }
+            } catch (Exception $e) {
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('Failed to retrieve feed.', OntoWiki_Message::ERROR)
+                );
+                $this->_log('Failed to retrieve feed: ' . $e->getMessage()); 
+                return;
+            }
             
             $s = new Subscriber($hubUrl, $callbackUrl);
             ob_start();
