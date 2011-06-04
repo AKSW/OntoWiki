@@ -91,8 +91,6 @@ class PubsubController extends OntoWiki_Controller_Component
                     );
                     $this->_log('Feed has no hub: ' . $topicUrl); 
                     return;
-                } else {
-                    $success = true;
                 }
             } catch (Exception $e) {
                 $this->_owApp->appendMessage(
@@ -105,7 +103,7 @@ class PubsubController extends OntoWiki_Controller_Component
             $s = new Subscriber($hubUrl, $callbackUrl);
             ob_start();
             $response = $s->subscribe($topicUrl);
-            $result = ob_end_clean();
+            $result = ob_get_clean();
             
             $this->_log('Subscriber Result: ' . $result);
             
@@ -191,6 +189,7 @@ class PubsubController extends OntoWiki_Controller_Component
             return $this->_exception(400, 'hub.challenge parameter required');
         }
         $challenge = $get['hub_challenge'];
+        $this->_log('Challenge: ' . $challenge);
         
         if (!isset($get['hub_lease_seconds'])) {
             return $this->_exception(400, 'hub.lease_seconds parameter required');
