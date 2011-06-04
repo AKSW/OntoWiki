@@ -195,7 +195,7 @@ class PubsubController extends OntoWiki_Controller_Component
             return $this->_exception(400, 'hub.lease_seconds parameter required');
         }
         
-        $this->_response->setResonseBody($challenge);
+        $this->_response->setBody($challenge);
         $this->_response->setHttpResponseCode(200);
         return $this->_response->sendResponse();   
     }
