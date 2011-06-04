@@ -494,6 +494,8 @@ class PubsubController extends OntoWiki_Controller_Component
             $callbackURL .= '&hub.verify_token=' . urlencode($params['hub.verify_token']);
         }
 
+        $this->_log('Verification Callback URL: ' . $callbackURL);
+
         // Execute the GET request to callback
         $hubModel = new HubSubscriptionModel(); 
         $client = Erfurt_App::getInstance()->getHttpClient($callbackURL, array(
@@ -515,7 +517,11 @@ class PubsubController extends OntoWiki_Controller_Component
                 }
 
                 return true;
+            } else {
+                $this->_log('Verification Callback Response: ' . $status . ' - ' . $response->getBody());
             }
+        } else {
+            $this->_log('Verification Callback Response: ' . $status . ' - ' . $response->getBody());
         }
 
         // If failed, we delete the subscription for sync mode or increment retries for async
