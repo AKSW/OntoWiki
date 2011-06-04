@@ -517,7 +517,7 @@ class PubsubController extends OntoWiki_Controller_Component
                 }
 
                 return true;
-            } else {
+            } else {
                 $this->_log('Verification Callback Response: ' . $status . ' - ' . $response->getBody());
             }
         } else {
