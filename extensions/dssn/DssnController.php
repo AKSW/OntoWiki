@@ -82,12 +82,13 @@ class DssnController extends OntoWiki_Controller_Component {
                 LIMIT 10'
             );
             $results = $model->sparqlQuery($query);
+// TODO: if empty $feed is never filled... error
             if ($results) {
                 $feed = new DSSN_Activity_Feed();
                 $feed->setTitle('Activity Feed @ ' . $this->model . ' (OntoWiki)');
-                $feed->setLinkSelf($this->_config->urlBase . '/dssn/feed');
-                $feed->setLinkHtml($this->_config->urlBase . '/dssn/news');
-                $feed->setLinkHub($this->_config->urlBase . '/pubsub/philhere');
+                $feed->setLinkSelf($this->_config->urlBase . 'dssn/feed');
+                $feed->setLinkHtml($this->_config->urlBase . 'dssn/news');
+                $feed->setLinkHub($this->_config->urlBase . 'pubsub/philhere');
 
                 $factory  = new DSSN_Activity_Factory($this->_owApp);
                 foreach ($results as $key => $result) {
