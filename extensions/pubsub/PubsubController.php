@@ -197,7 +197,7 @@ class PubsubController extends OntoWiki_Controller_Component
         
         $this->_response->setBody($challenge);
         $this->_response->setHttpResponseCode(200);
-        return $this->_response->sendResponse();   
+        return;
     }
     
 
