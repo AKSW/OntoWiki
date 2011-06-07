@@ -759,7 +759,145 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
     }
     
-    public static function import($graphUri, $uri, $loc, $all = true, $presets = array(), $exceptedProperties = array(), $wrapperName = 'linkeddata', $fetchMode = 'none'){
+    public static function filterStatements($statements, $all = true, $presets = array(), $exceptedProperties = array(), $fetchMode = 'none'){
+        // TODO handle configuration for import...
+        if ($all) {
+            // Keep all data...
+        } else {
+            // Only use those parts of the data, that have the resource URI as subject.
+            if (isset($statements[$uri])) {
+                $statements = array(
+                    $uri => $statements[$uri]
+                );
+            } else {
+                $statements = array();
+            }
+
+            // We also need to remove all blank node objects
+            $newResult = array();
+            foreach ($statements as $s => $pArray) {
+                foreach ($pArray as $p => $oArray) {
+                    foreach ($oArray as $oSpec) {
+                        if ($oSpec['type'] !== 'bnode') {
+                            if (!isset($newResult[$s])) {
+                                $newResult[$s] = array();
+                            }
+                            if (!isset($newResult[$s][$p])) {
+                                $newResult[$s][$p] = array();
+                            }
+                            $newResult[$s][$p][] = $oSpec;
+                        }
+                    }
+                }
+            }
+            $statements = $newResult;
+        }
+
+        $presetMatch = false;
+        foreach ($presets as $i => $preset) {
+            if (self::_matchUriStatic($preset['match'], $uri)) {
+                $presetMatch = true;
+                break;
+            }
+        }
+
+        $data = $statements;
+        $result = null;
+        if ($presetMatch !== false) {
+            // Use the preset
+            if (isset($presets[$presetMatch]['mode']) && $presets[$presetMatch]['mode'] === 'none') {
+                // Start with an empty result.
+                $result = array();
+                if (isset($presets[$presetMatch]['exception'])) {
+                    foreach ($presets[$presetMatch]['exception'] as $exception) {
+                        if (isset($data[$uri][$exception])) {
+                            if (!isset($result[$uri])) {
+                                $result[$uri] = array();
+                            }
+                            if (!isset($result[$uri][$exception])) {
+                                $result[$uri][$exception] = array();
+                            }
+
+                            foreach ($data[$uri][$exception] as $o) {
+                                if ($o['type'] === 'literal') {
+                                    if (isset($presets[$presetMatch]['lang'])) {
+                                        foreach ($presets[$presetMatch]['lang'] as $lang) {
+                                            if (isset($o['lang']) && $o['lang'] === $lang) {
+                                                $result[$uri][$exception][] = $o;
+                                            }
+                                        }
+                                    } else {
+                                        $result[$uri][$exception][] = $o;
+                                    }
+                                } else {
+                                    $result[$uri][$exception][] = $o;
+                                }
+                            }
+
+                            if (isset($presets[$presetMatch]['lang'])) {
+                                if (count($result[$uri][$exception]) === 0) {
+                                    foreach ($data[$uri][$exception] as $o) {
+                                        if (!isset($o['lang'])) {
+                                            $result[$uri][$exception][] = $o;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Use the default rule.
+                // Start with all data.
+                $result = $data;
+                if (isset($presets[$presetMatch]['exception'])) {
+                    foreach ($presets[$presetMatch]['exception'] as $exception) {
+                        if (isset($data[$uri][$exception])) {
+                            if (isset($result[$uri][$exception])) {
+                                unset($result[$uri][$exception]);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if ($fetchMode === 'none') {
+                // Start with an empty result.
+                $result = array();
+                foreach ($exceptedProperties as $exception) {
+                    if (isset($data[$uri][$exception])) {
+                        if (!isset($result[$uri])) {
+                            $result[$uri] = array();
+                        }
+                        $result[$uri][$exception] = $data[$uri][$exception];
+                    }
+                }
+            } else {
+                // Start with all data.
+                $result = $data;
+                foreach ($exceptedProperties as $exception) {
+                    if (isset($data[$uri][$exception])) {
+                        if (isset($result[$uri][$exception])) {
+                            unset($result[$uri][$exception]);
+                        }
+                    }
+                }
+            }
+        }
+        $statements = $result;
+        return $statements;
+    }
+    
+    public static function import($graphUri, $uri, $loc, $all = true, $presets = array(), $exceptedProperties = array(), $wrapperName = 'linkeddata', $fetchMode = 'none', $action = 'add'){
+        // Check whether user is allowed to write the model.
+        $erfurt = Erfurt_App::getInstance();
+        $store = $erfurt->getStore();
+        $model = $store->getModel($graphUri);
+        if (!$model || !$model->isEditable()) {
+            return self::IMPORT_NOT_EDITABLE;
+        }
+        
         $r = new Erfurt_Rdf_Resource($uri);
         $r->setLocator($loc);
          
@@ -772,13 +910,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             return self::IMPORT_WRAPPER_INSTANCIATION_ERR;
         }
 
-        // Check whether user is allowed to write the model.
-        $erfurt = Erfurt_App::getInstance();
-        $store = $erfurt->getStore();
-        $model = $store->getModel($graphUri);
-        if (!$model || !$model->isEditable()) {
-            return self::IMPORT_NOT_EDITABLE;
-        }
+        $wrapperResult = null;
 
         try {
             $wrapperResult = $wrapper->run($r, $graphUri);
@@ -789,7 +921,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
-                    $wrapperAdd = $wrapperResult['add'];
+                    $statements = $wrapperResult['add'];
 
                     $stmtBeforeCount = $store->countWhereMatches(
                         $graphUri, 
@@ -808,136 +940,27 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     // Start action, add statements, finish action.
                     $versioning->startAction($actionSpec);
                     
-                    // TODO handle configuration for import...
-                    if ($all) {
-                        // Keep all data...
-                    } else {
-                        // Only use those parts of the data, that have the resource URI as subject.
-                        if (isset($wrapperAdd[$uri])) {
-                            $wrapperAdd = array(
-                                $uri => $wrapperAdd[$uri]
-                            );
-                        } else {
-                            $wrapperAdd = array();
-                        }
-                        
-                        // We also need to remove all blank node objects
-                        $newResult = array();
-                        foreach ($wrapperAdd as $s=>$pArray) {
-                            foreach ($pArray as $p=>$oArray) {
-                                foreach ($oArray as $oSpec) {
-                                    if ($oSpec['type'] !== 'bnode') {
-                                        if (!isset($newResult[$s])) {
-                                            $newResult[$s] = array();
-                                        }
-                                        if (!isset($newResult[$s][$p])) {
-                                            $newResult[$s][$p] = array();
-                                        }
-                                        $newResult[$s][$p][] = $oSpec; 
-                                    }
-                                }
-                            }
-                        }
-                        $wrapperAdd = $newResult;
-                    }
+                    $statements = self::filterStatements($statements, $all, $presets, $exceptedProperties, $fetchMode);
 
-                    $presetMatch = false;
-                    foreach ($presets as $i=>$preset) {
-                            if (self::_matchUriStatic($preset['match'], $uri)) {
-                                $presetMatch = true;
-                                break;
-                            }
-                        }
+                    if($action == 'add'){
+                        $store->addMultipleStatements($graphUri, $statements);
+                    } else if($action == 'update'){
+                        $queryoptions = array(
+                            'use_ac'                 => false,
+                            'result_format'          => STORE_RESULTFORMAT_EXTENDED,
+                            'use_additional_imports' => false
+                        );
+                        $statementsBefore = $store->sparqlQuery(
+                            'SELECT * FROM <'.$graphUri.'> WHERE { ?s ?p ?o }',
+                            $queryoptions
+                        );
+                        require_once 'MemoryModel.php';
+                        //transform resultset to rdf/php statements 
+                        $model1 = new MemoryModel($statementsBefore);
+                        $model2 = new MemoryModel($statements);
+                        $model->updateWithMutualDifference($model1->getStatements(), $model2->getStatements());
+                    }
                     
-                    $data = $wrapperAdd;
-                    $result = null;
-                    if ($presetMatch !== false) {
-                        // Use the preset
-                        if (isset($presets[$presetMatch]['mode']) && $presets[$presetMatch]['mode'] === 'none') {
-                            // Start with an empty result.
-                            $result = array();
-                            if (isset($presets[$presetMatch]['exception'])) {
-                                foreach ($presets[$presetMatch]['exception'] as $exception) {
-                                    if (isset($data[$uri][$exception])) {
-                                        if (!isset($result[$uri])) {
-                                            $result[$uri] = array();
-                                        }
-                                        if (!isset($result[$uri][$exception])) {
-                                            $result[$uri][$exception] = array();
-                                        }
-
-                                        foreach ($data[$uri][$exception] as $o) {
-                                            if ($o['type'] === 'literal') {
-                                                if (isset($presets[$presetMatch]['lang'])) {
-                                                    foreach ($presets[$presetMatch]['lang'] as $lang) {
-                                                        if (isset($o['lang']) && $o['lang'] === $lang) {
-                                                            $result[$uri][$exception][] = $o;
-                                                        }
-                                                    }
-                                                } else {
-                                                    $result[$uri][$exception][] = $o;
-                                                }
-                                            } else {
-                                                $result[$uri][$exception][] = $o;
-                                            }
-                                        }
-
-                                        if (isset($presets[$presetMatch]['lang'])) {
-                                            if (count($result[$uri][$exception]) === 0) {
-                                                foreach ($data[$uri][$exception] as $o) {
-                                                    if (!isset($o['lang'])) {
-                                                        $result[$uri][$exception][] = $o;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }   
-                        } else {
-                            // Use the default rule.
-
-                            // Start with all data.
-                            $result = $data;
-                            if (isset($presets[$presetMatch]['exception'])) {
-                                foreach ($presets[$presetMatch]['exception'] as $exception) {
-                                    if (isset($data[$uri][$exception])) {
-                                        if (isset($result[$uri][$exception])) {
-                                            unset($result[$uri][$exception]);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        if ($fetchMode === 'none') {
-                            // Start with an empty result.
-                            $result = array();
-                            foreach ($exceptedProperties as $exception) {
-                                if (isset($data[$uri][$exception])) {
-                                    if (!isset($result[$uri])) {
-                                        $result[$uri] = array();
-                                    } 
-                                    $result[$uri][$exception] = $data[$uri][$exception];
-                                }
-                            }
-                            
-                        } else {
-                            // Start with all data.
-                            $result = $data;
-                            foreach ($exceptedProperties as $exception) {
-                                if (isset($data[$uri][$exception])) {
-                                    if (isset($result[$uri][$exception])) {
-                                        unset($result[$uri][$exception]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    $wrapperAdd = $result;
-
-                    $store->addMultipleStatements($graphUri, $wrapperAdd);
                     $versioning->endAction();
 
                     $stmtAfterCount = $store->countWhereMatches(

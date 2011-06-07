@@ -276,7 +276,8 @@ class DssnController extends OntoWiki_Controller_Component {
                             'datatype' => EF_XSD_BOOLEAN
                         )));
                 //declare import of new model to current
-                //$graph->setOption($this->_config->sysont->properties->hiddenImports, $importIntoGraphUri);
+                $store->addStatement($this->_owApp->selectedModel->getModelIri(), $me,  EF_OWL_NS.'imports', array('value'=>$importIntoGraphUri, 'type'=>'uri'));
+                
                 //connect me to that person
                 $store->addStatement($this->_owApp->selectedModel->getModelIri(), $me, DSSN_FOAF_knows, array('value'=>$friendUri, 'type'=>'uri'));
                 
@@ -310,6 +311,10 @@ class DssnController extends OntoWiki_Controller_Component {
                 }
             }
         }
+    }
+    
+    public static function reloadFriendModel($uri){
+        DatagatheringController::import($uri, $uri, $uri, true, array(), array(), 'linkeddata', 'none', 'update');
     }
 
     private function _sendResponse($returnValue, $message = null, $messageType = OntoWiki_Message::SUCCESS)
