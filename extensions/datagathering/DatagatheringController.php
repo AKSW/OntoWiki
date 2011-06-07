@@ -954,10 +954,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
                             'SELECT * FROM <'.$graphUri.'> WHERE { ?s ?p ?o }',
                             $queryoptions
                         );
-                        require_once 'MemoryModel.php';
                         //transform resultset to rdf/php statements 
-                        $model1 = new MemoryModel($statementsBefore);
-                        $model2 = new MemoryModel($statements);
+                        $model1 = new Erfurt_Rdf_MemoryModel($statementsBefore);
+                        $model2 = new Erfurt_Rdf_MemoryModel($statements);
                         $model->updateWithMutualDifference($model1->getStatements(), $model2->getStatements());
                     }
                     
