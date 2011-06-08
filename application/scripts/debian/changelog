@@ -1,8 +1,14 @@
+ontowiki (0.9.6-9) lod2; urgency=low
+
+  * split package structure into virtuoso, mysql and common (sub-)packages
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 08 Jun 2011 17:01:51 +0200
+
 ontowiki (0.9.6-8) lod2; urgency=low
 
   * hopefully fixes install problems
 
- -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Mon, 28 Mar 2011 16:10:12 +0200
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 08 Jun 2011 17:01:21 +0200
 
 ontowiki (0.9.6-7) lod2; urgency=low
 
