@@ -2,7 +2,7 @@ syntax: glob
 
 extensions/*.ini
 local.ini
-debian
+./debian
 .settings
 .project
 .idea
