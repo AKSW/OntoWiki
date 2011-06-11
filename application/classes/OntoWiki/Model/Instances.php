@@ -1538,5 +1538,16 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
         }
     }
+    
+    public static function getSelectedClass() {
+        $i = $_SESSION['ONTOWIKI']['managedLists']['instances'];
+        if (!isset($i))
+            return -1; 
+        $filter = $i->getFilter();
+        
+        return isset($filter['type0']['rdfsclass'])
+                ? $filter['type0']['rdfsclass']
+                : -1;
+    }
 }
 
