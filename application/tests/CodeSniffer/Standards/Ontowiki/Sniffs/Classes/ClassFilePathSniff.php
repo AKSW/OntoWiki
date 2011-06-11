@@ -64,23 +64,19 @@ class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Snif
 
 		// if the file is under the application/classes folder the class has the path in the name
 		// application/classes/Ontowiki/Utils/TestClass.php -> Classname=Ontowiki_Utils_TestClass
-		if (stristr($fullPath, 'classes') !== FALSE)
-		{
+		if (stristr($fullPath, 'classes') !== FALSE) {
 			$partedPath = substr($fullPath, strrpos($fullPath, 'classes'), strlen($fullPath));
 				$partedPath = substr($partedPath, 0, strrpos($partedPath, '.'));
 
 			$classNameArray = explode("_", $tokens[$decName]['content']);
 			$filepathArray = explode("/", $partedPath);
-			if (1 == count($filepathArray))
-			{
+			if (1 == count($filepathArray)) {
 				$filepathArray = explode("\\", $partedPath);
 			}
 			
 			$notFound = TRUE;
-			foreach($classNameArray as $index => $classNamePart)
-			{
-				if ($classNamePart != $filepathArray[$index + 1])
-				{
+			foreach ($classNameArray as $index => $classNamePart) {
+				if ($classNamePart != $filepathArray[$index + 1]) {
 					$notFound = FALSE;
 					break;
 				}

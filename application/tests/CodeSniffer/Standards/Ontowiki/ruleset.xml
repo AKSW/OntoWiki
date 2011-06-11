@@ -113,6 +113,7 @@
 <!-- closing tag in php files -->
  <rule ref="Zend.Files.ClosingTag.NotAllowed">
   <severity>7</severity>
+  <exclude-pattern>*/Sniffs/*</exclude-pattern>
  </rule>
  
 <!-- camel caps in variables -->

@@ -2,7 +2,7 @@
 
 hgrcfile=".hg/hgrc"
 hookstr="[hooks]"
-precommitstr="precommit.phpcs = hg status -n -0 --include='*.php' | xargs --null phpcs --report=summary -n --extensions=php --severity=7 --standard=application\/tests\/CodeSniffer\/Standards\/Ontowiki"
+precommitstr="precommit.phpcs = hg status -n | grep '\\.php$' | xargs phpcs --report=summary -n --severity=7 --standard=application\/tests\/CodeSniffer\/Standards\/Ontowiki"
 
 cp -n $hgrcfile $hgrcfile.org
 if grep 'hooks' $hgrcfile --quiet; then
