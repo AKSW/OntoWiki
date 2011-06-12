@@ -1544,7 +1544,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $listName = "instances";
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
-            $filter = $i->getFilter();
+            $filter = $list->getFilter();
         
             return isset($filter['type0']['rdfsclass'])
                 ? $filter['type0']['rdfsclass']
