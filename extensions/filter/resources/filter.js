@@ -1,7 +1,4 @@
 var filterboxcounter = 0; // dont overwrite previous filters
-for(onefilter in filtersFromSession){
-    filterboxcounter++;
-}
 
 function showAddFilterBox(){
     // $("#addFilterWindowOverlay").show();
@@ -108,9 +105,8 @@ $(document).ready(function(){
             }
         }
 
-        filter.add("filterbox"+filterboxcounter, prop, inverse, propLabel, filtertype, value1, value2, type, typedata, function(newfilter) {
+        filter.add("filterbox"+filter.counter, prop, inverse, propLabel, filtertype, value1, value2, type, typedata, function(newfilter) {
             //react in filter box
-            filterboxcounter++;
             //$("#addwindow").hide();
         }, false, negate);
     });

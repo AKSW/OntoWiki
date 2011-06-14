@@ -1,0 +1,20 @@
+<?php
+/**
+ * OntoWiki custom filter module template
+ */
+?>
+<div id="customfilterbox">
+    <a onclick="javascript:filter.removeAll()" >remove all filter</a><br/>
+    <?php 
+    foreach($this->definedfilters as $prop){
+        echo $prop["label"].":";
+        ?> <a onclick="javascript:filter.removeAllFiltersOfProperty('<?php echo $prop["uri"]; ?>')">All</a><?php
+        foreach($prop as $key => $value){
+            if($key != "label" && $key != "uri"){
+                ?> <a onclick="javascript:filter.add(null, '<?php echo $prop["uri"]; ?>', false, '<?php echo $prop["label"]; ?>', 'equals', '<?php echo $value["uri"]; ?>', null, 'uri')"><?php echo $value["label"]; ?></a><?php
+            }
+        }
+        echo "<br/>";
+    }
+    ?>
+</div>

@@ -299,8 +299,54 @@ class DssnController extends OntoWiki_Controller_Component {
                 require_once $this->_owApp->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
                 $res = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
 
+                //get feed
+                $res = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://ns.aksw.org/hasFeed> ?feed }');
+                if(is_array($res) && !empty ($res)){
+                    $topicUrl = $res[0]['feed'];
+                } else {
+                    $this->_sendResponse(false, "the model must link to a feed", OntoWiki_Message::ERROR);
+                    return;
+                }
+                
+                $hubUrl = null; 
+                try {
+                    $feed = new Zend_Feed_Atom($topicUrl);
+
+                    $hubUrl = $feed->link('hub');
+                    if (null == $hubUrl) {
+                        $this->_owApp->appendMessage(
+                            new OntoWiki_Message('Feed has no hub.', OntoWiki_Message::ERROR)
+                        );
+                        $this->_log('Feed has no hub: ' . $topicUrl); 
+                        return;
+                    }
+                } catch (Exception $e) {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message('Failed to retrieve feed.', OntoWiki_Message::ERROR)
+                    );
+                    $this->_log('Failed to retrieve feed: ' . $e->getMessage()); 
+                    return;
+                }
+                
+                //subscribe to its feed
+                $callbackUrl = PubsubController::getCallbackUrl();
+                $s = new Subscriber($hubUrl, $callbackUrl);
+                ob_start();
+                $response = $s->subscribe($topicUrl);
+                $result = ob_get_clean();
+
+                //$this->_log('Subscriber Result: ' . $result);
+
+                $success = false;
+                if ($response == false) {
+                    $success = true;
+                }
+                
                 $err = true;
-                if($res == DatagatheringController::IMPORT_OK){
+                if($success == false){
+                    $err = true;
+                    $this->_sendResponse(true,'could not subscribe with pubsubhubub.', OntoWiki_Message::INFO);
+                } else if($res == DatagatheringController::IMPORT_OK){
                     $err = false;
                     $this->_sendResponse(true,'Data was found for the given URI. Statements were added.', OntoWiki_Message::INFO);
                 } else if($res == DatagatheringController::IMPORT_WRAPPER_ERR){

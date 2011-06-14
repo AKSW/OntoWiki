@@ -585,9 +585,9 @@ class PubsubController extends OntoWiki_Controller_Component
         $this->_log('Scheduling result: ' . $result);
     }
     
-    private function _getCallbackUrl()
+    public static function getCallbackUrl()
     {
-        return $this->_owApp->getUrlBase() . "pubsub/callback/";
+        return OntoWiki::getInstance()->getUrlBase() . "pubsub/callback/";
     }
     
     private function _log($msg)
