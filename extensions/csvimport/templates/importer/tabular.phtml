@@ -1,0 +1,112 @@
+<?php
+
+/**
+ * OntoWiki table partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $$
+ */
+
+?>
+<script type="text/javascript" src="<?php echo $this->script ?>"></script>
+
+<h3>
+    Tabular CSV Importer
+</h3>
+
+<h4>Used Base Uri</h5>
+<p class="messagebox">
+        <?php echo $this->baseUri ?>
+</p>
+Resources, that will be generated will be in this namespace. <br>
+Please define the following fragment, which are used as part between namespace and localname of the uri.
+<table class="separated-vertical" id="tabular-table">
+    <tr>
+        <td><b>Fragment:</b></td>
+        <td>
+            <input type="text" name="uriFragment" value="/element/" class="text">
+        </td>
+    </tr>
+</table>
+
+<br><br>
+<h4>Defined Prefixes</h5>
+
+<table class="separated-vertical" id="tabular-table">
+    <tr>
+        <th>Prefix</th>
+        <th>Uri</th>
+    </tr>
+
+    <?php foreach ($this->prefixes as $uri => $prefix): ?>
+    <tr>
+        <td><?php echo $prefix ?></td>
+        <td><?php echo $uri ?></td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<p class="messagebox info">
+Every row in the csv-file will be generated as a resource, with a defined Uri. Every cell of the row will be assigned as
+an object/literal with a defined property.
+In case that all information are assigned correct, some configurations are necessary: <br>
+- Is there a cell which contain the local part of the identifier of the resource? <br>
+- Predicates which should be used for aggregation. <br>
+- Object definition : per default it is a literal; If it is a resource, contain the cell a prefix which should be replaced? <br>
+</p>
+
+<table class="separated-vertical" id="tabular-table">
+    <?php $r = 0; ?>
+    <tr>
+        <th colspan="3">Property Definitions</th>
+        <th style="text-align:right" colspan="3">Modifications</th></tr>
+    <tr>
+        <th>CSV&nbsp;Header</th>
+        <th>Property Selection</th>
+        <th>Example Entity</th>
+        <th style="text-align:center">Cell&nbsp;contain&nbsp;Identifier</th>
+        <th style="text-align:center">Cell&nbsp;is&nbsp;Uri</th>
+        <th style="text-align:center">Replace&nbsp;Prefix</th>
+    </tr>
+    <?php foreach ($this->data as $row): ?>
+        <tr>
+            <?php $c = 0; ?>
+            <?php foreach ($row as $field): ?>
+                <td<?php echo $this->has('itemClass') ? (' class="' . $this->itemClass . '"') : '' ?>
+                   id="<?php echo sprintf("r%d-c%d", $r, $c) ?>"><?php
+                    echo $field;
+                ?></td>
+                <td class="import-cell" about="<?php echo sprintf("r%d-c%d", $r, $c) ?>">
+                    <!-- <input type="text" class="import-type" value="rdf:type" /> -->
+                </td>
+                <td>
+                    <?php if (!empty($this->examples[$field])) : ?>
+                        <?php echo substr($this->examples[$field],0,20) ?>
+                    <?php endif; ?>
+                </td>
+                <td style="text-align:center">
+                    <input type="radio" name="ResourceIdentifier" value="<?php echo $field ?>" class="<?php echo sprintf("r%d-c%d", $r, $c) ?>">
+                </td>
+                <td style="text-align:center">
+                    <input type="checkbox"
+                           name="ObjectIsUri"
+                           class="<?php echo sprintf("r%d-c%d", $r, $c) ?>"
+                           value="<?php echo $field ?>"
+                           onchange="document.getElementById('ObjectUriContainPrefix<?php echo $field ?>').disabled=false">
+                </td>
+                <td style="text-align:center">
+                    <input id="ObjectUriContainPrefix<?php echo $field ?>" 
+                           type="checkbox" 
+                           name="ObjectUriContainPrefix" 
+                           class="<?php echo sprintf("r%d-c%d", $r, $c) ?>"
+                           value="<?php echo $field ?>" 
+                           disabled="disabled">
+                </td>
+
+                <?php $c++; ?>
+            <?php endforeach; ?>
+        </tr>
+        <?php $r++; ?>
+    <?php endforeach; ?>
+</table>
