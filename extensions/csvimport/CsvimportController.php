@@ -51,25 +51,31 @@ class CsvimportController extends OntoWiki_Controller_Component
             $this->view->modelUri   = (string)$this->_owApp->selectedModel;
             $this->view->title      = 'Import CSV Data';
             $model = $this->_owApp->selectedModel;
-            $this->view->modelTitle = $model->getTitle();
+            if($model != null){
+                $this->view->modelTitle = $model->getTitle();
 
-            if ($model->isEditable()) {
-                $toolbar = $this->_owApp->toolbar;
-                $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Import CSV', 'id' => 'import'))
-                        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
-                $this->view->placeholder('main.window.toolbar')->set($toolbar);
+                if ($model->isEditable()) {
+                    $toolbar = $this->_owApp->toolbar;
+                    $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Import CSV', 'id' => 'import'))
+                            ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
+                    $this->view->placeholder('main.window.toolbar')->set($toolbar);
+                } else {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message('No write permissions on model \''.$this->view->modelTitle.'\'', OntoWiki_Message::WARNING)
+                    );
+                }
+
+                // FIX: http://www.webmasterworld.com/macintosh_webmaster/3300569.htm
+                // disable connection keep-alive
+                $response = $this->getResponse();
+                $response->setHeader('Connection', 'close', true);
+                $response->sendHeaders();
+            return;
             } else {
                 $this->_owApp->appendMessage(
-                    new OntoWiki_Message("No write permissions on model '{$this->view->modelTitle}'", OntoWiki_Message::WARNING)
-                );
+                        new OntoWiki_Message('You need to select a model first', OntoWiki_Message::WARNING)
+                    );
             }
-
-            // FIX: http://www.webmasterworld.com/macintosh_webmaster/3300569.htm
-            // disable connection keep-alive
-            $response = $this->getResponse();
-            $response->setHeader('Connection', 'close', true);
-            $response->sendHeaders();
-            return;
         } else {
             // evaluate post data
             $messages = array();
@@ -112,7 +118,7 @@ class CsvimportController extends OntoWiki_Controller_Component
                 $store->importedFile = $tempFile;
                 $store->importMode   = $post['importMode'];
 
-                if($store->importMode == "tabular") {
+                if($store->importMode == 'tabular') {
                     $store->csvSeparator = ",";
                     $store->headlineDetection = true;
                     if(empty($post['defaultSeparator'])) {
@@ -186,21 +192,21 @@ class CsvimportController extends OntoWiki_Controller_Component
 
 
     protected function getStoredConfigurationUris() {
-        $dir = "extensions/components/csvimport/configs/";
+        $dir = $this->_owApp->extensionManager->getExtensionPath('csvimport').'/configs/';
         if(!is_dir($dir)) return;
         $configurations = array();
 
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
-                if($file == "." || $file == "..") continue;
+                if($file == "." || $file == '..') continue;
 
-                $handle = fopen($dir.$file, "r");
+                $handle = fopen($dir.$file, 'r');
                 $contents = fread($handle, filesize($dir.$file));
                 fclose($handle);
 
                 $configurations[] = array (
-                                            "label" => str_replace(".cfg", "", str_replace("_", " ", $file)),
-                                            "config" => $contents );
+                                            'label' => str_replace('.cfg', '', str_replace('_', ' ', $file)),
+                                            'config' => $contents );
             }
             closedir($dh);
             
@@ -214,10 +220,10 @@ class CsvimportController extends OntoWiki_Controller_Component
 
         $query = new Erfurt_Sparql_SimpleQuery();
         $query->setProloguePart(' SELECT  ?configUri ?configLabel ?configuration') ;
-        $query->setWherePart("  
-                    WHERE { ?configUri a <" . $sysontUri . "CSVImportConfig" ."> .
+        $query->setWherePart('  
+                    WHERE { ?configUri a <' . $sysontUri . 'CSVImportConfig> .
                             ?configUri <http://www.w3.org/2000/01/rdf-schema#label> ?configLabel .
-                            ?configUri <" . $sysontUri . "CSVImportConfig/configuration> ?configuration} ");
+                            ?configUri <' . $sysontUri . 'CSVImportConfig/configuration> ?configuration} ');
 
         if ($result = $sysOnt->sparqlQuery($query)) {
             // var_dump($result); die;
@@ -225,8 +231,8 @@ class CsvimportController extends OntoWiki_Controller_Component
             foreach ($result as $entry) {
                 //var_dump($entry['configuration']); die;
                 $configurations[$entry['configUri']] = array ( 
-                                                        "label" => $entry['configLabel'],
-                                                        "config" => base64_decode($entry['configuration']) );
+                                                        'label' => $entry['configLabel'],
+                                                        'config' => base64_decode($entry['configuration']) );
             }
 //var_dump($configurations);
             return $configurations;
@@ -254,12 +260,12 @@ class CsvimportController extends OntoWiki_Controller_Component
             // needed vars
             $sysontUri = $this->_owApp->erfurt->getConfig()->sysont->modelUri;
             $sysOnt = $this->_owApp->erfurt->getStore()->getModel($sysontUri, false);
-            $class = $sysontUri."CSVImportConfig";
-            $config = $class."/configuration";
-            $type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-            $label = "http://www.w3.org/2000/01/rdf-schema#label";
+            $class = $sysontUri.'CSVImportConfig';
+            $config = $class.'/configuration';
+            $type = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+            $label = 'http://www.w3.org/2000/01/rdf-schema#label';
             $val = $post['configString'];
-            $name = $sysontUri . date("Y/m/d/H/i/s") . "/" . str_replace(" ", "_", $post['configName']);
+            $name = $sysontUri . date('Y/m/d/H/i/s') . '/' . str_replace(' ', '_', $post['configName']);
 
             // create config instance:
             // name
@@ -302,9 +308,9 @@ class CsvimportController extends OntoWiki_Controller_Component
             // {sysont_ns}:CSVImportConfig
             // {sysont_ns}:CSVImportConfig rdfs:label "Configuration Class"
 
-            $s = $sysontUri."CSVImportConfig";
-            $type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-            $label = "http://www.w3.org/2000/01/rdf-schema#label";
+            $s = $sysontUri.'CSVImportConfig';
+            $type = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+            $label = 'http://www.w3.org/2000/01/rdf-schema#label';
             $element[$s] = array(
                 $type => array(
                     array(
@@ -328,9 +334,9 @@ class CsvimportController extends OntoWiki_Controller_Component
             // {sysont_ns}:CSVImportConfig/configuration rdfs:domain {sysont_ns}:CSVImportConfig
 
             $element = array();
-            $sp = $s."/configuration";
-            $label = "http://www.w3.org/2000/01/rdf-schema#label";
-            $domain = "http://www.w3.org/2000/01/rdf-schema#domain";
+            $sp = $s.'/configuration';
+            $label = 'http://www.w3.org/2000/01/rdf-schema#label';
+            $domain = 'http://www.w3.org/2000/01/rdf-schema#domain';
             $element[$sp] = array(
                 $domain => array(
                     array(
