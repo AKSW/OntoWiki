@@ -244,7 +244,7 @@ class DssnController extends OntoWiki_Controller_Component {
         $template = "list_dssn_network_main";
 
         //get the persons
-        if(!$helper->listExists($listname)) {
+        if(true || !$helper->listExists($listname)) {
             // create a new list from scratch if we do not have one
             $list = new OntoWiki_Model_Instances($store, $model, array());
 
@@ -256,7 +256,7 @@ class DssnController extends OntoWiki_Controller_Component {
 
             //get properties
             $list->addShownProperty(DSSN_FOAF_depiction);
-            $list->addShownProperty(DSSN_FOAF_nick);
+            $list->addShownProperty(DSSN_FOAF_name);
 
             // add the list to the session
             $helper->addListPermanently($listname, $list, $this->view, $template, $config);
@@ -278,9 +278,7 @@ class DssnController extends OntoWiki_Controller_Component {
         $store = $this->_erfurt->getStore();
         if(($friendUri = $this->getParam("friend-input")) != null){
             $importIntoGraphUri = $friendUri;
-            if($store->isModelAvailable($importIntoGraphUri)){
-                $this->_sendResponse(false, 'already imported', OntoWiki_Message::INFO);
-            } else {
+            if (!$store->isModelAvailable($importIntoGraphUri)){
                 // create model
                 $graph = $store->getNewModel($importIntoGraphUri);
                 //hide
@@ -290,25 +288,30 @@ class DssnController extends OntoWiki_Controller_Component {
                             'datatype' => EF_XSD_BOOLEAN
                         )));
                 //declare import of new model to current
-                $store->addStatement($this->_owApp->selectedModel->getModelIri(), $me,  EF_OWL_NS.'imports', array('value'=>$importIntoGraphUri, 'type'=>'uri'));
+                //$store->addStatement($this->_owApp->selectedModel->getModelIri(), $me,  EF_OWL_NS.'imports', array('value'=>$importIntoGraphUri, 'type'=>'uri'));
+                $this->_owApp->selectedModel->setOption($this->_config->sysont->properties->hiddenImports, array(array(
+                            'value'    => $friendUri,
+                            'type'     => 'uri'
+                        )), false); // do not replace
+                
                 
                 //connect me to that person
                 $store->addStatement($this->_owApp->selectedModel->getModelIri(), $me, DSSN_FOAF_knows, array('value'=>$friendUri, 'type'=>'uri'));
-
-                //fill new model via linked data
-                require_once $this->_owApp->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
-                $res = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
-
-                //get feed
-                $res = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://ns.aksw.org/hasFeed> ?feed }');
-                if(is_array($res) && !empty ($res)){
-                    $topicUrl = $res[0]['feed'];
-                } else {
-                    $this->_sendResponse(false, "the model must link to a feed", OntoWiki_Message::ERROR);
-                    return;
-                }
+            } 
                 
-                $hubUrl = null; 
+            //fill new model via linked data
+            require_once $this->_owApp->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
+            $res = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
+
+            //get feed
+            $res2 = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://ns.aksw.org/hasFeed> ?feed }');
+            $topicUrl = null;
+            if(is_array($res) && !empty ($res)){
+                $topicUrl = $res[0]['feed'];
+            }
+            
+            $hubUrl = null; 
+            if (null !== $topicUrl) {
                 try {
                     $feed = new Zend_Feed_Atom($topicUrl);
 
@@ -316,7 +319,7 @@ class DssnController extends OntoWiki_Controller_Component {
                     if (null == $hubUrl) {
                         $this->_owApp->appendMessage(
                             new OntoWiki_Message('Feed has no hub.', OntoWiki_Message::ERROR)
-                        );
+                            );
                         $this->_log('Feed has no hub: ' . $topicUrl); 
                         return;
                     }
@@ -327,7 +330,10 @@ class DssnController extends OntoWiki_Controller_Component {
                     $this->_log('Failed to retrieve feed: ' . $e->getMessage()); 
                     return;
                 }
-                
+            }
+            
+            $success = true;
+            if (null !== $hubUrl) {
                 //subscribe to its feed
                 $callbackUrl = PubsubController::getCallbackUrl();
                 $s = new Subscriber($hubUrl, $callbackUrl);
@@ -341,34 +347,35 @@ class DssnController extends OntoWiki_Controller_Component {
                 if ($response == false) {
                     $success = true;
                 }
-                
+            }
+            
+            $err = true;
+            if($success == false){
                 $err = true;
-                if($success == false){
-                    $err = true;
-                    $this->_sendResponse(true,'could not subscribe with pubsubhubub.', OntoWiki_Message::INFO);
-                } else if($res == DatagatheringController::IMPORT_OK){
-                    $err = false;
-                    $this->_sendResponse(true,'Data was found for the given URI. Statements were added.', OntoWiki_Message::INFO);
-                } else if($res == DatagatheringController::IMPORT_WRAPPER_ERR){
-                    $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
-                } else if($res == DatagatheringController::IMPORT_NO_DATA){
-                    $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
-                } else if($res == DatagatheringController::IMPORT_WRAPPER_INSTANCIATION_ERR){
-                    $this->_sendResponse(false, 'could not get wrapper instance.', OntoWiki_Message::ERROR);
-                    //$this->_response->setException(new OntoWiki_Http_Exception(400));
-                } else if($res == DatagatheringController::IMPORT_NOT_EDITABLE){
-                    $this->_sendResponse(false, 'you cannot write to this model.', OntoWiki_Message::ERROR);
-                    //$this->_response->setException(new OntoWiki_Http_Exception(403));
-                } else if($res == DatagatheringController::IMPORT_WRAPPER_EXCEPTION){
-                    $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
-                } else {
-                    $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
-                }
+                $this->_sendResponse(true,'could not subscribe with pubsubhubub.', OntoWiki_Message::INFO);
+            } else if ($res == DatagatheringController::IMPORT_OK){
+                $err = false;
+                $this->_sendResponse(true,'Data was found for the given URI. Statements were added.', OntoWiki_Message::INFO);
+            } else if($res == DatagatheringController::IMPORT_WRAPPER_ERR){
+                $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
+            } else if($res == DatagatheringController::IMPORT_NO_DATA){
+                $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
+            } else if($res == DatagatheringController::IMPORT_WRAPPER_INSTANCIATION_ERR){
+                $this->_sendResponse(false, 'could not get wrapper instance.', OntoWiki_Message::ERROR);
+                //$this->_response->setException(new OntoWiki_Http_Exception(400));
+            } else if($res == DatagatheringController::IMPORT_NOT_EDITABLE){
+                $this->_sendResponse(false, 'you cannot write to this model.', OntoWiki_Message::ERROR);
+                //$this->_response->setException(new OntoWiki_Http_Exception(403));
+            } else if($res == DatagatheringController::IMPORT_WRAPPER_EXCEPTION){
+                $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
+            } else {
+                var_dump($res);exit;
+                $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
+            }
 
-                if($err){
-                    //rollback changes
-                    $store->deleteModel($importIntoGraphUri);
-                }
+            if($err){
+                //rollback changes
+                $store->deleteModel($importIntoGraphUri);
             }
         }
     }

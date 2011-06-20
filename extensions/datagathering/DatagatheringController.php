@@ -763,6 +763,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // TODO handle configuration for import...
         if ($all) {
             // Keep all data...
+            return $statements;
         } else {
             // Only use those parts of the data, that have the resource URI as subject.
             if (isset($statements[$uri])) {
@@ -897,13 +898,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!$model || !$model->isEditable()) {
             return self::IMPORT_NOT_EDITABLE;
         }
-        
+
         $r = new Erfurt_Rdf_Resource($uri);
         $r->setLocator($loc);
          
         // Try to instanciate the requested wrapper
-        $wrapper = null;
-        
+        $wrapper = null;   
         try {
             $wrapper = Erfurt_Wrapper_Registry::getInstance()->getWrapperInstance($wrapperName);
         } catch (Erfurt_Wrapper_Exception $e) {
@@ -911,13 +911,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
 
         $wrapperResult = null;
-
         try {
             $wrapperResult = $wrapper->run($r, $graphUri);
         } catch (Erfurt_Wrapper_Exception $e) {
             return self::IMPORT_WRAPPER_EXCEPTION;
         }
-        
+          
         if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
@@ -939,7 +938,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     
                     // Start action, add statements, finish action.
                     $versioning->startAction($actionSpec);
-                    
+
                     $statements = self::filterStatements($statements, $uri, $all, $presets, $exceptedProperties, $fetchMode);
 
                     if($action == 'add'){
