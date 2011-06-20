@@ -759,7 +759,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
     }
     
-    public static function filterStatements($statements, $all = true, $presets = array(), $exceptedProperties = array(), $fetchMode = 'none'){
+    public static function filterStatements($statements, $uri, $all = true, $presets = array(), $exceptedProperties = array(), $fetchMode = 'none'){
         // TODO handle configuration for import...
         if ($all) {
             // Keep all data...
@@ -940,7 +940,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     // Start action, add statements, finish action.
                     $versioning->startAction($actionSpec);
                     
-                    $statements = self::filterStatements($statements, $all, $presets, $exceptedProperties, $fetchMode);
+                    $statements = self::filterStatements($statements, $uri, $all, $presets, $exceptedProperties, $fetchMode);
 
                     if($action == 'add'){
                         $store->addMultipleStatements($graphUri, $statements);
