@@ -13,6 +13,165 @@
 
 class HistoryController extends OntoWiki_Controller_Component
 {
+    public function feedAction()
+    {    
+        $model       = $this->_owApp->selectedModel;
+        $resource    = $this->_owApp->selectedResource;
+        $limit       = 20;
+        $rUri        = (string)$resource;
+        $rUriEncoded = urlencode($rUri);
+        $mUri        = (string)$model;
+        $mUriEncoded = urlencode($mUri);
+        $translate   = $this->_owApp->translate;
+        
+        
+        $store       = $this->_erfurt->getStore();
+        
+        $ac          = $this->_erfurt->getAc();
+        $params      = $this->_request->getParams();
+        
+
+        if (!$model || !$resource) {
+            var_dump('r or m missing');exit;
+        }
+
+        $versioning = $this->_erfurt->getVersioning();
+        $versioning->setLimit($limit);
+        if (!$versioning->isVersioningEnabled()) {
+            var_dump('versioning disabled');exit;
+        }
+
+        $title = $resource->getTitle();
+        if (null == $title) {
+            $title = OntoWiki_Utils::contractNamespace($resource->getIri());
+        }
+        $feedTitle = sprintf($translate->_('Versions for %1$s'), $title);
+
+        $historyArray = $versioning->getHistoryForResource((string)$resource, (string)$model, 1);
+
+        $idArray = array();
+        $userArray = $this->_erfurt->getUsers();
+        $titleHelper = new OntoWiki_Model_TitleHelper();
+        // Load IDs for rollback and Username Labels for view
+        foreach ($historyArray as $key => $entry) {
+            $idArray[] = (int) $entry['id'];
+            // if(!$singleResource){
+            //                 $historyArray[$key]['url'] = $this->_config->urlBase . "view?r=" . urlencode($entry['resource']);
+            //                 $titleHelper->addResource($entry['resource']);
+            //             }
+            if ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->anonymousUser) {
+                $userArray[$entry['useruri']] = 'Anonymous';
+            } elseif ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->superAdmin) {
+                $userArray[$entry['useruri']] = 'SuperAdmin';
+            } elseif (
+                is_array($userArray[$entry['useruri']]) &&
+                array_key_exists('userName',$userArray[$entry['useruri']])
+            ) {
+                $userArray[$entry['useruri']] = $userArray[$entry['useruri']]['userName'];
+            }
+        }
+        
+        $linkUrl = $this->_config->urlBase . "history/list?r=$rUriEncoded&mUriEncoded";
+        $feedUrl = $this->_config->urlBase . "history/feed?r=$rUriEncoded&mUriEncoded";
+        $feed = new Zend_Feed_Writer_Feed();
+        $feed->setTitle($feedTitle);
+        $feed->setLink($linkUrl);
+        $feed->setFeedLink($feedUrl, 'atom');
+        //$feed->addHub("http://pubsubhubbub.appspot.com/");
+        $feed->addAuthor(array(
+            'name' => 'OntoWiki',
+            'uri'  => $feedUrl
+        ));
+        $feed->setDateModified(time());
+        
+        foreach ($historyArray as $historyItem) {
+            $title = $translate->_('HISTORY_ACTIONTYPE_'.$historyItem['action_type']);
+            
+            $entry = $feed->createEntry();
+            $entry->setTitle($title);
+            $entry->setLink($this->_config->urlBase . 'view?r='.$rUriEncoded."&id=".$historyItem['id']);
+            $entry->addAuthor(array(
+                'name' => $userArray[$historyItem['useruri']],
+                'uri'  => $historyItem['useruri']
+            ));
+            $entry->setDateModified($historyItem['tstamp']);
+            $entry->setDateCreated($historyItem['tstamp']);
+            $entry->setDescription($title);
+			
+			$content = "";
+			$result = $this->getActionTriple($historyItem['id']);
+			$content .= json_encode($result);	
+				
+            $entry->setContent( htmlentities($content) );
+            
+            $feed->addEntry($entry);
+        }
+        
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+		$this->getResponse()->setHeader("Content-Type", "application/atom+xml");
+        
+        $out = $feed->export('atom');
+		
+		$pattern = '/updated>\n(.+?)link rel="alternate"/';
+		$replace = "updated>\n$1link";
+		$out = preg_replace($pattern, $replace, $out);
+		
+        echo $out;
+		
+		
+        return;
+		// Do we need this stuff below?
+		// ----------------------------
+
+
+        $this->view->userArray = $userArray;
+        $this->view->idArray = $idArray;
+        $this->view->historyArray = $historyArray;
+        $this->view->singleResource = $singleResource;
+        $this->view->titleHelper = $titleHelper;
+
+        if (empty($historyArray))  {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message(
+                    'No matches.' ,
+                    OntoWiki_Message::INFO
+                )
+            );
+        }
+
+        if ($this->_erfurt->getAc()->isActionAllowed('Rollback')) {
+            $this->view->rollbackAllowed = true;
+            // adding submit button for rollback-action
+            $toolbar = $this->_owApp->toolbar;
+            $toolbar->appendButton(
+                OntoWiki_Toolbar::SUBMIT,
+                array('name' => $translate->_('Rollback changes'), 'id' => 'history-rollback')
+            );
+            $this->view->placeholder('main.window.toolbar')->set($toolbar);
+        } else {
+            $this->view->rollbackAllowed = false;
+        }
+
+        // paging
+        
+        $statusBar = $this->view->placeholder('main.window.statusbar');
+        OntoWiki_Pager::setOptions(array('page_param'=>'page')); // the normal page_param p collides with the generic-list param p
+        $statusBar->append(OntoWiki_Pager::get($count,$limit));
+
+        // setting view variables
+        
+        $url = new OntoWiki_Url(array('controller' => 'history', 'action' => 'rollback'));
+
+        $this->view->placeholder('main.window.title')->set($windowTitle);
+
+        $this->view->formActionUrl = (string) $url;
+        $this->view->formMethod    = 'post';
+        // $this->view->formName      = 'instancelist';
+        $this->view->formName      = 'history-rollback';
+        $this->view->formEncoding  = 'multipart/form-data';
+    }
+    
 
     /**
      *  Listing history for selected Resource
@@ -26,6 +185,12 @@ class HistoryController extends OntoWiki_Controller_Component
         $ac          = $this->_erfurt->getAc();
         $params      = $this->_request->getParams();
         $limit       = 20;
+        
+        $rUriEncoded = urlencode((string)$resource);
+        $mUriEncoded = urlencode((string)$model);
+        $feedUrl = $this->_config->urlBase . "history/feed?r=$rUriEncoded&mUriEncoded";
+        
+        $this->view->headLink()->setAlternate($feedUrl, 'application/atom+xml', 'History Feed');
 
         // redirecting to home if no model/resource is selected
         if (empty($model) || (empty($this->_owApp->selectedResource) && empty($params['r']) && $this->_owApp->lastRoute !== 'instances')) {
@@ -278,7 +443,31 @@ class HistoryController extends OntoWiki_Controller_Component
         $this->_helper->layout()->disableLayout();
         $this->view->isEmpty = true;
 
-        // enabling versioning
+        $results = $this->getActionTriple($actionID);
+		if( $results != null ) $this->view->isEmpty = false;
+
+        $this->view->translate      = $this->_owApp->translate;
+        $this->view->actionID       = $actionID;
+        $this->view->stAddArray     = $results['added'];
+        $this->view->stDelArray     = $results['deleted'];
+        $this->view->stOtherArray   = $results['other'];
+
+    }
+	
+	private function toFlatArray($serializedString) {
+        $walkArray = unserialize($serializedString);
+        foreach ($walkArray as $subject => $a)  {
+            foreach ($a as $predicate => $b) {
+                foreach ($b as $object) {
+                    return array($subject, $predicate, $object['value']);
+                }
+            }
+        }
+    }
+
+
+	private function getActionTriple($actionID){
+		// enabling versioning
         $versioning = $this->_erfurt->getVersioning();
 
         $detailsArray = $versioning->getDetailsForAction($actionID);
@@ -287,36 +476,25 @@ class HistoryController extends OntoWiki_Controller_Component
         $stDelArray     = array();
         $stOtherArray   = array();
 
-        function toFlatArray($serializedString) {
-            $walkArray = unserialize($serializedString);
-            foreach ($walkArray as $subject => $a)  {
-                foreach ($a as $predicate => $b) {
-                    foreach ($b as $object) {
-                        return array($subject, $predicate, $object['value']);
-                    }
-                }
-            }
-        }
-
+        
         foreach ($detailsArray as $entry) {
-            $this->view->isEmpty = false;
             $type = (int) $entry['action_type'];
             if ( $type        === Erfurt_Versioning::STATEMENT_ADDED ) {
-                $stAddArray[]   = toFlatArray($entry['statement_hash']);
+                $stAddArray[]   = $this->toFlatArray($entry['statement_hash']);
             } elseif ( $type  === Erfurt_Versioning::STATEMENT_REMOVED ) {
-                $stDelArray[]   = toFlatArray($entry['statement_hash']);
+                $stDelArray[]   = $this->toFlatArray($entry['statement_hash']);
             } else {
-                $stOtherArray[] = toFlatArray($entry['statement_hash']);
+                $stOtherArray[] = $this->toFlatArray($entry['statement_hash']);
             }
         }
-
-        $this->view->translate      = $this->_owApp->translate;
-        $this->view->actionID       = $actionID;
-        $this->view->stAddArray     = $stAddArray;
-        $this->view->stDelArray     = $stDelArray;
-        $this->view->stOtherArray   = $stOtherArray;
-
-    }
+		
+		return array(
+			'id' => $actionID,
+			'added' => $stAddArray,
+			'deleted' => $stDelArray,
+			'other' => $stOtherArray
+		);
+	}
 
     /**
      * Shortcut for adding messages

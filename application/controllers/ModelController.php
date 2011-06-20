@@ -653,7 +653,6 @@ class ModelController extends OntoWiki_Controller_Base
                 // graph had been created: delete it
                 $this->_erfurt->getStore()->deleteModel($newModelUri);
             }
-            echo "exception".$e;
             // re-throw
             throw new OntoWiki_Controller_Exception("Graph '<$postData[modelUri]>' could not be imported: " . $e->getMessage());
         }

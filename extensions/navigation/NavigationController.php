@@ -64,7 +64,7 @@ class NavigationController extends OntoWiki_Controller_Component
         // disable standart navigation
         OntoWiki_Navigation::disableNavigation();
         // log action
-        $this->_owApp->logger->info('NavigationController Stage 1');
+        //$this->_owApp->logger->info('NavigationController Stage 1');
         // translate navigation title to selected language
         $this->view->placeholder('main.window.title')
             ->set($this->translate->_('Navigation'));
@@ -241,9 +241,9 @@ class NavigationController extends OntoWiki_Controller_Component
         if($query == null) return;
         
         // error logging
-        $this->_owApp->logger->info(
-            'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
-        );
+        //$this->_owApp->logger->info(
+        //    'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
+        //);
 
         // get extended results
         $all_results = $this->model->sparqlQuery($query, array('result_format' => 'extended'));

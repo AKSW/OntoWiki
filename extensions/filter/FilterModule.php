@@ -42,7 +42,7 @@ class FilterModule extends OntoWiki_Module
         $this->titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
 
         $this->view->headLink()->appendStylesheet($this->view->moduleUrl . 'resources/filter.css');
-        $this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/jquery.dump.js');
+        //$this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/jquery.dump.js');
         
         $this->view->properties = $this->_instances->getAllProperties(false);
         $this->view->inverseProperties = $this->_instances->getAllProperties(true);
@@ -77,7 +77,7 @@ class FilterModule extends OntoWiki_Module
 
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'resources/filter.js');
 
-        $content = $this->render('filter');
+        $content = $this->render('filter/filter');
         return $content;
     }
 

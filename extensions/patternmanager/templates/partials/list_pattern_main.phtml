@@ -1,10 +1,10 @@
 <ul>
 <?php
 $i=1; $odd = true;
-foreach ($this->instanceInfo as $instanceUri => $instance){
+foreach ($this->instanceInfo as $instance){
             echo $this->partial('partials/list_pattern_item.phtml',
                 array(
-                    'instanceUri'  => $instanceUri,
+                    'instanceUri'  => $instance['uri'],
                     'instance'     => $instance,
                     'instanceData' => $this->instanceData,
                     'instanceInfo' => $this->instanceInfo,

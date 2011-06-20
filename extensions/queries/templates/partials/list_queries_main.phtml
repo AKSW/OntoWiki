@@ -1,13 +1,13 @@
 <?php $odd = true;
 if ($this->instances->hasData()): ?>
 <ol class="bullets-none separated">
-    <?php foreach ($this->instanceInfo as $instanceUri => $instance){
+    <?php foreach ($this->instanceInfo as $instance){
         //fixme
-        $parts = explode("/", $instanceUri);
+        $parts = explode("/", $instance['uri']);
         $name = $parts[count($parts)-1]; //last part of the uri
             echo $this->partial('partials/list_queries_element.phtml',
                 array(
-                    'instanceUri'  => $instanceUri,
+                    'instanceUri'  => $instance['uri'],
                     'instance'     => $instance,
                     'instanceData' => $this->instanceData,
                     'instanceInfo' => $this->instanceInfo,

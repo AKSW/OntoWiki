@@ -22,10 +22,10 @@ class OntoWiki_Http_Exception extends OntoWiki_Exception
     
     protected $_responseCode = 0;
     
-    public function __construct($responseCode)
+    public function __construct($responseCode, $message = null)
     {
         parent::__construct(
-            Zend_Http_Response::responseCodeAsText($responseCode), 
+            ((null !== $message) ? $message : Zend_Http_Response::responseCodeAsText($responseCode)), 
             self::ERROR_CODE_BASE + (int)$responseCode
         );
         
@@ -34,7 +34,7 @@ class OntoWiki_Http_Exception extends OntoWiki_Exception
     
     public function getResponseMessage()
     {
-        return Zend_Http_Response::responseCodeAsText($this->_responseCode);
+        return $this->getMessage();
     }   
     
     public function getResponseCode()
