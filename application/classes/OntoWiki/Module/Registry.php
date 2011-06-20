@@ -155,21 +155,25 @@ class OntoWiki_Module_Registry
             $this->_moduleOrder[$context] = array();
         }
 
-        if($options == null){
+        if ($options == null) {
             $options = new Zend_Config(array());
         }
         
         if (!array_key_exists($moduleName, $this->_modules)) {
             // merge defaults
-            $options->merge(new Zend_Config(array(
-                'id'      => $moduleName,
-                'classes' => '',
-                'name'    => isset($options->name) ? $options->name : $moduleName,
-                'enabled' => true ,
-                'extensionName' => $extensionName,
-                '_privateConfig' => $options->private
-            )));
-            ;
+            $options->merge(
+                new Zend_Config(
+                    array(
+                        'id'      => $moduleName,
+                        'classes' => '',
+                        'name'    => isset($options->name) ? $options->name : $moduleName,
+                        'enabled' => true ,
+                        'extensionName' => $extensionName,
+                        '_privateConfig' => $options->private
+                    )
+                )
+            );
+            
             // set css classes according to module state
             switch ($this->_moduleStates->{$options->id}) {
                 case self::MODULE_STATE_OPEN:
@@ -240,7 +244,7 @@ class OntoWiki_Module_Registry
      */
     public function getModule($moduleName, $context = null)
     {
-        if(!$this->isModuleEnabled($moduleName)){
+        if (!$this->isModuleEnabled($moduleName)) {
             return null;
         }
         $moduleFile = $this->_extensionDir
@@ -257,7 +261,7 @@ class OntoWiki_Module_Registry
         $moduleClass = ucfirst($moduleName)
                      . self::MODULE_CLASS_POSTFIX;
         
-        if (!class_exists($moduleClass)) {
+        if (!class_exists($moduleClass))
             require_once $moduleFile;
 
         $module = new $moduleClass($moduleName, $context, $this->_modules[$moduleName]);
