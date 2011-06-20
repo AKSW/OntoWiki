@@ -9,10 +9,19 @@ class PingbackPlugin extends OntoWiki_Plugin
             return;
         }
         $response = $event->response;
+
+        $serverUrl = null;
+        if (isset($this->_privateConfig->external_pingback_server)) {
+            $serverUrl = $this->_privateConfig->external_pingback_server;
+        } else {
+            $owApp = OntoWiki::getInstance(); 
+            $serverUrl = $owApp->config->urlBase . 'pingback/ping/';
+        }
         
-        $owApp = OntoWiki::getInstance(); 
-        $url = $owApp->config->urlBase . 'pingback/ping/';
+        $url = $serverUrl;
         $response->setHeader('X-Pingback', $url, true);
+        
+        
 	}
 	
 	public function onAfterInitController($event)
@@ -22,8 +31,15 @@ class PingbackPlugin extends OntoWiki_Plugin
         }
         $response = $event->response;
         
-        $owApp = OntoWiki::getInstance(); 
-        $url = $owApp->config->urlBase . 'pingback/ping/';
+        $serverUrl = null;
+        if (isset($this->_privateConfig->external_pingback_server)) {
+            $serverUrl = $this->_privateConfig->external_pingback_server;
+        } else {
+            $owApp = OntoWiki::getInstance(); 
+            $serverUrl = $owApp->config->urlBase . 'pingback/ping/';
+        }
+        
+        $url = $serverUrl;
         $response->setHeader('X-Pingback', $url, true);
 	}
 	

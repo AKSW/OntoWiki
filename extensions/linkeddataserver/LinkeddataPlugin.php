@@ -98,7 +98,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($uri, $activeModel);
             
             $request->setDispatched(true);
-            
+
             // give plugins a chance to do something
             $event = new Erfurt_Event('onBeforeLinkedDataRedirect');
             $event->response = $response;
