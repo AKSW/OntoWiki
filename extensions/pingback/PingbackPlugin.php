@@ -240,26 +240,20 @@ class PingbackPlugin extends OntoWiki_Plugin
 	}
 	
 	protected function _logError($msg) 
-	{
-	    $owApp = OntoWiki::getInstance(); 
-	    $logger = $owApp->logger;
-	    
+	{ 
 	    if (is_array($msg)) {
-	        $logger->debug('Pingback Plugin Error: ' . print_r($msg, true));
+	        $this->_log('Pingback Plugin Error: ' . print_r($msg, true));
 	    } else {
-	        $logger->debug('Pingback Plugin Error: ' . $msg);
+	        $this->_log('Pingback Plugin Error: ' . $msg);
 	    }
 	}
 	
 	protected function _logInfo($msg) 
 	{
-	    $owApp = OntoWiki::getInstance(); 
-	    $logger = $owApp->logger;
-	    
 	    if (is_array($msg)) {
-	        $logger->debug('Pingback Plugin Info: ' . print_r($msg, true));
+	        $this->_log('Pingback Plugin Info: ' . print_r($msg, true));
 	    } else {
-	        $logger->debug('Pingback Plugin Info: ' . $msg);
+	        $this->_log('Pingback Plugin Info: ' . $msg);
 	    }
 	}
 	
@@ -298,4 +292,10 @@ class PingbackPlugin extends OntoWiki_Plugin
 	    $result = (bool)$event->trigger();
 	    return $result;
 	}
+	
+	private function _log($msg)
+    {
+        $logger = OntoWiki::getInstance()->getCustomLogger('pingback');
+        $logger->debug($msg);        
+    }
 }
