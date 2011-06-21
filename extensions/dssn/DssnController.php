@@ -280,7 +280,12 @@ class DssnController extends OntoWiki_Controller_Component {
             $importIntoGraphUri = $friendUri;
             if (!$store->isModelAvailable($importIntoGraphUri)){
                 // create model
-                $graph = $store->getNewModel($importIntoGraphUri);
+                $graph = $store->getNewModel(
+                    $importIntoGraphUri,
+                    '',
+                    Erfurt_Store::MODEL_TYPE_OWL,
+                    false
+                );
                 //hide
                 $graph->setOption($this->_config->sysont->properties->hidden, array(array(
                             'value'    => 'true',
