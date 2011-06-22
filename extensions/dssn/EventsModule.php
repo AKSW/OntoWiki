@@ -49,7 +49,7 @@ class EventsModule extends OntoWiki_Module
                     // MM-DD
                     'date' => $friend['birthday'],
                     // formats the difference nicly
-                    'label' => OntoWiki_Utils::dateDifference($now, $birthdayTime)
+                    'label' => OntoWiki_Utils::dateDifference($now, $birthdayTime).' ('.date('l',$birthdayTime).')'
                 );
             }
         }

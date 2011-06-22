@@ -253,7 +253,15 @@ class DssnController extends OntoWiki_Controller_Component {
 
             //get properties
             $list->addShownProperty(DSSN_FOAF_depiction);
+            $list->addShownProperty(DSSN_FOAF_img);
+            $list->addShownProperty(DSSN_FOAF_nick);
             $list->addShownProperty(DSSN_FOAF_name);
+            $list->addShownProperty(DSSN_FOAF_surname);
+            $list->addShownProperty(DSSN_FOAF_firstname);
+            $list->addShownProperty(DSSN_FOAF_familyName);
+            $list->addShownProperty(DSSN_FOAF_family_name);
+            
+            $list->addShownProperty(DSSN_FOAF_status);
 
             // add the list to the session
             $helper->addListPermanently($listname, $list, $this->view, $template, $config);
@@ -357,8 +365,6 @@ class DssnController extends OntoWiki_Controller_Component {
                 ob_start();
                 $response = $s->subscribe($topicUrl);
                 $result = ob_get_clean();
-
-                //$this->_log('Subscriber Result: ' . $result);
 
                 $success = false;
                 if ($response == false) {

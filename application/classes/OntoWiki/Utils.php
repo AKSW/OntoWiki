@@ -128,14 +128,7 @@ class OntoWiki_Utils
 	public static function dateDifference($start_timestamp, $end_timestamp = false, $unit = 0)
 	{
 	    $translate  = OntoWiki::getInstance()->translate;
-	    
-	    $secsStr  = $translate->_('moments ago');
-	    $minStr   = $translate->_('approx. 1 minute ago');
-	    $minsStr  = $translate->_('approx. %d minutes ago');
-	    $hourStr  = $translate->_('approx. 1 hour ago');
-	    $hoursStr = $translate->_('approx. %d hours ago');
-	    $daysStr  = $translate->_('approx. %d days ago');
-	    
+	    	    
             $days_seconds_star 	= (23 * 56 * 60) + 4.091; // Star Day
             $days_seconds_sun 	= 24 * 60 * 60; // Sun Day
             if($unit == 0){
@@ -167,7 +160,7 @@ class OntoWiki_Utils
                             }
                     }
             } else {
-                    throw new Exception('unexpected type of timestamp. expected string or int, got '. gettype($start_timestamp) .' instead');
+                    throw new Exception('unexpected type of timestamp. expected string (date) or int (timestamp), got '. gettype($start_timestamp) .' instead');
             }
 
             // show e.g. 'moments ago' if time is less than one minute
