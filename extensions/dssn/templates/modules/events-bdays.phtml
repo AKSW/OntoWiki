@@ -8,7 +8,7 @@
             title="<?php echo $bday['date'] ?>"
             class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
             <a href="<?php echo $bday['resource'] ?>"> 
-                <img class="friend" src="<?php echo $bday['depiction'] ?>" />
+                <img class="avatar"  style="max-width:60px" src="<?php echo $bday['depiction'] ?>" />
                 <?php echo $bday['name'] ?>
             </a> <?php echo $bday['label'] ?>
         </li>

@@ -15,6 +15,8 @@ class DssnController extends OntoWiki_Controller_Component {
      * working model for dssn
      */
     public $model = false;
+    
+    protected static $me = null;
 
     public function init() {
         parent::init();
@@ -225,14 +227,9 @@ class DssnController extends OntoWiki_Controller_Component {
 
         $this->view->placeholder('main.window.title')->set($translate->_('Network'));
 
-        $res = $store->sparqlQuery('PREFIX foaf:<http://xmlns.com/foaf/0.1/> SELECT ?me FROM <'.$this->_owApp->selectedModel->getModelIri().'> WHERE {<'.$this->_owApp->selectedModel->getModelIri().'> a foaf:PersonalProfileDocument . <'.$this->_owApp->selectedModel->getModelIri().'> foaf:primaryTopic ?me}');
-        if(is_array($res) && !empty ($res)){
-            $me = $res[0]['me'];
-        } else {
-            $this->_sendResponse(false, "the model must contain a foaf profile", OntoWiki_Message::ERROR);
-            return;
-        }
-        $this->_handleNewFriend($me);
+        $me = new DSSN_Foaf_Person(OntoWiki::getInstance()->selectedModel, true);
+        
+        $this->_handleNewFriend($me->uri);
 
         $config = $this->_privateConfig;
         $store  = $this->_owApp->erfurt->getStore();
@@ -252,7 +249,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addTypeFilter(DSSN_FOAF_Person);
 
             //restrict to persons that i know
-            $list->addFilter(DSSN_FOAF_knows, true, "knows", "equals", $me, null, 'uri');
+            $list->addFilter(DSSN_FOAF_knows, true, "knows", "equals", $me->uri, null, 'uri');
 
             //get properties
             $list->addShownProperty(DSSN_FOAF_depiction);
@@ -271,8 +268,23 @@ class DssnController extends OntoWiki_Controller_Component {
         //var_dump((string) $list->getQuery());
         $this->addModuleContext('main.window.dssn.network');
     }
+    
+    /**
+     * @return DSSN_Foaf_Person the current me 
+     */
+    public static function getMe(){
+        if(self::$me == null){
+            self::$me = new DSSN_Foaf_Person(OntoWiki::getInstance()->selectedModel, true);
+        } 
+        return self::$me;
+    }
 
-
+    
+    /**
+     * me is 
+     * @param type $me (is not the new friend, but really $self, to know who to connect the new friend to)
+     * @return type 
+     */
     private function _handleNewFriend($me)
     {
         $store = $this->_erfurt->getStore();

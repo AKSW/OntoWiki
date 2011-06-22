@@ -25,31 +25,34 @@ class EventsModule extends OntoWiki_Module
     }
 
     /*
-     * This fetches and sets the next
+     * This fetches and sets the next n birthdays of people $me knows
      * TODO: real data please, and with object-cache :-)
      */
     public function setBirthdays() {
-
-        $singleBirthday = array(
-            // resource will used to link to the friends page
-            'resource' => 'http://sebastian.tramp.name',
-            // titleHelper please
-            'name' => 'Sebastian Tramp',
-            // do we need a pic gatewy to enforce small images?
-            'depiction' => 'http://www.gravatar.com/avatar/65628ed5c340e69a9ebdea271f21a4fe.png',
-            // YYYY-MM-DD
-            'date' => '2010-09-29',
-            // something similar as OntoWiki_Utils::dateDifference but for days in the future
-            'label' => 'in 5 days'
-        );
-
+        $me = DssnController::getMe();
         $this->birthdays = array();
-        $this->birthdays[] = $singleBirthday;
-        $this->birthdays[] = $singleBirthday;
-        $this->birthdays[] = $singleBirthday;
-        $this->birthdays[] = $singleBirthday;
-
-        //$this->birthdays = array();
+        
+        foreach ($me->getFriends(DSSN_Foaf_Person::BASIC) as $uri => $friend){
+            $birthdayTime = strtotime(str_replace("-", "/", $friend['birthday']));
+            $now = time();
+            if($birthdayTime < $now){
+                $birthdayTime += 60*60*24*365; //TODO use +1year
+            }
+            if(($birthdayTime - $now) < 60*60*24*7){
+                $this->birthdays[] = array(
+                    // resource will used to link to the friends page
+                    'resource' => $uri,
+                    // titleHelper please
+                    'name' => $friend['name'],
+                    // do we need a pic gateway to enforce small images?
+                    'depiction' => $friend['depiction'],
+                    // MM-DD
+                    'date' => $friend['birthday'],
+                    // formats the difference nicly
+                    'label' => OntoWiki_Utils::dateDifference($now, $birthdayTime)
+                );
+            }
+        }
     }
 
     /*
