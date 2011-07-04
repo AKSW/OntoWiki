@@ -275,6 +275,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             $literalString = Erfurt_Utils::buildLiteralString($row['object']['value'],
                                                                               null,
                                                                               isset($row['object']['xml:lang']) ? $row['object']['xml:lang'] : null);
+                            // var_dump(md5($literalString) . ' ' . $literalString . PHP_EOL);
                             $value['object_hash'] = md5($literalString);
 
                             /**
