@@ -78,7 +78,7 @@
 				die;
 			}
 	
-			if(count($jsonArray['bindings'])==0){
+			if(count($jsonArray['results']['bindings'])==0){
 				return "no results| \n";
 			}
 			
@@ -144,7 +144,7 @@
 	function toListNoCount($jsonArray){
 		$list = array();
 		//echo $jsonArray;
-		$bindings= $jsonArray['bindings'];
+		$bindings= $jsonArray['results']['bindings'];
 		foreach ($bindings as $binding){
 					/*if(isset($binding['count']['value'])){
 						 $uri = $prefixHandler->applyPrefixToURIString($binding['suggest']['value']);

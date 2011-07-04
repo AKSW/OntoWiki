@@ -66,7 +66,7 @@
 			}
 			$vars = $jsonArray['head']['vars'];
 			
-			$bindings= $jsonArray['bindings'];
+			$bindings= $jsonArray['results']['bindings'];
 			
 			if(count($bindings) == 0){
 				return "<thead> <tr> <th>Empty result set</th> </tr> </thead> <tbody> <tr> <td><xmp>".tostr($jsonArray)."</xmp></td> </tr> </tbody> ";
