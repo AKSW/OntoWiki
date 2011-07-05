@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- generator="wordpress/2.1" -->
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	>
+
+<channel>
+	<title>blog.aksw.org</title>
+	<link>http://blog.aksw.org</link>
+	<description>The shared AKSW blog about our projects and the Semantic Web.</description>
+	<pubDate>Tue, 14 Dec 2010 16:02:49 +0000</pubDate>
+	<generator>http://wordpress.org/?v=2.1</generator>
+	<language>en</language>
+			<item>
+		<title>AKSW presents four papers at ISWC in Shanghai and wins Best Paper award</title>
+		<link>http://blog.aksw.org/2010/aksw-presents-four-papers-at-iswc-in-shanghai-and-wins-best-paper-award/</link>
+		<comments>http://blog.aksw.org/2010/aksw-presents-four-papers-at-iswc-in-shanghai-and-wins-best-paper-award/#comments</comments>
+		<pubDate>Thu, 11 Nov 2010 10:16:10 +0000</pubDate>
+		<dc:creator>Sören Auer</dc:creator>
+		
+	<dc:subject>Announcements</dc:subject>
+	<dc:subject>OntoWiki</dc:subject>
+	<dc:subject>Papers</dc:subject>
+	<dc:subject>Erfurt</dc:subject>
+	<dc:subject>ORE</dc:subject>
+		<guid isPermaLink="false">http://blog.aksw.org/2010/aksw-presents-four-papers-at-iswc-in-shanghai-and-wins-best-paper-award/</guid>
+		<description><![CDATA[The AKSW research group is represented in the main ISWC conference programme this year with four papers. International Semantic Web Conference (ISWC) is the major international forum where the latest research results and technical innovations on all aspects of the Semantic Web are presented. Acceptance rates for the main conference programme were this year 20% [...]]]></description>
+			<content:encoded><![CDATA[<p>The AKSW research group is represented in the main ISWC conference programme this year with four papers. <a href="http://iswc2010.semanticweb.org/">International Semantic Web Conference (ISWC)</a> is the major international forum where the latest research results and technical innovations on all aspects of the Semantic Web are presented. Acceptance rates for the main conference programme were this year 20% for the research track and 26% for the In-Use track. AKSW&#8217;s presentations at ISWC in Shanghai include:</p>
+<ul>
+<li>Christoph Rie&#223;, Norman Heino, Sebastian Tramp, S&#246;ren Auer: <a href="http://svn.aksw.org/papers/2010/ISWC_Evolution/public.pdf">EvoPat - Pattern-Based Evolution and Refactoring of RDF Knowledge Bases.</a></li>
+<li>Jens Lehmann and Lorenz B&#252;hmann: <a href="http://svn.aksw.org/papers/2010/ORE/public.pdf">ORE - A Tool for Repairing and Enriching Knowledge Bases.</a> </li>
+<li>S&#246;ren Auer, Matthias Weidl, Jens Lehmann, Amrapali J. Zaveri, Key-Sun Choi: <a href="http://svn.aksw.org/papers/2010/ISWC_I18n/public.pdf">I18n of Semantic Web Applications.</a></li>
+<li>Thomas Riechert, Ulf Morgenstern, S&#246;ren Auer, Sebastian Tramp, Michael Martin: <a href="http://svn.aksw.org/papers/2010/ISWC_CP/public.pdf">Knowledge Engineering for Historians on the Example of the Catalogus Professorum Lipsiensis.</a></li>
+</ul>
+<p>The paper titled <a href="http://svn.aksw.org/papers/2010/ISWC_CP/public.pdf">Knowledge Engineering for Historians on the Example of the Catalogus Professorum Lipsiensis</a> was awarded the best In-Use track paper award.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://blog.aksw.org/2010/aksw-presents-four-papers-at-iswc-in-shanghai-and-wins-best-paper-award/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>OntoWiki 0.9.5 Available</title>
+		<link>http://blog.aksw.org/2010/ontowiki-095-available/</link>
+		<comments>http://blog.aksw.org/2010/ontowiki-095-available/#comments</comments>
+		<pubDate>Mon, 14 Jun 2010 14:55:47 +0000</pubDate>
+		<dc:creator>Sebastian Tramp</dc:creator>
+		
+	<dc:subject>Software Releases</dc:subject>
+	<dc:subject>OntoWiki</dc:subject><dc:subject>OntoWiki</dc:subject><dc:subject>Release</dc:subject>
+		<guid isPermaLink="false">http://blog.aksw.org/2010/ontowiki-095-available/</guid>
+		<description><![CDATA[The AKSW research group is pleased to announce that OntoWiki 0.9.5 is now available for download.
+OntoWiki is a web-application enabling the collaborative creation and (linked data) publication of RDF knowledge bases.
+More information about OntoWiki can be found at http://ontowiki.net. You can download OntoWiki in our google code file section.
+Enhancements in this release include:
+
+Support for Semantic [...]]]></description>
+			<content:encoded><![CDATA[<p>The <a href="http://aksw.org">AKSW research group</a> is pleased to announce that OntoWiki 0.9.5 is now available <a href="http://code.google.com/p/ontowiki/downloads/list">for download</a>.</p>
+<blockquote><p>OntoWiki is a web-application enabling the collaborative creation and (linked data) publication of RDF knowledge bases.</p></blockquote>
+<p>More information about OntoWiki can be found at <a href="http://ontowiki.net">http://ontowiki.net</a>. You can download OntoWiki in our <a href="http://code.google.com/p/ontowiki/downloads/list">google code file section</a>.</p>
+<p>Enhancements in this release include:</p>
+<ul>
+<li>Support for <a href="http://aksw.org/Projects/SemanticPingBack">Semantic Pingback</a>, a protocol which enables OntoWiki to communicate named links from linked data resources or blog systems like WordPress.</li>
+<li>Support for the publication of provenance information via Linked Data.</li>
+<li>A new navigation module which support the configuration and usage of arbitrary navigation hierarchies (e.g. based on classes, SKOS elements, geospatial entities or FOAF groups).</li>
+<li>A bookmarklet for collecting RDFa-based information into a specific OntoWiki knowledge base.</li>
+<li>More editing widgets, e.g. for phone number and mailto: resources.</li>
+<li>A new mapping module for the resource visualisation and filtering based on maps.</li>
+<li>Attribute / Tag clouds based on selected RDF properties.</li>
+<li>A GUI for complex SPARQL filter (contains, larger, smaller, between and bound)</li>
+<li>A JSON/RPC server as an additional interface (e.g. for the <a href="http://code.google.com/p/ontowiki/wiki/CommandLineInterface">command line client</a>)</li>
+<li>A plugin to create nice URIs based on the content of a new resource.</li>
+</ul>
+<p>A detailed log of the over 200 enhancements and bug fixes of this release is available at our <a href="http://code.google.com/p/ontowiki/issues/list?can=1&#038;q=milestone=OntoWiki-0.9.5">issue tracker</a>.</p>
+<p>Many thanks to the contributors of this OntoWiki release (in alphabetical order): Atanas Alexandrov, Christian Maier, Christoph Riess, Jonas Brekle, Marvin Frommhold, Michael Haschke, Michael Martin, Michael Niederst&#228;tter, Natanael Arndt, Norman Heino, Philipp Frischmuth and Tim Ermilov</p>
+<p>best regards</p>
+<p>Sebastian Tramp</p>
+]]></content:encoded>
+			<wfw:commentRss>http://blog.aksw.org/2010/ontowiki-095-available/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>owcli 0.3 released</title>
+		<link>http://blog.aksw.org/2010/owcli-03-released/</link>
+		<comments>http://blog.aksw.org/2010/owcli-03-released/#comments</comments>
+		<pubDate>Fri, 09 Apr 2010 12:49:10 +0000</pubDate>
+		<dc:creator>Sebastian Tramp</dc:creator>
+		
+	<dc:subject>Software Releases</dc:subject>
+	<dc:subject>OntoWiki</dc:subject>
+		<guid isPermaLink="false">http://blog.aksw.org/2010/owcli-03-released/</guid>
+		<description><![CDATA[We’ve released the third version of our OntoWiki Command Line Interface (owcli). owcli is a php-based command line tool to administrate and manipulate OntoWiki Knowledge Bases. The release is a complete remake as an JSON/RPC client in order are save for future extensions at the OntoWiki RPC server base. owcli can be downloaded at the [...]]]></description>
+			<content:encoded><![CDATA[<p>We’ve released the third version of our <a href="http://code.google.com/p/ontowiki/wiki/CommandLineInterface">OntoWiki Command Line Interface (owcli)</a>. owcli is a php-based command line tool to administrate and manipulate OntoWiki Knowledge Bases. The release is a complete remake as an JSON/RPC client in order are save for future extensions at the OntoWiki RPC server base. owcli can be downloaded at the <a href="http://code.google.com/p/ontowiki/downloads/list?q=label:owcli">google code download page</a> and is featured in detail at this <a href="http://code.google.com/p/ontowiki/wiki/CommandLineInterface">wiki page</a>.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://blog.aksw.org/2010/owcli-03-released/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>Linked Opend Data Project of the Faculty of Mathematics and Computer Science at Leipzig University</title>
+		<link>http://blog.aksw.org/2010/linked-opend-data-project-of-the-faculty-of-mathematics-and-computer-science-at-leipzig-university/</link>
+		<comments>http://blog.aksw.org/2010/linked-opend-data-project-of-the-faculty-of-mathematics-and-computer-science-at-leipzig-university/#comments</comments>
+		<pubDate>Fri, 09 Apr 2010 11:35:53 +0000</pubDate>
+		<dc:creator>ThomasRiechert</dc:creator>
+		
+	<dc:subject>Announcements</dc:subject>
+	<dc:subject>Projects</dc:subject>
+	<dc:subject>OntoWiki</dc:subject>
+		<guid isPermaLink="false">http://blog.aksw.org/2010/linked-opend-data-project-of-the-faculty-of-mathematics-and-computer-science-at-leipzig-university/</guid>
+		<description><![CDATA[From this summer term onwards the Faculty of Mathematics and Computer Science at Leipzig University provides structured information about academia such aslectures, tutors, rooms and timetables as Linked Open Data. The platform http://od.fmi.uni-leipzig.de, which is based on the OntoWiki framework, provides a vocabulary and an ontology. Apart from the possibility of the direct linking of [...]]]></description>
+			<content:encoded><![CDATA[<p><font size="3"><font face="Times New Roman, serif">From this summer term onwards the Faculty of Mathematics and Computer Science at Leipzig University provides structured information about academia such aslectures, tutors, rooms and timetables as Linked Open Data. The platform <a href="http://od.fmi.uni-leipzig.de" title="http://od.fmi.uni-leipzig.de" target="_blank">http://od.fmi.uni-leipzig.de</a>, which is based on the OntoWiki framework, provides a vocabulary and an ontology. Apart from the possibility of the direct linking of resources in the semantic web, this platformn offers a SPARQL endpoint. The accessible information provides a basis for the integration into E-Learning platforms or personal knowledge management applications.</font></font></p>
+]]></content:encoded>
+			<wfw:commentRss>http://blog.aksw.org/2010/linked-opend-data-project-of-the-faculty-of-mathematics-and-computer-science-at-leipzig-university/feed/</wfw:commentRss>
+		</item>
+		<item>
+		<title>AKSW Publications on this Year&#8217;s Leipzig Book Fair</title>
+		<link>http://blog.aksw.org/2010/aksw-publications-on-this-years-leipzig-book-fair/</link>
+		<comments>http://blog.aksw.org/2010/aksw-publications-on-this-years-leipzig-book-fair/#comments</comments>
+		<pubDate>Thu, 18 Mar 2010 11:45:06 +0000</pubDate>
+		<dc:creator>ThomasRiechert</dc:creator>
+		
+	<dc:subject>Announcements</dc:subject>
+	<dc:subject>Projects</dc:subject>
+	<dc:subject>OntoWiki</dc:subject>
+	<dc:subject>Events</dc:subject>
+	<dc:subject>SoftWiki</dc:subject>
+		<guid isPermaLink="false">http://blog.aksw.org/2010/aksw-publications-on-this-years-leipzig-book-fair/</guid>
+		<description><![CDATA[At this year&#8217;s book fair in Leipzig (18/03 - 21/03) two books resulting from current project work of the AKSW research group [1,2] are displayed within the scope of scientific publications from the University of Leipzig. One of the editors, Thomas Riechert, will be present on 19th March from 10 to 12 o&#8217;clock at booth [...]]]></description>
+			<content:encoded><![CDATA[<p>At this year&#8217;s <a href="http://www.leipziger-buchmesse.de/" title="book fair in Leipzig">book fair in Leipzig</a> (18/03 - 21/03) two books resulting from current project work of the AKSW research group [1,2] are displayed within the scope of scientific publications from the University of Leipzig. One of the editors, Thomas Riechert, will be present on 19th March from 10 to 12 o&#8217;clock at booth G201/H200 (hall 3).</p>
+<p>[1] Agiles Requirements Engineering f&#252;r Softwareprojekte mit einer gro&#223;en Anzahl verteilter Stakeholder. S&#246;ren Auer, Kim Lauenroth, Steffen Lohmann and Thomas Riechert (Eds.),<br />
+2009, Leipziger Informatik Verbund (LIV), <a href="http://softwiki.de/buch" target="_blank">http://softwiki.de/buch</a></p>
+<p>[2] Catalogus Professorum Lipsiensis - Konzeption, technische Umsetzung und Anwendungen f&#252;r Professorenkataloge im Semantic Web.<br />
+Ulf Morgenstern and Thomas Riechert (Eds.), 2010, Leipziger Informatik Verbund (LIV), <a href="http://catalogus-professorum.org/buch" target="_blank">http://catalogus-professorum.org/buch</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://blog.aksw.org/2010/aksw-publications-on-this-years-leipzig-book-fair/feed/</wfw:commentRss>
+		</item>
+	</channel>
+</rss>

@@ -22,35 +22,33 @@
  * this URL: http://opensource.org/licenses/gpl-2.0.php
  *
  * @category   OntoWiki
- * @package    OntoWiki
+ * @package    Version
  * @subpackage UnitTests
  * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
- * @version    $Id: $
  */
  
 /*
  * Helper file, that adjusts the include_path and initializes the test environment.
  */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'TestHelper.php';
+require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'TestHelper.php';
 
 // This constant will not be defined iff this file is executed directly.
 if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'OntoWiki_MessageTest::main');
+    define('PHPUnit_MAIN_METHOD', 'OntoWiki_VersionTest::main');
 }
 
 /**
  * This test class comtains tests for the OntoWiki index controller.
  * 
  * @category   OntoWiki
- * @package    OntoWiki
+ * @package    Version
  * @subpackage UnitTests
  * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
- * @author     Norman Heino <norman.heino@gmail.com>
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
-class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
+class OntoWiki_VersionTest extends Zend_Test_PHPUnit_ControllerTestCase
 {
     /**
      * The main method, which executes all tests inside this class.
@@ -59,47 +57,27 @@ class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
      */
     public static function main()
     {
-        PHPUnit_TextUI_TestRunner::run(new ReflectionClass('OntoWiki_MessageTest'));
+        PHPUnit_TextUI_TestRunner::run(new ReflectionClass('OntoWiki_VersionTest'));
     }
     
-    public function testMessageGetTypeDefaultInfo()
+    public function testCompareVersionEqual()
     {
-        $msg = new OntoWiki_Message('ttt');
-        $this->assertEquals($msg->getType(), OntoWiki_Message::INFO);
+        $this->assertEquals(0, OntoWiki_Version::compareVersion(OntoWiki_Version::VERSION));
     }
     
-    public function testMessageGetTypeSuccess()
+    public function testCompareVersionGreater()
     {
-        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::SUCCESS);
-        $this->assertEquals($msg->getType(), OntoWiki_Message::SUCCESS);
+        // This version should be greater for a long time ;-)
+        $this->assertEquals(1, OntoWiki_Version::compareVersion('1000.1000.1000'));
     }
     
-    public function testMessageGetTypeInfo()
+    public function testCompareVersionLess()
     {
-        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::INFO);
-        $this->assertEquals($msg->getType(), OntoWiki_Message::INFO);
-    }
-    
-    public function testMessageGetTypeWarning()
-    {
-        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::WARNING);
-        $this->assertEquals($msg->getType(), OntoWiki_Message::WARNING);
-    }
-    
-    public function testMessageGetTypeError()
-    {
-        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::ERROR);
-        $this->assertEquals($msg->getType(), OntoWiki_Message::ERROR);
-    }
-    
-    public function testMessageGetText()
-    {
-        $msg = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
-        $this->assertEquals($msg->getText(), 'The test string for the message object.');
-    }
+        $this->assertEquals(-1, OntoWiki_Version::compareVersion('0.1.0'));
+    }    
 }
 
 // If this file is executed directly, execute the tests.
-if (PHPUnit_MAIN_METHOD === 'OntoWiki_MessageTest::main') {
-    OntoWiki_MessageTest::main();
+if (PHPUnit_MAIN_METHOD === 'OntoWiki_VersionTest::main') {
+    OntoWiki_VersionTest::main();
 }

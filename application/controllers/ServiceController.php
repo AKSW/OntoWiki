@@ -17,52 +17,83 @@ class ServiceController extends Zend_Controller_Action
     protected $_config = null;
     
     /**
+     * @var Erfurt_Store
+     */
+    protected $_store = null;
+    
+    public function getStore()
+    {
+        if (!$this->_store) {
+            $this->_store = OntoWiki::getInstance()->erfurt->getStore();
+        }
+        
+        return $this->_store;
+    }
+    
+    public function setStore($store)
+    {
+        $this->_store = store;
+    }
+    
+    /**
      * Attempts an authentication to the underlying Erfurt framework via 
      * HTTP GET/POST parameters.
+     * 
+     * Uses the following HTTP parameters: logout, username, password
+     * 
      */
     public function authAction()
     {
-        if (!$this->_config->service->allowGetAuth) {
+        if (!$this->_config->service->auth->allowGet) {
             // disallow get
             if (!$this->_request->isPost()) {
-                $this->_response->setRawHeader('HTTP/1.0 405 Method Not Allowed');
-                $this->_response->setRawHeader('Allow: POST');
-                exit();
+                $code = 405;
+                $this->_response->setHttpResponseCode($code);
+                $this->_response->setHeader('Allow', 'POST');
+                $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+                return;
             }
         }
     
         // fetch params
-        if (isset($this->_request->logout)) {
-            $logout = $this->_request->logout == 'true' ? true : false;
-        } elseif (isset($this->_request->u)) {
-            $username = $this->_request->u;
-            $password = $this->_request->getParam('p', '');
-        } else {
-            $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
-            // $this->_response->setRawHeader('');
-            exit();
-        }
-      
-        if ($logout) {
+        if (isset($this->_request->logout) && ($this->_request->logout === 'true')) {
             // logout
             Erfurt_Auth::getInstance()->clearIdentity();
             session_destroy();
-            $this->_response->setRawHeader('HTTP/1.0 200 OK');
-            exit();
+            
+            $code = 200;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
+        } 
+        
+        if (isset($this->_request->username)) {
+            $username = $this->_request->username;
+            $password = $this->_request->getParam('password', ''); // Defaults to '' if no p param was given.
+            
         } else {
-            // authenticate
-            $result = $owApp->erfurt->authenticate($username, $password);
+            $code = 400;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
         }
+      
+        // authenticate
+        $result = $this->_owApp->erfurt->authenticate($username, $password);
       
         // return HTTP result
         if ($result->isValid()) {
             // return success (200)
-            $this->_response->setRawHeader('HTTP/1.0 200 OK');
-            exit();
+            $code = 200;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
         } else {
             // return fail (401)
-            $this->_response->setRawHeader('HTTP/1.0 401 Unauthorized');
-            exit();
+            $code = 401;
+            $this->_response->setHttpResponseCode($code);
+            $this->_response->setBody(Zend_Http_Response::responseCodeAsText($code));
+            return;
         }
     }
     
@@ -489,23 +520,48 @@ class ServiceController extends Zend_Controller_Action
  
             // check graph availability
             $ac = Erfurt_App::getInstance()->getAc();
-            foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
-                if (!$ac->isModelAllowed('view', $graphUri)) {
-                    if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
-                        // In this case we allow the requesting party to authorize...
-                        $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                        $response->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"');
-                        $response->sendResponse();
-                        exit;
-                        
-                    } else {
-                        $response->setRawHeader('HTTP/1.1 500 Internal Server Error')
-                                 ->setBody('QueryRequestRefused')
-                                 ->sendResponse();
-                        exit;
+            
+            try
+            {
+                foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
+                    if (!$ac->isModelAllowed('view', $graphUri)) {
+                        if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
+                            // In this case we allow the requesting party to authorize...
+                            $response->setHttpResponseCode (401)
+                                     ->setRawHeader('HTTP/1.1 401 Unauthorized')
+                                     ->setHeader('WWW-Authenticate', 'FOAF+SSL')
+                                     ->sendResponse();
+                            return;
+                            
+                        } else {
+                            $response->setHttpResponseCode (500)
+                                     ->setRawHeader('HTTP/1.1 500 Internal Server Error')
+                                     ->setBody('QueryRequestRefused')
+                                     ->sendResponse();
+                            return;
+                        }
                     }
                 }
             }
+            // Erfurt Access Control error occured.
+            catch ( Erfurt_Ac_Exception $e )
+            {
+                $response->setHttpResponseCode (401)
+                         ->setRawHeader('HTTP/1.1 401 Unauthorized')
+                         ->setBody('HTTP/1.1 401 Unauthorized')
+                         ->sendResponse();
+                exit;
+            }
+            // Unknown exception was thrown
+            catch ( Exception $e )
+            {
+                $response->setHttpResponseCode (500)
+                         ->setRawHeader('HTTP/1.1 500 Internal Server Error')
+                         ->setBody('HTTP/1.1 500 Internal Server Error')
+                // $response->setBody($e->getMessage ());
+                         ->sendResponse();
+                exit;
+            }  
             
             $typeMapping = array(
                 'application/sparql-results+xml'  => 'xml', 
@@ -531,26 +587,29 @@ class ServiceController extends Zend_Controller_Action
                 // get result for mimetype
                 $result = $store->sparqlQuery($query, array('result_format' => $typeMapping[$type]));
             } catch (Exception $e) {
-                $response->setRawHeader('HTTP/1.1 400 Bad Request')
+                $response->setHttpResponseCode (400)
+                         ->setRawHeader('HTTP/1.1 400 Bad Request')
                          ->setBody('MalformedQuery: ' . $e->getMessage())
                          ->sendResponse();
-                exit;
+                return;
             }
             
             if (/* $typeMapping[$type] == 'json' && */isset($this->_request->callback)) {
                 // return jsonp
+                $response->setHttpResponseCode (200);
                 $response->setHeader('Content-Type', 'application/javascript');
                 $padding = $this->_request->getParam('callback', '');
                 $response->setBody($padding . '(' . $result . ')');
             } else {
                 // set header
+                $response->setHttpResponseCode (200);
                 $response->setHeader('Content-Type', $type);
                 // return normally
                 $response->setBody($result);
             }
             
             $response->sendResponse();
-            exit;
+            return;
         }
     }
     
@@ -561,13 +620,13 @@ class ServiceController extends Zend_Controller_Action
      * @todo LOAD <> INTO <>, CLEAR GRAPH <>, CREATE[SILENT] GRAPH <>, DROP[ SILENT] GRAPH <>
      */
     public function updateAction()
-    {        
+    {
         // service controller needs no view renderer
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
-    
-        $store        = OntoWiki::getInstance()->erfurt->getStore();
+
+        $store        = $this->getStore();
         $response     = $this->getResponse();
         $defaultGraph = $this->_request->getParam('default-graph-uri', null);
         $namedGraph   = $this->_request->getParam('named-graph-uri', null);
@@ -628,7 +687,7 @@ class ServiceController extends Zend_Controller_Action
                     if (defined('_OWDEBUG')) {
                         OntoWiki::getInstance()->logger->info('Could not instantiate models.');
                     }
-                    exit;
+                    return;
                 }
             }
             
@@ -640,20 +699,13 @@ class ServiceController extends Zend_Controller_Action
                     if (defined('_OWDEBUG')) {
                         OntoWiki::getInstance()->logger->info('Could not instantiate models.');
                     }
-                    exit;
+                    return;
                 }
             }
         } else {
             // no query, inserts and delete triples by JSON via param
             $insert = json_decode($this->_request->getParam('insert', '{}'), true);
             $delete = json_decode($this->_request->getParam('delete', '{}'), true);
-            
-            if ($this->_request->has('delete_hashed')) {
-                $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes(
-                    $namedGraph, 
-                    json_decode($this->_request->getParam('delete_hashed'), true));
-                $delete = array_merge_recursive($delete, $hashedObjectStatements);
-            }
             
             try {
                 $namedModel  = $store->getModel($namedGraph);
@@ -664,7 +716,14 @@ class ServiceController extends Zend_Controller_Action
                 if (defined('_OWDEBUG')) {
                     OntoWiki::getInstance()->logger->info('Could not instantiate models.');
                 }
-                exit;
+                return;
+            }
+            
+            if ($this->_request->has('delete_hashed')) {
+                $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes(
+                    $deleteModel, 
+                    json_decode($this->_request->getParam('delete_hashed'), true));
+                $delete = array_merge_recursive($delete, $hashedObjectStatements);
             }
         }
         
@@ -734,7 +793,7 @@ class ServiceController extends Zend_Controller_Action
                 $response->setRawHeader('HTTP/1.1 401 Unauthorized');
                 $response->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"');
                 $response->sendResponse();
-                exit;
+                return;
             }
         }
         
@@ -1136,7 +1195,7 @@ class ServiceController extends Zend_Controller_Action
         $response->sendResponse();
         exit;
     }
-    
+
     protected function _findStatementsForObjectsWithHashes($graphUri, $indexWithHashedObjects, $hashFunc = 'md5')
     {
         $queryOptions = array(

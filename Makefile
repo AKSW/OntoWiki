@@ -9,6 +9,8 @@ default:
 	@echo "     'make branch-check' ('hg branch' for all repos)"
 	@echo "     'make libraries' ('hg clone' all subrepos - in case of an old mercurial)"
 	@echo "     'make zend' (download and install Zend under libraries)"
+	@echo "     'make test' (execute 'phpunit TestSuite')"
+	@echo "     'make test-erfurt' (execute Erfurts TestSuite)"
 	@echo "     'make erfurt' (clone under libraries)"
 	@echo "     'make rdfauthor' (clone under libraries)"
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
@@ -75,10 +77,16 @@ rdfauthor:
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	hg clone https://rdfauthor.googlecode.com/hg/ libraries/RDFauthor
 
+test:
+	phpunit --verbose application/tests/TestSuite 
+
 erfurt:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
 	git clone git://github.com/AKSW/Erfurt.git libraries/Erfurt
+
+test-erfurt:
+	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..
 
 
 # packaging
@@ -92,4 +100,28 @@ debianize:
 	rm libraries/RDFauthor/libraries/jquery.js
 	rm Makefile
 	@echo "now do: cp -R application/scripts/debian debian"
+
+
+# coding standard
+
+cs-install: cs-enable
+	pear install PHP_CodeSniffer
+
+cs-uninstall: cs-disable
+
+cs-enable:
+	./application/tests/CodeSniffer/add-hook.sh
+
+cs-disable:
+	./application/tests/CodeSniffer/remove-hook.sh
+
+cs-check-commit:
+	hg status -n | grep '\.php$\' | xargs phpcs --report=full --severity=7 -p -s --standard=application/tests/CodeSniffer/Standards/Ontowiki
+cs-check-commit-intensive:
+	hg status -n | grep '\.php$\' | xargs phpcs --report=full --severity=5 -p -s --standard=application/tests/CodeSniffer/Standards/Ontowiki
+
+cs-check-all:
+	phpcs --report=summary --extensions=php --severity=7 -s -p --standard=application/tests/CodeSniffer/Standards/Ontowiki *
+cs-check-all-intensive:
+	phpcs --report=summary --extensions=php --severity=5 -s -p --standard=application/tests/CodeSniffer/Standards/Ontowiki *
 

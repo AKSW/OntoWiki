@@ -1,10 +1,8 @@
 <?php
 
-require_once '../test_base.php';
-
 // PHPUnit
 require_once 'PHPUnit/Framework.php';
-require_once '../../../erfurt/tests/Erfurt/Versioning/StoreStub.php';
+require_once 'Erfurt/tests/Erfurt/Versioning/StoreStub.php';
 
 /**
  * InstancesTest tests the behavior of Ontowiki_Model_Instances

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OntoWiki layout template
  *
@@ -92,6 +91,7 @@
     
     <?php echo $this->inlineScript() ?>
     
+    <?php if ($this->isMainWindowDisabled !== true): ?>
     <div class="section-mainwindows <?php echo $this->placeholder('main.window.additionalclasses') ?>">
         <div class="window<?php echo (OntoWiki_Navigation::isDisabled() ? '' : ' tabbed') ?>">
             <?php
@@ -181,6 +181,7 @@
             </div><!-- .slidehelper -->
         </div><!-- .window -->
     </div><!-- .section-mainwindows -->
+    <?php endif; ?>
 
     <div class="section-sidewindows">
         <?php echo $this->placeholder('main.sidewindows') ?>

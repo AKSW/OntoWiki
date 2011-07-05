@@ -102,7 +102,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         $owApp     = OntoWiki::getInstance();
         $translate = $owApp->translate;
 
-        $wrapperRegistry   = Erfurt_App::getInstance()->getWrapperRegistry();
+        $wrapperRegistry   = Erfurt_Wrapper_Registry::getInstance();
         $activeWrapperList = $wrapperRegistry->listActiveWrapper();
 
         if ((boolean)$this->_privateConfig->sync->enabled) {
