@@ -70,6 +70,11 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         parent::setUp();
     }
     
+    public function tearDown()
+    {
+        OntoWiki_Navigation::reset();
+    }
+    
     public function testNoControllerAndActionDefaultToNewsAction()
     {
         $this->dispatch('/');
@@ -102,10 +107,15 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('empty');
     }
     
+    /*
+     * @runInSeparateProcess
+     */
+    
     public function testInvalidActionWithMessagesDefaultsToMessagesAction()
     {
         $owApp = OntoWiki::getInstance();
-        $owApp->appendMessage(new OntoWiki_Message('Test Message'));
+        
+        $this->assertNotEmpty(null == $owApp->appendMessage(new OntoWiki_Message('Test Message')));
         
         $this->dispatch('/index/actionXYZNotExisting');
         
@@ -212,7 +222,7 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->dispatch('/index/newsshort');
         
-        echo ($this->_response->getBody());exit;
+        //echo ($this->_response->getBody());exit;
         
         $this->assertController('index');
         $this->assertAction('newsshort');

@@ -71,6 +71,11 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         parent::setUp();
     }
     
+    public function tearDown()
+    {
+        OntoWiki_Navigation::reset();
+    }
+    
     // ------------------------------------------------------------------------
     // Auth Action
     // ------------------------------------------------------------------------
