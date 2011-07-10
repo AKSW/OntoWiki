@@ -28,7 +28,6 @@ class PingbackController extends OntoWiki_Controller_Component {
             // Create XML RPC Server
             $server = new Zend_XmlRpc_Server();
             $server->setClass($this, 'pingback');
-            $server->
 
             // Let the server handle the RPC calls.
             $response = $this->getResponse();
