@@ -405,7 +405,7 @@ class OntoWiki_Model_TitleHelper
             
             // get results for all queries
             foreach ($this->getTitleQueries($numQueries) as $currentQuery) {
-                $queryResults = $execObject->sparqlQuery($currentQuery, array('result_format' => 'extended'));
+                $queryResults = $execObject->sparqlQuery($currentQuery, array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED));
 
                 if (is_array($queryResults) && isset($queryResults['head']['vars']) && !empty($queryResults['head']['vars'])) {
                     array_push($this->_titleQueryResults, $queryResults);
@@ -492,7 +492,7 @@ class OntoWiki_Model_TitleHelper
             }
             if (defined('_OWDEBUG')) {
                 $logger = OntoWiki::getInstance()->logger;
-                $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
+                $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($queryResult['bindings']));
             }
 
             foreach ($queryResult['bindings'] as $row) {
