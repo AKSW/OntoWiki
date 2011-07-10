@@ -660,7 +660,7 @@ class ModelController extends OntoWiki_Controller_Base
     
     public function deleteAction()
     {
-        $model = $this->_request->m;
+        $model = $this->_request->model;
         if ($this->_erfurt->isActionAllowed('ModelManagement')) {
             $event = new Erfurt_Event('onPreDeleteModel');
             $event->modelUri = $model;
@@ -672,7 +672,8 @@ class ModelController extends OntoWiki_Controller_Base
                 if ((null !== $this->_owApp->selectedModel) && 
                         ($this->_owApp->selectedModel->getModelIri() === $model)) {
                     
-                    unset($this->_owApp->selectedModel);
+                    $this->_owApp->selectedModel = null;
+                    
                 }
             } catch (Exception $e) {
                 $this->_owApp->appendMessage(
@@ -685,9 +686,8 @@ class ModelController extends OntoWiki_Controller_Base
             );
             
         }
-        
-        $this->view->clearModuleCache();
-        $this->_redirect($this->config->urlBase, array('code' => 302));
+        $this->view->clearModuleCache(); //deletes selected model - always needed?
+        $this->_redirect($_SERVER['HTTP_REFERER'] , array('code' => 302));
     }
     
     /** 

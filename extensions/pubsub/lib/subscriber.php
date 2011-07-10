@@ -81,9 +81,9 @@ class Subscriber {
         // make the http post request and return true/false
         // easy to over-write to use your own http function
         if ($http_function)
-            return $http_function($this->hub_url,$post_string);
+            return $http_function($this->hub_url, $post_string);
         else
-            return $this->http($this->hub_url,$post_string);
+            return $this->http($this->hub_url, $post_string);
     }
     
     // default http function that uses curl to post to the hub endpoint
@@ -106,9 +106,9 @@ class Subscriber {
         $response = curl_exec($ch);
         $info = curl_getinfo($ch);
         
-        print_r($response);
+        //print_r($response);
         
-        // all good -- anything in the 200 range 
+        // anything in the 200 range -- all good
         if (substr($info['http_code'],0,1) == "2") {
             return $response;
         }

@@ -206,7 +206,7 @@ class ServiceController extends Zend_Controller_Action
                         array('controller' => 'model', 'action' => 'delete'),
                         array()
                     );
-                    $url->setParam('m',$resource,false);
+                    $url->setParam('model',$resource,false);
 
                     $menu->prependEntry(
                         'Delete Knowledge Base',

@@ -1387,7 +1387,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $this->_resourceQuery,
                 array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED)
             );
-
             $this->_resources = array();
             foreach ($result['bindings'] as $row) {
                 $this->_resources[] = $row[$this->_resourceVar->getName()];

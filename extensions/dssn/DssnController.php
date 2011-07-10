@@ -226,9 +226,11 @@ class DssnController extends OntoWiki_Controller_Component {
         $model       = $this->model;
 
         $this->view->placeholder('main.window.title')->set($translate->_('Network'));
-
+        
+        //determine the uri of the person, whose network (friends) are displayed
         $me = new DSSN_Foaf_Person(OntoWiki::getInstance()->selectedModel, true);
         
+         //the request can contain instructions to add a friend
         $this->_handleNewFriend($me->uri);
 
         $config = $this->_privateConfig;
@@ -260,7 +262,6 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addShownProperty(DSSN_FOAF_firstname);
             $list->addShownProperty(DSSN_FOAF_familyName);
             $list->addShownProperty(DSSN_FOAF_family_name);
-            
             $list->addShownProperty(DSSN_FOAF_status);
 
             // add the list to the session
@@ -296,8 +297,20 @@ class DssnController extends OntoWiki_Controller_Component {
     private function _handleNewFriend($me)
     {
         $store = $this->_erfurt->getStore();
+        
         if(($friendUri = $this->getParam("friend-input")) != null){
             $importIntoGraphUri = $friendUri;
+            //TODO: check. i dont use the erfurt "singleton" versioning object, but a new one, 
+            //because inside  DatagatheringController::import the erfurt versioning object is used, 
+            //which throws an error (action already started) - what about nested transactions?
+            require_once 'Erfurt/Versioning.php';
+            $versioning = new Erfurt_Versioning();
+            $versioning->startAction(array(
+                'type' => '9000',
+                'modeluri' => $importIntoGraphUri,
+                'resourceuri' => $importIntoGraphUri
+            ));
+            
             if (!$store->isModelAvailable($importIntoGraphUri)){
                 // create model
                 $graph = $store->getNewModel(
@@ -328,36 +341,34 @@ class DssnController extends OntoWiki_Controller_Component {
             require_once $this->_owApp->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
             $res = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
 
-            //get feed
+            //get feed - everything below here (until the error check) is considered optional
             $res2 = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://ns.aksw.org/hasFeed> ?feed }');
+            
+            //try to subscribe to its activity feed via its hub
+            //check if a feed is announced in the foaf profile
             $topicUrl = null;
             if(is_array($res) && !empty ($res)){
                 $topicUrl = $res[0]['feed'];
             }
             
+            //try to get the hub from the feed
             $hubUrl = null; 
             if (null !== $topicUrl) {
                 try {
                     $feed = new Zend_Feed_Atom($topicUrl);
-
+                    
                     $hubUrl = $feed->link('hub');
                     if (null == $hubUrl) {
-                        $this->_owApp->appendMessage(
-                            new OntoWiki_Message('Feed has no hub.', OntoWiki_Message::ERROR)
-                            );
-                        $this->_log('Feed has no hub: ' . $topicUrl); 
-                        return;
+                        $this->_sendResponse(false, 'Feed has no hub.', OntoWiki_Message::ERROR);
                     }
                 } catch (Exception $e) {
-                    $this->_owApp->appendMessage(
-                        new OntoWiki_Message('Failed to retrieve feed.', OntoWiki_Message::ERROR)
-                    );
-                    $this->_log('Failed to retrieve feed: ' . $e->getMessage()); 
-                    return;
+                    $this->_sendResponse(false, 'Failed to retrieve feed.', OntoWiki_Message::ERROR);
                 }
+            } else {
+                $this->_sendResponse(false, 'The added friend has no activity feed announced in his profile.', OntoWiki_Message::INFO);
             }
             
-            $success = true;
+            //subscribe at that hub for that feed
             if (null !== $hubUrl) {
                 //subscribe to its feed
                 $callbackUrl = PubsubController::getCallbackUrl();
@@ -366,19 +377,16 @@ class DssnController extends OntoWiki_Controller_Component {
                 $response = $s->subscribe($topicUrl);
                 $result = ob_get_clean();
 
-                $success = false;
                 if ($response == false) {
-                    $success = true;
+                    $this->_sendResponse(false, 'could not subscribe to the hub.', OntoWiki_Message::INFO);
                 }
             }
             
+            //error check - notify user
             $err = true;
-            if($success == false){
-                $err = true;
-                $this->_sendResponse(true,'could not subscribe with pubsubhubub.', OntoWiki_Message::INFO);
-            } else if ($res == DatagatheringController::IMPORT_OK){
+            if ($res == DatagatheringController::IMPORT_OK){
                 $err = false;
-                $this->_sendResponse(true,'Data was found for the given URI. Statements were added.', OntoWiki_Message::INFO);
+                $this->_sendResponse(true,'Data was found for the given URI. Statements were added.', OntoWiki_Message::SUCCESS);
             } else if($res == DatagatheringController::IMPORT_WRAPPER_ERR){
                 $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
             } else if($res == DatagatheringController::IMPORT_NO_DATA){
@@ -392,13 +400,12 @@ class DssnController extends OntoWiki_Controller_Component {
             } else if($res == DatagatheringController::IMPORT_WRAPPER_EXCEPTION){
                 $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
             } else {
-                var_dump($res);exit;
                 $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
             }
 
             if($err){
                 //rollback changes
-                $store->deleteModel($importIntoGraphUri);
+                $versioning->abortAction();
             }
         }
     }

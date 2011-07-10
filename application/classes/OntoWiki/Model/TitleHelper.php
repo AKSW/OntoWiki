@@ -406,8 +406,7 @@ class OntoWiki_Model_TitleHelper
             // get results for all queries
             foreach ($this->getTitleQueries($numQueries) as $currentQuery) {
                 $queryResults = $execObject->sparqlQuery($currentQuery, array('result_format' => 'extended'));
-                // var_dump((string)$currentQuery, $queryResults);
-                
+
                 if (is_array($queryResults) && isset($queryResults['head']['vars']) && !empty($queryResults['head']['vars'])) {
                     array_push($this->_titleQueryResults, $queryResults);
                 }
@@ -486,7 +485,6 @@ class OntoWiki_Model_TitleHelper
             // fetch result
             $queryResult = $titleQueryResult;
             $head        = $queryResult['head'];
-            $bindings    = $queryResult['bindings'];
             
             // check if variable is contained in query result
             if (!in_array($resourceVariable, $head['vars'])) {
@@ -497,7 +495,7 @@ class OntoWiki_Model_TitleHelper
                 $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
             }
 
-            foreach ($bindings as $row) {
+            foreach ($queryResult['bindings'] as $row) {
                 // get the resource URI
                 $currentResource = $row[$resourceVariable]['value'];
                 $currentProperty = $row['property']['value'];
