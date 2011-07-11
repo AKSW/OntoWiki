@@ -104,6 +104,18 @@ debianize:
 
 # coding standard
 
+# #### config ####
+# if severity classes were chanced aou must run 'cs-install' again
+# standard severity class they must be fulfilled to be able to commit
+severity = 7
+# intensive severity class they must not be fulfilled to be able to commit,
+# but you are able to check your code with additional coding standards
+severity_intensive = 5
+# checkt filetypes
+filetypes = php
+# path to the Ontowiki Coding Standard
+cspath = application/tests/CodeSniffer/Standards/Ontowiki
+
 cs-install: cs-enable
 	pear install PHP_CodeSniffer
 
@@ -116,12 +128,12 @@ cs-disable:
 	./application/tests/CodeSniffer/remove-hook.sh
 
 cs-check-commit:
-	hg status -n | grep '\.php$\' | xargs phpcs --report=full --severity=7 -p -s --standard=application/tests/CodeSniffer/Standards/Ontowiki
+	hg status -n | grep '\.$(filetypes)$\' | xargs --no-run-if-empty phpcs --report=full --severity=$(severity) -p -s --standard=$(cspath)
 cs-check-commit-intensive:
-	hg status -n | grep '\.php$\' | xargs phpcs --report=full --severity=5 -p -s --standard=application/tests/CodeSniffer/Standards/Ontowiki
+	hg status -n | grep '\.$(filetypes)$\' | xargs --no-run-if-empty phpcs --report=full --severity=$(severity_intensive) -p -s --standard=$(cspath)
 
 cs-check-all:
-	phpcs --report=summary --extensions=php --severity=7 -s -p --standard=application/tests/CodeSniffer/Standards/Ontowiki *
+	phpcs --report=summary --extensions=$(filetypes) --severity=$(severity) -s -p --standard=$(cspath) *
 cs-check-all-intensive:
-	phpcs --report=summary --extensions=php --severity=5 -s -p --standard=application/tests/CodeSniffer/Standards/Ontowiki *
+	phpcs --report=summary --extensions=$(filetypes) --severity=$(severity_intensive) -s -p --standard=$(cspath) *
 
