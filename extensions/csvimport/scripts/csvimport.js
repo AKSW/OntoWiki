@@ -43,7 +43,7 @@ $(document).ready(function () {
     }
         
     // set uribase value
-    if( uribase.length < 1 ){
+    if( uribase.length < 1 && typeof salt != 'undefined' ){
         uribase = RDFAUTHOR_DEFAULT_GRAPH + '/' + salt + '/';    
     }
     $("#uribase").val(uribase);

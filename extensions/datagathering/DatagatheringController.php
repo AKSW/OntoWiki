@@ -513,7 +513,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         
         $tempResult = array();
         
-        foreach ($queryResult['bindings'] as $row) {
+        foreach ($queryResult['results']['bindings'] as $row) {
             $object = isset($row['o']) ? $row['o']['value'] : null;
             
             $weight = $this->_getWeight($termsArray, $row['resourceUri']['value'], $object);
@@ -614,7 +614,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $queryResult = $store->sparqlQuery($query, array('result_format' => 'extended'));
 
         $tempResult = array();
-        foreach ($queryResult['bindings'] as $row) {
+        foreach ($queryResult['results']['bindings'] as $row) {
             if ($row['o']['type'] === 'literal') {
                 $weight = $this->_getWeight($termsArray, $row['uri']['value'], $row['o']['value']);
             } else {
@@ -1499,7 +1499,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $store->deleteModel($tempModelUri);
 
         $retVal = array();
-        foreach ($sparqlResult['bindings'] as $row) {
+        foreach ($sparqlResult['results']['bindings'] as $row) {
             if (!isset($retVal[$row['s']['value']])) {
                 $retVal[$row['s']['value']] = array();
             }

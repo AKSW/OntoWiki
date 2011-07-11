@@ -1020,7 +1020,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         
         $this->getResults();
 
-        $result = $this->_results['bindings'];
+        $result = $this->_results['results']['bindings'];
         
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
 
@@ -1204,7 +1204,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         
 
         $properties = array();
-        foreach ($results['bindings'] as $row) {
+        foreach ($results['results']['bindings'] as $row) {
             $properties[] = array('uri' => $row['resourceUri']['value']);
         }
 
@@ -1263,7 +1263,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         );
 
         $values = array();
-        foreach ($results['bindings'] as $row) {
+        foreach ($results['results']['bindings'] as $row) {
             $values[] = $row['obj'];
         }
 
@@ -1388,7 +1388,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED)
             );
             $this->_resources = array();
-            foreach ($result['bindings'] as $row) {
+            foreach ($result['results']['bindings'] as $row) {
                 $this->_resources[] = $row[$this->_resourceVar->getName()];
             }
             $this->_resourcesUptodate = true;

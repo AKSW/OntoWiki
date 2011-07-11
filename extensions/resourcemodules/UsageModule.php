@@ -42,6 +42,9 @@ class UsageModule extends OntoWiki_Module
      */
     public function init()
     {
+    }
+
+    private function _initQuery() {
         // instances (subjects)
         $this->subjectQuery = new Erfurt_Sparql_SimpleQuery();
         $this->subjectQuery->setProloguePart('SELECT DISTINCT ?resourceUri')
@@ -65,11 +68,16 @@ class UsageModule extends OntoWiki_Module
 
     public function shouldShow()
     {
-        if (!empty($this->_subjects) || !empty($this->_objects)) {
-            return true;
+        if ($this->_privateConfig->show->usage == true) {
+            $this->_initQuery();
+            if (!empty($this->_subjects) || !empty($this->_objects)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     public function getTitle()

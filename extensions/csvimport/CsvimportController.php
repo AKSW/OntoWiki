@@ -24,6 +24,7 @@ class CsvimportController extends OntoWiki_Controller_Component
         parent::init();
 
         $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/csvimport.js');
+        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/rdfa.object.js');
     }
 
     public function indexAction()
