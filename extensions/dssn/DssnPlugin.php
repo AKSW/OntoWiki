@@ -2,6 +2,11 @@
 class DssnPlugin extends OntoWiki_Plugin
 {
     private $_externalActivitiesModel = null;
+    
+    /**
+     *
+     * @var Erfurt_Store
+     */
     private $_store = null;
     
     public function init()
@@ -39,6 +44,15 @@ class DssnPlugin extends OntoWiki_Plugin
             } catch (Exception $e) {
                 $this->_log('Failed adding external activity: ' . $activity);
             }
+        }
+    }
+    
+    public function onPingReceived($event)
+    {
+        file_put_contents("/tmp/newPingback.txt", time());
+        if($event->p == DSSN_FOAF_knows){
+            $model = $this->_store->getModel($event->o);
+            $model->addStatement($event->o, DSSN_FOAF_knows, array('type'=>'uri', 'value'=> $event->s));
         }
     }
     

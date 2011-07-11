@@ -38,7 +38,7 @@ class PingbackController extends OntoWiki_Controller_Component {
     }
 
     /**
-     * send a ping
+     * receive a ping API
      * 
      * @param string $sourceUri The source URI
      * @param string $targetUri The target URI
@@ -63,6 +63,7 @@ class PingbackController extends OntoWiki_Controller_Component {
                     'timeout' => 30
                 ));
         $client->setHeaders('Accept', 'application/rdf+xml');
+        $client->setHeaders('Content-Type', 'application/rdf+xml');
         try {
             $response = $client->request();
         } catch (Exception $e) {
@@ -188,7 +189,7 @@ class PingbackController extends OntoWiki_Controller_Component {
         if ($this->_targetGraph === null) {
             return false;
         }
-
+                
         $store = Erfurt_App::getInstance()->getStore();
 
         $sql = 'INSERT INTO ow_pingback_pingbacks (source, target, relation) VALUES ("' . $s . '", "' . $o . '", "' . $p . '")';
@@ -211,9 +212,9 @@ class PingbackController extends OntoWiki_Controller_Component {
         }
         
         $event = new Erfurt_Event('onPingReceived');
-        $event->s = "";
-        $event->p = "";
-        $event->o = "";
+        $event->s = $s;
+        $event->p = $p;
+        $event->o = $o;
         $event->trigger();
 
         return true;

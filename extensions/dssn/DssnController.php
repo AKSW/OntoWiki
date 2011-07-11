@@ -278,6 +278,8 @@ class DssnController extends OntoWiki_Controller_Component {
         $this->addModuleContext('main.window.dssn.network');
     }
     
+    
+    
     /**
      * @return DSSN_Foaf_Person the current me 
      */
@@ -386,7 +388,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $err = true;
             if ($res == DatagatheringController::IMPORT_OK){
                 $err = false;
-                $this->_sendResponse(true,'Data was found for the given URI. Statements were added.', OntoWiki_Message::SUCCESS);
+                $this->_sendResponse(true, 'Your friend has been successfully added.', OntoWiki_Message::SUCCESS);
             } else if($res == DatagatheringController::IMPORT_WRAPPER_ERR){
                 $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
             } else if($res == DatagatheringController::IMPORT_NO_DATA){

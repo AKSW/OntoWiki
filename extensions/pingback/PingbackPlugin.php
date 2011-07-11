@@ -183,7 +183,7 @@ class PingbackPlugin extends OntoWiki_Plugin
         }
 	    
 	    // 2. Check for (X)HTML Link element, if target has content type text/html
-	    // TODO Fetch only the first X bytes...???
+	// TODO Fetch only the first X bytes...???
         $client = Erfurt_App::getInstance()->getHttpClient($targetUri, array(
             'maxredirects'  => 0,
             'timeout'       => 3
@@ -203,8 +203,8 @@ class PingbackPlugin extends OntoWiki_Plugin
             }
         }
 	    
-	    // 3. Check RDF/XML
-	    require_once 'Zend/Http/Client.php';
+        // 3. Check RDF/XML
+        require_once 'Zend/Http/Client.php';
         $client = Erfurt_App::getInstance()->getHttpClient($targetUri, array(
             'maxredirects'  => 10,
             'timeout'       => 3
@@ -234,9 +234,7 @@ class PingbackPlugin extends OntoWiki_Plugin
             }
         }
         
-        
-	    
-	    return null;
+        return null;
 	}
 	
 	protected function _logError($msg) 
@@ -259,29 +257,34 @@ class PingbackPlugin extends OntoWiki_Plugin
 	
 	protected function _sendPingback($sourceUri, $targetUri) 
 	{
-		$pingbackServiceUrl = $this->_discoverPingbackServer($targetUri);
-		if ($pingbackServiceUrl === null) {
-		    $this->_logInfo('No Pingback server discovered');
-		    return;
-		}
-		
-        $xml = '<?xml version="1.0"?><methodCall><methodName>pingback.ping</methodName><params>' .
-                '<param><value><string>' . $sourceUri . '</string></value></param>' .
-                '<param><value><string>' . $targetUri . '</string></value></param>' .
-                '</params></methodCall>';
-                        
-        // TODO without curl? with zend?
-        $rq = curl_init();
-        curl_setopt($rq, CURLOPT_URL, $pingbackServiceUrl);
-        curl_setopt($rq, CURLOPT_POST, 1);
-        curl_setopt($rq, CURLOPT_POSTFIELDS, $xml);
-		curl_setopt($rq, CURLOPT_FOLLOWLOCATION, false); 
-		curl_setopt($rq, CURLOPT_RETURNTRANSFER, true);
-        $res = curl_exec($rq);
-        curl_close($rq);
-		$this->_logInfo('Pingback Result for ('.$pingbackServiceUrl.', ' . $xml . ') - ' . $res);
-		
-		return true;
+            $pingbackServiceUrl = $this->_discoverPingbackServer($targetUri);
+            if ($pingbackServiceUrl === null) {
+                $this->_logInfo('No Pingback server discovered');
+                return;
+            }
+
+            $xml = '<?xml version="1.0"?><methodCall><methodName>pingback.ping</methodName><params>' .
+                    '<param><value><string>' . $sourceUri . '</string></value></param>' .
+                    '<param><value><string>' . $targetUri . '</string></value></param>' .
+                    '</params></methodCall>';
+
+            // TODO without curl? with zend?
+            $rq = curl_init();
+            curl_setopt($rq, CURLOPT_URL, $pingbackServiceUrl);
+            curl_setopt($rq, CURLOPT_POST, 1);
+            curl_setopt($rq, CURLOPT_POSTFIELDS, $xml);
+            curl_setopt($rq, CURLOPT_FOLLOWLOCATION, false); 
+            curl_setopt($rq, CURLOPT_RETURNTRANSFER, true);
+            $synchroneous = false;
+            if(!$synchroneous){
+                curl_setopt($rq, CURLOPT_TIMEOUT, 1);
+            }
+            $res = curl_exec($rq);
+            if($synchroneous){
+                $this->_logInfo('Pingback Result for ('.$pingbackServiceUrl.', ' . $xml . ') - ' . $res);
+            }
+            curl_close($rq);
+            return true;
 	}
 	
 	private function _isLinkedDataUri($uri)

@@ -492,10 +492,10 @@ class OntoWiki_Model_TitleHelper
             }
             if (defined('_OWDEBUG')) {
                 $logger = OntoWiki::getInstance()->logger;
-                $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($queryResult['bindings']));
+                $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($queryResult['results']['bindings']));
             }
 
-            foreach ($queryResult['bindings'] as $row) {
+            foreach ($queryResult['results']['bindings'] as $row) {
                 // get the resource URI
                 $currentResource = $row[$resourceVariable]['value'];
                 $currentProperty = $row['property']['value'];
