@@ -26,6 +26,12 @@ class DssnController extends OntoWiki_Controller_Component {
 
         // check for model etc.
         $this->setupWiki();
+        
+        //check if current model contains a foaf profile
+        $this->getMe();
+        if(self::$me == null){
+            throw new OntoWiki_Exception("a model must be selected and it must contain a foaf profile");
+        }
 
         // create the navigation tabs
         OntoWiki_Navigation::reset();
@@ -227,11 +233,7 @@ class DssnController extends OntoWiki_Controller_Component {
 
         $this->view->placeholder('main.window.title')->set($translate->_('Network'));
         
-        //determine the uri of the person, whose network (friends) are displayed
-        $me = new DSSN_Foaf_Person(OntoWiki::getInstance()->selectedModel, true);
-        
-         //the request can contain instructions to add a friend
-        $this->_handleNewFriend($me->uri);
+        $this->addfriendAction(); // is a stand alone action, but we include it also here (so its functionality is imported)
 
         $config = $this->_privateConfig;
         $store  = $this->_owApp->erfurt->getStore();
@@ -251,7 +253,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $list->addTypeFilter(DSSN_FOAF_Person);
 
             //restrict to persons that i know
-            $list->addFilter(DSSN_FOAF_knows, true, "knows", "equals", $me->uri, null, 'uri');
+            $list->addFilter(DSSN_FOAF_knows, true, "knows", "equals", self::$me->uri, null, 'uri');
 
             //get properties
             $list->addShownProperty(DSSN_FOAF_depiction);
@@ -281,28 +283,38 @@ class DssnController extends OntoWiki_Controller_Component {
     
     
     /**
-     * @return DSSN_Foaf_Person the current me 
+     * try to determine who $me (the current foaf:Person) is
+     * 
+     * will only work if the user selected a model before, 
+     * otherwise we can not make assumptions which model is the correct one 
+     * (there could be many (imported) foaf profiles)
+     * 
+     * @return DSSN_Foaf_Person the current me or null
      */
     public static function getMe(){
+        if(!isset(OntoWiki::getInstance()->selectedModel)){
+            return null;
+        }
         if(self::$me == null){
             self::$me = new DSSN_Foaf_Person(OntoWiki::getInstance()->selectedModel, true);
         } 
         return self::$me;
     }
-
     
     /**
-     * me is 
-     * @param type $me (is not the new friend, but really $self, to know who to connect the new friend to)
-     * @return type 
+     * import a linked data enabled web id profile into a local graph and connect it to $me
+     * 
+     * API method
+     * 
+     * @param DSSN_Foaf_Person $me
+     * @param string $friendUri
+     * @param Erfurt_Store $store
+     * @param Erfurt_Rdf_Model $graph 
      */
-    private function _handleNewFriend($me)
-    {
-        $store = $this->_erfurt->getStore();
+    public static function handleNewFriend($me, $friendUri, $store, $meGraph){
         
-        if(($friendUri = $this->getParam("friend-input")) != null){
-            $importIntoGraphUri = $friendUri;
-            //TODO: check. i dont use the erfurt "singleton" versioning object, but a new one, 
+        $importIntoGraphUri = $friendUri;
+        //TODO: check. i dont use the erfurt "singleton" versioning object, but a new one, 
             //because inside  DatagatheringController::import the erfurt versioning object is used, 
             //which throws an error (action already started) - what about nested transactions?
             require_once 'Erfurt/Versioning.php';
@@ -312,6 +324,7 @@ class DssnController extends OntoWiki_Controller_Component {
                 'modeluri' => $importIntoGraphUri,
                 'resourceuri' => $importIntoGraphUri
             ));
+            $ow = OntoWiki::getInstance();
             
             if (!$store->isModelAvailable($importIntoGraphUri)){
                 // create model
@@ -321,39 +334,42 @@ class DssnController extends OntoWiki_Controller_Component {
                     Erfurt_Store::MODEL_TYPE_OWL,
                     false
                 );
+                
+                $config = $ow->config;
                 //hide
-                $graph->setOption($this->_config->sysont->properties->hidden, array(array(
+                $graph->setOption($config->sysont->properties->hidden, array(array(
                             'value'    => 'true',
                             'type'     => 'literal',
                             'datatype' => EF_XSD_BOOLEAN
                         )));
                 //declare import of new model to current
-                //$store->addStatement($this->_owApp->selectedModel->getModelIri(), $me,  EF_OWL_NS.'imports', array('value'=>$importIntoGraphUri, 'type'=>'uri'));
-                $this->_owApp->selectedModel->setOption($this->_config->sysont->properties->hiddenImports, array(array(
-                            'value'    => $friendUri,
+                $meGraph->setOption($config->sysont->properties->hiddenImports, array(array(
+                            'value'    => $importIntoGraphUri,
                             'type'     => 'uri'
-                        )), false); // do not replace
+                        )), false); // false -> do not replace other imports
                 
                 
                 //connect me to that person
-                $store->addStatement($this->_owApp->selectedModel->getModelIri(), $me, DSSN_FOAF_knows, array('value'=>$friendUri, 'type'=>'uri'));
+                $store->addStatement($meGraph->getModelIri(), $me->uri, DSSN_FOAF_knows, array('value'=>$friendUri, 'type'=>'uri'));
             } 
                 
             //fill new model via linked data
-            require_once $this->_owApp->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
-            $res = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
+            require_once $ow->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
+            $importResult = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
 
             //get feed - everything below here (until the error check) is considered optional
-            $res2 = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://ns.aksw.org/hasFeed> ?feed }');
+            $feedQueryResult = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://ns.aksw.org/hasFeed> ?feed }');
             
             //try to subscribe to its activity feed via its hub
             //check if a feed is announced in the foaf profile
             $topicUrl = null;
-            if(is_array($res) && !empty ($res)){
-                $topicUrl = $res[0]['feed'];
+            if(is_array($feedQueryResult) && !empty ($feedQueryResult)){
+                $topicUrl = $feedQueryResult[0]['feed'];
             }
             
             //try to get the hub from the feed
+            require_once $ow->extensionManager->getExtensionPath("pubsub") . DIRECTORY_SEPARATOR . "PubsubController.php";
+            $optionals = PubsubController::SUBSCRIPTION_OK;
             $hubUrl = null; 
             if (null !== $topicUrl) {
                 try {
@@ -361,13 +377,13 @@ class DssnController extends OntoWiki_Controller_Component {
                     
                     $hubUrl = $feed->link('hub');
                     if (null == $hubUrl) {
-                        $this->_sendResponse(false, 'Feed has no hub.', OntoWiki_Message::ERROR);
+                        $optionals = PubsubController::SUBSCRIPTION_NO_HUB;
                     }
                 } catch (Exception $e) {
-                    $this->_sendResponse(false, 'Failed to retrieve feed.', OntoWiki_Message::ERROR);
+                    $optionals = PubsubController::SUBSCRIPTION_FEED_UNREACHEABLE;
                 }
             } else {
-                $this->_sendResponse(false, 'The added friend has no activity feed announced in his profile.', OntoWiki_Message::INFO);
+                $optionals = PubsubController::SUBSCRIPTION_NO_FEED;
             }
             
             //subscribe at that hub for that feed
@@ -380,38 +396,76 @@ class DssnController extends OntoWiki_Controller_Component {
                 $result = ob_get_clean();
 
                 if ($response == false) {
-                    $this->_sendResponse(false, 'could not subscribe to the hub.', OntoWiki_Message::INFO);
+                    $optionals = PubsubController::SUBSCRIPTION_FAILED;
                 }
             }
             
+            if($importResult !== DatagatheringController::IMPORT_OK){
+                //rollback changes
+                $versioning->abortAction();
+            }
+            
+            return array('mandatories'=>$importResult, 'optionals'=>$optionals);
+    }
+
+    
+    /**
+     * process a friend add with UI
+     * @param type $me (is not the new friend, but really $self, to know who to connect the new friend to)
+     * @return type 
+     */
+    public function addfriendAction()
+    {
+        $me = self::getMe();
+        $store = $this->_erfurt->getStore();
+        
+        if(($friendUri = $this->getParam("friendUrl")) != null){
+                        
+            $ret = self::handleNewFriend($me, $friendUri, $store, $this->_owApp->selectedModel);
+            
             //error check - notify user
-            $err = true;
-            if ($res == DatagatheringController::IMPORT_OK){
-                $err = false;
+            $mandatories = $ret['mandatories'];
+            if ($mandatories == DatagatheringController::IMPORT_OK){
                 $this->_sendResponse(true, 'Your friend has been successfully added.', OntoWiki_Message::SUCCESS);
-            } else if($res == DatagatheringController::IMPORT_WRAPPER_ERR){
+            } else if($mandatories == DatagatheringController::IMPORT_WRAPPER_ERR){
                 $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
-            } else if($res == DatagatheringController::IMPORT_NO_DATA){
+            } else if($mandatories == DatagatheringController::IMPORT_NO_DATA){
                 $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
-            } else if($res == DatagatheringController::IMPORT_WRAPPER_INSTANCIATION_ERR){
+            } else if($mandatories == DatagatheringController::IMPORT_WRAPPER_INSTANCIATION_ERR){
                 $this->_sendResponse(false, 'could not get wrapper instance.', OntoWiki_Message::ERROR);
                 //$this->_response->setException(new OntoWiki_Http_Exception(400));
-            } else if($res == DatagatheringController::IMPORT_NOT_EDITABLE){
+            } else if($mandatories == DatagatheringController::IMPORT_NOT_EDITABLE){
                 $this->_sendResponse(false, 'you cannot write to this model.', OntoWiki_Message::ERROR);
                 //$this->_response->setException(new OntoWiki_Http_Exception(403));
-            } else if($res == DatagatheringController::IMPORT_WRAPPER_EXCEPTION){
+            } else if($mandatories == DatagatheringController::IMPORT_WRAPPER_EXCEPTION){
                 $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
             } else {
                 $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
             }
 
-            if($err){
-                //rollback changes
-                $versioning->abortAction();
+            $optionals = $ret['optionals'];
+            if($optionals % 2 !== 1){
+                if($optionals == PubsubController::SUBSCRIPTION_NO_HUB){
+                    $this->_sendResponse(false, 'Feed has no hub.', OntoWiki_Message::ERROR);
+                } else if($optionals == PubsubController::SUBSCRIPTION_NO_FEED){
+                    $this->_sendResponse(false, 'The added friend has no activity feed.', OntoWiki_Message::INFO);
+                } else if($optionals == PubsubController::SUBSCRIPTION_FEED_UNREACHEABLE){
+                    $this->_sendResponse(false, 'Failed to retrieve feed.', OntoWiki_Message::ERROR);
+                } else if($optionals == PubsubController::SUBSCRIPTION_FAILED){
+                    $this->_sendResponse(false, 'could not subscribe to the hub.', OntoWiki_Message::ERROR);
+                } else {
+                    $this->_sendResponse(false, 'unexpected reponse from PubsubController.', OntoWiki_Message::ERROR);
+                }
+                $this->_sendResponse(false, 'You will get no auto-updates from this friend.', OntoWiki_Message::INFO);
             }
         }
     }
     
+    
+    /**
+     * import a model again to get the newest updates
+     * @param string $uri 
+     */
     public static function reloadFriendModel($uri){
         DatagatheringController::import($uri, $uri, $uri, true, array(), array(), 'linkeddata', 'none', 'update');
     }

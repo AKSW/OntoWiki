@@ -216,6 +216,7 @@ class PingbackController extends OntoWiki_Controller_Component {
         $event->p = $p;
         $event->o = $o;
         $event->trigger();
+        file_put_contents("/tmp/newPingback.txt", date('h:i:s').' ping-event send in pingController '.__FILE__, FILE_APPEND);
 
         return true;
     }

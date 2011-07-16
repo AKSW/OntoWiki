@@ -8,6 +8,15 @@ class PubsubController extends OntoWiki_Controller_Component
     const CHALLENGE_SALT        = 'csaiojwef89456nucekljads8tv589ncefn4c5m90ikdf9df5s';
     const TEST_CHALLENGE        = 'TestChallenge'; 
     
+    //constants not used here (but in DSSNController) 
+    //TODO: return them
+    //use $ret % 2 == 1 to check if all worked
+    const SUBSCRIPTION_OK = 1;
+    const SUBSCRIPTION_FAILED = 2;
+    const SUBSCRIPTION_NO_FEED = 4;
+    const SUBSCRIPTION_FEED_UNREACHEABLE = 6;
+    const SUBSCRIPTION_NO_HUB = 8;
+    
     public function testAction()
     {
         $this->_helper->viewRenderer->setNoRender();

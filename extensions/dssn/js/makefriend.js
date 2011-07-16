@@ -5,20 +5,27 @@ $(document).ready(function() {
         e.preventDefault();
         $("#makefriend-input").attr("disabled", true); 
         
+        //make ajax request and show spinner
         var orig = $("#makefriend-input").css("background");
         $("#makefriend-input").css("background", "url(\""+urlBase+"extensions/themes/silverblue/images/spinner.gif\") center left no-repeat");
-        //make ajax request and show spinner
-        var loadurl = urlBase+"dssn/network?friend-input="+$("#makefriend-input").val();
+        var loadurl = urlBase+"dssn/addfriend?friendUrl="+$("#makefriend-input").val();
         $("#makefriend-input").val(""); //delete input
+        function abort(){
+            $("#makefriend-input").css("background", orig); //restore
+            $("#makefriend-input").attr("disabled", false); 
+        }
         $.ajax(
             {
                 url: loadurl, 
                 success: function(data){
+                    if(data != ""){
+                        abort()
+                    } else {
                     window.location = urlBase+"dssn/network"; //reload
+                    }
                 },
-                error: function(data){
-                    $("#makefriend-input").css("background", orig);
-                    $("#makefriend-input").attr("disabled", false); 
+                error: function(){
+                    abort();
                 }
             }
         );

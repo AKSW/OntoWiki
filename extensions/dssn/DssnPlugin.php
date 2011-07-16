@@ -49,9 +49,10 @@ class DssnPlugin extends OntoWiki_Plugin
     
     public function onPingReceived($event)
     {
-        file_put_contents("/tmp/newPingback.txt", time());
+        file_put_contents("/tmp/newPingback.txt", date('h:i:s').' ping-event received in plugin '.__FILE__, FILE_APPEND);
         if($event->p == DSSN_FOAF_knows){
             $model = $this->_store->getModel($event->o);
+            DssnController::handleNewFriend($event->o, $event->s, $this->_store, $this->_store->getModel($event->o));
             $model->addStatement($event->o, DSSN_FOAF_knows, array('type'=>'uri', 'value'=> $event->s));
         }
     }
