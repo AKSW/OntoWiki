@@ -161,7 +161,7 @@ class PingbackController extends OntoWiki_Controller_Component {
             }
         }
 
-        // 6. Iterate through pingback triples candidates and add those, wo are not already registered.
+        // 6. Iterate through pingback triples candidates and add those, who are not already registered.
         $added = false;
         foreach ($foundPingbackTriples as $triple) {
             if (!$this->_pingbackExists($triple['s'], $triple['p'], $triple['o'])) {
@@ -216,7 +216,6 @@ class PingbackController extends OntoWiki_Controller_Component {
         $event->p = $p;
         $event->o = $o;
         $event->trigger();
-        file_put_contents("/tmp/newPingback.txt", date('h:i:s').' ping-event send in pingController '.__FILE__, FILE_APPEND);
 
         return true;
     }
