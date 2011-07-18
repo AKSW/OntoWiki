@@ -14,6 +14,16 @@ default:
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
 	@echo "     'make install' (-> make directories, zend and libraries)"
 	@echo "     'make clean' (deletes all log and cache files)"
+	@echo "     'make cs-install' (install CodeSniffer)"
+	@echo "     'make cs-uninstall' (uninstall CodeSniffer)"
+	@echo "     'make cs-enable' (enable CodeSniffer to check code before every commit)"
+	@echo "     'make cs-disable' (disable CodeSniffer code checking)"
+	@echo "     'make cs-check-commit' (run pre ciommit code checking manually)"
+	@echo "     'make cs-check-commit-intensive' (run pre ciommit code checking"
+	@echo "             manually with stricter coding standard)"
+	@echo "     'make cs-check-all' (run complete code checking)"
+	@echo "     'make cs-check-commit-intensive' (run complete code checking with"
+	@echo "             stricter coding standard)"
 
 
 # top level target
@@ -93,3 +103,38 @@ debianize:
 	rm Makefile
 	@echo "now do: cp -R application/scripts/debian debian"
 
+
+# coding standard
+
+# #### config ####
+# if severity classes were chanced aou must run 'cs-install' again
+# standard severity class they must be fulfilled to be able to commit
+severity = 7
+# intensive severity class they must not be fulfilled to be able to commit,
+# but you are able to check your code with additional coding standards
+severity_intensive = 5
+# checkt filetypes
+filetypes = php
+# path to the Ontowiki Coding Standard
+cspath = application/tests/CodeSniffer/Standards/Ontowiki
+
+cs-install: cs-enable
+	pear install PHP_CodeSniffer
+
+cs-uninstall: cs-disable
+
+cs-enable:
+	./application/tests/CodeSniffer/add-hook.sh
+
+cs-disable:
+	./application/tests/CodeSniffer/remove-hook.sh
+
+cs-check-commit:
+	hg status -nam | grep '\.$(filetypes)$\' | xargs --no-run-if-empty phpcs --report=full --severity=$(severity) -p -s --standard=$(cspath)
+cs-check-commit-intensive:
+	hg status -nam | grep '\.$(filetypes)$\' | xargs --no-run-if-empty phpcs --report=full --severity=$(severity_intensive) -p -s --standard=$(cspath)
+
+cs-check-all:
+	phpcs --report=summary --extensions=$(filetypes) --severity=$(severity) -s -p --standard=$(cspath) *
+cs-check-all-intensive:
+	phpcs --report=summary --extensions=$(filetypes) --severity=$(severity_intensive) -s -p --standard=$(cspath) *

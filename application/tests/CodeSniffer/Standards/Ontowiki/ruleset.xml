@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<ruleset name="Ontowiki">
+ <description>A Ontowiki coding standard.</description>
+ 
+ <exclude-pattern>*/ARC2/*</exclude-pattern>
+ <exclude-pattern>*/Zend/*</exclude-pattern>
+ <exclude-pattern>*/Erfurt/*</exclude-pattern>
+ 
+ <rule ref="Zend"/>
+
+
+<!-- #################### strict #################### -->
+<!-- spaces in functions calls -->
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing.SpaceBeforeComma">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing.NoSpaceAfterComma">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing.NoSpaceBeforeEquals">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing.NoSpaceAfterEquals">
+  <severity>7</severity>
+ </rule>
+
+<!-- braces in functions -->
+ <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceSpacing">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceIndent">
+  <severity>7</severity>
+ </rule>
+
+<!-- shortopentags in php files -->
+ <rule ref="Generic.PHP.DisallowShortOpenTag.Found">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Generic.PHP.DisallowShortOpenTag.EchoFound">
+  <severity>7</severity>
+ </rule>
+
+<!-- class declaration -->
+ <rule ref="PEAR.Classes.ClassDeclaration.OpenBraceNewLine">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.Classes.ClassDeclaration.OpenBraceWrongLine">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.Classes.ClassDeclaration.OpenBraceNotAlone">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.Classes.ClassDeclaration.SpaceBeforeBrace">
+  <severity>7</severity>
+ </rule>
+
+<!-- control structures -->
+ <rule ref="PEAR.ControlStructures.ControlSignature">
+  <severity>7</severity>
+ </rule>
+
+<!-- function calls signature -->
+ <rule ref="PEAR.Functions.FunctionCallSignature.SpaceBeforeOpenBracket">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.Functions.FunctionCallSignature.SpaceAfterCloseBracket">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.Functions.FunctionCallSignature.SpaceBeforeCloseBracket">
+  <severity>7</severity>
+ </rule>
+ <!-- multi-line function calls -->
+ <rule ref="PEAR.Functions.FunctionCallSignature.Indent">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.Functions.FunctionCallSignature.CloseBracketLine">
+  <severity>7</severity>
+ </rule>
+ 
+<!-- function default value -->
+ <rule ref="PEAR.Functions.ValidDefaultValue.NotAtEnd">
+  <severity>7</severity>
+ </rule>
+
+<!-- scope closing -->
+ <rule ref="PEAR.WhiteSpace.ScopeClosingBrace.Line">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.WhiteSpace.ScopeClosingBrace.BreakIdent">
+  <severity>7</severity>
+ </rule>
+ <rule ref="PEAR.WhiteSpace.ScopeClosingBrace.Indent">
+  <severity>7</severity>
+ </rule>
+
+<!-- function in global scope (warning) -->
+ <rule ref="Squiz.Functions.GlobalFunction.Found">
+  <severity>7</severity>
+ </rule>
+ 
+<!-- closing tag in php files -->
+ <rule ref="Zend.Files.ClosingTag.NotAllowed">
+  <severity>7</severity>
+  <exclude-pattern>*/Sniffs/*</exclude-pattern>
+ </rule>
+ 
+<!-- camel caps in variables -->
+ <rule ref="Zend.NamingConventions.ValidVariableName.NotCamelCaps">
+  <severity>7</severity>
+ </rule>
+ <!-- warning -->
+ <rule ref="Zend.NamingConventions.ValidVariableName.ContainsNumbers">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Zend.NamingConventions.ValidVariableName.MemberVarNotCamelCaps">
+  <severity>7</severity>
+ </rule>
+ <!-- warning -->
+ <rule ref="Zend.NamingConventions.ValidVariableName.MemberVarContainsNumbers">
+  <severity>7</severity>
+ </rule>
+ <rule ref="Zend.NamingConventions.ValidVariableName.StringVarNotCamelCaps">
+  <severity>7</severity>
+ </rule>
+ <!-- warning -->
+ <rule ref="Zend.NamingConventions.ValidVariableName.StringVarContainsNumbers">
+  <severity>7</severity>
+ </rule>
+ 
+<!-- underscore in variables -->
+ <rule ref="Zend.NamingConventions.ValidVariableName.PublicHasUnderscore">
+  <severity>7</severity>
+ </rule> 
+ <rule ref="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore">
+  <severity>7</severity>
+ </rule>
+ 
+<!-- line-length -->
+ <rule ref="Generic.Files.LineLength">
+  <severity>7</severity>
+  <properties>
+   <property name="lineLimit" value="100"/>
+   <property name="absoluteLineLimit" value="120"/>
+  </properties>
+ </rule>
+ <rule ref="Generic.Files.LineLength.MaxExceeded">
+  <severity>7</severity>
+ </rule>
+ 
+<!-- #################### loose #################### -->
+
+<!-- tab used for indentation -->
+ <rule ref="Generic.WhiteSpace.DisallowTabIndent.TabsUsed">
+  <severity>5</severity>
+ </rule>
+ 
+ <!-- line-length (warning) -->
+ <rule ref="Generic.Files.LineLength.TooLong">
+  <severity>5</severity>
+ </rule>
+ 
+  <!-- Use Unix newlines -->
+ <rule ref="Generic.Files.LineEndings">
+  <properties>
+   <property name="eolChar" value="\n"/>
+  </properties>
+ </rule>
+ <rule ref="Generic.Files.LineEndings.InvalidEOLChar">
+  <severity>5</severity>
+ </rule>
+ 
+ <!-- #################### Ontowiki #################### -->
+ <!--<rule ref="Classes.ClassFilePath.NoMatch">
+  <severity>5</severity>
+ </rule>-->
+
+</ruleset>

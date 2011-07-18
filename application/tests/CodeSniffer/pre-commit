@@ -1,0 +1,58 @@
+#!/bin/bash
+################################################################################
+#
+# Pre commit hook to run phpcs and abort commits on failures or warnings
+#
+# To use, copy or link to the .git/hooks folder of your repository.
+#
+# This simple script:
+# 1. Determins the width of the current console, so the report is full-width
+# 2. Determins which commit to diff against (to know what is being commited) -
+# using a fictional commit if it's the first commit.
+# 3. Skip files which don't exist or are not php files
+# 4. If the commit is multiple files run in summary mode, otherwise show details
+#
+# If phpcs returns a none-zero value (which means errors or warnings where found)
+# The commit will be aborted. A developer can override this pre-commit hook and
+# thus still commit despite the errors or warnings raised with the command:
+#
+# git commit --no-verify <same args as before>
+#
+# Licensed under The MIT License
+# Redistributions of files must retain the above copyright notice.
+#
+# @copyright Copyright (c) 2010, Andy Dawson
+# @link www.ad7six.com
+# @link pear.php.net/package/PHP_CodeSniffer
+# @package cakephp-codesniffs
+# @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+#
+################################################################################
+
+width=80;
+
+commitFiles=`hg status -nam`
+
+args="-n -p -s --report-width=$width --severity=7 --standard=application/tests/CodeSniffer/Standards/Ontowiki"
+
+phpFiles="";
+phpFilesCount=0;
+for f in $commitFiles; do
+    if [[ ! -e $f ]]; then
+        continue;
+    fi
+    if [[ $f == *.php ]]; then
+        phpFilesCount=$((phpFilesCount+1))
+        phpFiles="$phpFiles $f"
+    fi
+done;
+
+if [[ $phpFilesCount = 0 ]]; then
+    exit 0;
+fi
+
+if [[ $phpFilesCount > 2 ]]; then
+    args="$args --report=summary"
+fi
+
+phpcs $args $phpFiles
