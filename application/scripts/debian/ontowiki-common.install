@@ -16,5 +16,3 @@ libraries/RDFauthor/img usr/share/ontowiki/libraries/RDFauthor
 libraries/RDFauthor/libraries usr/share/ontowiki/libraries/RDFauthor
 libraries/RDFauthor/src usr/share/ontowiki/libraries/RDFauthor
 
-debian/conf/*   etc/ontowiki
-debian/sql/*    usr/share/dbconfig-common/data/ontowiki/

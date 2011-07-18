@@ -100,7 +100,7 @@ class AjaxUpdateTable {
 		//TODO only keep as long as mysql is broken
 		$vars = self::nicenVars($vars);
 
-			$bindings= $jsonArray['bindings'];
+			$bindings= $jsonArray['results']['bindings'];
 			
 			
 			if(count($bindings) == 0){

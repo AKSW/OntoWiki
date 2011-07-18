@@ -486,7 +486,7 @@ class OntoWiki_Model_TitleHelper
             // fetch result
             $queryResult = $titleQueryResult;
             $head        = $queryResult['head'];
-            $bindings    = $queryResult['bindings'];
+            $bindings    = $queryResult['results']['bindings'];
             
             // check if variable is contained in query result
             if (!in_array($resourceVariable, $head['vars'])) {

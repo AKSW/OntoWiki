@@ -1,8 +1,3 @@
-/etc/ontowiki/config.ini  /usr/share/ontowiki/config.ini
-/etc/ontowiki/apache.conf /etc/apache2/conf.d/ontowiki
-/var/log/ontowiki         /usr/share/ontowiki/logs
-/var/cache/ontowiki       /usr/share/ontowiki/cache
-
 /usr/share/php/libzend-framework-php/Zend /usr/share/ontowiki/libraries/Zend
 
 /usr/share/php/markdown.php /usr/share/ontowiki/extensions/markdown/parser/markdown.php

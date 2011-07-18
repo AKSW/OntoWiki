@@ -23,14 +23,51 @@
     <fieldset class="activeForm" id="upload">
         <div>
             <label class="checkboxradio" for="r02">
-                <input type="radio" class="radio" name="importMode" id="r02" value="column" checked="checked" />
                 <?php echo $this->_('Tabular data (uses property mapping)') ?>
+                <input type="radio"
+                       class="radio"
+                       name="importMode"
+                       id="r02"
+                       value="tabular"
+                       onclick="$('#configure_tabularimport_container').toggle()" />
             </label>
+
+
+            <div id="configure_tabularimport_container"
+                 style="display: none;
+                        border: 1px dotted #ababab;
+                        background-color: #bcbcbc;
+                        padding-left: 10px;
+                        margin-left:27%;
+                        margin-right: 20%">
+                 <h5><?php echo $this->_('Configure tabular import') ?></h5>
+                 <br>
+
+                 <label class="checkboxradio" for="r03">
+                     <?php echo $this->_('Use default Separator (,) ') ?>
+                     <input id="r03" type="checkbox" value="true" name="defaultSeparator" checked ="checked" onclick="$('#configure_separator_container').toggle()"/>
+                </label>
+                 <div id="configure_separator_container" style="display: none;">
+                         <input id="r05" class="text" style="width:10%; margin-left: 27%" type="text" value="," name="separator" />
+                         <small><?php echo $this->_('Examples:",", ";", "\t" ') ?></small>
+                 </div>
+                 <label class="checkboxradio" for="r04">
+                     <?php echo $this->_('Automatic Headline detection') ?>
+                     <input id="r04" type="checkbox" value="true" name="headlineDetection" checked ="checked" />
+                </label>
+                 
+
+            </div>
+
+
+
+
+
             <br class="clearall" />
 
             <label class="checkboxradio" for="r01">
                 <input type="radio" class="radio" name="importMode" id="r01" value="scovo" />
-                <?php echo $this->_('Statistical data (uses SCOVO mapping)') ?>
+                <?php echo $this->_('Statistical data (uses DataCube mapping)') ?>
             </label>
             <br class="clearall" />
         </div>

@@ -1,3 +1,5 @@
+ZENDVERSION=1.11.5
+
 default:
 	@echo "please use:"
 	@echo "     'make pull' ('hg pull' for all repos)"
@@ -56,17 +58,17 @@ status:
 branch-check:
 	hg --repository . branch
 	hg --repository libraries/RDFauthor branch
-	cd libraries/Erfurt && git branch
+	cd libraries/Erfurt && git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`
 
 
 # libraries
 
 zend:
 	rm -rf libraries/Zend
-	curl -O http://framework.zend.com/releases/ZendFramework-1.10.8/ZendFramework-1.10.8-minimal.tar.gz || wget http://framework.zend.com/releases/ZendFramework-1.10.8/ZendFramework-1.10.8-minimal.tar.gz
-	tar xzf ZendFramework-1.10.8-minimal.tar.gz
-	mv ZendFramework-1.10.8-minimal/library/Zend libraries
-	rm -rf ZendFramework-1.10.8-minimal.tar.gz ZendFramework-1.10.8-minimal
+	curl -O http://framework.zend.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz || wget http://framework.zend.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz
+	tar xzf ZendFramework-${ZENDVERSION}-minimal.tar.gz
+	mv ZendFramework-${ZENDVERSION}-minimal/library/Zend libraries
+	rm -rf ZendFramework-${ZENDVERSION}-minimal.tar.gz ZendFramework-${ZENDVERSION}-minimal
 
 rdfauthor:
 	rm -rf libraries/RDFauthor

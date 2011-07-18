@@ -3,7 +3,7 @@ require_once 'lib/IteratorReader.php';
 
 /**
  *  @category		component
- *  @package        csvimport		
+ *  @package        csvimport
  *  @author			Michael Martin martin@informatik.uni-leipzig.de
  */
 class CsvParser
@@ -19,7 +19,7 @@ class CsvParser
 	 */
     private $csvMap;
 
-    
+
 	/**
 	 * This is the constructor.It try to open the csv file.The method throws an exception
 	 * on failure.
@@ -30,7 +30,7 @@ class CsvParser
 	 *
 	 * @throws Exception
 	 */
-    public function __construct($fileName = "" ) {
+    public function __construct($fileName = "", $separator = ',', $useHeaders = false ) {
 
         //preventing some limitations
         ini_set("max_execution_time","600");
@@ -40,8 +40,8 @@ class CsvParser
         //initialising some class attributes
         $this->csvMap = array();
 
-        //parse Map and check status        
-        $this->csvMap = $this->readCSV($fileName);
+        //parse Map and check status
+        $this->csvMap = $this->readCSV($fileName, $separator, $useHeaders);
 		if( empty ($this->csvMap) )
 			throw new Exception( 'The file "'.$fileName.'" cannot be readed or is empty.' );
     }
@@ -72,10 +72,10 @@ class CsvParser
 	 * @access private
 	 * @param str $fileName The csv file.
 	 */
-    private function readCSV($fileName) {
+    private function readCSV($fileName, $separator = ",", $useHeaders = false) {
 
-        $csvReader = new File_CSV_IteratorReader($fileName, ",") ;
-        return $csvReader->toArray();
+        $csvReader = new File_CSV_IteratorReader($fileName, $separator) ;
+        return $csvReader->toArray($useHeaders);
     }
 
 #########################################################
@@ -103,7 +103,7 @@ class CsvParser
             array('Transformer','escape_callback'),
             $str);
     }
-     
+
     private static function escape_callback($matches) {
         $encoded_character = $matches[0];
         $byte = ord($encoded_character[0]);
@@ -126,35 +126,35 @@ class CsvParser
         if ($byte < 0xE0) { // 110xxxxx, hex C0-DF
             $bytes = 2;
             $codepoint = $byte & 0x1F;
-        } else if ($byte < 0xF0) { 
+        } else if ($byte < 0xF0) {
             // 1110xxxx, hex E0-EF
             $bytes = 3;
             $codepoint = $byte & 0x0F;
-        } else if ($byte < 0xF8) { 
+        } else if ($byte < 0xF8) {
             // 11110xxx, hex F0-F7
             $bytes = 4;
             $codepoint = $byte & 0x07;
-        } else if ($byte < 0xFC) { 
+        } else if ($byte < 0xFC) {
             // 111110xx, hex F8-FB
             $bytes = 5;
             $codepoint = $byte & 0x03;
-        } else if ($byte < 0xFE) { 
+        } else if ($byte < 0xFE) {
             // 1111110x, hex FC-FD
             $bytes = 6;
             $codepoint = $byte & 0x01;
-        } else { 
+        } else {
             // 11111110 and 11111111, hex FE-FF, are not allowed
             return Transformer::error_character;
         }
 
         // Verify correct number of continuation bytes (0x80 to 0xBF)
         $length = strlen($encoded_character);
-        if ($length < $bytes) { 
+        if ($length < $bytes) {
             // not enough continuation bytes
             return Transformer::error_character;
         }
 
-        if ($length > $bytes) { 
+        if ($length > $bytes) {
             // Too many continuation bytes -- show each as one error
             $rest = str_repeat(Transformer::error_character, $length - $bytes);
         } else {
