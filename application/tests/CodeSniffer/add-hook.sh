@@ -2,10 +2,7 @@
 
 hgrcfile=".hg/hgrc"
 hookstr="[hooks]"
-severity=`sed -En 's/^severity = (.)$/\1/p' Makefile`
-cspath=`sed -En 's/^cspath = (.*)$/\1/p' Makefile`
-filetypes=`sed -En 's/^filetypes = (.*)$/\1/p' Makefile`
-precommitstr="precommit.phpcs = hg status -n | grep '\\.$filetypes$' | xargs --no-run-if-empty phpcs --report=summary -n --severity=$severity --standard=$cspath"
+precommitstr="precommit.phpcs = ./application/tests/CodeSniffer/pre-commit"
 
 cp -n $hgrcfile $hgrcfile.org
 if grep 'hooks' $hgrcfile --quiet; then
