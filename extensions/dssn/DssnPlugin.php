@@ -51,8 +51,16 @@ class DssnPlugin extends OntoWiki_Plugin
     {
         //TODO add a user confirm dialog here
         if($event->p == DSSN_FOAF_knows){
+            $this->_log('Event onPingReceived fired');
+            $this->_log('call handleNewFriend(new DSSN_Foaf_Person('.$event->o.'), '.$event->s.', $this->_store, $this->_store->getModel('.$event->o.'))');
             require_once __DIR__.DIRECTORY_SEPARATOR.'DssnController.php'; 
-            DssnController::handleNewFriend(new DSSN_Foaf_Person($event->o), $event->s, $this->_store, $this->_store->getModel($event->o));
+            try{
+                DssnController::handleNewFriend(new DSSN_Foaf_Person($event->o), $event->s, $this->_store, $this->_store->getModel($event->o));
+            } catch ( Exception $e){
+                $this->_log('Error: '.$e);
+            } 
+            $this->_log('after call. no exception');
+            
         }
     }
     
