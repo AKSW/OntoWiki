@@ -59,7 +59,7 @@ class DssnPlugin extends OntoWiki_Plugin
             } catch ( Exception $e){
                 $this->_log('Error: '.$e);
             } 
-            $this->_log('after call. no exception');
+            
             
         }
     }
