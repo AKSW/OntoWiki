@@ -317,13 +317,13 @@ class DssnController extends OntoWiki_Controller_Component {
         //TODO: check. i dont use the erfurt "singleton" versioning object, but a new one, 
             //because inside  DatagatheringController::import the erfurt versioning object is used, 
             //which throws an error (action already started) - what about nested transactions?
-            require_once 'Erfurt/Versioning.php';
+            /*require_once 'Erfurt/Versioning.php';
             $versioning = new Erfurt_Versioning();
             $versioning->startAction(array(
                 'type' => '9000',
                 'modeluri' => $importIntoGraphUri,
                 'resourceuri' => $importIntoGraphUri
-            ));
+            ));*/
             $ow = OntoWiki::getInstance();
             
             if (!$store->isModelAvailable($importIntoGraphUri)){
@@ -354,8 +354,8 @@ class DssnController extends OntoWiki_Controller_Component {
             } 
                 
             //fill new model via linked data
-            require_once $ow->extensionManager->getExtensionPath("datagathering") . DIRECTORY_SEPARATOR . "DatagatheringController.php";
-            $importResult = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri);
+            require_once $ow->extensionManager->getExtensionPath('datagathering') . DIRECTORY_SEPARATOR . 'DatagatheringController.php';
+            $importResult = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri, true, array(), array(), 'linkeddata', 'none', 'add', false);
 
             //get feed - everything below here (until the error check) is considered optional
             $feedQueryResult = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://ns.aksw.org/hasFeed> ?feed }');
@@ -402,7 +402,7 @@ class DssnController extends OntoWiki_Controller_Component {
             
             if($importResult !== DatagatheringController::IMPORT_OK){
                 //rollback changes
-                $versioning->abortAction();
+                //$versioning->abortAction();
             }
             
             return array('mandatories'=>$importResult, 'optionals'=>$optionals);
@@ -429,34 +429,39 @@ class DssnController extends OntoWiki_Controller_Component {
                 $this->_sendResponse(true, 'Your friend has been successfully added.', OntoWiki_Message::SUCCESS);
             } else if($mandatories == DatagatheringController::IMPORT_WRAPPER_ERR){
                 $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
+            } else if($mandatories == DatagatheringController::IMPORT_WRAPPER_NOT_AVAILABLE){
+                $this->_sendResponse(false, 'The resource is not available.', OntoWiki_Message::ERROR);
             } else if($mandatories == DatagatheringController::IMPORT_NO_DATA){
                 $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
             } else if($mandatories == DatagatheringController::IMPORT_WRAPPER_INSTANCIATION_ERR){
                 $this->_sendResponse(false, 'could not get wrapper instance.', OntoWiki_Message::ERROR);
                 //$this->_response->setException(new OntoWiki_Http_Exception(400));
             } else if($mandatories == DatagatheringController::IMPORT_NOT_EDITABLE){
-                $this->_sendResponse(false, 'you cannot write to this model.', OntoWiki_Message::ERROR);
+                $this->_sendResponse(false, 'You cannot write to this model.', OntoWiki_Message::ERROR);
                 //$this->_response->setException(new OntoWiki_Http_Exception(403));
             } else if($mandatories == DatagatheringController::IMPORT_WRAPPER_EXCEPTION){
-                $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
+                $this->_sendResponse(false, 'The wrapper run threw an error.', OntoWiki_Message::ERROR);
             } else {
-                $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
+                $this->_sendResponse(false, 'Unexpected return value.', OntoWiki_Message::ERROR);
             }
 
-            $optionals = $ret['optionals'];
-            if($optionals % 2 !== 1){
-                if($optionals == PubsubController::SUBSCRIPTION_NO_HUB){
-                    $this->_sendResponse(false, 'Feed has no hub.', OntoWiki_Message::ERROR);
-                } else if($optionals == PubsubController::SUBSCRIPTION_NO_FEED){
-                    $this->_sendResponse(false, 'The added friend has no activity feed.', OntoWiki_Message::INFO);
-                } else if($optionals == PubsubController::SUBSCRIPTION_FEED_UNREACHEABLE){
-                    $this->_sendResponse(false, 'Failed to retrieve feed.', OntoWiki_Message::ERROR);
-                } else if($optionals == PubsubController::SUBSCRIPTION_FAILED){
-                    $this->_sendResponse(false, 'could not subscribe to the hub.', OntoWiki_Message::ERROR);
-                } else {
-                    $this->_sendResponse(false, 'unexpected reponse from PubsubController.', OntoWiki_Message::ERROR);
+            if ($mandatories == DatagatheringController::IMPORT_OK){
+                //only show optional results if the mandatory were ok
+                $optionals = $ret['optionals'];
+                if($optionals % 2 !== 1){
+                    if($optionals == PubsubController::SUBSCRIPTION_NO_HUB){
+                        $this->_sendResponse(false, 'Feed has no hub.', OntoWiki_Message::ERROR);
+                    } else if($optionals == PubsubController::SUBSCRIPTION_NO_FEED){
+                        $this->_sendResponse(false, 'The added friend has no activity feed.', OntoWiki_Message::INFO);
+                    } else if($optionals == PubsubController::SUBSCRIPTION_FEED_UNREACHEABLE){
+                        $this->_sendResponse(false, 'Failed to retrieve feed.', OntoWiki_Message::ERROR);
+                    } else if($optionals == PubsubController::SUBSCRIPTION_FAILED){
+                        $this->_sendResponse(false, 'Could not subscribe to the hub.', OntoWiki_Message::ERROR);
+                    } else {
+                        $this->_sendResponse(false, 'Unexpected reponse from PubsubController.', OntoWiki_Message::ERROR);
+                    }
+                    $this->_sendResponse(false, 'You will get no auto-updates from this friend.', OntoWiki_Message::INFO);
                 }
-                $this->_sendResponse(false, 'You will get no auto-updates from this friend.', OntoWiki_Message::INFO);
             }
         }
     }

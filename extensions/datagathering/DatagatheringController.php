@@ -61,6 +61,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
     CONST IMPORT_WRAPPER_INSTANCIATION_ERR = 40;
     CONST IMPORT_NOT_EDITABLE = 50;
     CONST IMPORT_WRAPPER_EXCEPTION = 60;
+    CONST IMPORT_WRAPPER_NOT_AVAILABLE = 70;
     
     // ------------------------------------------------------------------------
     // --- Import and Sync related private properties -------------------------
@@ -916,8 +917,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
         } catch (Erfurt_Wrapper_Exception $e) {
             return self::IMPORT_WRAPPER_EXCEPTION;
         }
-          
-        if (is_array($wrapperResult)) {
+         
+        if($wrapperResult === false){
+            return self::IMPORT_WRAPPER_NOT_AVAILABLE;
+        } else if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
                     $statements = $wrapperResult['add'];
