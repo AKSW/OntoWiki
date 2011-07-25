@@ -216,6 +216,7 @@ class PingbackController extends OntoWiki_Controller_Component {
         $event->p = $p;
         $event->o = $o;
         $event->trigger();
+        
 
         return true;
     }
