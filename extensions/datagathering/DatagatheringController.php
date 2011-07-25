@@ -890,7 +890,21 @@ class DatagatheringController extends OntoWiki_Controller_Component
         return $statements;
     }
     
-    public static function import($graphUri, $uri, $loc, $all = true, $presets = array(), $exceptedProperties = array(), $wrapperName = 'linkeddata', $fetchMode = 'none', $action = 'add'){
+    /**
+     *
+     * @param type $graphUri
+     * @param type $uri
+     * @param type $locator
+     * @param type $all
+     * @param type $presets
+     * @param type $exceptedProperties
+     * @param type $wrapperName
+     * @param type $fetchMode
+     * @param type $action
+     * @param type $versioning
+     * @return type 
+     */
+    public static function import($graphUri, $uri, $locator, $all = true, $presets = array(), $exceptedProperties = array(), $wrapperName = 'linkeddata', $fetchMode = 'none', $action = 'add', $versioning = true){
         // Check whether user is allowed to write the model.
         $erfurt = Erfurt_App::getInstance();
         $store = $erfurt->getStore();
@@ -900,7 +914,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
 
         $r = new Erfurt_Rdf_Resource($uri);
-        $r->setLocator($loc);
+        $r->setLocator($locator);
          
         // Try to instanciate the requested wrapper
         $wrapper = null;   
@@ -927,17 +941,19 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         '{ ?s ?p ?o }',
                         '*'
                     );
-
-                    // Prepare versioning...
-                    $versioning = $erfurt->getVersioning();
-                    $actionSpec = array(
-                        'type'        => self::VERSIONING_IMPORT_ACTION_TYPE,
-                        'modeluri'    => $graphUri,
-                        'resourceuri' => $uri
-                    );
                     
-                    // Start action, add statements, finish action.
-                    $versioning->startAction($actionSpec);
+                    if($versioning){
+                        // Prepare versioning...
+                        $versioning = $erfurt->getVersioning();
+                        $actionSpec = array(
+                            'type'        => self::VERSIONING_IMPORT_ACTION_TYPE,
+                            'modeluri'    => $graphUri,
+                            'resourceuri' => $uri
+                        );
+
+                        // Start action, add statements, finish action.
+                        $versioning->startAction($actionSpec);
+                    }
 
                     $statements = self::filterStatements($statements, $uri, $all, $presets, $exceptedProperties, $fetchMode);
 
@@ -959,7 +975,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         $model->updateWithMutualDifference($model1->getStatements(), $model2->getStatements());
                     }
                     
-                    $versioning->endAction();
+                    if($versioning){
+                        $versioning->endAction();
+                    }
 
                     $stmtAfterCount = $store->countWhereMatches(
                             $graphUri, 
