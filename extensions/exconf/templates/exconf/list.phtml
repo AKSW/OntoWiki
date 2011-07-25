@@ -18,7 +18,11 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
 </form>
 <h2 class="onlyAural">Extensions</h2>
 <ol id="extensions" class="bullets-none separated">
-<?php $odd = false; foreach($this->extensions as $name => $extension){ ?>
+<?php $odd = false; foreach($this->extensions as $name => $extension){ 
+    if($name == 'exconf'){ //dont allow to disable the extension configuration itself
+        continue;
+    }
+    ?>
     <li class="<?php echo $odd ? "odd" : "even"; ?>">
         <a class="toggle icon icon-arrow-down" title="Close"><span>Close</span></a>
         <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
