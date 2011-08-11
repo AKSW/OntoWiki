@@ -291,13 +291,13 @@ class DssnController extends OntoWiki_Controller_Component {
      * 
      * @return DSSN_Foaf_Person the current me or null
      */
-    public static function getMe(){
+    public function getMe(){
         if(!isset(OntoWiki::getInstance()->selectedModel)){
             return null;
         }
         if(self::$me == null){
             self::_log(OntoWiki::getInstance()->selectedModel);
-            self::$me = new DSSN_Foaf_Person(OntoWiki::getInstance()->selectedModel, true);
+            self::$me = new DSSN_Foaf_Person($this->_privateConfig->defaults->webId);
         } 
         return self::$me;
     }
@@ -515,6 +515,18 @@ class DssnController extends OntoWiki_Controller_Component {
                     Erfurt_Store::MODEL_TYPE_OWL,
                     false
                 );
+
+            $graph->addMultipleStatements(
+                array(
+                    $this->_privateConfig->defaults->webId => array(
+                        EF_RDF_TYPE => array(
+                            array('type' => 'uri', 'value' => 'http://xmlns.com/foaf/0.1/Person')
+                        )
+                    )
+                ), 
+                false
+            );
+
             } else {
                 $graph = $store->getModel($graphUrl);
             }

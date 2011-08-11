@@ -29,7 +29,10 @@ class EventsModule extends OntoWiki_Module
      * TODO: real data please, and with object-cache :-)
      */
     public function setBirthdays() {
-        $me = DssnController::getMe();
+
+        $helper = $this->_owApp->extensionManager->getComponentHelper('dssn');
+
+        $me = $helper->getMe();
         $this->birthdays = array();
         
         foreach ($me->getFriends(DSSN_Foaf_Person::BASIC) as $uri => $friend){
