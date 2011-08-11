@@ -151,8 +151,8 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                 
                 $currentResults = $this->_store->sparqlQuery($query, $options);
                 
-                if (isset($currentResults['bindings'])) {
-                    $this->_queryResults[$graph] = $currentResults['bindings'];
+                if (isset($currentResults['results']['bindings'])) {
+                    $this->_queryResults[$graph] = $currentResults['results']['bindings'];
                 } else {
                     $this->_queryResults[$graph] = array();
                 }

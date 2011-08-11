@@ -189,9 +189,8 @@ class ResourceController extends OntoWiki_Controller_Base {
         // add toolbar
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
 
+        //show modules
         $this->addModuleContext('main.window.properties');
-
-
     }
 
     /**

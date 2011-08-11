@@ -90,14 +90,13 @@ class DssnController extends OntoWiki_Controller_Component {
                 LIMIT 10'
             );
             $results = $model->sparqlQuery($query);
-// TODO: if empty $feed is never filled... error
-            if ($results) {
-                $feed = new DSSN_Activity_Feed();
-                $feed->setTitle('Activity Feed @ ' . $this->model . ' (OntoWiki)');
-                $feed->setLinkSelf($this->_config->urlBase . 'dssn/feed');
-                $feed->setLinkHtml($this->_config->urlBase . 'dssn/news');
-                $feed->setLinkHub($this->_config->urlBase . 'pubsub/hubbub');
 
+            $feed = new DSSN_Activity_Feed();
+            $feed->setTitle('Activity Feed @ ' . $this->model . ' (OntoWiki)');
+            $feed->setLinkSelf($this->_config->urlBase . 'dssn/feed');
+            $feed->setLinkHtml($this->_config->urlBase . 'dssn/news');
+            $feed->setLinkHub($this->_config->urlBase . 'pubsub/hubbub');
+            if ($results) {
                 $factory  = new DSSN_Activity_Factory($this->_owApp);
                 foreach ($results as $key => $result) {
                     $iri      = $result['resourceUri'];
@@ -275,8 +274,9 @@ class DssnController extends OntoWiki_Controller_Component {
             // re-add the list to the page
             $helper->addList($listname, $list, $this->view, $template, $config);
         }
-        //var_dump((string) $list->getResourceQuery());
-        //var_dump((string) $list->getQuery());
+        //echo htmlentities( $list->getResourceQuery());
+        //echo htmlentities( $list->getQuery());
+            
         $this->addModuleContext('main.window.dssn.network');
     }
     
@@ -296,6 +296,7 @@ class DssnController extends OntoWiki_Controller_Component {
             return null;
         }
         if(self::$me == null){
+            self::_log(OntoWiki::getInstance()->selectedModel);
             self::$me = new DSSN_Foaf_Person(OntoWiki::getInstance()->selectedModel, true);
         } 
         return self::$me;
@@ -358,7 +359,7 @@ class DssnController extends OntoWiki_Controller_Component {
             $importResult = DatagatheringController::import($importIntoGraphUri, $friendUri, $friendUri, true, array(), array(), 'linkeddata', 'none', 'add', false);
 
             //get feed - everything below here (until the error check) is considered optional
-            $feedQueryResult = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://ns.aksw.org/hasFeed> ?feed }');
+            $feedQueryResult = $store->sparqlQuery('SELECT ?feed FROM <'.$importIntoGraphUri.'> WHERE {<'.$importIntoGraphUri.'> <http://purl.org/net/dssn/activityFeed> ?feed }');
             
             //try to subscribe to its activity feed via its hub
             //check if a feed is announced in the foaf profile
@@ -370,9 +371,10 @@ class DssnController extends OntoWiki_Controller_Component {
             //try to get the hub from the feed
             require_once $ow->extensionManager->getExtensionPath("pubsub") . DIRECTORY_SEPARATOR . "PubsubController.php";
             $optionals = PubsubController::SUBSCRIPTION_OK;
-            $hubUrl = null; 
+            $hubUrl = null;
             if (null !== $topicUrl) {
                 try {
+                    self::_log($topicUrl);
                     $feed = new Zend_Feed_Atom($topicUrl);
                     
                     $hubUrl = $feed->link('hub');
@@ -380,6 +382,7 @@ class DssnController extends OntoWiki_Controller_Component {
                         $optionals = PubsubController::SUBSCRIPTION_NO_HUB;
                     }
                 } catch (Exception $e) {
+                    self::_log((string)$e);
                     $optionals = PubsubController::SUBSCRIPTION_FEED_UNREACHEABLE;
                 }
             } else {
@@ -390,6 +393,7 @@ class DssnController extends OntoWiki_Controller_Component {
             if (null !== $hubUrl) {
                 //subscribe to its feed
                 $callbackUrl = PubsubController::getCallbackUrl();
+                require_once $ow->extensionManager->getExtensionPath('pubsub') . DIRECTORY_SEPARATOR . 'lib'. DIRECTORY_SEPARATOR . 'subscriber.php';
                 $s = new Subscriber($hubUrl, $callbackUrl);
                 ob_start();
                 $response = $s->subscribe($topicUrl);
@@ -466,6 +470,12 @@ class DssnController extends OntoWiki_Controller_Component {
         }
     }
     
+    private static function _log($msg)
+    {
+        $logger = OntoWiki::getInstance()->getCustomLogger('dssn');
+        $logger->debug($msg);        
+    }
+    
     
     /**
      * import a model again to get the newest updates
@@ -494,29 +504,27 @@ class DssnController extends OntoWiki_Controller_Component {
     {
         $ow          = OntoWiki::getInstance();
         $store       = $ow->erfurt->getStore();
-        $this->model = $ow->selectedModel;
-        $webid       = $ow->user->getUri();
 
-        if (!isset($this->model)) {
-            try {
-                $models = $store->getAvailableModels(true);
-                if (isset($models[$webid])) {
-                    // try to load the webid model
-                    $this->model = $store->getModel($webid);
-                } elseif (isset($models[$this->_config->urlBase])) {
-                    // try to load the model which has sem urlBase URI
-                    $this->model = $store->getModel($this->_config->urlBase);
-                } else {
-                    // try to create a new model (url = webid)
-                    $newModel = $store->getNewModel($webid);
-                    $this->model = $store->getModel($webid);
-                }
-                $ow->selectedModel = $this->model;
-            } catch (Exception $e) {
-                $message = $e->getMessage();
-                die('There is no space available for you here: ' . $message);
+        try {
+            $graphUrl = $this->_privateConfig->defaults->model;
+            if (!$store->isModelAvailable($graphUrl)){
+                // create model
+                $graph = $store->getNewModel(
+                    $graphUrl,
+                    '',
+                    Erfurt_Store::MODEL_TYPE_OWL,
+                    false
+                );
+            } else {
+                $graph = $store->getModel($graphUrl);
             }
+            $ow->selectedModel = $graph;
+            $this->model = $graph;
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            die('There is no space available for you here: ' . $message);
         }
+
     }
 
     /*

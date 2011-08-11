@@ -793,7 +793,6 @@ class ModelController extends OntoWiki_Controller_Base
         $event->graph = (string)$resource;
         $event->trigger();
         
-
         $windowTitle = $translate->_('Model info');
         $this->view->placeholder('main.window.title')->set($windowTitle);
         

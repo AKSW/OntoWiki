@@ -10,4 +10,5 @@
                                foaf:nick "alice" ;
                                foaf:birthday "06-26" ;
                                foaf:mbox_sha1sum "65b983bb397fb71849da910996741752ace8369b" ;
-                               foaf:weblog <http://myblog.de> .
+                               foaf:weblog <http://myblog.de> ;
+                               <http://purl.org/net/dssn/activityFeed> <http://localhost/ow/dssn/feed> .

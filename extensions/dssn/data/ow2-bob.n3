@@ -4,12 +4,13 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-<http://localhost/ow2/network/bob> a <http://www.w3.org/2002/07/owl#Ontology>, foaf:PersonalProfileDocument, foaf:Person ;
-                             foaf:primaryTopic <http://localhost/ow2/network/bob> ;
+<http://localhost/owmc/network/bob> a <http://www.w3.org/2002/07/owl#Ontology>, foaf:PersonalProfileDocument, foaf:Person ;
+                             foaf:primaryTopic <http://localhost/owmc/network/bob> ;
                                foaf:depiction <http://artschoolvets.com/news/wp-content/uploads/2008/02/marley_bob_07_1976_500_375_afp.jpg> ;
                                foaf:name "Bob" ;
                                foaf:nick "Bob" ;
                                foaf:homepage <http://www.bob.com/> ;
-                               foaf:birthday "06-26" .
+                               foaf:birthday "06-26" ;
+                               <http://purl.org/net/dssn/activityFeed> <http://localhost/owmc/dssn/feed> .
 
 
