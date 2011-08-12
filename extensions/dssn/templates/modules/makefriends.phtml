@@ -1,3 +1,4 @@
+<!-- start makefriends template -->
 <form action="" method="post" class="width98" id="makefriend-form">
         <div class="row-input">
             <label class="display-block onlyAural" for="makefriend-input">Add WebID or search by name</label>
@@ -7,3 +8,31 @@
             <button type="submit">Make Friend</button>
         </div>
 </form>
+<?php if (count($this->data->requests) > 0) : ?>
+    <ol class="dssn-requests bullets-none separated">
+    <?php $odd = true ?>
+    <?php foreach($this->data->requests as $request) : ?>
+        <li
+            class="has-contextmenu-area <?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
+            <a href="<?php echo $request['webid'] ?>">
+                <?php echo $request['name'] ?>
+            </a> 
+            (<?php echo $request['rlabel'] ?>,
+            <?php echo$request['tlabel'] ?>)
+            <div class="contextmenu">
+                <span class="item accept">
+                     <span class="icon icon-accept" title="Accept Request">
+                        <span>Accept</span>
+                    </span>
+                </span>
+                <span class="item ignore">
+                     <span class="icon icon-ignore" title="Ignore Request">
+                        <span>Ignore</span>
+                    </span>
+                </span>
+            </div>
+        </li>
+    <?php endforeach; ?>
+    </ol>
+<?php endif; ?>
+<!-- end makefriends template -->
