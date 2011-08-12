@@ -41,7 +41,6 @@ class PingbackPlugin extends OntoWiki_Plugin {
     }
 
     public function onAddStatement($event) {
-        $this->_logInfo($event->statement);
 
         // Check the environement... e.g. Linked Data plugin needs to be enabled.
         if (!$this->_check()) {
@@ -49,31 +48,36 @@ class PingbackPlugin extends OntoWiki_Plugin {
         }
 
         $s = $event->statement['subject'];
+        $p = $event->statement['predicate'];
         $o = $event->statement['object'];
-        $this->_checkAndPingback($s, $o);
+        $this->_checkAndPingback($s, $p, $o);
     }
 
-    public function onAddMultipleStatements($event) {
-        $this->_logInfo($event->statements);
-
+    public function onAddMultipleStatements($event) 
+    {
         // Check the environement... e.g. Linked Data plugin needs to be enabled.
         if (!$this->_check()) {
             return;
         }
-
         // Parse SPO array.
         $statements = $event->statements;
         foreach ($statements as $subject => $predicatesArray) {
             foreach ($predicatesArray as $predicate => $objectsArray) {
                 foreach ($objectsArray as $object) {
-                    $this->_checkAndPingback($subject, $object);
+                    $this->_checkAndPingback($subject, $predicate, $object);
                 }
             }
         }
     }
 
-    public function onDeleteMultipleStatements($event) {
-        $this->_logInfo($event->statements);
+    public function onDeleteMultipleStatements($event) 
+    {
+        // If pingOnDelete is configured, we also ping on statement delete, otherwise we skip.
+        if (!isset($this->_privateConfig->pingOnDelete) || 
+            ((boolean)$this->_privateConfig->pingOnDelete === false)) {
+
+            return;
+        }
 
         // Check the environement... e.g. Linked Data plugin needs to be enabled.
         if (!$this->_check()) {
@@ -84,7 +88,7 @@ class PingbackPlugin extends OntoWiki_Plugin {
         foreach ($event->statements as $subject => $predicatesArray) {
             foreach ($predicatesArray as $predicate => $objectsArray) {
                 foreach ($objectsArray as $object) {
-                    $this->_checkAndPingback($subject, $object);
+                    $this->_checkAndPingback($subject, $predicate, $object);
                 }
             }
         }
@@ -119,20 +123,23 @@ class PingbackPlugin extends OntoWiki_Plugin {
         return true;
     }
 
-    protected function _checkAndPingback($subject, $object) {
+    protected function _checkAndPingback($subject, $predicate, $object) 
+    {
+        // If at least one ping_properties value is set in config, we only ping for matching predicates.
+        if (isset($this->_privateConfig->ping_properties)) {
+            $props = $this->_privateConfig->ping_properties->toArray();
+            if (!in_array($predicate, $props)) {
+                return;
+            }
+        }
+
         $owApp = OntoWiki::getInstance();
         $base = $owApp->config->urlBase;
         $baseLen = strlen($base);
 
-        // Source URI (subject) needs to be a (internal) Linked Data resource
-        if (!$this->_isLinkedDataUri($subject)) {
-            $this->_logInfo('Subject is not a Linked Data resource.');
-            return;
-        }
-
         // Object (target) needs to be an external URI 
         if ($object['type'] !== 'uri') {
-            $this->_logInfo('Object is not an URI.');
+            #$this->_logInfo('Object is not an URI.');
             return;
         } else {
             $targetUri = $object['value'];
@@ -141,15 +148,21 @@ class PingbackPlugin extends OntoWiki_Plugin {
 
             // Check, whether URI is external.
             if (substr($targetUri, 0, strlen($owBase)) === $owBase) {
-                $this->_logInfo('Object is not an external URI.');
+                #$this->_logInfo('Object is not an external URI.');
                 return;
             }
 
             // Check, whether URI is derefderencable via HTTP.
             if ((substr($object['value'], 0, 7) !== 'http://') && (substr($object['value'], 0, 8) !== 'https://')) {
-                $this->_logInfo('Object is not a dereferencable URI.');
+                #$this->_logInfo('Object is not a dereferencable URI.');
                 return;
             }
+        }
+
+        // Source URI (subject) needs to be a (internal) Linked Data resource
+        if (!$this->_isLinkedDataUri($subject)) {
+            #$this->_logInfo('Subject is not a Linked Data resource.');
+            return;
         }
 
         // All tests passed... send the pingback.
@@ -164,10 +177,11 @@ class PingbackPlugin extends OntoWiki_Plugin {
         }
         if (isset($headers['X-Pingback'])) {
             if (is_array($headers['X-Pingback'])) {
-                $this->_logInfo($headers['X-Pingback']);
+                $this->_logInfo($headers['X-Pingback'][0]); 
                 return $headers['X-Pingback'][0];
             }
 
+            $this->_logInfo($headers['X-Pingback']);
             return $headers['X-Pingback'];
         }
 
@@ -228,21 +242,22 @@ class PingbackPlugin extends OntoWiki_Plugin {
 
     protected function _logError($msg) {
         if (is_array($msg)) {
-            $this->_log('Pingback Plugin Error: ' . print_r($msg, true));
+            $this->_log('Pingback Plugin Error - ' . print_r($msg, true));
         } else {
-            $this->_log('Pingback Plugin Error: ' . $msg);
+            $this->_log('Pingback Plugin Error - ' . $msg);
         }
     }
 
     protected function _logInfo($msg) {
         if (is_array($msg)) {
-            $this->_log('Pingback Plugin Info: ' . print_r($msg, true));
+            $this->_log('Pingback Plugin Info - ' . print_r($msg, true));
         } else {
-            $this->_log('Pingback Plugin Info: ' . $msg);
+            $this->_log('Pingback Plugin Info - ' . $msg);
         }
     }
 
-    protected function _sendPingback($sourceUri, $targetUri) {
+    protected function _sendPingback($sourceUri, $targetUri) 
+    {
         $pingbackServiceUrl = $this->_discoverPingbackServer($targetUri);
         if ($pingbackServiceUrl === null) {
             $this->_logInfo('No Pingback server discovered');
@@ -264,6 +279,8 @@ class PingbackPlugin extends OntoWiki_Plugin {
         $synchronous = false;
         if (!$synchronous) { //a timeout of one ms is like ignoring the http response -> asynchonous
             curl_setopt($rq, CURLOPT_TIMEOUT, 1);
+            $this->_logInfo('Now sending Pingback (not waiting for response) - ' . $sourceUri . ', ' 
+                . $targetUri);
         }
         $res = curl_exec($rq);
         if ($synchronous) {
@@ -282,7 +299,7 @@ class PingbackPlugin extends OntoWiki_Plugin {
     }
 
     private function _log($msg) {
-        $logger = OntoWiki::getInstance()->getCustomLogger('pingback');
+        $logger = OntoWiki::getInstance()->getCustomLogger('pingback_plugin');
         $logger->debug($msg);
     }
 
