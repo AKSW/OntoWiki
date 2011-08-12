@@ -533,16 +533,22 @@ class DssnController extends OntoWiki_Controller_Component {
                     false
                 );
 
-            $graph->addMultipleStatements(
-                array(
-                    $this->_privateConfig->defaults->webId => array(
-                        EF_RDF_TYPE => array(
-                            array('type' => 'uri', 'value' => 'http://xmlns.com/foaf/0.1/Person')
+                $graph->addMultipleStatements(
+                    array(
+                        $this->_privateConfig->defaults->webId => array(
+                            EF_RDF_TYPE => array(
+                                array('type' => 'uri', 'value' => 'http://xmlns.com/foaf/0.1/Person')
+                            )
                         )
-                    )
-                ), 
-                false
-            );
+                    ), 
+                    false
+                );
+
+                $graph->setOption($this->_owApp->config->sysont->properties->hiddenImports, array(array(
+                            'value'    => $this->_privateConfig->plugin->externalActivitiesModel,
+                            'type'     => 'uri'
+                        )), false); // false -> do not replace other imports
+
 
             } else {
                 $graph = $store->getModel($graphUrl);
