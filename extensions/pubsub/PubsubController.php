@@ -295,8 +295,8 @@ class PubsubController extends OntoWiki_Controller_Component
             $userAgent = 'OntoWiki Hub (+' . $this->_componentUrlBase . '; ' . count($subscriptions) . ' subscribers)';
 
             $modifiedSince = null;
-            if (null !== $notification['last_fetch']) {
-                $modifiedSince = date('r', $notification['last_fetch']);
+            if (null !== $notification['last_fetched']) {
+                $modifiedSince = date('r', $notification['last_fetched']);
             }
 
             $client = Erfurt_App::getInstance()->getHttpClient($notification['hub.url'], array(
@@ -586,7 +586,7 @@ class PubsubController extends OntoWiki_Controller_Component
         //curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
         //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, 'curl');
-        curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         $result = curl_exec($ch);
         curl_close($ch);
         $result = ob_get_clean();
