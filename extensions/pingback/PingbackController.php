@@ -1,9 +1,12 @@
 <?php
-
-require_once 'OntoWiki/Controller/Component.php';
-require_once 'Zend/XmlRpc/Server.php';
-require_once 'Zend/XmlRpc/Server/Exception.php';
-
+/**
+ * semantic pingback controller
+ *
+ * @category   OntoWiki
+ * @package    OntoWiki_extensions_components_pingback
+ * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 class PingbackController extends OntoWiki_Controller_Component {
 
     protected $_targetGraph = null;
@@ -15,7 +18,7 @@ class PingbackController extends OntoWiki_Controller_Component {
      */
     public function pingAction() {
         $this->_logInfo('Pingback Server Init.');
-        
+
         $this->_owApp->appendMessage(
             new OntoWiki_Message('Ping received.', OntoWiki_Message::INFO)
         );
@@ -39,7 +42,7 @@ class PingbackController extends OntoWiki_Controller_Component {
 
     /**
      * receive a ping API
-     * 
+     *
      * @param string $sourceUri The source URI
      * @param string $targetUri The target URI
      *
@@ -189,7 +192,7 @@ class PingbackController extends OntoWiki_Controller_Component {
         if ($this->_targetGraph === null) {
             return false;
         }
-                
+
         $store = Erfurt_App::getInstance()->getStore();
 
         $sql = 'INSERT INTO ow_pingback_pingbacks (source, target, relation) VALUES ("' . $s . '", "' . $o . '", "' . $p . '")';
@@ -210,13 +213,13 @@ class PingbackController extends OntoWiki_Controller_Component {
                 }
             }
         }
-        
+
         $event = new Erfurt_Event('onPingReceived');
         $event->s = $s;
         $event->p = $p;
         $event->o = $o;
         $event->trigger();
-        
+
 
         return true;
     }
@@ -400,11 +403,11 @@ class PingbackController extends OntoWiki_Controller_Component {
         $store = Erfurt_App::getInstance()->getStore();
 
         $sql = 'CREATE TABLE IF NOT EXISTS ow_pingback_pingbacks (
-	        id TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	        source    VARCHAR(255) COLLATE ascii_bin NOT NULL,
-	        target    VARCHAR(255) COLLATE ascii_bin NOT NULL,
-	        relation  VARCHAR(255) COLLATE ascii_bin NOT NULL
-	    );';
+            id TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+            source    VARCHAR(255) COLLATE ascii_bin NOT NULL,
+            target    VARCHAR(255) COLLATE ascii_bin NOT NULL,
+            relation  VARCHAR(255) COLLATE ascii_bin NOT NULL
+        );';
 
         return $this->_query($sql, false);
     }
