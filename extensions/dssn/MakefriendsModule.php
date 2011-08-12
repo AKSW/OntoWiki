@@ -27,10 +27,33 @@ class MakefriendsModule extends OntoWiki_Module
         return true;
     }
 
+    /*
+     * returns all incoming friending requests from the pingback extension
+     */
+    private function _getIncomingRequests()
+    {
+        $dummyfriend   = array (
+            'webid'    => 'http://sebastian.tramp.name',   // webid URI
+            'name'     => 'Sebastian Tramp',               // name / abbr of the person
+            'relation' => 'http://xmlns.com/foaf/0.1/',    // property URI
+            'rlabel'   => 'knows',                         // property label
+            'time'     => 'Fri Aug 12 12:57:54 CEST 2011', // sortable time
+            'tlabel'   => '2 min. ago',                    // display time
+        );
+        $friends = array();
+        //$friends[] = $dummyfriend;
+
+        return $friends;
+    }
+
     function getContents()
     {
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'js/makefriend.js');
-        $content = $this->render('modules/makefriends', false, 'data');
+
+        $data = new StdClass;
+        $data->requests = $this->_getIncomingRequests();
+
+        $content = $this->render('modules/makefriends', $data, 'data');
         return $content;
     }
 }
