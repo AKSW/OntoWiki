@@ -182,26 +182,46 @@ class DssnController extends OntoWiki_Controller_Component {
 
         try {
             $factory  = new DSSN_Activity_Factory($this->_owApp);
-            $activity = $factory->newFromShareItModule($this->_request);
+            
+            $type = $this->_request->getParam('activity-type');
+            $activity = null;
+            switch ($type) {
+                case 'status':
+                    $activity = $factory->newStatus(
+                        (string)$this->_request->getParam('share-status'),
+                        $this->_privateConfig->defaults->webId,
+                        $this->_privateConfig->defaults->username
+                    );
+                    break;
+                case 'link':
+                    $activity = $factory->newSharedLink(
+                        (string)$this->_request->getParam('share-link-url'),
+                        (string)$this->_request->getParam('share-link-name'),
+                        $this->_privateConfig->defaults->webId,
+                        $this->_privateConfig->defaults->username
+                    );
+                    break;
+            }
 
-            $model  = $this->model;
-            $store  = $this->_owApp->erfurt->getStore();
-            $store->addMultipleStatements((string) $model, $activity->toRDF());
+            if (null !== $activity) {
+                $model  = $this->model;
+                $store  = $this->_owApp->erfurt->getStore();
+                $store->addMultipleStatements((string) $model, $activity->toRDF());
 
-            $event = new Erfurt_Event('onInternalFeedDidChange');
-            $event->feedUrl = $this->_owApp->getUrlBase() . 'dssn/feed';
-            $event->trigger();
+                $event = new Erfurt_Event('onInternalFeedDidChange');
+                $event->feedUrl = $this->_owApp->getUrlBase() . 'dssn/feed';
+                $event->trigger();
 
-            $output   = array (
-                'message' => 'Activity saved',
-                'class'   => 'success'
-            );
+                $output   = array (
+                    'message' => 'Activity saved',
+                    'class'   => 'success'
+                );
 
-            // create an event so that the hub can send the data
-            $event = new Erfurt_Event('pubsub-onFeedChange');
-            $event->feedUrl = $this->_config->urlBase . '/dssn/feed';
-            $event->trigger();
-
+                // create an event so that the hub can send the data
+                #$event = new Erfurt_Event('pubsub-onFeedChange');
+                #$event->feedUrl = $this->_config->urlBase . '/dssn/feed';
+                #$event->trigger();
+            }
         } catch (Exception $e) {
             // encode the exception for http response
             $output = array (
