@@ -56,9 +56,6 @@ class DssnController extends OntoWiki_Controller_Component {
             'action'     => 'setup',
             'name'       => 'Setup' ));
 
-        // add dssn specific styles and javascripts
-        $this->view->headLink()->appendStylesheet($this->_componentUrlBase . 'css/dssn.css');
-        $this->view->headScript()->appendFile($this->_componentUrlBase . 'js/dssn.js');
     }
 
     /*

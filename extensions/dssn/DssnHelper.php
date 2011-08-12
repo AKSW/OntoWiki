@@ -13,6 +13,11 @@ class DssnHelper extends OntoWiki_Component_Helper {
 
     public function init() {
         parent::init();
+
+        // add dssn specific styles and javascripts
+        $pathBase = $this->_componentManager->getComponentUrl('dssn');
+        $this->_owApp->view->headLink()->appendStylesheet($pathBase . 'css/dssn.css');
+        $this->_owApp->view->headScript()->appendFile($pathBase . 'js/dssn.js');
     }
 
     public function getMe()
