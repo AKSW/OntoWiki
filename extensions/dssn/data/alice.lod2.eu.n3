@@ -1,0 +1,14 @@
+# Exported with the Erfurt API - http://aksw.org/Projects/Erfurt
+
+@base <http://example.com/network> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://alice.lod2.eu/id/alice> a foaf:Person ;
+  foaf:depiction <http://word.world-citizenship.org/wp-content/uploads/2009/01/alice-schwarzer-germany.jpg> ;
+  foaf:nick "Alice" ;
+  foaf:birthday "06-26" ;
+  foaf:mbox_sha1sum "65b983bb397fb71849da910996741752ace8369b" ;
+  foaf:weblog <http://myblog.de> ;
+  <http://purl.org/net/dssn/activityFeed> <http://alice.lod2.eu/dssn/feed> .
+
