@@ -1,0 +1,33 @@
+<?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
+ * aksw.org feed template
+ *
+ * arranges the content for the default class (unknown class)
+ */
+
+
+// prepare module options
+$moduleOptions = array('noChrome' => true);
+if ($this->resourceUri == 'http://lod2.eu/Welcome') {
+    // fetch feed module with relevant feeds
+    $moduleOptions['relevant'] = 'http://lod2.eu/schema/feedRelevantFor';
+}
+$moduleConfig = new Zend_Config($moduleOptions);
+$content = trim($this->module('feeds', $moduleConfig));
+?>
+
+<?php if (!empty($content)): ?>
+<div class="section">
+    <h3>News</h3>
+    <div class="section-content">
+        <?php echo $content; ?>
+    </div>
+</div>
+<?php endif; ?>

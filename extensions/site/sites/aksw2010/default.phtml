@@ -1,0 +1,32 @@
+<?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
+ * aksw.org default template
+ *
+ * arranges the content for the default class (unknown class)
+ */
+
+// this is the standard template data
+$templateData = array(
+                'title' => $this->title,
+                'resourceUri' => $this->resourceUri,
+                'description' => $this->description,
+                'descriptionHelper' => $this->descriptionHelper,
+                'options'           => $this->options
+            );
+?>
+
+<?php if ($content = trim($this->partial( 'aksw2010/content.phtml', $templateData))): ?>
+
+<h1><?php echo $this->title ?></h1>
+<?php echo $content; ?>
+
+<?php endif; ?>
+
+

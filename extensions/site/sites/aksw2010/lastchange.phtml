@@ -1,0 +1,24 @@
+<?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
+ * aksw.org lastchange template
+ *
+ * renders the last modification section of a resource
+ */
+?>
+<span rdf:about="<?php echo $this->resourceUri;?>">last modification
+<span
+    property="<?php echo $this->curie('http://rdfs.org/sioc/ns#last_activity_date');?>"
+    content="<?php echo $this->timeIso8601;?>"
+    title="<?php echo $this->timeIso8601;?>"
+    >
+<?php echo $this->timeDuration;?>
+</span>
+by <a href="<?php echo $this->userHref;?>"><?php echo $this->userTitle;?></a>
+</span>
