@@ -41,7 +41,7 @@ class Site_View_Helper_Processtidy extends Zend_View_Helper_Abstract
                                             ),
                                       'utf8');
             // */
-            
+
             return $string;
             return substr($string, strpos($string, '<body>')+6, strpos($string, '</body>')-strpos($string, '<body>')-6);
         }

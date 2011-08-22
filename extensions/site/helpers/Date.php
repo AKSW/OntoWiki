@@ -8,10 +8,9 @@
  */
 
 /**
- * OntoWiki URL view helper
+ * OntoWiki Date view helper
  *
- * This helper takes a URI and renders it as a link taking into account
- * the route for the current request.
+ * Renders a data string according to a format string
  *
  * @category OntoWiki
  * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}

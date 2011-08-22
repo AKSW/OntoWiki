@@ -8,10 +8,9 @@
  */
 
 /**
- * OntoWiki URL view helper
+ * OntoWiki Objectlist view helper
  *
- * This helper takes a URI and renders it as a link taking into account
- * the route for the current request.
+ * todo: documentation
  *
  * @category OntoWiki
  * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
@@ -27,7 +26,7 @@ class Site_View_Helper_Objectlist extends Zend_View_Helper_Abstract
                 if ($object['type'] == 'uri') {
                     $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
                     $url->setParam('r', $object['value'], true);
-                    
+
                     $link = sprintf('<a href="%s">%s</a>', (string) $url, $titleHelper->getTitle($object['value']));
                     array_push($list, $link);
                 } else {
@@ -35,7 +34,7 @@ class Site_View_Helper_Objectlist extends Zend_View_Helper_Abstract
                 }
             }
         }
-        
+
         return implode($separator, $list);
     }
 }

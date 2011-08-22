@@ -23,11 +23,11 @@ class Site_View_Helper_Url extends Zend_View_Helper_Abstract
     {
         $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
         $url->setParam('r', $uri, true);
-        
+
         foreach ($additionalParams as $name => $value) {
             $url->setParam($name, $value, true);
         }
-        
+
         return (string)$url;
     }
 }
