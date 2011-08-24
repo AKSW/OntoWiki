@@ -8,15 +8,16 @@
  */
 
 /**
- * OntoWiki DisplayMainContent view helper
+ * OntoWiki OutputDivContent view helper
  *
- * outputs the main content of a given resource
+ * outputs the content of a specific property of a given resource as an RDFa 
+ * annotated div-container with (optional) given css classes
  *
  * @category OntoWiki
  * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class Site_View_Helper_ReturnMainContent extends Zend_View_Helper_Abstract
+class Site_View_Helper_OutputDivContent extends Zend_View_Helper_Abstract
 {
     // current view, injected with setView from Zend
     public $view;
@@ -29,21 +30,23 @@ class Site_View_Helper_ReturnMainContent extends Zend_View_Helper_Abstract
         $this->view = $view;
     }
 
-    public function returnMainContent($desc = null) {
+    public function outputDivContent($desc = null, $contentProperties = null, $css = '')
+    {
 
         if (!$desc) {
             echo '';
             return;
         }
 
-        // used resources
-        // TODO: move to config
-        $contentProperties = array();
-        $contentProperties[] = 'http://aksw.org/schema/content';
-        $contentProperties[] = 'http://lod2.eu/schema/content';
-        $contentProperties[] = 'http://rdfs.org/sioc/ns#content';
-        $contentProperties[] = 'http://purl.org/dc/terms/description';
-        $contentProperties[] = 'http://aksw.org/schema/abstract';
+        // used default property resources
+        if (!$contentProperties) {
+            $contentProperties = array();
+            $contentProperties[] = 'http://aksw.org/schema/content';
+            $contentProperties[] = 'http://lod2.eu/schema/content';
+            $contentProperties[] = 'http://rdfs.org/sioc/ns#content';
+            $contentProperties[] = 'http://purl.org/dc/terms/description';
+            $contentProperties[] = 'http://aksw.org/schema/abstract';
+        }
 
         // select the main property from existing ones
         $mainProperty = null; // the URI of the main content property
@@ -55,21 +58,22 @@ class Site_View_Helper_ReturnMainContent extends Zend_View_Helper_Abstract
         }
 
         // filter and render the (first) literal value of the main property
+        // TODO: striptags and tidying as extension
         if ($mainProperty) {
             $firstLiteral = $desc[$mainProperty][0];
             $literalValue = $firstLiteral['value'];
 
+            // filter by using available extensions
             if (isset($firstLiteral['datatype'])) {
                 $datatype = $firstLiteral['datatype'];
-                $content = $this->view->displayLiteralPropertyValue($literalValue, $mainProperty, $datatype);
+                $content = $this->view->displayLiteralPropertyValue(
+                    $literalValue, $mainProperty, $datatype);
             } else {
-                $content = $this->view->displayLiteralPropertyValue($literalValue, $mainProperty);
+                $content = $this->view->displayLiteralPropertyValue(
+                    $literalValue, $mainProperty);
             }
-            // filter by using available extensions
-            //var_dump($literalValue, $datatype, $mainProperty);
 
             // render as div element with RDFa annotations
-            // TODO: striptags and tidying as extension
             echo '<div property="'. $this->view->curie($mainProperty) . '">';
             echo $content . '</div>' . PHP_EOL;
         }
