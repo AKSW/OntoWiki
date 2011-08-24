@@ -8,16 +8,16 @@
  */
 
 /**
- * OntoWiki OutputDivContent view helper
+ * OntoWiki ReturnLiteralTag view helper
  *
- * outputs the content of a specific property of a given resource as an RDFa 
- * annotated div-container with (optional) given css classes
+ * returns the content of a specific property of a given resource as an RDFa 
+ * annotated tag with (optional) given css classes
  *
  * @category OntoWiki
  * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class Site_View_Helper_OutputDivContent extends Zend_View_Helper_Abstract
+class Site_View_Helper_ReturnLiteralTag extends Zend_View_Helper_Abstract
 {
     // current view, injected with setView from Zend
     public $view;
@@ -30,22 +30,49 @@ class Site_View_Helper_OutputDivContent extends Zend_View_Helper_Abstract
         $this->view = $view;
     }
 
-    public function outputDivContent($desc = null, $contentProperties = null, $css = '')
+    public function returnLiteralTag($desc = null, $contentProperties = null, $options = array())
     {
-
         if (!$desc) {
             echo '';
             return;
         }
 
-        // used default property resources
+        if (!isset($options['class'])) {
+            $class = '';
+        } else {
+            $class = $options['class'];
+        }
+
+        if (!isset($options['tag'])) {
+            $tag = 'div';
+        } else {
+            $tag = $options['tag'];
+        }
+
+        if (!isset($options['prefix'])) {
+            $prefix = '';
+        } else {
+            $prefix = $options['prefix'];
+        }
+
+        if (!isset($options['suffix'])) {
+            $suffix = '';
+        } else {
+            $suffix = $options['suffix'];
+        }
+
         if (!$contentProperties) {
+            // used default property resources
             $contentProperties = array();
             $contentProperties[] = 'http://aksw.org/schema/content';
             $contentProperties[] = 'http://lod2.eu/schema/content';
             $contentProperties[] = 'http://rdfs.org/sioc/ns#content';
             $contentProperties[] = 'http://purl.org/dc/terms/description';
-            $contentProperties[] = 'http://aksw.org/schema/abstract';
+        } else if (is_string($contentProperties)) {
+            // string to array
+            $tmpArray = array();
+            $tmpArray[] = $contentProperties;
+            $contentProperties = $tmpArray;
         }
 
         // select the main property from existing ones
@@ -73,9 +100,8 @@ class Site_View_Helper_OutputDivContent extends Zend_View_Helper_Abstract
                     $literalValue, $mainProperty);
             }
 
-            // render as div element with RDFa annotations
-            echo '<div property="'. $this->view->curie($mainProperty) . '">';
-            echo $content . '</div>' . PHP_EOL;
+            $curie = $this->view->curie($mainProperty);
+            return "$prefix<$tag class='$class' property='$curie'>$content</$tag>$suffix";
         }
 
     }
