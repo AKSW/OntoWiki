@@ -19,7 +19,8 @@
  */
 class Site_View_Helper_DisplayLiteralPropertyValue extends Zend_View_Helper_Abstract
 {
-    public function displayLiteralPropertyValue($value = null, $datatype = '', $property = '')
+    public function displayLiteralPropertyValue($value = null,
+         $property = '', $datatype = 'http://www.w3.org/2001/XMLSchema#string')
     {
         if (!$value) {
             $newValue = '';
@@ -29,6 +30,11 @@ class Site_View_Helper_DisplayLiteralPropertyValue extends Zend_View_Helper_Abst
             $event->datatype = $datatype;
             $event->property = $property;
             $newValue        = $event->trigger();
+
+            // TODO: check why newValue sometimes is null
+            if ($newValue == null) {
+                $newValue = $value;
+            }
         }
         return $newValue;
     }
