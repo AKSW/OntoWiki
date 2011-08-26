@@ -8,7 +8,7 @@
  */
 
 /**
- * OntoWiki ReturnLiteralTag view helper
+ * OntoWiki LiteralTag view helper
  *
  * returns the content of a specific property of a given resource as an RDFa 
  * annotated tag with (optional) given css classes
@@ -17,7 +17,7 @@
  * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class Site_View_Helper_ReturnLiteralTag extends Zend_View_Helper_Abstract
+class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
 {
     // current view, injected with setView from Zend
     public $view;
@@ -30,11 +30,10 @@ class Site_View_Helper_ReturnLiteralTag extends Zend_View_Helper_Abstract
         $this->view = $view;
     }
 
-    public function returnLiteralTag($desc = null, $contentProperties = null, $options = array())
+    public function literalTag($desc = null, $contentProperties = null, $options = array())
     {
         if (!$desc) {
-            echo '';
-            return;
+            return '';
         }
 
         if (!isset($options['class'])) {
