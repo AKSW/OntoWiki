@@ -99,6 +99,9 @@ class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
                     $literalValue, $mainProperty);
             }
 
+            // execute the helper markup on the content
+            $content = $this->view->executeHelperMarkup($content);
+
             $curie = $this->view->curie($mainProperty);
             return "$prefix<$tag class='$class' property='$curie'>$content</$tag>$suffix";
         }
