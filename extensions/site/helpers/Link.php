@@ -11,7 +11,7 @@
  * OntoWiki Link view helper
  *
  * returns a link to a specific resource
- * this helper is usable as {{link ...}} markup in combination with 
+ * this helper is usable as {{link ...}} markup in combination with
  * ExecuteHelperMarkup
  *
  * @category OntoWiki
@@ -37,6 +37,8 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
      * the main link method, mentioned parameters are:
      * - literal
      * - property
+     * - text
+     * - uri
      */
     public function link($options = array())
     {
@@ -44,39 +46,53 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
         $model       = OntoWiki::getInstance()->selectedModel;
         $titleHelper = new OntoWiki_Model_TitleHelper($model);
 
-        if (!isset($options['literal'])) {
-            throw new Exception('link helper needs parameter: literal');
-        }
-        $literal  = $options['literal'];
-
-        if (isset($options['property'])) {
-            $property = $options['property'];
+        // if an uri is given, we do not need to search for
+        if (isset($options['uri'])) {
+            $uri = $options['uri'];
         } else {
-            $property = '?property';
-        }
+            // if no uri is given, we need to search by using the literal
+            if (!isset($options['literal'])) {
+                throw new Exception('link helper needs parameter: literal');
+            }
+            $literal  = $options['literal'];
 
-        $query = '';
-        foreach ($model->getNamespaces() as $ns => $prefix) {
-            $query .= 'PREFIX ' . $prefix . ': <' . $ns . '>' . PHP_EOL;
-        }
-        $query .= 'SELECT DISTINCT ?resourceUri WHERE {?resourceUri '.$property.' ?o0 
-                    FILTER (!isBLANK(?resourceUri)) 
-                    FILTER (REGEX(?o0, "^'.$literal.'$", "i")) 
-                    }  LIMIT 1';
-
-        $result = $store->sparqlQuery($query);
-        if (!$result) {
-            return $literal;
-        } else {
-            $uri   = $result[0]['resourceUri'];
-
-            if (isset($options['text'])) {
-                $text = $options['text'];
+            // if a property is given, use it instead of a variable part
+            if (isset($options['property'])) {
+                $property = $options['property'];
+                if (Erfurt_Uri::check($property)) {
+                    // full uris need to have <...> in sparql
+                    $property = '<'.$property.'>';
+                } else if (preg_match ('/[a-zA-Z]+:[a-zA-Z]+/', $property) == 0) {
+                    // if not an uri, check for prefix:name syntax
+                    throw new Exception('given property is invalid');
+                }
             } else {
-                $text = $titleHelper->getTitle($uri);
+                $property = '?property';
             }
 
-            return "<a href='$uri'>$text</a>";
+            $query = '';
+            foreach ($model->getNamespaces() as $ns => $prefix) {
+                $query .= 'PREFIX ' . $prefix . ': <' . $ns . '>' . PHP_EOL;
+            }
+            $query .= 'SELECT DISTINCT ?resourceUri WHERE {?resourceUri '.$property.' ?o0
+                FILTER (!isBLANK(?resourceUri))
+                FILTER (REGEX(?o0, "^'.$literal.'$", "i"))
+                }  LIMIT 1';
+
+            $result = $store->sparqlQuery($query);
+            if (!$result) {
+                return $literal;
+            } else {
+                $uri   = $result[0]['resourceUri'];
+            }
         }
+
+        if (isset($options['text'])) {
+            $text = $options['text'];
+        } else {
+            $text = $titleHelper->getTitle($uri);
+        }
+
+        return "<a href='$uri'>$text</a>";
     }
 }
