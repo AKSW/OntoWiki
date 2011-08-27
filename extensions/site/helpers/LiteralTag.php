@@ -87,19 +87,17 @@ class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
         // TODO: striptags and tidying as extension
         if ($mainProperty) {
             $firstLiteral = $desc[$mainProperty][0];
-            $literalValue = $firstLiteral['value'];
+            $content = $firstLiteral['value'];
 
             // filter by using available extensions
             if (isset($firstLiteral['datatype'])) {
                 $datatype = $firstLiteral['datatype'];
-                $content = $this->view->displayLiteralPropertyValue(
-                    $literalValue, $mainProperty, $datatype);
+                $content = $this->view->displayLiteralPropertyValue($content, $mainProperty, $datatype);
             } else {
-                $content = $this->view->displayLiteralPropertyValue(
-                    $literalValue, $mainProperty);
+                $content = $this->view->displayLiteralPropertyValue($content, $mainProperty);
             }
 
-            // execute the helper markup on the content
+            // execute the helper markup on the content (after the extensions)
             $content = $this->view->executeHelperMarkup($content);
 
             $curie = $this->view->curie($mainProperty);
