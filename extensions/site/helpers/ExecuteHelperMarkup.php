@@ -61,6 +61,7 @@ class Site_View_Helper_ExecuteHelperMarkup extends Zend_View_Helper_Abstract
             $options[$key] = $value;
         }
 
+        // return the output of the helper or its error message
         try {
             return $this->view->$helper($options);
         } catch (Exception $e) {
@@ -69,12 +70,6 @@ class Site_View_Helper_ExecuteHelperMarkup extends Zend_View_Helper_Abstract
             $message = str_replace ('\'', '', $message);
             return $this->returnError($message);
         }
-
-        //if (!method_exists($this->view, (string) $helper)) {
-            //return $this->returnError("No helper with that name found: $helper");
-        //};
-
-        return $log;
     }
 
     private function returnError($message = null)
@@ -86,6 +81,7 @@ class Site_View_Helper_ExecuteHelperMarkup extends Zend_View_Helper_Abstract
     {
         $this->text = (string) $text;
 
+        // execute full helper tags
         $callback = array( &$this, 'executeOnMatches');
         $this->text = preg_replace_callback ($this->helperPattern, $callback , $this->text);
 
