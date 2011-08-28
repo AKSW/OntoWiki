@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -14,8 +13,7 @@
  * annotated tag with (optional) given css classes
  *
  * @category OntoWiki
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @package  OntoWiki_extensions_components_site
  */
 class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
 {
@@ -30,35 +28,30 @@ class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
         $this->view = $view;
     }
 
+    /*
+     * the main tah method, mentioned parameters are:
+     * - class (css class)
+     * - tag (the used tag, e.g. div)
+     * - prefix, suffix
+     * - iprefix, isuffix
+     */
     public function literalTag($desc = null, $contentProperties = null, $options = array())
     {
+        $store       = OntoWiki::getInstance()->erfurt->getStore();
+        $model       = OntoWiki::getInstance()->selectedModel;
+        $titleHelper = new OntoWiki_Model_TitleHelper($model);
+
         if (!$desc) {
             return '';
         }
 
-        if (!isset($options['class'])) {
-            $class = '';
-        } else {
-            $class = $options['class'];
-        }
-
-        if (!isset($options['tag'])) {
-            $tag = 'div';
-        } else {
-            $tag = $options['tag'];
-        }
-
-        if (!isset($options['prefix'])) {
-            $prefix = '';
-        } else {
-            $prefix = $options['prefix'];
-        }
-
-        if (!isset($options['suffix'])) {
-            $suffix = '';
-        } else {
-            $suffix = $options['suffix'];
-        }
+        // check for options and assign local vars or null
+        $class   = (isset($options['class']))   ? $options['class']   : '';
+        $tag     = (isset($options['tag']))     ? $options['tag']     : 'div';
+        $prefix  = (isset($options['prefix']))  ? $options['prefix']  : '';
+        $suffix  = (isset($options['suffix']))  ? $options['suffix']  : '';
+        $iprefix = (isset($options['iprefix'])) ? $options['iprefix'] : '';
+        $isuffix = (isset($options['isuffix'])) ? $options['isuffix'] : '';
 
         if (!$contentProperties) {
             // used default property resources
@@ -70,7 +63,7 @@ class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
         } else if (is_string($contentProperties)) {
             // string to array
             $tmpArray = array();
-            $tmpArray[] = $contentProperties;
+            $tmpArray[] = Erfurt_Uri::getFromQnameOrUri($contentProperties, $model);
             $contentProperties = $tmpArray;
         }
 
@@ -101,7 +94,7 @@ class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
             $content = $this->view->executeHelperMarkup($content);
 
             $curie = $this->view->curie($mainProperty);
-            return "$prefix<$tag class='$class' property='$curie'>$content</$tag>$suffix";
+            return "$prefix<$tag class='$class' property='$curie'>$iprefix$content$isuffix</$tag>$suffix";
         }
 
     }

@@ -1,9 +1,8 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -13,9 +12,7 @@
  * returns metadata of the last change of a resource
  *
  * @category OntoWiki
- * @package    OntoWiki_extensions_components_site
- * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @package  OntoWiki_extensions_components_site
  */
 class Site_View_Helper_Lastchange extends Zend_View_Helper_Abstract
 {

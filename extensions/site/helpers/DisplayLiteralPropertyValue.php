@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -14,8 +13,7 @@
  * listen to the onDisplayLiteralPropertyValue event
  *
  * @category OntoWiki
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @package  OntoWiki_extensions_components_site
  */
 class Site_View_Helper_DisplayLiteralPropertyValue extends Zend_View_Helper_Abstract
 {

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -13,8 +12,7 @@
  * prints GA header script
  *
  * @category OntoWiki
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @package  OntoWiki_extensions_components_site
  */
 class Site_View_Helper_HeadScriptGoogleAnalytics extends Zend_View_Helper_Abstract
 {
