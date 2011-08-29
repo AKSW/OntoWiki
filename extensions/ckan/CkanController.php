@@ -22,7 +22,7 @@ class CkanController extends OntoWiki_Controller_Component
     protected $response = null;
 
     /** @var POST uri from CKAN */
-    protected $registerBaseUrl = "http://ckan.net/package/new";
+    protected $registerBaseUrl = "http://thedatahub.org/package/new";
     /**
      * Constructor
      */
