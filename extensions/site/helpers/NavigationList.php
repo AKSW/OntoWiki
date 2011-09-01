@@ -29,12 +29,12 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
     /*
      * the used list tag (ol/ul)
      */
-    private $listTag         = 'ul';
+    private $listTag = 'ul';
 
     /*
      * css class value for the list item
      */
-    private $listClass       = '';
+    private $listClass = '';
 
     /*
      * css class value for active li item
@@ -44,17 +44,22 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
     /*
      * the currently active resource
      */
-    private $activeUrl       = '';
+    private $activeUrl = '';
 
     /*
      * a string which is prepended to the list
      */
-    private $prefix          = ''; 
+    private $prefix = ''; 
 
     /*
      * a string which is appended to the list
      */
-    private $suffix          = '';
+    private $suffix = '';
+
+    /*
+     * the nav tag css class
+     */
+    private $navClass = '';
 
     /*
      * main call method, takes an URI and an options array.
@@ -66,40 +71,31 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
      * - prefix - a prefix string outside of the list
      * - suffix - a suffix string outside of the list
      * - titleProperty - an additional VIP title property
+     * - navClass - the navigation tag css class
      *
      */
-    public function navigationList($navResource = null, $options = array())
+    public function navigationList($options = array())
     {
         $owapp       = OntoWiki::getInstance();
         $store       = $owapp->erfurt->getStore();
         $view        = $owapp->view;
         $titleHelper = new OntoWiki_Model_TitleHelper($owapp->selectedModel);
 
-        if (!$navResource) {
+        if (!$options['navResource']) {
             return '';
         } else {
-            $this->navResource = $navResource;
+            $this->navResource = $options['navResource'];
         }
 
         // overwrite standard options with given ones
-        if (isset($options['listTag'])) {
-            $this->listTag = $options['listTag'];
-        }
-        if (isset($options['listClass'])) {
-            $this->listClass = $options['listClass'];
-        }
-        if (isset($options['activeItemClass'])) {
-            $this->activeItemClass = $options['activeItemClass'];
-        }
-        if (isset($options['activeUrl'])) {
-            $this->activeUrl = $options['activeUrl'];
-        }
-        if (isset($options['prefix'])) {
-            $this->prefix = $options['prefix'];
-        }
-        if (isset($options['suffix'])) {
-            $this->suffix = $options['suffix'];
-        }
+        $this->listTag         = (isset($options['listTag'])) ? $options['listTag'] : $this->listTag;
+        $this->listClass       = (isset($options['listClass'])) ? $options['listClass'] : $this->listClass;
+        $this->activeItemClass = (isset($options['activeItemClass'])) ? $options['activeItemClass'] : $this->activeItemClass;
+        $this->activeUrl       = (isset($options['activeUrl'])) ? $options['activeUrl'] : $this->activeUrl;
+        $this->prefix          = (isset($options['prefix'])) ? $options['prefix'] : $this->prefix;
+        $this->suffix          = (isset($options['suffix'])) ? $options['suffix'] : $this->suffix;
+        $this->navClass        = (isset($options['navClass'])) ? $options['navClass'] : $this->navClass;
+
         if (isset($options['titleProperty'])) {
             $titleHelper->prependTitleProperty($options['titleProperty']);
         }
@@ -187,7 +183,7 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
         $return  = '<' . $this->listTag . '>' . PHP_EOL . $return;
         $return .= '<' . $this->listTag . '>' . PHP_EOL;
 
-        $return = $this->prefix . $return . $this->suffix;
+        $return = "<nav class='$this->navClass ttt'>" . $this->prefix . $return . $this->suffix . '</nav>';
         return $return;
     }
 
