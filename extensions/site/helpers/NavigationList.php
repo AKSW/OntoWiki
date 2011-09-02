@@ -17,6 +17,11 @@
 class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
 {
     /*
+     * the uri of the special title property
+     */
+    protected $menuLabel = 'http://ns.ontowiki.net/SysOnt/Site/menuLabel';
+
+    /*
      * current view, injected with setView from Zend
      */
     public $view;
@@ -98,6 +103,8 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
 
         if (isset($options['titleProperty'])) {
             $titleHelper->prependTitleProperty($options['titleProperty']);
+        } else {
+            $titleHelper->prependTitleProperty($this->menuLabel);
         }
 
         $query = '
