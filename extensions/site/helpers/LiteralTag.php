@@ -17,23 +17,27 @@
  */
 class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
 {
-    // current view, injected with setView from Zend
+    /*
+     * current view, injected with setView from Zend
+     */
     public $view;
 
-    /*
-     * view setter (dev zone article: http://devzone.zend.com/article/3412)
-     */
-    public function setView(Zend_View_Interface $view)
-    {
-        $this->view = $view;
-    }
+    public $contentProperties = array(
+        'http://ns.ontowiki.net/SysOnt/Site/content',
+        'http://purl.org/rss/1.0/modules/content/encoded',
+        'http://rdfs.org/sioc/ns#content',
+        'http://purl.org/dc/terms/description',
+        'http://www.w3.org/2000/01/rdf-schema#comment',
+    );
 
     /*
      * the main tah method, mentioned parameters are:
      * - class (css class)
      * - tag (the used tag, e.g. div)
-     * - prefix, suffix
-     * - iprefix, isuffix
+     * - prefix
+     * - suffix
+     * - iprefix
+     * - isuffix
      */
     public function literalTag($desc = null, $contentProperties = null, $options = array())
     {
@@ -45,7 +49,7 @@ class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
             return '';
         }
 
-        // check for options and assign local vars or null
+        // check for options and assign local vars or default values
         $class   = (isset($options['class']))   ? $options['class']   : '';
         $tag     = (isset($options['tag']))     ? $options['tag']     : 'div';
         $prefix  = (isset($options['prefix']))  ? $options['prefix']  : '';
@@ -55,11 +59,7 @@ class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
 
         if (!$contentProperties) {
             // used default property resources
-            $contentProperties = array();
-            $contentProperties[] = 'http://aksw.org/schema/content';
-            $contentProperties[] = 'http://lod2.eu/schema/content';
-            $contentProperties[] = 'http://rdfs.org/sioc/ns#content';
-            $contentProperties[] = 'http://purl.org/dc/terms/description';
+            $contentProperties = $this->contentProperties;
         } else if (is_string($contentProperties)) {
             // string to array
             $tmpArray = array();
@@ -98,4 +98,13 @@ class Site_View_Helper_LiteralTag extends Zend_View_Helper_Abstract
         }
 
     }
+
+    /*
+     * view setter (dev zone article: http://devzone.zend.com/article/3412)
+     */
+    public function setView(Zend_View_Interface $view)
+    {
+        $this->view = $view;
+    }
+
 }
