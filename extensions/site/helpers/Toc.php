@@ -34,16 +34,16 @@ class Site_View_Helper_Toc extends Zend_View_Helper_Abstract
      */
     public function toc($options = array())
     {
+        // check for options and assign local vars or default
+        $startlevel = (isset($options['startlevel'])) ? $options['startlevel'] : '1';
+        $depth      = (isset($options['depth']))      ? $options['depth']      : '2';
+        $tag        = (isset($options['tag']))        ? $options['tag']        : 'ul';
+
         $view        = $this->view;
         $store       = OntoWiki::getInstance()->erfurt->getStore();
         $model       = OntoWiki::getInstance()->selectedModel;
         $titleHelper = new OntoWiki_Model_TitleHelper($model);
         $script      = OntoWiki::getInstance()->getUrlBase() . 'extensions/site/js/jquery.tableofcontents.js';
-
-        // check for options and assign local vars or null
-        $startlevel = (isset($options['startlevel'])) ? $options['startlevel'] : '1';
-        $depth      = (isset($options['depth']))      ? $options['depth']      : '2';
-        $tag        = (isset($options['tag']))        ? $options['tag']        : 'ul';
 
         $return  = PHP_EOL;
         $return .= '<script type="text/javascript" src="'. $script .'"></script>' . PHP_EOL;
@@ -51,7 +51,7 @@ class Site_View_Helper_Toc extends Zend_View_Helper_Abstract
     $(document).ready(function(){
         $.TableOfContents.defaultOptions.startLevel = "'.$startlevel.'";
         $.TableOfContents.defaultOptions.depth      = "'.$depth.'";
-        $("#toc").tableOfContents($("div.content[property=\'aksw:content\']"));
+        $("#toc").tableOfContents($("div.content[property=\'site:content\']"));
     })
 </script>' . PHP_EOL;
         $return .= '<details><summary>Table of Contents</summary>';
