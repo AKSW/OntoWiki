@@ -21,27 +21,21 @@ class CkanHelper extends OntoWiki_Component_Helper
      */
     public function onCreateMenu($event)
     {
-        // do not allow registration of resources ...
-        if ($event->isModel) {
-            return;
-        }
-
-        // localhost models can't be registered at CKAN
-        $modelUri = (string) $event->resource;
-        if (substr_count($modelUri, 'http://localhost') > 0) {
-            return;
-        }
-
-        // no menu entry if the model is not part of the base url
-        $baseUrl = OntoWiki::getInstance()->config->urlBase;
-        if (substr_count($modelUri, $baseUrl) !== 1) {
-            return;
-        }
-
-        // no menu entry if we do not have a linked data server online
+        $modelUri         = (string) $event->resource;
+        $baseUrl          = OntoWiki::getInstance()->config->urlBase;
         $extensionManager = OntoWiki::getInstance()->extensionManager;
-        if (!$extensionManager->isExtensionRegistered('linkeddataserver')) {
-            return;
+
+        // do NOT create the menu entry ...
+        switch (true) {
+            // ... for resources
+            case (!$event->isModel):
+            // ... for localhost models (can't be registered at CKAN)
+            case (substr_count($modelUri, 'http://localhost') > 0):
+            // ... if the model is not part of the base url (no Linked Data)
+            case (substr_count($modelUri, $baseUrl) !== 1) :
+            // ... if we do not have a linked data server online
+            case (!$extensionManager->isExtensionRegistered('linkeddataserver')):
+                return;
         }
 
         // finally, create the holy menu entry and PREPEND it on top of the menu
