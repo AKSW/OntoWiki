@@ -9,8 +9,7 @@
 /**
  * OntoWiki URL view helper
  *
- * This helper takes a URI and renders it as a link taking into account
- * the route for the current request.
+ * This helper takes a URI and returns a URL taking into account the route for the current request.
  *
  * @category OntoWiki
  * @package  OntoWiki_extensions_components_site
