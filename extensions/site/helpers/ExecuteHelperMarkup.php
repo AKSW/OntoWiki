@@ -13,6 +13,8 @@
  * helper markup is defined as:
  * {{helpername p1="v1" p2="v2 ...}} and {{helpername v1}}
  *
+ * @todo distinguish between helpers and markup-helpers (actions)
+ *
  * @category OntoWiki
  * @package  OntoWiki_extensions_components_site
  */
@@ -63,12 +65,12 @@ class Site_View_Helper_ExecuteHelperMarkup extends Zend_View_Helper_Abstract
         $tag        = $matches[0];
         $helper     = strtolower($matches['helper']);
         $attributes = trim($matches['attributes']);
-        $log        = "Found a $helper pattern: $matches[0]";
 
         // split the attributes part of the helper markup and fill it to the
         // options array
         preg_match_all ($this->keyValuePattern, $attributes, $matches, PREG_SET_ORDER);
         $options = array();
+        $options['r'] = OntoWiki::getInstance()->selectedResource;
         foreach ($matches as $i => $match) {
             $key           = $match['key'];
             $value         = $match['value'];
