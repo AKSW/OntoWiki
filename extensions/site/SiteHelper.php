@@ -208,7 +208,7 @@ class SiteHelper extends OntoWiki_Component_Helper
                 // classic
                 $event->route      = null;
                 $event->controller = 'site';
-                $event->action     = 'lod2'; // TODO: detect actual site
+                $event->action     = $site['id'];
 
                 // URL not created, but params changed
                 return false;
@@ -229,6 +229,9 @@ class SiteHelper extends OntoWiki_Component_Helper
                     $this->_siteConfig = $config;
                 }
             }
+
+            // add the site id to the config in order to allow correct URIs
+            $this->_siteConfig['id'] = $site;
         }
 
         return $this->_siteConfig;
