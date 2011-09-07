@@ -67,6 +67,11 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
     private $navClass = '';
 
     /*
+     * id value for the nav item
+     */
+    private $navId = '';
+
+    /*
      * main call method, takes an URI and an options array.
      * possible options array key:
      * - listTag - the used html tag (ol, ul)
@@ -100,6 +105,7 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
         $this->prefix          = (isset($options['prefix'])) ? $options['prefix'] : $this->prefix;
         $this->suffix          = (isset($options['suffix'])) ? $options['suffix'] : $this->suffix;
         $this->navClass        = (isset($options['navClass'])) ? $options['navClass'] : $this->navClass;
+        $this->navId           = (isset($options['navId'])) ? $options['navId'] : $this->navId;
 
         if (isset($options['titleProperty'])) {
             $titleHelper->prependTitleProperty($options['titleProperty']);
@@ -188,9 +194,10 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
             $return .= PHP_EOL;
         }
         $return  = '<' . $this->listTag . '>' . PHP_EOL . $return;
-        $return .= '<' . $this->listTag . '>' . PHP_EOL;
+        $return .= '</' . $this->listTag . '>' . PHP_EOL;
 
-        $return = "<nav class='$this->navClass ttt'>" . $this->prefix . $return . $this->suffix . '</nav>';
+        // $return = "<nav class='$this->navClass ttt'>" . $this->prefix . $return . $this->suffix . '</nav>';
+        $return = '<nav'.($this->navClass?' class="'.$this->navClass.'"':'').($this->navId?' id="'.$this->navId.'"':'').'>' . $this->prefix . $return . $this->suffix . '</nav>' . PHP_EOL;
         return $return;
     }
 
