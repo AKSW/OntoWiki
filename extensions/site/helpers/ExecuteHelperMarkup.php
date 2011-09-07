@@ -70,12 +70,14 @@ class Site_View_Helper_ExecuteHelperMarkup extends Zend_View_Helper_Abstract
         // options array
         preg_match_all ($this->keyValuePattern, $attributes, $matches, PREG_SET_ORDER);
         $options = array();
-        $options['r'] = OntoWiki::getInstance()->selectedResource;
         foreach ($matches as $i => $match) {
             $key           = $match['key'];
             $value         = $match['value'];
             $options[$key] = $value;
         }
+
+        // pre-set some standard values
+        $options['thisResource'] = OntoWiki::getInstance()->selectedResource;
 
         // return the output of the helper or its error message
         try {

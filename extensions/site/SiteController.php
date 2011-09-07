@@ -89,8 +89,8 @@ class SiteController extends OntoWiki_Controller_Component
         $mainTemplate = sprintf('%s/%s', $this->_site, self::MAIN_TEMPLATE_NAME);
 
         if (is_readable($templatePath . $mainTemplate)) {
-            $moduleContext = 'site.' . $this->_site;
-            // $this->addModuleContext($moduleContext);
+            $this->moduleContext = 'site.' . $this->_site;
+            // $this->addModuleContext($this->moduleContext);
 
             $this->_loadModel();
             $this->_loadResource();
@@ -125,42 +125,11 @@ class SiteController extends OntoWiki_Controller_Component
                 $this->view->setScriptPath($scriptPaths);
             }
 
-            $siteConfig = array(
-                'id'          => $this->_site,
-                'generator'   => 'OntoWiki ' . $this->_config->version->number,
-                'pingbackUri' => $this->_owApp->getUrlBase() . 'pingback/ping',
-                'wikiBaseUri' => $this->_owApp->getUrlBase(),
-                'basePath'    => sprintf('%ssites/%s', $this->_componentRoot, $this->_site),
-                'baseUri'     => sprintf('%ssites/%s', $this->_componentUrlBase, $this->_site),
-                'resourceUri' => $this->_resourceUri,
-                'context'     => $moduleContext,
-                'site'        => $this->_getSiteConfig(),
-                'description' => $this->_resource->getDescription(),
-                'descriptionHelper' => $this->_resource->getDescriptionHelper(),
-                'store'       => OntoWiki::getInstance()->erfurt->getStore(),
-                'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper()),
-                'options'     => array(
-                    'siteConfig' => $this->_getSiteConfig(),
-                    'site'       => $this->_site
-                ),
-                'namespaces'  => array(
-                    'rdf'    => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-                    'rdfs'   => 'http://www.w3.org/2000/01/rdf-schema#',
-                    'owl'    => 'http://www.w3.org/2002/07/owl#',
-                    'dc'     => 'http://purl.org/dc/terms/',
-                    'skos'   => 'http://www.w3.org/2004/02/skos/core#',
-                    'sioc'   => 'http://rdfs.org/sioc/ns#',
-                    'sioct'  => 'http://rdfs.org/sioc/types#',
-                    'doap'   => 'http://usefulinc.com/ns/doap#',
-                    'foaf'   => 'http://xmlns.com/foaf/0.1/',
-                    'xsd'    => 'http://www.w3.org/2001/XMLSchema#',
-                    'sysont' => 'http://ns.ontowiki.net/SysOnt/',
-                    'lod2'   => 'http://lod2.eu/schema/'
-                )
-            );
+            // with assignment, direct access is possible ($this->basePath).
+            $this->view->assign($this->_getTemplateData());
+            // this allows for easy re-assignment of everything
+            $this->view->templateData = $this->_getTemplateData();
 
-            // mit assign kann man im Template direkt zugreifen ($this->basePath).
-            $this->view->assign($siteConfig);
             // generate the page body
             $bodyContent = $this->view->render($mainTemplate);
 
@@ -177,6 +146,45 @@ class SiteController extends OntoWiki_Controller_Component
             $this->_response->setBody($this->view->render('404.phtml'));
         }
     }
+
+
+    private function _getTemplateData()
+    {
+        // prepare namespace array with presets of rdf, rdfs and owl
+        $namespaces = array(
+            'rdf'    => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+            'rdfs'   => 'http://www.w3.org/2000/01/rdf-schema#',
+            'owl'    => 'http://www.w3.org/2002/07/owl#'
+        );
+        foreach ($this->_model->getNamespaces() as $ns => $prefix) {
+            $namespaces[$prefix] = $ns;
+        }
+
+        // this template data is given to ALL templates (with renderx)
+        $templateData           = array(
+            'siteId'            => $this->_site,
+            'siteConfig'        => $this->_getSiteConfig(),
+            'generator'         => 'OntoWiki ' . $this->_config->version->number,
+            'pingbackUrl'       => $this->_owApp->getUrlBase() . 'pingback/ping',
+            'wikiBaseUrl'       => $this->_owApp->getUrlBase(),
+            'themeUrlBase'      => $this->view->themeUrlBase,
+            'libraryUrlBase'    => $this->view->libraryUrlBase,
+            'basePath'          => sprintf('%ssites/%s', $this->_componentRoot, $this->_site),
+            'baseUri'           => sprintf('%ssites/%s', $this->_componentUrlBase, $this->_site),
+            'context'           => $this->moduleContext,
+            'namespaces'        => $namespaces,
+            'model'             => $this->_model,
+            'modelUri'          => $this->_modelUri,
+            'title'             => $this->_resource->getTitle(),
+            'resourceUri'       => (string) $this->_resourceUri,
+            'description'       => $this->_resource->getDescription(),
+            'descriptionHelper' => $this->_resource->getDescriptionHelper(),
+        );
+
+
+        return $templateData;
+    }
+
 
     protected function _loadModel()
     {

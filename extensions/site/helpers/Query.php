@@ -31,9 +31,10 @@ class Site_View_Helper_Query extends Zend_View_Helper_Abstract
      */
     public function query($options = array())
     {
-        $store       = OntoWiki::getInstance()->erfurt->getStore();
-        $model       = OntoWiki::getInstance()->selectedModel;
-        $titleHelper = new OntoWiki_Model_TitleHelper($model);
+        $this->templateData = $this->view->getHelper('Renderx')->templateData;
+        $store              = OntoWiki::getInstance()->erfurt->getStore();
+        $model              = OntoWiki::getInstance()->selectedModel;
+        $titleHelper        = new OntoWiki_Model_TitleHelper($model);
 
         // check for options and assign local vars or null
         $where    = (isset($options['where']))    ? $options['where']    : '?resourceUri a foaf:Project.';
@@ -41,9 +42,8 @@ class Site_View_Helper_Query extends Zend_View_Helper_Abstract
         $limit    = (isset($options['limit']))    ? $options['limit']    : 100;
 
         // create template name {site}/items/{name}.phtml
-        $siteOptions = $this->view->options;
-        $site = $siteOptions['site'];
-        $template = $site . '/items/' . $template . '.phtml';
+        $siteId   = $this->templateData['siteId'];
+        $template = $siteId . '/items/' . $template . '.phtml';
 
         // build the query including PREFIX declarations
         $query = '';

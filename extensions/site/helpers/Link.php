@@ -37,21 +37,21 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
         $titleHelper = new OntoWiki_Model_TitleHelper($model);
 
         // check for options and assign local vars or null
-        $uri      = (isset($options['uri']))      ? $options['uri']      : null;
-        $literal  = (isset($options['literal']))  ? $options['literal']  : null;
-        $text     = (isset($options['text']))     ? $options['text']     : null;
-        $property = (isset($options['property'])) ? $options['property'] : null;
+        $uri      = (isset($options['uri']))      ? (string) $options['uri'] : null;
+        $literal  = (isset($options['literal']))  ? $options['literal']      : null;
+        $text     = (isset($options['text']))     ? $options['text']         : null;
+        $property = (isset($options['property'])) ? $options['property']     : null;
 
         // resolve short forms (overwrite full name values with short forms values)
-        $uri      = (isset($options['r'])) ? $options['r'] : $uri;
-        $literal  = (isset($options['l'])) ? $options['l'] : $literal;
-        $text     = (isset($options['t'])) ? $options['t'] : $text;
-        $property = (isset($options['p'])) ? $options['p'] : $property;
+        $uri      = (isset($options['r'])) ? (string) $options['r'] : $uri;
+        $literal  = (isset($options['l'])) ? $options['l']          : $literal;
+        $text     = (isset($options['t'])) ? $options['t']          : $text;
+        $property = (isset($options['p'])) ? $options['p']          : $property;
 
         // if an uri is given, we do not need to search for
         if (isset($uri)) {
             // resolve qnames and check uri input
-            $uri = Erfurt_Uri::getFromQnameOrUri($uri, $model);
+            $uri = Erfurt_Uri::getFromQnameOrUri((string) $uri, $model);
         } else {
             // if no uri is given, we need to search by using the literal
             if (!isset($literal)) {
