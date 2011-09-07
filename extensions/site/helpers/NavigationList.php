@@ -11,6 +11,7 @@
  *
  * returns an ol/ul list of a given rdf:seq resource
  *
+ * @todo render substructure
  * @category OntoWiki
  * @package  OntoWiki_extensions_components_site
  */
@@ -54,7 +55,7 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
     /*
      * a string which is prepended to the list
      */
-    private $prefix = ''; 
+    private $prefix = '';
 
     /*
      * a string which is appended to the list
@@ -74,21 +75,21 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
     /*
      * main call method, takes an URI and an options array.
      * possible options array key:
-     * - listTag - the used html tag (ol, ul)
-     * - listClass - the used css class for the list
+     * - listTag         - the used html tag (ol, ul)
+     * - listClass       - the used css class for the list
      * - activeItemClass - the used css class for the active item
-     * - activeUrl - the active item
-     * - prefix - a prefix string outside of the list
-     * - suffix - a suffix string outside of the list
-     * - titleProperty - an additional VIP title property
-     * - navClass - the navigation tag css class
+     * - activeUrl       - the active item
+     * - prefix          - a prefix string outside of the list
+     * - suffix          - a suffix string outside of the list
+     * - titleProperty   - an additional VIP title property
+     * - navClass        - the navigation tag css class
+     * - navId           - the navigation tag id attribute value
      *
      */
     public function navigationList($options = array())
     {
         $owapp       = OntoWiki::getInstance();
         $store       = $owapp->erfurt->getStore();
-        $view        = $owapp->view;
         $titleHelper = new OntoWiki_Model_TitleHelper($owapp->selectedModel);
 
         if (!$options['navResource']) {
@@ -97,7 +98,7 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
             $this->navResource = $options['navResource'];
         }
 
-        // overwrite standard options with given ones
+        // overwrite standard options with given ones, if given as option
         $this->listTag         = (isset($options['listTag'])) ? $options['listTag'] : $this->listTag;
         $this->listClass       = (isset($options['listClass'])) ? $options['listClass'] : $this->listClass;
         $this->activeItemClass = (isset($options['activeItemClass'])) ? $options['activeItemClass'] : $this->activeItemClass;
@@ -131,6 +132,7 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
 
         // array of urls and labels which represent the navigation menu
         $navigation = array();
+
         // round one: fill navigation array with urls as well as fill the titleHelper
         foreach ($result as $row) {
             // works only for URIs ...
@@ -182,22 +184,37 @@ class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
     {
         $return = '';
         foreach ($navigation as $item) {
-            if ($item['url'] == $this->activeUrl) {
+            // prepare item values
+            $url   = $item['url'];
+            $label = $item['label'];
+
+            // item tag start (depends on activeness)
+            if ($url == $this->activeUrl) {
                 $return .= '<li class="'.$this->activeItemClass.'">';
             } else {
                 $return .= '<li>';
             }
-            $return .= '<a href="'.$item['url'].'">';
-            $return .= $item['label'];
-            $return .= '</a>';
-            $return .= '</li>';
-            $return .= PHP_EOL;
+
+            // item tag body
+            $return .= '<a href="'.$url.'">'.$label.'</a>';
+
+            // item tag end
+            $return .= '</li>' . PHP_EOL;
         }
+
+        // surround the list items with ul or ol tag
         $return  = '<' . $this->listTag . '>' . PHP_EOL . $return;
         $return .= '</' . $this->listTag . '>' . PHP_EOL;
 
-        // $return = "<nav class='$this->navClass ttt'>" . $this->prefix . $return . $this->suffix . '</nav>';
-        $return = '<nav'.($this->navClass?' class="'.$this->navClass.'"':'').($this->navId?' id="'.$this->navId.'"':'').'>' . $this->prefix . $return . $this->suffix . '</nav>' . PHP_EOL;
+        // surround the list with prefix/suffix
+        $return = $this->prefix . $return . $this->suffix;
+
+        // prepare class and id attribute/value strings for the nav-tag
+        $class = ($this->navClass != '') ? ' class="'.$this->navClass.'"' : '';
+        $id    = ($this->navId != '')    ? ' id="'.$this->navId.'"'       : '';
+
+        // surround the list with the nav-tag
+        $return = '<nav'. $class . $id .'>' . $return . '</nav>' . PHP_EOL;
         return $return;
     }
 
