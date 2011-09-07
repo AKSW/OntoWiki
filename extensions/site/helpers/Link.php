@@ -25,10 +25,10 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
 
     /*
      * the main link method, mentioned parameters are:
-     * - literal
-     * - property
-     * - text
-     * - uri
+     * - literal   - if no uri/qname is given a search is executed
+     * - property  - search can be limited to a property
+     * - text      - the link text (instead of title)
+     * - uri       - a uri or qname of the resource
      */
     public function link($options = array())
     {
