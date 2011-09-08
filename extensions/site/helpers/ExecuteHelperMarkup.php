@@ -77,7 +77,7 @@ class Site_View_Helper_ExecuteHelperMarkup extends Zend_View_Helper_Abstract
         }
 
         // pre-set some standard values
-        $options['thisResource'] = OntoWiki::getInstance()->selectedResource;
+        $options['selectedResource'] = OntoWiki::getInstance()->selectedResource;
 
         // return the output of the helper or its error message
         try {
