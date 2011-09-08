@@ -59,11 +59,14 @@ class Site_View_Helper_Renderx extends Zend_View_Helper_Abstract
     protected $typeProp             = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 
     /*
-     * the main method
+     * the main method, mentioned parameters are:
+     * - template
      */
     public function renderx($options = array())
     {
-        $this->selectTemplate();
+        $this->template =
+            (isset($options['template'])) ? $options['template'] : $this->selectTemplate();
+
         $this->prepareTemplateData();
 
         // try to do a partial or output error details
@@ -94,6 +97,7 @@ class Site_View_Helper_Renderx extends Zend_View_Helper_Abstract
                 $this->template = $this->view->siteId .'/types/'. $mappings[$classUri] .'.phtml';
             }
         }
+        return $this->template;
 
     }
 
