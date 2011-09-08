@@ -29,6 +29,10 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
      * - property  - search can be limited to a property
      * - text      - the link text (instead of title)
      * - uri       - a uri or qname of the resource
+     * - prefix - string at the beginning
+     * - suffix - string at the end
+     * - iprefix - string between tag and content at the beginning
+     * - isuffix - string betwee content and tag at the end
      */
     public function link($options = array())
     {
@@ -41,6 +45,10 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
         $literal  = (isset($options['literal']))  ? $options['literal']      : null;
         $text     = (isset($options['text']))     ? $options['text']         : null;
         $property = (isset($options['property'])) ? $options['property']     : null;
+        $prefix  = (isset($options['prefix']))  ? $options['prefix']  : '';
+        $suffix  = (isset($options['suffix']))  ? $options['suffix']  : '';
+        $iprefix = (isset($options['iprefix'])) ? $options['iprefix'] : '';
+        $isuffix = (isset($options['isuffix'])) ? $options['isuffix'] : '';
 
         // resolve short forms (overwrite full name values with short forms values)
         $uri      = (isset($options['r'])) ? (string) $options['r'] : $uri;
@@ -83,7 +91,7 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
         // link text comes from title helper or option
         $text = (isset($text)) ? $text : $titleHelper->getTitle($uri);
 
-        return "<a href='$uri'>$text</a>";
+        return "$prefix<a href='$uri'>$iprefix$text$isuffix</a>$suffix";
     }
 
     /*
