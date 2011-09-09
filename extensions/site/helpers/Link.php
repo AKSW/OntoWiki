@@ -25,14 +25,15 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
 
     /*
      * the main link method, mentioned parameters are:
-     * - literal   - if no uri/qname is given a search is executed
-     * - property  - search can be limited to a property
-     * - text      - the link text (instead of title)
-     * - uri       - a uri or qname of the resource
-     * - prefix - string at the beginning
-     * - suffix - string at the end
-     * - iprefix - string between tag and content at the beginning
-     * - isuffix - string betwee content and tag at the end
+     * - literal  - if no uri/qname is given a search is executed
+     * - property - search can be limited to a property
+     * - text     - the link text (instead of title)
+     * - uri      - a uri or qname of the resource
+     * - prefix   - string at the beginning
+     * - suffix   - string at the end
+     * - iprefix  - string between tag and content at the beginning
+     * - isuffix  - string betwee content and tag at the end
+     * - direct   - set to something (e.g true) if you do not want OntoWiki URLs
      */
     public function link($options = array())
     {
@@ -45,10 +46,11 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
         $literal  = (isset($options['literal']))  ? $options['literal']      : null;
         $text     = (isset($options['text']))     ? $options['text']         : null;
         $property = (isset($options['property'])) ? $options['property']     : null;
-        $prefix  = (isset($options['prefix']))  ? $options['prefix']  : '';
-        $suffix  = (isset($options['suffix']))  ? $options['suffix']  : '';
-        $iprefix = (isset($options['iprefix'])) ? $options['iprefix'] : '';
-        $isuffix = (isset($options['isuffix'])) ? $options['isuffix'] : '';
+        $prefix   = (isset($options['prefix']))   ? $options['prefix']       : '';
+        $suffix   = (isset($options['suffix']))   ? $options['suffix']       : '';
+        $iprefix  = (isset($options['iprefix']))  ? $options['iprefix']      : '';
+        $isuffix  = (isset($options['isuffix']))  ? $options['isuffix']      : '';
+        $direct   = (isset($options['direct']))   ? true                     : false;
 
         // resolve short forms (overwrite full name values with short forms values)
         $uri      = (isset($options['r'])) ? (string) $options['r'] : $uri;
@@ -71,8 +73,8 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
 
             // build the query including PREFIX declarations
             $query = '';
-            foreach ($model->getNamespaces() as $ns => $prefix) {
-                $query .= 'PREFIX ' . $prefix . ': <' . $ns . '>' . PHP_EOL;
+            foreach ($model->getNamespaces() as $ns => $nsprefix) {
+                $query .= 'PREFIX ' . $nsprefix . ': <' . $ns . '>' . PHP_EOL;
             }
             $query .= 'SELECT DISTINCT ?resourceUri WHERE {?resourceUri '.$property.' ?literal
                 FILTER (!isBLANK(?resourceUri))
@@ -88,10 +90,19 @@ class Site_View_Helper_Link extends Zend_View_Helper_Abstract
             }
         }
 
+        // generate the link URL from the resource URI
+        if ($direct == true) {
+            $url = $uri;
+        } else {
+            $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+            $url->setParam('r', $uri, true);
+            $url = (string) $url;
+        }
+
         // link text comes from title helper or option
         $text = (isset($text)) ? $text : $titleHelper->getTitle($uri);
 
-        return "$prefix<a href='$uri'>$iprefix$text$isuffix</a>$suffix";
+        return "$prefix<a href='$url'>$iprefix$text$isuffix</a>$suffix";
     }
 
     /*
