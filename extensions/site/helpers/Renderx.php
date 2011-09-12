@@ -90,15 +90,16 @@ class Site_View_Helper_Renderx extends Zend_View_Helper_Abstract
         $description = $this->getDescription();
 
         // try to map each rdf:type property value
-        foreach ($description[$this->typeProp] as $class) {
-            $classUri = $class['value'];
-            if (isset($mappings[$classUri])) {
-                // overwrite, if class has an template entry
-                $this->template = $this->view->siteId .'/types/'. $mappings[$classUri] .'.phtml';
+        if (isset($description[$this->typeProp])) {
+            foreach ($description[$this->typeProp] as $class) {
+                $classUri = $class['value'];
+                if (isset($mappings[$classUri])) {
+                    // overwrite, if class has an template entry
+                    $this->template = $this->view->siteId .'/types/'. $mappings[$classUri] .'.phtml';
+                }
             }
         }
         return $this->template;
-
     }
 
     /*
