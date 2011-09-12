@@ -24,7 +24,20 @@ class Site_View_Helper_Img extends Zend_View_Helper_Abstract
     public $view;
 
     /*
+     * the list of known image properties
+     */
+    private $properties = array(
+        'http://xmlns.com/foaf/0.1/depiction',
+        'http://xmlns.com/foaf/0.1/logo',
+        'http://xmlns.com/foaf/0.1/img',
+        'http://purl.org/ontology/mo/image',
+        'http://open.vocab.org/terms/screenshot'
+    );
+
+    /*
      * the main img method, mentioned parameters are:
+     * - uri      - which resource the iamge is from (empty means selected Resource)
+     * - property - the property which represents the image
      * - src      - the URL of the image to load
      * - class    - the value of the class attribute
      * - alt      - the value of the alt attribute
@@ -38,7 +51,6 @@ class Site_View_Helper_Img extends Zend_View_Helper_Abstract
         $store       = $owapp->erfurt->getStore();
         $model       = $owapp->selectedModel;
         $extManager  = $owapp->extensionManager;
-        $titleHelper = new OntoWiki_Model_TitleHelper($model);
 
         // check for options and assign local vars or null
         $src      = (isset($options['src']))    ? (string) $options['src']         : null;
@@ -48,12 +60,54 @@ class Site_View_Helper_Img extends Zend_View_Helper_Abstract
         $prefix   = (isset($options['prefix'])) ? $options['prefix']               : '';
         $suffix   = (isset($options['suffix'])) ? $options['suffix']               : '';
 
-        // if an uri is given, we do not need to search for
-        if (!isset($src)) {
-            // @todo: resolve images from the resource
-            throw new Exception('currently this helper needs a src parameter');
+        // choose, which uri to use: option over helper default over view value
+        $uri = (isset($this->resourceUri))           ? $this->resourceUri : null;
+        $uri = (isset($options['selectedResource'])) ? (string) $options['selectedResource'] : $uri;
+        $uri = (isset($options['uri']))              ? (string) $options['uri'] : $uri;
+        // in case qname is given, transform to full URI
+        $uri = Erfurt_Uri::getFromQnameOrUri($uri, $model);
+
+        // look for a valid image url somewhere
+        if ($src == null) {
+            // choose, which properties to use for lookup (todo: allow multple properties)
+            $properties = (isset($options['property'])) ? array( $options['property']) : null;
+            $properties = (!$properties) ? $this->properties : $properties;
+
+            // validate each given property
+            foreach ($properties as $key => $value) {
+                try {
+                    $validatedValue = Erfurt_Uri::getFromQnameOrUri($value, $model);
+                    $properties[$key] = $validatedValue;
+                } catch (Exception $e) {
+                    // unset invalid properties
+                    unset($properties[$key]);
+                }
+            }
+
+            // create description from resource URI
+            $resource     = new OntoWiki_Resource($uri, $model);
+            $description  = $resource->getDescription();
+            $description  = $description[$uri];
+
+            // select the used property
+            $imgProperty = null;
+            foreach ($properties as $property) {
+                if (isset($description[$property])) {
+                    $imgProperty = $property;
+                    break;
+                }
+            }
+
+            if ($imgProperty != null) {
+                $src = $description[$imgProperty][0]['value'];
+            } else {
+                // we do not have an image src
+                return '';
+            }
         }
 
+        // modify the image src for the IPC extension
+        // @todo: use an event here
         if ($filter && $extManager->isExtensionRegistered('ipc')) {
             $ipcUrl = $owapp->config->urlBase . '/ipc/get';
             $ipcUrl = $ipcUrl . '?img='. urlencode($src) .'&filter='. urlencode($filter);
@@ -69,5 +123,6 @@ class Site_View_Helper_Img extends Zend_View_Helper_Abstract
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;
+        $this->resourceUri  = (string) $view->resourceUri;
     }
 }
