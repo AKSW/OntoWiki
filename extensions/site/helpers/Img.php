@@ -44,6 +44,7 @@ class Site_View_Helper_Img extends Zend_View_Helper_Abstract
      * - filter   - the filter string for the IPC (if enabled)
      * - prefix   - string at the beginning
      * - suffix   - string at the end
+     * - nordfa   - if set to anything except null, rdfa is not rendered
      */
     public function img($options = array())
     {
@@ -59,6 +60,7 @@ class Site_View_Helper_Img extends Zend_View_Helper_Abstract
         $filter   = (isset($options['filter'])) ? $options['filter']               : null;
         $prefix   = (isset($options['prefix'])) ? $options['prefix']               : '';
         $suffix   = (isset($options['suffix'])) ? $options['suffix']               : '';
+        $nordfa   = (isset($options['nordfa'])) ? true                             : false;
 
         // choose, which uri to use: option over helper default over view value
         $uri = (isset($this->resourceUri))           ? $this->resourceUri : null;
@@ -99,22 +101,35 @@ class Site_View_Helper_Img extends Zend_View_Helper_Abstract
             }
 
             if ($imgProperty != null) {
-                $src = $description[$imgProperty][0]['value'];
+                $imgSrc = $description[$imgProperty][0]['value'];
             } else {
                 // we do not have an image src
                 return '';
             }
+        } else {
+            $imgSrc = $src;
         }
 
-        // modify the image src for the IPC extension
+        // modify the image imgSrc for the IPC extension
         // @todo: use an event here
         if ($filter && $extManager->isExtensionRegistered('ipc')) {
-            $ipcUrl = $owapp->config->urlBase . '/ipc/get';
-            $ipcUrl = $ipcUrl . '?img='. urlencode($src) .'&filter='. urlencode($filter);
-            $src    = $ipcUrl;
+            $ipcSrc = $owapp->config->urlBase . '/ipc/get';
+            $ipcSrc = $ipcSrc . '?img='. urlencode($imgSrc) .'&filter='. urlencode($filter);
+            $imgSrc = $ipcSrc;
         }
 
-        return "$prefix<img$class$alt src=\"$src\" />$suffix";
+        // build the image tag for output
+        $return  = $prefix;
+        $return .= '<img'. $class . $alt;
+        if ($nordfa == false) {
+            $return .= (!$src) ? ' about="'. $this->view->curie($uri) .'"' : '';
+            $return .= (!$src) ? ' property="'. $this->view->curie($imgProperty) .'"' : '';
+            // this property is needed since ipc maybe rewrites the src
+            $return .= (!$src) ? ' resource="'. $imgSrc .'"' : '';
+        }
+        $return .= ' src="'. $imgSrc .'" />';
+        $return .= $suffix;
+        return $return;
     }
 
     /*
