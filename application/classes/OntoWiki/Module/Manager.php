@@ -54,12 +54,6 @@ class OntoWiki_Module_Manager
     protected $_modulePath = null;
     
     /**
-     * Array with registered modules
-     * @var array
-     */
-    protected $_moduleRegistry = null;
-    
-    /**
      * Constructor
      *
      * @param string $modulePath The path that is scanned for modules
@@ -67,8 +61,7 @@ class OntoWiki_Module_Manager
     public function __construct($modulePath)
     {
         $this->_modulePath     = (string)$modulePath;
-        $this->_moduleRegistry = OntoWiki_Module_Registry::getInstance();
-        $this->_moduleRegistry->setModuleDir($modulePath);
+        OntoWiki_Module_Registry::getInstance()->setModuleDir($modulePath);
         
         // scan for modules
         $this->_scanModulePath($this->_modulePath);
@@ -93,7 +86,7 @@ class OntoWiki_Module_Manager
         
         // register for context(s)
         foreach ($contexts as $context) {
-            $this->_moduleRegistry->register($moduleName, $context, $config);
+            OntoWiki_Module_Registry::getInstance()->register($moduleName, $context, $config);
         }
     }
     

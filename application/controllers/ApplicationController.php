@@ -9,7 +9,6 @@
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: ApplicationController.php 4313 2009-10-14 21:37:47Z c.riess.dev $
  */
 class ApplicationController extends OntoWiki_Controller_Base
 {
@@ -21,10 +20,7 @@ class ApplicationController extends OntoWiki_Controller_Base
         OntoWiki_Navigation::disableNavigation();
         $this->view->placeholder('main.window.title')->set('About OntoWiki');
         
-        $version = $this->_config->version->number;
-        if (isset($this->_config->version->suffix)) {
-            $version .= ' ' . $this->_config->version->suffix;
-        }
+        $version = OntoWiki_Version::VERSION;
         
         $cacheWritable = is_writable($this->_config->cache->path)
                        ? ' <span style="color:#aea">(writable)</span>'

@@ -26,7 +26,7 @@ class OntoWiki_Module_Registry
     const DEFAULT_CONTEXT = 'Default';
 
     const MODULE_CLASS_POSTFIX = 'Module';
-    const MODULE_FILE_POSTFIX = 'Module.php';
+    const MODULE_FILE_SUFFIX = 'Module.php';
 
 
     /**
@@ -86,6 +86,20 @@ class OntoWiki_Module_Registry
 
         return self::$_instance;
     }
+    
+    /**
+     * Always returns a fresh instance.
+     * 
+     * Make sure that this method is called when the first module will be
+     * registered.
+     *
+     * @return OntoWiki_Module_Registry
+     */
+    public static function getNewInstance()
+    {
+        self::reset();
+        return self::getInstance();
+    }
 
     /**
      * Resets the instance to its initial state. Mainly used for
@@ -134,28 +148,32 @@ class OntoWiki_Module_Registry
      */
     public function register($extensionName, $moduleFileName, $context = self::DEFAULT_CONTEXT, $options = null)
     {
-        $moduleName = strtolower(substr($moduleFileName, 0, strlen($moduleFileName)-strlen(self::MODULE_FILE_POSTFIX)));
+        $moduleName = strtolower(substr($moduleFileName, 0, strlen($moduleFileName)-strlen(self::MODULE_FILE_SUFFIX)));
 
         // create module context if necessary
         if (!array_key_exists($context, $this->_moduleOrder)) {
             $this->_moduleOrder[$context] = array();
         }
 
-        if($options == null){
+        if ($options == null) {
             $options = new Zend_Config(array());
         }
-
+        
         if (!array_key_exists($moduleName, $this->_modules)) {
             // merge defaults
-            $options->merge(new Zend_Config(array(
-                'id'      => $moduleName,
-                'classes' => '',
-                'name'    => isset($options->name) ? $options->name : $moduleName,
-                'enabled' => true ,
-                'extensionName' => $extensionName,
-                '_privateConfig' => $options->private
-            )));
-            ;
+            $options->merge(
+                new Zend_Config(
+                    array(
+                        'id'      => $moduleName,
+                        'classes' => '',
+                        'name'    => isset($options->name) ? $options->name : $moduleName,
+                        'enabled' => true ,
+                        'extensionName' => $extensionName,
+                        '_privateConfig' => $options->private
+                    )
+                )
+            );
+            
             // set css classes according to module state
             switch ($this->_moduleStates->{$options->id}) {
                 case self::MODULE_STATE_OPEN:
@@ -226,32 +244,33 @@ class OntoWiki_Module_Registry
      */
     public function getModule($moduleName, $context = null)
     {
-        if(!$this->isModuleEnabled($moduleName)){
+        if (!$this->isModuleEnabled($moduleName)) {
             return null;
         }
         $moduleFile = $this->_extensionDir
                     . $this->_modules[$moduleName]->extensionName
                     . DIRECTORY_SEPARATOR
                     . ucfirst($moduleName)
-                    . self::MODULE_FILE_POSTFIX;
+                    . self::MODULE_FILE_SUFFIX;
 
         if (!is_readable($moduleFile)) {
             throw new OntoWiki_Module_Exception("Module '$moduleName' could not be loaded from path '$moduleFile'.");
         }
         
         // instantiate module
-        require_once $moduleFile;
         $moduleClass = ucfirst($moduleName)
                      . self::MODULE_CLASS_POSTFIX;
-        $module = null;
-        if (class_exists($moduleClass)) {
-            $module = new $moduleClass($moduleName, $context, $this->_modules[$moduleName]);
-        }
+        
+        if (!class_exists($moduleClass))
+            require_once $moduleFile;
+
+        $module = new $moduleClass($moduleName, $context, $this->_modules[$moduleName]);
 
         return $module;
     }
 
-    public function getModules(){
+    public function getModules() 
+    {
         return $this->_modules;
     }
 

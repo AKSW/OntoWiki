@@ -127,7 +127,7 @@ class OntoWiki_Menu_Registry
         $helpMenu = new OntoWiki_Menu();
         $helpMenu->setEntry('Documentation', 'http://ontowiki.net/Projects/OntoWiki/Help')
                  ->setEntry('Bug Report', 'http://code.google.com/p/ontowiki/issues/entry')
-                 ->setEntry('Version Info', 'http://ontowiki.net/Projects/OntoWiki/ChangeLog#'.$owApp->config->version->number)
+                 ->setEntry('Version Info', 'http://ontowiki.net/Projects/OntoWiki/ChangeLog#' . OntoWiki_Version::VERSION)
                  ->setEntry('About', $owApp->config->urlBase . 'application/about');
         
         // build menu out of sub menus

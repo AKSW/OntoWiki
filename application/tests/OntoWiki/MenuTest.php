@@ -1,6 +1,5 @@
 <?php
 
-require_once 'test_base.php';
 require_once 'OntoWiki/Menu.php';
 
 // PHPUnit

@@ -5,7 +5,8 @@
  *
  * @author jonas
  */
-class Ontowiki_Extension_Manager {
+class Ontowiki_Extension_Manager 
+{
     const DEFAULT_CONFIG_FILE = 'default.ini';
 
     const COMPONENT_HELPER_SUFFIX = 'Helper';
@@ -15,10 +16,10 @@ class Ontowiki_Extension_Manager {
     const COMPONENT_FILE_POSTFIX = 'Controller.php';
 
     const PLUGIN_CLASS_POSTFIX = 'Plugin';
-    const PLUGIN_FILE_POSTFIX = 'Plugin.php';
+    const PLUGIN_FILE_SUFFIX = 'Plugin.php';
 
     const WRAPPER_CLASS_POSTFIX = 'Wrapper';
-    const WRAPPER_FILE_POSTFIX = 'Wrapper.php';
+    const WRAPPER_FILE_SUFFIX = 'Wrapper.php';
 
 
     /**
@@ -97,14 +98,12 @@ class Ontowiki_Extension_Manager {
      */
     public function __construct($extensionPath)
     {
-        if(!(substr($extensionPath, -1) == DIRECTORY_SEPARATOR)){
+        if (!(substr($extensionPath, -1) === DIRECTORY_SEPARATOR)) {
             $extensionPath .= DIRECTORY_SEPARATOR;
         }
         $this->_extensionPath = $extensionPath;
-        
-        OntoWiki_Module_Registry::reset();
-        //OntoWiki_Module_Registry::getInstance()->resetInstance();
-        $this->_moduleRegistry = OntoWiki_Module_Registry::getInstance();
+
+        $this->_moduleRegistry = OntoWiki_Module_Registry::getNewInstance();
         $this->_moduleRegistry->setExtensionPath($extensionPath);
 
         //TODO plugin & wrapper registry? needed anymore? why split it?
@@ -393,7 +392,10 @@ class Ontowiki_Extension_Manager {
         $helperSpec = $this->_helpers[$componentName];
 
         // load helper class
-        require_once $helperSpec['path'];
+        if (!class_exists($helperSpec['class'])) {
+            require_once $helperSpec['path'];
+        }
+        
         // instantiate helper object
         $helperInstance = new $helperSpec['class']($this);
 
@@ -418,7 +420,7 @@ class Ontowiki_Extension_Manager {
     {
         $dir = new DirectoryIterator($this->_extensionPath);
         $view = OntoWiki::getInstance()->view;
-        $reservedNames = array('themes','translations');
+        $reservedNames = array('themes', 'translations');
         foreach ($dir as $file) {
             if (!$file->isDot() && $file->isDir()) {
                 //for all folders in <ow>/extensions/
@@ -458,13 +460,21 @@ class Ontowiki_Extension_Manager {
                     //check for modules and plugins (multiple possible)
                     $extensionDir = new DirectoryIterator($currentExtensionPath);
                     foreach($extensionDir as $extensionDirFile) {
-                        $filename = $extensionDirFile->getFilename();
+                        // Skip hidden files and directories.
+                        if ($extensionDirFile->isDot() || $extensionDirFile->isDir()) {
+                            continue;
+                        }
                         
-                        if(substr($filename, -strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)) === OntoWiki_Module_Registry::MODULE_FILE_POSTFIX) {
+                        $filename = $extensionDirFile->getFilename();
+                        $moduleSuffix = substr($filename, -strlen(OntoWiki_Module_Registry::MODULE_FILE_SUFFIX));
+                        $pluginSuffix = substr($filename, -strlen(self::PLUGIN_FILE_SUFFIX));
+                        $wrapperSuffix = substr($filename, -strlen(self::WRAPPER_FILE_SUFFIX));
+                        
+                        if ($moduleSuffix === OntoWiki_Module_Registry::MODULE_FILE_SUFFIX) {
                             $this->_addModule($extensionName, $filename, $currentExtensionPath, $config);
-                        } elseif(substr($filename, -strlen(self::PLUGIN_FILE_POSTFIX)) === self::PLUGIN_FILE_POSTFIX) {
+                        } else if ($pluginSuffix === self::PLUGIN_FILE_SUFFIX) {
                             $this->_addPlugin($filename, $currentExtensionPath, $config);
-                        } elseif(substr($filename, -strlen(self::WRAPPER_FILE_POSTFIX)) === self::WRAPPER_FILE_POSTFIX) {
+                        } else if ($wrapperSuffix === self::WRAPPER_FILE_SUFFIX) {
                             $this->_addWrapper($filename, $currentExtensionPath, $config);
                         }
                     }
@@ -528,18 +538,18 @@ class Ontowiki_Extension_Manager {
         $this->_componentRegistry[$componentName] = $config;
     }
 
-    protected function _addModule($extensionName, $moduleFilename, $modulePath, $config = null)
+    protected function _addModule($extensionName, $moduleFilename, $modulePath, $config)
     {
         //one extension can contain many modules - so they share a config file
         //but each module needs different settings
         //so we got this hack to change the config like it was when every module had its own config
         if(isset($config->modules)){
-            $moduleName = strtolower(substr($moduleFilename, 0, strlen($moduleFilename)-strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)));
+            $moduleName = strtolower(substr($moduleFilename, 0, strlen($moduleFilename)-strlen(OntoWiki_Module_Registry::MODULE_FILE_SUFFIX)));
             if(isset ($config->modules->{$moduleName})){
-                $config = unserialize(serialize($config)) ; //dont touch the original config
+                $config = clone $config; //dont touch the original config
                 $config->merge($config->modules->{$moduleName});
             }
-        } 
+        }
 
         if (isset($config->context) && is_string($config->context)) {
             $contexts = array($config->context);
@@ -565,9 +575,9 @@ class Ontowiki_Extension_Manager {
     protected function _addWrapper($filename, $wrapperPath, $config)
     {
         $owApp = OntoWiki::getInstance();
-    	$wrapperManager = $owApp->erfurt->getWrapperManager(false);
-        $wrapperManager->addWrapperExternally(
-                strtolower(substr($filename,0,strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))), 
+    	$pluginManager = new Erfurt_Wrapper_Manager();
+        $pluginManager->addWrapperExternally(
+                strtolower(substr($filename,0,strlen($filename) - strlen(self::WRAPPER_FILE_SUFFIX))), 
                 $wrapperPath,
                 isset($config->private) ? $config->private : new Zend_Config(array(), true)
         );
@@ -584,7 +594,7 @@ class Ontowiki_Extension_Manager {
     {
         $owApp = OntoWiki::getInstance();
     	$pluginManager = $owApp->erfurt->getPluginManager(false);
-        $pluginManager->addPluginExternally(strtolower(substr($filename,0,strlen($filename) - strlen(self::PLUGIN_FILE_POSTFIX))), $filename, $pluginPath, $config);
+        $pluginManager->addPluginExternally(strtolower(substr($filename,0,strlen($filename) - strlen(self::PLUGIN_FILE_SUFFIX))), $filename, $pluginPath, $config);
     }
 
     private function _loadConfigs($name){
