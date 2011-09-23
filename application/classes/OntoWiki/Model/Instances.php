@@ -987,7 +987,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         
         $this->getResults();
 
-        $result = $this->_results['bindings'];
+        $result = $this->_results['results']['bindings'];
         
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
 
@@ -1171,7 +1171,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         
 
         $properties = array();
-        foreach ($results['bindings'] as $row) {
+        foreach ($results['results']['bindings'] as $row) {
             $properties[] = array('uri' => $row['resourceUri']['value']);
         }
 
@@ -1230,7 +1230,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         );
 
         $values = array();
-        foreach ($results['bindings'] as $row) {
+        foreach ($results['results']['bindings'] as $row) {
             $values[] = $row['obj'];
         }
 
@@ -1358,7 +1358,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             );
 
             $this->_resources = array();
-            foreach ($result['bindings'] as $row) {
+            foreach ($result['results']['bindings'] as $row) {
                 $this->_resources[] = $row[$this->_resourceVar->getName()];
             }
             $this->_resourcesUptodate = true;
@@ -1537,6 +1537,20 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 }
             }
         }
+    }
+    
+    public static function getSelectedClass() {
+        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
+        $listName = "instances";
+        if($listHelper->listExists($listName)){
+            $list = $listHelper->getList($listName);
+            $filter = $list->getFilter();
+        
+            return isset($filter['type0']['rdfsclass'])
+                ? $filter['type0']['rdfsclass']
+                : -1;
+        }
+        return  -1;
     }
 }
 

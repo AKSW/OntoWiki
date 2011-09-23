@@ -320,7 +320,7 @@ class ResourceController extends OntoWiki_Controller_Base {
 
                 $result = $store->sparqlQuery($sparqlQuery,array('result_format'=>'extended'));
                 // transform them to statement array to be compatible with store methods
-                foreach ($result['bindings'] as $stmt) {
+                foreach ($result['results']['bindings'] as $stmt) {
                     $stmtArray[$resource][$stmt['p']['value']][] = $stmt['o'];
                 }
 

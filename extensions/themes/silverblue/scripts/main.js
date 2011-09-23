@@ -370,7 +370,7 @@ $(document).ready(function() {
         
         $('table.rdfa')
             .children('tbody')
-            .append('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td></tr>');
+            .prepend('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td></tr>');
         
         var selectorOptions = {
             container: $('#' + td1ID), 
@@ -394,6 +394,12 @@ $(document).ready(function() {
         
         var selector = new Selector(RDFAUTHOR_DEFAULT_GRAPH, RDFAUTHOR_DEFAULT_SUBJECT, selectorOptions);
         selector.presentInContainer();
+
+        // var propertyWidget = RDFauthor.getWidgetForHook('__PROPERTY__',null,null);
+        // console.log(propertyWidget);
+        // propertyWidget.init();
+        // propertyWidget.ready();
+        // propertyWidget.markup();
     });
     
     $('.tabs').children('li').children('a').click(function() {

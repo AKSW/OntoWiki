@@ -2,7 +2,7 @@ syntax: glob
 
 extensions/*.ini
 local.ini
-debian
+./debian
 .settings
 .project
 .idea
@@ -13,6 +13,7 @@ config.ini
 nbproject
 cache
 libraries/Erfurt
+libraries/RDFauthor
 libraries/Zend
 libraries/ZendFramework-1.*
 BlogPost

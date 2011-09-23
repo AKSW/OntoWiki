@@ -18,26 +18,26 @@
  */
 class CsvimportController extends OntoWiki_Controller_Component
 {
-    protected $_dimensions = null;
-    protected $_columnMappings = null;
-    protected $_targetGraph = null;
-    
     public function init()
     {
         // init component
         parent::init();
-        
+
         $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/csvimport.js');
+        $this->view->headScript()->appendFile($this->_componentUrlBase . 'scripts/rdfa.object.js');
     }
-    
+
     public function indexAction()
-    {
+    {        
         $this->_forward('upload');
     }
-    
+
     public function uploadAction()
     {        
         if (!isset($this->_request->upload)) {
+            // clean store
+            $this->_destroySessionStore();
+
             // TODO: show import dialogue and import file
             $this->view->placeholder('main.window.title')->append('Import CSV Data');
             OntoWiki_Navigation::disableNavigation();
@@ -52,25 +52,31 @@ class CsvimportController extends OntoWiki_Controller_Component
             $this->view->modelUri   = (string)$this->_owApp->selectedModel;
             $this->view->title      = 'Import CSV Data';
             $model = $this->_owApp->selectedModel;
-            $this->view->modelTitle = $model->getTitle();
+            if($model != null){
+                $this->view->modelTitle = $model->getTitle();
 
-            if ($model->isEditable()) {
-                $toolbar = $this->_owApp->toolbar;
-                $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Import CSV', 'id' => 'import'))
-                        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
-                $this->view->placeholder('main.window.toolbar')->set($toolbar);
+                if ($model->isEditable()) {
+                    $toolbar = $this->_owApp->toolbar;
+                    $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Import CSV', 'id' => 'import'))
+                            ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
+                    $this->view->placeholder('main.window.toolbar')->set($toolbar);
+                } else {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message('No write permissions on model \''.$this->view->modelTitle.'\'', OntoWiki_Message::WARNING)
+                    );
+                }
+
+                // FIX: http://www.webmasterworld.com/macintosh_webmaster/3300569.htm
+                // disable connection keep-alive
+                $response = $this->getResponse();
+                $response->setHeader('Connection', 'close', true);
+                $response->sendHeaders();
+            return;
             } else {
                 $this->_owApp->appendMessage(
-                    new OntoWiki_Message("No write permissions on model '{$this->view->modelTitle}'", OntoWiki_Message::WARNING)
-                );
+                        new OntoWiki_Message('You need to select a model first', OntoWiki_Message::WARNING)
+                    );
             }
-            
-            // FIX: http://www.webmasterworld.com/macintosh_webmaster/3300569.htm
-            // disable connection keep-alive
-            $response = $this->getResponse();
-            $response->setHeader('Connection', 'close', true);
-            $response->sendHeaders();
-            return;
         } else {
             // evaluate post data
             $messages = array();
@@ -112,6 +118,17 @@ class CsvimportController extends OntoWiki_Controller_Component
                 $store = $this->_getSessionStore();
                 $store->importedFile = $tempFile;
                 $store->importMode   = $post['importMode'];
+
+                if($store->importMode == 'tabular') {
+                    $store->csvSeparator = ",";
+                    $store->headlineDetection = true;
+                    if(empty($post['defaultSeparator'])) {
+                        $store->csvSeparator = str_replace("\\\\", '\\', $post['separator']);
+                    }
+                    if(empty($post['headlineDetection'])) {
+                        $store->headlineDetection = false;
+                    }
+                }
                 // $store->nextAction   = 'mapping';
             }
 
@@ -119,315 +136,248 @@ class CsvimportController extends OntoWiki_Controller_Component
             $this->_forward('mapping');
         }
     }
-    
-    public function mappingAction()
-    {
-        if (!isset($this->_request->dimensions)) {
-            $this->view->placeholder('main.window.title')->append('Import CSV Data');
-            $this->view->actionUrl = $this->_config->urlBase . 'csvimport/mapping';
-            OntoWiki_Navigation::disableNavigation();
 
-            $model = $this->_owApp->selectedModel;
-            if ($model->isEditable()) {
-                $toolbar = $this->_owApp->toolbar;
-                $toolbar->appendButton(OntoWiki_Toolbar::ADD, array('name' => 'Add Dimension', 'id' => 'btn-add-dimension'))
-                        ->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Select Data Range', 'id' => 'btn-datarange', 'class'=>''))
-                        ->appendButton(OntoWiki_Toolbar::SEPARATOR)
-                        ->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Extract Triples', 'id' => 'extract'))
-                        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
-                $this->view->placeholder('main.window.toolbar')->set($toolbar);
+    public function mappingAction(){
+        $store = $this->_getSessionStore();
+        if (!empty($store->importMode)) {
+            $configuration = null;
+            switch ($store->importMode) {
+                case "tabular" :
+                    require_once('TabularImporter.php');
+                    $importer = new TabularImporter($this->view,
+                                                    $this->_privateConfig,
+                                                    array('headlineDetection' => $store->headlineDetection, 
+                                                          'separator' => $store->csvSeparator)
+                                                   );
+
+                    if (!empty($this->_request->dimensions)) {
+                        $json = $this->_request->dimensions;
+                        $json = str_replace('\\"', '"', $json);
+                        $configuration = json_decode($json, true);
+                    }
+                break;
+                case "scovo" :
+                    require_once('ScovoImporter.php');
+                    $importer = new ScovoImporter($this->view, $this->_privateConfig);
+                    if (!empty($this->_request->dimensions)) {
+                        $json = $this->_request->dimensions;
+                        $json = str_replace('\\"', '"', $json);
+                        $configuration = json_decode($json, true);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            $importer->setFile($store->importedFile);
+
+            if ($configuration) {
+                $importer->setConfiguration($configuration);
+                $importer->setParsedFile($store->parsedFile);
+                $store->results = $importer->importData();
+                $this->_helper->viewRenderer->setNoRender();
             } else {
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message("No write permissions on model '{$this->view->modelTitle}'", OntoWiki_Message::WARNING)
-                );
+                //get stored Configurations
+                $importer->setStoredConfigurations($this->getStoredConfigurationUris());
+                $importer->createConfigurationView($this->_config->urlBase);
+                $store->parsedFile = $importer->getParsedFile();
             }
-
-            // TODO: show table and let user define domain mapping
-            $store = $this->_getSessionStore();
-
-            if (is_readable($store->importedFile)) {
-                require_once 'CsvParser.php';
-                $parser = new CsvParser($store->importedFile);
-                $store->parsedData = $parser->getParsedFile();
-                $data   = array_filter($store->parsedData);
-                $this->view->table = $this->view->partial(
-                    'partials/table.phtml', array(
-                        'data' => $data, 
-                        'tableClass' => 'csvimport'
-                    )
-                );
-            }
-            
-            $store = $this->_getSessionStore();
-        } else {
-            // $json = $_POST['dimensions'];
-            $json = $this->_request->dimensions;
-            $json = str_replace('\\"', '"', $json);
-            $data = json_decode($json, true);
-            $store = $this->_getSessionStore();
-            $store->dimensions = $data;
-            $this->_createDimensions($data);
-            $this->_saveData();
-            $this->_helper->viewRenderer->setNoRender();
         }
     }
-    
+
     protected function resultsAction()
     {
-        
+        $this->view->placeholder('main.window.title')->append('Import CSV Results');
+        OntoWiki_Navigation::disableNavigation();
     }
-    
+
+
+    protected function getStoredConfigurationUris() {
+        $dir = $this->_owApp->extensionManager->getExtensionPath('csvimport').'/configs/';
+        if(!is_dir($dir)) return;
+        $configurations = array();
+
+        if ($dh = opendir($dir)) {
+            while (($file = readdir($dh)) !== false) {
+                if($file == "." || $file == '..') continue;
+
+                $handle = fopen($dir.$file, 'r');
+                $contents = fread($handle, filesize($dir.$file));
+                fclose($handle);
+
+                $configurations[] = array (
+                                            'label' => str_replace('.cfg', '', str_replace('_', ' ', $file)),
+                                            'config' => $contents );
+            }
+            closedir($dh);
+            
+            return $configurations;
+        }
+        return array();
+
+        return;
+        $sysontUri  = $this->_owApp->erfurt->getConfig()->sysont->modelUri;
+        $sysOnt     = $this->_owApp->erfurt->getStore()->getModel($sysontUri, false);
+
+        $query = new Erfurt_Sparql_SimpleQuery();
+        $query->setProloguePart(' SELECT  ?configUri ?configLabel ?configuration') ;
+        $query->setWherePart('  
+                    WHERE { ?configUri a <' . $sysontUri . 'CSVImportConfig> .
+                            ?configUri <http://www.w3.org/2000/01/rdf-schema#label> ?configLabel .
+                            ?configUri <' . $sysontUri . 'CSVImportConfig/configuration> ?configuration} ');
+
+        if ($result = $sysOnt->sparqlQuery($query)) {
+            // var_dump($result); die;
+            $configurations = array();
+            foreach ($result as $entry) {
+                //var_dump($entry['configuration']); die;
+                $configurations[$entry['configUri']] = array ( 
+                                                        'label' => $entry['configLabel'],
+                                                        'config' => base64_decode($entry['configuration']) );
+            }
+//var_dump($configurations);
+            return $configurations;
+        }
+        return array();
+    }
+
+    protected function saveconfigAction(){
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout->disableLayout();
+
+        if( $this->_createBaseModel() ){
+            // get post params
+            $post = $this->_request->getPost();
+
+            $val = $post['configString'];
+            $name = str_replace(" ", "_", $post['configName']);
+
+            $fp = fopen('extensions/components/csvimport/configs/'.$name.'.cfg', 'w');
+            fwrite($fp, $val);
+            fclose($fp);
+
+            return;
+
+            // needed vars
+            $sysontUri = $this->_owApp->erfurt->getConfig()->sysont->modelUri;
+            $sysOnt = $this->_owApp->erfurt->getStore()->getModel($sysontUri, false);
+            $class = $sysontUri.'CSVImportConfig';
+            $config = $class.'/configuration';
+            $type = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+            $label = 'http://www.w3.org/2000/01/rdf-schema#label';
+            $val = $post['configString'];
+            $name = $sysontUri . date('Y/m/d/H/i/s') . '/' . str_replace(' ', '_', $post['configName']);
+
+            // create config instance:
+            // name
+            // config string
+            // {sysont_ns}:salt/name a {sysont_ns}:CSVImportConfig
+            // {sysont_ns}:salt/name {sysont_ns}:CSVImportConfig/configuration "config string"
+            $element[$name] = array(
+                $type => array(
+                    array(
+                        'type' => 'uri',
+                        'value' => $class
+                    )
+                ),
+                $config => array(
+                    array(
+                        'type' => 'literal',
+                        'value' => base64_encode($val)
+                    )
+                ),
+                $label => array(
+                    array(
+                        'type' => 'literal',
+                        'value' => $post['configName']
+                    )
+                )
+            );
+
+            //var_dump($element);
+            $sysOnt->addMultipleStatements( $element );
+        }
+    }
+
+    protected function _createBaseModel(){
+        // check access controll for SysOnt
+        $sysontUri = $this->_owApp->erfurt->getConfig()->sysont->modelUri;
+        $sysOnt = $this->_owApp->erfurt->getStore()->getModel($sysontUri, false);
+        $allow = $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $sysOnt);
+        if ($allow) {
+            // create config class
+            // {sysont_ns}:CSVImportConfig
+            // {sysont_ns}:CSVImportConfig rdfs:label "Configuration Class"
+
+            $s = $sysontUri.'CSVImportConfig';
+            $type = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+            $label = 'http://www.w3.org/2000/01/rdf-schema#label';
+            $element[$s] = array(
+                $type => array(
+                    array(
+                        'type' => 'uri',
+                        'value' => 'http://www.w3.org/2002/07/owl#Class'
+                    )
+                ),
+                $label => array(
+                    array(
+                        'type' => 'literal',
+                        'value' => 'CSV Import Configuration'
+                    )
+                )
+            );
+
+            $sysOnt->addMultipleStatements( $element );
+
+            // create config string property
+            // {sysont_ns}:CSVImportConfig/configuration
+            // {sysont_ns}:CSVImportConfig/configuration rdfs:label "Configuration"
+            // {sysont_ns}:CSVImportConfig/configuration rdfs:domain {sysont_ns}:CSVImportConfig
+
+            $element = array();
+            $sp = $s.'/configuration';
+            $label = 'http://www.w3.org/2000/01/rdf-schema#label';
+            $domain = 'http://www.w3.org/2000/01/rdf-schema#domain';
+            $element[$sp] = array(
+                $domain => array(
+                    array(
+                        'type' => 'uri',
+                        'value' => $s
+                    )
+                ),
+                $label => array(
+                    array(
+                        'type' => 'literal',
+                        'value' => 'configuration'
+                    )
+                )
+            );
+
+            $sysOnt->addMultipleStatements( $element );
+
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     protected function _getSessionStore()
     {
         $session = new Zend_Session_Namespace('CSV_IMPORT_SESSION');
         return $session;
     }
-    
-    protected function _getColumnMapping()
-    {
-        $columnMapping = array(
-            array(
-                'property' => 'http://xmlns.com/foaf/0.1/name', 
-                'label' => 'Name', 
-                'col' => 3, 
-                'row' => 2, 
-                'items' => array(
-                    'type' => 'uri', 
-                    'class' => 'http://xmlns.com/foaf/0.1/Person', 
-                    'start' => array('col' => 3, 'row' => 2), 
-                    'end' => array('col' => 3, 'row' => 20)
-                ), 
-            ), 
-            array(
-                'property' => 'http://purl.org/dc/elements/1.1/', 
-                'label' => 'Titel', 
-                'col' => 4, 
-                'row' => 2,
-                'items' => array(
-                    'type' => 'literal', 
-                    'datatype' => 'http://www.w3.org/2001/XMLSchema#string', 
-                    'start' => array('col' => 4, 'row' => 2), 
-                    'end' => array('col' => 4, 'row' => 20)
-                )
-            )
-        );
-    }
-    
-    protected function _getDimensions()
-    {
-        $dimensions = array(
-            'http://example.com/dimension1' => array(
-                'label' => 'Age', 
-                'elements' => array(
-                    'http://example.com/dimension1/0-6' => array(
-                        'col' => 2, 
-                        'row' => 2, 
-                        'label' => '0-6', 
-                        'items' => array(
-                            'start' => array('col' => 2, 'row' => 3), 
-                            'end'   => array('col' => 2, 'row' => 20)
-                        )
-                    ),
-                    'http://example.com/dimension1/7-12' => array(
-                        'col' => 3,
-                        'row' => 2,
-                        'label' => '7-12',
-                        'items' => array(
-                            'start' => array('col' => 3, 'row' => 3),
-                            'end'   => array('col' => 3, 'row' => 20)
-                        )
-                    )
-                )
-            ),  
-            'http://example.com/dimension2' => array(
-                'label' => 'Region', 
-                'elements' => array(
-                    'http://example.com/dimension2/Africa' => array(
-                        'col' => 1, 
-                        'row' => 3, 
-                        'label' => 'Africa', 
-                        'items' => array(
-                            'start' => array('col' => 2, 'row' => 3), 
-                            'end'   => array('col' => 2, 'row' => 20)
-                        )
-                    )
-                )
-            )
-        );
-        
-        return $dimensions;
-    }
 
-    protected function _createDimensions($dimensions)
-    {
-        $elements = array();
-
-        // relations
-        $type = $this->_privateConfig->class->type;//'http://www.w3.org/2000/01/rdf-schema#type';
-        $subClassOf = $this->_privateConfig->class->subClassOf;//'http://www.w3.org/2000/01/rdf-schema#subClassOf';
-        $scvDimension = $this->_privateConfig->scovo->dimension;//'http://purl.org/NET/scovo#Dimension';
-        $title = $this->_privateConfig->item->title; //'http://purl.org/dc/elements/1.1/title';
-        $class = $this->_privateConfig->class->rdf;
-        
-        foreach ($dimensions as $url => $dim) {
-            $element = array();
-
-            // class
-            $element[$url] = array(
-                $subClassOf => array(
-                    array(
-                        'type' => 'uri',
-                        'value' => $scvDimension
-                        )
-                    )
-                );
-            $elements[] = $element;
-
-            // type
-            $element[$url] = array(
-                $type => array(
-                    array(
-                        'type' => 'uri',
-                        'value' => $class
-                        )
-                    )
-                );
-            $elements[] = $element;
-
-            // label
-            $element[$url] = array(
-                $title => array(
-                    array(
-                        'type' => 'literal',
-                        'value' => $dim['label']
-                        )
-                    )
-                );
-            $elements[] = $element;
-            
-            // types
-            foreach ($dim['elements'] as $eurl => $elem) {
-                $element = array();
-                
-                // type of new dimension
-                $element[$eurl] = array(
-                    $type => array(
-                        array(
-                            'type' => 'uri',
-                            'value' => $url
-                            )
-                        )
-                    );
-                $elements[] = $element;
-                // label
-                $element[$eurl] = array(
-                    $title => array(
-                        array(
-                            'type' => 'literal',
-                            'value' => $elem['label']
-                            )
-                        )
-                    );
-                $elements[] = $element;
-            }
-        }
-
-        foreach ($elements as $elem) {
-            $this->_owApp->selectedModel->addMultipleStatements($elem);
-        }
-
-        //echo '<pre>';
-        //echo print_r( $elements );
-        //echo '</pre>';
-    }
-
-    protected function _saveData()
-    {
-        $store = $this->_getSessionStore();
-
-        $data = $store->parsedData;
-        $dimensions = $store->dimensions;
-        $dims = array();
-
-        $predicate = $this->_privateConfig->scovo->hasDimension;//'http://purl.org/NET/scovo#dimension';
-        $value = $this->_privateConfig->class->value; //'http://www.w3.org/1999/02/22-rdf-syntax-ns#value';
-        $scovoItem = $this->_privateConfig->scovo->item; // 'http://purl.org/NET/scovo#Item';
-        $type = $this->_privateConfig->item->type; //'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-        $url_base = $this->_privateConfig->item->base;//"http://example.com/item";
-
-        foreach($dimensions as $url => $dim){
-            foreach($dim['elements'] as $eurl => $elem){
-                $dims[] = array(
-                    'uri' => $eurl,
-                    'row' => $elem['row'],
-                    'col' => $elem['col'],
-                    'items' => $elem['items']
-                );
-            }
-        }
-
-        foreach($data as $rowIndex => $row){
-            // check for null data
-            if(!isset($row) || $row == null) continue;
-
-            // parse row
-            foreach($row as $colIndex => $cell){
-                // filter empty
-                if(strlen($cell) > 0){
-                    // fill item dimensions from all dims
-                    $itemDims = array();
-                    foreach($dims as $dim){
-                        if(
-                            $colIndex >= $dim['items']['start']['col'] && $colIndex <= $dim['items']['end']['col'] &&
-                            $rowIndex >= $dim['items']['start']['row'] && $rowIndex <= $dim['items']['end']['row']
-                        ){
-                            if($dim['col'] == $colIndex || $dim['row'] == $rowIndex){
-                                $itemDims[$predicate][] = array(
-                                            'type' => 'uri',
-                                            'value' => $dim['uri']
-                                            );
-                            }
-                        }
-                    }
-
-                    // if there is some dimensions
-                    if(count($itemDims) > 0){
-                        //print_r($itemDims);
-                        $element = array();
-
-                        $eurl = $url_base."/".hash("md5", serialize($data))."/c".$colIndex."-r".$rowIndex;
-
-                        $element[$eurl] = array_merge(
-                            $itemDims,
-                            array(
-                                $value => array(
-                                    array(
-                                        'type' => 'literal',
-                                        'value' => $cell
-                                    )
-                                ),
-                                $type => array(
-                                    array(
-                                        'type' => 'uri',
-                                        'value' => $scovoItem
-                                    )
-                                )
-                            )
-                        );
-
-                        //print_r($element);
-                        //echo "---------------------------------------------------------------";
-                        // write element
-                        //var_dump($element);
-                        //die;
-                        $this->_owApp->selectedModel->addMultipleStatements($element);
-                    }
-                }
-            }
-        }
-
-        //echo "<pre>";
-        //print_r( $dims );
-        //echo "</pre>";
+    protected function _destroySessionStore(){
+        Zend_Session::namespaceUnset('CSV_IMPORT_SESSION');
     }
 }
+
+/*
+ *
+ * SELECT  ?configUri ?configLabel ?configuration
+WHERE { ?configUri a <http://localhost/OntoWiki/Config/CSVImportConfig> .
+?configUri <http://www.w3.org/2000/01/rdf-schema#label> ?configLabel .
+?configUri <http://localhost/OntoWiki/Config/CSVImportConfig/configuration> ?configuration .
+      }
+ *
+ */

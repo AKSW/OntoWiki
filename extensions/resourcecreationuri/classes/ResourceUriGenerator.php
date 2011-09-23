@@ -376,7 +376,7 @@ class ResourceUriGenerator {
                 
                 $result = $this->_model->sparqlQuery($query);
                 
-                if ( !empty($result['bindings']) ) {
+                if ( !empty($result['results']['bindings']) ) {
                     $schema = current($result);
                     return explode('/',$schema['schema']['value']);
                 }

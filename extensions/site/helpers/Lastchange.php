@@ -1,19 +1,18 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki Lastchange view helper
  *
+ * returns metadata of the last change of a resource
+ *
  * @category OntoWiki
- * @package    OntoWiki_extensions_components_site
- * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @package  OntoWiki_extensions_components_site
  */
 class Site_View_Helper_Lastchange extends Zend_View_Helper_Abstract
 {
@@ -24,20 +23,20 @@ class Site_View_Helper_Lastchange extends Zend_View_Helper_Abstract
         $limit = $versioning->getLimit();
         $versioning->setLimit(1);
         $history = $versioning->getHistoryForResource($uri, (string)  OntoWiki::getInstance()->selectedModel);
-        
+
         if (empty($history)) {
             return array(
-                'resourceUri'   => $uri, 
-                'resourceTitle' => '', 
-                'timeStamp'     => '', 
-                'timeIso8601'   => '', 
-                'timeDuration'  => '', 
-                'userTitle'     => '', 
-                'userUri'       => '', 
+                'resourceUri'   => $uri,
+                'resourceTitle' => '',
+                'timeStamp'     => '',
+                'timeIso8601'   => '',
+                'timeDuration'  => '',
+                'userTitle'     => '',
+                'userUri'       => '',
                 'userHref'      => ''
             );
         }
-        
+
         $versioning->setLimit($limit);
         $th = new OntoWiki_Model_TitleHelper(OntoWiki::getInstance()->selectedModel);
         $th->addResource($history[0]['useruri']);
@@ -62,5 +61,4 @@ class Site_View_Helper_Lastchange extends Zend_View_Helper_Abstract
 
         return $return;
     }
-
 }

@@ -848,7 +848,7 @@ class ApplicationController extends OntoWiki_Controller_Base
         // var_dump((string)$testModel->getQuery());
         if ($result = $testModel->getQueryResult()) {
             $had = array();
-            foreach ((array)$result['bindings'] as $resultRow) {
+            foreach ((array)$result['results']['bindings'] as $resultRow) {
                 if (!array_key_exists($resultRow['class']['value'], $had)) {
                     $had[$resultRow['class']['value']] = $resultRow['class']['value'];
                     var_dump($resultRow['class']['value'], $testModel->getTitle($resultRow['class']['value'], 'en'));

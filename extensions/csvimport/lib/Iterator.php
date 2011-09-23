@@ -104,7 +104,7 @@ class File_CSV_Iterator implements Iterator
 			if( !feof( $this->filePointer ) )
 			{
 				$this->rowCounter++;
-				$data = fgetcsv( $this->filePointer, self::ROW_SIZE, $this->delimiter );
+				$data = fgetcsv( $this->filePointer, self::ROW_SIZE, stripcslashes($this->delimiter) );
 				if( $data )
 				{
 					$this->currentElement	= $data;	

@@ -74,7 +74,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
         //TODO fix query
         $queryHidden = 'PREFIX sysont: <http://ns.ontowiki.net/SysOnt/> SELECT ?p WHERE {?p sysont:hidden ?o }';
         $res = $store->sparqlQuery($queryHidden, array("result_format" => STORE_RESULTFORMAT_EXTENDED));
-        foreach($res['bindings'] as $b){
+        foreach($res['results']['bindings'] as $b){
             $this->_ignoredPredicates[] = $b['p']['value'];
         }
     }
@@ -143,8 +143,8 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                 
                 $currentResults = $this->_store->sparqlQuery($query, $options);
                 
-                if (isset($currentResults['bindings'])) {
-                    $this->_queryResults[$graph] = $currentResults['bindings'];
+                if (isset($currentResults['results']['bindings'])) {
+                    $this->_queryResults[$graph] = $currentResults['results']['bindings'];
                 } else {
                     $this->_queryResults[$graph] = array();
                 }
@@ -262,6 +262,8 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             $event->datatype = $row['object']['datatype'];
                             $event->property = $predicateUri;
                             $value['object'] = $event->trigger();
+                            // keep unmodified value in content
+                            $value['content'] = $row['object']['value'];
 
                             if (!$event->handled()) {
                                 // object (modified by plug-ins)
@@ -275,6 +277,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             $literalString = Erfurt_Utils::buildLiteralString($row['object']['value'],
                                                                               null,
                                                                               isset($row['object']['xml:lang']) ? $row['object']['xml:lang'] : null);
+                            // var_dump(md5($literalString) . ' ' . $literalString . PHP_EOL);
                             $value['object_hash'] = md5($literalString);
 
                             /**
@@ -292,7 +295,9 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                                 $event->language = $row['object']['xml:lang'];
                             }
                             // trigger
-                            $value['object'] = $event->trigger();
+                            $value['object']  = $event->trigger();
+                            // keep unmodified value in content
+                            $value['content'] = $row['object']['value'];
 
                             // set default if event has not been handled
                             if (!$event->handled()) {
