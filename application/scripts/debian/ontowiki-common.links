@@ -1,7 +1,0 @@
-/usr/share/php/libzend-framework-php/Zend /usr/share/ontowiki/libraries/Zend
-
-/usr/share/php/markdown.php /usr/share/ontowiki/extensions/markdown/parser/markdown.php
-
-/usr/share/javascript/jquery/jquery.min.js /usr/share/ontowiki/extensions/themes/silverblue/scripts/libraries/jquery.js
-/usr/share/javascript/jquery/jquery.min.js /usr/share/ontowiki/libraries/RDFauthor/libraries/jquery.js
-

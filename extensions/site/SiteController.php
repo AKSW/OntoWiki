@@ -19,7 +19,7 @@
  * @subpackage component
  */
 class SiteController extends OntoWiki_Controller_Component
-{   
+{
     /**
      * The main template filename
      */
@@ -68,30 +68,30 @@ class SiteController extends OntoWiki_Controller_Component
     {
         $action = $this->_request->getActionName();
         $router = $this->_owApp->getBootstrap()->getResource('Router');
-        
+
         if ($router->hasRoute('empty')) {
             $emptyRoute    = $router->getRoute('empty');
             $defaults      = $emptyRoute->getDefaults();
             $defaultAction = $defaults['action'];
         }
-        
+
         if (empty($action) || (isset($defaultAction) && $action === $defaultAction)) {
             // use default site for empty or default action (index)
             $this->_site = $this->_privateConfig->defaultSite;
         } else {
             // use action as site otherwise
             $this->_site  = $action;
-        }        
-        
+        }
+
         $this->getComponentHelper()->setSite($this->_site);
-        
+
         $templatePath = $this->_owApp->extensionManager->getComponentTemplatePath('site');
         $mainTemplate = sprintf('%s/%s', $this->_site, self::MAIN_TEMPLATE_NAME);
-        
+
         if (is_readable($templatePath . $mainTemplate)) {
-            $moduleContext = 'site.' . $this->_site;
-            // $this->addModuleContext($moduleContext);
-            
+            $this->moduleContext = 'site.' . $this->_site;
+            // $this->addModuleContext($this->moduleContext);
+
             $this->_loadModel();
             $this->_loadResource();
 
@@ -102,83 +102,94 @@ class SiteController extends OntoWiki_Controller_Component
             $siteModuleObjectCacheId = 'site_' . md5($siteModuleObjectCacheIdSource);
             // try to load the cached value
             $erfurtObjectCache = OntoWiki::getInstance()->erfurt->getCache();
-            $erfurtQueryCache = OntoWiki::getInstance()->erfurt->getQueryCache();
-            $cachePageContent = $erfurtObjectCache->load($siteModuleObjectCacheId);
+            $erfurtQueryCache  = OntoWiki::getInstance()->erfurt->getQueryCache();
+            $cachePageContent  = $erfurtObjectCache->load($siteModuleObjectCacheId);
             if ($cachePageContent != false) {
                 $this->_response->setBody($cachePageContent); // send cached body instead of generating a new one
                 return;
             } else {
                 $erfurtQueryCache->startTransaction($siteModuleObjectCacheId);
             }
-            
+
             $moduleTemplatePath = $this->_componentRoot
                                 . 'sites'
                                 . DIRECTORY_SEPARATOR
                                 . $this->_privateConfig->defaultSite
                                 . DIRECTORY_SEPARATOR
                                 . 'modules';
-            
+
             // add module template override path
             if (is_readable($moduleTemplatePath)) {
                 $scriptPaths = $this->view->getScriptPaths();
                 array_push($scriptPaths, $moduleTemplatePath);
                 $this->view->setScriptPath($scriptPaths);
             }
-            
-            $siteConfig = array(
-                'id'          => $this->_site,
-                'generator'   => 'OntoWiki ' . $this->_config->version->number,
-                'pingbackUri' => $this->_owApp->getUrlBase() . 'pingback/ping',
-                'wikiBaseUri' => $this->_owApp->getUrlBase(),
-                'basePath'    => sprintf('%ssites/%s', $this->_componentRoot, $this->_site),
-                'baseUri'     => sprintf('%ssites/%s', $this->_componentUrlBase, $this->_site),
-                'resourceUri' => $this->_resourceUri,
-                'context'     => $moduleContext,
-                'site'        => $this->_getSiteConfig(), 
-                'description' => $this->_resource->getDescription(), 
-                'descriptionHelper' => $this->_resource->getDescriptionHelper(),
-                'store'       => OntoWiki::getInstance()->erfurt->getStore(),
-                'navigation'  => SiteHelper::skosNavigationAsArray($this->_resource->getDescriptionHelper()), 
-                'options'     => array(), 
-                'namespaces'  => array(
-                    'rdf'    => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 
-                    'rdfs'   => 'http://www.w3.org/2000/01/rdf-schema#', 
-                    'owl'    => 'http://www.w3.org/2002/07/owl#', 
-                    'dc'     => 'http://purl.org/dc/terms/', 
-                    'skos'   => 'http://www.w3.org/2004/02/skos/core#', 
-                    'sioc'   => 'http://rdfs.org/sioc/ns#', 
-                    'sioct'  => 'http://rdfs.org/sioc/types#', 
-                    'doap'   => 'http://usefulinc.com/ns/doap#', 
-                    'foaf'   => 'http://xmlns.com/foaf/0.1/', 
-                    'xsd'    => 'http://www.w3.org/2001/XMLSchema#', 
-                    'sysont' => 'http://ns.ontowiki.net/SysOnt/', 
-                    'lod2'   => 'http://lod2.eu/schema/'
-                )
-            );
 
-            // mit assign kann man im Template direkt zugreifen ($this->basePath).
-            $this->view->assign($siteConfig);
+            // with assignment, direct access is possible ($this->basePath).
+            $this->view->assign($this->_getTemplateData());
+            // this allows for easy re-assignment of everything
+            $this->view->templateData = $this->_getTemplateData();
+
             // generate the page body
             $bodyContent = $this->view->render($mainTemplate);
-            
+
             // save the page body as an object value for the object cache
             $erfurtObjectCache->save ($bodyContent, $siteModuleObjectCacheId) ;
             // close the object cache transaction
             $erfurtQueryCache->endTransaction($siteModuleObjectCacheId);
-            
+
             // set the page content
             $this->_response->setBody($bodyContent);
-            $this->_response->setHeader('Content-Type', 'text/html; encoding=utf-8');            
+            $this->_response->setHeader('Content-Type', 'text/html; encoding=utf-8');
         } else {
             $this->_response->setRawHeader('HTTP/1.0 404 Not Found');
             $this->_response->setBody($this->view->render('404.phtml'));
         }
     }
-    
+
+
+    private function _getTemplateData()
+    {
+        // prepare namespace array with presets of rdf, rdfs and owl
+        $namespaces = array(
+            'rdf'    => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+            'rdfs'   => 'http://www.w3.org/2000/01/rdf-schema#',
+            'owl'    => 'http://www.w3.org/2002/07/owl#'
+        );
+        foreach ($this->_model->getNamespaces() as $ns => $prefix) {
+            $namespaces[$prefix] = $ns;
+        }
+
+        // this template data is given to ALL templates (with renderx)
+        $templateData           = array(
+            'siteId'            => $this->_site,
+            'siteConfig'        => $this->_getSiteConfig(),
+            'generator'         => 'OntoWiki ' . $this->_config->version->number,
+            'pingbackUrl'       => $this->_owApp->getUrlBase() . 'pingback/ping',
+            'wikiBaseUrl'       => $this->_owApp->getUrlBase(),
+            'themeUrlBase'      => $this->view->themeUrlBase,
+            'libraryUrlBase'    => $this->view->libraryUrlBase,
+            'basePath'          => sprintf('%ssites/%s', $this->_componentRoot, $this->_site),
+            'baseUri'           => sprintf('%ssites/%s', $this->_componentUrlBase, $this->_site),
+            'context'           => $this->moduleContext,
+            'namespaces'        => $namespaces,
+            'model'             => $this->_model,
+            'modelUri'          => $this->_modelUri,
+            'title'             => $this->_resource->getTitle(),
+            'resourceUri'       => (string) $this->_resourceUri,
+            'description'       => $this->_resource->getDescription(),
+            'descriptionHelper' => $this->_resource->getDescriptionHelper(),
+        );
+
+
+        return $templateData;
+    }
+
+
     protected function _loadModel()
     {
         $siteConfig = $this->_getSiteConfig();
-        
+
         // m is automatically used and selected
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
             // TODO: what if no site model configured?
@@ -196,7 +207,7 @@ class SiteController extends OntoWiki_Controller_Component
             $this->_modelUri = (string) $this->_owApp->selectedModel;
         }
     }
-    
+
     protected function _loadResource()
     {
         // r is automatically used and selected, if not then we use the model uri as starting point
@@ -206,10 +217,10 @@ class SiteController extends OntoWiki_Controller_Component
         $this->_resource = $this->_owApp->selectedResource;
         $this->_resourceUri = (string) $this->_owApp->selectedResource;
     }
-    
+
     protected function _getSiteConfig()
     {
         return $this->getComponentHelper()->getSiteConfig();
     }
-    
+
 }
