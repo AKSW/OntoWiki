@@ -1,0 +1,9 @@
+<p class="messagebox info">Search for a CKAN datasets and upload it to a new Knowledge Base</p>
+
+<?php if (isset($this->data)) : ?>
+<ul>
+<?php foreach ($this->data as $package) : ?>
+<li><?php echo $package->title ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>

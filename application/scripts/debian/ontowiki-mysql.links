@@ -1,5 +1,0 @@
-/etc/ontowiki/config.ini  /usr/share/ontowiki/config.ini
-/etc/ontowiki/apache.conf /etc/apache2/conf.d/ontowiki
-/var/log/ontowiki         /usr/share/ontowiki/logs
-/var/cache/ontowiki       /usr/share/ontowiki/cache
-

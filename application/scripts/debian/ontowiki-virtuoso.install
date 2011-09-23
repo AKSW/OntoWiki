@@ -1,2 +1,0 @@
-debian/conf/mysql/*   etc/ontowiki
-debian/sql/*    usr/share/dbconfig-common/data/ontowiki/
