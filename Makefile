@@ -46,30 +46,26 @@ libraries: zend erfurt rdfauthor
 
 pull:
 	@hg --repository . pull
-	@hg --config web.cacerts= --repository libraries/RDFauthor pull
+	cd libraries/RDFauthor && git pull
 	cd libraries/Erfurt && git pull
 
 update: pull
 	@echo "\nOntoWiki"
 	hg --repository . update
-	@echo "\nRDFauthor"
-	hg --config web.cacerts= --repository libraries/RDFauthor update
 
 force-update: pull
 	@echo "I force the update of the subrepos ..."
 	@echo "\nOntoWiki"
 	hg --repository . update -c
-	@echo "\nRDFauthor"
-	hg --config web.cacerts= --repository libraries/RDFauthor update -c
 
 status:
 	hg --repository . status
-	hg --repository libraries/RDFauthor status
+	cd libraries/RDFauthor && git status
 	cd libraries/Erfurt && git status
 
 branch-check:
 	hg --repository . branch
-	hg --repository libraries/RDFauthor branch
+	cd libraries/RDFauthor && git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`
 	cd libraries/Erfurt && git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`
 
 
@@ -85,7 +81,12 @@ zend:
 rdfauthor:
 	rm -rf libraries/RDFauthor
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
-	hg clone https://rdfauthor.googlecode.com/hg/ libraries/RDFauthor
+	git clone git://github.com/AKSW/RDFauthor.git libraries/RDFauthor
+
+rdfauthor-dev:
+	rm -rf libraries/RDFauthor
+	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
+	git clone git@github.com:AKSW/RDFauthor.git libraries/RDFauthor
 
 test:
 	phpunit --verbose application/tests/TestSuite 
@@ -94,6 +95,11 @@ erfurt:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
 	git clone git://github.com/AKSW/Erfurt.git libraries/Erfurt
+
+erfurt-dev:
+	rm -rf libraries/Erfurt
+	@echo 'Cloning Erfurt into libraries/Erfurt ...'
+	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt
 
 test-erfurt:
 	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..
