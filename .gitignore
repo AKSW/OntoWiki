@@ -12,8 +12,6 @@ local.ini
 config.ini
 nbproject
 cache
-libraries/Erfurt
-libraries/RDFauthor
 libraries/Zend
 libraries/ZendFramework-1.*
 BlogPost

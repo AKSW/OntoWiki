@@ -2,17 +2,15 @@ ZENDVERSION=1.11.5
 
 default:
 	@echo "please use:"
-	@echo "     'make pull' ('hg pull' for all repos)"
-	@echo "     'make update' ('hg pull' and 'hg update' for all repos)"
-	@echo "     'make force-update' ('hg pull' and 'hg update -c' for all repos)"
-	@echo "     'make status' ('hg status' for all repos)"
-	@echo "     'make branch-check' ('hg branch' for all repos)"
-	@echo "     'make libraries' ('hg clone' all subrepos - in case of an old mercurial)"
+	@echo "     'make install' (-> make directories, zend and libraries)"
+	@echo "     'make directories' (create cache/log dir and chmod environment)"
 	@echo "     'make zend' (download and install Zend under libraries)"
+	@echo "     'make libraries' ('git clone' all subrepos - in case submodules do not work)"
 	@echo "     'make erfurt' (clone under libraries)"
 	@echo "     'make rdfauthor' (clone under libraries)"
-	@echo "     'make directories' (create cache/log dir and chmod environment)"
-	@echo "     'make install' (-> make directories, zend and libraries)"
+	@echo "     'make pull' ('git pull' for all repos)"
+	@echo "     'make status' ('git status' for all repos)"
+	@echo "     'make branch-check' ('git rev-parse' for all repos)"
 	@echo "     'make clean' (deletes all log and cache files)"
 	@echo "     'make cs-install' (install CodeSniffer)"
 	@echo "     'make cs-uninstall' (uninstall CodeSniffer)"
@@ -43,29 +41,23 @@ libraries: zend erfurt rdfauthor
 # developer targets
 
 pull:
-	@hg --repository . pull
+	git pull
 	cd libraries/RDFauthor && git pull
 	cd libraries/Erfurt && git pull
 
 update: pull
-	@echo "\nOntoWiki"
-	hg --repository . update
 
 force-update: pull
-	@echo "I force the update of the subrepos ..."
-	@echo "\nOntoWiki"
-	hg --repository . update -c
 
 status:
-	hg --repository . status
+	git status
 	cd libraries/RDFauthor && git status
 	cd libraries/Erfurt && git status
 
 branch-check:
-	hg --repository . branch
-	cd libraries/RDFauthor && git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`
-	cd libraries/Erfurt && git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`
-
+	git rev-parse --abbrev-ref HEAD
+	git --work-tree=libraries/Erfurt rev-parse --abbrev-ref HEAD
+	git --work-tree=libraries/RDFauthor rev-parse --abbrev-ref HEAD
 
 # libraries
 
