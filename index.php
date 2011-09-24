@@ -1,23 +1,35 @@
 <?php
-
-/* Profiling */
-define('REQUEST_START', microtime(true));
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki bootstrap file.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @category OntoWiki
  * @author Norman Heino <norman.heino@gmail.com>
  */
+
+/* Profiling */
+define('REQUEST_START', microtime(true));
+
+/*
+ * error handling for the very first includes etc.
+ * http://stackoverflow.com/questions/1241728/
+ */
+function handleError($errno, $errstr, $errfile, $errline, array $errcontext)
+{
+    // error was suppressed with the @-operator
+    if (0 === error_reporting()) {
+        return false;
+    }
+
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}
+set_error_handler('handleError');
 
 /**
  * Boostrap constants
@@ -70,7 +82,7 @@ if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
         // get .htaccess contents
         $htaccess = @file_get_contents(ONTOWIKI_ROOT . '.htaccess');
 
-        // check if RewriteEndine is enabled
+        // check if RewriteEngine is enabled
         $rewriteEngineOn = preg_match('/.*[^#][\t ]+RewriteEngine[\t ]+On/i', $htaccess);
 
         // explicitly request /index.php for non-rewritten requests
@@ -93,8 +105,13 @@ if (!function_exists('class_alias')) {
     }
 }
 
-/** Zend_Application */
-require_once 'Zend/Application.php';
+/** check/include Zend_Application */
+try {
+    // use include, so we can catch it with the error handler
+    include 'Zend/Application.php';
+} catch (Exception $e) {
+    die('Fatal Error: Could not load Zend library.<br />' . PHP_EOL .  'Maybe you need to install it with apt-get or with "make zend"?');
+}
 
 // create application
 $application = new Zend_Application(
@@ -102,8 +119,24 @@ $application = new Zend_Application(
     ONTOWIKI_ROOT . 'application/config/application.ini'
 );
 
-/** OntoWiki */
-require_once 'OntoWiki.php';
+/** check/include OntoWiki */
+try {
+    // use include, so we can catch it with the error handler
+    include 'OntoWiki.php';
+} catch (Exception $e) {
+    die('Fatal Error: Could not load the OntoWiki Application Framework classes.<br />' . PHP_EOL .  'Your installation directory seems to be screwed.');
+}
+
+/** check/include Erfurt_App */
+try {
+    // use include, so we can catch it with the error handler
+    include 'Erfurt/App.php';
+} catch (Exception $e) {
+    die('Fatal Error: Could not load the Erfurt Framework classes.<br />' . PHP_EOL .  'Maybe you should install it with apt-get or with "make erfurt"?');
+}
+
+// restore old error handler
+restore_error_handler();
 
 // define alias for backward compatiblity
 class_alias('OntoWiki', 'OntoWiki_Application');
