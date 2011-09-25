@@ -12,6 +12,8 @@ Other remarkable features are:
 * OntoWiki is backend independent, which means you can save your data on a MySQL database as well as on a Virtuoso Triple Store.
 * OntoWiki is easily extendible by you, since it features a sophisticated Extension System.
 
+OntoWiki is licensed under the [GNU General Public License Version 2, June 1991](http://www.gnu.org/licenses/gpl-2.0.txt) (license document is in the application subfolder).
+
 ## Installation
 
 ### via github repository
