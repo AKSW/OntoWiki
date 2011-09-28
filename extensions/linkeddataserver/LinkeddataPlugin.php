@@ -55,6 +55,12 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $uri = $event->uri;
       
         try {
+            // Check for a supported type by investigating the suffix of the URI or by
+            // checking the Accept header (content negotiation). The $matchingSuffixFlag
+            // parameter contains true if the suffix was used instead of the Accept header.
+            $matchingSuffixFlag = false;
+            $type = $this->_getTypeForRequest($request, $uri, $matchingSuffixFlag);
+
             // We need a readable graph to query. We use the first graph that was found.
             // If no readable graph is available for the current user, we cancel here.
             list($graph, $matchedUri) = $this->_matchGraphAndUri($uri);
@@ -75,12 +81,6 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 // FIXME: exit here prevents unit testing
                 exit;
             }
-
-            // Check for a supported type by investigating the suffix of the URI or by
-            // checking the Accept header (content negotiation). The $matchingSuffixFlag
-            // parameter contains true if the suffix was used instead of the Accept header.
-            $matchingSuffixFlag  = false;
-            $type = $this->_getTypeForRequest($request, $uri, $matchingSuffixFlag);
                                           
             // Prepare for redirect according to the given type.
             $url = null; // This will contain the URL to redirect to.
