@@ -24,6 +24,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         'application/xhtml+xml' => 'html', 
         'application/rdf+xml'   => 'rdf', 
         'text/n3'               => 'n3', 
+        'text/turtle'           => 'ttl',
         'application/json'      => 'json', 
         'application/xml'       => 'html'  // TODO: should this be xhtml or rdf?
     );
