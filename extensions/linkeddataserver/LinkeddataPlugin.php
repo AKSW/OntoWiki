@@ -222,7 +222,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $uri = rtrim($uri, '/');
             // Match case-insensitive and optionally with trailing slashes
             $query = sprintf(
-                'SELECT DISTINCT ?uri WHERE {?uri ?p ?o . FILTER (regex(str(?uri), "%s/*", "i"))}', 
+                'SELECT DISTINCT ?uri WHERE {?uri ?p ?o . FILTER (regex(str(?uri), "^%s/*$", "i"))}', 
                 $uri);
             $queryObj = Erfurt_Sparql_SimpleQuery::initWithString($query);
             $result = $store->sparqlQuery($queryObj);
