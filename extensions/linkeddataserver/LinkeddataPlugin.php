@@ -65,6 +65,10 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             }
 
             if ($uri !== $matchedUri) {
+                // Re-append faux file extension
+                if ($matchingSuffixFlag) {
+                    $matchedUri .= '.' . $type;
+                }
                 // Redirect to new (correct URI)
                 $response->setRedirect((string)$matchedUri, 301)
                          ->sendResponse();
