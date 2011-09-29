@@ -174,7 +174,7 @@ class OntoWiki_View extends Zend_View
      *        id       – a css id for the module window
      * @return string
      */
-    public function module($moduleName, Zend_Config $renderOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
+    public function module($moduleName, $renderOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
     {
         $moduleRegistry = OntoWiki_Module_Registry::getInstance();
 
