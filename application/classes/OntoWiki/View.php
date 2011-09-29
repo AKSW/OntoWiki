@@ -180,7 +180,11 @@ class OntoWiki_View extends Zend_View
 
         // get default options from the registry
         $defaultModuleOptions = $moduleRegistry->getModuleConfig($moduleName);
-        if($renderOptions != null){
+        if (!$defaultModuleOptions) {
+            // module is disabled
+            return '';
+        }
+        if ($renderOptions != null) {
             $moduleOptions = $defaultModuleOptions->merge($renderOptions);
         } else {
             $moduleOptions = $defaultModuleOptions;
