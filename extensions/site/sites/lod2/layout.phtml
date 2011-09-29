@@ -1,12 +1,11 @@
 <?php
-    // this is the standard template data
-    $templateData = array(
-                    'title' => $this->descriptionHelper->getTitle($this->resourceUri),
-                    'resourceUri' => $this->resourceUri,
-                    'description' => $this->description[$this->resourceUri],
-                    'descriptionHelper' => $this->descriptionHelper,
-                    'options'           => $this->options
-            );
+// this is the standard template data
+$templateData = array(
+    'title' => $this->descriptionHelper->getTitle($this->resourceUri),
+    'resourceUri' => $this->resourceUri,
+    'description' => $this->description[$this->resourceUri],
+    'descriptionHelper' => $this->descriptionHelper,
+);
 ?><?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
@@ -16,7 +15,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="generator" content="<?php echo $this->generator ?>" />
     <link rel="alternate" type="application/rdf+xml" href="<?php echo $this->resourceUri ?>.rdf" />
-    <link rel="pingback" href="<?php echo $this->pingbackUri ?>" />
+    <link rel="pingback" href="<?php echo $this->pingbackUrl ?>" />
 
     <link
         rel="<?php echo $this->curie('http://xmlns.com/foaf/0.1/primaryTopic') ?>"
@@ -37,7 +36,7 @@
     
     <script type="text/javascript" src="<?php echo $this->baseUri ?>/js/jquery.cycle.js"></script>
     
-    <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> &mdash; <?php echo $this->site['name'] ?></title>
+    <title><?php echo $this->descriptionHelper->getTitle($this->resourceUri) ?> &mdash; <?php echo $this->siteConfig['name'] ?></title>
 
     <script type="text/javascript">
 
@@ -66,33 +65,6 @@
 </head>
 <body<?php 
     foreach ($this->namespaces as $prefix => $ns): ?><?php echo ' xmlns:' . $prefix . '="' . $ns . '"' ?><?php endforeach; ?>>
-<?php
-    function printNavi($navi, $titleHelper, $depth, $view){
-        if(is_array($navi) && count($navi)>0):?>
-            <ul class="depth_<?php echo $depth; ?>">
-                <?php foreach ($navi as $navitem) :?>
-                <li>
-                    <?php
-                    $url = isset($navitem->page) ? $navitem->page : $view->url($navitem->uri);
-                    ?>
-                    <a href="<?php echo $url; ?>">
-                        <?php
-                            /* for($i=0; $i< $depth; $i++){echo "&nbsp;&nbsp;";}*/
-                            if (isset($navitem->altLabel)) {
-                                echo $navitem->altLabel;                                                                
-                            } else {
-                                echo $titleHelper->getTitle($navitem->uri);                                
-                            }
-                        ?></a>
-                        <?php printNavi($navitem->subconcepts, $titleHelper, $depth+1, $view); ?>
-                </li>
-                <?php endforeach; ?>
-             </ul>
-       <?php endif; 
-   }
-
-?>
-
   <!-- start: skip link navigation -->
   <!-- a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span -->
   <!-- end: skip link navigation -->
@@ -100,8 +72,8 @@
     <div class="page" about="<?php echo $this->resourceUri?>">
       <div id="header">
         <h1 id="logo">
-            <a href="<?php echo $this->site['index'] ?>">
-                <?php echo $this->site['name_encoded'] ?>
+            <a href="<?php echo $this->siteConfig['index'] ?>">
+                <?php echo $this->siteConfig['name_encoded'] ?>
             </a>
         </h1> <!-- /#logo -->
         <div id="topnav">
@@ -109,7 +81,7 @@
                 <!-- li><a href="#">Sitemap</a></li -->
                 <li><a href="http://lod2.eu/WikiArticle/Contact.html">Contact</a></li>
                 <li><a href="http://lod2.eu/Article/Imprint.html">Imprint</a></li>
-                <li><a rel="nofollow" href="<?php echo $this->wikiBaseUri ?>view?r=<?php echo urlencode($this->resourceUri) ?>">Log In/Edit</a></li>
+                <li><a rel="nofollow" href="<?php echo $this->wikiBaseUrl ?>view?r=<?php echo urlencode($this->resourceUri) ?>">Log In/Edit</a></li>
             </ul>
         </div> <!-- /#topnav -->
       </div>
@@ -118,8 +90,7 @@
         <a id="navigation" name="navigation"></a>
           <!-- main navigation: horizontal list -->
           <!-- ul -->
-          <?php printNavi($this->navigation, $this->descriptionHelper, 0, $this); ?>
-            <!-- li class="search"><a href="#">Keyword search</a></li -->
+          <?php echo $this->skosNavigation($this->descriptionHelper); ?>
           <!-- /ul -->
       </div>
 
@@ -204,7 +175,7 @@
 
       <div id="footer">
         <p>
-            See <a href="<?php echo $this->wikiBaseUri ?>source/edit?r=<?php echo $this->resourceUri ?>">page source</a>,
+            See <a href="<?php echo $this->wikiBaseUrl ?>source/edit?r=<?php echo $this->resourceUri ?>">page source</a>,
             <?php echo $this->partial('lod2/lastchange.phtml', $this->lastchange($this->resourceUri)); ?>
             </p>
         <p class="sublkine">This page is powered by the <a href="http://lod2.eu/WikiArticle/AboutTheWebsite.html">LOD2 stack</a>, 

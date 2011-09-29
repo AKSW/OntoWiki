@@ -6,6 +6,7 @@
         $moduleOptions['relevant'] = 'http://lod2.eu/schema/feedRelevantFor';
     }
     
+    $moduleOptions = new Zend_Config($moduleOptions);
     $content = trim($this->module('feeds', $moduleOptions));
     $content = str_replace('<h3', '<h4', $content);
     $content = str_replace('</h3', '</h4', $content);
