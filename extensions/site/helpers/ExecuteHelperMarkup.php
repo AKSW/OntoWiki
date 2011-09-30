@@ -81,6 +81,15 @@ class Site_View_Helper_ExecuteHelperMarkup extends Zend_View_Helper_Abstract
 
         // return the output of the helper or its error message
         try {
+            $helperInstance = $this->view->getHelper($helper);
+            if (!$helperInstance) {
+                throw new Exception(
+                    "Helper '$helper' not found.");
+            }
+            if (!$helperInstance instanceof Site_View_Helper_MarkupInterface) {
+                throw new Exception(
+                    "Helper '$helper' is not a markup helper and cannot be used in this way.");
+            }
             return $this->view->$helper($options);
         } catch (Exception $e) {
             $message = htmlspecialchars($e->getMessage(), ENT_NOQUOTES);
