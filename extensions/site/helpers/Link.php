@@ -16,7 +16,7 @@
  * @category OntoWiki
  * @package  OntoWiki_extensions_components_site
  */
-class Site_View_Helper_Link extends Zend_View_Helper_Abstract
+class Site_View_Helper_Link extends Zend_View_Helper_Abstract implements Site_View_Helper_MarkupInterface
 {
     /*
      * current view, injected with setView from Zend
