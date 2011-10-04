@@ -15,7 +15,7 @@
  * @category OntoWiki
  * @package  OntoWiki_extensions_components_site
  */
-class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract
+class Site_View_Helper_NavigationList extends Zend_View_Helper_Abstract implements Site_View_Helper_MarkupInterface
 {
     /*
      * the uri of the special title property

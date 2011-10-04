@@ -35,8 +35,11 @@ directories: clean
 	mkdir -p logs cache
 	chmod 777 logs cache extensions
 
-libraries: zend erfurt rdfauthor
+libraries: zend submodules
 
+submodules:
+	git submodule init
+	git submodule update
 
 # developer targets
 
@@ -50,9 +53,9 @@ update: pull
 force-update: pull
 
 status:
-	git status
-	cd libraries/RDFauthor && git status
-	cd libraries/Erfurt && git status
+	git status -sb
+	cd libraries/RDFauthor && git status -sb
+	cd libraries/Erfurt && git status -sb
 
 branch-check:
 	git rev-parse --abbrev-ref HEAD
@@ -63,7 +66,7 @@ branch-check:
 
 zend:
 	rm -rf libraries/Zend
-	curl -O http://framework.zend.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz || wget http://framework.zend.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz
+	curl -# -O http://framework.zend.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz || wget http://framework.zend.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz
 	tar xzf ZendFramework-${ZENDVERSION}-minimal.tar.gz
 	mv ZendFramework-${ZENDVERSION}-minimal/library/Zend libraries
 	rm -rf ZendFramework-${ZENDVERSION}-minimal.tar.gz ZendFramework-${ZENDVERSION}-minimal
