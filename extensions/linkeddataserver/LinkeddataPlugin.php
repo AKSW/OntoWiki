@@ -24,6 +24,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         'application/xhtml+xml' => 'html', 
         'application/rdf+xml'   => 'rdf', 
         'text/n3'               => 'n3', 
+        'text/turtle'           => 'ttl',
         'application/json'      => 'json', 
         'application/xml'       => 'html'  // TODO: should this be xhtml or rdf?
     );
@@ -54,6 +55,12 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $uri = $event->uri;
       
         try {
+            // Check for a supported type by investigating the suffix of the URI or by
+            // checking the Accept header (content negotiation). The $matchingSuffixFlag
+            // parameter contains true if the suffix was used instead of the Accept header.
+            $matchingSuffixFlag = false;
+            $type = $this->_getTypeForRequest($request, $uri, $matchingSuffixFlag);
+
             // We need a readable graph to query. We use the first graph that was found.
             // If no readable graph is available for the current user, we cancel here.
             list($graph, $matchedUri) = $this->_matchGraphAndUri($uri);
@@ -64,18 +71,16 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             }
 
             if ($uri !== $matchedUri) {
+                // Re-append faux file extension
+                if ($matchingSuffixFlag) {
+                    $matchedUri .= '.' . $type;
+                }
                 // Redirect to new (correct URI)
                 $response->setRedirect((string)$matchedUri, 301)
                          ->sendResponse();
                 // FIXME: exit here prevents unit testing
                 exit;
             }
-
-            // Check for a supported type by investigating the suffix of the URI or by
-            // checking the Accept header (content negotiation). The $matchingSuffixFlag
-            // parameter contains true if the suffix was used instead of the Accept header.
-            $matchingSuffixFlag  = false;
-            $type = $this->_getTypeForRequest($request, $uri, $matchingSuffixFlag);
                                           
             // Prepare for redirect according to the given type.
             $url = null; // This will contain the URL to redirect to.
@@ -221,7 +226,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $uri = rtrim($uri, '/');
             // Match case-insensitive and optionally with trailing slashes
             $query = sprintf(
-                'SELECT DISTINCT ?uri WHERE {?uri ?p ?o . FILTER (regex(str(?uri), "%s/*", "i"))}', 
+                'SELECT DISTINCT ?uri WHERE {?uri ?p ?o . FILTER (regex(str(?uri), "^%s/*$", "i"))}', 
                 $uri);
             $queryObj = Erfurt_Sparql_SimpleQuery::initWithString($query);
             $result = $store->sparqlQuery($queryObj);
