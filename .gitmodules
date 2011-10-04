@@ -4,3 +4,6 @@
 [submodule "libraries/Erfurt"]
 	path = libraries/Erfurt
 	url = git@github.com:AKSW/Erfurt.git
+[submodule "extensions/site"]
+	path = extensions/site
+	url = git@github.com:AKSW/site.ontowiki.git
