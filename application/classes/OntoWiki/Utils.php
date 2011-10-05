@@ -162,6 +162,9 @@ class OntoWiki_Utils
             } else {
                     throw new Exception('unexpected type of timestamp. expected string (date) or int (timestamp), got '. gettype($start_timestamp) .' instead');
             }
+            
+            //if start is in the past, we use negative differences
+            $difference_seconds *= -1;
 
             // show e.g. 'moments ago' if time is less than one minute
             if (abs($difference_seconds) < 60) {
@@ -181,8 +184,8 @@ class OntoWiki_Utils
                     } else {
                         return $translate->_('in approx. 1 minute');
                     }
-                } else if (abs($difference_minutes < 60)) {
-                    if($difference_seconds < 0){
+                } else if (abs($difference_minutes) < 60) {
+                    if($difference_minutes < 0){
                         return sprintf($translate->_('approx. %d minutes ago'), abs($difference_minutes));
                     } else {
                         return sprintf($translate->_('in approx. %d minutes'), abs($difference_minutes));
@@ -191,26 +194,26 @@ class OntoWiki_Utils
                     $difference_hours = round(($difference_seconds / 3600));
 
                     // show e.g. 'approx. x hours
-                    if (abs($difference_hours == 1)) {
+                    if (abs($difference_hours) == 1) {
                         if($difference_hours < 0){
                             return $translate->_('approx. 1 hour ago');
                         } else {
                             return $translate->_('in approx. 1 hour');
                         }
-                    } else if ($difference_hours <= 48) {
+                    } else if (abs($difference_hours) <= 48) {
                         if($difference_hours < 0){
-                            return sprintf($translate->_('approx. %d hours ago'), $difference_hours);
+                            return sprintf($translate->_('approx. %d hours ago'), abs($difference_hours));
                         } else {
-                            return sprintf($translate->_('in approx. %d hours'), $difference_hours);
+                            return sprintf($translate->_('in approx. %d hours'), abs($difference_hours));
                         }
                     } else {
                         $difference_days = round(($difference_seconds / $dayInSeconds));
 
                         // else return e.g. 'approx. x days ago'
                         if($difference_days < 0){
-                            return sprintf($translate->_('approx. %d days ago'), $difference_days);
+                            return sprintf($translate->_('approx. %d days ago'), abs($difference_days));
                         } else {
-                            return sprintf($translate->_('in approx. %d days'), $difference_days);
+                            return sprintf($translate->_('in approx. %d days'), abs($difference_days));
                         }
                     }
                 }
