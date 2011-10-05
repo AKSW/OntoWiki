@@ -11,9 +11,17 @@
             <?php echo ' checked="checked"' ?>
         <?php endif; ?>
 	/>
-	<label for="result_format_plain" class="checkboxradio"><?php echo $this->_('Plain') ?></label>
+	<label for="result_format_plain" class="checkboxradio"><?php echo $this->_('Inline List') ?></label>
 	<br class="clearall" />
-	<input type="radio" class="radio" name="result_format" id="result_format_xml" value="xml"
+	<input type="radio" class="radio" name="result_format" id="result_list" value="list"
+	<?php if ($this->placeholder('sparql.result.format') == 'list'): ?>
+            <?php echo ' checked="checked"' ?>
+        <?php endif; ?>
+	/>
+	<label for="result_list" class="checkboxradio"><?php echo $this->_('Default List') ?></label>
+	<br class="clearall">
+	<hr>
+        <input type="radio" class="radio" name="result_format" id="result_format_xml" value="xml"
 	<?php if ($this->placeholder('sparql.result.format') == 'xml'): ?>
             <?php echo ' checked="checked"' ?>
         <?php endif; ?>
@@ -33,12 +41,5 @@
         <?php endif; ?>
 	/>
 	<label for="result_outputfile" class="checkboxradio">Get as file</label>
-	<hr>
-                <input type="radio" class="radio" name="result_format" id="result_list" value="list"
-	<?php if ($this->placeholder('sparql.result.format') == 'list'): ?>
-            <?php echo ' checked="checked"' ?>
-        <?php endif; ?>
-	/>
-	<label for="result_list" class="checkboxradio">Show List</label>
-	<br class="clearall">
+        
 </div>
