@@ -115,7 +115,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini', 'private', true);
             $config->merge($privateConfig);
         } catch (Zend_Config_Exception $e) {
-            exit($e->getMessage());
+            exit('Fatal Error: Could not load OntoWiki config.<br />' . PHP_EOL . 'Maybe copy config.ini-dist to config.ini and configure database access.');
         }
 
         // normalize path names
