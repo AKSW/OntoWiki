@@ -16,7 +16,7 @@ class LastchangesModule extends OntoWiki_Module {
     // enabling versioning
         $this->versioning = $this->_erfurt->getVersioning();
         if (!$this->versioning->isVersioningEnabled()) {
-            $this->view->warningmessage = 'Versioning / history is currently disabled. This means, you can not see the latest changes.';
+            $this->view->warningmessage = 'Versioning/history is currently disabled. This means, you can not see the latest changes.';
         } else {
         // The system config is used to get the user title
         // TODO: How can switch from ACL to Non-ACL use?

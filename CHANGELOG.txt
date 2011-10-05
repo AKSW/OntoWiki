@@ -1,6 +1,0 @@
-
-A detailed Release ChangeLog is available at
-http://ontowiki.net/Projects/OntoWiki/Changelog
-
-An issue based Changelog for this version is available at
-http://code.google.com/p/ontowiki/issues/list?can=1&q=milestone=OntoWiki-0.9.5

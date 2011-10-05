@@ -1,2 +1,0 @@
-A detailed Installation Guide for different systems is available
-at http://code.google.com/p/ontowiki/wiki/InstallFromArchive

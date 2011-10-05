@@ -6,8 +6,8 @@
     Deny from all
 </Files>
 
-# OntoWiki does not requires Apache's rewrite engine to work. However, 
-# if you would like to have nice (Linked Data) URIs you must enable URL 
+# OntoWiki does not requires Apache's rewrite engine to work. However,
+# if you would like to have nice (Linked Data) URIs you must enable URL
 # rewriting by enabling mod_rewrite in your apache config.
 <IfModule mod_rewrite.c>
     RewriteEngine On
@@ -17,8 +17,9 @@
         SetEnv ONTOWIKI_APACHE_MOD_REWRITE_ENABLED 1
     </IfModule>
 
+    RewriteRule ^favicon\.(.*)$ application/favicon.$1
     RewriteRule !((extensions|libraries).*|\.(js|ico|gif|jpg|png|css|php|swf|json))$ index.php
-    
+
     # Set RewriteBase only if your OntoWiki folder is not located in your web server's root dir.
     #RewriteBase /ontowiki
 </IfModule>
