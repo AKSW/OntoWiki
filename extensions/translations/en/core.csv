@@ -8,11 +8,11 @@ Bla bla, blub!;Bla bla, blubb!
 I am %1$s years old.;I am %1$s years old.
 
 moments ago;moments ago
-approx. 1 minute ago;one minute ago
-approx. %d minutes ago;%d minutes ago
-approx. 1 hour ago;one hour ago
-approx. %d hours ago;%d hours ago
-approx. %d days ago;%d days ago
+approx. 1 minute ago;approx. one minute ago
+approx. %d minutes ago;approx. %d minutes ago
+approx. 1 hour ago;approx. one hour ago
+approx. %d hours ago;approx. %d hours ago
+approx. %d days agoapprox. ;%d days ago
 
 # test
 page1;Page 1
