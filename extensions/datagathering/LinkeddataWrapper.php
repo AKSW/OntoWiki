@@ -240,11 +240,11 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         );
         
         $uri = $r->getUri();
-        
+ 
         $fullResult['status_description'] = "Linked Data found for URI $uri";
         $fullResult['ns'] = $ns;
         $fullResult['add'] = $data;
-        
+         
         return $fullResult;
     }
     

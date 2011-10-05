@@ -189,9 +189,8 @@ class ResourceController extends OntoWiki_Controller_Base {
         // add toolbar
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
 
+        //show modules
         $this->addModuleContext('main.window.properties');
-
-
     }
 
     /**
@@ -224,6 +223,7 @@ class ResourceController extends OntoWiki_Controller_Base {
         //begin view building
         $this->view->placeholder('main.window.title')->set('Resource List');
 
+        // rdfauthor on a list is not possible yet
         // TODO: check acl
         // build toolbar
         /*

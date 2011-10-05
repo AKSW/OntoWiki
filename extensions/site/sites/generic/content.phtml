@@ -1,8 +1,0 @@
-<?php /* you can use $this->has() as a shortcut */ ?>
-<?php if (isset($this->description['http://lod2.eu/schema/content'])) : ?>
-    <?php echo $this->description['http://lod2.eu/schema/content'][0]['value']; ?>
-<?php elseif (isset($this->description['http://rdfs.org/sioc/ns#content'])) : ?>
-<p>
-    <?php echo $this->description['http://rdfs.org/sioc/ns#content'][0]['value']; ?>
-</p>
-<?php endif ?>

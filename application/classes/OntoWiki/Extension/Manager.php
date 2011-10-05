@@ -1,9 +1,9 @@
 <?php
 
 /**
+ * will be used by OntoWiki to scan the extension folder and load the needed extension
  *
- *
- * @author jonas
+ * @author Jonas Brekle <jonas.brekle@gmail.com>
  */
 class Ontowiki_Extension_Manager {
     const DEFAULT_CONFIG_FILE = 'default.ini';
@@ -198,9 +198,13 @@ class Ontowiki_Extension_Manager {
      *
      * @return string
      */
-    public function getExtensionPath()
-    {
-        return $this->_extensionPath;
+    public function getExtensionPath($name = null)
+    {   
+        if($name == null){
+            return $this->_extensionPath;
+        } else {
+            return $this->_extensionPath . $name;
+        }
     }
 
     /**
@@ -233,6 +237,8 @@ class Ontowiki_Extension_Manager {
 
     /**
      * Checks whether a specific component is registered.
+     * 
+     * @deprecated
      *
      * @param  string $componentName
      * @return boolean
@@ -257,6 +263,8 @@ class Ontowiki_Extension_Manager {
     /**
      * Returns a prefix that can be used to distinguish components from
      * other extensions, i.e. modules or plugins.
+     * 
+     * @deprecated
      *
      * @return string
      */

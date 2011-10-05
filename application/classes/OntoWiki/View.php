@@ -163,7 +163,8 @@ class OntoWiki_View extends Zend_View
      * is used instead.
      *
      * @param string $moduleName
-     * @param array $moduleOptions An associative array of module options.
+     * @param array $moduleOptions An associative array or and instance of
+     *        Zend_config with module options.
      *        The following keys can be used:
      *        enabled  – whether the module is enabled or disabled
      *        title    – the module window's title
@@ -174,13 +175,21 @@ class OntoWiki_View extends Zend_View
      *        id       – a css id for the module window
      * @return string
      */
-    public function module($moduleName, Zend_Config $renderOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
+    public function module($moduleName, $renderOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
     {
         $moduleRegistry = OntoWiki_Module_Registry::getInstance();
 
+        // allow old-style array config
+        if (is_array($renderOptions)) {
+            $renderOptions = new Zend_Config($renderOptions);
+        }
+
         // get default options from the registry
         $defaultModuleOptions = $moduleRegistry->getModuleConfig($moduleName);
-        if($renderOptions != null){
+
+        if ($defaultModuleOptions == null) {
+            $moduleOptions = $renderOptions;
+        } else if ($renderOptions != null) {
             $moduleOptions = $defaultModuleOptions->merge($renderOptions);
         } else {
             $moduleOptions = $defaultModuleOptions;
@@ -190,6 +199,11 @@ class OntoWiki_View extends Zend_View
         $cssId       = isset($moduleOptions->id) ? $moduleOptions->id : '';
 
         $module = $moduleRegistry->getModule($moduleName, $context);
+
+        // no module found
+        if (null == $module) {
+            return '';
+        }
 
         $module->setOptions($moduleOptions);
 

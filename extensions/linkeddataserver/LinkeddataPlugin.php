@@ -24,6 +24,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         'application/xhtml+xml' => 'html', 
         'application/rdf+xml'   => 'rdf', 
         'text/n3'               => 'n3', 
+        'text/turtle'           => 'ttl',
         'application/json'      => 'json', 
         'application/xml'       => 'html'  // TODO: should this be xhtml or rdf?
     );
@@ -54,34 +55,32 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $uri = $event->uri;
       
         try {
-            // We need a readable graph to query. We use the first graph that was found.
-            // If no readable graph is available for the current user, we cancel here.
-            $graph = $this->_getFirstReadableGraphForUri($uri);
-            if (!$graph) {
-                // Check configuration, whether case-insensitive check is 
-                if (isset($this->_privateConfig->caseInsensitiveResourceSearch)) {
-                    // TODO @seebi Use your new store method here.
-                    $uri   = strtolower($uri);
-                    $graph = $this->_getFirstReadableGraphForUri($uri);
-
-                    if (!$graph) {
-                        return false;
-                    } else {
-                        // Redirect to new (correct URI)
-                        $response->setRedirect((string)$uri, 301)
-                                 ->sendResponse();
-                        exit;
-                    }
-                } else {
-                    return false;
-                }
-            }
-
             // Check for a supported type by investigating the suffix of the URI or by
             // checking the Accept header (content negotiation). The $matchingSuffixFlag
             // parameter contains true if the suffix was used instead of the Accept header.
-            $matchingSuffixFlag  = false;
+            $matchingSuffixFlag = false;
             $type = $this->_getTypeForRequest($request, $uri, $matchingSuffixFlag);
+
+            // We need a readable graph to query. We use the first graph that was found.
+            // If no readable graph is available for the current user, we cancel here.
+            list($graph, $matchedUri) = $this->_matchGraphAndUri($uri);
+
+            if (!$graph || !$matchedUri) {
+                // URI not found
+                return false;
+            }
+
+            if ($uri !== $matchedUri) {
+                // Re-append faux file extension
+                if ($matchingSuffixFlag) {
+                    $matchedUri .= '.' . $type;
+                }
+                // Redirect to new (correct URI)
+                $response->setRedirect((string)$matchedUri, 301)
+                         ->sendResponse();
+                // FIXME: exit here prevents unit testing
+                exit;
+            }
                                           
             // Prepare for redirect according to the given type.
             $url = null; // This will contain the URL to redirect to.
@@ -169,73 +168,6 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         }
     }
 
-    // The following event is not used any more
-    // TODO Remove?
-    /*
-    public function onRouteShutdown($event)
-    {
-        $owApp = OntoWiki::getInstance();
-        $requestUri = $owApp->config->urlBase . ltrim($event->request->getPathInfo(), '/');
-            
-        $viewPos = strrpos($requestUri, '/view/');
-        if ($viewPos !== false) {
-            $uri = substr($requestUri, 0, $viewPos) . '/id/' . substr($requestUri, $viewPos+6);
-                
-            $store = Erfurt_App::getInstance()->getStore();
-            $result = $store->getGraphsUsingResource($uri, false);
-                
-            if ($result) {                
-                // get source graph
-                $allowedGraph = null;
-                $ac = Erfurt_App::getInstance()->getAc();
-                foreach ($result as $g) {
-                    if ($ac->isModelAllowed('view', $g)) {
-                        $allowedGraph = $g;
-                        break;
-                    }
-                }
-                
-                $graph = null;
-                if ($allowedGraph !== null) {
-                    $graph = $store->getModel($allowedGraph);
-                    $owApp->selectedModel = $graph;
-                }
-                    
-                $resource = new OntoWiki_Resource($uri, $graph);
-                $owApp->selectedResource = $resource;
-            }
-        }
-        $dataPos = strrpos($requestUri, '/data/');
-        if ($dataPos !== false) {
-            $uri = substr($requestUri, 0, $dataPos) . '/id/' . substr($requestUri, $dataPos+6);
-                
-            $store = Erfurt_App::getInstance()->getStore();
-            $result = $store->getGraphsUsingResource($uri, false);
-                
-            if ($result) {                
-                // get source graph
-                $allowedGraph = null;
-                $ac = Erfurt_App::getInstance()->getAc();
-                foreach ($result as $g) {
-                    if ($ac->isModelAllowed('view', $g)) {
-                        $allowedGraph = $g;
-                        break;
-                    }
-                }
-                    
-                $graph = null;
-                if ($allowedGraph !== null) {
-                    $graph = $store->getModel($allowedGraph);
-                    $owApp->selectedModel = $graph;
-                }
-                    
-                $resource = new OntoWiki_Resource($uri, $graph);
-                $owApp->selectedResource = $resource;
-            }
-        }
-    }
-    */
-
     public function onNeedsGraphForLinkedDataUri($event)
     {
         return $this->_getFirstReadableGraphForUri($event->uri);
@@ -283,6 +215,33 @@ class LinkeddataPlugin extends OntoWiki_Plugin
     {
         return OntoWiki_Utils::matchMimetypeFromRequest($request, $supportedTypes);
     }
+
+    private function _matchGraphAndUri($uri)
+    {
+        $graph = null;
+        $actualUri = null;
+        if ((bool)$this->_privateConfig->fuzzyMatch === true) {
+            $store = OntoWiki::getInstance()->erfurt->getStore();
+            // Remove trailing slashes
+            $uri = rtrim($uri, '/');
+            // Match case-insensitive and optionally with trailing slashes
+            $query = sprintf(
+                'SELECT DISTINCT ?uri WHERE {?uri ?p ?o . FILTER (regex(str(?uri), "^%s/*$", "i"))}', 
+                $uri);
+            $queryObj = Erfurt_Sparql_SimpleQuery::initWithString($query);
+            $result = $store->sparqlQuery($queryObj);
+            $first = current($result);
+            if (isset($first['uri'])) {
+                $actualUri = $first['uri'];
+            }
+        } else {
+            $actualUri = $uri;
+        }
+
+        $graph = $this->_getFirstReadableGraphForUri($actualUri);
+
+        return array($graph, $actualUri);
+    }
     
     private function _getFirstReadableGraphForUri($uri)
     {
@@ -290,7 +249,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         try {
             $result = $store->getGraphsUsingResource($uri, false);
             
-            if ($result) {                
+            if ($result) {
                 // get source graph
                 $allowedGraph = null;
                 $ac = Erfurt_App::getInstance()->getAc();
