@@ -171,11 +171,11 @@ class Ontowiki_Extension_Manager {
     public function getComponentHelper($componentName)
     {
         if (!$this->isExtensionRegistered($componentName)) {
-            throw new OntoWiki_Component_Exception("Component with key '$componentName' not registered");
+            throw new OntoWiki_Component_Exception('Component with key "'.$componentName.'" not registered');
         }
 
-        if (!array_key_exists('instance', $this->_helpers[$componentName])) {
-            throw new OntoWiki_Component_Exception("Could not load helper for component '$componentName'.");
+        if (!isset($this->_helpers[$componentName]['instance'])) {
+            throw new OntoWiki_Component_Exception('no helper loaded for component "'.$componentName.'"');
         }
 
         return $this->_helpers[$componentName]['instance'];
@@ -375,7 +375,7 @@ class Ontowiki_Extension_Manager {
         if (!$this->_helpersCalled) {
             foreach ($this->_helpers as $componentName => &$helper) {
                 // only if helper has not been previously loaded
-                if (!array_key_exists('instance', $helper)) {
+                if (!isset($helper['instance'])) {
                     $helperInstance = $this->_loadHelper($componentName);
                 } else {
                     $helperInstance = $this->_helpers[$componentName]['instance'];
@@ -394,7 +394,7 @@ class Ontowiki_Extension_Manager {
 
     protected function _loadHelper($componentName)
     {
-        if (!array_key_exists($componentName, $this->_helpers)) {
+        if (!isset($this->_helpers[$componentName])) {
             throw new OntoWiki_Component_Exception("No helper defined for component '$componentName'.");
         }
 
@@ -600,8 +600,8 @@ class Ontowiki_Extension_Manager {
         $config = new Zend_Config_Ini($path . self::DEFAULT_CONFIG_FILE, null, true);
         
         // overwrites default config with local config
-        if (is_readable($this->_extensionPath . $name . ".ini")) {
-            $local_ini = new Zend_Config_Ini($this->_extensionPath . $name . ".ini", null, true);
+        if (is_readable($this->_extensionPath . $name . '.ini')) {
+            $local_ini = new Zend_Config_Ini($this->_extensionPath . $name . '.ini', null, true);
             $config->merge($local_ini);
         }
 
@@ -613,10 +613,10 @@ class Ontowiki_Extension_Manager {
         //this might be nessary
         if(is_string($config->enabled)){
             switch($config->enabled){
-                case "1":
-                case "enabled":
-                case "true":
-                case "on":
+                case '1':
+                case 'enabled':
+                case 'true':
+                case 'on':
                     $config->enabled = true;
                     break;
                 default:
