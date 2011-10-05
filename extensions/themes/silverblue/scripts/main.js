@@ -217,6 +217,24 @@ $(document).ready(function() {
             }
         });
     }
+    /*
+     *  on press enter, this type of textbox looses focus and gives it to the next textfield
+     */
+    $('.focusNextOnEnter').keypress(function(event) {
+        // return pressed
+        if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
+            var me = $(this)
+            var next = me.next();
+            if(next.get(0).tagName.toLowerCase() == me.get(0).tagName.toLowerCase()){
+                next.focus();
+            } else {
+                var next2 = me.parent().next().find('>'+me.get(0).tagName.toLowerCase()+':first')
+                if (next2.length != 0){
+                    next2.focus();
+                } 
+            } 
+        }
+    });
     
     // autosubmit
     $('a.reset').click(function() {
