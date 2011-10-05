@@ -1537,6 +1537,22 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         //remove duplicate triples...
         $this->_valueQuery->optimize();
+        
+        //fix for a strange issue with mysql/zenddb where a query with only optionals fails (but there is a magic/unkown condition, that makes it work for some queries!?)
+        if($this->_store->getBackendName() == 'ZendDb'){
+            $hasTriple = false;
+            foreach($this->_valueQuery->getWhere()->getElements() as $element){
+                if($element instanceof Erfurt_Sparql_Query2_IF_TriplesSameSubject){
+                    $hasTriple = true;
+                    break;
+                }
+            }
+            if(!$hasTriple){
+                $this->_valueQuery->getWhere()->addElement(
+                   new Erfurt_Sparql_Query2_Triple($this->_resourceVar, new Erfurt_Sparql_Query2_Var("p"), new Erfurt_Sparql_Query2_Var("o"))
+                );
+            }
+        }
 
         $this->_valueQueryUptodate = true;
 
