@@ -93,7 +93,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->_resourceVar = new Erfurt_Sparql_Query2_Var("resourceUri");
 
         $this->allTriple = new Erfurt_Sparql_Query2_Triple($this->_resourceVar, new Erfurt_Sparql_Query2_Var("p"), new Erfurt_Sparql_Query2_Var("o"));
-        $this->_resourceQuery->addElement($this->allTriple);
+        $this->addAllTriple();
         
         //show resource uri
         $this->_resourceQuery->addProjectionVar($this->_resourceVar);
@@ -194,13 +194,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     }
 
    /**
-    * add ?resourceUri ?p ?o to the query
+    * add ?resourceUri ?p ?o to the resource query
     * TODO: support objects as resources? optionally?
     */
-    public function addAllTriple($withObjects = false){
-        $this->_resourceQuery->addElement(
-            $this->allTriple
-        );
+    public function addAllTriple(){
+        $this->_resourceQuery->addElement($this->allTriple);
     }
     
     /**
