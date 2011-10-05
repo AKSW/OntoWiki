@@ -238,7 +238,7 @@ class Ontowiki_Extension_Manager {
     /**
      * Checks whether a specific component is registered.
      * 
-     * deprecated
+     * @deprecated
      *
      * @param  string $componentName
      * @return boolean
@@ -264,7 +264,7 @@ class Ontowiki_Extension_Manager {
      * Returns a prefix that can be used to distinguish components from
      * other extensions, i.e. modules or plugins.
      * 
-     * deprecated
+     * @deprecated
      *
      * @return string
      */
