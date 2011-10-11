@@ -702,7 +702,14 @@ class ServiceController extends Zend_Controller_Action
         // delete
         if ($deleteModel && $deleteModel->isEditable()) {
             try {
-                $count = $deleteModel->deleteMultipleStatements((array)$delete);
+                $deleteModel->deleteMultipleStatements((array)$delete);
+                
+                $flag = true;
+                if (defined('_OWDEBUG')) {
+                    OntoWiki::getInstance()->logger->info(
+                        sprintf('Deleted statements from graph <%s>', $deleteModel->getModelUri())
+                    );
+                }
             } catch (Erfurt_Store_Exception $e) {
                 if (defined('_OWDEBUG')) {
                     OntoWiki::getInstance()->logger->info(
@@ -712,16 +719,14 @@ class ServiceController extends Zend_Controller_Action
                 }
             }
 
-            $flag = true;
-            if (defined('_OWDEBUG')) {
-                OntoWiki::getInstance()->logger->info(
-                    sprintf('Deleted %i statements from graph <%s>', $count, $deleteModel->getModelUri())
-                );
-            }
+            
         }
 
         // insert
         if ($insertModel && $insertModel->isEditable()) {
+            OntoWiki::getInstance()->logger->info(
+                        'add Statements: ' . print_r($delete, true)
+                    );
             $count = $insertModel->addMultipleStatements((array)$insert);
             $flag = true;
             if (defined('_OWDEBUG')) {
