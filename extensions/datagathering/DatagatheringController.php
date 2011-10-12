@@ -755,6 +755,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
             //$this->_response->setException(new OntoWiki_Http_Exception(403));
         } else if($res == self::IMPORT_WRAPPER_EXCEPTION){
             return $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
+        } else if($res == DatagatheringController::IMPORT_WRAPPER_NOT_AVAILABLE){
+            return $this->_sendResponse($res, 'the data is not available.', OntoWiki_Message::ERROR);
         } else {
             return $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
         }

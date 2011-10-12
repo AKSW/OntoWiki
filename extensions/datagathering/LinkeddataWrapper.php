@@ -90,10 +90,14 @@ class LinkeddataWrapper extends Erfurt_Wrapper
 
         // Test the URI.
         $this->_url = $url;
-        $client = $this->_getHttpClient($url, array(
-            'maxredirects'  => 0,
-            'timeout'       => 30
-        ));
+        try{ 
+            $client = $this->_getHttpClient($url, array(
+                'maxredirects'  => 0,
+                'timeout'       => 30
+            ));
+        } catch (Zend_Uri_Exception $e){
+            return false;
+        }
         
         $client->setHeaders('Accept', 'application/rdf+xml');
         $response = $client->request();
@@ -141,6 +145,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                     $data = array($uri => $tempArray[$uri]);
                     $retVal = true;
                 } else {
+                    
                     $data = array();
                     $ns = array();
                     $retVal = false;
