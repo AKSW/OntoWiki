@@ -10,6 +10,12 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
 {   
     public function onAfterInitController($event)
     {
+        //only do this once (so if the model is changed later, this plugin will not prevent it)
+        if(isset($_SESSION['defaultModelHasBeenSet']) && $_SESSION['defaultModelHasBeenSet']){
+            return;
+        }
+        $_SESSION['defaultModelHasBeenSet'] = true;
+        
         require_once 'OntoWiki/Module/Registry.php';
 
         $owApp = OntoWiki::getInstance();
@@ -33,9 +39,7 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
         if ( $config['modelsHide'] && !$efApp->getAc()->isActionAllowed($config['modelsExclusiveRight']) ) {
             $registry = OntoWiki_Module_Registry::getInstance();
             $registry->disableModule('modellist','main.sidewindow');
-        } else {
-            // do nothing
-        }
+        } 
 
         // set default model if it could be determined
         if ( $modelUri && !$efApp->getAc()->isActionAllowed($config['modelsExclusiveRight']) ) {
@@ -44,15 +48,16 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
                 // everythings fine nothing to do here
             } else {
                 $owApp->selectedModel = $efStore->getModel($modelUri);
-                // set redirect to model info and send immediately
-                $response = Zend_Controller_Front::getInstance()->getResponse();
-                $url = new OntoWiki_Url(array('controller' => 'model', 'action' => 'info'), array());
-                $response->setRedirect((string)$url, 303)
-                         ->sendResponse();
-                exit;
+                
+                // set redirect to "model/info" and send immediately
+                //$response = Zend_Controller_Front::getInstance()->getResponse();
+                //$url = new OntoWiki_Url(array('controller' => 'model', 'action' => 'info'), array());
+                //$response->setRedirect((string)$url, 303)
+                //         ->sendResponse();
+                //exit;
             }
             if($config['setSelectedResource']){
-                $owApp->selectedResource = $owApp->selectedModel;
+                $owApp->selectedResource = $modelUri;
             }
         } else {
             // could not determine model so do nothing
