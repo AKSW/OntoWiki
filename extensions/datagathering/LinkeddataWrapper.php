@@ -145,7 +145,6 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                     $data = array($uri => $tempArray[$uri]);
                     $retVal = true;
                 } else {
-                    
                     $data = array();
                     $ns = array();
                     $retVal = false;

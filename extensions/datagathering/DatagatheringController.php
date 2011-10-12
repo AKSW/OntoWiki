@@ -975,7 +975,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
                             $queryoptions
                         );
                         //transform resultset to rdf/php statements 
-                        $model1 = new Erfurt_Rdf_MemoryModel($statementsBefore);
+                        $model1 = new Erfurt_Rdf_MemoryModel();
+                        $model1->addStatementsFromSPOQuery($statementsBefore);
                         $model2 = new Erfurt_Rdf_MemoryModel($statements);
                         $model->updateWithMutualDifference($model1->getStatements(), $model2->getStatements());
                     }
