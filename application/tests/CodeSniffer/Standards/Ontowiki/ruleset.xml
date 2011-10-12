@@ -2,9 +2,7 @@
 <ruleset name="Ontowiki">
  <description>A Ontowiki coding standard.</description>
  
- <exclude-pattern>*/ARC2/*</exclude-pattern>
- <exclude-pattern>*/Zend/*</exclude-pattern>
- <exclude-pattern>*/Erfurt/*</exclude-pattern>
+ <exclude-pattern>*/libraries/*</exclude-pattern>
  
  <rule ref="Zend"/>
 
