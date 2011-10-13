@@ -59,9 +59,10 @@ pull:
 	git pull
 	git submodule foreach git pull
 
-update: pull
+fetch: 
+	git fetch
+	git submodule foreach git fetch
 
-force-update: pull
 info:
 	@git --no-pager log -1 --oneline --decorate
 	@git submodule foreach git --no-pager log -1 --oneline --decorate
