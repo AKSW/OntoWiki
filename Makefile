@@ -35,6 +35,8 @@ default:
 
 install: directories libraries
 
+install-dev: directories libraries-dev
+
 clean:
 	rm -rf cache/* logs/*
 
@@ -42,7 +44,9 @@ directories: clean
 	mkdir -p logs cache
 	chmod 777 logs cache extensions
 
-libraries: zend submodules
+libraries: zend rdfauthor erfurt submodules
+
+libraries-dev: zend rdfauthor-dev erfurt-dev submodules
 
 submodules:
 	git submodule init
