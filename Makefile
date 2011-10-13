@@ -3,6 +3,7 @@ ZENDVERSION=1.11.5
 default:
 	@echo "please use:"
 	@echo "     'make install' (-> make directories, zend and libraries)"
+	@echo "     'make install-dev' (-> same as install but writeable)"
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
 	@echo "     'make zend' (download and install Zend under libraries)"
 	@echo "     'make libraries' ('git clone' all subrepos - in case submodules do not work)"
@@ -44,7 +45,7 @@ directories: clean
 	mkdir -p logs cache
 	chmod 777 logs cache extensions
 
-libraries: zend rdfauthor erfurt submodules
+libraries: zend rdfauthor erfurt 
 
 libraries-dev: zend rdfauthor-dev erfurt-dev submodules
 
