@@ -62,6 +62,9 @@ pull:
 update: pull
 
 force-update: pull
+info:
+	@git --no-pager log -1 --oneline --decorate
+	@git submodule foreach git --no-pager log -1 --oneline --decorate
 
 status:
 	git status -sb
