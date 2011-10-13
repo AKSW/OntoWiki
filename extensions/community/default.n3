@@ -9,7 +9,7 @@
 
 <> foaf:primaryTopic :community .
 
-:community a :Project;
+:community a doap:Project;
     doap:name "Community";
     doap:description "rate and comment on resources.";
     doap:maintainer <http://aksw.org/SebastianTramp>;

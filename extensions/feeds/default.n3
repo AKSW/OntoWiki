@@ -9,7 +9,7 @@
 
 <> foaf:primaryTopic :feeds .
 
-:feeds a :Project;
+:feeds a doap:Project;
     doap:name "Feeds";
     doap:description "aggregate news from feeds which are related to a resource and displays them in a module";
     doap:maintainer <http://aksw.org/SebastianTramp>;
