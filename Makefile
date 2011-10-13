@@ -56,8 +56,7 @@ submodules:
 
 pull:
 	git pull
-	cd libraries/RDFauthor && git pull
-	cd libraries/Erfurt && git pull
+	git submodule foreach git pull
 
 update: pull
 
@@ -68,13 +67,11 @@ info:
 
 status:
 	git status -sb
-	cd libraries/RDFauthor && git status -sb
-	cd libraries/Erfurt && git status -sb
+	git submodule foreach git status -sb
 
 branch-check:
-	git rev-parse --abbrev-ref HEAD
-	git --work-tree=libraries/Erfurt rev-parse --abbrev-ref HEAD
-	git --work-tree=libraries/RDFauthor rev-parse --abbrev-ref HEAD
+	@git rev-parse --abbrev-ref HEAD
+	@git submodule foreach git rev-parse --abbrev-ref HEAD
 
 # libraries
 
