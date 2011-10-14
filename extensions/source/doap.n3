@@ -1,0 +1,18 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/source> .
+:source a doap:Project;
+  owconfig:enabled "1"^^xsd:boolean;
+  doap:name "Source";
+  doap:description "a tab for the list and resource view which displays the N3 source and allows source based editing";
+  doap:maintainer "AKSW";
+  doap:maintainer <http://aksw.org>;
+  :navigation "yes";
+  :position "100";
+  owconfig:templates "templates";
+  :action "edit"

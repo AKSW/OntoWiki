@@ -1,0 +1,20 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/sendmail> .
+:sendmail a doap:Project;
+  owconfig:enabled "false"^^xsd:boolean;
+  doap:name "Sendmail";
+  doap:description "A plug-in that sends mails via a mailserver using zend_mail";
+  doap:maintainer "Maier Christian, Niederstätter Michael";
+  owconfig:helperEvents event:onEmailsend;
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "smtp";
+  rdfs:comment "fixme";
+  :server "yourmailserver.com".
+]

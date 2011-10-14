@@ -1,0 +1,65 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/community> .
+:community a doap:Project;
+  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:templates "templates";
+  owconfig:languages "languages/";
+  :action "list";
+  doap:name "Community";
+  doap:description "rate and comment on resources.";
+  doap:maintainer "AKSW";
+  doap:maintainer <http://aksw.org>;
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "enableRating";
+  rdfs:comment "fixme";
+  :enableRating "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "about";
+  rdfs:comment "fixme";
+  :property "http://rdfs.org/sioc/ns#about".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "creator";
+  rdfs:comment "fixme";
+  :property "http://rdfs.org/sioc/ns#has_creator".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "comment";
+  rdfs:comment "fixme";
+  :type "http://rdfs.org/sioc/types#Comment".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "content";
+  rdfs:comment "fixme";
+  :property "http://rdfs.org/sioc/ns#content".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "date";
+  rdfs:comment "fixme";
+  :property "http://purl.org/dc/terms/created".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "rating";
+  rdfs:comment "fixme";
+  :type "http://rdfs.org/sioc/types#Poll".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "note";
+  rdfs:comment "fixme";
+  :property "http://rdfs.org/sioc/ns#note".
+]

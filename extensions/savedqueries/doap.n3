@@ -1,0 +1,55 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/savedqueries> .
+:savedqueries a doap:Project;
+  owconfig:enabled "false"^^xsd:boolean;
+  :action "init";
+  doap:name "Saved Queries";
+  owconfig:templates "templates";
+  owconfig:languages "languages/";
+  doap:description "display saved queries in a module, and execute them";
+  doap:maintainer "AKSW";
+  doap:maintainer <http://aksw.org>;
+  :priority "30";
+  :classes "has-contextmenus-block";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "title";
+  rdfs:comment "fixme";
+  :title "saved Queries".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "queryClass";
+  rdfs:comment "fixme";
+  :queryClass "http://ns.ontowiki.net/SysOnt/SparqlQuery".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "queryLabel";
+  rdfs:comment "fixme";
+  :queryLabel "http://purl.org/dc/elements/1.1/title".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "queryId";
+  rdfs:comment "fixme";
+  :queryId "http://rdfs.org/sioc/ns#id".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "queryDesc";
+  rdfs:comment "fixme";
+  :queryDesc "http://purl.org/dc/elements/1.1/description".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "queryCode";
+  rdfs:comment "fixme";
+  :queryCode "http://ns.ontowiki.net/SysOnt/sparql_code".
+]

@@ -1,0 +1,33 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/feeds> .
+:feeds a doap:Project;
+  owconfig:enabled "false"^^xsd:boolean;
+  doap:name "Feeds";
+  :priority "20";
+  doap:description "aggregate news from feeds which are related to a resource and displays them in a module";
+  doap:maintainer "AKSW";
+  doap:maintainer <http://aksw.org>;
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "properties";
+  rdfs:comment "fixme";
+  :0 "http://rdfs.org/sioc/ns#feed".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "maxentries";
+  rdfs:comment "fixme";
+  :maxentries "3".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "cachelivetime";
+  rdfs:comment "fixme";
+  :cachelivetime "86400".
+]

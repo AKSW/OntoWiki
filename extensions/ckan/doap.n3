@@ -1,0 +1,22 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/ckan> .
+:ckan a doap:Project;
+  owconfig:enabled "1"^^xsd:boolean;
+  doap:name "CKAN Integration";
+  doap:description "allows for registration of CKAN datasets from your OntoWiki instance";
+  doap:maintainer "Sebastian Tramp";
+  doap:maintainer <http://sebastian.tramp.name>;
+  owconfig:templates "templates";
+  owconfig:languages "languages";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "features";
+  rdfs:comment "fixme";
+  :registration "enabled".
+]

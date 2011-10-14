@@ -1,0 +1,22 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/resourcemodules> .
+:resourcemodules a doap:Project;
+  owconfig:enabled "1"^^xsd:boolean;
+  doap:name "Resource Modules";
+  :caching "1"^^xsd:boolean;
+  doap:description "Modules showed in the single resource view (Linking Here, Similar Instances, Predicates, Usage as Property)";
+  doap:maintainer "AKSW";
+  doap:maintainer <http://aksw.org>;
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "show";
+  rdfs:comment "fixme";
+  :similarinstances "false"^^xsd:boolean;
+  :usage "1"^^xsd:boolean.
+]

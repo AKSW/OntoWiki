@@ -1,0 +1,16 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/jsonrpc> .
+:jsonrpc a doap:Project;
+  owconfig:enabled "1"^^xsd:boolean;
+  doap:name "JSON RPC Server";
+  doap:description "provides a service for remote control (e.g. with owcli).";
+  doap:maintainer "AKSW";
+  doap:maintainer <http://aksw.org>;
+  :homepage "http://code.google.com/p/ontowiki/wiki/CommandLineInterface";
+  owconfig:languages "languages/"

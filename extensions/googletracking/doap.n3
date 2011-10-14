@@ -1,0 +1,14 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/googletracking> .
+:googletracking a doap:Project;
+  owconfig:enabled "false"^^xsd:boolean;
+  doap:name "Google Analytics";
+  doap:description "A plug-in that adds a Google Analytics Tracking Code to every page.";
+  doap:maintainer "Niederstätter Michael";
+  owconfig:helperEvents event:onAfterInitController

@@ -1,0 +1,550 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/navigation> .
+:navigation a doap:Project;
+  owconfig:enabled "1"^^xsd:boolean;
+  doap:name "Navigation Module";
+  doap:description "an extensible and highly customizable module to navigate in knowledge bases via tree-based information (e.g. classes)";
+  doap:maintainer "AKSW";
+  doap:maintainer <http://aksw.org>;
+  :priority "30";
+  owconfig:templates "templates";
+  owconfig:languages "languages";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "defaults";
+  rdfs:comment "fixme";
+  :config "classes";
+  :limit "10";
+  :checkTypes "1"^^xsd:boolean;
+  :showMenu "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "sorting";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "By Label".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "type";
+  rdfs:comment "fixme";
+  :type "http://www.w3.org/2000/01/rdf-schema#label".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "config";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "Classes".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "cache";
+  rdfs:comment "fixme";
+  :cache "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "titleMode";
+  rdfs:comment "fixme";
+  :titleMode "titleHelper".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "checkVisibility";
+  rdfs:comment "fixme";
+  :checkVisibility "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyTypes";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2002/07/owl#Class";
+  :1 "http://www.w3.org/2000/01/rdf-schema#Class".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyRelations";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2000/01/rdf-schema#subClassOf".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "instanceRelation";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/1999/02/22-rdf-syntax-ns#type".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hiddenNS";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+  :1 "http://www.w3.org/2000/01/rdf-schema#";
+  :2 "http://www.w3.org/2002/07/owl#".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hiddenRelation";
+  rdfs:comment "fixme";
+  :0 "http://ns.ontowiki.net/SysOnt/hidden".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showImplicitElements";
+  rdfs:comment "fixme";
+  :showImplicitElements "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showEmptyElements";
+  rdfs:comment "fixme";
+  :showEmptyElements "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showCounts";
+  rdfs:comment "fixme";
+  :showCounts "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "checkSub";
+  rdfs:comment "fixme";
+  :checkSub "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hideDefaultHierarchy";
+  rdfs:comment "fixme";
+  :hideDefaultHierarchy "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "list";
+  rdfs:comment "fixme";
+  :config "{|filter|:[{|rdfsclass|:|%resource%|,|mode|:|rdfsclass|}]}".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "Properties".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "titleMode";
+  rdfs:comment "fixme";
+  :titleMode "titleHelper".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyTypes";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property";
+  :1 "http://www.w3.org/2002/07/owl#DatatypeProperty";
+  :2 "http://www.w3.org/2002/07/owl#ObjectProperty";
+  :3 "http://www.w3.org/2002/07/owl#AnnotationProperty".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyRelations";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2000/01/rdf-schema#subPropertyOf".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "instanceRelation";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2000/01/rdf-schema#subPropertyOf".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showImplicitElements";
+  rdfs:comment "fixme";
+  :showImplicitElements "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showEmptyElements";
+  rdfs:comment "fixme";
+  :showEmptyElements "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showCounts";
+  rdfs:comment "fixme";
+  :showCounts "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hideDefaultHierarchy";
+  rdfs:comment "fixme";
+  :hideDefaultHierarchy "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "checkSub";
+  rdfs:comment "fixme";
+  :checkSub "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "list";
+  rdfs:comment "fixme";
+  :config "{|shownProperties|:[{|uri|:|%resource%|,|label|:|Label 1|,|action|:|add|,|inverse|:false}],|filter|:[{|property|:|%resource%|,|filter|:|bound|}]}".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "Spatial".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyTypes";
+  rdfs:comment "fixme";
+  :0 "http://ns.aksw.org/spatialHierarchy/SpatialArea";
+  :1 "http://ns.aksw.org/spatialHierarchy/Planet";
+  :2 "http://ns.aksw.org/spatialHierarchy/Continent";
+  :3 "http://ns.aksw.org/spatialHierarchy/Country";
+  :4 "http://ns.aksw.org/spatialHierarchy/Province";
+  :5 "http://ns.aksw.org/spatialHierarchy/District";
+  :6 "http://ns.aksw.org/spatialHierarchy/City".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyRelations";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://ns.aksw.org/spatialHierarchy/isLocatedIn".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "instanceRelation";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://ns.aksw.org/addressFeatures/physical/country".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "1";
+  rdfs:comment "fixme";
+  :1 "http://ns.aksw.org/addressFeatures/physical/city".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "titleMode";
+  rdfs:comment "fixme";
+  :titleMode "titleHelper".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "Faunistics".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyTypes";
+  rdfs:comment "fixme";
+  :0 "http://purl.org/net/faunistics#Family";
+  :1 "http://purl.org/net/faunistics#Genus";
+  :2 "http://purl.org/net/faunistics#Species";
+  :3 "http://purl.org/net/faunistics#Order";
+  :4 "http://purl.org/net/faunistics#SubOrder".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyRelations";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://purl.org/net/faunistics#subTaxonOf".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "instanceRelation";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://purl.org/net/faunistics#identifiesAs".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "titleMode";
+  rdfs:comment "fixme";
+  :titleMode "titleHelper".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "checkSub";
+  rdfs:comment "fixme";
+  :checkSub "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "SKOS".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyTypes";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2004/02/skos/core#Concept".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyRelations";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2004/02/skos/core#broader".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2004/02/skos/core#narrower".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "instanceRelation";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2004/02/skos/core#narrower".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.w3.org/2004/02/skos/core#broader".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "titleMode";
+  rdfs:comment "fixme";
+  :titleMode "titleHelper".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showCounts";
+  rdfs:comment "fixme";
+  :showCounts "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "Groups".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyTypes";
+  rdfs:comment "fixme";
+  :0 "http://xmlns.com/foaf/0.1/Group";
+  :1 "http://xmlns.com/foaf/0.1/Organization".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyRelations";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://ns.ontowiki.net/SysOnt/subGroup".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "instanceRelation";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://xmlns.com/foaf/0.1/member".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://xmlns.com/foaf/0.1/member_of".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "titleMode";
+  rdfs:comment "fixme";
+  :titleMode "titleHelper".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showCounts";
+  rdfs:comment "fixme";
+  :showCounts "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "Gene Ontology".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyTypes";
+  rdfs:comment "fixme";
+  :0 "http://www.geneontology.org/dtds/go.dtd#term".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyRelations";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.geneontology.org/dtds/go.dtd#is_a".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "titleMode";
+  rdfs:comment "fixme";
+  :titleMode "titleHelper".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "showCounts";
+  rdfs:comment "fixme";
+  :showCounts "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "checkSub";
+  rdfs:comment "fixme";
+  :checkSub "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hideDefaultHierarchy";
+  rdfs:comment "fixme";
+  :hideDefaultHierarchy "false"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "list";
+  rdfs:comment "fixme";
+  :query "SELECT DISTINCT ?resourceUri WHERE { ?resourceUri <http://www.geneontology.org/GO.format.gaf-2_0.shtml#go_id> <%resource%> }".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "name";
+  rdfs:comment "fixme";
+  doap:name "Checklist".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "titleMode";
+  rdfs:comment "fixme";
+  :titleMode "titleHelper".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyTypes";
+  rdfs:comment "fixme";
+  :0 "http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#Country".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "hierarchyRelations";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "0";
+  rdfs:comment "fixme";
+  :0 "http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within".
+].
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "checkSub";
+  rdfs:comment "fixme";
+  :checkSub "1"^^xsd:boolean.
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "list";
+  rdfs:comment "fixme";
+  :shownProperties "{|uri|:|http://purl.org/net/faunistics#citationSuffix|,|label|:|citation suffix|,|action|:|add|,|inverse|:false}";
+  :query "SELECT DISTINCT ?resourceUri ?famUri WHERE {     ?recUri <http://purl.org/net/faunistics#recordedAtLocation> ?resourceLocation     OPTIONAL{         ?resourceLocation <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l1.         OPTIONAL{             ?l1 <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l2.             OPTIONAL{                 ?l2 <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l3.             }         }     }     ?recUri <http://purl.org/net/faunistics#identifiesAs> ?resourceUri .     ?resourceUri <http://purl.org/net/faunistics#subTaxonOf> ?genUri .     ?genUri <http://purl.org/net/faunistics#subTaxonOf> ?famUri .     FILTER ( sameTerm(?resourceLocation, <%resource%>) ||     sameTerm(?l1, <%resource%>) ||     sameTerm(?l2, <%resource%>) ||     sameTerm(?l3, <%resource%>)) }".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "rootName";
+  rdfs:comment "fixme";
+  :rootName "Caucasus Spiders".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "rootURI";
+  rdfs:comment "fixme";
+  :rootURI "http://db.caucasus-spiders.info/Area/152".
+].
+]

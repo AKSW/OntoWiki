@@ -1,0 +1,72 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/filter> .
+:filter a doap:Project;
+  owconfig:templates "templates";
+  owconfig:enabled "1"^^xsd:boolean;
+  doap:name "Filter Resource Lists";
+  doap:description "provides a GUI to apply filters on a list of resources.";
+  doap:maintainer "AKSW";
+  doap:maintainer <http://aksw.org>;
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "customfilter";
+  rdfs:comment "fixme";
+  owconfig:config [
+  a owconfig:Config;
+  owconfig:id "uri";
+  rdfs:comment "fixme";
+  :uri "http://example.com/aProp1/".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "label";
+  rdfs:comment "fixme";
+  :label "prop1".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "value1";
+  rdfs:comment "fixme";
+  :uri "http://example.com/aVal11/";
+  :label "val11".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "value2";
+  rdfs:comment "fixme";
+  :uri "http://example.com/aVal12/";
+  :label "val12".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "uri";
+  rdfs:comment "fixme";
+  :uri "http://example.com/aProp2/".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "label";
+  rdfs:comment "fixme";
+  :label "prop2".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "value1";
+  rdfs:comment "fixme";
+  :uri "http://example.com/aVal21/";
+  :label "val21".
+] ; 
+ owconfig:config [
+  a owconfig:Config;
+  owconfig:id "value2";
+  rdfs:comment "fixme";
+  :uri "http://example.com/aVal22/";
+  :label "val22".
+].
+]
