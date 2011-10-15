@@ -127,7 +127,10 @@ class OntoWiki_Menu_Registry
         $helpMenu = new OntoWiki_Menu();
         $helpMenu->setEntry('Documentation', 'http://ontowiki.net/Projects/OntoWiki/Help')
                  ->setEntry('Bug Report', 'http://code.google.com/p/ontowiki/issues/entry')
-                 ->setEntry('Version Info', 'http://ontowiki.net/Projects/OntoWiki/ChangeLog#'.$owApp->config->version->number)
+                 ->setEntry(
+                     'Version Info', 'http://ontowiki.net/Projects/OntoWiki/ChangeLog#'.
+                     $owApp->config->version->number
+                 )
                  ->setEntry('About', $owApp->config->urlBase . 'application/about');
         
         // build menu out of sub menus
@@ -145,7 +148,7 @@ class OntoWiki_Menu_Registry
             $debugMenu->setEntry('Clear Module Cache', $owApp->config->urlBase . 'debug/clearmodulecache')
                       ->setEntry('Clear Translation Cache', $owApp->config->urlBase . 'debug/cleartranslationcache')
                       ->setEntry('Clear Object & Query Cache', $owApp->config->urlBase . 'debug/clearquerycache')
-                      ->setEntry('Destroy Session', $owApp->config->urlBase . 'debug/destroysession');
+                      ->setEntry('Reset Session', $owApp->config->urlBase . 'debug/destroysession');
                       
             // for testing sub menus  
             // $test1 = new OntoWiki_Menu();

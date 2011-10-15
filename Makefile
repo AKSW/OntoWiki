@@ -3,6 +3,7 @@ ZENDVERSION=1.11.5
 default:
 	@echo "please use:"
 	@echo "     'make install' (-> make directories, zend and libraries)"
+	@echo "     'make install-dev' (-> same as install but writeable)"
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
 	@echo "     'make zend' (download and install Zend under libraries)"
 	@echo "     'make libraries' ('git clone' all subrepos - in case submodules do not work)"
@@ -35,6 +36,8 @@ default:
 
 install: directories libraries
 
+install-dev: directories libraries-dev
+
 clean:
 	rm -rf cache/* logs/*
 
@@ -42,7 +45,9 @@ directories: clean
 	mkdir -p logs cache
 	chmod 777 logs cache extensions
 
-libraries: zend submodules
+libraries: zend rdfauthor erfurt 
+
+libraries-dev: zend rdfauthor-dev erfurt-dev submodules
 
 submodules:
 	git submodule init
@@ -52,22 +57,23 @@ submodules:
 
 pull:
 	git pull
-	cd libraries/RDFauthor && git pull
-	cd libraries/Erfurt && git pull
+	git submodule foreach git pull
 
-update: pull
+fetch: 
+	git fetch
+	git submodule foreach git fetch
 
-force-update: pull
+info:
+	@git --no-pager log -1 --oneline --decorate
+	@git submodule foreach git --no-pager log -1 --oneline --decorate
 
 status:
 	git status -sb
-	cd libraries/RDFauthor && git status -sb
-	cd libraries/Erfurt && git status -sb
+	git submodule foreach git status -sb
 
 branch-check:
-	git rev-parse --abbrev-ref HEAD
-	git --work-tree=libraries/Erfurt rev-parse --abbrev-ref HEAD
-	git --work-tree=libraries/RDFauthor rev-parse --abbrev-ref HEAD
+	@git rev-parse --abbrev-ref HEAD
+	@git submodule foreach git rev-parse --abbrev-ref HEAD
 
 # libraries
 
