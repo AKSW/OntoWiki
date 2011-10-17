@@ -16,7 +16,8 @@
   doap:description "provides this component to configure / toggle extensions.";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
-  owconfig:templates "templates".
+  owconfig:templates "templates";
+  owconfig:hasModule :Outline.
 :Outline a owconfig:Module;
   rdfs:label "Extension Outline";
   owconfig:caching "no";

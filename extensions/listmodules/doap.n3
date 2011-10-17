@@ -15,7 +15,8 @@
   doap:name "List Modules";
   doap:description "Modules showed in the list view (show properties)";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>.
+  doap:maintainer <http://aksw.org>;
+  owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";
   owconfig:caching "false"^^xsd:boolean;

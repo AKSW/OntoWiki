@@ -18,18 +18,22 @@
   doap:maintainer <http://aksw.org>;
   owconfig:templates "templates";
   owconfig:languages "languages/";
-  :action "display".
+  :action "display";
+  owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";
   owconfig:caching "no" .
+:queries owconfig:hasModule :Sparqloptions.
 :Sparqloptions a owconfig:Module;
   rdfs:label "Sparqloptions";
   owconfig:context "main.window.queryeditor";
   owconfig:priority "5" .
+:queries owconfig:hasModule :Queryeditorfromsetter.
 :Queryeditorfromsetter a owconfig:Module;
   rdfs:label "Queryeditorfromsetter";
   owconfig:context "main.window.queryeditor";
   owconfig:priority "6" .
+:queries owconfig:hasModule :Savequery.
 :Savequery a owconfig:Module;
   rdfs:label "Savequery";
   owconfig:context "main.window.savequery";

@@ -15,7 +15,8 @@
   doap:name "Imprint";
   doap:description "show a little box on the left that can contain legal notices and a contact information on the legally responsible person.";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>.
+  doap:maintainer <http://aksw.org>;
+  owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";
   owconfig:caching "no";

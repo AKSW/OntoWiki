@@ -16,7 +16,8 @@
   owconfig:languages "languages";
   doap:name "Manchester";
   doap:description "Class Editor with Manchester Syntax";
-  doap:maintainer "AKSW".
+  doap:maintainer "AKSW";
+  owconfig:hasModule :Manchester.
 :Manchester a owconfig:Module;
   rdfs:label "Manchester Syntax";
   owconfig:caching "no";

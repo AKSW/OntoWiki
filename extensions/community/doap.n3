@@ -18,24 +18,28 @@
   doap:name "Community";
   doap:description "rate and comment on resources.";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>.
+  doap:maintainer <http://aksw.org>;
+  owconfig:hasModule :Comment.
 :Comment a owconfig:Module;
   rdfs:label "Comment";
   owconfig:priority "19";
   doap:name "Comment";
   owconfig:context "main.window.community" .
+:community owconfig:hasModule :Lastchanges.
 :Lastchanges a owconfig:Module;
   rdfs:label "Lastchanges";
   owconfig:priority "18";
   doap:name "Last Changes";
   owconfig:context "main.window.modelinfo";
   owconfig:context "main.window.dashmodelinfo" .
+:community owconfig:hasModule :Lastcomments.
 :Lastcomments a owconfig:Module;
   rdfs:label "Lastcomments";
   owconfig:priority "15";
   doap:name "Last Comments";
   owconfig:context "main.window.modelinfo";
   owconfig:context "main.window.dashmodelinfo" .
+:community owconfig:hasModule :Rating.
 :Rating a owconfig:Module;
   rdfs:label "Rating";
   owconfig:caching "no";

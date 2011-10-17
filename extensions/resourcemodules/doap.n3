@@ -15,21 +15,25 @@
   doap:name "Resource Modules";
   doap:description "Modules showed in the single resource view (Linking Here, Similar Instances, Predicates, Usage as Property)";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>.
+  doap:maintainer <http://aksw.org>;
+  owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";
   owconfig:caching "true"^^xsd:boolean .
+:resourcemodules owconfig:hasModule :Linkinghere.
 :Linkinghere a owconfig:Module;
   rdfs:label "Linkinghere";
   owconfig:priority "20";
   doap:name "Linking Here";
   owconfig:context "main.window.properties";
   owconfig:context "main.window.modelinfo" .
+:resourcemodules owconfig:hasModule :Similarinstances.
 :Similarinstances a owconfig:Module;
   rdfs:label "Similarinstances";
   owconfig:priority "10";
   doap:name "Similar Instances";
   owconfig:context "main.window.properties" .
+:resourcemodules owconfig:hasModule :Usage.
 :Usage a owconfig:Module;
   owconfig:priority "30";
   rdfs:label "Usage as Property";

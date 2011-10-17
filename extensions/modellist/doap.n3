@@ -16,7 +16,8 @@
   doap:description "provides a model list with create and view menu.";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
-  :classes "has-contextmenus-block".
+  :classes "has-contextmenus-block";
+  owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";
   owconfig:caching "yes";

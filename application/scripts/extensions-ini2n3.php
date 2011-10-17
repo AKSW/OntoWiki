@@ -212,24 +212,25 @@ class NestedPropertyAndModuleHandler
 
     function printN3()
     {
-        foreach ($this->modules as $name => $values) {
+        foreach ($this->modules as $name => $config) {
             //print a module
-            $subject = ':'.ucfirst($name);
-            $this->_printer->printStatement($subject, 'a', 'owconfig:Module');
-            if (!isset($values['title'])) {
-                $this->_printer->printStatement($subject, 'rdfs:label', '"'.ucfirst($name).'"');
+            $moduleUri = ':'.ucfirst($name);
+            $this->_printer->printStatement($this->_subject, 'owconfig:hasModule', $moduleUri);
+            $this->_printer->printStatement($moduleUri, 'a', 'owconfig:Module');
+            if (!isset($config['title'])) {
+                $this->_printer->printStatement($moduleUri, 'rdfs:label', '"'.ucfirst($name).'"');
             }
-            foreach ($values as $prop => $val) {
+            foreach ($config as $prop => $val) {
                 if (!is_array(($val))) {
                     $this->_printer->printStatement(
-                        $subject, 
+                        $moduleUri, 
                         $this->_printer->getPredicate($prop, ''), 
                         $this->_printer->getObject($prop, $val)
                     );
                 } else {
-                    foreach ($val as $subval) {
+                    foreach ($val as $subval) { //recursion is not needed (?)
                         $this->_printer->printStatement(
-                            $subject, 
+                            $moduleUri, 
                             $this->_printer->getPredicate($prop, ''), 
                             $this->_printer->getObject($prop, $subval)
                         );

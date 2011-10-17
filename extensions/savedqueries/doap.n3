@@ -19,7 +19,8 @@
   doap:description "display saved queries in a module, and execute them";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
-  :classes "has-contextmenus-block".
+  :classes "has-contextmenus-block";
+  owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";
   owconfig:priority "30";

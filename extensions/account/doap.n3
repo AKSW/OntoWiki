@@ -17,7 +17,8 @@
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
   owconfig:templates "templates";
-  owconfig:languages "languages".
+  owconfig:languages "languages";
+  owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";
   owconfig:caching "yes";

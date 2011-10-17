@@ -15,7 +15,8 @@
   doap:name "Application Module";
   doap:description "provides the application module with search input and main menu.";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>.
+  doap:maintainer <http://aksw.org>;
+  owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";
   owconfig:caching "no";
