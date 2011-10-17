@@ -5,10 +5,13 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/pingback> .
+@prefix : <http://ns.ontowiki.net/Extensions/pingback/> .
+
+<> foaf:primaryTopic :pingback.
 :pingback a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/pingback/>;
   owconfig:templates "templates";
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "Pingback Server";
   doap:description "provides a Semantic Pingback Server and pingback enables all linked data resources";
   doap:maintainer "AKSW";
@@ -19,41 +22,20 @@
   owconfig:helperEvents event:onAddMultipleStatements;
   owconfig:helperEvents event:onDeleteMultipleStatements;
   owconfig:helperEvents event:beforeExportResource;
+  :generic_relation <http://rdfs.org/sioc/ns#links_to>;
   owconfig:config [
-  a owconfig:Config;
-  owconfig:id "generic_relation";
-  rdfs:comment "fixme";
-  :generic_relation "http://rdfs.org/sioc/ns#links_to".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "rdfa";
-  rdfs:comment "fixme";
-  owconfig:enabled "yes";
-  :service "http://www.w3.org/2007/08/pyRdfa/extract?format=pretty-xml&warnings=false&parser=lax&space-preserve=true&uri=".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "title_properties";
-  rdfs:comment "fixme";
-  :0 "http://purl.org/dc/elements/1.1/title";
-  :1 "http://purl.org/dc/terms/title";
-  :2 "http://xmlns.com/foaf/0.1/name";
-  :3 "http://usefulinc.com/ns/doap#name";
-  :4 "http://rdfs.org/sioc/ns#name";
-  :5 "http://www.w3.org/2000/01/rdf-schema#label";
-  :6 "http://xmlns.com/foaf/0.1/nick";
-  :7 "http://xmlns.com/foaf/0.1/surname".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "ping_properties";
-  rdfs:comment "fixme";
-  :0 "http://xmlns.com/foaf/0.1/knows".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "pingOnDelete";
-  rdfs:comment "fixme";
+      a owconfig:Config;
+      owconfig:id "rdfa";
+      owconfig:enabled "yes";
+      :service <http://www.w3.org/2007/08/pyRdfa/extract?format=pretty-xml&warnings=false&parser=lax&space-preserve=true&uri=>.
+];
+ :title_properties <http://purl.org/dc/elements/1.1/title>;
+  :title_properties <http://purl.org/dc/terms/title>;
+  :title_properties <http://xmlns.com/foaf/0.1/name>;
+  :title_properties <http://usefulinc.com/ns/doap#name>;
+  :title_properties <http://rdfs.org/sioc/ns#name>;
+  :title_properties <http://www.w3.org/2000/01/rdf-schema#label>;
+  :title_properties <http://xmlns.com/foaf/0.1/nick>;
+  :title_properties <http://xmlns.com/foaf/0.1/surname>;
+  :ping_properties <http://xmlns.com/foaf/0.1/knows>;
   :pingOnDelete "false"^^xsd:boolean.
-]

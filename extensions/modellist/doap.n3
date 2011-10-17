@@ -5,13 +5,20 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/modellist> .
+@prefix : <http://ns.ontowiki.net/Extensions/modellist/> .
+
+<> foaf:primaryTopic :modellist.
 :modellist a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/modellist/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "Knowledge Bases Module";
   doap:description "provides a model list with create and view menu.";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
-  :caching "yes";
-  :priority "20";
-  :classes "has-contextmenus-block"
+  :classes "has-contextmenus-block".
+:Default a owconfig:Module;
+  rdfs:label "Default";
+  owconfig:caching "yes";
+  owconfig:priority "20";
+  owconfig:context "main.sidewindows" .
+.

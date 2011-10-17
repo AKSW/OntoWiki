@@ -5,42 +5,40 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/weblink> .
+@prefix : <http://ns.ontowiki.net/Extensions/weblink/> .
+
+<> foaf:primaryTopic :weblink.
 :weblink a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/weblink/>;
   owconfig:enabled "yes";
   doap:name "Weblink";
   doap:description "A plug-in that renders values of certain properties as HTML links.";
   doap:maintainer "Norman Heino";
   owconfig:helperEvents event:onDisplayObjectPropertyValue;
   owconfig:helperEvents event:onDisplayLiteralPropertyValue;
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "weblink";
-  rdfs:comment "fixme";
-  :0 "http://xmlns.com/foaf/0.1/homepage";
-  :1 "http://xmlns.com/foaf/0.1/page";
-  :2 "http://xmlns.com/foaf/0.1/weblog";
-  :3 "http://xmlns.com/foaf/0.1/workInfoHomepage";
-  :4 "http://xmlns.com/foaf/0.1/workplaceHomepage";
-  :5 "http://xmlns.com/foaf/0.1/schoolHomepage";
-  :6 "http://xmlns.com/foaf/0.1/pubkeyAddress";
-  :7 "http://xmlns.com/foaf/0.1/publications";
-  :8 "http://www.w3.org/2000/01/rdf-schema#seeAlso";
-  :9 "http://purl.org/dc/elements/1.1/identifier";
-  :10 "http://purl.org/ontology/mo/myspace";
-  :11 "http://purl.org/ontology/mo/discogs";
-  :12 "http://purl.org/ontology/mo/musicbrainz";
-  :13 "http://3ba.se/conferences/URL";
-  :14 "http://usefulinc.com/ns/doap#homepage";
-  :15 "http://usefulinc.com/ns/doap#download-page";
-  :16 "http://usefulinc.com/ns/doap#bug-database";
-  :17 "http://usefulinc.com/ns/doap#browse";
-  :18 "http://xmlns.com/wot/0.1/assurance";
-  :19 "http://xmlns.com/wot/0.1/src_assurance";
-  :20 "http://www.uni-leipzig.de/history/professors/webLinks";
-  :21 "http://www.w3.org/2002/07/owl#versionInfo";
-  :22 "http://www.w3.org/2000/01/rdf-schema#isDefinedBy";
-  :23 "http://purl.org/vocab/vann/changes";
-  :24 "http://purl.org/vocab/vann/example";
-  :25 "http://rdfs.org/sioc/ns#feed".
-]
+  :weblink <http://xmlns.com/foaf/0.1/homepage>;
+  :weblink <http://xmlns.com/foaf/0.1/page>;
+  :weblink <http://xmlns.com/foaf/0.1/weblog>;
+  :weblink <http://xmlns.com/foaf/0.1/workInfoHomepage>;
+  :weblink <http://xmlns.com/foaf/0.1/workplaceHomepage>;
+  :weblink <http://xmlns.com/foaf/0.1/schoolHomepage>;
+  :weblink <http://xmlns.com/foaf/0.1/pubkeyAddress>;
+  :weblink <http://xmlns.com/foaf/0.1/publications>;
+  :weblink <http://www.w3.org/2000/01/rdf-schema#seeAlso>;
+  :weblink <http://purl.org/dc/elements/1.1/identifier>;
+  :weblink <http://purl.org/ontology/mo/myspace>;
+  :weblink <http://purl.org/ontology/mo/discogs>;
+  :weblink <http://purl.org/ontology/mo/musicbrainz>;
+  :weblink <http://3ba.se/conferences/URL>;
+  :weblink <http://usefulinc.com/ns/doap#homepage>;
+  :weblink <http://usefulinc.com/ns/doap#download-page>;
+  :weblink <http://usefulinc.com/ns/doap#bug-database>;
+  :weblink <http://usefulinc.com/ns/doap#browse>;
+  :weblink <http://xmlns.com/wot/0.1/assurance>;
+  :weblink <http://xmlns.com/wot/0.1/src_assurance>;
+  :weblink <http://www.uni-leipzig.de/history/professors/webLinks>;
+  :weblink <http://www.w3.org/2002/07/owl#versionInfo>;
+  :weblink <http://www.w3.org/2000/01/rdf-schema#isDefinedBy>;
+  :weblink <http://purl.org/vocab/vann/changes>;
+  :weblink <http://purl.org/vocab/vann/example>;
+  :weblink <http://rdfs.org/sioc/ns#feed>.

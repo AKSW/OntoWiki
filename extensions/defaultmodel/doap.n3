@@ -5,34 +5,17 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/defaultmodel> .
+@prefix : <http://ns.ontowiki.net/Extensions/defaultmodel/> .
+
+<> foaf:primaryTopic :defaultmodel.
 :defaultmodel a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/defaultmodel/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Default Model";
   doap:description "Plugin to select default model if only one available or always";
   doap:maintainer "Christoph Rieß";
   owconfig:helperEvents event:onAfterInitController;
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "modelUri";
-  rdfs:comment "fixme";
-  :modelUri "http://showcase.ontowiki.net/".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "modelsHide";
-  rdfs:comment "fixme";
-  :modelsHide "1"^^xsd:boolean.
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "modelsExclusiveRight";
-  rdfs:comment "fixme";
-  :modelsExclusiveRight "ModelManagement".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "setSelectedResource";
-  rdfs:comment "fixme";
+  :modelUri <http://showcase.ontowiki.net/>;
+  :modelsHide "true"^^xsd:boolean;
+  :modelsExclusiveRight "ModelManagement";
   :setSelectedResource "false"^^xsd:boolean.
-]

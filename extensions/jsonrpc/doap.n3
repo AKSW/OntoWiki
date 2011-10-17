@@ -5,12 +5,15 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/jsonrpc> .
+@prefix : <http://ns.ontowiki.net/Extensions/jsonrpc/> .
+
+<> foaf:primaryTopic :jsonrpc.
 :jsonrpc a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/jsonrpc/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "JSON RPC Server";
   doap:description "provides a service for remote control (e.g. with owcli).";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
-  :homepage "http://code.google.com/p/ontowiki/wiki/CommandLineInterface";
-  owconfig:languages "languages/"
+  :homepage <http://code.google.com/p/ontowiki/wiki/CommandLineInterface>;
+  owconfig:languages "languages/".

@@ -5,18 +5,16 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/mailtolink> .
+@prefix : <http://ns.ontowiki.net/Extensions/mailtolink/> .
+
+<> foaf:primaryTopic :mailtolink.
 :mailtolink a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/mailtolink/>;
   owconfig:enabled "yes";
   doap:name "Mailtolink";
   doap:description "A plug-in that renders values of certain properties as mailto links.";
   doap:maintainer "Norman Heino";
   owconfig:helperEvents event:onDisplayObjectPropertyValue;
   owconfig:helperEvents event:onDisplayLiteralPropertyValue;
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "properties";
-  rdfs:comment "fixme";
-  :0 "http://xmlns.com/foaf/0.1/mbox";
-  :1 "http://swrc.ontoware.org/ontology#email".
-]
+  :properties <http://xmlns.com/foaf/0.1/mbox>;
+  :properties <http://swrc.ontoware.org/ontology#email>.

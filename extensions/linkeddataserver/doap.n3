@@ -5,13 +5,16 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/linkeddataserver> .
+@prefix : <http://ns.ontowiki.net/Extensions/linkeddataserver/> .
+
+<> foaf:primaryTopic :linkeddataserver.
 :linkeddataserver a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/linkeddataserver/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "Linked Data Server";
   doap:description "A plug-in that converts resource URIs to internal OntoWiki URLs if a resource exists.";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
   owconfig:helperEvents event:onIsDispatchable;
   owconfig:helperEvents event:onNeedsGraphForLinkedDataUri;
-  owconfig:helperEvents event:onNeedsLinkedDataUri
+  owconfig:helperEvents event:onNeedsLinkedDataUri.

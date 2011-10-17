@@ -5,124 +5,40 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/resourcecreationuri> .
+@prefix : <http://ns.ontowiki.net/Extensions/resourcecreationuri/> .
+
+<> foaf:primaryTopic :resourcecreationuri.
 :resourcecreationuri a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/resourcecreationuri/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "Custom Resource URI Creation";
   doap:description "plugin to create nice URIs on instance creation via RDFauthor/updateService";
   doap:maintainer "Christoph Rieß";
   owconfig:helperEvents event:onUpdateServiceAction;
+  :fromModel "true"^^xsd:boolean;
+  :namingSchemeProperty <http://ns.ontowiki.net/SysOnt/instanceNamingScheme>;
+  :newResourceUri "NewResource";
+  :defaultNamingScheme "type/label";
   owconfig:config [
-  a owconfig:Config;
-  owconfig:id "fromModel";
-  rdfs:comment "fixme";
-  :fromModel "1"^^xsd:boolean.
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "namingSchemeProperty";
-  rdfs:comment "fixme";
-  :namingSchemeProperty "http://ns.ontowiki.net/SysOnt/instanceNamingScheme".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "newResourceUri";
-  rdfs:comment "fixme";
-  :newResourceUri "NewResource".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "defaultNamingScheme";
-  rdfs:comment "fixme";
-  :defaultNamingScheme "type/label".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "property";
-  rdfs:comment "fixme";
-  :type "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "skosPlabel";
-  rdfs:comment "fixme";
-  :skosPlabel "http://www.w3.org/2004/02/skos/core#prefLabel".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "dcTitle";
-  rdfs:comment "fixme";
-  :dcTitle "http://purl.org/dc/elements/1.1/title".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "dcTitle2";
-  rdfs:comment "fixme";
-  :dcTitle2 "http://purl.org/dc/terms/title".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "swrcTitle";
-  rdfs:comment "fixme";
-  :swrcTitle "http://swrc.ontoware.org/ontology#title".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "foafName";
-  rdfs:comment "fixme";
-  :foafName "http://xmlns.com/foaf/0.1/name".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "siocName";
-  rdfs:comment "fixme";
-  :siocName "http://rdfs.org/sioc/ns#name".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "tagName";
-  rdfs:comment "fixme";
-  :tagName "http://www.holygoat.co.uk/owl/redwood/0.1/tags/name".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "lgeodName";
-  rdfs:comment "fixme";
-  :lgeodName "http://linkedgeodata.org/vocabulary#name".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "geoName";
-  rdfs:comment "fixme";
-  :geoName "http://www.geonames.org/ontology#name".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "rdfsLabel";
-  rdfs:comment "fixme";
-  :rdfsLabel "http://www.w3.org/2000/01/rdf-schema#label".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "accountName";
-  rdfs:comment "fixme";
-  :accountName "http://xmlns.com/foaf/0.1/accountName".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "foafNick";
-  rdfs:comment "fixme";
-  :foafNick "http://xmlns.com/foaf/0.1/nick".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "foafSurname";
-  rdfs:comment "fixme";
-  :foafSurname "http://xmlns.com/foaf/0.1/surname".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "skosAlabel";
-  rdfs:comment "fixme";
-  :skosAlabel "http://www.w3.org/2004/02/skos/core#altLabel".
+      a owconfig:Config;
+      owconfig:id "property";
+      :type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>;
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "label";
+          :skosPlabel <http://www.w3.org/2004/02/skos/core#prefLabel>;
+          :dcTitle <http://purl.org/dc/elements/1.1/title>;
+          :dcTitle2 <http://purl.org/dc/terms/title>;
+          :swrcTitle <http://swrc.ontoware.org/ontology#title>;
+          :foafName <http://xmlns.com/foaf/0.1/name>;
+          :siocName <http://rdfs.org/sioc/ns#name>;
+          :tagName <http://www.holygoat.co.uk/owl/redwood/0.1/tags/name>;
+          :lgeodName <http://linkedgeodata.org/vocabulary#name>;
+          :geoName <http://www.geonames.org/ontology#name>;
+          :rdfsLabel <http://www.w3.org/2000/01/rdf-schema#label>;
+          :accountName <http://xmlns.com/foaf/0.1/accountName>;
+          :foafNick <http://xmlns.com/foaf/0.1/nick>;
+          :foafSurname <http://xmlns.com/foaf/0.1/surname>;
+          :skosAlabel <http://www.w3.org/2004/02/skos/core#altLabel>.
+    ].
 ].
-]

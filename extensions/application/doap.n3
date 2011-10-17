@@ -5,18 +5,19 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/application> .
+@prefix : <http://ns.ontowiki.net/Extensions/application/> .
+
+<> foaf:primaryTopic :application.
 :application a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/application/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "Application Module";
   doap:description "provides the application module with search input and main menu.";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  :caching "no";
-  :priority "1";
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "hideForAnonymousOnNoModels";
-  rdfs:comment "fixme";
-  :hideForAnonymousOnNoModels "no".
-]
+  doap:maintainer <http://aksw.org>.
+:Default a owconfig:Module;
+  rdfs:label "Default";
+  owconfig:caching "no";
+  owconfig:priority "1";
+  owconfig:context "main.sidewindows" .
+:application :hideForAnonymousOnNoModels "no".

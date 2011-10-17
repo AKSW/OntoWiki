@@ -5,9 +5,12 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/ckan> .
+@prefix : <http://ns.ontowiki.net/Extensions/ckan/> .
+
+<> foaf:primaryTopic :ckan.
 :ckan a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/ckan/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "CKAN Integration";
   doap:description "allows for registration of CKAN datasets from your OntoWiki instance";
   doap:maintainer "Sebastian Tramp";
@@ -15,8 +18,7 @@
   owconfig:templates "templates";
   owconfig:languages "languages";
   owconfig:config [
-  a owconfig:Config;
-  owconfig:id "features";
-  rdfs:comment "fixme";
-  :registration "enabled".
-]
+      a owconfig:Config;
+      owconfig:id "features";
+      :registration "enabled".
+].

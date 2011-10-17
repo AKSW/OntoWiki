@@ -5,61 +5,74 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/community> .
+@prefix : <http://ns.ontowiki.net/Extensions/community/> .
+
+<> foaf:primaryTopic :community.
 :community a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/community/>;
+  owconfig:enabled "true"^^xsd:boolean;
   owconfig:templates "templates";
   owconfig:languages "languages/";
   :action "list";
   doap:name "Community";
   doap:description "rate and comment on resources.";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
+  doap:maintainer <http://aksw.org>.
+:Comment a owconfig:Module;
+  rdfs:label "Comment";
+  owconfig:priority "19";
+  doap:name "Comment";
+  owconfig:context "main.window.community" .
+:Lastchanges a owconfig:Module;
+  rdfs:label "Lastchanges";
+  owconfig:priority "18";
+  doap:name "Last Changes";
+  owconfig:context "main.window.modelinfo";
+  owconfig:context "main.window.dashmodelinfo" .
+:Lastcomments a owconfig:Module;
+  rdfs:label "Lastcomments";
+  owconfig:priority "15";
+  doap:name "Last Comments";
+  owconfig:context "main.window.modelinfo";
+  owconfig:context "main.window.dashmodelinfo" .
+:Rating a owconfig:Module;
+  rdfs:label "Rating";
+  owconfig:caching "no";
+  owconfig:priority "20";
+  owconfig:context "main.window.properties" .
+:community :enableRating "false"^^xsd:boolean;
   owconfig:config [
-  a owconfig:Config;
-  owconfig:id "enableRating";
-  rdfs:comment "fixme";
-  :enableRating "false"^^xsd:boolean.
-] ; 
+      a owconfig:Config;
+      owconfig:id "about";
+      :property <http://rdfs.org/sioc/ns#about>.
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "about";
-  rdfs:comment "fixme";
-  :property "http://rdfs.org/sioc/ns#about".
-] ; 
+      a owconfig:Config;
+      owconfig:id "creator";
+      :property <http://rdfs.org/sioc/ns#has_creator>.
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "creator";
-  rdfs:comment "fixme";
-  :property "http://rdfs.org/sioc/ns#has_creator".
-] ; 
+      a owconfig:Config;
+      owconfig:id "comment";
+      :type <http://rdfs.org/sioc/types#Comment>.
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "comment";
-  rdfs:comment "fixme";
-  :type "http://rdfs.org/sioc/types#Comment".
-] ; 
+      a owconfig:Config;
+      owconfig:id "content";
+      :property <http://rdfs.org/sioc/ns#content>.
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "content";
-  rdfs:comment "fixme";
-  :property "http://rdfs.org/sioc/ns#content".
-] ; 
+      a owconfig:Config;
+      owconfig:id "date";
+      :property <http://purl.org/dc/terms/created>.
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "date";
-  rdfs:comment "fixme";
-  :property "http://purl.org/dc/terms/created".
-] ; 
+      a owconfig:Config;
+      owconfig:id "rating";
+      :type <http://rdfs.org/sioc/types#Poll>.
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "rating";
-  rdfs:comment "fixme";
-  :type "http://rdfs.org/sioc/types#Poll".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "note";
-  rdfs:comment "fixme";
-  :property "http://rdfs.org/sioc/ns#note".
-]
+      a owconfig:Config;
+      owconfig:id "note";
+      :property <http://rdfs.org/sioc/ns#note>.
+].

@@ -5,8 +5,11 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/files> .
+@prefix : <http://ns.ontowiki.net/Extensions/files/> .
+
+<> foaf:primaryTopic :files.
 :files a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/files/>;
   owconfig:templates "templates";
   owconfig:enabled "false"^^xsd:boolean;
   owconfig:languages "languages/";
@@ -15,39 +18,13 @@
   doap:description "manage file uploads.";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
+  :path "uploads";
   owconfig:config [
-  a owconfig:Config;
-  owconfig:id "path";
-  rdfs:comment "fixme";
-  :path "uploads".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "mime";
-  rdfs:comment "fixme";
-  :property "http://localhost/OntoWiki/Config/hasMimeType".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "class";
-  rdfs:comment "fixme";
-  :class "http://localhost/OntoWiki/Config/File".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "model";
-  rdfs:comment "fixme";
-  :model "http://localhost/OntoWiki/Config/toModel".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "DMS_NS";
-  rdfs:comment "fixme";
-  :DMS_NS "http://ns.aksw.org/DMS/".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "import_DMS";
-  rdfs:comment "fixme";
-  :import_DMS "1"^^xsd:boolean.
-]
+      a owconfig:Config;
+      owconfig:id "mime";
+      :property <http://localhost/OntoWiki/Config/hasMimeType>.
+];
+ :class <http://localhost/OntoWiki/Config/File>;
+  :model <http://localhost/OntoWiki/Config/toModel>;
+  :DMS_NS <http://ns.aksw.org/DMS/>;
+  :import_DMS "true"^^xsd:boolean.

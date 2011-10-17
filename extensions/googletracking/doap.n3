@@ -5,10 +5,13 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/googletracking> .
+@prefix : <http://ns.ontowiki.net/Extensions/googletracking/> .
+
+<> foaf:primaryTopic :googletracking.
 :googletracking a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/googletracking/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Google Analytics";
   doap:description "A plug-in that adds a Google Analytics Tracking Code to every page.";
   doap:maintainer "Niederstätter Michael";
-  owconfig:helperEvents event:onAfterInitController
+  owconfig:helperEvents event:onAfterInitController.

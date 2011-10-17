@@ -5,8 +5,11 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/semanticsitemap> .
+@prefix : <http://ns.ontowiki.net/Extensions/semanticsitemap/> .
+
+<> foaf:primaryTopic :semanticsitemap.
 :semanticsitemap a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/semanticsitemap/>;
   owconfig:enabled "false"^^xsd:boolean;
   :action "sitemap.xml";
   owconfig:templates "templates/";
@@ -15,4 +18,4 @@
   doap:description "represent the content of ontowiki as a semantic sitemap.";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
-  owconfig:helperEvents event:onRouteStartup
+  owconfig:helperEvents event:onRouteStartup.

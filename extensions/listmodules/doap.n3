@@ -5,31 +5,22 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/listmodules> .
+@prefix : <http://ns.ontowiki.net/Extensions/listmodules/> .
+
+<> foaf:primaryTopic :listmodules.
 :listmodules a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/listmodules/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "List Modules";
-  :caching "false"^^xsd:boolean;
-  :priority "20";
   doap:description "Modules showed in the list view (show properties)";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "filterhidden";
-  rdfs:comment "fixme";
-  :filterhidden "false"^^xsd:boolean.
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "filterlist";
-  rdfs:comment "fixme";
-  :filterlist "false"^^xsd:boolean.
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "property";
-  rdfs:comment "fixme";
-  :0 "http://www.w3.org/2003/01/geo/wgs84_pos#lat";
-  :1 "http://www.w3.org/2003/01/geo/wgs84_pos#long".
-]
+  doap:maintainer <http://aksw.org>.
+:Default a owconfig:Module;
+  rdfs:label "Default";
+  owconfig:caching "false"^^xsd:boolean;
+  owconfig:priority "20";
+  owconfig:context "main.window.list" .
+:listmodules :filterhidden "false"^^xsd:boolean;
+  :filterlist "false"^^xsd:boolean;
+  :property <http://www.w3.org/2003/01/geo/wgs84_pos#lat>;
+  :property <http://www.w3.org/2003/01/geo/wgs84_pos#long>.

@@ -5,8 +5,11 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/savedqueries> .
+@prefix : <http://ns.ontowiki.net/Extensions/savedqueries/> .
+
+<> foaf:primaryTopic :savedqueries.
 :savedqueries a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/savedqueries/>;
   owconfig:enabled "false"^^xsd:boolean;
   :action "init";
   doap:name "Saved Queries";
@@ -15,41 +18,14 @@
   doap:description "display saved queries in a module, and execute them";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
-  :priority "30";
-  :classes "has-contextmenus-block";
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "title";
-  rdfs:comment "fixme";
-  :title "saved Queries".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "queryClass";
-  rdfs:comment "fixme";
-  :queryClass "http://ns.ontowiki.net/SysOnt/SparqlQuery".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "queryLabel";
-  rdfs:comment "fixme";
-  :queryLabel "http://purl.org/dc/elements/1.1/title".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "queryId";
-  rdfs:comment "fixme";
-  :queryId "http://rdfs.org/sioc/ns#id".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "queryDesc";
-  rdfs:comment "fixme";
-  :queryDesc "http://purl.org/dc/elements/1.1/description".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "queryCode";
-  rdfs:comment "fixme";
-  :queryCode "http://ns.ontowiki.net/SysOnt/sparql_code".
-]
+  :classes "has-contextmenus-block".
+:Default a owconfig:Module;
+  rdfs:label "Default";
+  owconfig:priority "30";
+  owconfig:context "main.sidewindows" .
+:savedqueries :title "saved Queries";
+  :queryClass <http://ns.ontowiki.net/SysOnt/SparqlQuery>;
+  :queryLabel <http://purl.org/dc/elements/1.1/title>;
+  :queryId <http://rdfs.org/sioc/ns#id>;
+  :queryDesc <http://purl.org/dc/elements/1.1/description>;
+  :queryCode <http://ns.ontowiki.net/SysOnt/sparql_code>.

@@ -5,10 +5,13 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/autologin> .
+@prefix : <http://ns.ontowiki.net/Extensions/autologin/> .
+
+<> foaf:primaryTopic :autologin.
 :autologin a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/autologin/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "AutoLogin";
   doap:description "A plug-in that allows FOAF+SSL based auto login.";
   doap:maintainer "Philipp Frischmuth";
-  owconfig:helperEvents event:onRouteShutdown
+  owconfig:helperEvents event:onRouteShutdown.

@@ -5,9 +5,12 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/datagathering> .
+@prefix : <http://ns.ontowiki.net/Extensions/datagathering/> .
+
+<> foaf:primaryTopic :datagathering.
 :datagathering a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/datagathering/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "Linked Data Gathering";
   doap:description "a component and a wrapper to import linked data and expand local models.";
   doap:maintainer "AKSW";
@@ -20,141 +23,62 @@
   owconfig:helperEvents event:onDeleteResources;
   owconfig:helperEvents event:onPreDeleteModel;
   owconfig:config [
-  a owconfig:Config;
-  owconfig:id "sync";
-  rdfs:comment "fixme";
-  owconfig:enabled "false"^^xsd:boolean.
-] ; 
+      a owconfig:Config;
+      owconfig:id "sync";
+      owconfig:enabled "false"^^xsd:boolean.
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "fetch";
-  rdfs:comment "fixme";
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "mode";
-  rdfs:comment "fixme";
-  :mode "all".
-] ; 
+      a owconfig:Config;
+      owconfig:id "fetch";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "default";
+          :mode "all".
+    ];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "0";
-  rdfs:comment "fixme";
-  :match "http://dbpedia.org";
-  :mode "none";
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "0";
-  rdfs:comment "fixme";
-  :0 "en".
-] ; 
+          a owconfig:Config;
+          owconfig:id "preset";
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "0";
+              :match <http://dbpedia.org>;
+              :mode "none";
+              :lang "en";
+              :exception <http://www.w3.org/2000/01/rdf-schema#label>;
+              :exception <http://xmlns.com/foaf/0.1/depiction>;
+              :exception <http://xmlns.com/foaf/0.1/name>;
+              :exception <http://xmlns.com/foaf/0.1/page>;
+              :exception <http://xmlns.com/foaf/0.1/homepage>;
+              :exception <http://dbpedia.org/ontology/birthDate>;
+              :exception <http://dbpedia.org/ontology/birthPlace>;
+              :exception <http://dbpedia.org/ontology/abstract>;
+              :exception <http://www.w3.org/2003/01/geo/wgs84_pos#lat>;
+              :exception <http://www.w3.org/2003/01/geo/wgs84_pos#long>.
+        ].
+    ].
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "0";
-  rdfs:comment "fixme";
-  :0 "http://www.w3.org/2000/01/rdf-schema#label".
-] ; 
+      a owconfig:Config;
+      owconfig:id "rewrite";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "lsid";
+          :pattern "/^(urn:lsid:.+)$/";
+          :replacement <http://lsid.tdwg.org/$1>.
+    ];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "1";
-  rdfs:comment "fixme";
-  :1 "http://xmlns.com/foaf/0.1/depiction".
-] ; 
+          a owconfig:Config;
+          owconfig:id "go";
+          :pattern "/^http:\\/\\/www.geneontology.org\\/go#GO:([0-9]+)$/";
+          :replacement <http://go.ontowiki.de/$1>.
+    ].
+];
  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "2";
-  rdfs:comment "fixme";
-  :2 "http://xmlns.com/foaf/0.1/name".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "3";
-  rdfs:comment "fixme";
-  :3 "http://xmlns.com/foaf/0.1/page".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "4";
-  rdfs:comment "fixme";
-  :4 "http://xmlns.com/foaf/0.1/homepage".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "5";
-  rdfs:comment "fixme";
-  :5 "http://dbpedia.org/ontology/birthDate".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "6";
-  rdfs:comment "fixme";
-  :6 "http://dbpedia.org/ontology/birthPlace".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "7";
-  rdfs:comment "fixme";
-  :7 "http://dbpedia.org/ontology/abstract".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "8";
-  rdfs:comment "fixme";
-  :8 "http://www.w3.org/2003/01/geo/wgs84_pos#lat".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "9";
-  rdfs:comment "fixme";
-  :9 "http://www.w3.org/2003/01/geo/wgs84_pos#long".
-].
-].
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "rewrite";
-  rdfs:comment "fixme";
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "pattern";
-  rdfs:comment "fixme";
-  :pattern "/^(urn:lsid:.+)$/".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "replacement";
-  rdfs:comment "fixme";
-  :replacement "http://lsid.tdwg.org/$1".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "pattern";
-  rdfs:comment "fixme";
-  :pattern "/^http:\\/\\/www.geneontology.org\\/go#GO:([0-9]+)$/".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "replacement";
-  rdfs:comment "fixme";
-  :replacement "http://go.ontowiki.de/$1".
-].
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "handle";
-  rdfs:comment "fixme";
-  :mode "all".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "ignore";
-  rdfs:comment "fixme";
-  :0 "http://www.w3.org/1999/xhtml/vocab#stylesheet";
-  :1 "http://www.w3.org/1999/xhtml/vocab#alternate";
-  :2 "http://poshrdf.org/ns/mf#nofollow".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "defaultClass";
-  rdfs:comment "fixme";
-  :defaultClass "http://xmlns.com/foaf/0.1/Document".
-]
+      a owconfig:Config;
+      owconfig:id "handle";
+      :mode "all".
+];
+ :ignore <http://www.w3.org/1999/xhtml/vocab#stylesheet>;
+  :ignore <http://www.w3.org/1999/xhtml/vocab#alternate>;
+  :ignore <http://poshrdf.org/ns/mf#nofollow>;
+  :defaultClass <http://xmlns.com/foaf/0.1/Document>.

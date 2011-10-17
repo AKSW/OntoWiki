@@ -5,11 +5,20 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/manchester> .
+@prefix : <http://ns.ontowiki.net/Extensions/manchester/> .
+
+<> foaf:primaryTopic :manchester.
 :manchester a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/manchester/>;
   owconfig:enabled "false"^^xsd:boolean;
   owconfig:templates "templates";
   owconfig:languages "languages";
   doap:name "Manchester";
   doap:description "Class Editor with Manchester Syntax";
-  doap:maintainer "AKSW"
+  doap:maintainer "AKSW".
+:Manchester a owconfig:Module;
+  rdfs:label "Manchester Syntax";
+  owconfig:caching "no";
+  owconfig:priority "3";
+  owconfig:context "main.window.properties" .
+.

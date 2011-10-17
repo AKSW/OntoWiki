@@ -5,23 +5,16 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/markdown> .
+@prefix : <http://ns.ontowiki.net/Extensions/markdown/> .
+
+<> foaf:primaryTopic :markdown.
 :markdown a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/markdown/>;
+  owconfig:enabled "true"^^xsd:boolean;
   doap:name "Markdown";
   doap:description "A plug-in that renders markdown values of certain properties as html.";
   doap:maintainer "Marvin Frommhold";
   owconfig:helperEvents event:onDisplayLiteralPropertyValue;
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "properties";
-  rdfs:comment "fixme";
-  :0 "http://purl.org/dc/elements/1.1/description";
-  :1 "http://rdfs.org/sioc/ns#content".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "datatypes";
-  rdfs:comment "fixme";
-  :0 "http://ns.ontowiki.net/SysOnt/Markdown".
-]
+  :properties <http://purl.org/dc/elements/1.1/description>;
+  :properties <http://rdfs.org/sioc/ns#content>;
+  :datatypes <http://ns.ontowiki.net/SysOnt/Markdown>.

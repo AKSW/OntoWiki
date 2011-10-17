@@ -26,10 +26,26 @@ class ExtensionSerializer
                             'type'=>'literal',
                             'property'=>'owconfig:helpers'
                         ),
+        'caching'   =>array(
+                            'type'=>'literal',
+                            'property'=>'owconfig:caching'
+                        ),
+        'priority'   =>array(
+                            'type'=>'literal',
+                            'property'=>'owconfig:priority'
+                        ),
         'description'   =>array(
                             'type'=>'literal',
                             'property'=>'doap:description'
                         ),
+        'contexts'   =>array(
+                            'type'=>'literal',
+                            'property'=>'owconfig:context'
+                        ),
+        'title'   =>array(
+                            'type'=>'literal',
+                            'property'=>'rdfs:label'
+                        ), 
         'authorUrl'     =>array(
                             'type'=>'uri',
                             'property'=>'doap:maintainer',
@@ -39,6 +55,7 @@ class ExtensionSerializer
     private $_lastSubject = null;
     private $_bnCounter = 0;
     private $_parent = null;
+    private $_depth = 0;
 
     function resetLastSubject()
     {
@@ -48,20 +65,22 @@ class ExtensionSerializer
 
     function addBN($subj, $prop)
     {
-
         $bn = $this->_bnCounter++;
         $bn = '_:'.$bn;
         //echo "start bn for ".$prop." bn=".$bn.PHP_EOL;
         $this->printStatement($subj, $prop, '[');
         $this->_parent = $this->_lastSubject;
         $this->_lastSubject = $bn;
+        $this->_depth++;
         return $bn;
     }
 
     function endBN()
     {
         $this->flush();
-        echo ']';
+        $this->_depth--;
+        $i = str_repeat('    ', $this->_depth);
+        echo $i.']';
         $this->_lastSubject = $this->_parent;
     }
 
@@ -69,11 +88,11 @@ class ExtensionSerializer
     {
         if (is_string($value)) {
             $value = addslashes($value);
-        } 
-        if (isset($this->_map[$property]) && $this->_map[$property]['type'] == 'uri') {
-            $object =  '<'.$value.'>';
-        } else if ($value == 'true' || $value == 'false') {
-             $object =  '"'.$value.'"^^xsd:boolean';
+        }
+        if ((isset($this->_map[$property]) && $this->_map[$property]['type'] == 'uri') || Erfurt_Uri::check($value)) {
+             $object =  '<'.$value.'>';
+        } else if (is_string($value) && $value == 'true' || $value == 'false') {
+             $object =  '"'.($value == 'true' ? 'true' : 'false').'"^^xsd:boolean'; //why?
         } else if (is_bool($value)) {
              $object =  '"'.($value ? 'true' : 'false').'"^^xsd:boolean';
         } else {
@@ -81,6 +100,7 @@ class ExtensionSerializer
         }
         return $object;
     }
+    
     function getPredicate($property, $sectionname)
     {
         return ( 
@@ -92,6 +112,8 @@ class ExtensionSerializer
 
     function printStatement($s, $p, $o)
     {
+        //indent
+        $i = str_repeat('    ', $this->_depth);
         if (substr($this->_lastSubject, 0, 2) == '_:' && substr($s, 0, 2) != '_:') {
             //echo substr($s, 0, 2).PHP_EOL;
             //echo "end bn implicitly. old: ".$this->_lastSubject. " s: $s p: $p o:$o".PHP_EOL;
@@ -99,12 +121,12 @@ class ExtensionSerializer
         }
         if ($this->_lastSubject == null) {
             $this->_lastSubject = $s;
-            echo $s.' '. $p .' '.$o;
+            echo $i.$s.' '. $p .' '.$o;
         } else if ($this->_lastSubject == $s) {
-            echo ';'.PHP_EOL.'  '. $p .' '.$o;
+            echo ';'.PHP_EOL.$i.'  '. $p .' '.$o; 
         } else {
             $this->_lastSubject = $s;
-            echo '.'.PHP_EOL.$s.' '. $p .' '.$o;
+            echo '.'.PHP_EOL.$i.$s.' '. $p .' '.$o; 
         }
     }
     function __destruct() 
@@ -140,62 +162,106 @@ class NestedPropertyAndModuleHandler
         $this->_subject = $_subj;
     }
 
-    function printProperty($name, $value, $i, $parent)
+    function printProperty($name, $value)
     {
         $this->_parent = $this->_subject;
         $bnUri = $this->_printer->addBN($this->_subject, 'owconfig:config');
         $this->_subject = $bnUri;
         $this->_printer->printStatement($bnUri, 'a', 'owconfig:Config;');
         $this->_printer->printStatement($bnUri, 'owconfig:id', '"'.$name.'";');
-        $this->_printer->printStatement($bnUri, 'rdfs:comment', '"fixme";');
-
-        if (is_array($value)) {
-            foreach ($value as $key => $value) {
-                if (is_array($value)) { 
-                    foreach ($value as $subKey => $subValue) {   
-                        $this->printProperty($subKey, $subValue, $i +1, $key);
-                    } 
+        //$this->_printer->printStatement($bnUri, 'rdfs:comment', '"fixme";');
+        
+        foreach ($value as $subKey => $subValue) {  
+            if (!is_array($subValue)) {
+                $this->_printer->printStatement(
+                    $bnUri, 
+                    $this->_printer->getPredicate($subKey, ''), 
+                    $this->_printer->getObject($subKey, $subValue)
+                );
+            } else {
+                if (!self::is_numeric($subValue)) {
+                    $this->printProperty($subKey, $subValue);
                 } else {
-                    $this->_printer->printStatement(
-                        $bnUri, 
-                        $this->_printer->getPredicate($key, ''),
-                        $this->_printer->getObject($key, $value)
-                    );
+                    foreach ($subValue as $subSubKey => $subSubValue) {
+                        if (!is_array($subSubValue)) {
+                            $this->_printer->printStatement(
+                                $bnUri, 
+                                $this->_printer->getPredicate($subKey, ''), //omit the $subSubKey here!
+                                $this->_printer->getObject($subKey, $subSubValue)
+                            );
+                        } else {
+                            $this->printProperty($subKey, $subValue);
+                        }
+                    }
                 }
-            }   
-        } else {
-            $this->_printer->printStatement(
-                $bnUri, 
-                $this->_printer->getPredicate($name, ''),
-                $this->_printer->getObject($name, $value)
-            );
-        }
-
+            }
+        } 
+        
         $this->_printer->endBN();
     }
-
+    
+    static private function is_assoc ($arr) 
+    {
+        return (is_array($arr) && count(array_filter(array_keys($arr), 'is_string')) == count($arr));
+    }
+    
+    static private function is_numeric ($arr) 
+    {
+        return (is_array($arr) && count(array_filter(array_keys($arr), 'is_int')) == count($arr));
+    }
 
     function printN3()
     {
         foreach ($this->modules as $name => $values) {
+            //print a module
             $subject = ':'.ucfirst($name);
             $this->_printer->printStatement($subject, 'a', 'owconfig:Module');
-            $this->_printer->printStatement($subject, 'rdfs:label', '"'.ucfirst($name).'"');
+            if (!isset($values['title'])) {
+                $this->_printer->printStatement($subject, 'rdfs:label', '"'.ucfirst($name).'"');
+            }
             foreach ($values as $prop => $val) {
-                $this->_printer->printStatement(
-                    $subject, 
-                    $this->_printer->getPredicate($prop, ''), 
-                    $this->_printer->getObject($prop, $val)
-                );
+                if (!is_array(($val))) {
+                    $this->_printer->printStatement(
+                        $subject, 
+                        $this->_printer->getPredicate($prop, ''), 
+                        $this->_printer->getObject($prop, $val)
+                    );
+                } else {
+                    foreach ($val as $subval) {
+                        $this->_printer->printStatement(
+                            $subject, 
+                            $this->_printer->getPredicate($prop, ''), 
+                            $this->_printer->getObject($prop, $subval)
+                        );
+                    }
+                }
             }
             $this->_printer->resetLastSubject();
         }
 
         if (is_array($this->properties)) {
             foreach ($this->properties as $name => $value) {
-                $this->printProperty($name, $value, 1, null);
+                if (is_array($value)) {
+                    if (self::is_numeric($value)) {
+                       foreach ($value as $subval) {
+                           $this->_printer->printStatement(
+                               $this->_subject, 
+                               $this->_printer->getPredicate($name, 'private'), 
+                               $this->_printer->getObject($name, $subval)
+                           );
+                       } 
+                    } else {
+                        $this->printProperty($name, $value, 1, null);
+                    }
+                } else {
+                    $this->_printer->printStatement(
+                        $this->_subject, 
+                        $this->_printer->getPredicate($name, 'private'), 
+                        $this->_printer->getObject($name, $value)
+                    );
+                }
             }
-        } else var_dump($this->properties);
+        } 
     }
 
 }
@@ -348,6 +414,7 @@ class Converter
     static function convert($iniPath, $extension)
     {
         ob_start();
+        $privNS = "http://ns.ontowiki.net/Extensions/$extension/";
         echo <<<EOT
 !!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
@@ -356,7 +423,8 @@ class Converter
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/$extension> .
+@prefix : <$privNS> .
+
 
 EOT;
 
@@ -365,20 +433,29 @@ EOT;
 
         $subject = ':'.$extension;
         $es = new ExtensionSerializer();
+        $es->printStatement('<>', 'foaf:primaryTopic', $subject);
         $es->printStatement($subject, 'a', 'doap:Project');
+        $es->printStatement($subject, 'owconfig:privateNamespace', '<'.$privNS.'>');
+        
         $mp = new NestedPropertyAndModuleHandler($es, $subject);
 
         foreach ($config as $sectionname => $sectionconf) {
-            if ($sectionname == 'modules') {
-                $mp->modules = $sectionconf;
-                continue;
-            } else if ($sectionname == 'private') {
+            if ($sectionname == 'private') {
                 $mp->properties = $sectionconf;
                 continue;
-            }
+            } 
             if (is_array($sectionconf)) {
                 foreach ($sectionconf as $property => $value) {
-                    if ($sectionname == 'events') {
+                    if ($property == 'modules') {
+                        $mp->modules = array_merge_recursive($mp->modules, $value);
+                        continue;
+                    } else if ($property == 'priority' || $property == 'contexts' 
+                            || $property == 'caching' || $property == 'title') {
+                        $mp->modules = array_merge_recursive(
+                            $mp->modules, 
+                            array('default'=>(array($property=>$value)))
+                        );
+                    } else if ($sectionname == 'events') {
                         $predicate = 'owconfig:helperEvents';
                         $object = 'event:'.$value;
                         $es->printStatement($subject, $predicate, $object);
@@ -405,39 +482,50 @@ EOT;
         }
 
         $mp->printN3();
-
+        
+        //make sure the destructors are called
+        $es = null;
+        $mp = null;
+        
         $res = ob_get_clean();
 
+        //some wtf fixes :)
         $res = str_replace(";;", ";", $res);
         $res = str_replace("[;", "[", $res);
-        $res = preg_replace("/\\]\.\n_:[0-9]*/", "] ; \n", $res);
+        $res = preg_replace("/\\]\.\n\s*_:[0-9]*/", "];\n", $res);
+         
         return $res;
     }
 }
+require_once realpath(__DIR__.'/../../libraries/Erfurt/Erfurt/Uri.php');
 
-if ($argc != 1) {
-    echo "usage extensions-ini2n3.sh <extension-name>\n"; exit(-1);
+if ($argc != 1 && $argc != 2) {
+    echo 'usage: extensions-ini2n3.sh [<extension-name>]'.PHP_EOL; exit(-1);
 } else {
-    $dir = realpath(__DIR__.'/../../extensions/');
-    if ($handle = opendir($dir)) {
-        while (false !== ($file = readdir($handle))) {
-            $fullPath = realpath($dir.DIRECTORY_SEPARATOR.$file);
-            if (
-                    $file != "." && $file != ".." && $file != "themes" && 
-                    $file != "translations" && is_dir($fullPath) && is_writable($fullPath)
-            ) {
-                $origIni = realpath($fullPath.DIRECTORY_SEPARATOR.'default.ini');
-                if (file_exists($origIni) && is_readable($origIni)) {
-                $newFile = $fullPath."/doap.n3";
-                echo "write ".$newFile.PHP_EOL;
-                file_put_contents($newFile, Converter::convert($origIni, $file));
+    if ($argc==2) {
+        echo Converter::convert(__DIR__.'/../../extensions/'.$argv[1].'/default.ini', $argv[1]);
+    } else {
+        $dir = realpath(__DIR__.'/../../extensions/');
+        if ($handle = opendir($dir)) {
+            while (false !== ($file = readdir($handle))) {
+                $fullPath = realpath($dir.DIRECTORY_SEPARATOR.$file);
+                if (
+                        $file != "." && $file != ".." && $file != "themes" && 
+                        $file != "translations" && is_dir($fullPath) && is_writable($fullPath)
+                ) {
+                    $origIni = realpath($fullPath.DIRECTORY_SEPARATOR.'default.ini');
+                    if (file_exists($origIni) && is_readable($origIni)) {
+                        $newFile = $fullPath."/doap.n3";
+                        echo "write ".$newFile.PHP_EOL;
+                        file_put_contents($newFile, Converter::convert($origIni, $file));
+                    } else {
+                        echo 'no default.ini in '.$fullPath.PHP_EOL;
+                    }
                 } else {
-                    echo 'no default.ini in '.$fullPath.PHP_EOL;
+                    echo 'skipping non-extension dir '.$fullPath.PHP_EOL;
                 }
-            } else {
-                echo 'skipping non-extension dir '.$fullPath.PHP_EOL;
             }
+            closedir($handle);
         }
-        closedir($handle);
     }
 }

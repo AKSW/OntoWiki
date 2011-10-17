@@ -5,13 +5,16 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/history> .
+@prefix : <http://ns.ontowiki.net/Extensions/history/> .
+
+<> foaf:primaryTopic :history.
 :history a doap:Project;
-  owconfig:enabled "1"^^xsd:boolean;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/history/>;
+  owconfig:enabled "true"^^xsd:boolean;
   owconfig:templates "templates";
   owconfig:languages "languages/";
   :action "list";
   doap:name "History";
   doap:description "show the revision history of resources (creation, changes, etc.) and provide rollback GUI.";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>
+  doap:maintainer <http://aksw.org>.

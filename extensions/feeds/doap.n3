@@ -5,29 +5,20 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/feeds> .
+@prefix : <http://ns.ontowiki.net/Extensions/feeds/> .
+
+<> foaf:primaryTopic :feeds.
 :feeds a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/feeds/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Feeds";
-  :priority "20";
   doap:description "aggregate news from feeds which are related to a resource and displays them in a module";
   doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:config [
-  a owconfig:Config;
-  owconfig:id "properties";
-  rdfs:comment "fixme";
-  :0 "http://rdfs.org/sioc/ns#feed".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "maxentries";
-  rdfs:comment "fixme";
-  :maxentries "3".
-] ; 
- owconfig:config [
-  a owconfig:Config;
-  owconfig:id "cachelivetime";
-  rdfs:comment "fixme";
+  doap:maintainer <http://aksw.org>.
+:Default a owconfig:Module;
+  rdfs:label "Default";
+  owconfig:priority "20";
+  owconfig:context "main.window.properties" .
+:feeds :properties <http://rdfs.org/sioc/ns#feed>;
+  :maxentries "3";
   :cachelivetime "86400".
-]

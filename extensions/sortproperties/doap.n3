@@ -5,15 +5,17 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/sortproperties> .
+@prefix : <http://ns.ontowiki.net/Extensions/sortproperties/> .
+
+<> foaf:primaryTopic :sortproperties.
 :sortproperties a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sortproperties/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Sortproperties";
   owconfig:helperEvents event:onPropertiesActionData;
   owconfig:config [
-  a owconfig:Config;
-  owconfig:id "sort";
-  rdfs:comment "fixme";
-  :method "rdf";
-  :property "http://ns.ontowiki.net/SysBase/order".
-]
+      a owconfig:Config;
+      owconfig:id "sort";
+      :method "rdf";
+      :property <http://ns.ontowiki.net/SysBase/order>.
+].

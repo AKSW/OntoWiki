@@ -5,16 +5,18 @@
 @prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/hideproperties> .
+@prefix : <http://ns.ontowiki.net/Extensions/hideproperties/> .
+
+<> foaf:primaryTopic :hideproperties.
 :hideproperties a doap:Project;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/hideproperties/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "HideProperties";
   doap:description "A plug-in that hides defined Properties in the ressourceview";
   doap:maintainer "Niederstaetter Michael ,  Maier Christian";
   owconfig:helperEvents event:onPropertiesActionData;
   owconfig:config [
-  a owconfig:Config;
-  owconfig:id "hide";
-  rdfs:comment "fixme";
-  :property "http://ns.ontowiki.net/SysOnt/hidden".
-]
+      a owconfig:Config;
+      owconfig:id "hide";
+      :property <http://ns.ontowiki.net/SysOnt/hidden>.
+].
