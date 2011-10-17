@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :imprint.
 :imprint a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/imprint/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Imprint";
   doap:description "show a little box on the left that can contain legal notices and a contact information on the legally responsible person.";
@@ -27,4 +27,7 @@
   :name "Herr Max Mustermann";
   :street "Lange Str. 123";
   :city "Leipzig";
-  :zip "04123".
+  :zip "04123";
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

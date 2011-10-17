@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :resourcecreationuri.
 :resourcecreationuri a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/resourcecreationuri/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Custom Resource URI Creation";
   doap:description "plugin to create nice URIs on instance creation via RDFauthor/updateService";
@@ -43,3 +43,6 @@
           :skosAlabel <http://www.w3.org/2004/02/skos/core#altLabel>.
     ].
 ].
+:resourcecreationuri doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

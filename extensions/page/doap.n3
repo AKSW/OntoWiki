@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :page.
 :page a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/page/>;
+  owconfig:privateNamespace :;
   owconfig:templates ".";
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Pages";
@@ -21,4 +21,7 @@
       a owconfig:Config;
       owconfig:id "titles";
       :example "Example Page".
-].
+];
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

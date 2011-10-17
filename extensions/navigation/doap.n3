@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :navigation.
 :navigation a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/navigation/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Navigation Module";
   doap:description "an extensible and highly customizable module to navigate in knowledge bases via tree-based information (e.g. classes)";
@@ -236,3 +236,6 @@
           :rootURI <http://db.caucasus-spiders.info/Area/152>.
     ].
 ].
+:navigation doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

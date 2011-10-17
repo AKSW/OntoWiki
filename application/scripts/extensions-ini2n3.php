@@ -75,8 +75,13 @@ class ExtensionSerializer
         return $bn;
     }
 
-    function endBN()
+    function endBN($uri = null)
     {
+        /*if($uri != null){
+            if($uri != $this->_lastSubject){
+                return; //do not end this, this is not what you wanted to end
+            }
+        }*/
         $this->flush();
         $this->_depth--;
         $i = str_repeat('    ', $this->_depth);
@@ -114,11 +119,11 @@ class ExtensionSerializer
     {
         //indent
         $i = str_repeat('    ', $this->_depth);
-        if (substr($this->_lastSubject, 0, 2) == '_:' && substr($s, 0, 2) != '_:') {
+        /*if (substr($this->_lastSubject, 0, 2) == '_:' && substr($s, 0, 2) != '_:') {
             //echo substr($s, 0, 2).PHP_EOL;
             //echo "end bn implicitly. old: ".$this->_lastSubject. " s: $s p: $p o:$o".PHP_EOL;
-            $this->endBN();
-        }
+            $this->endBN($this->_lastSubject);
+        }*/
         if ($this->_lastSubject == null) {
             $this->_lastSubject = $s;
             echo $i.$s.' '. $p .' '.$o;
@@ -197,7 +202,7 @@ class NestedPropertyAndModuleHandler
             }
         } 
         
-        $this->_printer->endBN();
+        $this->_printer->endBN($bnUri);
     }
     
     static private function is_assoc ($arr) 
@@ -437,7 +442,7 @@ EOT;
         $es = new ExtensionSerializer();
         $es->printStatement('<>', 'foaf:primaryTopic', $subject);
         $es->printStatement($subject, 'a', 'doap:Project');
-        $es->printStatement($subject, 'owconfig:privateNamespace', '<'.$privNS.'>');
+        $es->printStatement($subject, 'owconfig:privateNamespace', ':');
         
         $mp = new NestedPropertyAndModuleHandler($es, $subject);
 
@@ -484,6 +489,11 @@ EOT;
         }
 
         $mp->printN3();
+        
+        $version = ':v1-0';
+        $es->printStatement($subject, 'doap:release', $version);
+        $es->printStatement($version, 'a', 'doap:Version');
+        $es->printStatement($version, 'doap:revision', '"1.0"');
         
         //make sure the destructors are called
         $es = null;

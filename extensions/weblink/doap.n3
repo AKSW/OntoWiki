@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :weblink.
 :weblink a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/weblink/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "yes";
   doap:name "Weblink";
   doap:description "A plug-in that renders values of certain properties as HTML links.";
@@ -42,4 +42,7 @@
   :weblink <http://www.w3.org/2000/01/rdf-schema#isDefinedBy>;
   :weblink <http://purl.org/vocab/vann/changes>;
   :weblink <http://purl.org/vocab/vann/example>;
-  :weblink <http://rdfs.org/sioc/ns#feed>.
+  :weblink <http://rdfs.org/sioc/ns#feed>;
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

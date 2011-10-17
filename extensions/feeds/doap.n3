@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :feeds.
 :feeds a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/feeds/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Feeds";
   doap:description "aggregate news from feeds which are related to a resource and displays them in a module";
@@ -23,4 +23,7 @@
   owconfig:context "main.window.properties" .
 :feeds :properties <http://rdfs.org/sioc/ns#feed>;
   :maxentries "3";
-  :cachelivetime "86400".
+  :cachelivetime "86400";
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

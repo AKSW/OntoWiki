@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :ckan.
 :ckan a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/ckan/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "CKAN Integration";
   doap:description "allows for registration of CKAN datasets from your OntoWiki instance";
@@ -22,4 +22,7 @@
       a owconfig:Config;
       owconfig:id "features";
       :registration "enabled".
-].
+];
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

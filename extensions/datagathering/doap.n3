@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :datagathering.
 :datagathering a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/datagathering/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Linked Data Gathering";
   doap:description "a component and a wrapper to import linked data and expand local models.";
@@ -83,3 +83,6 @@
   :ignore <http://www.w3.org/1999/xhtml/vocab#alternate>;
   :ignore <http://poshrdf.org/ns/mf#nofollow>;
   :defaultClass <http://xmlns.com/foaf/0.1/Document>.
+:datagathering doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

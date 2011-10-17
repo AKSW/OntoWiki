@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :defaultmodel.
 :defaultmodel a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/defaultmodel/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Default Model";
   doap:description "Plugin to select default model if only one available or always";
@@ -19,4 +19,7 @@
   :modelUri <http://showcase.ontowiki.net/>;
   :modelsHide "true"^^xsd:boolean;
   :modelsExclusiveRight "ModelManagement";
-  :setSelectedResource "false"^^xsd:boolean.
+  :setSelectedResource "false"^^xsd:boolean;
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

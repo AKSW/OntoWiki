@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :account.
 :account a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/account/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Login Module";
   doap:description "provides a login module and a recover action.";
@@ -24,4 +24,6 @@
   owconfig:caching "yes";
   owconfig:priority "40";
   owconfig:context "main.sidewindows" .
-.
+:account doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

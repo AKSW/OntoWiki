@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :source.
 :source a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/source/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Source";
   doap:description "a tab for the list and resource view which displays the N3 source and allows source based editing";
@@ -19,4 +19,7 @@
   :navigation "yes";
   :position "100";
   owconfig:templates "templates";
-  :action "edit".
+  :action "edit";
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

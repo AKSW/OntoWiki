@@ -10,11 +10,14 @@
 
 <> foaf:primaryTopic :jsonrpc.
 :jsonrpc a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/jsonrpc/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "JSON RPC Server";
   doap:description "provides a service for remote control (e.g. with owcli).";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
   :homepage <http://code.google.com/p/ontowiki/wiki/CommandLineInterface>;
-  owconfig:languages "languages/".
+  owconfig:languages "languages/";
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

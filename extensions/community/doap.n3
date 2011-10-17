@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :community.
 :community a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/community/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   owconfig:templates "templates";
   owconfig:languages "languages/";
@@ -81,3 +81,6 @@
       owconfig:id "note";
       :property <http://rdfs.org/sioc/ns#note>.
 ].
+:community doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

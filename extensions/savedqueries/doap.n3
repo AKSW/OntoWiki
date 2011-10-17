@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :savedqueries.
 :savedqueries a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/savedqueries/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "false"^^xsd:boolean;
   :action "init";
   doap:name "Saved Queries";
@@ -30,4 +30,7 @@
   :queryLabel <http://purl.org/dc/elements/1.1/title>;
   :queryId <http://rdfs.org/sioc/ns#id>;
   :queryDesc <http://purl.org/dc/elements/1.1/description>;
-  :queryCode <http://ns.ontowiki.net/SysOnt/sparql_code>.
+  :queryCode <http://ns.ontowiki.net/SysOnt/sparql_code>;
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

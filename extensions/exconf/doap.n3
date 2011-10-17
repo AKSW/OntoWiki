@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :exconf.
 :exconf a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/exconf/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Extensions Configuration";
   doap:description "provides this component to configure / toggle extensions.";
@@ -24,4 +24,7 @@
   owconfig:priority "4";
   owconfig:context "main.window.exconf" .
 :exconf :repoUrl <http://plugins.ontowiki.net/index.php/service/sparql>;
-  :graph <http://ns.ontowiki.net/Extensions/>.
+  :graph <http://ns.ontowiki.net/Extensions/>;
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

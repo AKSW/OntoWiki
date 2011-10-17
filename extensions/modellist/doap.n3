@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :modellist.
 :modellist a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/modellist/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Knowledge Bases Module";
   doap:description "provides a model list with create and view menu.";
@@ -23,4 +23,6 @@
   owconfig:caching "yes";
   owconfig:priority "20";
   owconfig:context "main.sidewindows" .
-.
+:modellist doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

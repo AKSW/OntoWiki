@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :imagelink.
 :imagelink a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/imagelink/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "yes";
   doap:name "Imagelink";
   doap:description "A plug-in that renders values of certain properties as HTML images.";
@@ -21,4 +21,7 @@
   :properties <http://xmlns.com/foaf/0.1/logo>;
   :properties <http://xmlns.com/foaf/0.1/img>;
   :properties <http://purl.org/ontology/mo/image>;
-  :properties <http://open.vocab.org/terms/screenshot>.
+  :properties <http://open.vocab.org/terms/screenshot>;
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".

@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :mailtolink.
 :mailtolink a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/mailtolink/>;
+  owconfig:privateNamespace :;
   owconfig:enabled "yes";
   doap:name "Mailtolink";
   doap:description "A plug-in that renders values of certain properties as mailto links.";
@@ -18,4 +18,7 @@
   owconfig:helperEvents event:onDisplayObjectPropertyValue;
   owconfig:helperEvents event:onDisplayLiteralPropertyValue;
   :properties <http://xmlns.com/foaf/0.1/mbox>;
-  :properties <http://swrc.ontoware.org/ontology#email>.
+  :properties <http://swrc.ontoware.org/ontology#email>;
+  doap:release :v1-0.
+:v1-0 a doap:Version;
+  doap:revision "1.0".
