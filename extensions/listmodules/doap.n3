@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :listmodules.
 :listmodules a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/listmodules/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "List Modules";
   doap:description "Modules showed in the list view (show properties)";

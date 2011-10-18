@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :history.
 :history a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/history/>;
   owconfig:enabled "true"^^xsd:boolean;
   owconfig:templates "templates";
   owconfig:languages "languages/";

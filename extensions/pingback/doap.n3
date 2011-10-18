@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :pingback.
 :pingback a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/pingback/>;
   owconfig:templates "templates";
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Pingback Server";

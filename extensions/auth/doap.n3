@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :auth.
 :auth a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/auth/>;
   owconfig:enabled "true"^^xsd:boolean;
   owconfig:templates "templates/";
   owconfig:languages "languages/";

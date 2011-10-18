@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :bookmarklet.
 :bookmarklet a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/bookmarklet/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "RDFauthor Bookmarklet";
   doap:description "extract rdfa from websites, import to ontowiki, done with RDFauthor delivered in a bookmarklet.";

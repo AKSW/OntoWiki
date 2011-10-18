@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :fancystyle.
 :fancystyle a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/fancystyle/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Fancy Style";
   doap:description "loads an additional css with round borders.";

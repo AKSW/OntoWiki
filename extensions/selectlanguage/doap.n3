@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :selectlanguage.
 :selectlanguage a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/selectlanguage/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Select Language";
   doap:description "This plugin is used for switching to a specific language";

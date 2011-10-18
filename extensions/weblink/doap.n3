@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :weblink.
 :weblink a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/weblink/>;
   owconfig:enabled "yes";
   doap:name "Weblink";
   doap:description "A plug-in that renders values of certain properties as HTML links.";

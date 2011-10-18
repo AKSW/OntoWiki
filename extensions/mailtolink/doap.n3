@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :mailtolink.
 :mailtolink a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/mailtolink/>;
   owconfig:enabled "yes";
   doap:name "Mailtolink";
   doap:description "A plug-in that renders values of certain properties as mailto links.";

@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :filter.
 :filter a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/filter/>;
   owconfig:templates "templates";
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Filter Resource Lists";

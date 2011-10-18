@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :autologin.
 :autologin a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/autologin/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "AutoLogin";
   doap:description "A plug-in that allows FOAF+SSL based auto login.";

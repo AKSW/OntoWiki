@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :linkeddataserver.
 :linkeddataserver a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/linkeddataserver/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Linked Data Server";
   doap:description "A plug-in that converts resource URIs to internal OntoWiki URLs if a resource exists.";

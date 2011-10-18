@@ -45,6 +45,10 @@ class ExtensionSerializer
         'title'   =>array(
                             'type'=>'literal',
                             'property'=>'rdfs:label'
+                        ),
+        'classes'   =>array(
+                            'type'=>'literal',
+                            'property'=>'owconfig:class'
                         ), 
         'authorUrl'     =>array(
                             'type'=>'uri',
@@ -442,7 +446,7 @@ EOT;
         $es = new ExtensionSerializer();
         $es->printStatement('<>', 'foaf:primaryTopic', $subject);
         $es->printStatement($subject, 'a', 'doap:Project');
-        $es->printStatement($subject, 'owconfig:privateNamespace', ':');
+        $es->printStatement($subject, 'owconfig:privateNamespace', '<'.$privNS.'>');
         
         $mp = new NestedPropertyAndModuleHandler($es, $subject);
 

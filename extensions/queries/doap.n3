@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :queries.
 :queries a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/queries/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "SPARQL Query";
   doap:description "allows to execute and manage SPARQL queries.";

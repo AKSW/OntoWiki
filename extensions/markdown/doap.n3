@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :markdown.
 :markdown a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/markdown/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Markdown";
   doap:description "A plug-in that renders markdown values of certain properties as html.";

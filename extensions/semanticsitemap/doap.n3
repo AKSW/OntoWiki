@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :semanticsitemap.
 :semanticsitemap a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/semanticsitemap/>;
   owconfig:enabled "false"^^xsd:boolean;
   :action "sitemap.xml";
   owconfig:templates "templates/";

@@ -10,13 +10,13 @@
 
 <> foaf:primaryTopic :modellist.
 :modellist a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/modellist/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Knowledge Bases Module";
   doap:description "provides a model list with create and view menu.";
   doap:maintainer "AKSW";
   doap:maintainer <http://aksw.org>;
-  :classes "has-contextmenus-block";
+  owconfig:class "has-contextmenus-block";
   owconfig:hasModule :Default.
 :Default a owconfig:Module;
   rdfs:label "Default";

@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :resourcemodules.
 :resourcemodules a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/resourcemodules/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Resource Modules";
   doap:description "Modules showed in the single resource view (Linking Here, Similar Instances, Predicates, Usage as Property)";

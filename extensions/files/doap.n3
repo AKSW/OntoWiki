@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :files.
 :files a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/files/>;
   owconfig:templates "templates";
   owconfig:enabled "false"^^xsd:boolean;
   owconfig:languages "languages/";

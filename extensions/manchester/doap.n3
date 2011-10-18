@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :manchester.
 :manchester a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/manchester/>;
   owconfig:enabled "false"^^xsd:boolean;
   owconfig:templates "templates";
   owconfig:languages "languages";

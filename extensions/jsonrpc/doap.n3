@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :jsonrpc.
 :jsonrpc a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/jsonrpc/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "JSON RPC Server";
   doap:description "provides a service for remote control (e.g. with owcli).";

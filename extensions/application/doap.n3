@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :application.
 :application a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/application/>;
   owconfig:enabled "true"^^xsd:boolean;
   doap:name "Application Module";
   doap:description "provides the application module with search input and main menu.";

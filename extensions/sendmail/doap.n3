@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :sendmail.
 :sendmail a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sendmail/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Sendmail";
   doap:description "A plug-in that sends mails via a mailserver using zend_mail";

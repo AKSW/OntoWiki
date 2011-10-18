@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :community.
 :community a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/community/>;
   owconfig:enabled "true"^^xsd:boolean;
   owconfig:templates "templates";
   owconfig:languages "languages/";

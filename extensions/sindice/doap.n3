@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :sindice.
 :sindice a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sindice/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Sindice";
   doap:description "provides results from sindice via datagathering search";

@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :feeds.
 :feeds a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/feeds/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "Feeds";
   doap:description "aggregate news from feeds which are related to a resource and displays them in a module";

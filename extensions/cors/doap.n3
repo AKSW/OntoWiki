@@ -10,7 +10,7 @@
 
 <> foaf:primaryTopic :cors.
 :cors a doap:Project;
-  owconfig:privateNamespace :;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/cors/>;
   owconfig:enabled "false"^^xsd:boolean;
   doap:name "CORS";
   doap:description "Setup Cross-Origin Resource Sharing (CORS)";
