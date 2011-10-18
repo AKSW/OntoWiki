@@ -8,18 +8,18 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/source/> .
 
-<> foaf:primaryTopic :source.
-:source a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/source/>;
-  owconfig:enabled "true"^^xsd:boolean;
-  doap:name "Source";
-  doap:description "a tab for the list and resource view which displays the N3 source and allows source based editing";
-  doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  :navigation "yes";
-  :position "100";
-  owconfig:templates "templates";
-  owconfig:defaultAction "edit";
-  doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+<> foaf:primaryTopic :source .
+:source a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/source/> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  doap:name "Source" ;
+  doap:description "a tab for the list and resource view which displays the N3 source and allows source based editing" ;
+  doap:maintainer "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  :navigation "yes" ;
+  :position "100" ;
+  owconfig:templates "templates" ;
+  owconfig:defaultAction "edit" ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

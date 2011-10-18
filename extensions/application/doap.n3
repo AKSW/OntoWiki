@@ -8,21 +8,21 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/application/> .
 
-<> foaf:primaryTopic :application.
-:application a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/application/>;
-  owconfig:enabled "true"^^xsd:boolean;
-  doap:name "Application Module";
-  doap:description "provides the application module with search input and main menu.";
-  doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:hasModule :Default.
-:Default a owconfig:Module;
-  rdfs:label "Default";
-  owconfig:caching "no";
-  owconfig:priority "1";
+<> foaf:primaryTopic :application .
+:application a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/application/> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  doap:name "Application Module" ;
+  doap:description "provides the application module with search input and main menu." ;
+  doap:maintainer "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:hasModule :Default .
+:Default a owconfig:Module ;
+  rdfs:label "Default" ;
+  owconfig:caching "no" ;
+  owconfig:priority "1" ;
   owconfig:context "main.sidewindows" .
-:application :hideForAnonymousOnNoModels "no";
-  doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+:application :hideForAnonymousOnNoModels "no" ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

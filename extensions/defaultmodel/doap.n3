@@ -8,18 +8,18 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/defaultmodel/> .
 
-<> foaf:primaryTopic :defaultmodel.
-:defaultmodel a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/defaultmodel/>;
-  owconfig:enabled "false"^^xsd:boolean;
-  doap:name "Default Model";
-  doap:description "Plugin to select default model if only one available or always";
-  doap:maintainer "Christoph Rieß";
-  owconfig:helperEvents event:onAfterInitController;
-  :modelUri <http://showcase.ontowiki.net/>;
-  :modelsHide "true"^^xsd:boolean;
-  :modelsExclusiveRight "ModelManagement";
-  :setSelectedResource "false"^^xsd:boolean;
-  doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+<> foaf:primaryTopic :defaultmodel .
+:defaultmodel a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/defaultmodel/> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  doap:name "Default Model" ;
+  doap:description "Plugin to select default model if only one available or always" ;
+  doap:maintainer "Christoph Rieß" ;
+  owconfig:helperEvents event:onAfterInitController ;
+  :modelUri <http://showcase.ontowiki.net/> ;
+  :modelsHide "true"^^xsd:boolean ;
+  :modelsExclusiveRight "ModelManagement" ;
+  :setSelectedResource "false"^^xsd:boolean ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

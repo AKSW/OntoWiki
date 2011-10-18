@@ -8,20 +8,20 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/page/> .
 
-<> foaf:primaryTopic :page.
-:page a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/page/>;
-  owconfig:templates ".";
-  owconfig:enabled "false"^^xsd:boolean;
-  doap:name "Pages";
-  doap:description "redirect controller actions to template calls. a minimal filesystem-based CMS. see the \'site\' extension for a more sophisticated variant";
-  doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:config [
-      a owconfig:Config;
-      owconfig:id "titles";
-      :example "Example Page".
-];
-  doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+<> foaf:primaryTopic :page .
+:page a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/page/> ;
+  owconfig:templates "." ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  doap:name "Pages" ;
+  doap:description "redirect controller actions to template calls. a minimal filesystem-based CMS. see the \'site\' extension for a more sophisticated variant" ;
+  doap:maintainer "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:config [ ;
+      a owconfig:Config; ;
+      owconfig:id "titles"; ;
+      :example "Example Page" .
+] ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

@@ -8,38 +8,38 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/pingback/> .
 
-<> foaf:primaryTopic :pingback.
-:pingback a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/pingback/>;
-  owconfig:templates "templates";
-  owconfig:enabled "true"^^xsd:boolean;
-  doap:name "Pingback Server";
-  doap:description "provides a Semantic Pingback Server and pingback enables all linked data resources";
-  doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:helperEvents event:onBeforeLinkedDataRedirect;
-  owconfig:helperEvents event:onAfterInitController;
-  owconfig:helperEvents event:onAddStatement;
-  owconfig:helperEvents event:onAddMultipleStatements;
-  owconfig:helperEvents event:onDeleteMultipleStatements;
-  owconfig:helperEvents event:beforeExportResource;
-  :generic_relation <http://rdfs.org/sioc/ns#links_to>;
-  owconfig:config [
-      a owconfig:Config;
-      owconfig:id "rdfa";
-      owconfig:enabled "yes";
-      :service <http://www.w3.org/2007/08/pyRdfa/extract?format=pretty-xml&warnings=false&parser=lax&space-preserve=true&uri=>.
-];
- :title_properties <http://purl.org/dc/elements/1.1/title>;
-  :title_properties <http://purl.org/dc/terms/title>;
-  :title_properties <http://xmlns.com/foaf/0.1/name>;
-  :title_properties <http://usefulinc.com/ns/doap#name>;
-  :title_properties <http://rdfs.org/sioc/ns#name>;
-  :title_properties <http://www.w3.org/2000/01/rdf-schema#label>;
-  :title_properties <http://xmlns.com/foaf/0.1/nick>;
-  :title_properties <http://xmlns.com/foaf/0.1/surname>;
-  :ping_properties <http://xmlns.com/foaf/0.1/knows>;
-  :pingOnDelete "false"^^xsd:boolean.
-:pingback doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+<> foaf:primaryTopic :pingback .
+:pingback a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/pingback/> ;
+  owconfig:templates "templates" ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  doap:name "Pingback Server" ;
+  doap:description "provides a Semantic Pingback Server and pingback enables all linked data resources" ;
+  doap:maintainer "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:helperEvents event:onBeforeLinkedDataRedirect ;
+  owconfig:helperEvents event:onAfterInitController ;
+  owconfig:helperEvents event:onAddStatement ;
+  owconfig:helperEvents event:onAddMultipleStatements ;
+  owconfig:helperEvents event:onDeleteMultipleStatements ;
+  owconfig:helperEvents event:beforeExportResource ;
+  :generic_relation <http://rdfs.org/sioc/ns#links_to> ;
+  owconfig:config [ ;
+      a owconfig:Config; ;
+      owconfig:id "rdfa"; ;
+      owconfig:enabled "yes" ;
+      :service <http://www.w3.org/2007/08/pyRdfa/extract?format=pretty-xml&warnings=false&parser=lax&space-preserve=true&uri=> .
+] .
+_:0 :title_properties <http://purl.org/dc/elements/1.1/title> ;
+  :title_properties <http://purl.org/dc/terms/title> ;
+  :title_properties <http://xmlns.com/foaf/0.1/name> ;
+  :title_properties <http://usefulinc.com/ns/doap#name> ;
+  :title_properties <http://rdfs.org/sioc/ns#name> ;
+  :title_properties <http://www.w3.org/2000/01/rdf-schema#label> ;
+  :title_properties <http://xmlns.com/foaf/0.1/nick> ;
+  :title_properties <http://xmlns.com/foaf/0.1/surname> ;
+  :ping_properties <http://xmlns.com/foaf/0.1/knows> ;
+  :pingOnDelete "false"^^xsd:boolean .
+:pingback doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

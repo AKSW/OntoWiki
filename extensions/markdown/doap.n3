@@ -8,17 +8,17 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/markdown/> .
 
-<> foaf:primaryTopic :markdown.
-:markdown a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/markdown/>;
-  owconfig:enabled "true"^^xsd:boolean;
-  doap:name "Markdown";
-  doap:description "A plug-in that renders markdown values of certain properties as html.";
-  doap:maintainer "Marvin Frommhold";
-  owconfig:helperEvents event:onDisplayLiteralPropertyValue;
-  :properties <http://purl.org/dc/elements/1.1/description>;
-  :properties <http://rdfs.org/sioc/ns#content>;
-  :datatypes <http://ns.ontowiki.net/SysOnt/Markdown>;
-  doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+<> foaf:primaryTopic :markdown .
+:markdown a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/markdown/> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  doap:name "Markdown" ;
+  doap:description "A plug-in that renders markdown values of certain properties as html." ;
+  doap:maintainer "Marvin Frommhold" ;
+  owconfig:helperEvents event:onDisplayLiteralPropertyValue ;
+  :properties <http://purl.org/dc/elements/1.1/description> ;
+  :properties <http://rdfs.org/sioc/ns#content> ;
+  :datatypes <http://ns.ontowiki.net/SysOnt/Markdown> ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

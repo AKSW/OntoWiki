@@ -8,22 +8,22 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/account/> .
 
-<> foaf:primaryTopic :account.
-:account a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/account/>;
-  owconfig:enabled "true"^^xsd:boolean;
-  doap:name "Login Module";
-  doap:description "provides a login module and a recover action.";
-  doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:templates "templates";
-  owconfig:languages "languages";
-  owconfig:hasModule :Default.
-:Default a owconfig:Module;
-  rdfs:label "Default";
-  owconfig:caching "yes";
-  owconfig:priority "40";
+<> foaf:primaryTopic :account .
+:account a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/account/> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  doap:name "Login Module" ;
+  doap:description "provides a login module and a recover action." ;
+  doap:maintainer "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:templates "templates" ;
+  owconfig:languages "languages" ;
+  owconfig:hasModule :Default .
+:Default a owconfig:Module ;
+  rdfs:label "Default" ;
+  owconfig:caching "yes" ;
+  owconfig:priority "40" ;
   owconfig:context "main.sidewindows" .
-:account doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+:account doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

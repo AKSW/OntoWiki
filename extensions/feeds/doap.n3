@@ -8,22 +8,22 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/feeds/> .
 
-<> foaf:primaryTopic :feeds.
-:feeds a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/feeds/>;
-  owconfig:enabled "false"^^xsd:boolean;
-  doap:name "Feeds";
-  doap:description "aggregate news from feeds which are related to a resource and displays them in a module";
-  doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:hasModule :Default.
-:Default a owconfig:Module;
-  rdfs:label "Default";
-  owconfig:priority "20";
+<> foaf:primaryTopic :feeds .
+:feeds a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/feeds/> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  doap:name "Feeds" ;
+  doap:description "aggregate news from feeds which are related to a resource and displays them in a module" ;
+  doap:maintainer "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:hasModule :Default .
+:Default a owconfig:Module ;
+  rdfs:label "Default" ;
+  owconfig:priority "20" ;
   owconfig:context "main.window.properties" .
-:feeds :properties <http://rdfs.org/sioc/ns#feed>;
-  :maxentries "3";
-  :cachelivetime "86400";
-  doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+:feeds :properties <http://rdfs.org/sioc/ns#feed> ;
+  :maxentries "3" ;
+  :cachelivetime "86400" ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

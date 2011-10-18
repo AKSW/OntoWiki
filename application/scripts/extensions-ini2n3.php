@@ -136,10 +136,10 @@ class ExtensionSerializer
             $this->_lastSubject = $s;
             echo $i.$s.' '. $p .' '.$o;
         } else if ($this->_lastSubject == $s) {
-            echo ';'.PHP_EOL.$i.'  '. $p .' '.$o; 
+            echo ' ;'.PHP_EOL.$i.'  '. $p .' '.$o; 
         } else {
             $this->_lastSubject = $s;
-            echo '.'.PHP_EOL.$i.$s.' '. $p .' '.$o; 
+            echo ' .'.PHP_EOL.$i.$s.' '. $p .' '.$o; 
         }
     }
     function __destruct() 
@@ -149,7 +149,7 @@ class ExtensionSerializer
 
     function flush() 
     {
-       echo '.'.PHP_EOL;
+       echo ' .'.PHP_EOL;
     }
 }
 

@@ -8,15 +8,15 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/sindice/> .
 
-<> foaf:primaryTopic :sindice.
-:sindice a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sindice/>;
-  owconfig:enabled "false"^^xsd:boolean;
-  doap:name "Sindice";
-  doap:description "provides results from sindice via datagathering search";
-  doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:helperEvents event:onDatagatheringComponentSearch;
-  doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+<> foaf:primaryTopic :sindice .
+:sindice a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sindice/> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  doap:name "Sindice" ;
+  doap:description "provides results from sindice via datagathering search" ;
+  doap:maintainer "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:helperEvents event:onDatagatheringComponentSearch ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

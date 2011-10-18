@@ -8,21 +8,21 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/manchester/> .
 
-<> foaf:primaryTopic :manchester.
-:manchester a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/manchester/>;
-  owconfig:enabled "false"^^xsd:boolean;
-  owconfig:templates "templates";
-  owconfig:languages "languages";
-  doap:name "Manchester";
-  doap:description "Class Editor with Manchester Syntax";
-  doap:maintainer "AKSW";
-  owconfig:hasModule :Manchester.
-:Manchester a owconfig:Module;
-  rdfs:label "Manchester Syntax";
-  owconfig:caching "no";
-  owconfig:priority "3";
+<> foaf:primaryTopic :manchester .
+:manchester a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/manchester/> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  owconfig:templates "templates" ;
+  owconfig:languages "languages" ;
+  doap:name "Manchester" ;
+  doap:description "Class Editor with Manchester Syntax" ;
+  doap:maintainer "AKSW" ;
+  owconfig:hasModule :Manchester .
+:Manchester a owconfig:Module ;
+  rdfs:label "Manchester Syntax" ;
+  owconfig:caching "no" ;
+  owconfig:priority "3" ;
   owconfig:context "main.window.properties" .
-:manchester doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+:manchester doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

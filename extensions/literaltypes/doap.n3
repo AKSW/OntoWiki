@@ -8,14 +8,14 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/literaltypes/> .
 
-<> foaf:primaryTopic :literaltypes.
-:literaltypes a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/literaltypes/>;
-  owconfig:enabled "false"^^xsd:boolean;
-  doap:name "LiteralTypes";
-  doap:description "Visualizes the language or the datatype of a LiteralValue";
-  doap:maintainer "Michael Martin";
-  owconfig:helperEvents event:onDisplayLiteralPropertyValue;
-  doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+<> foaf:primaryTopic :literaltypes .
+:literaltypes a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/literaltypes/> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  doap:name "LiteralTypes" ;
+  doap:description "Visualizes the language or the datatype of a LiteralValue" ;
+  doap:maintainer "Michael Martin" ;
+  owconfig:helperEvents event:onDisplayLiteralPropertyValue ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

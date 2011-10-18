@@ -8,21 +8,21 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/modellist/> .
 
-<> foaf:primaryTopic :modellist.
-:modellist a doap:Project;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/modellist/>;
-  owconfig:enabled "true"^^xsd:boolean;
-  doap:name "Knowledge Bases Module";
-  doap:description "provides a model list with create and view menu.";
-  doap:maintainer "AKSW";
-  doap:maintainer <http://aksw.org>;
-  owconfig:class "has-contextmenus-block";
-  owconfig:hasModule :Default.
-:Default a owconfig:Module;
-  rdfs:label "Default";
-  owconfig:caching "yes";
-  owconfig:priority "20";
+<> foaf:primaryTopic :modellist .
+:modellist a doap:Project ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/modellist/> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  doap:name "Knowledge Bases Module" ;
+  doap:description "provides a model list with create and view menu." ;
+  doap:maintainer "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:class "has-contextmenus-block" ;
+  owconfig:hasModule :Default .
+:Default a owconfig:Module ;
+  rdfs:label "Default" ;
+  owconfig:caching "yes" ;
+  owconfig:priority "20" ;
   owconfig:context "main.sidewindows" .
-:modellist doap:release :v1-0.
-:v1-0 a doap:Version;
-  doap:revision "1.0".
+:modellist doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .
