@@ -14,7 +14,7 @@
   owconfig:templates "templates";
   owconfig:enabled "false"^^xsd:boolean;
   owconfig:languages "languages/";
-  :action "display";
+  owconfig:defaultAction "display";
   doap:name "File Resource Manager";
   doap:description "manage file uploads.";
   doap:maintainer "AKSW";

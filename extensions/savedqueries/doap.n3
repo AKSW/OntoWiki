@@ -12,7 +12,7 @@
 :savedqueries a doap:Project;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/savedqueries/>;
   owconfig:enabled "false"^^xsd:boolean;
-  :action "init";
+  owconfig:defaultAction "init";
   doap:name "Saved Queries";
   owconfig:templates "templates";
   owconfig:languages "languages/";

@@ -14,7 +14,7 @@
   owconfig:enabled "true"^^xsd:boolean;
   owconfig:templates "templates";
   owconfig:languages "languages/";
-  :action "list";
+  owconfig:defaultAction "list";
   doap:name "Community";
   doap:description "rate and comment on resources.";
   doap:maintainer "AKSW";

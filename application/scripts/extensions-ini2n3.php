@@ -49,6 +49,10 @@ class ExtensionSerializer
         'classes'   =>array(
                             'type'=>'literal',
                             'property'=>'owconfig:class'
+                        ),
+        'action'   =>array(
+                            'type'=>'literal',
+                            'property'=>'owconfig:defaultAction'
                         ), 
         'authorUrl'     =>array(
                             'type'=>'uri',

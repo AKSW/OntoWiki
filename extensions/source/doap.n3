@@ -19,7 +19,7 @@
   :navigation "yes";
   :position "100";
   owconfig:templates "templates";
-  :action "edit";
+  owconfig:defaultAction "edit";
   doap:release :v1-0.
 :v1-0 a doap:Version;
   doap:revision "1.0".

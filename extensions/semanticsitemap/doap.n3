@@ -12,7 +12,7 @@
 :semanticsitemap a doap:Project;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/semanticsitemap/>;
   owconfig:enabled "false"^^xsd:boolean;
-  :action "sitemap.xml";
+  owconfig:defaultAction "sitemap.xml";
   owconfig:templates "templates/";
   owconfig:languages "languages/";
   doap:name "Semantic Site Map";
