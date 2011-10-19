@@ -14,8 +14,8 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "HideProperties" ;
   doap:description "A plug-in that hides defined Properties in the ressourceview" ;
-  doap:maintainer "Niederstaetter Michael ,  Maier Christian" ;
-  owconfig:helperEvents event:onPropertiesActionData ;
+  owconfig:authorLabel "Niederstaetter Michael ,  Maier Christian" ;
+  owconfig:helperEvent event:onPropertiesActionData ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "hide";

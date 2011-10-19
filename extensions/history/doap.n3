@@ -17,7 +17,7 @@
   owconfig:defaultAction "list" ;
   doap:name "History" ;
   doap:description "show the revision history of resources (creation, changes, etc.) and provide rollback GUI." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

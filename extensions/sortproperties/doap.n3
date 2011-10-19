@@ -13,7 +13,7 @@
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sortproperties/> ;
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Sortproperties" ;
-  owconfig:helperEvents event:onPropertiesActionData ;
+  owconfig:helperEvent event:onPropertiesActionData ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "sort";

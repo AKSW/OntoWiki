@@ -14,7 +14,7 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Resource Modules" ;
   doap:description "Modules showed in the single resource view (Linking Here, Similar Instances, Predicates, Usage as Property)" ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:hasModule :Default .
 :Default a owconfig:Module ;

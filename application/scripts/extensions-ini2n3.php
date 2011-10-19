@@ -12,7 +12,7 @@ class ExtensionSerializer
                         ),
         'author'        =>array(
                             'type'=>'literal',
-                            'property'=>'doap:maintainer'
+                            'property'=>'owconfig:authorLabel'
                         ),
         'templates'     =>array(
                             'type'=>'literal',
@@ -471,7 +471,7 @@ EOT;
                             array('default'=>(array($property=>$value)))
                         );
                     } else if ($sectionname == 'events') {
-                        $predicate = 'owconfig:helperEvents';
+                        $predicate = 'owconfig:helperEvent';
                         $object = 'event:'.$value;
                         $es->printStatement($subject, $predicate, $object);
                     } else {

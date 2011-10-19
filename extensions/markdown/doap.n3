@@ -14,8 +14,8 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Markdown" ;
   doap:description "A plug-in that renders markdown values of certain properties as html." ;
-  doap:maintainer "Marvin Frommhold" ;
-  owconfig:helperEvents event:onDisplayLiteralPropertyValue ;
+  owconfig:authorLabel "Marvin Frommhold" ;
+  owconfig:helperEvent event:onDisplayLiteralPropertyValue ;
   :properties <http://purl.org/dc/elements/1.1/description> ;
   :properties <http://rdfs.org/sioc/ns#content> ;
   :datatypes <http://ns.ontowiki.net/SysOnt/Markdown> ;

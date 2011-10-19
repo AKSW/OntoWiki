@@ -14,7 +14,7 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "RDFauthor Bookmarklet" ;
   doap:description "extract rdfa from websites, import to ontowiki, done with RDFauthor delivered in a bookmarklet." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:hasModule :Default .
 :Default a owconfig:Module ;

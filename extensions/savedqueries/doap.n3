@@ -17,7 +17,7 @@
   owconfig:templates "templates" ;
   owconfig:languages "languages/" ;
   doap:description "display saved queries in a module, and execute them" ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:class "has-contextmenus-block" ;
   owconfig:hasModule :Default .

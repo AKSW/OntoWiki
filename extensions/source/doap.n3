@@ -14,7 +14,7 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Source" ;
   doap:description "a tab for the list and resource view which displays the N3 source and allows source based editing" ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   :navigation "yes" ;
   :position "100" ;

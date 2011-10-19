@@ -15,14 +15,14 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Pingback Server" ;
   doap:description "provides a Semantic Pingback Server and pingback enables all linked data resources" ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
-  owconfig:helperEvents event:onBeforeLinkedDataRedirect ;
-  owconfig:helperEvents event:onAfterInitController ;
-  owconfig:helperEvents event:onAddStatement ;
-  owconfig:helperEvents event:onAddMultipleStatements ;
-  owconfig:helperEvents event:onDeleteMultipleStatements ;
-  owconfig:helperEvents event:beforeExportResource ;
+  owconfig:helperEvent event:onBeforeLinkedDataRedirect ;
+  owconfig:helperEvent event:onAfterInitController ;
+  owconfig:helperEvent event:onAddStatement ;
+  owconfig:helperEvent event:onAddMultipleStatements ;
+  owconfig:helperEvent event:onDeleteMultipleStatements ;
+  owconfig:helperEvent event:beforeExportResource ;
   :generic_relation <http://rdfs.org/sioc/ns#links_to> ;
   owconfig:config [
       a owconfig:Config;

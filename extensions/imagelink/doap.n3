@@ -14,9 +14,9 @@
   owconfig:enabled "yes" ;
   doap:name "Imagelink" ;
   doap:description "A plug-in that renders values of certain properties as HTML images." ;
-  doap:maintainer "Norman Heino" ;
-  owconfig:helperEvents event:onDisplayObjectPropertyValue ;
-  owconfig:helperEvents event:onDisplayLiteralPropertyValue ;
+  owconfig:authorLabel "Norman Heino" ;
+  owconfig:helperEvent event:onDisplayObjectPropertyValue ;
+  owconfig:helperEvent event:onDisplayLiteralPropertyValue ;
   :properties <http://xmlns.com/foaf/0.1/depiction> ;
   :properties <http://xmlns.com/foaf/0.1/logo> ;
   :properties <http://xmlns.com/foaf/0.1/img> ;

@@ -14,7 +14,7 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Application Module" ;
   doap:description "provides the application module with search input and main menu." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:hasModule :Default .
 :Default a owconfig:Module ;

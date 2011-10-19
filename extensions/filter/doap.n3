@@ -15,7 +15,7 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Filter Resource Lists" ;
   doap:description "provides a GUI to apply filters on a list of resources." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:hasModule :Filter .
 :Filter a owconfig:Module ;

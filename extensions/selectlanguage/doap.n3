@@ -14,9 +14,9 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Select Language" ;
   doap:description "This plugin is used for switching to a specific language" ;
-  doap:maintainer "Michael Martin" ;
-  owconfig:helperEvents event:onPostBootstrap ;
-  owconfig:helperEvents event:onBeforeInitController ;
+  owconfig:authorLabel "Michael Martin" ;
+  owconfig:helperEvent event:onPostBootstrap ;
+  owconfig:helperEvent event:onBeforeInitController ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "languages";

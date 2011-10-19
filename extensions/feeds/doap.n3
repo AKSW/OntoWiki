@@ -14,7 +14,7 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Feeds" ;
   doap:description "aggregate news from feeds which are related to a resource and displays them in a module" ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:hasModule :Default .
 :Default a owconfig:Module ;

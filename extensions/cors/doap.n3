@@ -14,9 +14,9 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "CORS" ;
   doap:description "Setup Cross-Origin Resource Sharing (CORS)" ;
-  doap:maintainer "Sebastian Tramp" ;
+  owconfig:authorLabel "Sebastian Tramp" ;
   doap:maintainer <http://sebastian.tramp.name> ;
-  owconfig:helperEvents event:onRouteStartup ;
+  owconfig:helperEvent event:onRouteStartup ;
   :accessControlAllowOrigin "*" ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

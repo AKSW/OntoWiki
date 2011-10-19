@@ -14,8 +14,8 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Sendmail" ;
   doap:description "A plug-in that sends mails via a mailserver using zend_mail" ;
-  doap:maintainer "Maier Christian, Niederstätter Michael" ;
-  owconfig:helperEvents event:onEmailsend ;
+  owconfig:authorLabel "Maier Christian, Niederstätter Michael" ;
+  owconfig:helperEvent event:onEmailsend ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "smtp";

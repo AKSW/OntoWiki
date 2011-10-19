@@ -14,7 +14,7 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "JSON RPC Server" ;
   doap:description "provides a service for remote control (e.g. with owcli)." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   :homepage <http://code.google.com/p/ontowiki/wiki/CommandLineInterface> ;
   owconfig:languages "languages/" ;

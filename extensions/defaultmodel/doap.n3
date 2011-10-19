@@ -14,8 +14,8 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Default Model" ;
   doap:description "Plugin to select default model if only one available or always" ;
-  doap:maintainer "Christoph Rieß" ;
-  owconfig:helperEvents event:onAfterInitController ;
+  owconfig:authorLabel "Christoph Rieß" ;
+  owconfig:helperEvent event:onAfterInitController ;
   :modelUri <http://showcase.ontowiki.net/> ;
   :modelsHide "true"^^xsd:boolean ;
   :modelsExclusiveRight "ModelManagement" ;

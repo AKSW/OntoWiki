@@ -14,9 +14,9 @@
   owconfig:enabled "yes" ;
   doap:name "Weblink" ;
   doap:description "A plug-in that renders values of certain properties as HTML links." ;
-  doap:maintainer "Norman Heino" ;
-  owconfig:helperEvents event:onDisplayObjectPropertyValue ;
-  owconfig:helperEvents event:onDisplayLiteralPropertyValue ;
+  owconfig:authorLabel "Norman Heino" ;
+  owconfig:helperEvent event:onDisplayObjectPropertyValue ;
+  owconfig:helperEvent event:onDisplayLiteralPropertyValue ;
   :weblink <http://xmlns.com/foaf/0.1/homepage> ;
   :weblink <http://xmlns.com/foaf/0.1/page> ;
   :weblink <http://xmlns.com/foaf/0.1/weblog> ;

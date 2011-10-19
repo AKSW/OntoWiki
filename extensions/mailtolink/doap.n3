@@ -14,9 +14,9 @@
   owconfig:enabled "yes" ;
   doap:name "Mailtolink" ;
   doap:description "A plug-in that renders values of certain properties as mailto links." ;
-  doap:maintainer "Norman Heino" ;
-  owconfig:helperEvents event:onDisplayObjectPropertyValue ;
-  owconfig:helperEvents event:onDisplayLiteralPropertyValue ;
+  owconfig:authorLabel "Norman Heino" ;
+  owconfig:helperEvent event:onDisplayObjectPropertyValue ;
+  owconfig:helperEvent event:onDisplayLiteralPropertyValue ;
   :properties <http://xmlns.com/foaf/0.1/mbox> ;
   :properties <http://swrc.ontoware.org/ontology#email> ;
   doap:release :v1-0 .

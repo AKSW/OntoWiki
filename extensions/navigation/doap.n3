@@ -14,7 +14,7 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Navigation Module" ;
   doap:description "an extensible and highly customizable module to navigate in knowledge bases via tree-based information (e.g. classes)" ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:templates "templates" ;
   owconfig:languages "languages" ;

@@ -17,7 +17,7 @@
   owconfig:defaultAction "list" ;
   doap:name "Community" ;
   doap:description "rate and comment on resources." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:hasModule :Comment .
 :Comment a owconfig:Module ;

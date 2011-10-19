@@ -14,7 +14,7 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "CKAN Integration" ;
   doap:description "allows for registration of CKAN datasets from your OntoWiki instance" ;
-  doap:maintainer "Sebastian Tramp" ;
+  owconfig:authorLabel "Sebastian Tramp" ;
   doap:maintainer <http://sebastian.tramp.name> ;
   owconfig:templates "templates" ;
   owconfig:languages "languages" ;

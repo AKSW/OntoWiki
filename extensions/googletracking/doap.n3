@@ -14,8 +14,8 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Google Analytics" ;
   doap:description "A plug-in that adds a Google Analytics Tracking Code to every page." ;
-  doap:maintainer "Niederstätter Michael" ;
-  owconfig:helperEvents event:onAfterInitController ;
+  owconfig:authorLabel "Niederstätter Michael" ;
+  owconfig:helperEvent event:onAfterInitController ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

@@ -1,3 +1,4 @@
+!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -13,15 +14,15 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Linked Data Gathering" ;
   doap:description "a component and a wrapper to import linked data and expand local models." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:templates "templates/" ;
   owconfig:languages "languages/" ;
-  owconfig:helperEvents event:onCreateMenu ;
-  owconfig:helperEvents event:onPropertiesAction ;
-  owconfig:helperEvents event:onPreTabsContentAction ;
-  owconfig:helperEvents event:onDeleteResources ;
-  owconfig:helperEvents event:onPreDeleteModel ;
+  owconfig:helperEvent event:onCreateMenu ;
+  owconfig:helperEvent event:onPropertiesAction ;
+  owconfig:helperEvent event:onPreTabsContentAction ;
+  owconfig:helperEvent event:onDeleteResources ;
+  owconfig:helperEvent event:onPreDeleteModel ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "sync";

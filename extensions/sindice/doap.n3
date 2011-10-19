@@ -14,9 +14,9 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Sindice" ;
   doap:description "provides results from sindice via datagathering search" ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
-  owconfig:helperEvents event:onDatagatheringComponentSearch ;
+  owconfig:helperEvent event:onDatagatheringComponentSearch ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

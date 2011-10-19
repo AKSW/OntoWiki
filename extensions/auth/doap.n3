@@ -16,7 +16,7 @@
   owconfig:languages "languages/" ;
   doap:name "Authentification" ;
   doap:description "provides WebID and FOAF+SSL authentification." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:config [
       a owconfig:Config;

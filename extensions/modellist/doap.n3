@@ -14,7 +14,7 @@
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Knowledge Bases Module" ;
   doap:description "provides a model list with create and view menu." ;
-  doap:maintainer "AKSW" ;
+  owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:class "has-contextmenus-block" ;
   owconfig:hasModule :Default .
