@@ -1,4 +1,3 @@
-!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -23,25 +22,25 @@
   owconfig:helperEvents event:onPreTabsContentAction ;
   owconfig:helperEvents event:onDeleteResources ;
   owconfig:helperEvents event:onPreDeleteModel ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "sync"; ;
-      owconfig:enabled "false"^^xsd:boolean .
-] .
-_:0 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "fetch"; ;
-      owconfig:config [ ;
-          a owconfig:Config; ;
-          owconfig:id "default"; ;
-          :mode "all" .
-    ] .
-    _:2 owconfig:config [ ;
-          a owconfig:Config; ;
-          owconfig:id "preset"; ;
-          owconfig:config [ ;
-              a owconfig:Config; ;
-              owconfig:id "0"; ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "sync";
+      owconfig:enabled "false"^^xsd:boolean
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "fetch";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "default";
+          :mode "all"
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "preset";
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "0";
               :match <http://dbpedia.org> ;
               :mode "none" ;
               :lang "en" ;
@@ -54,32 +53,32 @@ _:0 owconfig:config [ ;
               :exception <http://dbpedia.org/ontology/birthPlace> ;
               :exception <http://dbpedia.org/ontology/abstract> ;
               :exception <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ;
-              :exception <http://www.w3.org/2003/01/geo/wgs84_pos#long> .
-        ] .
-    ] .
-] .
-_:4 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "rewrite"; ;
-      owconfig:config [ ;
-          a owconfig:Config; ;
-          owconfig:id "lsid"; ;
+              :exception <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+        ]
+    ]
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "rewrite";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "lsid";
           :pattern "/^(urn:lsid:.+)$/" ;
-          :replacement <http://lsid.tdwg.org/$1> .
-    ] .
-    _:6 owconfig:config [ ;
-          a owconfig:Config; ;
-          owconfig:id "go"; ;
+          :replacement <http://lsid.tdwg.org/$1>
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "go";
           :pattern "/^http:\\/\\/www.geneontology.org\\/go#GO:([0-9]+)$/" ;
-          :replacement <http://go.ontowiki.de/$1> .
-    ] .
-] .
-_:7 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "handle"; ;
-      :mode "all" .
-] .
-_:8 :ignore <http://www.w3.org/1999/xhtml/vocab#stylesheet> ;
+          :replacement <http://go.ontowiki.de/$1>
+    ]
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "handle";
+      :mode "all"
+];
+ :ignore <http://www.w3.org/1999/xhtml/vocab#stylesheet> ;
   :ignore <http://www.w3.org/1999/xhtml/vocab#alternate> ;
   :ignore <http://poshrdf.org/ns/mf#nofollow> ;
   :defaultClass <http://xmlns.com/foaf/0.1/Document> .

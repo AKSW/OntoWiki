@@ -46,40 +46,40 @@
   owconfig:priority "20" ;
   owconfig:context "main.window.properties" .
 :community :enableRating "false"^^xsd:boolean ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "about"; ;
-      :property <http://rdfs.org/sioc/ns#about> .
-] .
-_:0 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "creator"; ;
-      :property <http://rdfs.org/sioc/ns#has_creator> .
-] .
-_:1 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "comment"; ;
-      :type <http://rdfs.org/sioc/types#Comment> .
-] .
-_:2 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "content"; ;
-      :property <http://rdfs.org/sioc/ns#content> .
-] .
-_:3 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "date"; ;
-      :property <http://purl.org/dc/terms/created> .
-] .
-_:4 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "rating"; ;
-      :type <http://rdfs.org/sioc/types#Poll> .
-] .
-_:5 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "note"; ;
-      :property <http://rdfs.org/sioc/ns#note> .
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "about";
+      :property <http://rdfs.org/sioc/ns#about>
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "creator";
+      :property <http://rdfs.org/sioc/ns#has_creator>
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "comment";
+      :type <http://rdfs.org/sioc/types#Comment>
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "content";
+      :property <http://rdfs.org/sioc/ns#content>
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "date";
+      :property <http://purl.org/dc/terms/created>
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "rating";
+      :type <http://rdfs.org/sioc/types#Poll>
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "note";
+      :property <http://rdfs.org/sioc/ns#note>
 ] .
 :community doap:release :v1-0 .
 :v1-0 a doap:Version ;

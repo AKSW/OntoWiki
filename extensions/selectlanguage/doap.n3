@@ -17,17 +17,17 @@
   doap:maintainer "Michael Martin" ;
   owconfig:helperEvents event:onPostBootstrap ;
   owconfig:helperEvents event:onBeforeInitController ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "languages"; ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "languages";
       :en "english (en)" ;
       :de "deutsch (de)" ;
-      :zh "汉语 (zh)" .
-] .
-_:0 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "langzages"; ;
-      :ru "русский язык (ru)" .
+      :zh "汉语 (zh)"
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "langzages";
+      :ru "русский язык (ru)"
 ] .
 :selectlanguage doap:release :v1-0 .
 :v1-0 a doap:Version ;

@@ -18,10 +18,10 @@
   doap:maintainer <http://sebastian.tramp.name> ;
   owconfig:templates "templates" ;
   owconfig:languages "languages" ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "features"; ;
-      :registration "enabled" .
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "features";
+      :registration "enabled"
 ] ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

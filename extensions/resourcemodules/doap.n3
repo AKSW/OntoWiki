@@ -38,11 +38,11 @@
   owconfig:priority "30" ;
   rdfs:label "Usage as Property" ;
   owconfig:context "main.window.properties" .
-:resourcemodules owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "show"; ;
+:resourcemodules owconfig:config [
+      a owconfig:Config;
+      owconfig:id "show";
       :similarinstances "false"^^xsd:boolean ;
-      :usage "true"^^xsd:boolean .
+      :usage "true"^^xsd:boolean
 ] ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

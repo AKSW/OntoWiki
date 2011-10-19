@@ -38,21 +38,21 @@
   rdfs:label "Savequery" ;
   owconfig:context "main.window.savequery" ;
   owconfig:priority "7" .
-:queries owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "general"; ;
-      owconfig:config [ ;
-          a owconfig:Config; ;
-          owconfig:id "enabled"; ;
+:queries owconfig:config [
+      a owconfig:Config;
+      owconfig:id "general";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "enabled";
           :saving "true"^^xsd:boolean ;
           :editor "true"^^xsd:boolean ;
           :gqb "false"^^xsd:boolean ;
-          :builder "false"^^xsd:boolean .
-    ] .
-] .
-_:1 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "saving"; ;
+          :builder "false"^^xsd:boolean
+    ]
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "saving";
       :baseQueryDbUri <http://ns.ontowiki.net/SysOnt/UserQueries/> ;
       :ClassUri <http://ns.ontowiki.net/SysOnt/SparqlQuery> ;
       :NameUri <http://purl.org/dc/elements/1.1/title> ;
@@ -64,13 +64,13 @@ _:1 owconfig:config [ ;
       :CreatorUri <http://rdfs.org/sioc/ns#has_creator> ;
       :GeneratorUri <http://ns.ontowiki.net/SysOnt/generator> ;
       :QueryUri <http://ns.ontowiki.net/SysOnt/sparql_code> ;
-      :JsonUri <http://ns.ontowiki.net/SysOnt/json_code> .
-] .
-_:2 owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "gqb"; ;
+      :JsonUri <http://ns.ontowiki.net/SysOnt/json_code>
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "gqb";
       :SelClassUri <http://ns.ontowiki.net/GQB/UserQueries/Pattern/Type> ;
-      :SelClassLabelUri <http://ns.ontowiki.net/GQB/UserQueries/Pattern/TypeLabel> .
+      :SelClassLabelUri <http://ns.ontowiki.net/GQB/UserQueries/Pattern/TypeLabel>
 ] .
 :queries doap:release :v1-0 .
 :v1-0 a doap:Version ;

@@ -90,10 +90,10 @@ class ExtensionSerializer
                 return; //do not end this, this is not what you wanted to end
             }
         }*/
-        $this->flush();
+        //$this->flush();
         $this->_depth--;
         $i = str_repeat('    ', $this->_depth);
-        echo $i.']';
+        echo PHP_EOL.$i.']';
         $this->_lastSubject = $this->_parent;
     }
 
@@ -512,7 +512,9 @@ EOT;
         //some wtf fixes :)
         $res = str_replace(";;", ";", $res);
         $res = str_replace("[;", "[", $res);
-        $res = preg_replace("/\\]\.\n\s*_:[0-9]*/", "];\n", $res);
+        $res = str_replace("; ;", ";", $res);
+        $res = str_replace("[ ;", "[", $res);
+        $res = preg_replace("/\\]\s\.\n\s*_:[0-9]*/", "];\n", $res);
          
         return $res;
     }

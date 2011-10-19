@@ -14,11 +14,11 @@
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Sortproperties" ;
   owconfig:helperEvents event:onPropertiesActionData ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "sort"; ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "sort";
       :method "rdf" ;
-      :property <http://ns.ontowiki.net/SysBase/order> .
+      :property <http://ns.ontowiki.net/SysBase/order>
 ] ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

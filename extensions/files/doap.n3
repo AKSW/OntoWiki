@@ -20,12 +20,12 @@
   doap:maintainer "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   :path "uploads" ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "mime"; ;
-      :property <http://localhost/OntoWiki/Config/hasMimeType> .
-] .
-_:0 :class <http://localhost/OntoWiki/Config/File> ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "mime";
+      :property <http://localhost/OntoWiki/Config/hasMimeType>
+];
+ :class <http://localhost/OntoWiki/Config/File> ;
   :model <http://localhost/OntoWiki/Config/toModel> ;
   :DMS_NS <http://ns.aksw.org/DMS/> ;
   :import_DMS "true"^^xsd:boolean .

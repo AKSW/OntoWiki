@@ -16,10 +16,10 @@
   doap:description "A plug-in that hides defined Properties in the ressourceview" ;
   doap:maintainer "Niederstaetter Michael ,  Maier Christian" ;
   owconfig:helperEvents event:onPropertiesActionData ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "hide"; ;
-      :property <http://ns.ontowiki.net/SysOnt/hidden> .
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "hide";
+      :property <http://ns.ontowiki.net/SysOnt/hidden>
 ] ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

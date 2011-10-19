@@ -16,10 +16,10 @@
   doap:description "A plug-in that sends mails via a mailserver using zend_mail" ;
   doap:maintainer "Maier Christian, Niederstätter Michael" ;
   owconfig:helperEvents event:onEmailsend ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "smtp"; ;
-      :server "yourmailserver.com" .
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "smtp";
+      :server "yourmailserver.com"
 ] ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

@@ -22,45 +22,45 @@
   rdfs:label "Filter" ;
   owconfig:priority "30" ;
   owconfig:context "main.window.list" .
-:filter owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "customfilter"; ;
-      owconfig:config [ ;
-          a owconfig:Config; ;
-          owconfig:id "prop1"; ;
+:filter owconfig:config [
+      a owconfig:Config;
+      owconfig:id "customfilter";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "prop1";
           :uri <http://example.com/aProp1/> ;
           :label "prop1" ;
-          owconfig:config [ ;
-              a owconfig:Config; ;
-              owconfig:id "value1"; ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "value1";
               :uri <http://example.com/aVal11/> ;
-              :label "val11" .
-        ] .
-        _:2 owconfig:config [ ;
-              a owconfig:Config; ;
-              owconfig:id "value2"; ;
+              :label "val11"
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "value2";
               :uri <http://example.com/aVal12/> ;
-              :label "val12" .
-        ] .
-    ] .
-    _:3 owconfig:config [ ;
-          a owconfig:Config; ;
-          owconfig:id "prop2"; ;
+              :label "val12"
+        ]
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "prop2";
           :uri <http://example.com/aProp2/> ;
           :label "prop2" ;
-          owconfig:config [ ;
-              a owconfig:Config; ;
-              owconfig:id "value1"; ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "value1";
               :uri <http://example.com/aVal21/> ;
-              :label "val21" .
-        ] .
-        _:5 owconfig:config [ ;
-              a owconfig:Config; ;
-              owconfig:id "value2"; ;
+              :label "val21"
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "value2";
               :uri <http://example.com/aVal22/> ;
-              :label "val22" .
-        ] .
-    ] .
+              :label "val22"
+        ]
+    ]
 ] .
 :filter doap:release :v1-0 .
 :v1-0 a doap:Version ;

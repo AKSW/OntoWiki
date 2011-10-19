@@ -20,13 +20,13 @@
   :namingSchemeProperty <http://ns.ontowiki.net/SysOnt/instanceNamingScheme> ;
   :newResourceUri "NewResource" ;
   :defaultNamingScheme "type/label" ;
-  owconfig:config [ ;
-      a owconfig:Config; ;
-      owconfig:id "property"; ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "property";
       :type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ;
-      owconfig:config [ ;
-          a owconfig:Config; ;
-          owconfig:id "label"; ;
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "label";
           :skosPlabel <http://www.w3.org/2004/02/skos/core#prefLabel> ;
           :dcTitle <http://purl.org/dc/elements/1.1/title> ;
           :dcTitle2 <http://purl.org/dc/terms/title> ;
@@ -40,8 +40,8 @@
           :accountName <http://xmlns.com/foaf/0.1/accountName> ;
           :foafNick <http://xmlns.com/foaf/0.1/nick> ;
           :foafSurname <http://xmlns.com/foaf/0.1/surname> ;
-          :skosAlabel <http://www.w3.org/2004/02/skos/core#altLabel> .
-    ] .
+          :skosAlabel <http://www.w3.org/2004/02/skos/core#altLabel>
+    ]
 ] .
 :resourcecreationuri doap:release :v1-0 .
 :v1-0 a doap:Version ;
