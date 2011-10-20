@@ -429,8 +429,8 @@ class Converter
     {
         ob_start();
         $privNS = "http://ns.ontowiki.net/Extensions/$extension/";
+        //!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
         echo <<<EOT
-!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -514,8 +514,8 @@ EOT;
         $res = str_replace("[;", "[", $res);
         $res = str_replace("; ;", ";", $res);
         $res = str_replace("[ ;", "[", $res);
-        $res = preg_replace("/\\]\s\.\n\s*_:[0-9]*/", "];\n", $res);
-         
+        $res = preg_replace("/\\]\s*\.?\n\s*_:[0-9]*/", "];\n", $res);
+        $res = preg_replace("/.\n\s*_:[0-9]*/", ";\n", $res);
         return $res;
     }
 }

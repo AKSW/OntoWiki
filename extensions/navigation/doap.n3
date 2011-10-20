@@ -1,4 +1,3 @@
-!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -71,8 +70,8 @@
           :showEmptyElements "true"^^xsd:boolean ;
           :showCounts "false"^^xsd:boolean ;
           :checkSub "true"^^xsd:boolean ;
-          :hideDefaultHierarchy "false"^^xsd:boolean .
-        _:6 owconfig:config [
+          :hideDefaultHierarchy "false"^^xsd:boolean ;
+ owconfig:config [
               a owconfig:Config;
               owconfig:id "list";
               :config "{|filter|:[{|rdfsclass|:|%resource%|,|mode|:|rdfsclass|}]}"
@@ -101,8 +100,8 @@
           :showEmptyElements "true"^^xsd:boolean ;
           :showCounts "false"^^xsd:boolean ;
           :hideDefaultHierarchy "false"^^xsd:boolean ;
-          :checkSub "true"^^xsd:boolean .
-        _:10 owconfig:config [
+          :checkSub "true"^^xsd:boolean ;
+ owconfig:config [
               a owconfig:Config;
               owconfig:id "list";
               :config "{|shownProperties|:[{|uri|:|%resource%|,|label|:|Label 1|,|action|:|add|,|inverse|:false}],|filter|:[{|property|:|%resource%|,|filter|:|bound|}]}"
@@ -207,8 +206,8 @@
           :titleMode "titleHelper" ;
           :showCounts "false"^^xsd:boolean ;
           :checkSub "true"^^xsd:boolean ;
-          :hideDefaultHierarchy "false"^^xsd:boolean .
-        _:25 owconfig:config [
+          :hideDefaultHierarchy "false"^^xsd:boolean ;
+ owconfig:config [
               a owconfig:Config;
               owconfig:id "list";
               :query "SELECT DISTINCT ?resourceUri WHERE { ?resourceUri <http://www.geneontology.org/GO.format.gaf-2_0.shtml#go_id> <%resource%> }"
@@ -225,8 +224,8 @@
               owconfig:id "hierarchyRelations";
               :in <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within>
         ] ;
-          :checkSub "true"^^xsd:boolean .
-        _:28 owconfig:config [
+          :checkSub "true"^^xsd:boolean ;
+ owconfig:config [
               a owconfig:Config;
               owconfig:id "list";
               :shownProperties "{|uri|:|http://purl.org/net/faunistics#citationSuffix|,|label|:|citation suffix|,|action|:|add|,|inverse|:false}" ;
