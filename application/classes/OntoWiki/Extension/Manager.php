@@ -514,7 +514,7 @@ class Ontowiki_Extension_Manager
             
             // store events
             if (isset($config->helperEvents)) {
-                $helperSpec['events'] = $config->helperEvents->toArray();
+                $helperSpec['events'] = (array)$config->helperEvents;
             } else {
                 $helperSpec['events'] = array();
             }
@@ -567,20 +567,24 @@ class Ontowiki_Extension_Manager
             );
             if (isset ($config->modules->{$moduleName})) {
                 $config = unserialize(serialize($config)); //dont touch the original config
-                $config->merge($config->modules->{$moduleName});
+                $config = (object) array_merge_recursive((array)$config, (array)$config->modules->{$moduleName});
             }
         } 
 
         if (isset($config->context) && is_string($config->context)) {
             $contexts = array($config->context);
-        } else if (isset($config->contexts) && $config->contexts instanceof Zend_Config) {
-            $contexts = $config->contexts->toArray();
+        } else if (isset($config->context) && is_object($config->context)) {
+            $contexts = (array)$config->context;
+        } else if (isset($config->contexts) && is_object($config->contexts)) {
+            $contexts = (array)$config->contexts;
         } else {
             $contexts = array(OntoWiki_Module_Registry::DEFAULT_CONTEXT);
         }
-
+        //echo $moduleName.PHP_EOL;
+        //print_r($contexts);
         // register for context(s)
         foreach ($contexts as $context) {
+            //echo "register ".$moduleName." for ".$context.PHP_EOL;
             $this->_moduleRegistry->register($extensionName, $moduleFilename, $context, $config);
         }
     }
@@ -658,17 +662,24 @@ class Ontowiki_Extension_Manager
         $privateNS = $memModel->getValue($extensionUri, $owconfigNS.'privateNamespace');
         
         $modules = array();
-        $config = array('default'=>array(), 'private'=>array(), 'events'=>array());
+        $config = array('default'=>array(), 'private'=>array(), 'events'=>array(), 'modules'=>array());
         $subconfigs = array();
         foreach ($memModel->getPO($extensionUri) as $key => $values) {
+            //echo $key.PHP_EOL;
             if ($key == $scp) {
                 foreach ($values as $val) {
                     $subconfigs[] = $val['value'];
                 }
+                continue;
+            } else if ($key == $mp) {
+                foreach ($values as $val) {
+                    $modules[] = $val['value'];
+                }
+                continue;
             }
             if (isset($mapping[$key])) {
                 $mappedKey = $mapping[$key];
-                $section = 'default';
+                $section = 'default'; 
             } else {
                 $mappedKey = $this->getPrivateKey($key, $privateNS);
                 if ($mappedKey == null) {
@@ -693,14 +704,36 @@ class Ontowiki_Extension_Manager
             );
         }
         
+        foreach ($modules as $moduleUri) {
+            $name = strtolower(self::getPrivateKey($moduleUri, $privateNS));
+            $config['modules'][$name] = array();
+            foreach ($memModel->getPO($moduleUri) as $key => $values) {
+                $mappedKey = self::getPrivateKey($key, $owconfigNS);
+                if ($mappedKey == null) {
+                    continue; //modules can only have specific properties
+                }
+
+                foreach ($values as $value) {
+                    $value = $this->getValue($value);
+                    $this->addValue($mappedKey, $value, $config['modules'][$name]);
+                }
+            }
+        }
+        
         //var_dump($memModel);
         //print_r($config );
+        if (empty($config['events'])) {
+            unset($config['events']);
+        }
         
-        //todo check if this is correct
+        if (isset($config['modules']['default'])) {
+            $config = array_merge($config, $config['modules']['default']);
+            unset($config['modules']['default']);
+        }
         $config = array_merge($config, $config['default']);
         unset($config['default']);
         
-        return self::array_to_object($config);
+        return $config;
     }
     
     private static function getValue($value) 
@@ -788,17 +821,23 @@ class Ontowiki_Extension_Manager
         //var_dump($config);
            
         // overwrites default config with local config
-        if (is_readable($this->_extensionPath . $name . '.ini')) {
-            $localIni = new Zend_Config_Ini($this->_extensionPath . $name . '.ini', null, true);
-            $config->merge($localIni);
+        $localConfigPath = $this->_extensionPath . $name . '.n3';
+        if (is_readable($localConfigPath)) {
+            $localConfig = $this->loadDoapN3($localConfigPath, $name);
+            $config = array_merge_recursive($config, $localConfig);
         }
-
-        //fix unset names
+//        echo $name.PHP_EOL;
+//        print_r($config);
+//        echo PHP_EOL;
+        //convert to object
+        $config = self::array_to_object($config);
+        
+        //fix missing names
         if (!isset ($config->name)) {
            $config->name = $name;
         }
 
-        //this might be nessary
+        //fix deprecated/invalid values for "enabled"
         if (is_string($config->enabled)) {
             switch($config->enabled) {
                 case '1':

@@ -129,7 +129,7 @@ class OntoWiki_Module_Registry
      * @param string $extensionName the name of the extension that brings this module
      * @param string $moduleName the name of the module
      * @param string $context in which context the module should be shown
-     * @param array $options config array of the module
+     * @param array $options config object of the module
      * @return OntoWiki_Module_Registry
      */
     public function register($extensionName, $moduleFileName, $context = self::DEFAULT_CONTEXT, $options = null)
@@ -141,21 +141,24 @@ class OntoWiki_Module_Registry
             $this->_moduleOrder[$context] = array();
         }
 
-        if($options == null){
-            $options = new Zend_Config(array());
+        if ($options == null) {
+            $options = new stdClass();
         }
 
+        //if not already registered
         if (!array_key_exists($moduleName, $this->_modules)) {
             // merge defaults
-            $options->merge(new Zend_Config(array(
-                'id'      => $moduleName,
+            $default = array(
+                'id'      => strtolower($moduleName),
                 'classes' => '',
-                'name'    => isset($options->name) ? $options->name : $moduleName,
+                'name'    => ucwords($moduleName),
                 'enabled' => true ,
                 'extensionName' => $extensionName,
-                '_privateConfig' => $options->private
-            )));
-            ;
+                'private' => new stdClass()
+            );
+            
+            $options = (object) array_merge($default, (array) $options);
+
             // set css classes according to module state
             switch ($this->_moduleStates->{$options->id}) {
                 case self::MODULE_STATE_OPEN:
@@ -226,7 +229,7 @@ class OntoWiki_Module_Registry
      */
     public function getModule($moduleName, $context = null)
     {
-        if(!$this->isModuleEnabled($moduleName)){
+        if (!$this->isModuleEnabled($moduleName)) {
             return null;
         }
         $moduleFile = $this->_extensionDir
@@ -251,7 +254,8 @@ class OntoWiki_Module_Registry
         return $module;
     }
 
-    public function getModules(){
+    public function getModules()
+    {
         return $this->_modules;
     }
 

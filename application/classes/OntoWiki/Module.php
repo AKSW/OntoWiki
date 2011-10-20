@@ -62,7 +62,7 @@ abstract class OntoWiki_Module
      * The module private config ([private] section from module.ini file)
      * @var Zend_Config
      */
-    public $_privateConfig = null;
+    protected $_privateConfig = null;
 
     /**
      * The module runtime options from the view's module method's second
@@ -70,7 +70,7 @@ abstract class OntoWiki_Module
      * injected with setOptions from the view
      * @var Zend_Config
      */
-    public $_options = null;
+    protected $_options = null;
 
     /**
      * The current request object
@@ -230,7 +230,8 @@ abstract class OntoWiki_Module
      *
      * @return string
      */
-    public function getCacheId() {
+    public function getCacheId()
+    {
         $id = $this->_config->host
             . $this->_name
             . $this->getStateId();
@@ -312,7 +313,7 @@ abstract class OntoWiki_Module
     /*
      * setter method for options
      */
-    public function setOptions(Zend_Config $options = null)
+    public function setOptions(stdClass $options = null)
     {
         if ($options) {
             $this->_options = $options;
