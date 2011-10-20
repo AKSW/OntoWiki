@@ -809,6 +809,8 @@ img.clickicon, a.clickicon img {
 .icon-save   { background-image:url(./../images/icons/save.png); }
 .icon-copy   { background-image:url(./../images/icons/copy.png); }
 .icon-add    { background-image:url(./../images/icons/add.png); }
+.icon-accept { background-image:url(./../images/icon-add-grey.png); }
+.icon-ignore { background-image:url(./../images/icons/close.png); }
 
 .icon-arrow-first    { background-image:url(./../images/icons/arrow-first.png); }
 .icon-arrow-last     { background-image:url(./../images/icons/arrow-last.png); }

@@ -75,6 +75,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $extensionPathBase = $config->staticUrlBase
                         . $config->extensions->base;
 
+        OntoWiki_Navigation::reset();
+
         $extensionManager = new OntoWiki_Extension_Manager($extensionPath);
         $extensionManager->setTranslate($translate)
                          ->setComponentUrlBase($extensionPathBase);
@@ -126,7 +128,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->themes->default  = rtrim($config->themes->default, '/\\') . '/';
         $config->extensions->base = rtrim($config->extensions->base, '/\\') . '/';
 
-        define('EXTENSION_PATH', $config->extensions->base);
+        if (!defined('EXTENSION_PATH')) {
+            define('EXTENSION_PATH', $config->extensions->base);
+        }
         $config->extensions->legacy     = EXTENSION_PATH . rtrim($config->extensions->legacy, '/\\') . '/';
         $config->languages->path        = EXTENSION_PATH . rtrim($config->languages->path, '/\\') . '/';
 
@@ -419,7 +423,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $session    = new Zend_Session_Namespace($sessionKey);
 
         // define the session key as a constant for global reference
-        define('_OWSESSION', $sessionKey);
+        if (!defined('_OWSESSION')) {
+            define('_OWSESSION', $sessionKey);
+        }
 
         // inject session vars into OntoWiki
         if (array_key_exists('sessionVars', $this->_options['bootstrap'])) {

@@ -20,12 +20,19 @@ if (!array_key_exists($graphBase, $namespaces)) {
 $filter = $instances->getFilter();
 $filter_js = json_encode(is_array($filter) ? $filter : array());
 
-$this->headScript()->prependFile(
+if (OntoWiki::getInstance()->extensionManager->isExtensionRegistered('filter')) {
+    $this->headScript()->prependFile(
         OntoWiki::getInstance()->extensionManager->getComponentUrl('filter') .'resources/FilterAPI.js'
-);
+    );
+}
+
 if ($instances->hasData()) {
     $instanceInfo = $instances->getResources();
-    $instanceData = $instances->getValues();
+    if(!isset($this->other->disableValueQuery) || !$this->other->disableValueQuery){
+        $instanceData = $instances->getValues();
+    } else {
+         $instanceData = array();
+    }
     //echo '<pre>'; print_r($instanceData); echo '</pre>';
     
     $itemsOnPage = count($instanceData);

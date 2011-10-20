@@ -19,6 +19,6 @@ class SparqloptionsModule extends OntoWiki_Module
     }
 
     public function getTitle() {
-        return "Options";
+        return "Output Format";
     }
 }

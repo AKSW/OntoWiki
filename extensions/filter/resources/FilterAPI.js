@@ -15,6 +15,15 @@ function FilterAPI(){
          * @var array
          */
         this.filters = filtersFromSession;
+        
+        /**
+         * @var int
+         */
+        this.count = 0;
+        for(onefilter in filtersFromSession){
+            this.count++;
+        }
+
 
         /**
          *@method
@@ -24,6 +33,27 @@ function FilterAPI(){
 		if(typeof callback == 'function' || typeof callback == 'object')
 			this.callbacks.push(callback);
 	};
+        
+        /**
+         *@method
+         *
+         */
+	this.removeAllFiltersOfProperty = function(uri){
+            var data = { filter: [] }
+            for(afilterName in this.filters){
+                if(this.filters[afilterName].property == uri){
+                    data.filter.push({
+                        "mode" : "box",
+                        "action" : "remove",
+                        "id" : this.filters[afilterName].id
+                    })
+                }
+            }
+            var dataserialized = $.toJSON(data);
+            var url = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized)+"&list="+listName;
+            //alert(dataserialized)
+            window.location = url;
+        };
 
 	/**
          * add a filter
@@ -47,6 +77,9 @@ function FilterAPI(){
 		callback = function(){};
             }
 
+            if(id == null){
+                id  = "filterbox"+this.count
+            }
             var data =
                 {
                 filter:
@@ -71,6 +104,9 @@ function FilterAPI(){
 
             var dataserialized = $.toJSON(data);
             var url = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized)+"&list="+listName;
+            
+            this.count++;
+            
             if(dontReload == true){
                 $.ajax(
                   {
@@ -81,7 +117,6 @@ function FilterAPI(){
             } else {
                 window.location = url;
             }
-            
 	};
 
 	this.reloadInstances = function(){
@@ -113,10 +148,13 @@ function FilterAPI(){
 
             var dataserialized = $.toJSON(data);
 
+            this.count--;
+            
             window.location = this.uri + "?instancesconfig=" + encodeURIComponent(dataserialized);
 	};
 
 	this.removeAll = function(){
+            this.count = 0;
             window.location = this.uri+"?init"
 	};
 }
