@@ -119,7 +119,7 @@ class FeedsModule extends OntoWiki_Module
             }
             return $this->_content;
         } else {
-            return '';
+            return '<div class="message info">No recent news available.</div>';
         }
     }
 
@@ -220,10 +220,13 @@ class FeedsModule extends OntoWiki_Module
             // get the ontowiki master config
             $config = OntoWiki::getInstance()->getConfig();
 
+            // this uses 304 http codes to speed up retrieval
+            Zend_Feed_Reader::useHttpConditionalGet();
+
             // use the ontowiki cache directory if writeable
             // http://framework.zend.com/manual/en/zend.feed.reader.html#zend.feed.reader.cache-request.cache
             if ((isset($config->cache->path)) && (is_writable($config->cache->path))) {
-
+                // set livetime for cached XML documents
                 if (isset($this->_privateConfig->livetime)) {
                     $livetime = $this->_privateConfig->livetime;
                 } else {
@@ -234,20 +237,25 @@ class FeedsModule extends OntoWiki_Module
                 $cacheFrontendOptions = array(
                     'lifetime' => $livetime,
                     'automatic_serialization' => true
-               );
-                $cacheBackendOptions = array('cache_dir' => $config->cache->path);
-                Zend_Feed_Reader::setCache(
-                    Zend_Cache::factory(
-                        'Core', 'File', $cacheFrontendOptions, $cacheBackendOptions
-                    )
                 );
+                $cacheBackendOptions = array('cache_dir' => $config->cache->path);
+                $cache = Zend_Cache::factory(
+                    'Core', 'File', $cacheFrontendOptions, $cacheBackendOptions
+                );
+                Zend_Feed_Reader::setCache($cache);
 
-                // this uses 304 http codes to speed up retrieval
-                Zend_Feed_Reader::useHttpConditionalGet();
+                // look for cached feed to avoid unneeded traffic
+                $cacheKey  = 'Zend_Feed_Reader_' . md5($url);
+                $cachedXml = $cache->load($cacheKey);
             }
 
-            // try to load the feed from uri
-            $feed = Zend_Feed_Reader::import($url);
+            if ($cachedXml != false) {
+                // use the cached XML
+                $feed = Zend_Feed_Reader::importString($cachedXml);
+            } else {
+                // try to load the feed from uri whithout cache support
+                $feed = Zend_Feed_Reader::import($url);
+            }
 
         } catch (Exception $e) {
             // feed import failed
