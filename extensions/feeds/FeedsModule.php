@@ -20,17 +20,17 @@ class FeedsModule extends OntoWiki_Module
     /*
      * The CBD of the selected resource
      */
-    protected $description = null;
+    protected $_description = null;
 
     /*
      * at the end, this should be an merged and sorted array of entry arrays ...
      */
-    protected $entries = array();
+    protected $_entries = array();
 
     /*
      * The rendered content of the module
      */
-    protected $content = null;
+    protected $_content = null;
 
     /*
      * indicates that the module should be shown or not
@@ -44,8 +44,8 @@ class FeedsModule extends OntoWiki_Module
         }
 
         // get the CBD description
-        $this->description = OntoWiki::getInstance()->selectedResource->getDescription();
-        $this->description = $this->description[(string) OntoWiki::getInstance()->selectedResource];
+        $this->_description = OntoWiki::getInstance()->selectedResource->getDescription();
+        $this->_description = $this->_description[(string) OntoWiki::getInstance()->selectedResource];
 
         // look for configure feed properties
         if (isset($this->_privateConfig->properties)) {
@@ -53,8 +53,8 @@ class FeedsModule extends OntoWiki_Module
 
             // ask for values for every feed property
             foreach ($properties as $key => $property) {
-                if (isset($this->description[$property])) {
-                    foreach ($this->description[$property] as $feedObject) {
+                if (isset($this->_description[$property])) {
+                    foreach ($this->_description[$property] as $feedObject) {
                         // load the feed content
                         $this->_loadFeed($feedObject['value']);
                     }
@@ -76,21 +76,21 @@ class FeedsModule extends OntoWiki_Module
             $fallback = $this->_options->fallbackFeed;
         }
         if ($fallback != null) {
-            if (count($this->entries) == 0) {
+            if (count($this->_entries) == 0) {
                 $this->_loadFeed($fallback);
             }
         }
 
         // sort entries according to time (taken from http://devzone.zend.com/article/3208)
-        usort ($this->entries, array('FeedsModule', 'compareEntries'));
+        usort($this->_entries, array('FeedsModule', 'compareEntries'));
 
         // slice entries to show only X configured entries
         if (isset($this->_privateConfig->maxentries)) {
-            $this->entries = array_slice($this->entries, 0, $this->_privateConfig->maxentries);
+            $this->_entries = array_slice($this->_entries, 0, $this->_privateConfig->maxentries);
         }
 
         // turn visibility on if we have something to show
-        if (count($this->entries) > 0) {
+        if (count($this->_entries) > 0) {
             $this->shouldShow = true;
         }
     }
@@ -102,18 +102,18 @@ class FeedsModule extends OntoWiki_Module
     public function getContents()
     {
         // provide content only if there is at least one entry (maybe double checked)
-        if (count($this->entries) > 0) {
+        if (count($this->_entries) > 0) {
             // generate the template data
-            $data = array('entries' => $this->entries);
+            $data = array('entries' => $this->_entries);
             // render the content
             if (isset($this->_options->template)) {
                 // use a custom template if given with the setOptions config
-                $this->content = $this->render($this->_options->template, $data);
+                $this->_content = $this->render($this->_options->template, $data);
             } else {
                 // use the default feeds template
-                $this->content = $this->render('feeds', $data);
+                $this->_content = $this->render('feeds', $data);
             }
-            return $this->content;
+            return $this->_content;
         } else {
             return "";
         }
@@ -167,7 +167,8 @@ class FeedsModule extends OntoWiki_Module
     /*
      * Loads a feed silently and use the OntoWiki cache dir for caching
      */
-    private function _loadFeed($url) {
+    private function _loadFeed($url)
+    {
         // check then feed uri
         if (!Erfurt_Uri::check($url)) {
             return;
@@ -193,9 +194,11 @@ class FeedsModule extends OntoWiki_Module
                     'automatic_serialization' => true
                );
                 $cacheBackendOptions = array('cache_dir' => $config->cache->path);
-                Zend_Feed_Reader::setCache(Zend_Cache::factory(
-                    'Core', 'File', $cacheFrontendOptions, $cacheBackendOptions
-               ));
+                Zend_Feed_Reader::setCache(
+                    Zend_Cache::factory(
+                        'Core', 'File', $cacheFrontendOptions, $cacheBackendOptions
+                    )
+                );
 
                 // this uses 304 http codes to speed up retrieval
                 Zend_Feed_Reader::useHttpConditionalGet();
@@ -219,7 +222,7 @@ class FeedsModule extends OntoWiki_Module
                 'link'         => $entry->getLink(),
                 'content'      => $entry->getContent()
            );
-            $this->entries[$entry->getLink()] = $newEntry;
+            $this->_entries[$entry->getLink()] = $newEntry;
         }
 
         return;
@@ -230,14 +233,15 @@ class FeedsModule extends OntoWiki_Module
      * compare two entries according to time
      * taken from http://devzone.zend.com/article/3208
      */
-    static function compareEntries ($a , $b) {
-        $a_time = $a['dateModified'];
-        $b_time = $b['dateModified'];
+    static function compareEntries ($a , $b)
+    {
+        $aTime = $a['dateModified'];
+        $btime = $b['dateModified'];
 
-        if ($a_time == $b_time) {
+        if ($aTime == $bTime) {
             return 0;
         }
-        return ($a_time > $b_time) ? -1 : 1;
+        return ($aTime > $bTime) ? -1 : 1;
     }
 
 }
