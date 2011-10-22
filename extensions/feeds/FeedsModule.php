@@ -9,7 +9,7 @@
 /**
  * OntoWiki module – Feeds
  *
- * presents a merged news feed of the current resource, which is based on
+ * presents a merged news feed of the current resource which is based on
  * configured feed properties
  *
  * @category   OntoWiki
@@ -18,81 +18,66 @@
 class FeedsModule extends OntoWiki_Module
 {
     /*
-     * The CBD of the selected resource
+     * the selected resource
      */
-    protected $_description = null;
+    private $_selectedResource = null;
+
+    /*
+     * The memory model of the selected resource
+     */
+    private $_description = null;
+
+    /*
+     * the array of found feed URLs
+     */
+    private $_feeds = array();
 
     /*
      * at the end, this should be an merged and sorted array of entry arrays ...
      */
-    protected $_entries = array();
+    private $_entries = array();
 
     /*
      * The rendered content of the module
      */
-    protected $_content = null;
+    private $_content = null;
 
     /*
-     * indicates that the module should be shown or not
+     * create memmodel, read config properties and find feed URLs
      */
-    public $shouldShow = false;
-
     public function init()
     {
+        // do we have a selected resource?
         if (!isset(OntoWiki::getInstance()->selectedResource)) {
+            // do not show and do not fetch anything
             return;
+        } else {
+            $this->_selectedResource = OntoWiki::getInstance()->selectedResource;
         }
 
-        // get the CBD description
-        $this->_description = OntoWiki::getInstance()->selectedResource->getDescription();
-        $this->_description = $this->_description[(string) OntoWiki::getInstance()->selectedResource];
+        // create the memory model
+        $this->_description = $this->_selectedResource->getMemoryModel();
 
         // look for configure feed properties
         if (isset($this->_privateConfig->properties)) {
             $properties = (array) $this->_privateConfig->properties->toArray();
 
-            // ask for values for every feed property
+            // fetch values for every feed property
             foreach ($properties as $key => $property) {
-                if (isset($this->_description[$property])) {
-                    foreach ($this->_description[$property] as $feedObject) {
-                        // load the feed content
-                        $this->_loadFeed($feedObject['value']);
-                    }
+                $subject = (string) $this->_selectedResource;
+                $feeds   = $this->_description->getValues($subject, $property);
+                // check values for URL-ness
+                foreach ($feeds as $key => $feedObject) {
+                    $this->_addFeed($feedObject['value']);
                 }
             }
         }
 
-        // load feeds on relevant resources
+        // add feeds on relevant resources
         if (isset($this->_privateConfig->relevant)) {
-            $this->_loadRelevantFeeds();
+            $this->_addRelevantFeeds();
         }
 
-        // load fallback feed if needed (runtime option overwrites config)
-        $fallback = null;
-        if (isset($this->_privateConfig->fallbackFeed)) {
-            $fallback = $this->_privateConfig->fallbackFeed;
-        }
-        if (isset($this->_options->fallbackFeed)) {
-            $fallback = $this->_options->fallbackFeed;
-        }
-        if ($fallback != null) {
-            if (count($this->_entries) == 0) {
-                $this->_loadFeed($fallback);
-            }
-        }
-
-        // sort entries according to time (taken from http://devzone.zend.com/article/3208)
-        usort($this->_entries, array('FeedsModule', 'compareEntries'));
-
-        // slice entries to show only X configured entries
-        if (isset($this->_privateConfig->maxentries)) {
-            $this->_entries = array_slice($this->_entries, 0, $this->_privateConfig->maxentries);
-        }
-
-        // turn visibility on if we have something to show
-        if (count($this->_entries) > 0) {
-            $this->shouldShow = true;
-        }
     }
 
 
@@ -101,10 +86,29 @@ class FeedsModule extends OntoWiki_Module
      */
     public function getContents()
     {
+        // finally try to load the feeds
+        foreach ($this->_feeds as $feed) {
+            $this->_loadFeed($feed);
+        }
+
         // provide content only if there is at least one entry (maybe double checked)
         if (count($this->_entries) > 0) {
+            // sort entries according to time
+            // taken from http://devzone.zend.com/article/3208
+            usort($this->_entries, array('FeedsModule', 'compareEntries'));
+
+            // slice entries to show only X configured entries
+            if (isset($this->_privateConfig->maxentries)) {
+                $this->_entries = array_slice(
+                    $this->_entries,
+                    0,
+                    $this->_privateConfig->maxentries
+                );
+            }
+
             // generate the template data
             $data = array('entries' => $this->_entries);
+
             // render the content
             if (isset($this->_options->template)) {
                 // use a custom template if given with the setOptions config
@@ -115,7 +119,7 @@ class FeedsModule extends OntoWiki_Module
             }
             return $this->_content;
         } else {
-            return "";
+            return '';
         }
     }
 
@@ -132,20 +136,50 @@ class FeedsModule extends OntoWiki_Module
      */
     public function shouldShow()
     {
-        return $this->shouldShow;
+        // add a fallback feed URL if available and needed
+        $this->_addFallbackFeed();
+
+        // turn visibility on if we have some feed to show
+        if (count($this->_feeds) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /*
+     * add a fallback feed URL if available and needed
+     */
+    private function _addFallbackFeed()
+    {
+        // add fallback feed if needed (runtime option overwrites config)
+        if (count($this->_feeds) == 0) {
+            $fallback = null;
+            // check for configured fallback
+            if (isset($this->_privateConfig->fallbackFeed)) {
+                $fallback = $this->_privateConfig->fallbackFeed;
+            }
+            // check for runtime option
+            if (isset($this->_options->fallbackFeed)) {
+                $fallback = $this->_options->fallbackFeed;
+            }
+            if ($fallback != null) {
+                $this->_addFeed($fallback);
+            }
+        }
     }
 
     /**
-     * Loads feeds from configured relevant resources
+     * add feeds from configured relevant resources
      */
-    private function _loadRelevantFeeds()
+    private function _addRelevantFeeds()
     {
         if ($this->_owApp->selectedModel && $this->_owApp->selectedResource) {
             $relevants  = is_string($this->_privateConfig->relevant)
-                        ? (array)$this->_privateConfig->relevant
+                        ? (array) $this->_privateConfig->relevant
                         : $this->_privateConfig->relevant->toArray();
             $properties = is_string($this->_privateConfig->properties)
-                        ? (array)$this->_privateConfig->properties
+                        ? (array) $this->_privateConfig->properties
                         : $this->_privateConfig->properties->toArray();
 
             $relevantQuery = "
@@ -158,22 +192,30 @@ class FeedsModule extends OntoWiki_Module
 
             if ($result = $this->_erfurt->getStore()->sparqlQuery($relevantQuery)) {
                 foreach ($result as $row) {
-                    $this->_loadFeed($row['f']);
+                    $this->_addFeed($row['f']);
                 }
             }
         }
     }
 
+
     /*
-     * Loads a feed silently and use the OntoWiki cache dir for caching
+     * add a feed url string to the feed array (after check)
+     */
+    private function _addFeed($url)
+    {
+        if (Erfurt_Uri::check($url)) {
+            // add valid feeds to our good-list
+            $this->_feeds[] = $url;
+        }
+    }
+
+    /*
+     * Loads a feed silently into _entries
+     * (uses the OntoWiki cache dir for caching)
      */
     private function _loadFeed($url)
     {
-        // check then feed uri
-        if (!Erfurt_Uri::check($url)) {
-            return;
-        }
-
         try {
             // get the ontowiki master config
             $config = OntoWiki::getInstance()->getConfig();
@@ -233,7 +275,7 @@ class FeedsModule extends OntoWiki_Module
      * compare two entries according to time
      * taken from http://devzone.zend.com/article/3208
      */
-    static function compareEntries ($a , $b)
+    static function compareEntries($a , $b)
     {
         $aTime = $a['dateModified'];
         $btime = $b['dateModified'];
