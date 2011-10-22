@@ -286,7 +286,7 @@ class FeedsModule extends OntoWiki_Module
     static function compareEntries($a , $b)
     {
         $aTime = $a['dateModified'];
-        $btime = $b['dateModified'];
+        $bTime = $b['dateModified'];
 
         if ($aTime == $bTime) {
             return 0;
