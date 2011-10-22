@@ -49,7 +49,7 @@ class FeedsModule extends OntoWiki_Module
 
         // look for configure feed properties
         if (isset($this->_privateConfig->properties)) {
-            $properties = (array)$this->_privateConfig->properties->toArray();
+            $properties = (array) $this->_privateConfig->properties->toArray();
 
             // ask for values for every feed property
             foreach ($properties as $key => $property) {
@@ -65,6 +65,20 @@ class FeedsModule extends OntoWiki_Module
         // load feeds on relevant resources
         if (isset($this->_privateConfig->relevant)) {
             $this->_loadRelevantFeeds();
+        }
+
+        // load fallback feed if needed (runtime option overwrites config)
+        $fallback = null;
+        if (isset($this->_privateConfig->fallbackFeed)) {
+            $fallback = $this->_privateConfig->fallbackFeed;
+        }
+        if (isset($this->_options->fallbackFeed)) {
+            $fallback = $this->_options->fallbackFeed;
+        }
+        if ($fallback != null) {
+            if (count($this->entries) == 0) {
+                $this->_loadFeed($fallback);
+            }
         }
 
         // sort entries according to time (taken from http://devzone.zend.com/article/3208)
