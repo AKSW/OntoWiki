@@ -11,17 +11,10 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ApplicationModule extends OntoWiki_Module
-{   
-    public function init(){
-        /*$this->view->headScript()->appendScript('
-        $(document).ready(function(){
-            $("#applicationsearch input").keyup(function(e) {
-                if(e.keyCode == 13) {
-                    alert($(this).val());
-                }
-            });
-        });
-        ');*/
+{
+    public function init()
+    {
+        
     }
 
     /**

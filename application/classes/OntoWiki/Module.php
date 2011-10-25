@@ -313,7 +313,7 @@ abstract class OntoWiki_Module
     /*
      * setter method for options
      */
-    public function setOptions(stdClass $options = null)
+    public function setOptions(Zend_Config $options = null)
     {
         if ($options) {
             $this->_options = $options;

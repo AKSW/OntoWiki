@@ -105,22 +105,55 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initConfig()
     {
-        // load default application configuration file
-        try {
-            $config = new Zend_Config_Ini(APPLICATION_PATH . 'config/default.ini', 'default', true);
-        } catch (Zend_Config_Exception $e) {
-            exit($e->getMessage());
+        //load cached config
+        $cachedConfigPath = 'cache/config.json';
+        $configPath = ONTOWIKI_ROOT . 'config.ini'; // 'doap.n3';
+        $defaultConfigPath = APPLICATION_PATH . 'config/default.ini'; //'config/default.n3';
+        $updateCache = false;
+        
+        $statCache = @stat($cachedConfigPath);
+        if ($statCache !== false) { //file exists
+            $statOrig = @stat($configPath);
+            $statDefault = @stat($defaultConfigPath);
+            
+            if (
+                    $statOrig && $statDefault && //files exist
+                    $statCache['mtime'] >= $statOrig['mtime'] && 
+                    $statCache['mtime'] >= $statDefault['mtime']
+            ) {
+                //cache is still valid
+                $config = new Zend_Config(json_decode(file_get_contents($cachedConfigPath), true), true);
+            } else {
+                $updateCache = true;
+            }
+        } else {
+            $updateCache = true;
         }
+        if ($updateCache) {
+            // load default application configuration file
+            // 
+            // $config = Ontowiki_Extension_Manager::loadDoapN3($defaultConfigPath, $name);
 
-        // load user application configuration files
-        try {
-            $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini', 'private', true);
-            $config->merge($privateConfig);
-        } catch (Zend_Config_Exception $e) {
-            $message = '<p>OntoWiki can not find a proper configuration.</p>' . PHP_EOL .
-                '<p>Maybe you have to copy and modify the distributed <code>config.ini-dist</code> file?</p>' . PHP_EOL .
-                '<details><summary>Error Details</summary>' . $e->getMessage() . '</details>';
-            exit($message);
+            try {
+                $config = new Zend_Config_Ini(APPLICATION_PATH . 'config/default.ini', 'default', true);
+            } catch (Zend_Config_Exception $e) {
+                exit($e->getMessage());
+            }
+
+            // load user application configuration files
+            try {
+                $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini', 'private', true);
+                $config->merge($privateConfig); 
+            } catch (Zend_Config_Exception $e) {
+                $message = '<p>OntoWiki can not find a proper configuration.</p>' . PHP_EOL .
+                    '<p>Maybe you have to copy and modify the distributed '.
+                    '<code>config.ini-dist</code> file?</p>' . PHP_EOL .
+                    '<details><summary>Error Details</summary>' . $e->getMessage() . '</details>';
+                exit($message);
+            }
+            
+            //write to cache
+            file_put_contents($cachedConfigPath, json_encode($config->toArray()));
         }
 
         // normalize path names
@@ -150,11 +183,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $port        = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80') 
                      ? (':' . $_SERVER['SERVER_PORT']) 
                      : '';
-        $urlBase     = sprintf('%s://%s%s%s', 
-                               $protocol, 
-                               isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', 
-                               $port, 
-                               $rewriteBase);
+        $urlBase     = sprintf(
+            '%s://%s%s%s', 
+            $protocol, 
+            isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', 
+            $port, 
+            $rewriteBase
+        );
         
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);
@@ -321,13 +356,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             extract($config->routes->{$route}->defaults->toArray());
 
             // and add last routed component
-            OntoWiki_Navigation::register('index', array(
-                'route'      => $route,
-                'controller' => $controller,
-                'action'     => $action,
-                'name'       => ucfirst($route),
-                'priority'   => 0
-            ));
+            OntoWiki_Navigation::register(
+                'index', 
+                array(
+                    'route'      => $route,
+                    'controller' => $controller,
+                    'action'     => $action,
+                    'name'       => ucfirst($route),
+                    'priority'   => 0
+                )
+            );
         }
     }
 
@@ -356,9 +394,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('frontController');
         $frontController = $this->getResource('frontController');
 
-        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_HttpAuth(), 1); // Needs to be done first!
+        // Needs to be done first!
+        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_HttpAuth(), 1); 
         $frontController->registerPlugin(new OntoWiki_Controller_Plugin_SetupHelper(), 2);
-        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_ListSetupHelper(), 3); //needs to be done after SetupHelper
+         //needs to be done after SetupHelper
+        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_ListSetupHelper(), 3);
     }
 
     /**
@@ -586,10 +626,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
 
         // initialize layout
-        Zend_Layout::startMvc(array(
-            // for layouts we use the default path
-            'layoutPath' => $defaultTemplatePath . DIRECTORY_SEPARATOR . 'layouts'
-        ));
+        Zend_Layout::startMvc(
+            array(
+                // for layouts we use the default path
+                'layoutPath' => $defaultTemplatePath . DIRECTORY_SEPARATOR . 'layouts'
+            )
+        );
 
         return $view;
     }

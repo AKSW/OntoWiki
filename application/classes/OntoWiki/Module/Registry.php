@@ -74,6 +74,18 @@ class OntoWiki_Module_Registry
     private static $_instance = null;
 
     /**
+     * private Constructor
+     */
+    private function __construct()
+    {
+        $this->_moduleStates = new Zend_Session_Namespace('Module_Registry');
+
+        // TODO: module order per namespace?
+        if (isset($this->_moduleStates->moduleOrder)) {
+            $this->_moduleOrder = $this->_moduleStates->moduleOrder;
+        }
+    }
+    /**
      * Singleton instance
      *
      * @return OntoWiki_Module_Registry
@@ -136,29 +148,31 @@ class OntoWiki_Module_Registry
     {
         $moduleName = strtolower(substr($moduleFileName, 0, strlen($moduleFileName)-strlen(self::MODULE_FILE_POSTFIX)));
 
-        // create module context if necessary
         if (!array_key_exists($context, $this->_moduleOrder)) {
             $this->_moduleOrder[$context] = array();
         }
 
         if ($options == null) {
-            $options = new stdClass();
+            $options = new Zend_Config(array(), true);
         }
 
         //if not already registered
         if (!array_key_exists($moduleName, $this->_modules)) {
             // merge defaults
-            $default = array(
-                'id'      => strtolower($moduleName),
-                'classes' => '',
-                'name'    => ucwords($moduleName),
-                'enabled' => true ,
-                'extensionName' => $extensionName,
-                'private' => new stdClass()
+            $default = new Zend_Config(
+                array(
+                    'id'      => strtolower($moduleName),
+                    'classes' => '',
+                    'name'    => ucwords($moduleName),
+                    'enabled' => true ,
+                    'extensionName' => $extensionName,
+                    'private' => array()
+                ), 
+                true
             );
             
-            $options = (object) array_merge($default, (array) $options);
-
+            $options = $default->merge($options);
+            
             // set css classes according to module state
             switch ($this->_moduleStates->{$options->id}) {
                 case self::MODULE_STATE_OPEN:
@@ -313,18 +327,5 @@ class OntoWiki_Module_Registry
         }
 
         return $priority;
-    }
-
-    /**
-     * Constructor
-     */
-    private function __construct()
-    {
-        $this->_moduleStates = new Zend_Session_Namespace('Module_Registry');
-
-        // TODO: module order per namespace?
-        if (isset($this->_moduleStates->moduleOrder)) {
-            $this->_moduleOrder = $this->_moduleStates->moduleOrder;
-        }
     }
 }
