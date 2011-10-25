@@ -281,6 +281,9 @@ $(document).ready(function() {
             $(button).removeClass('active');
             window.location.href = window.location.href;
         } else {
+            if(typeof(RDFauthor) !== 'undefined') {
+                RDFauthor.cancel();
+            }
             loadRDFauthor(function () {
                 RDFauthor.setOptions({
                     onSubmitSuccess: function () {
@@ -382,42 +385,62 @@ $(document).ready(function() {
     
     // add property
     $('.property-add').click(function() {
-        var ID = RDFauthor.nextID();
-        var td1ID = 'rdfauthor-property-selector-' + ID;
-        var td2ID = 'rdfauthor-property-widget-' + ID;
-        
-        $('table.rdfa')
-            .children('tbody')
-            .prepend('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td></tr>');
-        
-        var selectorOptions = {
-            container: $('#' + td1ID), 
-            selectionCallback: function (uri, label) {
-                var statement = new Statement({
-                    subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>', 
-                    predicate: '<' + uri + '>'
-                }, {
-                    title: label, 
-                    graph: RDFAUTHOR_DEFAULT_GRAPH
+        if(typeof(RDFauthor) === 'undefined') {
+            loadRDFauthor(function () {
+                RDFauthor.setOptions({
+                    onSubmitSuccess: function () {
+                        // var mainInnerContent = $('.window .content.has-innerwindows').eq(0).find('.innercontent');
+                        // mainInnerContent.load(document.URL);
+
+                        // tell RDFauthor that page content has changed
+                        // RDFauthor.invalidatePage();
+
+                        $('.edit').each(function() {
+                            $(this).fadeOut(effectTime);
+                        });
+                        $('.edit-enable').removeClass('active');
+                        
+                        // HACK: reload whole page after 1000 ms
+                        window.setTimeout(function () {
+                            window.location.href = window.location.href;
+                        }, 500);
+                    }, 
+                    onCancel: function () {
+                        $('.edit').each(function() {
+                            $(this).fadeOut(effectTime);
+                        });
+                        $('.edit-enable').removeClass('active');
+                    }, 
+                    saveButtonTitle: 'Save Changes', 
+                    cancelButtonTitle: 'Cancel', 
+                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+                    viewOptions: {
+                        // no statements needs popover
+                        type: $('.section-mainwindows table.Resource').length ? RDFAUTHOR_VIEW_MODE : 'popover', 
+                        container: function (statement) {
+                            var element = RDFauthor.elementForStatement(statement);
+                            var parent  = $(element).closest('div');
+                            
+                            if (!parent.hasClass('ontowiki-processed')) {
+                                parent.children().each(function () {
+                                    $(this).hide();
+                                });
+                                parent.addClass('ontowiki-processed');
+                            }
+                            
+                            return parent.get(0);
+                        }
+                    }
                 });
                 
-                var owURL = urlBase + 'view?r=' + encodeURIComponent(uri);
-                $('#' + td1ID).closest('td')
-                    .attr('colspan', '1')
-                    .html('<a class="hasMenu" about="' + uri + '" href="' + owURL + '">' + label + '</a>')
-                    .after('<td id="' + td2ID + '"></td>');
-                RDFauthor.getView().addWidget(statement, null, {container: $('#' + td2ID), activate: true});
-            }
-        };
+                RDFauthor.start();
+                $('.edit-enable').addClass('active');
+                setTimeout("addProperty()",500);
+            });
+        } else {
+            addProperty();
+        }
         
-        var selector = new Selector(RDFAUTHOR_DEFAULT_GRAPH, RDFAUTHOR_DEFAULT_SUBJECT, selectorOptions);
-        selector.presentInContainer();
-
-        // var propertyWidget = RDFauthor.getWidgetForHook('__PROPERTY__',null,null);
-        // console.log(propertyWidget);
-        // propertyWidget.init();
-        // propertyWidget.ready();
-        // propertyWidget.markup();
     });
     
     $('.tabs').children('li').children('a').click(function() {
