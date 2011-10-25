@@ -805,14 +805,27 @@ class ModelController extends OntoWiki_Controller_Base
             
             $values = $model->getValues();
             $predicates = $model->getPredicates();
+            
+            $titleHelper = new OntoWiki_Model_TitleHelper($graph);
+            $graphs = array_keys($predicates);
+            $titleHelper->addResources($graphs);
+
+            $graphInfo = array();
+            $editableFlags = array();
+            foreach ($graphs as $g) {
+                $graphInfo[$g] = $titleHelper->getTitle($g, $this->_config->languages->locale);
+                $editableFlags[$g] = false;
+            }
+            
             if (count($values) > 0) {
-                // TODO: show imported infos as well?
-                $this->view->values             = $values[(string)$graph];
-                $this->view->predicates         = $predicates[(string)$graph];
+                $this->view->graphs             = $graphInfo;
+                $this->view->values             = $values;
+                $this->view->predicates         = $predicates;
                 $this->view->resourceIri        = (string)$resource;
                 $this->view->graphIri           = $graph->getModelIri();
                 $this->view->graphBaseIri       = $graph->getBaseIri();
                 $this->view->namespacePrefixes  = $graph->getNamespacePrefixes();
+                $this->view->editableFlags = $editableFlags;
 
                 if (!is_array($this->view->namespacePrefixes)) {
                         $this->view->namespacePrefixes  = array();
@@ -830,11 +843,17 @@ class ModelController extends OntoWiki_Controller_Base
 
                 $this->view->infoPredicates = array();
                 foreach ($infoUris as $infoUri) {
-                    if (array_key_exists($infoUri, $this->view->predicates)) {
-                        $this->view->infoPredicates[$infoUri] = $this->view->predicates[$infoUri];
-                        unset($this->view->predicates[$infoUri]);
+                    if (array_key_exists($infoUri, $predicates[(string)$graph])) {
+                        $this->view->infoPredicates[$infoUri] = $predicates[(string)$graph][$infoUri];
                     }
                 }
+                
+                $namespaces = $graph->getNamespaces();
+                $graphBase  = $graph->getBaseUri();
+                if (!array_key_exists($graphBase, $namespaces)) {
+                    $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
+                }
+                $this->view->namespaces = $namespaces;
             }
         }
 

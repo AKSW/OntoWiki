@@ -118,7 +118,6 @@ class ResourceController extends OntoWiki_Controller_Base {
 
                 if ($this->_erfurt->getAc()->isModelAllowed('edit', $g)) {
                     $editableFlags[$g] = true;
-                    $graphInfo[$g] = $titleHelper->getTitle($g, $this->_config->languages->locale);
                     $this->view->placeholder('update')->append(array(
                         'sourceGraph'    => $g,
                         'queryEndpoint'  => $this->_config->urlBase . 'sparql/',

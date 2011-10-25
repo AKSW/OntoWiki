@@ -359,7 +359,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                                     true
                                 );
                             } else {
-                                $hasMoreUrl = new OntoWiki_Url(array('controller' => 'querybuilding', 'action' => 'editor'), array());
+                                $hasMoreUrl = new OntoWiki_Url(array('controller' => 'queries', 'action' => 'editor'), array());
                                 $hasMoreUrl->setParam(
                                     'query',
                                     'SELECT ?value WHERE {<'.$this->_uri.'> <'.$predicateUri.'> ?value}'
