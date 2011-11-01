@@ -1,4 +1,4 @@
-<?php $values = $this->values[$this->graphIri]; ?>
+<?php $values = isset($this->values[$this->graphIri]) ? $this->values[$this->graphIri] : array(); ?>
 
 <h2><?php echo $this->modelTitle ?></h2>
 

@@ -817,44 +817,45 @@ class ModelController extends OntoWiki_Controller_Base
                 $editableFlags[$g] = false;
             }
             
+            $this->view->graphs             = $graphInfo;
+            $this->view->resourceIri        = (string)$resource;
+            $this->view->graphIri           = $graph->getModelIri();
+            $this->view->values             = $values;
+            $this->view->predicates         = $predicates;
+            $this->view->graphBaseIri       = $graph->getBaseIri();
+            $this->view->namespacePrefixes  = $graph->getNamespacePrefixes();
+            $this->view->editableFlags = $editableFlags;
+
+            if (!is_array($this->view->namespacePrefixes)) {
+                    $this->view->namespacePrefixes  = array();
+            }
+            $this->view->namespacePrefixes['__default'] = $graph->getModelIri();
+
+            $infoUris = $this->_config->descriptionHelper->properties;
+            //echo (string)$resource;
+            
             if (count($values) > 0) {
-                $this->view->graphs             = $graphInfo;
-                $this->view->values             = $values;
-                $this->view->predicates         = $predicates;
-                $this->view->resourceIri        = (string)$resource;
-                $this->view->graphIri           = $graph->getModelIri();
-                $this->view->graphBaseIri       = $graph->getBaseIri();
-                $this->view->namespacePrefixes  = $graph->getNamespacePrefixes();
-                $this->view->editableFlags = $editableFlags;
-
-                if (!is_array($this->view->namespacePrefixes)) {
-                        $this->view->namespacePrefixes  = array();
-                }
-                $this->view->namespacePrefixes['__default'] = $graph->getModelIri();
-
-                $infoUris = $this->_config->descriptionHelper->properties;
-                //echo (string)$resource;
                 $query = 'ASK FROM <'.(string)$resource.'> WHERE {<'.(string)$resource.'> a <http://xmlns.com/foaf/0.1/PersonalProfileDocument>}';
                 $q = Erfurt_Sparql_SimpleQuery::initWithString($query);
                 if($this->_owApp->extensionManager->isExtensionActive('foafprofileviewer') && $store->sparqlAsk($q) === true){
                     $this->view->showFoafLink = true;
                     $this->view->foafLink = $this->_config->urlBase.'foafprofileviewer/display';
                 } 
-
-                $this->view->infoPredicates = array();
-                foreach ($infoUris as $infoUri) {
-                    if (array_key_exists($infoUri, $predicates[(string)$graph])) {
-                        $this->view->infoPredicates[$infoUri] = $predicates[(string)$graph][$infoUri];
-                    }
-                }
-                
-                $namespaces = $graph->getNamespaces();
-                $graphBase  = $graph->getBaseUri();
-                if (!array_key_exists($graphBase, $namespaces)) {
-                    $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
-                }
-                $this->view->namespaces = $namespaces;
             }
+
+            $this->view->infoPredicates = array();
+            foreach ($infoUris as $infoUri) {
+                if (isset($predicates[(string)$graph]) && array_key_exists($infoUri, $predicates[(string)$graph])) {
+                    $this->view->infoPredicates[$infoUri] = $predicates[(string)$graph][$infoUri];
+                }
+            }
+
+            $namespaces = $graph->getNamespaces();
+            $graphBase  = $graph->getBaseUri();
+            if (!array_key_exists($graphBase, $namespaces)) {
+                $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
+            }
+            $this->view->namespaces = $namespaces;
         }
 
         $this->addModuleContext('main.window.modelinfo');
