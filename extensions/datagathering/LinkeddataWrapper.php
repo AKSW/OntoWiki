@@ -65,7 +65,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         return 'Linked Data Wrapper';
     }
     
-    public function isAvailable($r, $graphUri)
+    public function isAvailable($r, $graphUri, $all = false)
     { 
         $uri = $r->getUri();
         $url = $r->getLocator();
@@ -122,13 +122,20 @@ class LinkeddataWrapper extends Erfurt_Wrapper
             $ns = $tempArray['ns'];
             $tempArray = $tempArray['data'];
             
-            if (isset($tempArray[$uri])) {
-                $data = array($uri => $tempArray[$uri]);
-                $retVal = true;
+            if (!$all) {
+                //only load statements, that have the $uri as subject
+                if (isset($tempArray[$uri])) {
+                    $data = array($uri => $tempArray[$uri]);
+                    $retVal = true;
+                } else {
+                    $data = array();
+                    $ns = array();
+                    $retVal = false;
+                }
             } else {
-                $data = array();
-                $ns = array();
-                $retVal = false;
+                //all statements that were found
+                $data = $tempArray;
+                $retVal = true;
             }
         } else {
             // try n3
@@ -223,10 +230,10 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         return true;
     }
     
-    public function run($r, $graphUri)
+    public function run($r, $graphUri, $all = false)
     { 
         if (null === $this->_cachedData) {
-            $isAvailable = $this->isAvailable($r, $graphUri);
+            $isAvailable = $this->isAvailable($r, $graphUri, $all);
         
             if ($isAvailable === false) {
                 return false;

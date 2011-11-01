@@ -895,17 +895,17 @@ class DatagatheringController extends OntoWiki_Controller_Component
     
     /**
      *
-     * @param type $graphUri
-     * @param type $uri
+     * @param string $graphUri
+     * @param string $uri
      * @param type $locator
-     * @param type $all
-     * @param type $presets
-     * @param type $exceptedProperties
-     * @param type $wrapperName
-     * @param type $fetchMode
-     * @param type $action
-     * @param type $versioning
-     * @return type 
+     * @param boolean $all
+     * @param array $presets
+     * @param array $exceptedProperties
+     * @param string $wrapperName
+     * @param string $fetchMode
+     * @param string $action
+     * @param boolean $versioning
+     * @return int status code 
      */
     public static function import($graphUri, $uri, $locator, $all = true, $presets = array(), $exceptedProperties = array(), $wrapperName = 'linkeddata', $fetchMode = 'none', $action = 'add', $versioning = true){
         // Check whether user is allowed to write the model.
@@ -929,7 +929,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         $wrapperResult = null;
         try {
-            $wrapperResult = $wrapper->run($r, $graphUri);
+            $wrapperResult = $wrapper->run($r, $graphUri, $all);
         } catch (Erfurt_Wrapper_Exception $e) {
             return self::IMPORT_WRAPPER_EXCEPTION;
         }
