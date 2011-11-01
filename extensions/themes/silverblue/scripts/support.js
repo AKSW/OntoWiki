@@ -556,7 +556,7 @@ function editProperty(event) {
         });
 
         RDFauthor.start($(element).parents('td'));
-
+        $('.edit-enable').addClass('active');
         $('.edit').each(function() {
             var button = this;
             $(this).fadeIn(effectTime);
@@ -564,4 +564,41 @@ function editProperty(event) {
     });
 
     //return false;
+}
+
+function addProperty() {
+    var ID = RDFauthor.nextID();
+    var td1ID = 'rdfauthor-property-selector-' + ID;
+    var td2ID = 'rdfauthor-property-widget-' + ID;
+
+    $('.edit').each(function() {
+        $(this).fadeIn(effectTime);
+    });
+
+    $('table.rdfa')
+        .children('tbody')
+        .prepend('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td></tr>');
+    
+    var selectorOptions = {
+        container: $('#' + td1ID), 
+        selectionCallback: function (uri, label) {
+            var statement = new Statement({
+                subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>', 
+                predicate: '<' + uri + '>'
+            }, {
+                title: label, 
+                graph: RDFAUTHOR_DEFAULT_GRAPH
+            });
+            
+            var owURL = urlBase + 'view?r=' + encodeURIComponent(uri);
+            $('#' + td1ID).closest('td')
+                .attr('colspan', '1')
+                .html('<a class="hasMenu" about="' + uri + '" href="' + owURL + '">' + label + '</a>')
+                .after('<td id="' + td2ID + '"></td>');
+            RDFauthor.getView().addWidget(statement, null, {container: $('#' + td2ID), activate: true});
+        }
+    };
+    
+    var selector = new Selector(RDFAUTHOR_DEFAULT_GRAPH, RDFAUTHOR_DEFAULT_SUBJECT, selectorOptions);
+    selector.presentInContainer();
 }
