@@ -299,9 +299,20 @@ class Converter
 
 
 EOT;
-        require_once __DIR__.'/../../application/classes/OntoWiki/Ini.php';
-        $config = OntoWiki_Ini::read($iniPath);
-        //var_dump($config);
+        require_once __DIR__.'/../../libraries/Zend/Config.php';
+        require_once __DIR__.'/../../libraries/Zend/Config/Ini.php';
+        $config = new Zend_Config_Ini($iniPath, null, true);
+        $config = $config->toArray();
+        if(!isset($config['default'])){
+            $config['default'] = array();
+        }
+        foreach ($config as $sectionname => $sectionconf) {
+            if(!in_array($sectionname, array('default','events', 'private'))){
+                $config['default'][$sectionname]  = $sectionconf;
+                unset($config[$sectionname]);
+            }
+        }
+        //var_dump($config); exit;
 
         $subject = ':'.$extension;
         $es = new ExtensionSerializer();
@@ -376,6 +387,8 @@ EOT;
         return $res;
     }
 }
+$path = realpath(__DIR__.'/../../libraries/');
+set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 require_once realpath(__DIR__.'/../../libraries/Erfurt/Erfurt/Uri.php');
 
 if ($argc > 3) {
