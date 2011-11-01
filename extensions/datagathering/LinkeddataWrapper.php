@@ -152,6 +152,7 @@ class LinkeddataWrapper extends Erfurt_Wrapper
                     $data = array($uri => $tempArray[$uri]);
                     $retVal = true;
                 } else {
+                   
                     $data = array();
                     $ns = array();
                     $retVal = false;
@@ -341,24 +342,49 @@ class LinkeddataWrapper extends Erfurt_Wrapper
             $contentType = substr($contentType, 0, $pos);
         }
         
-        switch ($contentType) {
-            case 'application/rdf+xml':
-            case 'application/xml': // Hack for lsi urns
-            case 'text/plain':
-                $type = 'rdfxml';
-                break;
-            case 'application/json':
-                $type = 'rdfjson';
-                break;
-            case 'text/rdf+n3':
-            case 'text/n3':
-                $type = 'rdfn3';
-                break;
-            case 'text/html':
-                return $this->_handleResponseBodyHtml($response, $baseUri);
-            default:
-                require_once 'Erfurt/Wrapper/Exception.php';
-                throw new Erfurt_Wrapper_Exception('Server returned not supported content type: ' . $contentType);
+        $found = false;
+        if($contentType == 'text/plain' && !empty($baseUri)){
+            //if the mime type does not reveal anything, try file endings. duh
+            $parts = explode('.', $baseUri);
+            $ending = end($parts);
+            $found = true;
+            switch ($ending) {
+                case 'n3':
+                case 'ttl':
+                    $type = 'rdfn3';
+                    break;
+                case 'xml':
+                    $type = 'rdfxml';
+                    break;
+                case 'json':
+                    $type = 'rdfjson';
+                    break;
+                default:
+                    $found = false;
+                    break;
+            }
+        }
+        if(!$found){
+            //use the defined mime type
+            switch ($contentType) {
+                case 'application/rdf+xml':
+                case 'application/xml': // Hack for lsi urns
+                case 'text/plain':
+                    $type = 'rdfxml';
+                    break;
+                case 'application/json':
+                    $type = 'rdfjson';
+                    break;
+                case 'text/rdf+n3':
+                case 'text/n3':
+                    $type = 'rdfn3';
+                    break;
+                case 'text/html':
+                    return $this->_handleResponseBodyHtml($response, $baseUri);
+                default:
+                    require_once 'Erfurt/Wrapper/Exception.php';
+                    throw new Erfurt_Wrapper_Exception('Server returned not supported content type: ' . $contentType);
+            }
         }
         
         $data = $response->getBody();
