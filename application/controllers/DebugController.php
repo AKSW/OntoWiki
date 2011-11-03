@@ -51,7 +51,7 @@ class DebugController extends OntoWiki_Controller_Base
     }
 
     /**
-     * Destroys complete query cache
+     * Destroys complete query cache and object cache
      *
      * @return void
      */
