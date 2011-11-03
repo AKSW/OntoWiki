@@ -799,25 +799,6 @@ class ApplicationController extends OntoWiki_Controller_Base
         $error = false;
         $errorMsg = '';
 
-        // check for very short searches (that barely make sense)
-        if (strlen($searchText) < 3) {
-
-            $error = true;
-
-            $this->_owApp->appendMessage(
-                new OntoWiki_Message(
-                    $this->_owApp->translate->_('Too Short or empty. (length < 3 )'),
-                    OntoWiki_Message::ERROR
-                )
-            );
-
-            $errorMsg .= $this->_owApp->translate->_(
-                'The given search string is either empty or too short: ' .
-                'For searches to make sense they need a minimum of expressiveness.'
-            );
-
-        }
-
         // check if search is already errorenous
         if (!$error) {
 
