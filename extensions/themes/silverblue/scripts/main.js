@@ -246,8 +246,9 @@ $(document).ready(function() {
     
     // init new resource based on type
     $('.init-resource').click(function() {
-       var type       = $(this).closest('.window').find('*[typeof]').eq(0).attr('typeof');
-       createInstanceFromClassURI(type);
+        var type       = $(this).closest('.window').find('*[typeof]').eq(0).attr('typeof');
+        console.log(type);
+        createInstanceFromClassURI('http://xmlns.com/foaf/0.1/Person');
     });
     
     $('.edit.save').click(function() {
