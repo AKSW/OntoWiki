@@ -427,7 +427,6 @@ function createInstanceFromClassURI(type, dataCallback) {
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
             for (var subjectUri in data) {break;};
-            console.log(data);
             // add statements to RDFauthor
             populateRDFauthor(data, true, subjectUri, selectedGraph.URI);
             RDFauthor.setOptions({
