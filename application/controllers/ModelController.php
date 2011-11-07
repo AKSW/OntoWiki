@@ -590,11 +590,13 @@ class ModelController extends OntoWiki_Controller_Base
     private function _handleImport($postData, $createGraph = false)
     {        
         $newModelUri = trim($postData['modelUri']);
-        $newBaseUri  = isset($postData['baseUri']) ? trim($postData['baseUri']) : null;
+        $newBaseUri  = isset($postData['baseUri']) ? trim($postData['baseUri']) : '';
+        $newType = isset($postData['type']) ? $postData['type'] : Erfurt_Store::MODEL_TYPE_OWL;
         
         switch ($postData['activeForm']) {
             case 'empty':
-                $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $postData['type']);
+                $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $newType);
+                $createGraph = false;
                 $this->_erfurt->getAc()->setUserModelRight($model->getModelIri(), 'edit', 'grant');
                 $this->_redirect($this->_config->urlBase . 'model/select/?m=' . urlencode($model->getModelIri()), array('code' => 302));
                 return;
@@ -642,7 +644,7 @@ class ModelController extends OntoWiki_Controller_Base
         
         // create graph
         if ($createGraph) {
-            $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, (isset($postData['type']) ? $postData['type'] : Erfurt_Store::MODEL_TYPE_OWL));
+            $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $newType);
         }
         
         // import statements
@@ -654,7 +656,7 @@ class ModelController extends OntoWiki_Controller_Base
                 $this->_erfurt->getStore()->deleteModel($newModelUri);
             }
             // re-throw
-            throw new OntoWiki_Controller_Exception("Graph '<$postData[modelUri]>' could not be imported: " . $e->getMessage());
+            throw new OntoWiki_Controller_Exception('Graph <'.$postData['modelUri'].'> could not be imported: ' . $e->getMessage(), 0, $e);
         }
     }
     
@@ -673,11 +675,12 @@ class ModelController extends OntoWiki_Controller_Base
                         ($this->_owApp->selectedModel->getModelIri() === $model)) {
                     
                     $this->_owApp->selectedModel = null;
-                    
+                    $this->view->clearModuleCache(); //deletes selected model - always needed?
+                    $this->_redirect($this->_owApp->getUrlBase() , array('code' => 302));
                 }
             } catch (Exception $e) {
                 $this->_owApp->appendMessage(
-                    new OntoWiki_Message('Error deleting model: ' . $e->getMessage(), OntoWiki_Message::ERROR)
+                    new OntoWiki_Message('Error deleting model: ' . $e->getMessage().'<br/>'.$e->getTraceAsString(), OntoWiki_Message::ERROR)
                 );
             }
         } else {

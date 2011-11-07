@@ -1,9 +1,19 @@
 ZENDVERSION=1.11.5
 
 default:
+	@echo "Typical targets your could want to reach:"
+	@echo ""
+	@echo "--> 'make deploy' : install OntoWiki <-- in doubt, use this"
+	@echo "                    (use this for server installations)"
+	@echo "    'make install': install OntoWiki for developer"
+	@echo "                    (you will need github access and ssh for this)"
+	@echo "    'make help'   : show more (developer related) make targets"
+	@echo "                    (this includes all code sniffing targets)"
+
+help:
 	@echo "please use:"
+	@echo "     'make deploy' (-> runs everything which is needed for a deployment)"
 	@echo "     'make install' (-> make directories, zend and libraries)"
-	@echo "     'make install-dev' (-> same as install but writeable)"
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
 	@echo "     'make zend' (download and install Zend under libraries)"
 	@echo "     'make libraries' ('git clone' all subrepos - in case submodules do not work)"
@@ -34,9 +44,16 @@ default:
 
 # top level target
 
-install: directories libraries
+deploy: directories clean zend
+	rm -rf libraries/RDFauthor
+	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
+	git clone git://github.com/AKSW/RDFauthor.git libraries/RDFauthor
+	rm -rf libraries/Erfurt
+	@echo 'Cloning Erfurt into libraries/Erfurt ...'
+	git clone git://github.com/AKSW/Erfurt.git libraries/Erfurt
 
-install-dev: directories libraries-dev
+
+install: directories libraries
 
 clean:
 	rm -rf cache/* logs/*
@@ -45,9 +62,7 @@ directories: clean
 	mkdir -p logs cache
 	chmod 777 logs cache extensions
 
-libraries: zend rdfauthor erfurt 
-
-libraries-dev: zend rdfauthor-dev erfurt-dev submodules
+libraries: zend submodules
 
 submodules:
 	git submodule init
@@ -87,19 +102,9 @@ zend:
 rdfauthor:
 	rm -rf libraries/RDFauthor
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
-	git clone git://github.com/AKSW/RDFauthor.git libraries/RDFauthor
-
-rdfauthor-dev:
-	rm -rf libraries/RDFauthor
-	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	git clone git@github.com:AKSW/RDFauthor.git libraries/RDFauthor
 
 erfurt:
-	rm -rf libraries/Erfurt
-	@echo 'Cloning Erfurt into libraries/Erfurt ...'
-	git clone git://github.com/AKSW/Erfurt.git libraries/Erfurt
-
-erfurt-dev:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
 	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt

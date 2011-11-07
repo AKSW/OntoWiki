@@ -30,14 +30,12 @@
     </div>
 
     <div>
-        <?php if (empty($this->modelUri)): ?>
-            <?php // if model URI is set, don't allow empty model creation ?>
-            <label class="checkboxradio" for="r01">
-                <input type="radio" class="radio" name="activeForm" id="r01" value="empty" />
-                <?php echo $this->_('Create an Empty Knowledge Base') ?>
-            </label>
-            <br class="clearall" />
-        <?php endif; ?>
+        <?php // if model URI is set, don't allow empty model creation ?>
+        <label class="checkboxradio" for="r01">
+            <input type="radio" class="radio" name="activeForm" id="r01" value="empty" />
+            <?php echo $this->_('Create an Empty Knowledge Base') ?>
+        </label>
+        <br class="clearall" />
         
         <?php if (ini_get('allow_url_fopen')): ?>
             <label class="checkboxradio" for="r02">
@@ -65,7 +63,7 @@
         <!-- empty model -->
         <fieldset class="activeForm" id="empty">
             <legend><?php echo $this->_('Create an Empty Knowledge Base') ?></legend>
-            <div>
+            <!--div>
                 <label for="base-input"><?php echo $this->_('Base URI') ?></label>
                 <input type="text" class="text" id="base-input" name="baseUri" value="<?php echo $this->baseUri ?>" />
                 <br class="clearall" />
@@ -74,10 +72,10 @@
                 <label for="type-select"><?php echo $this->_('Type') ?></label>
                 <select name="type" id="type-select">
                     <option value="owl" selected="selected">OWL</option>
-                    <!--option value="rdfs">RDF(S)</option-->
+                    <option value="rdfs">RDF(S)</option>
                 </select>
                 <br class="clearall" />
-            </div>
+            </div-->
         </fieldset>
     <?php endif; ?>
 
