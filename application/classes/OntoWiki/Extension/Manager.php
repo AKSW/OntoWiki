@@ -7,7 +7,6 @@
  */
 class Ontowiki_Extension_Manager
 {
-    const DEFAULT_CONFIG_FILE = 'default.ini';
     const EXTENSION_DEFAULT_DOAP_FILE = 'doap.n3';
     
     const COMPONENT_HELPER_SUFFIX = 'Helper';
@@ -21,7 +20,8 @@ class Ontowiki_Extension_Manager
 
     const WRAPPER_CLASS_POSTFIX = 'Wrapper';
     const WRAPPER_FILE_POSTFIX = 'Wrapper.php';
-
+    
+    const EVENT_NS = 'http://ns.ontowiki.net/SysOnt/Events/';
 
     /**
      * Array where component information is kept
@@ -53,21 +53,32 @@ class Ontowiki_Extension_Manager
      */
     protected $_helpers = array();
 
+    /**
+     * stores extensions configs
+     * @var array 
+     */
     protected $_componentRegistry = array();
 
+    /**
+     *
+     * @var OntoWiki_Module_Registry
+     */
     protected $_moduleRegistry = null;
+    
+    //plugins and wrappers are handled by erfurt
 
     /**
      * Denotes whether component helpers have been called.
      * @var boolean
      */
     protected $_helpersCalled = false;
-
+    
+    
     /**
-     * Prefix to distinguish component controller directories
-     * from other controller directories.
-     * @var string
-     */
+    * Prefix to distinguish component controller directories
+    * from other controller directories.
+    * @var string
+    */
     private $_componentPrefix = '_component_';
 
     /**
@@ -87,8 +98,17 @@ class Ontowiki_Extension_Manager
      */
     private $_privateSection = 'private';
 
+    /**
+     * a reference to the erfurt event dispatcher
+     * @var Erfurt_Event_Dispatcher 
+     */
     protected $_eventDispatcher = null;
-
+    
+    /**
+     * folders in the extensions directory that are not extensions
+     * @var array 
+     */
+    public $reservedNames = array('themes', 'translations');
 
     /**
      * Constructor
@@ -257,15 +277,16 @@ class Ontowiki_Extension_Manager
         return array_key_exists($componentName, $this->_extensionRegistry) && 
             $this->_extensionRegistry[$componentName]->enabled;
     }
-
+    
+    
     /**
-     * Returns a prefix that can be used to distinguish components from
-     * other extensions, i.e. modules or plugins.
-     * 
-     * @deprecated
-     *
-     * @return string
-     */
+    * Returns a prefix that can be used to distinguish components from
+    * other extensions, i.e. modules or plugins.
+    *
+    * @deprecated
+    *
+    * @return string
+    */
     public function getComponentPrefix()
     {
         return $this->_componentPrefix;
@@ -407,6 +428,10 @@ class Ontowiki_Extension_Manager
         if (isset($helperSpec['events'])) {
             $dispatcher = Erfurt_Event_Dispatcher::getInstance();
             foreach ($helperSpec['events'] as $currentEvent) {
+                if(substr($currentEvent, 0, strlen(self::EVENT_NS)) == self::EVENT_NS){
+                    //currently we only accept events from the ontowiki event namespace
+                    $currentEvent = substr($currentEvent, strlen(self::EVENT_NS));
+                } 
                 $dispatcher->register($currentEvent, $helperInstance);
             }
         }
@@ -428,10 +453,9 @@ class Ontowiki_Extension_Manager
     private function _getModifiedConfigsSince($time)
     {
         $dir = new DirectoryIterator($this->_extensionPath);
-        $reservedNames = array('themes','translations');
         $mod = array();
         foreach ($dir as $file) {
-            if (!$file->isDot() && $file->isDir() && !in_array($file->getFileName(), $reservedNames)) {
+            if (!$file->isDot() && $file->isDir() && !in_array($file->getFileName(), $this->reservedNames)) {
                 //for all folders in <ow>/extensions/
                 $extensionName = $file->getFileName();
                 $modifiedLocalConfig = @filemtime($this->_extensionPath . $extensionName.'.ini');
@@ -471,9 +495,8 @@ class Ontowiki_Extension_Manager
         } else {
             $config = array();
             $dir = new DirectoryIterator($this->_extensionPath);
-            $reservedNames = array('themes','translations');
             foreach ($dir as $file) {
-                if (!$file->isDot() && $file->isDir() && !in_array($file->getFileName(), $reservedNames)) {
+                if (!$file->isDot() && $file->isDir() && !in_array($file->getFileName(), $this->reservedNames)) {
                     $extensionName = $file->getFileName();
 
                     $currentExtensionPath = $file->getPathname() . DIRECTORY_SEPARATOR;
@@ -509,7 +532,7 @@ class Ontowiki_Extension_Manager
             //templates can be in the main extension folder
             $view->addScriptPath($currentExtensionPath);
             if (isset($extensionConfig->templates)) {
-                //or in a folder specified in the config
+                //or in a folder specified in  config
                 $view->addScriptPath($currentExtensionPath.$extensionConfig->templates);
             }
 
@@ -583,6 +606,12 @@ class Ontowiki_Extension_Manager
             // store events
             if (isset($config->helperEvents)) {
                 $helperSpec['events'] = $config->helperEvents->toArray();
+            } else if (isset($config->helperEvent)) {
+                if($config->helperEvent instanceof Zend_Config){
+                    $helperSpec['events'] = $config->helperEvent->toArray();
+                } else {
+                    $helperSpec['events'] = array($config->helperEvent);
+                }
             } else {
                 $helperSpec['events'] = array();
             }
@@ -877,8 +906,6 @@ class Ontowiki_Extension_Manager
             $config->merge($localConfig);
         }
 
-        //convert to object
-        
         //fix missing names
         if (!isset ($config->name)) {
            $config->name = $name;
