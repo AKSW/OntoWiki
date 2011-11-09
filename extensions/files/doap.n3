@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/files/> .
 
-<> foaf:primaryTopic :files .
-:files a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/files/> ;
   owconfig:templates "templates" ;
   owconfig:enabled "false"^^xsd:boolean ;
@@ -27,7 +27,7 @@
  :class <http://localhost/OntoWiki/Config/File> ;
   :model <http://localhost/OntoWiki/Config/toModel> ;
   :DMS_NS <http://ns.aksw.org/DMS/> ;
-  :import_DMS "true"^^xsd:boolean .
-:files doap:release :v1-0 .
+  :import_DMS "1" .
+:this doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

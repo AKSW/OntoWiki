@@ -7,9 +7,14 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/datagathering/> .
 
-<> foaf:primaryTopic :datagathering .
-:datagathering a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/datagathering/> ;
+  owconfig:pluginEvent event:onCreateMenu ;
+  owconfig:pluginEvent event:onPropertiesAction ;
+  owconfig:pluginEvent event:onPreTabsContentAction ;
+  owconfig:pluginEvent event:onDeleteResources ;
+  owconfig:pluginEvent event:onPreDeleteModel ;
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Linked Data Gathering" ;
   doap:description "a component and a wrapper to import linked data and expand local models." ;
@@ -17,11 +22,6 @@
   doap:maintainer <http://aksw.org> ;
   owconfig:templates "templates/" ;
   owconfig:languages "languages/" ;
-  owconfig:helperEvent event:onCreateMenu ;
-  owconfig:helperEvent event:onPropertiesAction ;
-  owconfig:helperEvent event:onPreTabsContentAction ;
-  owconfig:helperEvent event:onDeleteResources ;
-  owconfig:helperEvent event:onPreDeleteModel ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "sync";
@@ -82,6 +82,6 @@
   :ignore <http://www.w3.org/1999/xhtml/vocab#alternate> ;
   :ignore <http://poshrdf.org/ns/mf#nofollow> ;
   :defaultClass <http://xmlns.com/foaf/0.1/Document> .
-:datagathering doap:release :v1-0 .
+:this doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

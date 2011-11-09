@@ -519,11 +519,12 @@ class Ontowiki_Extension_Manager
             }
         }
         
-
+        $logger = Erfurt_App::getInstance()->getLog('extensions');
         $view = OntoWiki::getInstance()->view;
         //register the discovered extensions within ontowiki
         foreach ($config as $extensionName => $extensionConfig) {
-             $currentExtensionPath = $this->_extensionPath . DIRECTORY_SEPARATOR .$extensionName. DIRECTORY_SEPARATOR;
+            $logger->log($extensionName.' =>: ' . print_r($extensionConfig->toArray(), true), 1);
+            $currentExtensionPath = $this->_extensionPath . DIRECTORY_SEPARATOR .$extensionName. DIRECTORY_SEPARATOR;
 
             if (!$extensionConfig->enabled) {
                 continue;
@@ -604,17 +605,18 @@ class Ontowiki_Extension_Manager
             );
             
             // store events
+            $events = array();
             if (isset($config->helperEvents)) {
-                $helperSpec['events'] = $config->helperEvents->toArray();
+                 $events = $config->helperEvents;
             } else if (isset($config->helperEvent)) {
-                if($config->helperEvent instanceof Zend_Config){
-                    $helperSpec['events'] = $config->helperEvent->toArray();
-                } else {
-                    $helperSpec['events'] = array($config->helperEvent);
-                }
-            } else {
-                $helperSpec['events'] = array();
+                 $events = $config->helperEvent;
             }
+            if($events instanceof Zend_Config){
+                $events = $events->toArray();
+            } else if (!is_array($events)){
+                $events =  array($events);
+            }
+            $helperSpec['events'] = $events; 
            
             if ($config->enabled) {
                 $this->_helpers[$componentName] = $helperSpec;
@@ -731,6 +733,12 @@ class Ontowiki_Extension_Manager
     
     private static $_owconfigNS = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/';
     
+    /**
+     * load the doap.n3 file of a extension and transform it into a associative array thats corresponds to ini
+     * @param string $path
+     * @param string $name
+     * @return array config array 
+     */
     public static function loadDoapN3($path, $name) 
     {
         $parser =  Erfurt_Syntax_RdfParser::rdfParserWithFormat('n3');
@@ -762,19 +770,25 @@ class Ontowiki_Extension_Manager
         $config = array('default'=>array(), 'private'=>array(), 'events'=>array(), 'modules'=>array());
         $subconfigs = array();
         foreach ($memModel->getPO($extensionUri) as $key => $values) {
-            //echo $key.PHP_EOL;
+            //handle subconfigs
             if ($key == $scp) {
                 foreach ($values as $val) {
                     $subconfigs[] = $val['value'];
                 }
                 continue;
             } else if ($key == $mp) {
+                //handle modules
                 foreach ($values as $val) {
                     $modules[] = $val['value'];
                 }
                 continue;
-            }
-            if (isset($mapping[$key])) {
+            } else if ($key == $owconfigNS.'pluginEvent') {
+                //handle events that belong to plugins
+                foreach ($values as $value){
+                    $config['events'][] = $value['value'];
+                }
+                continue;
+            } else if (isset($mapping[$key])) {
                 $mappedKey = $mapping[$key];
                 $section = 'default'; 
             } else {

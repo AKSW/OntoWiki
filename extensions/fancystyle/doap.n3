@@ -7,15 +7,15 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/fancystyle/> .
 
-<> foaf:primaryTopic :fancystyle .
-:fancystyle a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/fancystyle/> ;
+  owconfig:pluginEvent event:onAfterInitController ;
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Fancy Style" ;
   doap:description "loads an additional css with round borders." ;
   owconfig:authorLabel "Jonas Brekle" ;
   doap:maintainer <http://3feed.de> ;
-  owconfig:helperEvent event:onAfterInitController ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

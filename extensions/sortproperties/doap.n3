@@ -7,12 +7,12 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/sortproperties/> .
 
-<> foaf:primaryTopic :sortproperties .
-:sortproperties a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sortproperties/> ;
+  owconfig:pluginEvent event:onPropertiesActionData ;
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Sortproperties" ;
-  owconfig:helperEvent event:onPropertiesActionData ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "sort";

@@ -7,15 +7,15 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/imagelink/> .
 
-<> foaf:primaryTopic :imagelink .
-:imagelink a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/imagelink/> ;
-  owconfig:enabled "yes" ;
+  owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
+  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
+  owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Imagelink" ;
   doap:description "A plug-in that renders values of certain properties as HTML images." ;
   owconfig:authorLabel "Norman Heino" ;
-  owconfig:helperEvent event:onDisplayObjectPropertyValue ;
-  owconfig:helperEvent event:onDisplayLiteralPropertyValue ;
   :properties <http://xmlns.com/foaf/0.1/depiction> ;
   :properties <http://xmlns.com/foaf/0.1/logo> ;
   :properties <http://xmlns.com/foaf/0.1/img> ;

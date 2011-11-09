@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/community/> .
 
-<> foaf:primaryTopic :community .
-:community a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/community/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   owconfig:templates "templates" ;
@@ -24,27 +24,27 @@
   owconfig:priority "19" ;
   doap:name "Comment" ;
   owconfig:context "main.window.community" .
-:community owconfig:hasModule :Lastchanges .
+:this owconfig:hasModule :Lastchanges .
 :Lastchanges a owconfig:Module ;
   rdfs:label "Lastchanges" ;
   owconfig:priority "18" ;
   doap:name "Last Changes" ;
   owconfig:context "main.window.modelinfo" ;
   owconfig:context "main.window.dashmodelinfo" .
-:community owconfig:hasModule :Lastcomments .
+:this owconfig:hasModule :Lastcomments .
 :Lastcomments a owconfig:Module ;
   rdfs:label "Lastcomments" ;
   owconfig:priority "15" ;
   doap:name "Last Comments" ;
   owconfig:context "main.window.modelinfo" ;
   owconfig:context "main.window.dashmodelinfo" .
-:community owconfig:hasModule :Rating .
+:this owconfig:hasModule :Rating .
 :Rating a owconfig:Module ;
   rdfs:label "Rating" ;
-  owconfig:caching "no" ;
+  owconfig:caching "false"^^xsd:boolean ;
   owconfig:priority "20" ;
   owconfig:context "main.window.properties" .
-:community :enableRating "false"^^xsd:boolean ;
+:this :enableRating "" ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "about";
@@ -80,6 +80,6 @@
       owconfig:id "note";
       :property <http://rdfs.org/sioc/ns#note>
 ] .
-:community doap:release :v1-0 .
+:this doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

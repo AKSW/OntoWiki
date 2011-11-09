@@ -7,15 +7,15 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/weblink/> .
 
-<> foaf:primaryTopic :weblink .
-:weblink a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/weblink/> ;
-  owconfig:enabled "yes" ;
+  owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
+  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
+  owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Weblink" ;
   doap:description "A plug-in that renders values of certain properties as HTML links." ;
   owconfig:authorLabel "Norman Heino" ;
-  owconfig:helperEvent event:onDisplayObjectPropertyValue ;
-  owconfig:helperEvent event:onDisplayLiteralPropertyValue ;
   :weblink <http://xmlns.com/foaf/0.1/homepage> ;
   :weblink <http://xmlns.com/foaf/0.1/page> ;
   :weblink <http://xmlns.com/foaf/0.1/weblog> ;

@@ -7,15 +7,15 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/cors/> .
 
-<> foaf:primaryTopic :cors .
-:cors a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/cors/> ;
+  owconfig:pluginEvent event:onRouteStartup ;
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "CORS" ;
   doap:description "Setup Cross-Origin Resource Sharing (CORS)" ;
   owconfig:authorLabel "Sebastian Tramp" ;
   doap:maintainer <http://sebastian.tramp.name> ;
-  owconfig:helperEvent event:onRouteStartup ;
   :accessControlAllowOrigin "*" ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

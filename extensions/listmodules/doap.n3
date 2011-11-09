@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/listmodules/> .
 
-<> foaf:primaryTopic :listmodules .
-:listmodules a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/listmodules/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "List Modules" ;
@@ -21,8 +21,8 @@
   owconfig:caching "false"^^xsd:boolean ;
   owconfig:priority "20" ;
   owconfig:context "main.window.list" .
-:listmodules :filterhidden "false"^^xsd:boolean ;
-  :filterlist "false"^^xsd:boolean ;
+:this :filterhidden "" ;
+  :filterlist "" ;
   :property <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ;
   :property <http://www.w3.org/2003/01/geo/wgs84_pos#long> ;
   doap:release :v1-0 .

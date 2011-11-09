@@ -7,15 +7,15 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/mailtolink/> .
 
-<> foaf:primaryTopic :mailtolink .
-:mailtolink a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/mailtolink/> ;
-  owconfig:enabled "yes" ;
+  owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
+  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
+  owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Mailtolink" ;
   doap:description "A plug-in that renders values of certain properties as mailto links." ;
   owconfig:authorLabel "Norman Heino" ;
-  owconfig:helperEvent event:onDisplayObjectPropertyValue ;
-  owconfig:helperEvent event:onDisplayLiteralPropertyValue ;
   :properties <http://xmlns.com/foaf/0.1/mbox> ;
   :properties <http://swrc.ontoware.org/ontology#email> ;
   doap:release :v1-0 .

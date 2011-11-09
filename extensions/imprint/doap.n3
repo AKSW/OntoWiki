@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/imprint/> .
 
-<> foaf:primaryTopic :imprint .
-:imprint a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/imprint/> ;
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Imprint" ;
@@ -18,10 +18,10 @@
   owconfig:hasModule :Default .
 :Default a owconfig:Module ;
   rdfs:label "Default" ;
-  owconfig:caching "no" ;
+  owconfig:caching "false"^^xsd:boolean ;
   owconfig:priority "40" ;
   owconfig:context "main.sidewindows" .
-:imprint :notice "Angaben gemäß § 5 TMG:" ;
+:this :notice "Angaben gemäß § 5 TMG:" ;
   :mail "info@domain.de" ;
   :name "Herr Max Mustermann" ;
   :street "Lange Str. 123" ;

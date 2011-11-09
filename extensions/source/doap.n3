@@ -7,15 +7,15 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/source/> .
 
-<> foaf:primaryTopic :source .
-:source a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/source/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Source" ;
   doap:description "a tab for the list and resource view which displays the N3 source and allows source based editing" ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
-  :navigation "yes" ;
+  :navigation "1" ;
   :position "100" ;
   owconfig:templates "templates" ;
   owconfig:defaultAction "edit" ;

@@ -7,18 +7,18 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/defaultmodel/> .
 
-<> foaf:primaryTopic :defaultmodel .
-:defaultmodel a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/defaultmodel/> ;
+  owconfig:pluginEvent event:onAfterInitController ;
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Default Model" ;
   doap:description "Plugin to select default model if only one available or always" ;
   owconfig:authorLabel "Christoph Rieß" ;
-  owconfig:helperEvent event:onAfterInitController ;
   :modelUri <http://showcase.ontowiki.net/> ;
-  :modelsHide "true"^^xsd:boolean ;
+  :modelsHide "1" ;
   :modelsExclusiveRight "ModelManagement" ;
-  :setSelectedResource "false"^^xsd:boolean ;
+  :setSelectedResource "" ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

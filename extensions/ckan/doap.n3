@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/ckan/> .
 
-<> foaf:primaryTopic :ckan .
-:ckan a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/ckan/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "CKAN Integration" ;
@@ -17,6 +17,7 @@
   doap:maintainer <http://sebastian.tramp.name> ;
   owconfig:templates "templates" ;
   owconfig:languages "languages" ;
+  owconfig:helperEvent event:onCreateMenu ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "features";

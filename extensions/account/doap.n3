@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/account/> .
 
-<> foaf:primaryTopic :account .
-:account a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/account/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Login Module" ;
@@ -20,9 +20,9 @@
   owconfig:hasModule :Default .
 :Default a owconfig:Module ;
   rdfs:label "Default" ;
-  owconfig:caching "yes" ;
+  owconfig:caching "true"^^xsd:boolean ;
   owconfig:priority "40" ;
   owconfig:context "main.sidewindows" .
-:account doap:release :v1-0 .
+:this doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/savedqueries/> .
 
-<> foaf:primaryTopic :savedqueries .
-:savedqueries a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/savedqueries/> ;
   owconfig:enabled "false"^^xsd:boolean ;
   owconfig:defaultAction "init" ;
@@ -24,7 +24,7 @@
   rdfs:label "Default" ;
   owconfig:priority "30" ;
   owconfig:context "main.sidewindows" .
-:savedqueries :title "saved Queries" ;
+:this :title "saved Queries" ;
   :queryClass <http://ns.ontowiki.net/SysOnt/SparqlQuery> ;
   :queryLabel <http://purl.org/dc/elements/1.1/title> ;
   :queryId <http://rdfs.org/sioc/ns#id> ;

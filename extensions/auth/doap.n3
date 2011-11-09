@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/auth/> .
 
-<> foaf:primaryTopic :auth .
-:auth a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/auth/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   owconfig:templates "templates/" ;

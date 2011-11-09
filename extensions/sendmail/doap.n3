@@ -7,14 +7,14 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/sendmail/> .
 
-<> foaf:primaryTopic :sendmail .
-:sendmail a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sendmail/> ;
+  owconfig:pluginEvent event:onEmailsend ;
   owconfig:enabled "false"^^xsd:boolean ;
   doap:name "Sendmail" ;
   doap:description "A plug-in that sends mails via a mailserver using zend_mail" ;
   owconfig:authorLabel "Maier Christian, Niederstätter Michael" ;
-  owconfig:helperEvent event:onEmailsend ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "smtp";

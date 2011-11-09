@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <http://ns.ontowiki.net/Extensions/exconf/> .
 
-<> foaf:primaryTopic :exconf .
-:exconf a doap:Project ;
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/exconf/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   doap:name "Extensions Configuration" ;
@@ -19,10 +19,10 @@
   owconfig:hasModule :Outline .
 :Outline a owconfig:Module ;
   rdfs:label "Extension Outline" ;
-  owconfig:caching "no" ;
+  owconfig:caching "false"^^xsd:boolean ;
   owconfig:priority "4" ;
   owconfig:context "main.window.exconf" .
-:exconf :repoUrl <http://plugins.ontowiki.net/index.php/service/sparql> ;
+:this :repoUrl <http://plugins.ontowiki.net/index.php/service/sparql> ;
   :graph <http://ns.ontowiki.net/Extensions/> ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

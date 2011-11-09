@@ -8,7 +8,8 @@ class ExtensionSerializer
                         ),
         'enabled'       =>array(
                             'type'=>'literal',
-                            'property'=>'owconfig:enabled'
+                            'property'=>'owconfig:enabled',
+                            'datatype' => 'boolean'
                         ),
         'author'        =>array(
                             'type'=>'literal',
@@ -28,7 +29,8 @@ class ExtensionSerializer
                         ),
         'caching'   =>array(
                             'type'=>'literal',
-                            'property'=>'owconfig:caching'
+                            'property'=>'owconfig:caching',
+                            'datatype' => 'boolean'
                         ),
         'priority'   =>array(
                             'type'=>'literal',
@@ -104,10 +106,12 @@ class ExtensionSerializer
         }
         if ((isset($this->_map[$property]) && $this->_map[$property]['type'] == 'uri') || Erfurt_Uri::check($value)) {
              $object =  '<'.$value.'>';
-        } else if (is_string($value) && $value == 'true' || $value == 'false') {
-             $object =  '"'.($value == 'true' ? 'true' : 'false').'"^^xsd:boolean'; //why?
         } else if (is_bool($value)) {
              $object =  '"'.($value ? 'true' : 'false').'"^^xsd:boolean';
+        } else if (is_string($value) && $value == 'true' || $value == 'false') {
+             $object =  '"'.($value == 'true' ? 'true' : 'false').'"^^xsd:boolean'; //why?
+        } else if (isset($this->_map[$property]['datatype']) && $this->_map[$property]['datatype'] == 'boolean') {
+             $object =  '"'.((bool)$value ? 'true' : 'false').'"^^xsd:boolean';
         } else {
              $object =  '"'.$value.'"';
         }
@@ -314,7 +318,7 @@ EOT;
         }
         //var_dump($config); exit;
 
-        $subject = ':'.$extension;
+        $subject = ':this';
         $es = new ExtensionSerializer();
         $es->printStatement('<>', 'foaf:primaryTopic', $subject);
         $es->printStatement($subject, 'a', 'doap:Project');
@@ -338,10 +342,28 @@ EOT;
                             $mp->modules, 
                             array('default'=>(array($property=>$value)))
                         );
-                    } else if ($sectionname == 'events') {
+                    } else if ($sectionname == 'default' && $property == 'helperEvents') {
                         $predicate = 'owconfig:helperEvent';
-                        $object = 'event:'.$value;
-                        $es->printStatement($subject, $predicate, $object);
+                        if(is_array($value)){
+                            foreach ($value as $v){
+                                $object = 'event:'.$v;
+                                $es->printStatement($subject, $predicate, $object);
+                            }
+                        } else {
+                            $object = 'event:'.$value;
+                            $es->printStatement($subject, $predicate, $object);
+                        }
+                    } else if ($sectionname == 'events') {
+                        $predicate = 'owconfig:pluginEvent';
+                        if(is_array($value)){
+                            foreach ($value as $v){
+                                $object = 'event:'.$v;
+                                $es->printStatement($subject, $predicate, $object);
+                            }
+                        } else {
+                            $object = 'event:'.$value;
+                            $es->printStatement($subject, $predicate, $object);
+                        }
                     } else {
                         //this is not in global section and not in events
                         $predicate = $es->getPredicate($property, $sectionname);
