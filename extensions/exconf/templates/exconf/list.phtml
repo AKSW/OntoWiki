@@ -43,7 +43,7 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
                         </span>
                     </a>
                 <?php endif; ?>
-                    <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>" class="item">
+                    <a href="<?php echo $this->urlBase; if(!isset($extension->confAction)){?>exconf/conf/?name=<?php echo $name; } else {echo $extension->confAction;}?>" class="item">
                         <span title="Configure" class="icon icon-edit">
                             <span>Configure</span>
                         </span>
