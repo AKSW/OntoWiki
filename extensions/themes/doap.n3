@@ -1,9 +1,0 @@
-!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-@prefix doap: <http://usefulinc.com/ns/doap#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
-@prefix extension: <http://ns.ontowiki.net/Extensions/> .
-@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/themes> .
-:themes a doap:Project
