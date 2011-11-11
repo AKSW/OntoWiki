@@ -46,15 +46,16 @@ function rrmdir($dir, $check = true) {
  * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class ExconfController extends OntoWiki_Controller_Component {
-
-    const EXTENSION_CLASS = "http://ns.ontowiki.net/Extensions/Extension";
-    const EXTENSION_TITLE_PROPERTY = "http://www.w3.org/2000/01/rdf-schema#label"; //rdfs:label
-    const EXTENSION_NAME_PROPERTY = "http://rdfs.org/sioc/ns#name"; //rdfs:label
-    const EXTENSION_DESCRIPTION_PROPERTY = "http://purl.org/dc/elements/1.1/description"; //dc:description
-    const EXTENSION_LATESTVERSION_PROPERTY = "http://ns.ontowiki.net/Extensions/latestVersion";
-    const EXTENSION_LATESTRELEASELOCATION_PROPERTY = "http://ns.ontowiki.net/Extensions/latestReleaseLocation";
-
+class ExconfController extends OntoWiki_Controller_Component 
+{
+    const EXTENSION_CLASS = 'http://usefulinc.com/ns/doap#Project';
+    const EXTENSION_TITLE_PROPERTY = 'http://www.w3.org/2000/01/rdf-schema#label'; //rdfs:label
+    const EXTENSION_NAME_PROPERTY = 'http://usefulinc.com/ns/doap#name'; //doap:name
+    const EXTENSION_DESCRIPTION_PROPERTY = 'http://usefulinc.com/ns/doap#description'; //doap:description
+    const EXTENSION_LATESTVERSION_PROPERTY = 'http://ns.ontowiki.net/Extensions/latestVersion';
+    const EXTENSION_LATESTRELEASELOCATION_PROPERTY = 'http://ns.ontowiki.net/Extensions/latestReleaseLocation';
+    const EXTENSION_AUTHOR_PROPERTY = 'http://usefulinc.com/ns/doap#maintainer';
+    const EXTENSION_AUTHORLABEL_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorLabel';
 
     protected $use_ftp = false;
     protected $writeable = true;
@@ -63,7 +64,6 @@ class ExconfController extends OntoWiki_Controller_Component {
     protected $sftp = null;
 
     public function __call($method, $args) {
-        echo "forward";
         $this->_forward('list');
     }
     
@@ -258,11 +258,11 @@ class ExconfController extends OntoWiki_Controller_Component {
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Explore Repo'));
 
         $repoUrl = $this->_privateConfig->repoUrl;
-        if(($otherRepo = $this->getParam("repoUrl")) != null){
+        if(($otherRepo = $this->getParam('repoUrl')) != null){
             $repoUrl = $otherRepo;
         }
         $graph = $this->_privateConfig->graph;
-        if(($otherGraph = $this->getParam("graph")) != null){
+        if(($otherGraph = $this->getParam('graph')) != null){
             $graph = $otherGraph;
         }
         $this->view->repoUrl = $repoUrl;
@@ -273,27 +273,30 @@ class ExconfController extends OntoWiki_Controller_Component {
         $other->configs = $configs;
        
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
-        $listName = "extensions";
+        $listName = 'extensions';
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
             $list->invalidate(); //remote repo may change data
-            //$list->setStore($store); //TODO serialization replaces the store with the default store...
-            $listHelper->addList($listName, $list, $this->view, "list_extensions_main", $other);
+            $listHelper->addList($listName, $list, $this->view, 'list_extensions_main', $other);
         } else {
-            $adapter = new Erfurt_Store_Adapter_Sparql(array("serviceurl"=>$repoUrl, 'graphs'=>array($graph)));
-            $store = new Erfurt_Store(array("adapterInstance"=>$adapter), "sparql");
+            $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceurl'=>$repoUrl, 'graphs'=>array($graph)));
+            $store = new Erfurt_Store(array('adapterInstance'=>$adapter), 'sparql');
             $rdfGraphObj = new Erfurt_Rdf_Model($graph);
 
             $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array());
             $list->addTypeFilter(self::EXTENSION_CLASS, null, array('withChilds'=>false));
-            $list->addShownProperty(self::EXTENSION_NAME_PROPERTY, "name"); //internal name
-            $list->addShownProperty(self::EXTENSION_TITLE_PROPERTY, "title"); //pretty name
-            $list->addShownProperty(self::EXTENSION_DESCRIPTION_PROPERTY, "description");
-            $list->addShownProperty(self::EXTENSION_LATESTVERSION_PROPERTY, "latestVersion");
-            $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, "latestReleaseLocation");
+            $list->addShownProperty(self::EXTENSION_NAME_PROPERTY, 'name'); //internal name (folder name)
+            $list->addShownProperty(self::EXTENSION_TITLE_PROPERTY, 'title'); //pretty name (label)
+            $list->addShownProperty(self::EXTENSION_DESCRIPTION_PROPERTY, 'description');
+            $list->addShownProperty(self::EXTENSION_AUTHOR_PROPERTY, 'author');
+            $list->addShownProperty(self::EXTENSION_AUTHORLABEL_PROPERTY, 'authorlabel');
+            $list->addShownProperty(self::EXTENSION_LATESTVERSION_PROPERTY, 'latestVersion');
+            $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, 'latestReleaseLocation');            
 
-            $listHelper->addListPermanently($listName, $list, $this->view, "list_extensions_main", $other);
+            $listHelper->addListPermanently($listName, $list, $this->view, 'list_extensions_main', $other);
         }
+        //echo htmlentities($list->getResourceQuery());
+        //echo htmlentities($list->getQuery());
     }
 
     /**

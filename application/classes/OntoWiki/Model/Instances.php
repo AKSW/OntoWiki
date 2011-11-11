@@ -703,6 +703,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 );
         } else if(isset($options['subtypes'])){ //dont query, take the given. maybe the new navigation can use this
             $subClasses = $options['subtypes'];
+        } else {
+            $subClasses = array();
         }
 
         if (count($subClasses)>1) {
