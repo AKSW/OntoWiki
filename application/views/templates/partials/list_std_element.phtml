@@ -8,7 +8,7 @@
             <a class="hasMenu expandable"
                about="<?php echo $this->instanceUri ?>"
                            <?php if(isset($this->instanceData[$this->instanceUri]['__TYPE'])) : ?>
-               typeof="<?php echo $this->curie($this->instanceData[$this->instanceUri]['__TYPE'][0]['value']) ?>"
+               typeof="<?php echo $this->curie($this->instanceData[$this->instanceUri]['__TYPE'][0]['origvalue']); /* dont use the titlehelper generated value*/ ?>"
                                <?php endif; ?>
                href="<?php echo $this->instance['url']?>">
                         <?php echo $this->instance['title'] ?>
@@ -22,7 +22,7 @@
                                     <?php echo $type['value'] . ($count > ++$j ? ', ' : '') ?>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <?php echo $this->instanceData[$this->instanceUri]['__TYPE'][0]['value'] ?>
+                                <?php echo $this->instanceData[$this->instanceUri]['__TYPE'][0]['value']; /* title helper replaces the uri with a label here*/ ?>
                             <?php endif; ?>
                         <?php endif; ?>
             <?php } else { ?>

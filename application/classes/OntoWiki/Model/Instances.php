@@ -1020,8 +1020,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $result = $this->_results['results']['bindings'];
         
+        //fill titlehelper
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-
         foreach ($result as $row) {
             foreach ($this->_shownProperties as $propertyUri => $property) {
                 if (
