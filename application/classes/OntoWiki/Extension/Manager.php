@@ -519,12 +519,10 @@ class Ontowiki_Extension_Manager
             }
         }
         
-        $logger = Erfurt_App::getInstance()->getLog('extensions');
         $view = OntoWiki::getInstance()->view;
         //register the discovered extensions within ontowiki
         foreach ($config as $extensionName => $extensionConfig) {
-            $logger->log($extensionName.' =>: ' . print_r($extensionConfig->toArray(), true), 1);
-            $currentExtensionPath = $this->_extensionPath . DIRECTORY_SEPARATOR .$extensionName. DIRECTORY_SEPARATOR;
+            $currentExtensionPath = $this->_extensionPath .$extensionName. DIRECTORY_SEPARATOR;
 
             if (!$extensionConfig->enabled) {
                 continue;
@@ -765,7 +763,7 @@ class Ontowiki_Extension_Manager
         $base = dirname($path).DIRECTORY_SEPARATOR;
         $extensionUri = $memModel->getValue($base, 'http://xmlns.com/foaf/0.1/primaryTopic');
         $privateNS = $memModel->getValue($extensionUri, $owconfigNS.'privateNamespace');
-        
+
         $modules = array();
         $config = array('default'=>array(), 'private'=>array(), 'events'=>array(), 'modules'=>array());
         $subconfigs = array();
@@ -794,7 +792,6 @@ class Ontowiki_Extension_Manager
             } else {
                 $mappedKey = self::getPrivateKey($key, $privateNS);
                 if ($mappedKey == null) {
-                    //echo 'skipped '.$key.' -> '.$mappedKey.' '.PHP_EOL;
                     continue; //skip irregular keys
                 }
                 $section = 'private';

@@ -7,7 +7,11 @@ class MarkdownPlugin extends OntoWiki_Plugin {
 
     public function init() {
         $this->properties = array_values($this->_privateConfig->properties->toArray());
-        $this->datatypes = array_values($this->_privateConfig->datatypes->toArray());
+        if (isset($this->_privateConfig->datatypes) && $this->_privateConfig->datatypes instanceof Zend_Config) {
+            $this->datatypes = array_values($this->_privateConfig->datatypes->toArray());
+        } else if (isset($this->_privateConfig->datatypes)) {
+            $this->datatypes = array($this->_privateConfig->datatypes);
+        }
     }
 
     public function onDisplayLiteralPropertyValue($event) {
