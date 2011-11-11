@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "navigation" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/navigation/> ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Navigation Module" ;
+  rdfs:label "Navigation Module" ;
   doap:description "an extensible and highly customizable module to navigate in knowledge bases via tree-based information (e.g. classes)" ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
@@ -36,7 +37,7 @@
       owconfig:config [
           a owconfig:Config;
           owconfig:id "label";
-          doap:name "By Label" ;
+          rdfs:label "By Label" ;
           :type <http://www.w3.org/2000/01/rdf-schema#label>
     ]
 ];
@@ -46,7 +47,7 @@
       owconfig:config [
           a owconfig:Config;
           owconfig:id "classes";
-          doap:name "Classes" ;
+          rdfs:label "Classes" ;
           :cache "" ;
           :titleMode "titleHelper" ;
           :checkVisibility "" ;
@@ -80,7 +81,7 @@
  owconfig:config [
           a owconfig:Config;
           owconfig:id "properties";
-          doap:name "Properties" ;
+          rdfs:label "Properties" ;
           :titleMode "titleHelper" ;
           :hierarchyTypes <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ;
           :hierarchyTypes <http://www.w3.org/2002/07/owl#DatatypeProperty> ;
@@ -110,7 +111,7 @@
  owconfig:config [
           a owconfig:Config;
           owconfig:id "spatial";
-          doap:name "Spatial" ;
+          rdfs:label "Spatial" ;
           :hierarchyTypes <http://ns.aksw.org/spatialHierarchy/SpatialArea> ;
           :hierarchyTypes <http://ns.aksw.org/spatialHierarchy/Planet> ;
           :hierarchyTypes <http://ns.aksw.org/spatialHierarchy/Continent> ;
@@ -134,7 +135,7 @@
  owconfig:config [
           a owconfig:Config;
           owconfig:id "faun";
-          doap:name "Faunistics" ;
+          rdfs:label "Faunistics" ;
           :hierarchyTypes <http://purl.org/net/faunistics#Family> ;
           :hierarchyTypes <http://purl.org/net/faunistics#Genus> ;
           :hierarchyTypes <http://purl.org/net/faunistics#Species> ;
@@ -156,7 +157,7 @@
  owconfig:config [
           a owconfig:Config;
           owconfig:id "skos";
-          doap:name "SKOS" ;
+          rdfs:label "SKOS" ;
           :hierarchyTypes <http://www.w3.org/2004/02/skos/core#Concept> ;
           owconfig:config [
               a owconfig:Config;
@@ -176,7 +177,7 @@
  owconfig:config [
           a owconfig:Config;
           owconfig:id "org";
-          doap:name "Groups" ;
+          rdfs:label "Groups" ;
           :hierarchyTypes <http://xmlns.com/foaf/0.1/Group> ;
           :hierarchyTypes <http://xmlns.com/foaf/0.1/Organization> ;
           owconfig:config [
@@ -196,7 +197,7 @@
  owconfig:config [
           a owconfig:Config;
           owconfig:id "go";
-          doap:name "Gene Ontology" ;
+          rdfs:label "Gene Ontology" ;
           :hierarchyTypes <http://www.geneontology.org/dtds/go.dtd#term> ;
           owconfig:config [
               a owconfig:Config;
@@ -216,7 +217,7 @@
  owconfig:config [
           a owconfig:Config;
           owconfig:id "checklist";
-          doap:name "Checklist" ;
+          rdfs:label "Checklist" ;
           :titleMode "titleHelper" ;
           :hierarchyTypes <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#Country> ;
           owconfig:config [

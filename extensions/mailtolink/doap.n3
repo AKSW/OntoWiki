@@ -9,11 +9,12 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "mailtolink" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/mailtolink/> ;
   owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
   owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Mailtolink" ;
+  rdfs:label "Mailtolink" ;
   doap:description "A plug-in that renders values of certain properties as mailto links." ;
   owconfig:authorLabel "Norman Heino" ;
   :properties <http://xmlns.com/foaf/0.1/mbox> ;

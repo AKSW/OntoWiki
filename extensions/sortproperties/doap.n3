@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "sortproperties" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sortproperties/> ;
   owconfig:pluginEvent event:onPropertiesActionData ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "Sortproperties" ;
+  rdfs:label "Sortproperties" ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "sort";

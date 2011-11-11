@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "sendmail" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sendmail/> ;
   owconfig:pluginEvent event:onEmailsend ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "Sendmail" ;
+  rdfs:label "Sendmail" ;
   doap:description "A plug-in that sends mails via a mailserver using zend_mail" ;
   owconfig:authorLabel "Maier Christian, Niederstätter Michael" ;
   owconfig:config [

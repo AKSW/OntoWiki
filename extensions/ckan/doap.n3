@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "ckan" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/ckan/> ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "CKAN Integration" ;
+  rdfs:label "CKAN Integration" ;
   doap:description "allows for registration of CKAN datasets from your OntoWiki instance" ;
   owconfig:authorLabel "Sebastian Tramp" ;
   doap:maintainer <http://sebastian.tramp.name> ;

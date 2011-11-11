@@ -9,13 +9,14 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "semanticsitemap" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/semanticsitemap/> ;
   owconfig:pluginEvent event:onRouteStartup ;
   owconfig:enabled "false"^^xsd:boolean ;
   owconfig:defaultAction "sitemap.xml" ;
   owconfig:templates "templates/" ;
   owconfig:languages "languages/" ;
-  doap:name "Semantic Site Map" ;
+  rdfs:label "Semantic Site Map" ;
   doap:description "represent the content of ontowiki as a semantic sitemap." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

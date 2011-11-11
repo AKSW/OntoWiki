@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "sindice" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/sindice/> ;
   owconfig:pluginEvent event:onDatagatheringComponentSearch ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "Sindice" ;
+  rdfs:label "Sindice" ;
   doap:description "provides results from sindice via datagathering search" ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

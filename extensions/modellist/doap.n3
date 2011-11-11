@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "modellist" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/modellist/> ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Knowledge Bases Module" ;
+  rdfs:label "Knowledge Bases Module" ;
   doap:description "provides a model list with create and view menu." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

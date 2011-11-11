@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "markdown" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/markdown/> ;
   owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Markdown" ;
+  rdfs:label "Markdown" ;
   doap:description "A plug-in that renders markdown values of certain properties as html." ;
   owconfig:authorLabel "Marvin Frommhold" ;
   :properties <http://purl.org/dc/elements/1.1/description> ;

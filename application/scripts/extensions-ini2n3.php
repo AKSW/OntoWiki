@@ -4,7 +4,7 @@ class ExtensionSerializer
       private $_map = array(
         'name'          => array(
                             'type'=>'literal',
-                            'property'=>'doap:name'
+                            'property'=>'rdfs:label'
                         ),
         'enabled'       =>array(
                             'type'=>'literal',
@@ -322,6 +322,7 @@ EOT;
         $es = new ExtensionSerializer();
         $es->printStatement('<>', 'foaf:primaryTopic', $subject);
         $es->printStatement($subject, 'a', 'doap:Project');
+        $es->printStatement($subject, 'doap:name', '"'.$extension.'"');
         $es->printStatement($subject, 'owconfig:privateNamespace', '<'.$privNS.'>');
         
         $mp = new NestedPropertyAndModuleHandler($es, $subject);
@@ -413,15 +414,16 @@ $path = realpath(__DIR__.'/../../libraries/');
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 require_once realpath(__DIR__.'/../../libraries/Erfurt/Erfurt/Uri.php');
 
-if ($argc > 3) {
+if ($argc > 4) {
     echo 'usage: extensions-ini2n3.sh [<extension-name>]'.PHP_EOL; exit(-1);
 } else {
     if ($argc==2) {
         echo Converter::convert(__DIR__.'/../../extensions/'.$argv[1].'/default.ini', $argv[1]);
-    } else if ($argc==3) {
+    } else if ($argc==4) {
         $in = $argv[1];
         $out = $argv[2];
-        $newContent = Converter::convert($in, 'ontowiki');
+        $name = $argv[3];
+        $newContent = Converter::convert($in, $name);
         file_put_contents($out, $newContent);
     } else {
         $dir = realpath(__DIR__.'/../../extensions/');
@@ -432,6 +434,7 @@ if ($argc > 3) {
                         $file != "." && $file != ".." && $file != "themes" && 
                         $file != "translations" && is_dir($fullPath) && is_writable($fullPath)
                 ) {
+                    echo $file.PHP_EOL;
                     $origIni = realpath($fullPath.DIRECTORY_SEPARATOR.'default.ini');
                     if (file_exists($origIni) && is_readable($origIni)) {
                         $newFile = $fullPath."/doap.n3";

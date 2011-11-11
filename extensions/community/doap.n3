@@ -9,33 +9,35 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "community" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/community/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   owconfig:templates "templates" ;
   owconfig:languages "languages/" ;
   owconfig:defaultAction "list" ;
-  doap:name "Community" ;
+  rdfs:label "Community" ;
   doap:description "rate and comment on resources." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
+  :confAction "community/configure" ;
   owconfig:hasModule :Comment .
 :Comment a owconfig:Module ;
   rdfs:label "Comment" ;
   owconfig:priority "19" ;
-  doap:name "Comment" ;
+  rdfs:label "Comment" ;
   owconfig:context "main.window.community" .
 :this owconfig:hasModule :Lastchanges .
 :Lastchanges a owconfig:Module ;
   rdfs:label "Lastchanges" ;
   owconfig:priority "18" ;
-  doap:name "Last Changes" ;
+  rdfs:label "Last Changes" ;
   owconfig:context "main.window.modelinfo" ;
   owconfig:context "main.window.dashmodelinfo" .
 :this owconfig:hasModule :Lastcomments .
 :Lastcomments a owconfig:Module ;
   rdfs:label "Lastcomments" ;
   owconfig:priority "15" ;
-  doap:name "Last Comments" ;
+  rdfs:label "Last Comments" ;
   owconfig:context "main.window.modelinfo" ;
   owconfig:context "main.window.dashmodelinfo" .
 :this owconfig:hasModule :Rating .

@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "googletracking" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/googletracking/> ;
   owconfig:pluginEvent event:onAfterInitController ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "Google Analytics" ;
+  rdfs:label "Google Analytics" ;
   doap:description "A plug-in that adds a Google Analytics Tracking Code to every page." ;
   owconfig:authorLabel "Niederstätter Michael" ;
   doap:release :v1-0 .

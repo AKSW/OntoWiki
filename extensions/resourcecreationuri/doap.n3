@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "resourcecreationuri" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/resourcecreationuri/> ;
   owconfig:pluginEvent event:onUpdateServiceAction ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Custom Resource URI Creation" ;
+  rdfs:label "Custom Resource URI Creation" ;
   doap:description "plugin to create nice URIs on instance creation via RDFauthor/updateService" ;
   owconfig:authorLabel "Christoph Rieß" ;
   :fromModel "1" ;

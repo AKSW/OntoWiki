@@ -9,12 +9,13 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "files" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/files/> ;
   owconfig:templates "templates" ;
   owconfig:enabled "false"^^xsd:boolean ;
   owconfig:languages "languages/" ;
   owconfig:defaultAction "display" ;
-  doap:name "File Resource Manager" ;
+  rdfs:label "File Resource Manager" ;
   doap:description "manage file uploads." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

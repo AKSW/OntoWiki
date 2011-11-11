@@ -9,6 +9,7 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "pingback" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/pingback/> ;
   owconfig:pluginEvent event:onBeforeLinkedDataRedirect ;
   owconfig:pluginEvent event:onAfterInitController ;
@@ -18,7 +19,7 @@
   owconfig:pluginEvent event:beforeExportResource ;
   owconfig:templates "templates" ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Pingback Server" ;
+  rdfs:label "Pingback Server" ;
   doap:description "provides a Semantic Pingback Server and pingback enables all linked data resources" ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

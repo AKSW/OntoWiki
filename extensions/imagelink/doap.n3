@@ -9,11 +9,12 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "imagelink" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/imagelink/> ;
   owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
   owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Imagelink" ;
+  rdfs:label "Imagelink" ;
   doap:description "A plug-in that renders values of certain properties as HTML images." ;
   owconfig:authorLabel "Norman Heino" ;
   :properties <http://xmlns.com/foaf/0.1/depiction> ;

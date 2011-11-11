@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "listmodules" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/listmodules/> ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "List Modules" ;
+  rdfs:label "List Modules" ;
   doap:description "Modules showed in the list view (show properties)" ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "autologin" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/autologin/> ;
   owconfig:pluginEvent event:onRouteShutdown ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "AutoLogin" ;
+  rdfs:label "AutoLogin" ;
   doap:description "A plug-in that allows FOAF+SSL based auto login." ;
   owconfig:authorLabel "Philipp Frischmuth" ;
   doap:release :v1-0 .

@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "jsonrpc" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/jsonrpc/> ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "JSON RPC Server" ;
+  rdfs:label "JSON RPC Server" ;
   doap:description "provides a service for remote control (e.g. with owcli)." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

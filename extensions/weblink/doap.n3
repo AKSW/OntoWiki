@@ -9,11 +9,12 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "weblink" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/weblink/> ;
   owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
   owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Weblink" ;
+  rdfs:label "Weblink" ;
   doap:description "A plug-in that renders values of certain properties as HTML links." ;
   owconfig:authorLabel "Norman Heino" ;
   :weblink <http://xmlns.com/foaf/0.1/homepage> ;

@@ -9,11 +9,12 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "selectlanguage" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/selectlanguage/> ;
   owconfig:pluginEvent event:onPostBootstrap ;
   owconfig:pluginEvent event:onBeforeInitController ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Select Language" ;
+  rdfs:label "Select Language" ;
   doap:description "This plugin is used for switching to a specific language" ;
   owconfig:authorLabel "Michael Martin" ;
   owconfig:config [

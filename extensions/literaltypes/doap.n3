@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "literaltypes" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/literaltypes/> ;
   owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "LiteralTypes" ;
+  rdfs:label "LiteralTypes" ;
   doap:description "Visualizes the language or the datatype of a LiteralValue" ;
   owconfig:authorLabel "Michael Martin" ;
   doap:release :v1-0 .

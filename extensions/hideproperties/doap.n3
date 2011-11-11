@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "hideproperties" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/hideproperties/> ;
   owconfig:pluginEvent event:onPropertiesActionData ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "HideProperties" ;
+  rdfs:label "HideProperties" ;
   doap:description "A plug-in that hides defined Properties in the ressourceview" ;
   owconfig:authorLabel "Niederstaetter Michael ,  Maier Christian" ;
   owconfig:config [

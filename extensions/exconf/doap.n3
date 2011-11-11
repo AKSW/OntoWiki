@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "exconf" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/exconf/> ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Extensions Configuration" ;
+  rdfs:label "Extensions Configuration" ;
   doap:description "provides this component to configure / toggle extensions." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

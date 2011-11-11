@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "cors" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/cors/> ;
   owconfig:pluginEvent event:onRouteStartup ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "CORS" ;
+  rdfs:label "CORS" ;
   doap:description "Setup Cross-Origin Resource Sharing (CORS)" ;
   owconfig:authorLabel "Sebastian Tramp" ;
   doap:maintainer <http://sebastian.tramp.name> ;

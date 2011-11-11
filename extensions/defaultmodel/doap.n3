@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "defaultmodel" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/defaultmodel/> ;
   owconfig:pluginEvent event:onAfterInitController ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "Default Model" ;
+  rdfs:label "Default Model" ;
   doap:description "Plugin to select default model if only one available or always" ;
   owconfig:authorLabel "Christoph Rieß" ;
   :modelUri <http://showcase.ontowiki.net/> ;

@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "account" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/account/> ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Login Module" ;
+  rdfs:label "Login Module" ;
   doap:description "provides a login module and a recover action." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "savedqueries" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/savedqueries/> ;
   owconfig:enabled "false"^^xsd:boolean ;
   owconfig:defaultAction "init" ;
-  doap:name "Saved Queries" ;
+  rdfs:label "Saved Queries" ;
   owconfig:templates "templates" ;
   owconfig:languages "languages/" ;
   doap:description "display saved queries in a module, and execute them" ;

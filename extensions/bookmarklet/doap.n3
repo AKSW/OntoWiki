@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "bookmarklet" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/bookmarklet/> ;
   owconfig:enabled "false"^^xsd:boolean ;
-  doap:name "RDFauthor Bookmarklet" ;
+  rdfs:label "RDFauthor Bookmarklet" ;
   doap:description "extract rdfa from websites, import to ontowiki, done with RDFauthor delivered in a bookmarklet." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

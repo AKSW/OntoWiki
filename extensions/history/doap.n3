@@ -9,12 +9,13 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "history" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/history/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   owconfig:templates "templates" ;
   owconfig:languages "languages/" ;
   owconfig:defaultAction "list" ;
-  doap:name "History" ;
+  rdfs:label "History" ;
   doap:description "show the revision history of resources (creation, changes, etc.) and provide rollback GUI." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

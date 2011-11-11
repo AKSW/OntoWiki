@@ -9,10 +9,11 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "filter" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/filter/> ;
   owconfig:templates "templates" ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Filter Resource Lists" ;
+  rdfs:label "Filter Resource Lists" ;
   doap:description "provides a GUI to apply filters on a list of resources." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

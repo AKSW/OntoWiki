@@ -9,11 +9,12 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "manchester" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/manchester/> ;
   owconfig:enabled "false"^^xsd:boolean ;
   owconfig:templates "templates" ;
   owconfig:languages "languages" ;
-  doap:name "Manchester" ;
+  rdfs:label "Manchester" ;
   doap:description "Class Editor with Manchester Syntax" ;
   owconfig:authorLabel "AKSW" ;
   owconfig:hasModule :Manchester .

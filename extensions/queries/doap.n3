@@ -9,9 +9,10 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "queries" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/queries/> ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "SPARQL Query" ;
+  rdfs:label "SPARQL Query" ;
   doap:description "allows to execute and manage SPARQL queries." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

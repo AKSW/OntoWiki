@@ -9,12 +9,13 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "linkeddataserver" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/linkeddataserver/> ;
   owconfig:pluginEvent event:onIsDispatchable ;
   owconfig:pluginEvent event:onNeedsGraphForLinkedDataUri ;
   owconfig:pluginEvent event:onNeedsLinkedDataUri ;
   owconfig:enabled "true"^^xsd:boolean ;
-  doap:name "Linked Data Server" ;
+  rdfs:label "Linked Data Server" ;
   doap:description "A plug-in that converts resource URIs to internal OntoWiki URLs if a resource exists." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;

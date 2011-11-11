@@ -9,11 +9,12 @@
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
+  doap:name "auth" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/auth/> ;
   owconfig:enabled "true"^^xsd:boolean ;
   owconfig:templates "templates/" ;
   owconfig:languages "languages/" ;
-  doap:name "Authentification" ;
+  rdfs:label "Authentification" ;
   doap:description "provides WebID and FOAF+SSL authentification." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
