@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="Ontowiki">
  <description>A Ontowiki coding standard.</description>
- 
- <exclude-pattern>*/libraries/*</exclude-pattern>
- 
+  
  <rule ref="Zend"/>
 
 

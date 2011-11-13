@@ -25,6 +25,10 @@ help:
 	@echo "     'make clean' (deletes all log and cache files)"
 	@echo "     'make cs-install' (install CodeSniffer)"
 	@echo "     'make cs-uninstall' (uninstall CodeSniffer)"
+	@echo "     'make cs-install-submodule MPATH=<path>' (install CodeSniffer on a submodule,"
+	@echo "             <path> must by the relativ path to the submodule)"
+	@echo "     'make cs-uninstall-submodule MPATH=<path>' (uninstall CodeSniffer on a submodule,"
+	@echo "             <path> must by the relativ path to the submodule)"
 	@echo "     'make cs-enable' (enable CodeSniffer to check code before every commit)"
 	@echo "     'make cs-disable' (disable CodeSniffer code checking)"
 	@echo "     'make cs-check-commit' (run pre-commit code checking manually)"
@@ -125,49 +129,53 @@ debianize:
 # coding standard
 
 # #### config ####
-# if severity classes were chanced aou must run 'cs-install' again
-# standard severity class they must be fulfilled to be able to commit
-SEVERITY = 7
-# intensive severity class they must not be fulfilled to be able to commit,
-# but you are able to check your code with additional coding standards
-SEVERITY_INTENSIVE = 5
-# checkt filetypes
-FILETYPES = php
-# path to the Ontowiki Coding Standard
-CSPATH = application/tests/CodeSniffer/Standards/Ontowiki
+# cs-script path
+CSSPATH = application/tests/CodeSniffer/
+# ignore pattern
+IGNOREPATTERN = */libraries/*
 
-cs-install: cs-enable
-	pear install PHP_CodeSniffer
+cs-default:
+	chmod ugo+x "$(CSSPATH)cs-scripts.sh"
+	
+cs-install: cs-default
+	$(CSSPATH)cs-scripts.sh -i
+	
+cs-install-submodule: cs-default
+	$(CSSPATH)cs-scripts.sh -f $(CSSPATH) -m $(MPATH)
 
-cs-uninstall: cs-disable
+cs-uninstall-submodule: cs-default
+	$(CSSPATH)cs-scripts.sh -n $(MPATH)
 
-cs-enable:
-	ln -s "../../application/tests/CodeSniffer/pre-commit" .git/hooks/pre-commit
+cs-uninstall: cs-default
+	$(CSSPATH)cs-scripts.sh -u
 
-cs-disable:
-	rm .git/hooks/pre-commit
+cs-enable: cs-default
+	$(CSSPATH)cs-scripts.sh -f $(CSSPATH) -e
+
+cs-disable: cs-default
+	$(CSSPATH)cs-scripts.sh -d
 
 cs-check-commit:
-	application/tests/CodeSniffer/pre-commit
+	$(CSSPATH)cs-scripts.sh -p ""
 cs-check-commit-emacs:
-	application/tests/CodeSniffer/pre-commit -remacs
+	$(CSSPATH)cs-scripts.sh -p "-remacs"
 cs-check-commit-intensive:
-	application/tests/CodeSniffer/pre-commit -s5
+	$(CSSPATH)cs-scripts.sh -p "-s5"
 
 cs-check-path:
-	phpcs --report=summary --extensions=$(FILETYPES) --severity=$(SEVERITY) -s -p --standard=$(CSPATH) $(FPATH)
+	$(CSSPATH)cs-scripts.sh -c "--report=summary $(FPATH)"
 cs-check-path-emacs:
-	phpcs --report=emacs --extensions=$(FILETYPES) --severity=$(SEVERITY) -s -p --standard=$(CSPATH) $(FPATH)
+	$(CSSPATH)cs-scripts.sh -c "--report=emacs $(FPATH)"
 cs-check-path-full:
-	phpcs --report=full --extensions=$(FILETYPES) --severity=$(SEVERITY) -s -p --standard=$(CSPATH) $(FPATH)
+	$(CSSPATH)cs-scripts.sh -c "--report=full $(FPATH)"
 
 cs-check-all:
-	phpcs --report=summary --extensions=$(FILETYPES) --severity=$(SEVERITY) -s -p --standard=$(CSPATH) *
+	$(CSSPATH)cs-scripts.sh -c "--ignore=$(IGNOREPATTERN) --report=summary *"
 cs-check-all-intensive:
-	phpcs --report=summary --extensions=$(FILETYPES) --severity=$(SEVERITY_INTENSIVE) -s -p --standard=$(CSPATH) *
+	$(CSSPATH)cs-scripts.sh -s -c "--ignore=$(IGNOREPATTERN) --report=summary *"
 
 cs-check-blame:
-	phpcs --report=gitblame -v --extensions=$(FILETYPES) --severity=$(SEVERITY_INTENSIVE) -s -p --standard=$(CSPATH) *
+	$(CSSPATH)cs-scripts.sh -s -c "--ignore=$(IGNOREPATTERN) --report=gitblame -v *"
 
 cs-check-blame-full:
-	phpcs --report=gitblame -s --extensions=$(FILETYPES) --severity=$(SEVERITY_INTENSIVE) -s -p --standard=$(CSPATH) *
+	$(CSSPATH)cs-scripts.sh -s -c "--ignore=$(IGNOREPATTERN) --report=gitblame *"
