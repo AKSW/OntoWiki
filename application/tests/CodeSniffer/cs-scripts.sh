@@ -8,9 +8,6 @@ CSDIR="$( cd -P "$( dirname "$CSSOURCE" )" && pwd )"
 # load config file
 source $CSDIR/config;
 
-# set default CodeSniffer path
-CSPATH="/"
-
 # function install the Codesniffer Pear Package and enable the Codesniffer
 function cs-install() {
     return_value=0
