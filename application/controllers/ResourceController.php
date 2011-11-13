@@ -118,7 +118,6 @@ class ResourceController extends OntoWiki_Controller_Base {
 
                 if ($this->_erfurt->getAc()->isModelAllowed('edit', $g)) {
                     $editableFlags[$g] = true;
-                    $graphInfo[$g] = $titleHelper->getTitle($g, $this->_config->languages->locale);
                     $this->view->placeholder('update')->append(array(
                         'sourceGraph'    => $g,
                         'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
@@ -156,19 +155,19 @@ class ResourceController extends OntoWiki_Controller_Base {
             // TODO: check acl
             $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties'));
             $toolbar->appendButton(OntoWiki_Toolbar::EDITADD, array(
-                'name'  => 'Clone Resource',
+                'name'  => 'Clone',
                 'class' => 'clone-resource'
             ));
             // ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Property', 'class' => 'property-add'));
             $params = array(
-                    'name' => 'Delete Resource',
+                    'name' => 'Delete',
                     'url'  => $this->_config->urlBase . 'resource/delete/?r=' . urlencode((string)$resource)
             );
             $toolbar->appendButton(OntoWiki_Toolbar::SEPARATOR)
                     ->appendButton(OntoWiki_Toolbar::DELETE, $params);
 
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::ADD, array('name' => 'Add Property', '+class' => 'hidden edit property-add'));
+                    ->prependButton(OntoWiki_Toolbar::ADD, array('name' => 'Add Property', '+class' => 'property-add'));
 
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
                     ->prependButton(OntoWiki_Toolbar::CANCEL, array('+class' => 'hidden'))
@@ -227,19 +226,20 @@ class ResourceController extends OntoWiki_Controller_Base {
         // TODO: check acl
         // build toolbar
         /*
-             * toolbar disabled for 0.9.5 (reactived hopefully later :) )
+         * toolbar disabled for 0.9.5 (reactived hopefully later :) ) */
 
             if ($graph->isEditable()) {
                 $toolbar = $this->_owApp->toolbar;
-                $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
-                        ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource'))
-                        ->appendButton(OntoWiki_Toolbar::SEPARATOR)
-                        ->appendButton(OntoWiki_Toolbar::DELETE, array('name' => 'Delete Selected', 'class' => 'submit'))
-                        ->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                        ->prependButton(OntoWiki_Toolbar::CANCEL)
-                        ->prependButton(OntoWiki_Toolbar::SAVE);
-                //$this->view->placeholder('main.window.toolbar')->set($toolbar);
+                $toolbar->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource'));
+                        // ->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
+                        // ->appendButton(OntoWiki_Toolbar::SEPARATOR)
+                        // ->appendButton(OntoWiki_Toolbar::DELETE, array('name' => 'Delete Selected', 'class' => 'submit'))
+                        // ->prependButton(OntoWiki_Toolbar::SEPARATOR)
+                        // ->prependButton(OntoWiki_Toolbar::CANCEL)
+                        // ->prependButton(OntoWiki_Toolbar::SAVE);
+                $this->view->placeholder('main.window.toolbar')->set($toolbar);
             }
+        /*
             
             $url = new OntoWiki_Url(
                 array(

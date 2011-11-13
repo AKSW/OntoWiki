@@ -28,6 +28,8 @@ store.zenddb.dbtype     = mysql             ; mysql
 store.virtuoso.dsn         = vos505
 store.virtuoso.username    = "dba"
 store.virtuoso.password    = "dba"
+; affect the main search: searches <= 4 will be exact search (instead of bif:contains)
+store.virtuoso.search_max_length_for_bifcontains = "4"
 ;store.virtuoso.use_persistent_connection = true
 
 store.arc.dbname = "ontowiki_arc2"

@@ -14,17 +14,15 @@ Other remarkable features are:
 
 OntoWiki is licensed under the [GNU General Public License Version 2, June 1991](http://www.gnu.org/licenses/gpl-2.0.txt) (license document is in the application subfolder).
 
-## Installation
+## Installation for Users
 
 ### via github repository
 
-* clone the repository into your web folder (e.g. `/var/www`)
+* clone or [download](https://github.com/AKSW/OntoWiki/zipball/develop) the repository into your web folder (e.g. `/var/www/ontowiki`)
 * enable Apaches rewrite  module (e.g. `a2enmod rewrite`)
-* run `make install` to download Zend, create log and cache dir as well as
-  initialize all git submodules
+* run `make deploy` to download Zend, Erfurt and RDFauthor as well as to create log and cache dir
 * copy `config.ini-dist` to `config.ini` and modify it according to your store
-* open your browser, go to your ontowiki URL, login as `Admin` without pass and
-  change the password
+* open your browser, go to your ontowiki URL, login as `Admin` without pass and change the password
 
 ### via Debian package
 
@@ -32,6 +30,14 @@ OntoWiki is licensed under the [GNU General Public License Version 2, June 1991]
   package](http://stack.lod2.eu/lod2repository_current_all.deb)
 * update you package database (`sudo apt-get update`)
 * install `ontowiki-mysql` or `ontowiki-virtuoso` (`sudo apt-get ontowiki-virtuoso`)
-* open your browser, go to [your ontowiki URL](http://localhost/ontowiki/), login as `Admin` without pass and
-  change the password
+* open your browser, go to [your ontowiki URL](http://localhost/ontowiki/), login as `Admin` without pass and change the password
 
+## Installation for Developer
+
+* optional: fork the repository
+* clone the repository into your web folder (e.g. `/var/www/ontowiki`)
+* enable Apaches rewrite  module (e.g. `a2enmod rewrite`)
+* run `make install` to download Zend, init git submodules as well as to create log and cache dir
+* copy `config.ini-dist` to `config.ini` and modify it according to your store
+* open your browser, go to your ontowiki URL, login as `Admin` without pass and change the password
+* make sure you create your own feature branch

@@ -1,9 +1,11 @@
+<?php $values = isset($this->values[$this->graphIri]) ? $this->values[$this->graphIri] : array(); ?>
+
 <h2><?php echo $this->modelTitle ?></h2>
 
 <h3><?php echo $this->_('Comments, Descriptions and Notes') ?></h3>
 <?php if ($this->has('infoPredicates')): ?>
     <?php foreach ($this->infoPredicates as $uri => $predicate): ?>
-        <?php foreach ($this->values[$uri] as $entry): ?>
+        <?php foreach ($values[$uri] as $entry): ?>
             <p class="messagebox info"><?php echo trim($entry['object']) ?></p>
         <?php endforeach; ?>
     <?php endforeach; ?>
@@ -34,71 +36,22 @@
     </tr>
 </table-->
 
-<?php $odd = true; ?>
-<h3><?php echo $this->_('Properties') ?></h3>
-<?php if ($this->has('predicates')): ?>
-<table class="separated-vertical rdfa" about="<?php echo $this->resourceIri ?>"
-    <?php foreach ($this->namespacePrefixes as $prefix => $namespace): ?>
-        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
-    <?php endforeach; ?>>
-    <?php foreach ($this->predicates as $uri => $predicate): ?>
-        <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
-            <td width="25%">
-                <a class="hasMenu" about="<?php echo $this->predicates[$uri]['uri'] ?>" href="<?php echo $this->predicates[$uri]['url'] ?>"><?php echo $this->predicates[$uri]['title'] ?></a>
-            </td>
-            <?php if (count($this->values[$uri]) > 1): ?>
-            <td>
-                <ul class="bullets-none">
-                    <?php foreach ($this->values[$uri] as $entry): ?>
-                        <?php if ($entry['url']): ?>
-                            <li>
-                                <a resource="<?php echo $entry['uri'] ?>" rel="<?php echo $this->predicates[$uri]['curi'] ?>" class="expandable hasMenu" href="<?php echo $entry['url'] ?>">
-                                    <?php echo $entry['object'] ?>
-                                </a>
-                            </li>
-                        <?php else: ?>
-                            <li property="<?php echo $this->predicates[$uri]['curi'] ?>" 
-                                <?php if (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
-                                    datatype="<?php echo $entry['datatype'] ?>"
-                                <?php endif; ?>
-                                ><?php 
-                                echo $entry['object'] 
-                            ?></li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                    <?php if ($this->predicates[$uri]['has_more']): ?>
-                        <a href="">&hellip;</a>
-                    <?php endif; ?>
-                </ul>
-            </td>
-            <?php else: ?>
-            <td>
-                <?php if ($this->values[$uri][0]['url']): ?>
-                    <?php if ($this->values[$uri][0]['uri']): ?>
-                        <a rel="<?php echo $this->predicates[$uri]['curi'] ?>" class="expandable hasMenu" resource="<?php echo $this->values[$uri][0]['uri'] ?>" href="<?php echo $this->values[$uri][0]['url'] ?>">
-                            <?php echo $this->values[$uri][0]['object'] ?>
-                        </a>
-                    <?php else: ?>
-                        <a rel="<?php echo $this->predicates[$uri]['curi'] ?>" href="<?php echo $this->values[$uri][0]['url'] ?>">
-                            <?php echo $this->values[$uri][0]['object'] ?>
-                        </a>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <span property="<?php echo $this->predicates[$uri]['curi'] ?>" 
-                          content="<?php echo $this->values[$uri][0]['content'] ?>" 
-                          <?php if (isset($this->values[$uri][0]['datatype']) && !empty($this->values[$uri][0]['datatype'])): ?>
-                              datatype="<?php echo $this->values[$uri][0]['datatype'] ?>"
-                          <?php endif; ?>
-                    ><?php echo $this->values[$uri][0]['object'] ?></span>
-                <?php endif; ?>
-            </td>
-            <?php endif; ?>
-        </tr>
-    <?php endforeach; ?>
-</table>
-<?php else: ?>
-    <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
-<?php endif; ?>
+<?php //include the resource/properties view
+//hand over all nessesary variables
+echo $this->partial('resource/properties.phtml',array(
+    'graphs' => $this->graphs,
+    'editableFlags' => $this->editableFlags,
+    'values' => $this->values,
+    'predicates' => $this->predicates,
+    'resourceUri' => $this->resourceIri, 
+    'graphUri' => $this->graphIri,
+    'graphBaseUri' => $this->graphBaseIri,
+    'editable' => false, 
+    'namespaces' => $this->namespaces
+));
+//notice: ModelController (and the rest of this template) want Iri, 
+//but ResourceController (and its template) want Uri
+?>
 
 
 <div class="messagebox">
