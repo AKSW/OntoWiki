@@ -247,7 +247,7 @@ $(document).ready(function() {
     // init new resource based on type
     $('.init-resource').click(function() {
         var type       = $(this).closest('.window').find('*[typeof]').eq(0).attr('typeof');
-        createInstanceFromClassURI('http://xmlns.com/foaf/0.1/Person');
+        createInstanceFromClassURI(type);
     });
     
     $('.edit.save').click(function() {
@@ -433,7 +433,7 @@ $(document).ready(function() {
                     }
                 });
                 
-                RDFauthor.start();
+                RDFauthor.start('html');
                 $('.edit-enable').addClass('active');
                 setTimeout("addProperty()",500);
             });

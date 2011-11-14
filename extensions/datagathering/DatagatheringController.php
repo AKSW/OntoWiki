@@ -895,24 +895,25 @@ class DatagatheringController extends OntoWiki_Controller_Component
     
     /**
      *
-     * @param type $graphUri
-     * @param type $uri
+     * @param string $graphUri
+     * @param string $uri
      * @param type $locator
-     * @param type $all
-     * @param type $presets
-     * @param type $exceptedProperties
-     * @param type $wrapperName
-     * @param type $fetchMode
-     * @param type $action
-     * @param type $versioning
-     * @return type 
+     * @param boolean $all
+     * @param array $presets
+     * @param array $exceptedProperties
+     * @param string $wrapperName
+     * @param string $fetchMode
+     * @param string $action
+     * @param boolean $versioning
+     * @return int status code 
      */
-    public static function import($graphUri, $uri, $locator, $all = true, $presets = array(), $exceptedProperties = array(), $wrapperName = 'linkeddata', $fetchMode = 'none', $action = 'add', $versioning = true){
+    //TODO refactor these 11 parameters (use a config object or break it down with adapters etc)
+    public static function import($graphUri, $uri, $locator, $all = true, $presets = array(), $exceptedProperties = array(), $wrapperName = 'linkeddata', $fetchMode = 'none', $action = 'add', $versioning = true, $filterCallback = null){
         // Check whether user is allowed to write the model.
         $erfurt = Erfurt_App::getInstance();
         $store = $erfurt->getStore();
-        $model = $store->getModel($graphUri);
-        if (!$model || !$model->isEditable()) {
+        $storeGraph = $store->getModel($graphUri);
+        if (!$storeGraph || !$storeGraph->isEditable()) {
             return self::IMPORT_NOT_EDITABLE;
         }
 
@@ -929,7 +930,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         $wrapperResult = null;
         try {
-            $wrapperResult = $wrapper->run($r, $graphUri);
+            $wrapperResult = $wrapper->run($r, $graphUri, $all);
         } catch (Erfurt_Wrapper_Exception $e) {
             return self::IMPORT_WRAPPER_EXCEPTION;
         }
@@ -939,7 +940,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         } else if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
-                    $statements = $wrapperResult['add'];
+                    $newStatements = $wrapperResult['add'];
 
                     $stmtBeforeCount = $store->countWhereMatches(
                         $graphUri, 
@@ -960,24 +961,28 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         $versioning->startAction($actionSpec);
                     }
 
-                    $statements = self::filterStatements($statements, $uri, $all, $presets, $exceptedProperties, $fetchMode);
-
+                    $newStatements = self::filterStatements($newStatements, $uri, $all, $presets, $exceptedProperties, $fetchMode);
+                    if($filterCallback != null && is_array($filterCallback)){
+                        $newStatements = call_user_func($filterCallback, $newStatements);
+                    }
+                    
                     if($action == 'add'){
-                        $store->addMultipleStatements($graphUri, $statements);
+                        $store->addMultipleStatements($graphUri, $newStatements);
                     } else if($action == 'update'){
                         $queryoptions = array(
                             'use_ac'                 => false,
                             'result_format'          => STORE_RESULTFORMAT_EXTENDED,
                             'use_additional_imports' => false
                         );
-                        $statementsBefore = $store->sparqlQuery(
+                        $oldStatements = $store->sparqlQuery(
                             'SELECT * FROM <'.$graphUri.'> WHERE { ?s ?p ?o }',
                             $queryoptions
                         );
                         //transform resultset to rdf/php statements 
-                        $model1 = new Erfurt_Rdf_MemoryModel($statementsBefore);
-                        $model2 = new Erfurt_Rdf_MemoryModel($statements);
-                        $model->updateWithMutualDifference($model1->getStatements(), $model2->getStatements());
+                        $model1 = new Erfurt_Rdf_MemoryModel();
+                        $model1->addStatementsFromSPOQuery($oldStatements);
+                        $model2 = new Erfurt_Rdf_MemoryModel($newStatements);
+                        $storeGraph->updateWithMutualDifference($model1->getStatements(), $model2->getStatements());
                     }
                     
                     if($versioning){
@@ -989,7 +994,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                             '{ ?s ?p ?o }',
                             '*'
                     );
-
+                    
                     $stmtAddCount = $stmtAfterCount - $stmtBeforeCount;
 
                     if ($stmtAddCount > 0) {
