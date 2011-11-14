@@ -197,10 +197,12 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         }
         
         // content negotiation
-        $possibleTypes = array_filter(array_keys($this->_typeMapping));
+        $possibleTypes = array_keys($this->_typeMapping);
         if ($type = $this->_matchDocumentTypeRequest($request, $possibleTypes)) {
             return $this->_typeMapping[$type];
         }
+
+        return $this->_typeMapping['']; // default type
     }
     
     /**
