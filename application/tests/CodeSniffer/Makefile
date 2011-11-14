@@ -37,7 +37,7 @@ else
 	SNIFFSTR =
 endif
 
-REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR)  $(FPATH)
+REQUESTSTR = $(OPTIONS) $(SNIFFSTR)  $(FPATH)
 
 cs-default:
 	chmod ugo+x "$(CSSPATH)cs-scripts.sh"
