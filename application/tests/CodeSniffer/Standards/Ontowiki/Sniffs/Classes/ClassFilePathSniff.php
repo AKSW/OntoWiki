@@ -7,9 +7,6 @@
  * @category  PHP
  * @package   PHP_CodeSniffer
  * @author    Lars Eidam <lars.eidam@googlemail.com>
- * @copyright 
- * @license   
- * @version   
  * @link      http://code.google.com/p/ontowiki/
  */
 
@@ -22,9 +19,6 @@
  * @category  PHP
  * @package   PHP_CodeSniffer
  * @author    Lars Eidam <lars.eidam@googlemail.com>
- * @copyright 
- * @license   
- * @version   
  * @link      http://code.google.com/p/ontowiki/
  */
 class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Sniff

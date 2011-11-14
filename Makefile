@@ -35,15 +35,18 @@ help:
 	@echo "     'make cs-check-commit-emacs' (same as cs-check-commit with emacs output)"
 	@echo "     'make cs-check-commit-intensive' (run pre-commit code checking"
 	@echo "             manually with stricter coding standard)"
-	@echo "     'make cs-check-path FPATH=<path>' (run code checking on specific path)"
-	@echo "     'make cs-check-path-emacs FPATH=<path>' (same as cs-check-path"
-	@echo "             with emacs output)"
-	@echo "     'make cs-check-path-full FPATH=<path>' (run intensive code checking on"
-	@echo "             specific path)"
-	@echo "     'make cs-check-all' (run complete code checking)"
-	@echo "     'make cs-check-commit-intensive' (run complete code checking with"
+	@echo "     'make cs-check (run complete code checking)"
+	@echo "     'make cs-check-intensive' (run complete code checking with"
 	@echo "             stricter coding standard)"
-	@echo "     'make cs-check-blame' (get blame list)"
+	@echo "     'make cs-check-full' (run complete code checking with detailed output)"
+	@echo "     'make cs-check-emacs' (run complete code checking with with emacs output)"
+	@echo "     'make cs-check-blame' (run complete code checking with blame list output)"
+	@echo "     'make cs-check' (run complete code checking)"
+	@echo "     'possible Parameter:"
+	@echo "     'FPATH=<path>' (run code checking on specific relative path)"
+	@echo "     'SNIFFS=<sniff 1>,<sniff 2>' (run code checking on specific sniffs)"
+	@echo "     'OPTIONS=<option>' (run code checking with specific CodeSniffer options)"
+	
 
 
 # top level target
@@ -134,16 +137,28 @@ CSSPATH = application/tests/CodeSniffer/
 # ignore pattern
 IGNOREPATTERN = */libraries/*
 
+# Parameter check
+ifndef FPATH
+	FPATH = "*"
+endif
+ifdef SNIFFS
+	SNIFFSTR = "--sniffs="$(SNIFFS)
+else
+	SNIFFSTR =
+endif
+
+REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR)  $(FPATH)
+
 cs-default:
 	chmod ugo+x "$(CSSPATH)cs-scripts.sh"
 	
 cs-install: cs-default
 	$(CSSPATH)cs-scripts.sh -i
 	
-cs-install-submodule: cs-default
+cs-install-submodule: cs-submodule-check cs-default
 	$(CSSPATH)cs-scripts.sh -f $(CSSPATH) -m $(MPATH)
 
-cs-uninstall-submodule: cs-default
+cs-uninstall-submodule: cs-submodule-check cs-default
 	$(CSSPATH)cs-scripts.sh -n $(MPATH)
 
 cs-uninstall: cs-default
@@ -160,22 +175,22 @@ cs-check-commit:
 cs-check-commit-emacs:
 	$(CSSPATH)cs-scripts.sh -p "-remacs"
 cs-check-commit-intensive:
-	$(CSSPATH)cs-scripts.sh -p "-s5"
+	$(CSSPATH)cs-scripts.sh -p "-s"
 
-cs-check-path:
-	$(CSSPATH)cs-scripts.sh -c "--report=summary $(FPATH)"
-cs-check-path-emacs:
-	$(CSSPATH)cs-scripts.sh -c "--report=emacs $(FPATH)"
-cs-check-path-full:
-	$(CSSPATH)cs-scripts.sh -c "--report=full $(FPATH)"
-
-cs-check-all:
-	$(CSSPATH)cs-scripts.sh -c "--ignore=$(IGNOREPATTERN) --report=summary *"
-cs-check-all-intensive:
-	$(CSSPATH)cs-scripts.sh -s -c "--ignore=$(IGNOREPATTERN) --report=summary *"
-
+cs-check:
+	$(CSSPATH)cs-scripts.sh -c "--report=summary $(REQUESTSTR)"
+cs-check-intensive:
+	$(CSSPATH)cs-scripts.sh -s -c "--report=summary $(REQUESTSTR)"
+cs-check-full:
+	$(CSSPATH)cs-scripts.sh -c "-v --report=full $(REQUESTSTR)"
+cs-check-emacs:
+	$(CSSPATH)cs-scripts.sh -c "--report=emacs $(REQUESTSTR)"
 cs-check-blame:
-	$(CSSPATH)cs-scripts.sh -s -c "--ignore=$(IGNOREPATTERN) --report=gitblame -v *"
+	$(CSSPATH)cs-scripts.sh -s -c "--report=gitblame $(REQUESTSTR)"
 
-cs-check-blame-full:
-	$(CSSPATH)cs-scripts.sh -s -c "--ignore=$(IGNOREPATTERN) --report=gitblame *"
+cs-submodule-check:
+ifndef MPATH
+	@echo "You must Set a path to the submodule."
+	@echo "Example: MPATH=path/to/the/submodule/"
+	@exit 1 
+endif

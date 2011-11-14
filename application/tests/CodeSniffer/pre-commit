@@ -29,11 +29,11 @@ WIDTH=80;
 
 # parse parameter for severity, cspath (path to the coding standard), filetypes
 # and reporttyp
-while getopts ":s:p:f:r:" optname
+while getopts ":sp:f:r:" optname
     do
         case "$optname" in
         "s")
-            SEVERITY=$OPTARG
+            SEVERITY=$SEVERITY_INTENSIVE;
         ;;
         "p")
             CSPATH=$OPTARG
