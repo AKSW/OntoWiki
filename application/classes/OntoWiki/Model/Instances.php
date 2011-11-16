@@ -1585,14 +1585,14 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
         }
     }
-    
-    public static function getSelectedClass() {
+
+    public static function getSelectedClass()
+    {
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = "instances";
-        if($listHelper->listExists($listName)){
+        if ($listHelper->listExists($listName)) {
             $list = $listHelper->getList($listName);
             $filter = $list->getFilter();
-        
             return isset($filter['type0']['rdfsclass'])
                 ? $filter['type0']['rdfsclass']
                 : -1;

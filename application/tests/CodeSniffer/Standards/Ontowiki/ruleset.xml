@@ -40,7 +40,9 @@
  
 <!-- camel caps and underscore in variables -->
  <rule ref="Zend.NamingConventions.ValidVariableName" />
- 
+
+<!-- tab used for indentation -->
+ <rule ref="Generic.WhiteSpace.DisallowTabIndent" />
  
 <!-- line-length -->
  <rule ref="Generic.Files.LineLength">
@@ -51,11 +53,6 @@
  </rule>
  
 <!-- #################### loose #################### -->
-
-<!-- tab used for indentation -->
- <rule ref="Generic.WhiteSpace.DisallowTabIndent.TabsUsed">
-  <severity>3</severity>
- </rule>
  
  <!-- line-length (warning) -->
  <rule ref="Generic.Files.LineLength.TooLong">
@@ -71,5 +68,13 @@
  <rule ref="Generic.Files.LineEndings.InvalidEOLChar">
   <severity>3</severity>
  </rule>
+
+<!-- #################### Ontowiki #################### -->
+<!-- whtespace -->
+ <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
+<!-- deprecated functions -->
+ <rule ref="Generic.PHP.DeprecatedFunctions" />
+<!-- non executable functions -->
+ <rule ref="Squiz.PHP.NonExecutableCode" />
 
 </ruleset>

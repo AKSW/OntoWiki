@@ -67,7 +67,7 @@ class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Snif
             if (1 == count($filepathArray)) {
                 $filepathArray = explode("\\", $partedPath);
             }
-            
+
             $notFound = TRUE;
             foreach ($classNameArray as $index => $classNamePart) {
                 if ($classNamePart != $filepathArray[$index + 1]) {

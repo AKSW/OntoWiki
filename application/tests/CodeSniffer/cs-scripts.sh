@@ -11,21 +11,21 @@ source $CSDIR/config;
 # function install the Codesniffer Pear Package and enable the Codesniffer
 function cs-install() {
     return_value=0
-    user=`whoami`;
-    if [[ $user == "root" ]]
+    cs=`pear info PHP_CodeSniffer`;
+    if [[ $cs == "No information found for \`PHP_CodeSniffer'" ]]
     then
-        cs=`pear info PHP_CodeSniffer`;
-        if [[ $cs == "No information found for \`PHP_CodeSniffer'" ]]
+        user=`whoami`;
+        if [[ $user == "root" ]]
         then
             pear install PHP_CodeSniffer;
             echo " CodeSniffer PEAR Package installed.";
             return_value=0
         else
-            echo " CodeSniffer PEAR Package already installed.";
+            echo " You need root privileges. Please run 'sudo make cs-install'.";
             return_value=1
         fi
     else
-        echo " You need root privileges. Please run 'sudo make cs-install'.";
+        echo " CodeSniffer PEAR Package already installed.";
         return_value=1
     fi
     return $return_value;
@@ -34,11 +34,11 @@ function cs-install() {
 # function uninstall the Codesniffer Pear Package and disable the Codesniffer
 function cs-uninstall() {
     return_value=0
-    user=`whoami`;
-    if [[ $user == "root" ]]
+    cs=`pear info PHP_CodeSniffer`;
+    if [[ $cs != "No information found for \`PHP_CodeSniffer'" ]]
     then
-        cs=`pear info PHP_CodeSniffer`;
-        if [[ $cs != "No information found for \`PHP_CodeSniffer'" ]]
+        user=`whoami`;
+        if [[ $user == "root" ]]
         then
             echo -n " Do you really want to uninstall PHP_CodeSniffer Package? (y/n): "
             read CONFIRM;
@@ -52,11 +52,11 @@ function cs-uninstall() {
                 return_value=1
             fi
         else
-            echo " CodeSniffer PEAR Package not uninstalled, because CodeSniffer PEAR Package was not installed.";
+            echo " You need root privileges. Please run 'sudo make cs-uninstall'.";
             return_value=1
         fi
     else
-        echo " You need root privileges. Please run 'sudo make cs-uninstall'.";
+        echo " CodeSniffer PEAR Package not uninstalled, because CodeSniffer PEAR Package was not installed.";
         return_value=1
     fi
     return $return_value;
@@ -86,16 +86,22 @@ function cs-disable() {
 # on a submodule
 function cs-install-submodule() {
     return_value=0
-    user=`whoami`;
-    MPATH=${1//[^\/]}
-    MPATH=${MPATH//\//..\/}
-    cs-install;
-    if `ln -s $MPATH$CSPATH"Makefile" $1Makefile`;
+    LASTLETTER=${1: -1}
+    if  [[ $LASTLETTER != "/" ]]
     then
-        echo " CodeSniffer installed for Submodule '$1'.";
+        MPATH=$1/
+    else
+        MPATH=$1
+    fi
+    BACKMPATH=${MPATH//[^\/]}
+    BACKMPATH=${BACKMPATH//\//..\/}
+    cs-install;
+    if `ln -s $BACKMPATH$CSPATH"Makefile" $MPATH"Makefile"`;
+    then
+        echo " CodeSniffer installed for Submodule '$MPATH'.";
         return_value=0
     else
-        echo " Can't install CodeSniffer for Submodule '$1' because Makefile already exists.";
+        echo " Can't install CodeSniffer for Submodule '$MPATH' because Makefile already exists.";
         echo " Maybe CodeSniffer already installed!?";
         return_value=1
     fi
@@ -105,15 +111,22 @@ function cs-install-submodule() {
 # on a submodule
 function cs-uninstall-submodule() {
     return_value=0
-    echo -n " Do you really want to uninstall CodeSniffer for Submodule '$1'? (y/n): "
+    LASTLETTER=${1: -1}
+    if  [[ $LASTLETTER != "/" ]]
+    then
+        MPATH=$1/
+    else
+        MPATH=$1
+    fi
+    echo -n " Do you really want to uninstall CodeSniffer for Submodule '$MPATH'? (y/n): "
     read CONFIRM;
     if [[ $CONFIRM == "y" ]]
     then
-        rm "$1"Makefile
-        echo " CodeSniffer uninstalled for Submodule '$1'.";
+        rm "$MPATH"Makefile
+        echo " CodeSniffer uninstalled for Submodule '$MPATH'.";
         return_value=0
     else
-        echo " CodeSniffer not uninstalled for Submodule '$1'.";
+        echo " CodeSniffer not uninstalled for Submodule '$MPATH'.";
         return_value=1
     fi
     return $return_value;
@@ -121,7 +134,7 @@ function cs-uninstall-submodule() {
 
 # function run a CodeSniffer Check on specific files
 function cs-check() {
-    phpcs --extensions=$FILETYPES --severity=$SEVERITY -s -p --standard=$CSDIR/$CSPATH $1
+    phpcs --extensions=$FILETYPES --severity=$SEVERITY -p --standard=$CSDIR/$CSPATH $1
 }
 
 # function run the CodeSniffer pre-commit
