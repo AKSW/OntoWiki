@@ -322,11 +322,8 @@ class CommunityController extends OntoWiki_Controller_Component {
 
         // stop Action
         $versioning->endAction();
-    }
-    
-    function configureAction()
-    {
-        $this->view->config = $this->_privateConfig->toArray();
+
+
     }
 }
 
