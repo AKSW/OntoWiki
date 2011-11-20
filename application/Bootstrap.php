@@ -159,7 +159,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);
         $config->urlBase        = rtrim($urlBase . (ONTOWIKI_REWRITE ? '' : BOOTSTRAP_FILE), '/\\') . '/';
-		$config->urlBase		= str_replace('index.php', '', $config->urlBase);
         $config->staticUrlBase  = rtrim($urlBase, '/\\') . '/';
         $config->themeUrlBase   = $config->staticUrlBase
                                 . $config->themes->path
