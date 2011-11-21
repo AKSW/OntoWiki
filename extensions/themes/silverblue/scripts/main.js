@@ -250,10 +250,6 @@ $(document).ready(function() {
         var namespace  = type.split(':')[0];
         var instance = type.split(':')[1];
         var namespaceUri = $(this).closest('.window').find('table').attr('xmlns:'+namespace);
-        console.log(type);
-        console.log(namespaceUri);
-        console.log(namespace);
-        console.log(namespaceUri+instance);
         createInstanceFromClassURI(namespaceUri+instance);
     });
     
