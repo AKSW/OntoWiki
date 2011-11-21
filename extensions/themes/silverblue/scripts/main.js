@@ -435,8 +435,8 @@ $(document).ready(function() {
                         }
                     }
                 });
-                
-                RDFauthor.start('html');
+                //workaround: don't load widget
+                RDFauthor.start($('head'));
                 $('.edit-enable').addClass('active');
                 setTimeout("addProperty()",500);
             });
