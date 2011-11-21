@@ -247,7 +247,14 @@ $(document).ready(function() {
     // init new resource based on type
     $('.init-resource').click(function() {
         var type       = $(this).closest('.window').find('*[typeof]').eq(0).attr('typeof');
-        createInstanceFromClassURI(type);
+        var namespace  = type.split(':')[0];
+        var instance = type.split(':')[1];
+        var namespaceUri = $(this).closest('.window').find('table').attr('xmlns:'+namespace);
+        console.log(type);
+        console.log(namespaceUri);
+        console.log(namespace);
+        console.log(namespaceUri+instance);
+        createInstanceFromClassURI(namespaceUri+instance);
     });
     
     $('.edit.save').click(function() {
