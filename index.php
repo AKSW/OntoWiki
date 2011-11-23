@@ -20,15 +20,15 @@ define('REQUEST_START', microtime(true));
  * error handling for the very first includes etc.
  * http://stackoverflow.com/questions/1241728/
  */
-set_error_handler(
-    function ($errno, $errstr, $errfile, $errline, array $errcontext){
-        // error was suppressed with the @-operator
-        if (0 === error_reporting()) {
-            return false;
-        }
-        throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
+{
+    // error was suppressed with the @-operator
+    if (0 === error_reporting()) {
+        return false;
     }
-);
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}
+set_error_handler('errorHandler');
 
 /**
  * Boostrap constants
