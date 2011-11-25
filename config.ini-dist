@@ -25,7 +25,7 @@ store.zenddb.password   = "ow"
 store.zenddb.dbtype     = mysql             ; mysql
 ;store.zenddb.host      = localhost          ; default is localhost
 
-store.virtuoso.dsn         = vos505
+store.virtuoso.dsn         = VOS
 store.virtuoso.username    = "dba"
 store.virtuoso.password    = "dba"
 ; affect the main search: searches <= 4 will be exact search (instead of bif:contains)
