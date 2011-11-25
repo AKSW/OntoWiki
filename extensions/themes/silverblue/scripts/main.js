@@ -247,7 +247,10 @@ $(document).ready(function() {
     // init new resource based on type
     $('.init-resource').click(function() {
         var type       = $(this).closest('.window').find('*[typeof]').eq(0).attr('typeof');
-        createInstanceFromClassURI(type);
+        var namespace  = type.split(':')[0];
+        var instance = type.split(':')[1];
+        var namespaceUri = $(this).closest('.window').find('table').attr('xmlns:'+namespace);
+        createInstanceFromClassURI(namespaceUri+instance);
     });
     
     $('.edit.save').click(function() {
@@ -432,8 +435,8 @@ $(document).ready(function() {
                         }
                     }
                 });
-                
-                RDFauthor.start('html');
+                //workaround: don't load widget
+                RDFauthor.start($('head'));
                 $('.edit-enable').addClass('active');
                 setTimeout("addProperty()",500);
             });
