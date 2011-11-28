@@ -1,5 +1,7 @@
 <?php
 
+define('DEFAULT_TYPE', '*/*');
+
 /**
  * OntoWiki linked data plug-in
  *
@@ -19,7 +21,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      * @var array
      */
     private $_typeMapping = array(
-        ''                      => 'html', // default is xhtml
+        DEFAULT_TYPE            => 'html', // default is xhtml
         'text/html'             => 'html', // we only deliver XML-compatible html
         'application/xhtml+xml' => 'html', 
         'application/rdf+xml'   => 'rdf', 
@@ -60,6 +62,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             // parameter contains true if the suffix was used instead of the Accept header.
             $matchingSuffixFlag = false;
             $type = $this->_getTypeForRequest($request, $uri, $matchingSuffixFlag);
+
 
             // We need a readable graph to query. We use the first graph that was found.
             // If no readable graph is available for the current user, we cancel here.
@@ -202,7 +205,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             return $this->_typeMapping[$type];
         }
 
-        return $this->_typeMapping['']; // default type
+        return $this->_typeMapping[DEFAULT_TYPE]; // default type
     }
     
     /**
