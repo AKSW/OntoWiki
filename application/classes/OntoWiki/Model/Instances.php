@@ -1199,7 +1199,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $query,
             array('result_format' => 'extended')
         );
-        
 
         $properties = array();
         foreach ($results['results']['bindings'] as $row) {
@@ -1302,7 +1301,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $property['title'] = $titleHelper->getTitle($property['uri'], $this->_getLanguage());
 
-            $propertyResults[] = $property;
+            // use URI as key to enforce uniqueness
+            $propertyResults[$property['uri']] = $property;
         }
         
         return $propertyResults;
