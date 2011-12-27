@@ -1556,21 +1556,27 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         return $this;
     }
-
-    public function setOrderUri($uri, $asc = true) {
-        if(!is_bool($asc)){
-            $asc = true;
-        }
+    
+    /**
+     * order by a property (must be set as shown property before)
+     * @param type $uri the property to order by
+     * @param boolean $asc true if ascending, false if descending
+     // this method wont work, you cannot sort the resource query by a var used in the value query 
+    public function setOrderProperty($uri, $asc = true) {
         foreach($this->_shownProperties as $prop){
             if($prop['uri'] == $uri){
-               $this->_resourceQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
+               $this->setOrderVar($prop['var'], $asc);
+               break;
             }
         }
-
-        $this->_resourceQuery->getOrder()->setExpression($order);
-
     }
-
+    */
+    
+    /**
+     * order by a var, that is used in the resource query
+     * @param Erfurt_Sparql_Query2_Var $var the var to order by
+     * @param boolean $asc true if ascending, false if descending
+     */
     public function setOrderVar($var, $asc = true) {
         if(!is_bool($asc)){
             $asc = true;
@@ -1578,12 +1584,25 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if($var instanceof Erfurt_Sparql_Query2_Var){
             $this->_resourceQuery->getOrder()->setExpression(array('exp'=>$var,'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
         } else if(is_string($var)){
-            foreach($this->_shownProperties as $prop){
-            if($prop['varName'] == $var){
-                    $this->_resourceQuery->getOrder()->setExpression(array('exp'=>$prop['var'],'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
-                }
+            if($var == $this->getResourceVar()->getName()){
+                $this->setOrderVar($this->getResourceVar(), $asc);
+            } else {
+                /*foreach($this->_shownProperties as $prop){
+                    if($prop['varName'] == $var){
+                        $this->setOrderVar($prop['var'], $asc);
+                        break;
+                    }
+                }*/
             }
         }
+    }
+    
+    /**
+     * order the resources by their URI
+     * @param type $asc 
+     */
+    public function orderByUri($asc = true){
+        $this->setOrderVar($this->getResourceVar(), $asc);
     }
 
     public static function getSelectedClass()
