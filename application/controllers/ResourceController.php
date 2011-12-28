@@ -217,7 +217,10 @@ class ResourceController extends OntoWiki_Controller_Base {
             $list = new OntoWiki_Model_Instances($store, $this->_owApp->selectedModel, array());
             $listHelper->addListPermanently($listName, $list, $this->view);
         }
+        
+        //two usefull order
         //$list->orderByUri();
+        //$list->setOrderProperty('http://ns.ontowiki.net/SysOnt/order');
         
         //begin view building
         $this->view->placeholder('main.window.title')->set('Resource List');
