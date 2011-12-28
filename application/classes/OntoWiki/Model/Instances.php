@@ -73,6 +73,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @var Erfurt_Sparql_Query2 the manged query that selects the resources in the list
      */
     protected $_resourceQuery = null;
+    
+    protected $_sortTriple = null;
+    
     /**
      * @var Erfurt_Sparql_Query2
      */
@@ -1561,16 +1564,29 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * order by a property (must be set as shown property before)
      * @param type $uri the property to order by
      * @param boolean $asc true if ascending, false if descending
-     // this method wont work, you cannot sort the resource query by a var used in the value query 
+     */ 
     public function setOrderProperty($uri, $asc = true) {
-        foreach($this->_shownProperties as $prop){
-            if($prop['uri'] == $uri){
-               $this->setOrderVar($prop['var'], $asc);
-               break;
-            }
+        if($this->_sortTriple == null){
+            $orderVar = new Erfurt_Sparql_Query2_Var('order');
+            $this->_sortTriple = new Erfurt_Sparql_Query2_OptionalGraphPattern(
+                    array(
+                        new Erfurt_Sparql_Query2_Triple(
+                            $this->getResourceVar(), 
+                            new Erfurt_Sparql_Query2_IriRef($uri),  
+                            $orderVar
+                        )
+                    )
+                );
+            $this->_resourceQuery->getWhere()->addElement($this->_sortTriple);
+            $this->_resourceQuery->getOrder()->add(
+                $orderVar,
+                $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC
+            );
+        } else {
+            $this->_sortTriple->getElement(0)->setP(new Erfurt_Sparql_Query2_IriRef($uri));
         }
     }
-    */
+    
     
     /**
      * order by a var, that is used in the resource query
