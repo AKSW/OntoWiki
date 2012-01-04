@@ -1,3 +1,4 @@
+
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -244,6 +245,35 @@ function removeResourceMenus() {
     $('.contextmenu-enhanced .contextmenu').remove();
 }
 
+function showAddInstanceMenu(event, menuData) {
+    // remove all other menus
+    removeResourceMenus();
+    
+    menuX  = event.pageX - 30;
+    menuY  = event.pageY - 20;
+    menuId = 'windowmenu-' + menuX + '-' + menuY;
+    
+    // create the plain menu with correct style and position
+    $('.contextmenu-enhanced').append('<div class="contextmenu is-processing" id="' + menuId + '"></div>');
+    $('#' + menuId)
+        .attr({style: 'z-index: ' + menuZIndex + '; top: ' + menuY + 'px; left: ' + menuX + 'px;'})
+        .click(function(event) {event.stopPropagation();});
+
+    $('#' + menuId).fadeIn();
+
+    var tempMenu = "";
+    for (var key in menuData) {
+        tempMenu += '<li><a href="javascript:createInstanceFromClassURI(\'' + menuData[key] + '\');">' + key + '</a></li>'
+    }
+    // append menu
+    // console.log(tempMenu);
+    $('#' + menuId).append('<ul>' + tempMenu + '</ul>');
+    // remove is-processing
+    $('#' + menuId).toggleClass('is-processing');
+    // prevent href trigger
+    event.stopPropagation();
+
+}
 
 function showResourceMenu(event, json) {
     // remove all other menus
@@ -423,7 +453,6 @@ function createInstanceFromClassURI(type, dataCallback) {
             if (typeof dataCallback == 'function') {
                 data = dataCallback(data);
             }
-
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
             for (var subjectUri in data) {break;};

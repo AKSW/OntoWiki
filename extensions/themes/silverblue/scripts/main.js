@@ -243,16 +243,23 @@ $(document).ready(function() {
             document.forms[$(this).attr('name')].reset();
         })
     });
-    
+
     // init new resource based on type
-    $('.init-resource').click(function() {
-        var type       = $(this).closest('.window').find('*[typeof]').eq(0).attr('typeof');
-        var namespace  = type.split(':')[0];
-        var instance = type.split(':')[1];
-        var namespaceUri = $(this).closest('.window').find('table').attr('xmlns:'+namespace);
-        createInstanceFromClassURI(namespaceUri+instance);
+    $('.init-resource').click(function(event) {
+        var instances = {};
+        $('.resource-list a').each(function() {
+          var element    = $(this).attr('typeof');
+          var type       = $(this).attr('typeof');
+          var namespace  = type.split(':')[0];
+          var instance = type.split(':')[1];
+          var namespaceUri = $('.resource-list').attr('xmlns:'+namespace);
+          instances[element] = namespaceUri+instance;
+        })
+        //console.log(instances);
+        console.log(instances.length);
+        showAddInstanceMenu(event, instances);
     });
-    
+
     $('.edit.save').click(function() {
         RDFauthor.commit();
     });
@@ -551,6 +558,10 @@ $(document).ready(function() {
         $(this).createResourceMenuToggle();
     });
 
+    $('.init-resource').livequery(function() {
+        $(this).createResourceMenuToggle();
+    });
+
     // All RDFa elements with @about or @resource attribute are resources
     $('*[about]').livequery(function() {
         $(this).addClass('Resource');
@@ -603,7 +614,7 @@ $(document).ready(function() {
         }).mouseout(function() {
             showHref($(this).parent())
         });
-    })
+    });
     
     var loadChildren = function(li) {
         var ul;
