@@ -248,9 +248,11 @@ function removeResourceMenus() {
 function showAddInstanceMenu(event, menuData) {
     // remove all other menus
     removeResourceMenus();
-    
-    menuX  = event.pageX - 30;
-    menuY  = event.pageY - 20;
+
+    var pos = $('.init-resource').offset();
+    menuX = pos.left - $('.init-resource').innerWidth() + 4;
+    menuY = pos.top + $('.init-resource').outerHeight();
+
     menuId = 'windowmenu-' + menuX + '-' + menuY;
     
     // create the plain menu with correct style and position
@@ -270,6 +272,17 @@ function showAddInstanceMenu(event, menuData) {
     $('#' + menuId).append('<ul>' + tempMenu + '</ul>');
     // remove is-processing
     $('#' + menuId).toggleClass('is-processing');
+
+    // repositioning
+    menuX = pos.left - $('#' + menuId).innerWidth() + $('.init-resource').outerWidth();
+    menuY = pos.top + $('.init-resource').outerHeight();
+    
+    // set new position
+    $('#' + menuId).css({ top: menuY + 'px', left: menuX + 'px'});
+
+    // remove is-processing
+    $('#' + menuId).removeClass('is-processing');
+
     // prevent href trigger
     event.stopPropagation();
 
