@@ -247,6 +247,8 @@ $(document).ready(function() {
     // init new resource based on type
     $('.init-resource').click(function(event) {
         var instances = {};
+        var size = 0;
+        var key = "";
         $('.resource-list a').each(function() {
           var element    = $(this).attr('typeof');
           var type       = $(this).attr('typeof');
@@ -255,9 +257,17 @@ $(document).ready(function() {
           var namespaceUri = $('.resource-list').attr('xmlns:'+namespace);
           instances[element] = namespaceUri+instance;
         })
-        //console.log(instances);
-        console.log(instances.length);
-        showAddInstanceMenu(event, instances);
+        // get size of types
+        for (key in instances) {
+          size++;
+        }
+        // if only one type is available open immediately the add instance dialog
+        // otherwise show context menu
+        if ( size == 1 ) {
+            createInstanceFromClassURI(instances[key]);
+        } else {
+            showAddInstanceMenu(event, instances);
+        }
     });
 
     $('.edit.save').click(function() {
