@@ -73,3 +73,6 @@ mail.localname.recovery = "ontowiki-account-recovery"
 ;proxy.port = 8080
 ;proxy.username = ""
 ;proxy.password = ""
+
+;cache.enable       = false
+;cache.query.enable = false
