@@ -250,12 +250,15 @@ $(document).ready(function() {
         var size = 0;
         var key = "";
         $('.resource-list a').each(function() {
-          var element    = $(this).attr('typeof');
-          var type       = $(this).attr('typeof');
-          var namespace  = type.split(':')[0];
-          var instance = type.split(':')[1];
-          var namespaceUri = $('.resource-list').attr('xmlns:'+namespace);
-          instances[element] = namespaceUri+instance;
+          var element    = $(this).attr('typeof').split(' ');
+          console.log(element);
+          for (var t in element) {
+            var type       = element[t];
+            var namespace  = type.split(':')[0];
+            var instance = type.split(':')[1];
+            var namespaceUri = $('.resource-list').attr('xmlns:'+namespace);
+            instances[element[t]] = namespaceUri+instance;
+          };
         })
         // get size of types
         for (key in instances) {
