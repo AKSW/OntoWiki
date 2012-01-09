@@ -54,8 +54,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $request  = Zend_Controller_Front::getInstance()->getRequest();
         $response = Zend_Controller_Front::getInstance()->getResponse();
       
-        $uri = $event->uri;
-      
+        $uri = $event->uri;   
         try {
             // Check for a supported type by investigating the suffix of the URI or by
             // checking the Accept header (content negotiation). The $matchingSuffixFlag
@@ -169,6 +168,23 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             // could chain this event
             return false;
         }
+    }
+    
+    public function onRouteShutdown($event)
+    {
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $owApp   = OntoWiki::getInstance();
+        $store   = $owApp->erfurt->getStore();
+        
+        if (null == $owApp->selectedModel) {
+            $uri = $request->getScheme() . '://' . $request->getHttpHost() . $request->getRequestUri();
+            try {
+                $activeModel = $store->getModel($uri);
+                $owApp->selectedModel = $activeModel;
+            } catch (Exception $e) {
+                // Nothing to do here.
+            }
+        }           
     }
 
     public function onNeedsGraphForLinkedDataUri($event)
