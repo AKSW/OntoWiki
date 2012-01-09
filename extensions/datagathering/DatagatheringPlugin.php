@@ -204,7 +204,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         // Add the location bar menu entry.
         $menu = OntoWiki_Menu_Registry::getInstance()->getMenu('resource');
         $menu->prependEntry(OntoWiki_Menu::SEPARATOR);
-        if (!isset($session->showLocationBar) || $session->showLocationBar == false) {
+        if ($session->showLocationBar === false) {
             $entry = $translate->_('Show/Hide Location Bar');
             $menu->prependEntry($entry, array('class' => 'location_bar show'));
         } else {

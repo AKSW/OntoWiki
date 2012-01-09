@@ -146,20 +146,20 @@ function showLocationBar()
     $('a.location_bar').removeClass('show');
     $('#location_bar_container').show();
 
-    $('#location_bar_input')._autocomplete(function(term, cb) { locationBarUriSearch(term, cb); }, {
-        minChars: 3,
-        delay: 1000,
-        max: 100,
-        formatItem: function(data, i, n, term) {
-            return '<div style="overflow:hidden">\
-                    <span style="white-space: nowrap;font-size: 0.8em">' + data[2] + '</span>\
-                    <br />\
-                    <span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
-                    <br />\
-                    <span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
-                    </div>';
-        }
-    });
+    // $('#location_bar_input')._autocomplete(function(term, cb) { locationBarUriSearch(term, cb); }, {
+    //         minChars: 3,
+    //         delay: 1000,
+    //         max: 100,
+    //         formatItem: function(data, i, n, term) {
+    //             return '<div style="overflow:hidden">\
+    //                     <span style="white-space: nowrap;font-size: 0.8em">' + data[2] + '</span>\
+    //                     <br />\
+    //                     <span style="white-space: nowrap;font-weight: bold">' + data[0] + '</span>\
+    //                     <br />\
+    //                     <span style="white-space: nowrap;font-size: 0.8em">' + data[1] + '</span>\
+    //                     </div>';
+    //         }
+    //     });
 
     $('#location_bar_input').result(function(e, data, formated) {
         $(this).attr('value', data[1]);
