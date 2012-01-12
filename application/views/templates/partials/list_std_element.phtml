@@ -8,7 +8,10 @@
             <a class="hasMenu expandable"
                about="<?php echo $this->instanceUri ?>"
                            <?php if(isset($this->instanceData[$this->instanceUri]['__TYPE'])) : ?>
-               typeof="<?php echo $this->curie($this->instanceData[$this->instanceUri]['__TYPE'][0]['origvalue']); /* dont use the titlehelper generated value*/ ?>"
+                         <?php $count = count($this->instanceData[$this->instanceUri]['__TYPE']); $j=0; $typeof = ''?>
+                         <?php foreach ($this->instanceData[$this->instanceUri]['__TYPE'] as $type ): ?>
+                             <?php $typeof = $typeof . $this->curie($type['origvalue']) . ($count > ++$j ? ' ' : ''); /* dont use the titlehelper generated value*/ ?>
+                         <?php endforeach; echo 'typeof="' . $typeof . '"'; ?>
                                <?php endif; ?>
                href="<?php echo $this->instance['url']?>">
                         <?php echo $this->instance['title'] ?>
@@ -19,10 +22,12 @@
                                 <?php $j = 0;
                                 $count = count($this->instanceData[$this->instanceUri]['__TYPE']) ?>
                                 <?php foreach ($this->instanceData[$this->instanceUri]['__TYPE'] as $type): ?>
-                                    <?php echo $type['value'] . ($count > ++$j ? ', ' : '') ?>
+                                    <span about="<?php echo $type['origvalue']; ?>"><?php echo $type['value'] . ($count > ++$j ? '</span>, ' : '</span>') ?>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <?php echo $this->instanceData[$this->instanceUri]['__TYPE'][0]['value']; /* title helper replaces the uri with a label here*/ ?>
+                                <?php $about = $this->instanceData[$this->instanceUri]['__TYPE'][0]['origvalue']; ?>
+                                <?php $type = $this->instanceData[$this->instanceUri]['__TYPE'][0]['value']; ?>
+                                <?php echo '<span about="' . $about . '">' . $type . '</span>'; /* title helper replaces the uri with a label here*/ ?>
                             <?php endif; ?>
                         <?php endif; ?>
             <?php } else { ?>
