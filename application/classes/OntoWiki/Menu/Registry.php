@@ -100,8 +100,11 @@ class OntoWiki_Menu_Registry
 
         // user sub menu
         if (
-            !((boolean)$owApp->config->ac->deactivateRegistration === true) &&
-            $owApp->erfurt->isActionAllowed('RegisterNewUser')
+            $owApp->erfurt->isActionAllowed('RegisterNewUser') &&
+            !(
+                isset($owApp->config->ac) &&
+                ((boolean)$owApp->config->ac->deactivateRegistration === true)
+            )
         ) {
             $userMenu = new OntoWiki_Menu();
             $userMenu->setEntry('Register New User', $owApp->config->urlBase . 'application/register');
