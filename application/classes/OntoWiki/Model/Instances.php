@@ -252,7 +252,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $inverse
         );
         
-        $this->_shownProperties[$propertyUri.'-'.$inverse] = array(
+        $this->_shownProperties[$propertyUri.'-'.($inverse?"inverse":"direct")] = array(
             'uri' => $propertyUri,
             'name' => $propertyName, 
             'inverse' => $inverse, 
@@ -1026,7 +1026,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         //fill titlehelper
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
         foreach ($result as $row) {
-            foreach ($this->_shownProperties as $propertyUri => $property) {
+            foreach ($this->_shownProperties as $property) {
                 if (
                     isset($row[$property['varName']])
                     && $row[$property['varName']]['type'] == 'uri'
@@ -1289,7 +1289,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
     
        $propertyResults = array();
-       $i = 0;
         foreach ($properties as $property) {
             if (in_array($property['uri'], $this->_ignoredShownProperties)) {
                 continue;
@@ -1304,8 +1303,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $property['title'] = $titleHelper->getTitle($property['uri'], $this->_getLanguage());
 
-            // use URI as key to enforce uniqueness
-            $propertyResults[$property['uri']] = $property;
+            $propertyResults[$property['uri'].'-'.((isset($property['inverse']) && $property['inverse']) ?'inverse':'direct')] = $property;
         }
         
         return $propertyResults;
@@ -1536,11 +1534,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 new Erfurt_Sparql_Query2_ConditionalOrExpression($resources)
         );
 
-        //remove duplicate triples...
-        $this->_valueQuery->optimize();
         
-        //fix for a strange issue with mysql/zenddb where a query with only optionals fails (but there is a magic/unkown condition, that makes it work for some queries!?)
-        if($this->_store->getBackendName() == 'ZendDb'){
+        //fix for a strange issue where a query with only optionals fails (but there is a magic/unkown condition, that makes it work for some queries!?)
+        //if($this->_store->getBackendName() == 'ZendDb'){
             $hasTriple = false;
             foreach($this->_valueQuery->getWhere()->getElements() as $element){
                 if($element instanceof Erfurt_Sparql_Query2_IF_TriplesSameSubject){
@@ -1553,8 +1549,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                    new Erfurt_Sparql_Query2_Triple($this->_resourceVar, new Erfurt_Sparql_Query2_Var("p"), new Erfurt_Sparql_Query2_Var("o"))
                 );
             }
-        }
-
+        //}
+        //remove duplicate triples...
+        $this->_valueQuery->optimize();
+       
         $this->_valueQueryUptodate = true;
 
         return $this;

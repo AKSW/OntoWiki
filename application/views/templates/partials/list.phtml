@@ -93,7 +93,7 @@ if ($instances->hasData()) {
     $instanceInfo = array();
     $propertyInfo = array();
 }
-$url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));$url->setParam('init', true);
+
 $this->headScript()->prependScript(
         'var reloadUrl = "'.
         new OntoWiki_Url(array()). // url to reload -> without config params
