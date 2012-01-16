@@ -83,8 +83,26 @@ $(document).ready(function() {
     if (typeof sectionRatio != 'undefined') {
         setSectionRatio(sectionRatio);
     }
-    
+
     /* list selection */
+    $('body').bind(
+        'ontowiki.selection.changed',
+        function(event, data)
+        {
+            // select event
+            $('.list-selected').removeClass('list-selected'); // should not add class in the click function
+            $('table.resource-list > tbody > tr').each(
+                function(key)
+                {
+                    var pos = $.inArray($(this).children('td').children('a').attr('about'), data);
+                    if (pos >= 0) {
+                        $(this).addClass('list-selected');
+                    }
+                }
+            );
+        }
+    );
+
     $('table.resource-list > tbody > tr').live('click', function(e) {
         var selectee     = $(this);
         var selectionURI = $(this).children('td').children('a').attr('about');
@@ -150,7 +168,8 @@ $(document).ready(function() {
         // event for all selected
         $('body').trigger('ontowiki.selection.changed', [OntoWiki.selectedResources]);
     });
-    
+    /* END list selection */
+
     $('body').bind('ontowiki.resource-list.reloaded', function() {
         // synchronize selection with list style
         $('.resource-list tr').each(function() {
