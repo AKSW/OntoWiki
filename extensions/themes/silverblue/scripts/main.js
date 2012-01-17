@@ -70,7 +70,7 @@ $(document).ready(function() {
             }});
     
     // resize separator when all ajax crap is loaded
-    window.setTimeout(function () {        
+    window.setTimeout(function () {
         $('.section-sidewindows .resizer-horizontal').height(
             Math.max(
                 $(document).height(),
@@ -79,12 +79,13 @@ $(document).ready(function() {
                 document.documentElement.clientHeight
             ) + 'px');
     }, 750);
-    
+
     if (typeof sectionRatio != 'undefined') {
         setSectionRatio(sectionRatio);
     }
 
     /* list selection */
+    /* bind to selection events */
     $('body').bind(
         'ontowiki.selection.changed',
         function(event, data)
@@ -103,6 +104,7 @@ $(document).ready(function() {
         }
     );
 
+    /* trigger selection events */
     $('table.resource-list > tbody > tr').live('click', function(e) {
         var selectee     = $(this);
         var selectionURI = $(this).children('td').children('a').attr('about');
@@ -121,7 +123,7 @@ $(document).ready(function() {
         if (typeof OntoWiki.selectedResources == 'undefined') {
             OntoWiki.selectedResources = [];
         }
-        
+
         if (!selectee.hasClass('list-selected')) { // select a resource
             // TODO: check for macos UI compability
             if (e.ctrlKey) {
@@ -164,7 +166,7 @@ $(document).ready(function() {
             // event for most recent unselection
             $('body').trigger('ontowiki.resource.unselected', [selectionURI]);
         }
-        
+
         // event for all selected
         $('body').trigger('ontowiki.selection.changed', [OntoWiki.selectedResources]);
     });
