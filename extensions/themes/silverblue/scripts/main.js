@@ -134,14 +134,11 @@ $(document).ready(function() {
                 // not implemented yet
             } else {
                 // normal click on unselected means deselect all and select this one
-                // deselect all resources
-                $('.list-selected').removeClass('list-selected');
                 // purge the container array
                 OntoWiki.selectedResources = [];
             }
 
             // add this resource
-            selectee.addClass('list-selected');
             OntoWiki.selectedResources.push(selectionURI);
             // event for most recent selection
             $('body').trigger('ontowiki.resource.selected', [selectionURI]);
@@ -149,7 +146,6 @@ $(document).ready(function() {
             // TODO: check for macos UI compability
             if (e.ctrlKey) {
                 // ctrl+click on selected means deselect this one
-                selectee.removeClass('list-selected');
                 var pos = $.inArray(selectionURI, OntoWiki.selectedResources);
                 OntoWiki.selectedResources.splice(pos, 1);
             } else if (e.shiftKey) {
@@ -157,8 +153,6 @@ $(document).ready(function() {
                 // not implemented yet
             } else {
                 // normal click on selected means deselect all
-                // deselect all resources
-                $('.list-selected').removeClass('list-selected');
                 // purge the container array
                 OntoWiki.selectedResources = [];
             }
