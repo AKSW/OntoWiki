@@ -22,7 +22,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                href="<?php echo $this->instance['url']?>">
                         <?php echo $this->instance['title'] ?>
             </a>
-            <br />
+            <br/>
                 <?php if (isset($this->instanceData[$this->instanceUri]) && isset($this->instanceData[$this->instanceUri]['__TYPE'])): 
                 //print the types/classes this instance belongs to
                 ?>
@@ -30,12 +30,12 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                         <?php $j = 0;
                         $count = count($this->instanceData[$this->instanceUri]['__TYPE']) ?>
                         <?php foreach ($this->instanceData[$this->instanceUri]['__TYPE'] as $type): ?>
-                            <span about="<?php echo $type['origvalue']; ?>"><?php echo $type['value'] . ($count > ++$j ? '</span>, ' : '</span>') ?>
+                            <span typeof="rdfs:Class" about="<?php echo $type['origvalue']; ?>" property="rdfs:label"><?php echo $type['value'] . ($count > ++$j ? '</span>, ' : '</span>') ?>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <?php $about = $this->instanceData[$this->instanceUri]['__TYPE'][0]['origvalue']; ?>
                         <?php $type = $this->instanceData[$this->instanceUri]['__TYPE'][0]['value']; /* title helper replaces the uri with a label here*/ ?>
-                        <?php echo '<span about="' . $about . '">' . $type . '</span>'; /* is the about needed here? */?>
+                        <?php echo '<span typeof="rdfs:Class" about="'. $about .'" property="rdfs:label">' . $type . '</span>'; ?>
                     <?php endif; ?>
                 <?php endif; ?>
             <?php } else { ?>
