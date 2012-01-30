@@ -168,13 +168,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // define constants for development/debugging
         if (isset($config->debug) and (boolean)$config->debug) {
-           // display errors
-           error_reporting(E_ALL | E_STRICT);
-           ini_set('display_errors', 'On');
-           // enable debugging options
-           define('_OWDEBUG', 1);
-           // log everything
-           $config->log->level = 7;
+            // display errors
+            error_reporting(E_ALL | E_STRICT);
+            ini_set('display_errors', 'On');
+            // enable debugging options
+            define('_OWDEBUG', 1);
+            // log everything
+            $config->log->level = 7;
         }
 
         return $config;
