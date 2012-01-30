@@ -76,13 +76,22 @@ div.section-mainwindows {
     position: static;
     width: auto;
     margin-left: 17.5em;
+	margin-top: 110px;
+}
+
+div.section-topbar {
+	position: absolute;
+    width: 100%;
+	max-width: 100%;
+	top: 0;
+	max-height: 100px;
 }
 
 div.section-sidewindows {
     position: absolute;
     width: 17.5em;
     left: 0;
-    top: 0;
+    top: 99px;
 }
 
 /*div.modal-wrapper {

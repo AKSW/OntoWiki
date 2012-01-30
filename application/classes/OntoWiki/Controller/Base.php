@@ -179,6 +179,11 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         if (!$this->view->has('main.sidewindows') && !$this->_request->isXmlHttpRequest()) {
             $this->view->placeholder('main.sidewindows')->append($this->view->modules('main.sidewindows'));
         }
+
+		// render topbar modules
+        if (!$this->view->has('main.topbar') && !$this->_request->isXmlHttpRequest()) {
+            $this->view->placeholder('main.topbar')->append($this->view->modules('main.topbar'));
+        }
     }
     
     /**
