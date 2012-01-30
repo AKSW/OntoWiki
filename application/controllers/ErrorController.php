@@ -19,6 +19,18 @@ class ErrorController extends Zend_Controller_Action
      */
     public function errorAction()
     {
+        if (defined('_OWDEBUG')) {
+            $this->_debugError();
+        } else {
+            $this->_gracefulError();
+        }
+
+        // we provide a complete page
+        $this->_helper->layout()->disableLayout();
+    }
+
+    protected function _debugError()
+    {
         if ($this->_request->has('error_handler')) {
             // get errors passed by error handler plug-in
             $errors    = $this->_getParam('error_handler');
@@ -78,10 +90,21 @@ class ErrorController extends Zend_Controller_Action
         }
         
         $this->view->errorText = $errorString;
-        
-        // we provide a complete page
-        $this->_helper->layout()->disableLayout();
+    }
+
+    protected function _gracefulError()
+    {
+        $requestExtra = str_replace($this->getRequest()->getBaseUrl(),
+                                    '',
+                                    $this->getRequest()->getRequestUri());
+        $requestedUri = OntoWiki::getInstance()->config->urlBase . ltrim($requestExtra, '/');
+
+        $createUrl = new OntoWiki_Url(array(), array());
+        $createUrl->controller = 'resource';
+        $createUrl->action = 'new';
+        $createUrl->setParam('r', $requestedUri);
+        $this->view->createUrl = (string)$createUrl;
+        $this->_helper->viewRenderer->setScriptAction('404');
     }
 }
-
 
