@@ -22,6 +22,18 @@ class ApplicationModule extends OntoWiki_Module
             });
         });
         ');*/
+        
+        $this->view->headScript()->appendFile($this->view->moduleUrl . 'modellist.js');
+
+        $this->session = new Zend_Session_Namespace(_OWSESSION);
+        $this->allGraphUris = $this->_store->getAvailableModels(true);
+        $this->visibleGraphUris = $this->_store->getAvailableModels(false);
+
+        if (isset($this->session->showHiddenGraphs) && $this->session->showHiddenGraphs == true) {
+            $this->graphUris = $this->allGraphUris;
+        } else {
+            $this->graphUris = $this->visibleGraphUris;
+        }
     }
 
     /**
@@ -112,6 +124,31 @@ class ApplicationModule extends OntoWiki_Module
         } else {
             $data['showSearch'] = false;
         }
+        
+        $models = array();
+        $selectedModel = $this->_owApp->selectedModel ? $this->_owApp->selectedModel->getModelIri() : null;
+
+        $lang = $this->_config->languages->locale;
+
+        $titleHelper = new OntoWiki_Model_TitleHelper();
+        $titleHelper->addResources(array_keys($this->graphUris));
+
+        foreach ($this->graphUris as $graphUri => $true) {
+            $temp = array();
+            $temp['url']      = $this->_config->urlBase . 'model/select/?m=' . urlencode($graphUri);
+            $temp['graphUri'] = $graphUri;
+            $temp['selected'] = ($selectedModel == $graphUri ? 'true' : '');
+
+            // use URI if no title exists
+            $label = $titleHelper->getTitle($graphUri, $lang);
+            $temp['label'] = !empty($label) ? $label : $graphUri;
+
+            $temp['backendName'] = $true;
+
+            $models[] = $temp;
+        }
+        
+        $data['models'] = $models;
         
         $content = $this->render('application', $data);
         

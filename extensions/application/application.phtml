@@ -8,7 +8,19 @@
 
 ?>
 
-<form method="GET" action="<?php echo $this->actionUrl ?>">
+<select id="modellist" style="float:left; margin-right: 10px;">
+<?php if (!empty($this->models)): ?>
+    <?php foreach ($this->models as $modelDetails): ?>
+        <option <?php if( $modelDetails['selected'] ) echo 'selected="true"' ?> data-uri="<?php echo $modelDetails['url'] ?>" about="<?php echo $modelDetails['graphUri'] ?>">
+            <?php echo $modelDetails['label'] ?>
+        </option>
+    <?php endforeach; ?>
+<?php else: ?>
+    <option><?php echo $this->_('No knowledge bases found.') ?></option>
+<?php endif; ?>
+</select>
+
+ <form method="GET" action="<?php echo $this->actionUrl ?>" style="width: 200px; float:left;">
 	<?php if ($this->showSearch) : ?>
 	<p class="width98">
 		<label class="display-block" for="searchtext-input"><?php echo $this->_('Search for Resources') ?></label>
