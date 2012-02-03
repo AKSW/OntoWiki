@@ -26,14 +26,14 @@ class ApplicationModule extends OntoWiki_Module
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'modellist.js');
 
         $this->session = new Zend_Session_Namespace(_OWSESSION);
-        $this->allGraphUris = $this->_store->getAvailableModels(true);
+        //$this->allGraphUris = $this->_store->getAvailableModels(true);
         $this->visibleGraphUris = $this->_store->getAvailableModels(false);
 
-        if (isset($this->session->showHiddenGraphs) && $this->session->showHiddenGraphs == true) {
-            $this->graphUris = $this->allGraphUris;
-        } else {
+        //if (isset($this->session->showHiddenGraphs) && $this->session->showHiddenGraphs == true) {
+        //    $this->graphUris = $this->allGraphUris;
+        //} else {
             $this->graphUris = $this->visibleGraphUris;
-        }
+        //}
     }
 
     /**
