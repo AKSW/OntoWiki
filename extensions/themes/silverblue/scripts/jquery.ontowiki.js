@@ -243,7 +243,7 @@
     $.fn.adjustClickMenu = function () {
         return this.each(function () {
             var menu = $(this);
-            menu.parents('div.window').children('h1.title').attr('style', 'margin-bottom:'+menu.outerHeight(true)+'px !important;');
+            //menu.parents('div.window').children('h1.title').attr('style', 'margin-bottom:'+menu.outerHeight(true)+'px !important;');
         });
     }
 

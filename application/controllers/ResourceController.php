@@ -50,7 +50,7 @@ class ResourceController extends OntoWiki_Controller_Base {
         }
 
         $menu = new OntoWiki_Menu();
-        $menu->setEntry('Resource', $resourceMenu);
+        //$menu->setEntry('Resource', $resourceMenu);
 
         $event = new Erfurt_Event('onCreateMenu');
         $event->menu = $resourceMenu;
