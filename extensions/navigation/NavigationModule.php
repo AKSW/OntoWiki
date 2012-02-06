@@ -61,7 +61,7 @@ class NavigationModule extends OntoWiki_Module
         // view sub menu
         $viewMenu = new OntoWiki_Menu();
         $viewMenu->setEntry('Number of Elements', $countMenu);
-        $viewMenu->setEntry('Toggle Elements', $toggleMenu);
+        //$viewMenu->setEntry('Toggle Elements', $toggleMenu);
         $viewMenu->setEntry('Reset Navigation', "javascript:navigationEvent('reset')");
         $mainMenu->setEntry('View', $viewMenu);
 
@@ -85,7 +85,7 @@ class NavigationModule extends OntoWiki_Module
                 $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
             }
         }
-        $mainMenu->setEntry('Type', $typeMenu);
+        //$mainMenu->setEntry('Type', $typeMenu);
 
         return $mainMenu;
     }
