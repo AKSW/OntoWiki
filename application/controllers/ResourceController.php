@@ -187,7 +187,8 @@ class ResourceController extends OntoWiki_Controller_Base {
         
         // add toolbar
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
-
+		// disable tabs
+		OntoWiki_Navigation::disableNavigation();
         //show modules
         $this->addModuleContext('main.window.properties');
     }
@@ -261,6 +262,9 @@ class ResourceController extends OntoWiki_Controller_Base {
 
         $url = new OntoWiki_Url();
         $this->view->redirectUrl = (string)$url;
+
+		// disable tabs
+		OntoWiki_Navigation::disableNavigation();
 
         $this->addModuleContext('main.window.list');
         $this->addModuleContext('main.window.instances');
