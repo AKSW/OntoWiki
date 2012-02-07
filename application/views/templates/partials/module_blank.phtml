@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * OntoWiki window partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $Id: window.phtml 3690 2009-07-16 08:16:06Z pfrischmuth $
+ */
+
+?>
+<?php if (is_array($this->content)): ?>
+    <?php foreach ($this->content as $key => $value): ?>
+		<?php echo $value ?>
+    <?php endforeach; ?>
+<?php else: ?>
+	<?php echo $this->content ?>
+<?php endif; ?>

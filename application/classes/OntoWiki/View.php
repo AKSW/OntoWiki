@@ -295,7 +295,10 @@ class OntoWiki_View extends Zend_View
             if (isset($moduleOptions->noChrome) && (boolean)$moduleOptions->noChrome) {
                 // render without window chrome
                 $moduleWindow = $this->_moduleView->render('partials/module.phtml');
-            } else {
+            } else if(isset($moduleOptions->noWrap) && (boolean)$moduleOptions->noWrap) {
+				// render without any formatting 
+                $moduleWindow = $this->_moduleView->render('partials/module_blank.phtml');
+			} else {
                 // render with window chrome
                 $moduleWindow = $this->_moduleView->render('partials/window.phtml');
             }

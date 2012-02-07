@@ -76,7 +76,7 @@ div.section-mainwindows {
     position: static;
     width: auto;
     margin-left: 17.5em;
-	margin-top: 110px;
+	margin-top: 50px;
 }
 
 div.section-topbar {
@@ -91,7 +91,7 @@ div.section-sidewindows {
     position: absolute;
     width: 17.5em;
     left: 0;
-    top: 99px;
+    top: 40px;
 }
 
 /*div.modal-wrapper {

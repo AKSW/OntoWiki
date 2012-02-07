@@ -32,9 +32,14 @@
     <?php if ($this->has('metaKeywords')){ ?>
         <meta name="Keywords" content="<?php echo $this->metaKeywords ?>" />
     <?php }  ?>
-    
+   
     <!-- ontowiki stylesheets -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
+	
+	<!-- bootstrap stylesheets -->
+	<link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/bootstrap.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/bootstrap-responsive.css" type="text/css" media="screen" />
+
     <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.css" type="text/css" media="screen" / -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
@@ -56,6 +61,9 @@
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
     
+	<!-- included js libraries -->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/bootstrap.js"></script>
+
     <!-- included js libraries -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
@@ -91,9 +99,17 @@
     </script>
     
     <?php echo $this->inlineScript() ?>
+
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+	        <div class="container" style="width: auto; margin-left: 10px;">
+				<?php echo $this->placeholder('main.topbar') ?>
+			</div>
+		</div>
+	</div>
     
     <div class="section-mainwindows <?php echo $this->placeholder('main.window.additionalclasses') ?>">
-        <div class="window<?php echo (OntoWiki_Navigation::isDisabled() ? '' : ' tabbed') ?>">
+        <div class="well<?php echo (OntoWiki_Navigation::isDisabled() ? '' : ' tabbed') ?>">
             <?php
                 /**
                  * @trigger onDisplayMainWindowTitle
@@ -103,7 +119,9 @@
                 $event->setDefault($this->placeholder('main.window.title'));
                 $title = $event->trigger();
             ?>
-            <h1 class="title"><?php echo $title ?></h1>
+			<div class="page-header">
+			    <h1 class="title"><?php echo $title ?></h1>
+			</div>
             <div class="slidehelper">
                 <?php if (isset($this->preTabsContent)): ?>
                     <div id="pre_tabs_content">
@@ -181,10 +199,6 @@
             </div><!-- .slidehelper -->
         </div><!-- .window -->
     </div><!-- .section-mainwindows -->
-
-	<div class="section-topbar">
-		<?php echo $this->placeholder('main.topbar') ?>
-	</div>
 
     <div class="section-sidewindows">
         <?php echo $this->placeholder('main.sidewindows') ?>

@@ -8,6 +8,34 @@
 
 ?>
 
+<a class="brand" href="./">OntoWiki</a>
+<div class="nav-collapse pull-left">
+  <ul class="nav">
+    <li class="active"><a href="#">Home</a></li>
+	<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Knowledge base <b class="caret"></b></a>
+	    <ul class="dropdown-menu">
+			<?php if (!empty($this->models)): ?>
+			    <?php foreach ($this->models as $modelDetails): ?>
+			        <li> 
+						<a href="#" class="knowledgeBaseElement" data-uri="<?php echo $modelDetails['url'] ?>" about="<?php echo $modelDetails['graphUri'] ?>" <?php if( $modelDetails['selected'] ) echo 'style="text-decoration: underline; font-weight: bold;"' ?>>
+			            	<?php echo $modelDetails['label'] ?>
+						</a>
+			        </li>
+			    <?php endforeach; ?>
+			<?php else: ?>
+			    <li><?php echo $this->_('No knowledge bases found.') ?></li>
+			<?php endif; ?>
+		</ul>
+	</li>
+  </ul>
+</div><!--/.nav-collapse -->
+
+<form class="navbar-search pull-right" action="">
+  <input type="text" class="search-query span2" placeholder="Search">
+</form>
+
+<!--
 <select id="modellist" style="float:left; margin-right: 10px;">
 <?php if (!empty($this->models)): ?>
     <?php foreach ($this->models as $modelDetails): ?>
@@ -27,15 +55,15 @@
 		<input class="text width99 inner-label" type="text" id="searchtext-input" name="searchtext-input" value="<?php echo $this->searchtextinput ?>" />
 	</p>
 	<?php endif; ?>
-	<p>
+	<p>-->
 		<!--label class="display-block">
 		    <?php $selected = ($this->modelSelected ? '' : 'checked="checked"') ?>
 			<input class="checkbox" type="checkbox" name="allModels" id="allModels" <?php echo $selected ?>/>
 			<?php echo $this->_('Search all Knowledge Bases') ?>
 		</label-->
-		<?php if ($this->has('logo')): ?>
+		<!--<?php if ($this->has('logo')): ?>
 		    <img src="<?php echo $this->logo ?>" style="float:right;vertical-align:bottom" alt="<?php echo $this->logo_alt ?>" />
-		<?php endif; ?>
+		<?php endif; ?>-->
 		<!--a class="button submit"><?php echo $this->_('Submit') ?></a-->
-	</p>
-</form>
+<!--	</p>
+</form> -->
