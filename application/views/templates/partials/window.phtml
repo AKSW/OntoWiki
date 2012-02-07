@@ -9,13 +9,25 @@
  */
 
 ?>
-<div class="window<?php echo ' ' . $this->cssClasses ?>"<?php echo ($this->cssId ? ' id="' . $this->cssId . '"' : '') ?>>
-    
-    <?php if ($this->has('headinglevel')): ?>
-        <h<?php echo $this->headinglevel ?> class="title"><?php echo $this->_($this->title) ?></h<?php echo $this->headinglevel ?>>
-    <?php else: ?>
-        <h1 class="title"><?php echo $this->_($this->title) ?></h1>
-    <?php endif; ?>
+<ul class="nav nav-pills">
+	<?php if ($this->has('menu')): ?>
+	  	<li class="dropdown">
+	    	<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+		    	<?php echo $this->_($this->title) ?>
+	        	<b class="caret"></b>
+	    	</a>
+	        <ul class="dropdown-menu">
+	            <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->menu)) ?>
+	   		</ul>
+	  	</li>
+	<?php else: ?>
+		<li>
+	    	<a href="#">
+		    	<?php echo $this->_($this->title) ?>
+	    	</a>
+	  	</li>
+	<?php endif; ?>
+</ul>
     
     <div class="slidehelper">
         <?php if (!$this->has('innerwindows')): ?>
@@ -60,12 +72,6 @@
                 </div><!-- .window .content -->
             <?php endif; ?>
         <?php endif; ?>
-    
-        <?php if ($this->has('menu')): ?>
-            <ul class="menu">
-                <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->menu)) ?>
-            </ul>
-        <?php endif; ?>
         
         <?php if ($this->has('contextmenu')): ?>
             <div class="contextmenu">
@@ -74,5 +80,3 @@
         <?php endif; ?>
     
     </div><!-- .slidehelper -->
-    
-</div><!-- .window -->

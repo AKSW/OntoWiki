@@ -11,12 +11,12 @@
 ?>
 <?php foreach ($this->menu as $name => $menu): ?>
     <?php if (is_array($menu)): ?>
-        <li><?php echo $this->_($name) ?>
-            <ul>
+		<li>
+			<ul class="nav nav-list">
+				<li class="nav-header"><?php echo $this->_($name) ?></li>
                 <?php foreach ($menu as $itemName => $itemContent): ?>
                     <?php if ($itemContent === OntoWiki_Menu::SEPARATOR): ?>
-                        <!-- TODO: this is invalid XHTML -->
-                        <hr class="menusep"/>
+                        <li class="divider"></li>
                     <?php elseif ($itemContent instanceof OntoWiki_Menu): ?>
                         <?php echo $this->partial('partials/menu.phtml', array('menu' => array($itemName => $itemContent->toArray(false, false)))) ?>
                     <?php elseif (is_string($itemContent)): ?>
@@ -36,7 +36,7 @@
                         </li>
                     <?php endif; ?>
                 <?php endforeach; ?>
-            </ul>
+			</ul>
         </li>
     <?php elseif ($menu instanceof OntoWiki_Menu): ?>
         <?php echo $this->partial('partials/menu.phtml', array('menu' => array($name => $menu->toArray(false, false)))) ?>
