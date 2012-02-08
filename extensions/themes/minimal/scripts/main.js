@@ -729,5 +729,9 @@ $(document).ready(function() {
     // adjust neede space for clickmenu
     $('.window div.cmDiv').adjustClickMenu();
     
-}) // $(document).ready
 
+	$(".modalButton").click(function(){
+		var modal = $("#" + $(this).text().trim().replace(/\s/g, '') + "_Modal");
+		if( typeof modal != 'undefined' ) modal.modal('show');
+	})
+}) // $(document).ready

@@ -8,9 +8,9 @@
 
 ?>
 <?php if (!empty($this->properties)): ?>
-<div class="has-contextmenu-area modal" id="propertiesbox" style="display:none;">
+<div class="has-contextmenu-area modal" id="ShowProperties_Modal" style="display:none;">
 	<div class="modal-header">
-		<a class="close" data-dismiss="modal">×</a>
+		<a class="close" data-dismiss="modal" onclick="$('#ShowProperties_Modal').hide().modal('hide')">×</a>
 	    <h3>Show Properties</h3>
 	</div>
 	<div class="modal-body">

@@ -11,7 +11,7 @@
 ?>
 <div class="btn-group">
 	<?php if ($this->has('menu')): ?>
-	  	<a class="btn" data-toggle="dropdown" href="#">
+	  	<a class="btn modalButton" href="#">
 		    <?php echo $this->_($this->title) ?>
 	   	</a>
 		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -21,7 +21,7 @@
             <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->menu)) ?>
    		</ul>
 	<?php else: ?>
-	   	<a class="btn" href="#">
+	   	<a class="btn modalButton" href="#">
 	    	<?php echo $this->_($this->title) ?>
 	   	</a>
 	<?php endif; ?>
