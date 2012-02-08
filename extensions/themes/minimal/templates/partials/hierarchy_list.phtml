@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * OntoWiki hierarchy module children list template
+ *
+ * @version $Id: hierarchy_list.phtml 2769 2009-04-06 14:57:58Z norman.heino $
+ */
+
+?>
+<?php if ($this->open): ?>
+    <ul class="bullets-none separated hierarchy">
+<?php else: ?>
+    <ul style="display:none" class="bullets-none separated hierarchy">
+<?php endif; ?>
+    <?php foreach ($this->classes as $child): ?>
+        <li>
+            <?php if ($child['has_children']): ?>
+                <?php if ($child['open']): ?>
+		            <a class="hierarchy-toggle open"></a>
+		        <?php else: ?>
+		            <a class="hierarchy-toggle closed"></a>
+		        <?php endif; ?>
+            <?php endif; ?>
+            <a class="Class <?php echo $child['classes'] ?>" href="<?php echo $child['url'] ?>" about="<?php echo $child['uri'] ?>">
+				<?php echo $child['title'] ?>
+			</a>
+			<?php if (!empty($child['children'])): ?>
+			    <?php echo $this->partial('partials/hierarchy_list.phtml', array('classes' => $child['children'], 'open' => $child['open'])) ?>
+            <?php endif; ?>
+        </li>
+    <?php endforeach; ?>
+</ul>
+

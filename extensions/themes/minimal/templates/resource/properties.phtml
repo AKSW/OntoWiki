@@ -1,0 +1,105 @@
+<?php if (isset($this->prePropertiesContent)): ?>
+    <div><?php echo $this->prePropertiesContent; ?></div>    
+<?php endif; ?>
+<?php $flag = false; ?>
+<span about="<?php echo $this->resourceUri ?>" style="display:none" class="about_span"></span>
+<?php if ($this->has('predicates')): ?>
+<?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
+<table class="separated-vertical rdfa" about="<?php echo $this->resourceUri ?>"
+    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+    <?php endforeach; ?>>
+    
+    <?php foreach ($this->predicates as $graph => $predicatesForGraph): ?>
+        <?php $current++; ?>
+        <?php if (count($this->predicates[$graph]) > 0): /* has resource predicates from graph at all? */ ?>
+            <?php $flag = true; ?>
+        <tbody update:from="<?php echo $graph ?>" id="table-group-<?php echo $current ?>">
+            <?php if (($graphCount > 1) || ($graph != $this->graphUri)): ?>
+                <?php /* show tbody caption only if statements from more than one graph or not from the selected graph */ ?>
+                <tr class="grouptitle">
+                    <th colspan="2">
+                        <a class="toggle"></a>
+                        <?php echo ($graph != $this->graphUri) ? $this->_('Imported from ') : '' ?>
+                        <?php echo $this->graphs[$graph] ?>
+                    </th>
+                </tr>
+            <?php endif; ?>
+        <?php foreach ($predicatesForGraph as $uri => $predicate): ?>
+            <?php $currentPredicate = $this->predicates[$graph][$uri] ?>
+            <tr>
+                <td width="120">
+                    <a class="hasMenu" 
+                       about="<?php echo $currentPredicate['uri'] ?>" 
+                       href="<?php echo $currentPredicate['url'] ?>"><?php echo $currentPredicate['title'] ?></a>
+                </td>
+                <td>
+                    <?php // if there is at least one resource in this value list -> show list icon ?>
+                    <div class="has-contextmenu-area">
+                        <div class="contextmenu">
+                            <?php
+                                // if there is at least one resource in this value list -> show list icon
+                                $hasListLink = false;
+                                if (count($this->values[$graph][$uri]) > 1) {
+                                    foreach ($this->values[$graph][$uri] as $entry) {
+                                         if ($entry['url']) {
+                                             $hasListLink = true;
+                                         }
+                                    }
+                                }
+                            ?>
+                            <?php if ($hasListLink == true) : ?>
+                                <a class="item"
+                                   href="<?php echo (isset($currentPredicate['has_more_link']) ? $currentPredicate['has_more_link'] : "") ?>">
+                                    <span class="icon icon-list" title="Show as List">
+                                        <span>Show as List</span>
+                                    </span>
+                                </a>
+                            <?php endif ?>
+                            <?php if ($this->editableFlags[$graph] == true) : ?>
+                                <a class="item rdfauthor-edit-property"
+                                   onclick="editProperty(event)">
+                                    <span class="icon icon-edit" title="Edit Values">
+                                        <span>Show as List</span>
+                                    </span>
+                                </a>
+                            <?php endif ?>
+                        </div>
+                        <ul class="bullets-none">
+                            <?php foreach ($this->values[$graph][$uri] as $entry): ?>
+                                <?php if ($entry['url']): ?>
+                                    <li>
+                                        <a resource="<?php echo $entry['uri'] ?>" 
+                                           rel="<?php echo $currentPredicate['curi'] ?>" 
+                                           class="expandable hasMenu" href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
+                                    </li>
+                                <?php else: ?>
+                                    <li property="<?php echo $currentPredicate['curi']; ?>" 
+                                        data-object-hash="<?php echo $entry['object_hash']; ?>"
+                                        content="<?php echo $this->escape(isset($entry['content']) ? $entry['content'] : $entry['object']); ?>"
+                                        <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
+                                            xml:lang="<?php echo $entry['lang']; ?>"
+                                        <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
+                                            datatype="<?php echo $entry['datatype'] ?>"
+                                        <?php endif; ?>
+                                        ><?php 
+                                        echo $entry['object']
+                                    ?></li>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                            <?php if (isset($currentPredicate['has_more']) && $currentPredicate['has_more']): ?>
+                                <a href="<?php echo $currentPredicate['has_more_link'] ?>">[<?php echo $this->_('more') ?>]</a>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+    <?php endif; ?>
+    <?php endforeach; ?>
+</table>
+<?php endif; ?>
+<?php if (!$flag): ?>
+    <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
+<?php endif; ?>

@@ -1,0 +1,75 @@
+<?php $values = isset($this->values[$this->graphIri]) ? $this->values[$this->graphIri] : array(); ?>
+
+<h2><?php echo $this->modelTitle ?></h2>
+
+<h3><?php echo $this->_('Comments, Descriptions and Notes') ?></h3>
+<?php if ($this->has('infoPredicates')): ?>
+    <?php foreach ($this->infoPredicates as $uri => $predicate): ?>
+        <?php foreach ($values[$uri] as $entry): ?>
+            <p class="messagebox info"><?php echo trim($entry['object']) ?></p>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+<?php else: ?>
+    <p class="messagebox warning"><?php echo $this->_('There are no comments, descriptions or notes on this knowledge base.') ?></p>
+<?php endif; ?>
+<!--h3><?php echo $this->_('Statistical Outline') ?></h3>
+<table class="separated-vertical">
+    <tr class="odd">
+        <td width="25%">Classes</td>
+        <td>23 (Defined: 23, Imported: 0)</td>
+    </tr>
+    <tr>
+        <td width="25%">Datatype Properties</td>
+        <td>23 (Defined: 23, Imported: 0)</td>
+    </tr>
+    <tr class="odd">
+        <td width="25%">Object Properties</td>
+        <td>23 (Defined: 23, Imported: 0)</td>
+    </tr>
+    <tr>
+        <td width="25%">Annotation Properties</td>
+        <td>23 (Defined: 23, Imported: 0)</td>
+    </tr>
+    <tr class="odd">
+        <td width="25%">Individuals</td>
+        <td>23 (Defined: 23, Imported: 0)</td>
+    </tr>
+</table-->
+
+<?php //include the resource/properties view
+//hand over all nessesary variables
+echo $this->partial('resource/properties.phtml',array(
+    'graphs' => $this->graphs,
+    'editableFlags' => $this->editableFlags,
+    'values' => $this->values,
+    'predicates' => $this->predicates,
+    'resourceUri' => $this->resourceIri, 
+    'graphUri' => $this->graphIri,
+    'graphBaseUri' => $this->graphBaseIri,
+    'editable' => false, 
+    'namespaces' => $this->namespaces
+));
+//notice: ModelController (and the rest of this template) want Iri, 
+//but ResourceController (and its template) want Uri
+?>
+
+
+<div class="messagebox">
+<h4><?php echo $this->_('Actions') ?></h4>
+<?php
+if($this->has('showFoafLink') && $this->showFoafLink){
+    ?><a href="<?php echo $this->foafLink; ?>">open FOAF viewer</a><br/><?php
+}
+?>
+<a href="<?php echo $this->resourcesUrl; ?>"> <?php echo $this->_('view all resources') ?></a>&nbsp;|&nbsp;
+
+<a onclick="$('#location_bar_container').toggle()" > <?php echo $this->_('Jump to resource') ?></a>
+
+<div id="location_bar_container" style="display: none; padding: 10px 0px 10px 20px; border-top: 1px dotted #ababab;">
+  <h5><?php echo $this->_('Jump to resource') ?></h5>
+  <input id="location_bar_input" class="text width75" type="text" value="" name="l" />
+  <a id="location_open" class="minibutton" style="float: none"> <?php echo $this->_('View Resource') ?> </a>
+</div>
+
+
+</div>

@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * OntoWiki resultset partial template
+ *
+ * @author  Jonas Brekle <jonas.brekle@gmail.com>
+ */
+
+$resultCounter = 1;
+?>
+<?php if(!empty($this->data)){ ?>
+<table class="separated-vertical" <?php if (isset($this->cssid)) echo "id=\"".$this->cssid."\"" ?>>
+    <?php if ($this->has('caption')): ?>
+        <caption><?php echo $this->caption;?></caption>
+    <?php endif; ?>
+    
+    <?php if (!$this->has('header')) $this->header = array_keys($this->data[0]); ?>
+        <tr>
+            <th style="width: 1em">#</th>
+            <?php foreach ($this->header as $headerField): ?>
+                <th><?php echo $headerField ?></th>
+            <?php endforeach; ?>
+        </tr>
+       
+    <?php 
+    	$odd = true;
+    	foreach ($this->data as $row): ?>
+        <tr class="<?php echo $odd ? "odd" : "even" ?>">
+            <td><?php echo $resultCounter++ . "."?></td>
+            <?php foreach ($row as $field): ?>
+                <td>
+                <?php 
+                if(!is_array($field)){
+                	if(substr($field,0,4)=="http"){ 
+                		$shorturl = OntoWiki_Utils::contractNamespace($field);
+                		
+                		$localpart = OntoWiki_Utils::getUriLocalPart($field);
+                		?><a class="hasMenu expandable Resource" about="<?php echo $field;?>"  href="<?php echo $this->urlBase."/view/?r=".urlencode($field);?>"><?php echo $shorturl;?></a><?php
+                	} else {
+                		echo $this->escape($field); //literal
+                	}
+                } else { $localpart = OntoWiki_Utils::getUriLocalPart($field["uri"]); ?>
+                	<a class="hasMenu expandable Resource" about="<?php echo $field["uri"];?>"  href="<?php echo $this->urlBase."/view/?r=".urlencode($field); ?>"><?php echo $field["title"];?></a>
+                <?php } ?>
+                </td>
+            <?php endforeach; $odd = !$odd; ?>
+        </tr>
+    <?php endforeach; ?>
+</table>
+<?php } else {
+	?><p class="messagebox info"><?php echo $this->_('No matches.') ?></p><?php
+}  ?>

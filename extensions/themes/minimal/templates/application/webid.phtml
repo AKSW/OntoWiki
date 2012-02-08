@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * OntoWiki openid details template
+ *
+ * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @version $Id: $
+ */
+
+?>
+
+<script type="text/javascript">
+//<![CDATA[
+
+$(document).ready(function() {
+
+    $('a.openidreg-cancel').click(function() {
+        window.location = urlBase + 'application/webidreg';
+    });
+});
+
+//]]>
+</script>
+
+<fieldset>
+<p class="messagebox info">Here is a <a href="http://esw.w3.org/topic/foaf%2Bssl/services">list of FOAF+SSL services</a> where you can create FOAF+SSL compliant certificates.</p>
+    <div>
+        <label for="openid_url"><?php echo $this->_('WebID') ?></label>
+        <input class="text" id="webid_url" type="text" name="webid_url" readonly="readonly" value="<?php echo (string)$this->webid ?>" />
+        <?php if (isset($this->checked)): ?>
+            <span class='success_icon'></span>
+        <?php endif; ?>
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="label-input"><?php echo $this->_('Label') ?></label>
+        <input class="text" id="label-input" type="text" name="label" value="<?php echo $this->label ?>" />
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="email-input"><?php echo $this->_('Email Address') ?></label>
+        <input class="text" id="email-input" type="text" name="email" value="<?php echo $this->email ?>" />
+        <br class="clearall" />
+    </div>
+    <div class="clearall"></div>
+</fieldset>

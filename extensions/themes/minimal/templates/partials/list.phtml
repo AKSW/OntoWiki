@@ -1,0 +1,121 @@
+<?php
+$start = microtime(true);
+$instances = $this->instances;
+
+$graph = $this->instances->getGraph();
+$store = $this->instances->getStore();
+
+// prepare namespaces
+try{
+    $namespaces = $graph->getNamespaces();
+} catch (Exception $e){
+    $namespaces = array();
+}
+$graphBase  = $graph->getBaseUri();
+if (!array_key_exists($graphBase, $namespaces)) {
+    $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
+}
+
+//data for filter module
+$filter = $instances->getFilter();
+$filter_js = json_encode(is_array($filter) ? $filter : array());
+
+if (OntoWiki::getInstance()->extensionManager->isExtensionRegistered('filter')) {
+    $this->headScript()->prependFile(
+        OntoWiki::getInstance()->extensionManager->getComponentUrl('filter') .'resources/FilterAPI.js'
+    );
+}
+
+if ($instances->hasData()) {
+    $instanceInfo = $instances->getResources();
+    if(!isset($this->other->disableValueQuery) || !$this->other->disableValueQuery){
+        $instanceData = $instances->getValues();
+    } else {
+         $instanceData = array();
+    }
+    //echo '<pre>'; print_r($instanceData); echo '</pre>';
+    
+    $itemsOnPage = count($instanceData);
+    
+    $propertyInfo = $instances->getShownProperties();
+    
+    $time = (microtime(true) - $start) * 1000;
+    
+    $start     = $instances->getOffset() + 1;
+    $translate = OntoWiki::getInstance()->translate;
+    
+    $statusBar = $this->placeholder('main.window.statusbar');
+    
+    $limit = $instances->getLimit();
+    $offset = $instances->getOffset();
+    if($limit != 0) {
+        $page = ($offset / $limit) +1;
+    } else {
+        $page = 1;
+    }
+    $config = Erfurt_App::getInstance()->getConfig();
+
+    if($graph->getOption($config->sysont->properties->isLarge)) {
+        $statusBar->append(OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName));
+    } else {
+        $query = clone $instances->getResourceQuery();
+        
+        $where = 'WHERE '.$query->getWhere();
+        
+        try {
+            $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
+        } catch (Erfurt_Store_Exception $e) {
+            $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
+        }
+        $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName));
+        
+        if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
+            $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
+            $numResultsMsg = sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results);
+            $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
+        }
+    }
+    if(!isset($count) || $count > 10 ){
+        $thisActionUrl = new OntoWiki_Url().'/';
+        $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
+        $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
+        $statusBar->append($limit);
+    }
+
+    if (defined('_OWDEBUG')) {
+        $timeMsg = sprintf($translate->translate('Query execution took %1$d ms.'), $time);
+        $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
+    }
+} else {
+    $instanceData = array();
+    $instanceInfo = array();
+    $propertyInfo = array();
+}
+
+$this->headScript()->prependScript(
+        'var reloadUrl = "'.
+        new OntoWiki_Url(array()). // url to reload -> without config params
+        '";
+            var filtersFromSession = ' . $filter_js.';
+            var listName = "'.$this->listName.'";'
+        );
+//other contains template specific data
+$other = $this->other;
+$other->namespaces =$namespaces;
+$other->graphbase = $graphBase;
+
+//call the requested template
+echo $this->partial('partials/'.$this->mainTemplate.'.phtml',
+                array(
+                    'instances'    => $instances,
+                    'instanceData' => $instanceData,
+                    'instanceInfo' => $instanceInfo,
+                    'propertyInfo' => $propertyInfo,
+                    'other'        => $other,
+                    'listName'    => $this->listName,
+                    'start'        => $start
+                )
+             );
+?>

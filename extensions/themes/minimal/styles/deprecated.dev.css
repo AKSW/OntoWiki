@@ -1,0 +1,97 @@
+/**
+  * deprecated.dev.css
+  *
+  * - it makes deprecated gui elements visible
+  * - should be only included in development environments
+  *
+  * @see http://code.google.com/p/ontowiki/wiki/CSSDevelopment
+  *
+  * @since 0.9.5
+  * @author Michael Haschke
+  */
+  
+
+
+/* -- Buttons --------------------------------------------------------------- */
+
+/**
+ * Inherited Minibuttons
+ * @deprecated 0.9.5
+ *
+ * - ul.minibutton and li.minibutton is deprecated 0.9.5 for simplification of the default styles
+ * - please use directly span.minibutton or a.minibutton
+ */
+ul.minibutton li a,
+li.minibutton a
+{
+    outline:solid 1px red !important;
+}
+
+/* -- Form elements --------------------------------------------------------- */
+
+/**
+ * Propably unused elements
+ * @deprecated 0.9.5
+ *
+ * - put some of them back to default.dev.css if they are used
+ */
+
+/* not used? */
+input.uri-input {
+	width: 30em;
+	font-size: 90%;
+	padding: 0.15em;
+}
+
+/* not used? */
+label.input-label-left {
+	float: left;
+	width: 12em;
+}
+
+/* not used? */
+label.radio-label {
+	margin-left: 1.6em;
+}
+
+input.uri-input, label.input-label-left, label.radio-label
+{
+    outline:solid 1px red !important;
+}
+
+/* -- Lists ----------------------------------------------------------------- */
+
+/**
+ * Horizontal/Inline lists
+ *
+ * - please use directly ul.inline
+ */
+ul.horizontal, ol.horizontal > li
+{
+    outline:solid 1px red !important;
+}
+
+/**
+ * Vertically separated lists -- old solution
+ * @deprecated 0.9.5
+ *
+ * - please use just <ul class="separated">...</ul>
+ */
+ul.separated-vertical, ol.separated-vertical
+{
+    outline:solid 1px red !important;
+}
+
+/**
+ * Horizontally separated lists -- old solution
+ * @deprecated 0.9.5
+ *
+ * - please use just <ul class="inline separated">...</ul> or
+ *   <ul class="inline">...</ul> for horizontal/inline lists without separation
+ *   between items
+ */
+ul.separated-horizontal, ol.separated-horizontal
+{
+    outline:solid 1px red !important;
+}
+

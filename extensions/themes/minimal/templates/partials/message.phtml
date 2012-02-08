@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * OntoWiki message partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $Id: message.phtml 3932 2009-08-05 12:43:49Z sebastian.dietzold $
+ */
+
+?>
+<p class="messagebox <?php echo $this->message->getType() ?>">
+    <?php echo $this->_($this->message->getText()) ?>
+</p>

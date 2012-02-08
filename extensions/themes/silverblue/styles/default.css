@@ -56,9 +56,17 @@
 
 /* 1. Layout ---------------------------------------------------------------- */
 
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
 body {
-	padding-top: 60px;
-	padding-bottom: 40px;
+    font-family: sans-serif;
+    line-height: 1.5;
+    background: url(./../images/layout-background-body.png) fixed no-repeat 97% 96% #eff9ff;
+    font-size:16px; /* same font-size for all browsers */
 }
 
 /* -- 1.1. Positions -------------------------------------------------------- */
@@ -68,22 +76,13 @@ div.section-mainwindows {
     position: static;
     width: auto;
     margin-left: 17.5em;
-	margin-top: 50px;
-}
-
-div.section-topbar {
-	position: absolute;
-    width: 100%;
-	max-width: 100%;
-	top: 0;
-	max-height: 100px;
 }
 
 div.section-sidewindows {
     position: absolute;
     width: 17.5em;
     left: 0;
-    top: 40px;
+    top: 0;
 }
 
 /*div.modal-wrapper {

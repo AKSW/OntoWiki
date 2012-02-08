@@ -1,0 +1,14 @@
+<?php if ($this->has('update')): ?>
+    <?php foreach ($this->placeholder('update') as $update): ?>
+        <?php if (isset($update['sourceGraph'])): ?>
+            <link about="" rel="update:sourceGraph" href="<?php echo $update['sourceGraph'] ?>"/>
+            <?php $graph = $update['sourceGraph'] ?>
+        <?php elseif (isset($update['defaultGraph'])): ?>
+            <link about="" rel="update:defaultGraph" href="<?php echo $update['defaultGraph'] ?>"/>
+            <?php $graph = $update['defaultGraph'] ?>
+        <?php endif; ?>
+        <link about="<?php echo $graph ?>" rel="update:updateEndpoint" href="<?php echo $update['updateEndpoint'] ?>"/>
+        <link about="<?php echo $graph ?>" rel="update:queryEndpoint" href="<?php echo $update['queryEndpoint'] ?>"/>
+    <?php endforeach; ?>
+<?php endif; ?>
+

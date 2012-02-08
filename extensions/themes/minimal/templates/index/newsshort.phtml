@@ -1,0 +1,6 @@
+<?php foreach ($this->rssData as $feedItem): ?>
+    <div class="messagebox feed">
+        <h4><a href="<?php echo $feedItem['link'] ?>"><?php echo $feedItem['title'] ?></a></h4>
+        <p><?php echo $feedItem['description'] ?></p>
+    </div>
+<?php endforeach; ?>

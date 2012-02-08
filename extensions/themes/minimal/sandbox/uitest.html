@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>OntoWiki — Instances of Person</title>    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="OntoWiki — Collaborative Knowledge Engineering" />
+<link rel="stylesheet" href="./../styles/default.css" type="text/css" media="screen" />
+<!-- jQuery -->
+<script type="text/javascript" src="./../scripts/libraries/jquery.js"></script>
+<script type="text/javascript" src="./../scripts/libraries/jquery-ui.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#button-tests button, #button-tests input, #button-tests a').button().click(function(){ $('#dialog-test').dialog('open'); });
+        $('#tabs').tabs();
+        $('#progressbar-1').progressbar({ value: 75 });
+        $('#progressbar-2').progressbar({ value: 20 });
+        $('#dialog-test').dialog({autoOpen: false});
+        $('#slider-1').slider();
+        $('#slider-2').slider({ value: 100, max: 400, min: 0, step: 10});
+        $('#accordion').accordion();
+    });
+</script>
+</head>
+<body>
+    <h3>tabs</h3>
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1">tab1</a></li>
+            <li><a href="#tabs-2">tab2</a></li>
+            <li><a href="#tabs-3">tab3</a></li>
+        </ul>
+        <div id="tabs-1">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+        <div id="tabs-2">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam</div>
+        <div id="tabs-3">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
+    </div>
+    <h3>buttons - click to open dialog</h3>
+    <div id="button-tests">
+        <p>
+            <button>Element Button</button>
+            <input value="Submit Button" type="submit"></input>
+            <a href="#">An anchor Button</a>
+        </p>
+    </div>
+    <h3>progressbars</h3>
+    <div id="progressbar-test">
+        <div id="progressbar-1"></div>
+        <br></br>
+        <div id="progressbar-2"></div>
+    </div>
+    <div id="dialog-test" title="Ontowiki Dialog Test">
+	<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+    </div>
+    <h3>slider</h3>
+    <div id="slider-test">
+        <div id="slider-1"></div>
+        <br></br>
+        <div id="slider-2"></div>
+    </div>
+    <h3>accordion</h3>
+    <div id="accordion">
+        <h3>One</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+        <h3>Two</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+        <h3>Three</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+    </div>
+</body>
+</html>

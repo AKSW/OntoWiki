@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * OntoWiki user details template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @version $Id: userdetails.phtml 3378 2009-06-24 14:09:30Z pfrischmuth $
+ */
+
+?>
+<fieldset>
+    <?php if (isset($this->isOpenIdUser) && $this->isOpenIdUser): ?>
+        <div>
+            <label for="openid-input"><?php echo $this->_('OpenID') ?></label>
+            <input class="text" id="openid-input" type="text" name="openid" readonly="readonly" value="<?php echo $this->openid ?>"/>
+            <br class="clearall" />
+        </div>
+    <?php endif; ?>
+    
+    <div>
+        <label for="name-input"><?php echo $this->_('Username') ?></label>
+        <input class="text" id="name-input" type="text" name="username" <?php echo $this->userReadonly ?> value="<?php echo $this->username ?>" />
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="email-input"><?php echo $this->_('Email Address') ?></label>
+        <input class="text" id="email-input" type="text" name="email" value="<?php echo $this->email ?>" />
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="pw1-input"><?php echo $this->_('New Password') ?></label>
+        <input class="text" id="pw1-input" type="password" name="password1" />
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="pw2-input"><?php echo $this->_('New Password (repeat)') ?></label>
+        <input class="text" id="pw2-input" type="password" name="password2" />
+        <br class="clearall" />
+    </div>
+    <div>
+        <label for="pwchange-input"></label>
+        <input class="checkbox" id="pwchange-input" type="checkbox" name="changepassword" value="1" />
+        <?php echo $this->_('Change Password?') ?>
+        <br class="clearall" />
+    </div>
+    <div class="clearall"></div>
+</fieldset>

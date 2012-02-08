@@ -1,0 +1,65 @@
+/* Tabs */
+
+div.window .tabs {
+    height:1%;
+}
+
+div.window .tabs li a {
+    margin-top:0.1em;
+    border-top:solid 3px;
+}
+
+div.window .tabs li.active a {
+    margin-top:0;
+}
+
+/* Contextmenu */
+
+div.contextmenu-enhanced .contextmenu {
+    width:15em;
+}
+
+/* Buttons */
+
+a.formbutton,
+div.window .content a.button {
+  padding:0.45em 0.7em 0.45em 0.7em;   /* Links */
+}
+
+/* Inputs */
+
+div.input-justify-left label,
+form.input-justify-left div label {
+    padding-top:0;
+}
+
+fieldset fieldset fieldset {
+    border-style:solid;
+}
+
+/* Tables */
+
+table {
+    border-collapse: separate;
+}
+
+body.javascript-on tbody.closed tr.grouptitle { display:block; }
+
+/* Lists */
+
+/**
+ * Horizontally separated lists
+ * @fix MSIE 7
+ */
+ul.inline.separated li, ol.inline.separated li,
+ul.inline.separated.comma li, ol.inline.separated.comma li
+{
+    padding-right:0.5em;
+    border-right:dotted 1px #ccc;
+}
+ul.inline.separated li.last-child, ol.inline.separated li.last-child,
+ul.inline.separated.comma li.last-child, ol.inline.separated.comma li.last-child
+{
+    border-right-style:none;
+}
+

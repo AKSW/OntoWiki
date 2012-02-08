@@ -1,0 +1,122 @@
+div.cmDiv {
+/*  border-top: 1px solid #000;*/
+    border-bottom: 0.1em solid #ddd;
+    background-color: #eee;
+    line-height: 1;
+    /*z-index: 100;*/
+    overflow: visible;
+}
+
+.clickMenu {
+    margin: 0;
+    padding: 0;
+    cursor: default;
+}
+
+.clickMenu, .clickMenu ul {
+    list-style: none;
+}
+
+.clickMenu ul {
+    margin: 0 !important;
+    padding: 1px;
+    border: 1px solid #999;
+    background-color: #f6f6f6;
+    min-width: 15em; /* ie doesnt know this : / */
+}
+
+.clickMenu div.outerbox {
+    display: none;
+    min-width: 15em; /* firefox produces animation-flickering when the box is bigger than this : / */
+    top: 1.65em;
+    z-index: 101;
+    /* opacity: 0.95; */
+}
+
+.clickMenu div.inner {
+    left: 0;
+    margin: 0;
+}
+
+.clickMenu div.inner div.outerbox {
+    margin: 0 4px 0 0;
+    left: 50% !important; /*right: 0;*/
+    top: 0;
+}
+
+.clickMenu li {
+    position: relative;
+    padding: 0.35em 0.5em 0.25em 0.5em;
+    border: solid 1px transparent;
+    white-space: nowrap; /* does not really work in ie */
+    
+}
+
+.clickMenu li.main {
+    float: left;
+    background-color: #eee;
+}
+
+.clickMenu li.main li {
+    z-index: 102;
+    min-width: 78px;
+}
+
+.clickMenu li.hover {
+    z-index: 103 !important;
+    border-color: #cdd7dd;
+    background: url(./../images/layout-button-menu-hover-gradient.png) repeat-x bottom center #eff9ff;
+}
+
+.clickMenu img.liArrow {
+    position: absolute;
+    right: 5px;
+    top: 0.5em;
+}
+
+.clickMenu a {
+    text-decoration: none;
+    color: black;
+    cursor: default;
+}
+
+/* thats for the shadowbox */
+/*
+html>body div.outerbox {
+    padding: 0 5px 5px 0;
+}
+
+html>body div.shadowbox1 {
+    position: absolute;
+    right: 0;
+    bottom: 5px;
+    width: 5px;
+    height: 100%;
+    background: url(myshadow.png) no-repeat right top;
+}
+
+html>body div.shadowbox2 {
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+    height: 5px;
+    width: 100%;
+    background: url(myshadow.png) left bottom;
+}
+
+html>body div.shadowbox3 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 5px;
+    width: 5px;
+    background: url(myshadow.png) no-repeat right bottom;
+}
+
+html>body .innerbox {
+    margin: 0;
+    display: inherit;
+}
+
+*/
+

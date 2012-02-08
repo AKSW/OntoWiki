@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * OntoWiki toolbar partial template
+ *
+ * @author  Norman Heino <norman.heino@gmail.com>
+ * @author  Michael Haschke
+ * @version $$
+ */
+
+?>
+<div class="messagebox">
+    <?php if (isset($this->lines)): ?>
+        <?php foreach ($this->lines as $line): ?>
+            <div class="statusline"><?php echo $line ?></div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    
+    <?php if (isset($this->tools)): ?>
+        <?php foreach ($this->tools as $tool): ?>
+            <div class="statustool"><?php echo $tool ?></div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>

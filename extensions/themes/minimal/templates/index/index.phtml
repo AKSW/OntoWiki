@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * OntoWiki index template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: index.phtml 2327 2008-05-26 15:47:55Z norman.heino $
+ */
+
+?>
+<?php $this->headTitle()->append($this->_(' - Added by a Template With no Acces to <head>')) ?>
+<p><?php echo $this->_('Bla bla, blub!') ?></p>
+<p><?php echo sprintf($this->_('I am %1$s years old.'), $this->age) ?></p>
+<a href="<?php echo $this->url() ?>foo/bar"><?php echo $this->_('Click me!') ?></a>
