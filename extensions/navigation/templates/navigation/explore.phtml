@@ -5,16 +5,11 @@
  */
 $odd = true;
 ?>
-<!-- <ol class="bullets-none separated">
-    <li> -->
     <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>
-        <h2 class="navRoot fancybuttons">
+        <li class="nav-header">
         <?php if (isset($this->rootEntry)):?>
-            <a class="navFirst icon icon-arrow-first" title="Go to root level">
-                <span>[Go to root level]</span>
-            </a><a class="navBack icon icon-arrow-previous" title="Go to previous level">
-                <span>[Go to previous level]</span>
-            </a><br/>
+            <a class="navFirst icon-arrow-first" title="Go to root level"></a>
+			<a class="navBack icon-arrow-previous" title="Go to previous level"></a>
             <a class="hasMenu" href="<?php echo $this->rootEntry['url'] ?>" about="<?php echo $this->rootEntry['uri'] ?>">
                 <?php echo $this->rootEntry['title'] ?>
             </a>
@@ -27,50 +22,40 @@ $odd = true;
                 }else{
                     echo $this->rootName;
                 }
-            }else{ ?>
-                <!-- Root -->
-            <?php } ?>
+            } ?>
         <?php endif ?>
-        </h2>
+        </li>
     <?php endif ?>
-<!-- </h2> -->
 
     <?php if (!empty($this->messages)): ?>
         <?php foreach ($this->messages as $message): ?>
-        <p class="messagebox <?php echo $message['type'] ?>">
+        <li class="nav-header <?php echo $message['type'] ?>">
             <?php echo $message['text'] ?>
-        </p>
+        </li>
         <?php endforeach; ?>
     <?php endif ?>
 
 
     <?php if ($this->entries) :?>
-        <ol class="bullets-none separated has-contextmenus-block">
+        <li>
         <?php foreach ($this->entries as $uri => $entry): ?>
-            <li class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
-                <a class="navigation navList"
-                   href="<?php echo $entry['link'] ?>"
-                   about="<?php echo $uri ?>" title="show list of instances">
-                   <?php echo $entry['title'] ?>
+	        <a class="navigation navList"
+	           href="<?php echo $entry['link'] ?>"
+	           about="<?php echo $uri ?>" title="show list of instances">
+	           <?php echo $entry['title'] ?>
 
-                   <?php if( $entry['sub'] > 0 ): ?>
-                   <span class="navDeeper navDeeperIcon icon icon-arrow-next" title="show deeper level"><span>[show deeper level]</span></span>
-                   <?php endif ?>
-                   <!-- span class="navList icon icon-list" title="show list of instances">
-                    <span>[show list of instances]</span>
-                   </span -->
-                </a>
-            </li>
+	           <?php if( $entry['sub'] > 0 ): ?>
+	           <span class="navDeeper navDeeperIcon icon-arrow-next" title="show deeper level"></span>
+	           <?php endif ?>
+	        </a>
         <?php endforeach; ?>
-        </ol>
+        </li>
     <?php endif; ?>
 
 <?php if ($this->showMeMore) :?>
-<a class="minibutton" href="javascript:navigationEvent ('more', '')" id="naviganion-more"><span class="icon icon-arrow-down"></span> Show Me More</a>
+<li>
+	<a class="btn" href="javascript:navigationEvent ('more', '')" id="naviganion-more">
+		<span class="icon-arrow-down"></span> Show Me More
+	</a>
+</li>
 <?php endif; ?>
-
-<!-- <pre>
-<?php
-        #print_r($this->setup)
-?>
-</pre> -->
