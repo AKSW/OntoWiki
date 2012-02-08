@@ -8,7 +8,12 @@
 
 ?>
 <?php if (!empty($this->properties)): ?>
-<div class="has-contextmenu-area">
+<div class="has-contextmenu-area modal" id="propertiesbox" style="display:none;">
+	<div class="modal-header">
+		<a class="close" data-dismiss="modal">×</a>
+	    <h3>Show Properties</h3>
+	</div>
+	<div class="modal-body">
     <div class="contextmenu">
         <a class="item"
            href="<?php echo $this->propertiesListLink ?>">
@@ -49,6 +54,7 @@
 		    <?php endif; ?>
 		<?php endforeach; ?>
 	</ul>
+	</div>
 </div>
 <?php endif ?>
 <?php if ( ( !empty($this->Properties) ) && ( !empty($this->reverseProperties) ) ): ?>

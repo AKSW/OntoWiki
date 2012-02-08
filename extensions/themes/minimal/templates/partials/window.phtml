@@ -9,25 +9,23 @@
  */
 
 ?>
-<ul class="nav nav-pills">
+<div class="btn-group">
 	<?php if ($this->has('menu')): ?>
-	  	<li class="dropdown">
-	    	<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-		    	<?php echo $this->_($this->title) ?>
-	        	<b class="caret"></b>
-	    	</a>
-	        <ul class="dropdown-menu">
-	            <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->menu)) ?>
-	   		</ul>
-	  	</li>
+	  	<a class="btn" data-toggle="dropdown" href="#">
+		    <?php echo $this->_($this->title) ?>
+	   	</a>
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+			<span class="caret"></span>
+		</a>
+        <ul class="dropdown-menu">
+            <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->menu)) ?>
+   		</ul>
 	<?php else: ?>
-		<li>
-	    	<a href="#">
-		    	<?php echo $this->_($this->title) ?>
-	    	</a>
-	  	</li>
+	   	<a class="btn" href="#">
+	    	<?php echo $this->_($this->title) ?>
+	   	</a>
 	<?php endif; ?>
-</ul>
+</div>
     
     <div class="slidehelper">
         <?php if (!$this->has('innerwindows')): ?>

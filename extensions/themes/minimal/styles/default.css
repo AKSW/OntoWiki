@@ -2154,3 +2154,8 @@ a.open:hover {
     display: none;
 }
 
+/* ---------------------------------------- */
+.innerwindows .btn-group {
+	float:right;
+	margin-right: 5px;
+}

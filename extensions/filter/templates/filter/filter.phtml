@@ -4,7 +4,12 @@
  */
 $odd = true;
 ?>
-<div id="filterbox">
+<div id="filterbox" class="modal" style="display:none;">
+	<div class="modal-header">
+		<a class="close" data-dismiss="modal">×</a>
+		<h3>Filter</h3>
+	</div>
+	<div class="modal-body">
     <!--ul id="list"></ul-->
     <form name="search" method="get" action="<?php echo $this->actionUrl ?>">
 	<p class="width98">
@@ -126,5 +131,6 @@ $odd = true;
                 <a id="addwindowhide" class="button minibutton">cancel</a></formset>
             </div>
         </div>
-    </div>
+    </div>  
+	</div>
 </div>

@@ -139,6 +139,9 @@
 	            ?>
 				<div class="page-header">
 				    <h3 class="title"><?php echo $title ?></h3>
+					<div class="innerwindows" style="float: right; width:100%; margin-top: -20px;">
+                        <?php echo $this->placeholder('main.window.innerwindows') ?>
+                    </div><!-- .innerwindows -->
 				</div>
 	            <div class="slidehelper">
 	                <?php if (isset($this->preTabsContent)): ?>
@@ -173,10 +176,6 @@
 
 	                            <?php echo $this->layout()->content ?>
 	                        </div><!-- .innercontent -->
-
-	                        <div class="innerwindows">
-	                            <?php echo $this->placeholder('main.window.innerwindows') ?>
-	                        </div><!-- .innerwindows -->
 
 	                        <?php if ($this->has('formActionUrl')): ?>
 	                            </form>
