@@ -5,16 +5,19 @@
  */
 
 ?>
-<?php if (!empty($this->models)): ?>
-    <ol class="bullets-none separated has-contextmenus-block">
-    	<?php foreach ($this->models as $modelDetails): ?>
-    		<li>
-    			<a class="Model <?php echo $modelDetails['selected'] ?>" href="<?php echo $modelDetails['url'] ?>" about="<?php echo $modelDetails['graphUri'] ?>">
-    				<?php echo $modelDetails['label'] ?>
-    			</a>
-    		</li>
-    	<?php endforeach; ?>
-    </ol>
-<?php else: ?>
-    <p class="messagebox info"><?php echo $this->_('No knowledge bases found.') ?></p>
-<?php endif; ?>
+<li class="dropdown">
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Knowledge base <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+		<?php if (!empty($this->models)): ?>
+		    <?php foreach ($this->models as $modelDetails): ?>
+		        <li> 
+					<a href="#" class="knowledgeBaseElement" data-uri="<?php echo $modelDetails['url'] ?>" about="<?php echo $modelDetails['graphUri'] ?>" <?php if( $modelDetails['selected'] ) echo 'style="text-decoration: underline; font-weight: bold;"' ?>>
+		            	<?php echo $modelDetails['label'] ?>
+					</a>
+		        </li>
+		    <?php endforeach; ?>
+		<?php else: ?>
+		    <li><?php echo $this->_('No knowledge bases found.') ?></li>
+		<?php endif; ?>
+	</ul>
+</li>

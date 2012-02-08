@@ -62,13 +62,14 @@ class LoginModule extends OntoWiki_Module
             $data['showRegisterButton'] = false;
         }
 
-        $content = array(
-            'Local' => $this->render('templates/local', $data),
-            'OpenID' => $this->render('templates/openid', $data),
-            'FOAFSSL' => $this->render('templates/webid', $data)
-        );
+        //$content = array(
+        //    'Local' => $this->render('templates/local', $data),
+        //    'OpenID' => $this->render('templates/openid', $data),
+        //    'FOAFSSL' => $this->render('templates/webid', $data)
+        //);
 
-        return $content;
+        //return $content;
+		return $this->render('templates/local', $data);
     }
 
     public function shouldShow()

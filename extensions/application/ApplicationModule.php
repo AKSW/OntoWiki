@@ -22,8 +22,6 @@ class ApplicationModule extends OntoWiki_Module
             });
         });
         ');*/
-        
-        $this->view->headScript()->appendFile($this->view->moduleUrl . 'modellist.js');
 
         $this->session = new Zend_Session_Namespace(_OWSESSION);
         //$this->allGraphUris = $this->_store->getAvailableModels(true);

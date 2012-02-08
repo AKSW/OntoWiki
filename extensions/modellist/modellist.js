@@ -7,15 +7,20 @@ $(document).ready(function() {
                     updateModellistModule(); 
                 }
             });
-    } else {
-        sessionStore('showHiddenGraphs', false, {
-            method: 'unset', 
-            callback: function() { 
-                updateModellistModule(); 
-            }
-        });
-    }
-});
+    	} else {
+        	sessionStore('showHiddenGraphs', false, {
+            	method: 'unset', 
+            	callback: function() { 
+                	updateModellistModule(); 
+            	}
+        	});
+    	}
+	});
+	
+	$('.knowledgeBaseElement').click(function() {
+		var url = $(this).attr('data-uri');
+	    window.location = url;
+	});
 });
 
 function updateModellistModule()
