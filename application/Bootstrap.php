@@ -585,10 +585,23 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $viewRenderer = new Zend_Controller_Action_Helper_ViewRenderer($view);
         Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
 
+        $themeLayoutTemplate = $themeTemplatePath
+                             . DIRECTORY_SEPARATOR
+                             . 'layouts'
+                             . DIRECTORY_SEPARATOR
+                             . 'layout.phtml';
+
+        $layoutPath = $defaultTemplatePath . DIRECTORY_SEPARATOR . 'layouts';
+        if (is_readable($themeLayoutTemplate)) {
+            $layoutPath = $themeTemplatePath
+                        . DIRECTORY_SEPARATOR
+                        . 'layouts';
+        }
+
         // initialize layout
         Zend_Layout::startMvc(array(
             // for layouts we use the default path
-            'layoutPath' => $defaultTemplatePath . DIRECTORY_SEPARATOR . 'layouts'
+            'layoutPath' => $layoutPath
         ));
 
         return $view;
