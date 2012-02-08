@@ -9,7 +9,7 @@
 $resultCounter = 1;
 ?>
 <?php if(!empty($this->data)){ ?>
-<table class="separated-vertical" <?php if (isset($this->cssid)) echo "id=\"".$this->cssid."\"" ?>>
+<table class="table table-striped table-bordered table-condensed" <?php if (isset($this->cssid)) echo "id=\"".$this->cssid."\"" ?>>
     <?php if ($this->has('caption')): ?>
         <caption><?php echo $this->caption;?></caption>
     <?php endif; ?>

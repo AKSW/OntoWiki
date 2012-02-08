@@ -31,7 +31,7 @@ $this->headScript()->prependScript(
 
     if ($this->instances->hasData()): 
         ?>
-<table class="resource-list separated-vertical"
+<table class="resource-list table table-striped table-bordered table-condensed"
         <?php foreach ($this->other->namespaces as $namespace => $prefix): ?>
                    <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
                    <?php endforeach; ?>>
