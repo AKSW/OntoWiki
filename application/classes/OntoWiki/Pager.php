@@ -181,7 +181,7 @@ class OntoWiki_Pager
                 }
             }
             
-            $ret = '<ul>';
+            $ret = '<ul class="pager">';
             foreach ($pagerLinks as $link) {
                 $ret .= '<li>' . $link . '</li>';
             }

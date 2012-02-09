@@ -68,20 +68,21 @@ if ($instances->hasData()) {
             $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
         }
         $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName));
+
+		if(!isset($count) || $count > 10 ){
+	        $thisActionUrl = new OntoWiki_Url().'/';
+	        $limit = '<div>Show me: <div class="btn-group" style="display: inline-block; vertical-align: middle;"><a class="btn" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a>';
+	        $limit .= '<a class="btn" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a>';
+	        $limit .= '<a class="btn" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a>';
+	        $limit .= '<a class="btn" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></div>';
+	        $statusBar->append($limit);
+	    }
         
         if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
             $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
             $numResultsMsg = sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results);
             $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
         }
-    }
-    if(!isset($count) || $count > 10 ){
-        $thisActionUrl = new OntoWiki_Url().'/';
-        $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
-        $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
-        $statusBar->append($limit);
     }
 
     if (defined('_OWDEBUG')) {
