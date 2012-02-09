@@ -10,9 +10,9 @@
 
 ?>
 <?php if ($this->has('statusbar')): ?>
-    <div class="messagebox statusbar">
-        <?php foreach ($this->statusbar as $statusElement): ?>
-            <div class="statustool"><?php echo $statusElement ?></div>
+    <div class="alert alert-info">
+        <?php $i=0; foreach ($this->statusbar as $statusElement): ?>
+            <div class="statustool" <?php if(++$i != count($this->statusbar) ) echo 'style="float:left;"'; ?> ><?php echo $statusElement ?></div>
         <?php endforeach; ?>
     </div>
 <?php endif; ?>

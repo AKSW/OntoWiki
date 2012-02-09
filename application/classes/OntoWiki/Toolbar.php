@@ -39,15 +39,15 @@ class OntoWiki_Toolbar
      * @var array 
      */
     protected $_defaultButtons = array(
-        self::CANCEL  => array('name' => 'Cancel', 'image' => 'cancel', 'class' => 'edit cancel'), 
-        self::SAVE    => array('name' => 'Save Changes', 'image' => 'save2', 'class' => 'edit save'), 
-        self::EDIT    => array('name' => 'Edit', 'image' => 'edit', 'class' => 'edit-enable'), 
-        self::ADD     => array('name' => 'Add', 'image' => 'add'), 
-        self::EDITADD => array('name' => 'Add', 'image' => 'editadd'), 
-        self::DELETE  => array('name' => 'Delete', 'image' => 'delete'), 
-        self::SUBMIT  => array('name' => 'Submit', 'class' => 'submit', 'image' => 'go2'), 
-        self::RESET   => array('name' => 'Reset', 'class' => 'reset', 'image' => 'reset'),
-        self::EXPORT  => array('name' => 'Export', 'class' => 'export', 'image' => 'save')
+        self::CANCEL  => array('name' => 'Cancel', 'image' => 'icon-cancel', 'class' => 'edit cancel btn-warning'), 
+        self::SAVE    => array('name' => 'Save Changes', 'image' => 'icon-upload', 'class' => 'edit save btn-success'), 
+        self::EDIT    => array('name' => 'Edit', 'image' => 'icon-edit', 'class' => 'edit-enable'), 
+        self::ADD     => array('name' => 'Add', 'image' => 'icon-plus'), 
+        self::EDITADD => array('name' => 'Add', 'image' => 'icon-plus'), 
+        self::DELETE  => array('name' => 'Delete', 'image' => 'icon-remove', 'class' => 'btn-danger'), 
+        self::SUBMIT  => array('name' => 'Submit', 'class' => 'submit btn-success', 'image' => 'icon-ok'), 
+        self::RESET   => array('name' => 'Reset', 'class' => 'reset btn-warning', 'image' => 'icon-ban-circle'),
+        self::EXPORT  => array('name' => 'Export', 'class' => 'export', 'image' => 'icon-share')
     );
     
     /** 
@@ -183,7 +183,7 @@ class OntoWiki_Toolbar
      */
     public function __toString()
     {
-        return '<div class="toolbar">' . implode('', $this->_buttons) . '</div>';
+        return '<div class="btn-group" style="float:right;">' . implode('', $this->_buttons) . '</div>';
     }
     
     /**
@@ -196,7 +196,7 @@ class OntoWiki_Toolbar
     private function _getButton($type, $options = array())
     {        
         if ($type == self::SEPARATOR) {
-            return '<a class="button separator"></a>';
+            return '<a class="button"></a>';
         } else if (array_key_exists($type, $this->_defaultButtons)) {
             $options = array_merge($this->_defaultButtons[$type], $options);
         } else {
@@ -262,21 +262,22 @@ class OntoWiki_Toolbar
         }
         
         // set image
-        if (array_key_exists('image_url', $options)) {
-            $image = $options['image_url'];
-        } else if (array_key_exists('image', $options)) {
-            $image = $this->_themeUrlBase . 'images/icon-' . $options['image'] . '.png';
+        //if (array_key_exists('image_url', $options)) {
+            //$image = $options['image_url'];
+        //} else 
+		if (array_key_exists('image', $options)) {
+            $image = /*$this->_themeUrlBase . 'images/icon-' .*/ $options['image']; // . '.png';
         } else {
             $image = null;
         }
         
         // construct button link
-        $button = sprintf('<a class="button %s" %s %s %s><img src="%s"/><span>&nbsp;%s</span></a>', 
-                          $class, 
+        $button = sprintf('<a class="btn %s" %s %s %s><i class="%s"></i><span>&nbsp;%s</span></a>', 
+						  $class, 
                           $id, 
                           $href,
-                          $title,  
-                          $image, 
+                          $title,
+   						  $image,
                           $label);
         
         return $button;
