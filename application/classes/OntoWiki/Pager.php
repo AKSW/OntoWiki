@@ -97,16 +97,16 @@ class OntoWiki_Pager
             if ($page > 1) {
                 if (self::$_options['show_first_last']) {
                     self::$_url->{self::$_options['page_param']} = 1;
-                    $pagerLinks[] = sprintf('<a class="minibutton" href="%s">%s</a>', self::$_url, self::$firstHtml . $translate->_('First'));
+                    $pagerLinks[] = sprintf('<a class="" href="%s">%s</a>', self::$_url, self::$firstHtml . $translate->_('First'));
                 }
 
                 self::$_url->{self::$_options['page_param']} = $page - 1;
-                $pagerLinks[] = sprintf('<a class="minibutton" href="%s">%s</a>', self::$_url, self::$prevHtml . $translate->_('Previous'));
+                $pagerLinks[] = sprintf('<a class="" href="%s">%s</a>', self::$_url, self::$prevHtml . $translate->_('Previous'));
             } else {
                 if (self::$_options['show_first_last']) {
-                    $pagerLinks[] = sprintf('<a class="disabled minibutton">%s</a>', self::$firstHtml . $translate->_('First'));
+                    $pagerLinks[] = sprintf('<a class="disabled ">%s</a>', self::$firstHtml . $translate->_('First'));
                 }
-                $pagerLinks[] = sprintf('<a class="disabled minibutton">%s</a>', self::$prevHtml . $translate->_('Previous'));
+                $pagerLinks[] = sprintf('<a class="disabled ">%s</a>', self::$prevHtml . $translate->_('Previous'));
             }
             
             // individual page links
@@ -119,9 +119,9 @@ class OntoWiki_Pager
                     $maxLinksAsym = floor((self::$_options['max_page_links'] - 2) / 2);
                     self::$_url->{self::$_options['page_param']} = 1;
                     if ($page == 1) {
-                        $pagerLinks[] = '<a class="selected minibutton">1</a>';
+                        $pagerLinks[] = '<a class="selected ">1</a>';
                     } else {
-                        $pagerLinks[] = '<a class="minibutton" href="' . self::$_url . '">1</a>';
+                        $pagerLinks[] = '<a class="" href="' . self::$_url . '">1</a>';
                     }
                     $offset = 1;
 
@@ -135,9 +135,9 @@ class OntoWiki_Pager
                     for ($i=max(1+$offset, $page-$maxLinksAsym); $i <= $page; ++$i) {
                         self::$_url->{self::$_options['page_param']} = $i;
                         if ($page == $i) {
-                            $pagerLinks[] = '<a class="selected minibutton">' . $i . '</a>';
+                            $pagerLinks[] = '<a class="selected ">' . $i . '</a>';
                         } else {
-                            $pagerLinks[] = '<a class="minibutton" href="' . self::$_url . '">' . $i . '</a>';
+                            $pagerLinks[] = '<a class="" href="' . self::$_url . '">' . $i . '</a>';
                         }
                     }
                 } else {
@@ -145,9 +145,9 @@ class OntoWiki_Pager
                         self::$_url->{self::$_options['page_param']} = $i;
                         
                         if ($page == $i) {
-                            $pagerLinks[] = '<a class="selected minibutton">' . $i . '</a>';
+                            $pagerLinks[] = '<a class="selected ">' . $i . '</a>';
                         } else {
-                            $pagerLinks[] = '<a class="minibutton" href="' . self::$_url . '">' . $i . '</a>';
+                            $pagerLinks[] = '<a class="" href="' . self::$_url . '">' . $i . '</a>';
                         }
                     }
                 }
@@ -158,9 +158,9 @@ class OntoWiki_Pager
                         $pagerLinks[] = '&hellip;';
                     }
                     if ($page == self::$_url->{self::$_options['page_param']}) {
-                        $pagerLinks[] = '<a class="selected minibutton">' . self::$_url->{self::$_options['page_param']} . '</a>';
+                        $pagerLinks[] = '<a class="selected ">' . self::$_url->{self::$_options['page_param']} . '</a>';
                     } else {
-                        $pagerLinks[] = '<a class="minibutton" href="' . self::$_url . '">' . self::$_url->{self::$_options['page_param']} . '</a>';
+                        $pagerLinks[] = '<a class="" href="' . self::$_url . '">' . self::$_url->{self::$_options['page_param']} . '</a>';
                     }
                 }
             }
@@ -168,16 +168,16 @@ class OntoWiki_Pager
             // next page exists
             if (($count > $page * $limit) || ($count == Erfurt_Store::COUNT_NOT_SUPPORTED && $itemsOnPage === $limit)) {
                 self::$_url->{self::$_options['page_param']} = $page + 1;
-                $pagerLinks[] = sprintf('<a class="minibutton" href="%s">%s</a>', self::$_url, $translate->_('Next') . self::$nextHtml);
+                $pagerLinks[] = sprintf('<a class="" href="%s">%s</a>', self::$_url, $translate->_('Next') . self::$nextHtml);
                 
                 if (self::$_options['show_first_last']) {
                     self::$_url->{self::$_options['page_param']} = (int) ceil($count / $limit);
-                    $pagerLinks[] = sprintf('<a class="minibutton" href="%s">%s</a>', self::$_url, $translate->_('Last') . self::$lastHtml);
+                    $pagerLinks[] = sprintf('<a class="" href="%s">%s</a>', self::$_url, $translate->_('Last') . self::$lastHtml);
                 }
             } else {
-                $pagerLinks[] = sprintf('<a class="disabled minibutton">%s</a>', $translate->_('Next') . self::$nextHtml);
+                $pagerLinks[] = sprintf('<a class="disabled ">%s</a>', $translate->_('Next') . self::$nextHtml);
                 if (self::$_options['show_first_last']) {
-                    $pagerLinks[] = sprintf('<a class="disabled minibutton">%s</a>', $translate->_('Last') . self::$lastHtml);
+                    $pagerLinks[] = sprintf('<a class="disabled ">%s</a>', $translate->_('Last') . self::$lastHtml);
                 }
             }
             
