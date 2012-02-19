@@ -101,5 +101,10 @@
 </table>
 <?php endif; ?>
 <?php if (!$flag): ?>
+    <table class="separated-vertical rdfa hidden" about="<?php echo $this->resourceUri ?>"
+    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+    <?php endforeach; ?>>
+    <tbody></tbody></table>
     <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
 <?php endif; ?>

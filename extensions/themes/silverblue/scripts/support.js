@@ -616,8 +616,12 @@ function addProperty() {
     });
 
     $('table.rdfa')
+        .removeClass('hidden')
+        .show()
         .children('tbody')
         .prepend('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td></tr>');
+
+    $('table.rdfa').parent().find('p.messagebox').hide();
     
     var selectorOptions = {
         container: $('#' + td1ID), 
