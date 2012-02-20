@@ -13,10 +13,10 @@
 function toggleExpansion(event) {
     var target = $(event.target);
     var resourceUri = target.next().attr('about') ? target.next().attr('about') : target.next().attr('resource');
-    
+
     if (target.hasClass('expand')) {
         target.removeClass('expand').addClass('collapse');
-        
+
         if (target.parent().children('.expansion').length) {
             target.parent().children('.expansion').slideDown(effectTime);
         } else {
@@ -25,9 +25,9 @@ function toggleExpansion(event) {
             var url    = urlBase + 'view/';
             var params = 'r=' + encodeURIComponent(resourceUri);
             $.ajax({
-                url:      url, 
-                data:     params, 
-                dataType: 'html', 
+                url:      url,
+                data:     params,
+                dataType: 'html',
                 success:  function(content) {
                     expansion.hide();
                     expansion.append(content);
@@ -85,7 +85,7 @@ function setSectionRatio(x) {
 function showWindowMenu(event) {
     // remove all other menus
     $('.contextmenu-enhanced .contextmenu').remove();
-    
+
     menuX  = event.pageX - 11;
     menuY  = event.pageY - 11;
     menuId = 'windowmenu-' + menuX + '-' + menuY;
@@ -164,11 +164,11 @@ function showWindowMenu(event) {
  */
 function sessionStore(name, value, options) {
     var defaultOptions = {
-        encode:    false, 
-        namespace: _OWSESSION, 
-        callback:  null, 
-        method:    'set', 
-        url:       urlBase + 'service/session/', 
+        encode:    false,
+        namespace: _OWSESSION,
+        callback:  null,
+        method:    'set',
+        url:       urlBase + 'service/session/',
         withValue: false
     };
     var config = $.extend(defaultOptions, options);
@@ -204,7 +204,7 @@ function setAutoId(element) {
  */
 function hideHref(element) {
     setAutoId(element);
-    
+
     if (element.attr('href')) {
         tempHrefs[element.attr('id')] = element.attr('href');
         element.removeAttr('href');
@@ -222,19 +222,19 @@ function serializeArray(array, key)
     if (typeof key == 'undefined') {
         key = 'value';
     }
-    
+
     var serialization = '';
-    
+
     if (array.length) {
         serialization += key + '[]=' + encodeURIComponent(array[0]);
-        
+
         for (var i = 1; i < array.length; ++i) {
             serialization += '&' + key + '[]=' + encodeURIComponent(array[i]);
         }
     } else {
         serialization += key + '=';
     }
-    
+
     return serialization;
 }
 
@@ -254,7 +254,7 @@ function showAddInstanceMenu(event, menuData) {
     menuY = pos.top + $('.init-resource').outerHeight();
 
     menuId = 'windowmenu-' + menuX + '-' + menuY;
-    
+
     // create the plain menu with correct style and position
     $('.contextmenu-enhanced').append('<div class="contextmenu is-processing" id="' + menuId + '"></div>');
     $('#' + menuId)
@@ -276,7 +276,7 @@ function showAddInstanceMenu(event, menuData) {
     // repositioning
     menuX = pos.left - $('#' + menuId).innerWidth() + $('.init-resource').outerWidth();
     menuY = pos.top + $('.init-resource').outerHeight();
-    
+
     // set new position
     $('#' + menuId).css({ top: menuY + 'px', left: menuX + 'px'});
 
@@ -291,11 +291,11 @@ function showAddInstanceMenu(event, menuData) {
 function showResourceMenu(event, json) {
     // remove all other menus
     removeResourceMenus();
-    
+
     menuX  = event.pageX - 30;
     menuY  = event.pageY - 20;
     menuId = 'windowmenu-' + menuX + '-' + menuY;
-    
+
     // create the plain menu with correct style and position
     $('.contextmenu-enhanced').append('<div class="contextmenu is-processing" id="' + menuId + '"></div>');
     $('#' + menuId)
@@ -303,9 +303,9 @@ function showResourceMenu(event, json) {
         .click(function(event) {event.stopPropagation();});
 
     $('#' + menuId).fadeIn();
-    
+
     parentHref = tempHrefs[$(event.target).parent().attr('id')];
-    
+
     function onJSON(menuData, textStatus) {
         try {
             //console.log(menuData)
@@ -343,7 +343,7 @@ function showResourceMenu(event, json) {
             $('#' + menuId).fadeOut();
         }
     }
-    
+
     if(json == undefined){
         // URI of the resource clicked (used attribute can be about and resource)
         if ( typeof $(event.target).parent().attr('about') != 'undefined' ) {
@@ -358,7 +358,7 @@ function showResourceMenu(event, json) {
         encodedResourceUri = encodeURIComponent(resourceUri);
         resource = $(event.target).parent();
 
-        
+
 
         var urlParams = {};
         urlParams.resource = resourceUri;
@@ -389,7 +389,7 @@ function showResourceMenu(event, json) {
  */
 function loadRDFauthor(callback) {
     var loaderURI = RDFAUTHOR_BASE + 'src/rdfauthor.js';
-    
+
     if ($('head').children('script[src=' + loaderURI + ']').length > 0) {
         callback();
     } else {
@@ -406,19 +406,19 @@ function populateRDFauthor(data, protect, resource, graph) {
     protect  = arguments.length >= 2 ? protect : true;
     resource = arguments.length >= 3 ? resource : null;
     graph    = arguments.length >= 4 ? graph : null;
-    
+
     for (var currentSubject in data) {
         for (var currentProperty in data[currentSubject]) {
             var objects = data[currentSubject][currentProperty];
 
             for (var i = 0; i < objects.length; i++) {
                 var objSpec = objects[i];
-                
+
                 var newObjectSpec = {
-                    value: (objSpec.type == 'uri') ? ('<' + objSpec.value + '>') : objSpec.value, 
+                    value: (objSpec.type == 'uri') ? ('<' + objSpec.value + '>') : objSpec.value,
                     type: String(objSpec.type).replace('typed-', '')
                 }
-                
+
                 if (objSpec.value) {
                     if (objSpec.type == 'typed-literal') {
                         newObjectSpec.options = {
@@ -430,15 +430,15 @@ function populateRDFauthor(data, protect, resource, graph) {
                         }
                     }
                 }
-                
+
                 RDFauthor.addStatement(new Statement({
-                    subject: '<' + currentSubject + '>', 
-                    predicate: '<' + currentProperty + '>', 
+                    subject: '<' + currentSubject + '>',
+                    predicate: '<' + currentProperty + '>',
                     object: newObjectSpec
                 }, {
-                    graph: graph, 
-                    title: objSpec.title, 
-                    protected: protect ? true : false, 
+                    graph: graph,
+                    title: objSpec.title,
+                    protected: protect ? true : false,
                     hidden: objSpec.hidden ? objSpec.hidden : false
                 }));
             }
@@ -474,9 +474,9 @@ function createInstanceFromClassURI(type, dataCallback) {
             RDFauthor.setOptions({
                 saveButtonTitle: 'Create Resource',
                 cancelButtonTitle: 'Cancel',
-                title: 'Create New Instance of ' + type,  
-                autoParse: false, 
-                showPropertyButton: true, 
+                title: 'Create New Instance of ' + type,
+                autoParse: false,
+                showPropertyButton: true,
                 onSubmitSuccess: function (responseData) {
                     var newLocation;
                     if (responseData && responseData.changed) {
@@ -490,7 +490,7 @@ function createInstanceFromClassURI(type, dataCallback) {
                     }, 500);
                 }
             });
-           
+
             RDFauthor.start();
         })
     });
@@ -510,7 +510,7 @@ function editResourceFromURI(resource) {
            mode: 'edit',
            uri: resource
         }, function(data) {
-            
+
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
             for (var subjectUri in data) {break;};
@@ -521,9 +521,9 @@ function editResourceFromURI(resource) {
             RDFauthor.setOptions({
                 saveButtonTitle: 'Save Changes',
                 cancelButtonTitle: 'Cancel',
-                title: 'Edit Resource ' + resource,  
-                autoParse: false, 
-                showPropertyButton: true, 
+                title: 'Edit Resource ' + resource,
+                autoParse: false,
+                showPropertyButton: true,
                 onSubmitSuccess: function () {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
@@ -567,18 +567,18 @@ function editProperty(event) {
                 window.setTimeout(function () {
                     window.location.href = window.location.href;
                 }, 1000);
-            }, 
+            },
             onCancel: function () {
                 $('.edit').each(function() {
                     $(this).fadeOut(effectTime);
                 });
                 $('.edit-enable').removeClass('active');
-            }, 
-            saveButtonTitle: 'Save Changes', 
-            cancelButtonTitle: 'Cancel', 
-            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+            },
+            saveButtonTitle: 'Save Changes',
+            cancelButtonTitle: 'Cancel',
+            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(),
             viewOptions: {
-                type: RDFAUTHOR_VIEW_MODE, 
+                type: RDFAUTHOR_VIEW_MODE,
                 container: function (statement) {
                     var element = RDFauthor.elementForStatement(statement);
                     var parent  = $(element).closest('div');
@@ -616,20 +616,24 @@ function addProperty() {
     });
 
     $('table.rdfa')
+        .removeClass('hidden')
+        .show()
         .children('tbody')
         .prepend('<tr><td colspan="2" width="120"><div style="width:75%" id="' + td1ID + '"></div></td></tr>');
-    
+
+    $('table.rdfa').parent().find('p.messagebox').hide();
+
     var selectorOptions = {
-        container: $('#' + td1ID), 
+        container: $('#' + td1ID),
         selectionCallback: function (uri, label) {
             var statement = new Statement({
-                subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>', 
+                subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>',
                 predicate: '<' + uri + '>'
             }, {
-                title: label, 
+                title: label,
                 graph: RDFAUTHOR_DEFAULT_GRAPH
             });
-            
+
             var owURL = urlBase + 'view?r=' + encodeURIComponent(uri);
             $('#' + td1ID).closest('td')
                 .attr('colspan', '1')
@@ -638,7 +642,7 @@ function addProperty() {
             RDFauthor.getView().addWidget(statement, null, {container: $('#' + td2ID), activate: true});
         }
     };
-    
+
     var selector = new Selector(RDFAUTHOR_DEFAULT_GRAPH, RDFAUTHOR_DEFAULT_SUBJECT, selectorOptions);
     selector.presentInContainer();
 }
