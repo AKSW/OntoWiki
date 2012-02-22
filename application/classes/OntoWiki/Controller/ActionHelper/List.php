@@ -1,5 +1,8 @@
 <?php
 
+/**
+ *manage the session variable that stores multiple lists (mostly the current instance list)
+ */
 class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helper_Abstract{
     protected $_owApp;
 

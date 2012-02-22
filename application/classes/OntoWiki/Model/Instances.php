@@ -1582,6 +1582,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             );
         } else {
             $this->_sortTriple->getElement(0)->setP(new Erfurt_Sparql_Query2_IriRef($uri));
+            if($asc){$this->_resourceQuery->getOrder()->setAsc(0);} else {$this->_resourceQuery->getOrder()->setDesc(0);}
         }
     }
     

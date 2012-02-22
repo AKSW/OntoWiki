@@ -151,6 +151,14 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 if ($config == false) {
                     throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed)');
                 }
+                
+                if (isset($config->sort)) {
+                    if($config->sort == null){
+                        $list->orderByUri($config->sort->asc);
+                    } else {
+                        $list->setOrderProperty($config->sort->uri, $config->sort->asc);
+                    }
+                }
 
                 if (isset($config->shownProperties)) {
                     foreach ($config->shownProperties as $prop) {
