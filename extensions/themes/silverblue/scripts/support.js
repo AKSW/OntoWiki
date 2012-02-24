@@ -390,7 +390,7 @@ function showResourceMenu(event, json) {
 function loadRDFauthor(callback) {
     var loaderURI = RDFAUTHOR_BASE + 'src/rdfauthor.js';
     
-    if ($('head').children('script[src=' + loaderURI + ']').length > 0) {
+    if ($('head').children('script[src="' + loaderURI + '"]').length > 0) {
         callback();
     } else {
         RDFAUTHOR_READY_CALLBACK = callback;
