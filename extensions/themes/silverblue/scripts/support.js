@@ -265,7 +265,8 @@ function showAddInstanceMenu(event, menuData) {
 
     var tempMenu = "";
     for (var key in menuData) {
-        tempMenu += '<li><a href="javascript:createInstanceFromClassURI(\'' + menuData[key] + '\');">' + key + '</a></li>'
+        var label = menuData[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value;
+        tempMenu += '<li><a href="javascript:createInstanceFromClassURI(\'' + key + '\');">' + label + '</a></li>'
     }
     // append menu
     // console.log(tempMenu);
@@ -431,7 +432,7 @@ function populateRDFauthor(data, protect, resource, graph) {
                     }
                 }
                 
-                RDFauthor.addStatement(new Statement({
+                var stmt = new Statement({
                     subject: '<' + currentSubject + '>', 
                     predicate: '<' + currentProperty + '>', 
                     object: newObjectSpec
@@ -440,7 +441,14 @@ function populateRDFauthor(data, protect, resource, graph) {
                     title: objSpec.title, 
                     protected: protect ? true : false, 
                     hidden: objSpec.hidden ? objSpec.hidden : false
-                }));
+                });
+
+                // remove all values except for type
+                if (stmt._predicateLabel != "type") {
+                    stmt._object.value = "";
+                }
+
+                RDFauthor.addStatement(stmt);
             }
         }
     }
