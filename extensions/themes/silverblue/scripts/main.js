@@ -262,7 +262,10 @@ $(document).ready(function() {
     // init new resource based on type
     $('.init-resource').click(function(event) {
         // parse .resource-list and query for all types
-        var types = $('.resource-list').rdf().where('?type a rdfs:Class').where('?type rdfs:label ?value').dump();
+        var types = $('.resource-list').rdf()
+                                       .where('?type a rdfs:Class')
+                                       .where('?type rdfs:label ?value')
+                                       .dump();
 
         if (Object.keys(types).length == 1) {
             createInstanceFromClassURI(Object.keys(types)[0]);
