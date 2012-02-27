@@ -17,7 +17,7 @@ function cs-install() {
         user=`whoami`;
         if [[ $user == "root" ]]
         then
-            pear install PHP_CodeSniffer;
+            pear install PHP_CodeSniffer-1.3.2;
             echo " CodeSniffer PEAR Package installed.";
             return_value=0
         else
