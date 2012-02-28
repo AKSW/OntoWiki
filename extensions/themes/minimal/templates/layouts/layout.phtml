@@ -15,11 +15,11 @@
     <?php echo $this->headTitle() ?>
     <?php echo $this->headMeta() ?>
     <?php echo $this->headLink() ?>
-    
+
     <?php echo $this->partial('partials/meta.phtml') ?>
-    
+
     <link rel="shortcut icon" type="image/x-icon" href="<?php echo $this->staticUrlBase;?>favicon.png" />
-    
+
     <?php if ($this->has('jsonVars')): ?>
         <script type="text/javascript">
             <?php echo $this->jsonVars ?>
@@ -32,10 +32,10 @@
     <?php if ($this->has('metaKeywords')){ ?>
         <meta name="Keywords" content="<?php echo $this->metaKeywords ?>" />
     <?php }  ?>
-   
+
     <!-- ontowiki stylesheets -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
-	
+
 	<!-- bootstrap stylesheets -->
 	<link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/bootstrap.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/bootstrap-responsive.css" type="text/css" media="screen" />
@@ -50,21 +50,19 @@
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/deprecated.dev.css" type="text/css" media="screen" />
     <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.dev.css" type="text/css" media="screen" / -->
     <?php endif; ?>
-    
+
     <!-- IE conditional stylesheets -->
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="<?php echo $this->themeUrlBase ?>styles/default.ie7.css" /><![endif]-->
-    
+
     <!-- dynamic styles -->
     <?php echo $this->headStyle() ?>
 
     <!-- jQuery -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
-    
+
 	<!-- bootstrap js libraries -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/bootstrap.js"></script>
-	<script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/bootstrap-tab.js"></script>
-	<script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/bootstrap-modal.js"></script>
 
     <!-- included js libraries -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
@@ -75,19 +73,19 @@
 
     <!-- RDFa widgets -->
     <script type="text/javascript" id="RDFauthorScript" src="<?php echo $this->libraryUrlBase ?>RDFauthor/src/rdfauthor.js"></script>
-    
+
     <!-- ontowiki js -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/main.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/support.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/jquery.ontowiki.js"></script>
-    
+
     <!-- dynamic js -->
     <?php echo $this->headScript() ?>
-    
+
 </head>
 
 <body class="javascript-off" xmlns:update="http://ns.aksw.org/update/">
-    
+
     <script type="text/javascript">
         // get body element
         var body = document.body;
@@ -99,7 +97,7 @@
         // process changes
         body.setAttribute("class", bodyClass, 0);
     </script>
-    
+
     <?php echo $this->inlineScript() ?>
 
 	<div class="navbar navbar-fixed-top">
@@ -154,11 +152,11 @@
 	                <?php if ($this->has('main.window.innerwindows')): ?>
 	                    <div class="content has-innerwindows">
 	                        <?php if ($this->has('formActionUrl') and $this->has('formMethod')): ?>
-	                            <form action="<?php echo $this->formActionUrl ?>" 
-	                                  method="<?php echo $this->formMethod ?>" 
-	                                  <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?> 
-	                                  <?php if ($this->has('formId')) echo 'id="' . $this->formId . '"' ?> 
-	                                  <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?> 
+	                            <form action="<?php echo $this->formActionUrl ?>"
+	                                  method="<?php echo $this->formMethod ?>"
+	                                  <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?>
+	                                  <?php if ($this->has('formId')) echo 'id="' . $this->formId . '"' ?>
+	                                  <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?>
 	                                  <?php if ($this->has('formClass')) echo 'class="' . $this->formClass . '"' ?>>
 	                                  <?php if ($this->has('redirectUrl')): ?>
 	                                      <input type="hidden" name="redirect" value="<?php echo $this->redirectUrl ?>"/>
@@ -169,7 +167,7 @@
 	                            <div class="well" style="margin-top: 20px; padding-top: 10px;"><?php echo $this->placeholder('main.window.toolbar') ?></div>
 	                        <?php endif; ?>
 
-	                        <div class="innercontent">                                
+	                        <div class="innercontent">
 	                            <?php foreach (OntoWiki::getInstance()->drawMessages() as $message): ?>
 	                                <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
 	                            <?php endforeach; ?>
@@ -184,10 +182,10 @@
 	                <?php else: ?>
 	                    <div class="content">
 	                        <?php if ($this->has('formActionUrl') and $this->has('formMethod')): ?>
-	                            <form action="<?php echo $this->formActionUrl ?>" 
-	                                  method="<?php echo $this->formMethod ?>" 
+	                            <form action="<?php echo $this->formActionUrl ?>"
+	                                  method="<?php echo $this->formMethod ?>"
 	                                  <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?>
-	                                  <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?> 
+	                                  <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?>
 	                                  <?php if ($this->has('formClass')) echo 'class="' . $this->formClass . '"' ?>>
 	                        <?php endif;?>
 
