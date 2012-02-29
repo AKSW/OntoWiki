@@ -9,10 +9,11 @@
 #    are possible
 #  - not be set parameter are taken from the Makefile
 #  - only added or chanced files in the staging area be tested
-#  - if partially files in the staging area only the parts of the file in the
+#  - if partially files in the staging area, only the parts of the file in the
 #    staging area be checked, not the whole file (ATTENTION:it makes it a little
 #    bit difficult to find the right line were a error or warning is caused)
-#
+#  - check if a commit goes to the AKSW/OntoWiki Master branch, if so the commit will
+#    be canceled, because it's forbidden to commit in this branch
 #
 
 PCSOURCE="${BASH_SOURCE[0]}"
@@ -20,6 +21,18 @@ while [ -h "$PCSOURCE" ] ; do PCSOURCE="$(dirname $0)/$(readlink "$PCSOURCE")"; 
 PCDIR="$( cd -P "$( dirname "$PCSOURCE" )" && pwd )"
 
 source $PCDIR/config;
+
+# check if the commit goes to the master branch of AKSW/OntoWiki.git, if so the commit will be canceled
+# get the remote url
+REMOTEURL=$(git config remote.`git config branch.$(git rev-parse --abbrev-ref HEAD).remote`.url)
+if [[ $REMOTEURL =~ 'AKSW/OntoWiki.git' ]]; then
+    # get the current branch
+    BRANCH=$(git config branch.$(git rev-parse --abbrev-ref HEAD).merge | cut -d "/" -f 3-)
+    if [ "$BRANCH" == "master" ]; then
+        echo "A commit in the protected Master branch of AKSW/OntoWiki is forbidden. Commit canceled!"
+        exit 1
+    fi
+fi
 
 # folder for the tempary stage files
 TMP_STAGING=".tmp_staging"
