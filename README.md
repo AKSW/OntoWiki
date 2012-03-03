@@ -18,7 +18,11 @@ Other remarkable features are:
 
 For an installation guide have a look at our [wiki](https://github.com/AKSW/OntoWiki/wiki/GetOntowikiUsers).
 
-## Screenshot
+## Screenshot / Webinar
+Below is a screenshot showing OntoWiki in editing mode.
+
+For a longer visual presentation you can watch our [webinar@youtube](http://www.youtube.com/watch?v=vP1UDKeZsQk)
+(thanks to Phil and the Semantic Web company).
 
 ![Screenshot](http://lh4.ggpht.com/-kXpKMqBBCIU/Tpx45SUaItI/AAAAAAAAA9w/aPYaNQjcpvo/s800/ontowiki.png)
 
