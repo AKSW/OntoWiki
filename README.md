@@ -1,5 +1,7 @@
 # OntoWiki
 
+## Introduction
+
 is a tool providing support for agile, distributed knowledge engineering scenarios.
 OntoWiki facilitates the visual presentation of a knowledge base as an information map, with different views on instance data.
 It enables intuitive authoring of semantic content.
@@ -12,6 +14,14 @@ Other remarkable features are:
 * OntoWiki is backend independent, which means you can save your data on a MySQL database as well as on a Virtuoso Triple Store.
 * OntoWiki is easily extendible by you, since it features a sophisticated Extension System.
 
-OntoWiki is licensed under the [GNU General Public License Version 2, June 1991](http://www.gnu.org/licenses/gpl-2.0.txt) (license document is in the application subfolder).
+## Installation
 
 For an installation guide have a look at our [wiki](https://github.com/AKSW/OntoWiki/wiki/GetOntowikiUsers).
+
+## Screenshot
+
+![Screenshot](http://lh4.ggpht.com/-kXpKMqBBCIU/Tpx45SUaItI/AAAAAAAAA9w/aPYaNQjcpvo/s800/ontowiki.png)
+
+## License
+
+OntoWiki is licensed under the [GNU General Public License Version 2, June 1991](http://www.gnu.org/licenses/gpl-2.0.txt) (license document is in the application subfolder).
