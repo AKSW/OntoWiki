@@ -6,8 +6,10 @@
 
 <!-- Sniffs from the integrated Zend Standard -->
 <!-- #################### strict #################### -->
+
 <!-- spaces in functions calls -->
- <rule ref="Generic.Functions.FunctionCallArgumentSpacing" />
+<!-- now integrated in Ontowiki standard to make specific adjustments -->
+<!-- <rule ref="Generic.Functions.FunctionCallArgumentSpacing" /> -->
 
 <!-- braces in functions -->
  <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman" />

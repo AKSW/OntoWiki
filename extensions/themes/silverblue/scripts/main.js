@@ -261,31 +261,17 @@ $(document).ready(function() {
 
     // init new resource based on type
     $('.init-resource').click(function(event) {
-        var instances = {};
-        var size = 0;
-        var key = "";
-        $('.resource-list a').each(function() {
-          var element    = $(this).attr('typeof').split(' ');
-          for (var t in element) {
-            var type         = element[t];
-            var label        = $(this).parent().find('span.Resource').eq(t).text();
-            var namespace    = type.split(':')[0];
-            var instance     = type.split(':')[1];
-            var namespaceUri = $('.resource-list').attr('xmlns:'+namespace);
-            instances[label] = namespaceUri+instance;
-          };
-        })
-        // get size of types
-        for (key in instances) {
-          size++;
-        }
-        // if only one type is available open immediately the add instance dialog
-        // otherwise show context menu
-        if ( size == 1 ) {
-            createInstanceFromClassURI(instances[key]);
+        // parse .resource-list and query for all types
+        var types = $('.resource-list').rdf()
+                                       .where('?type a rdfs:Class')
+                                       .where('?type rdfs:label ?value')
+                                       .dump();
+
+        if (Object.keys(types).length == 1) {
+            createInstanceFromClassURI(Object.keys(types)[0]);
         } else {
-            showAddInstanceMenu(event, instances);
-        }
+            showAddInstanceMenu(event, types);
+        } 
     });
 
     $('.edit.save').click(function() {

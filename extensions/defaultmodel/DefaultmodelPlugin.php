@@ -10,18 +10,26 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
 {   
     public function onAfterInitController($event)
     {
+        $config = $this->_privateConfig->toArray();
+        $efApp = Erfurt_App::getInstance();
+        
+        // disable model box if config value is true and modelmanangement isn't allowed
+        if ( $config['modelsHide'] && !$efApp->getAc()->isActionAllowed($config['modelsExclusiveRight']) ) {
+            $registry = OntoWiki_Module_Registry::getInstance();
+            $registry->disableModule('modellist','main.sidewindow');
+        } 
+
         //only do this once (so if the model is changed later, this plugin will not prevent it)
-        if(isset($_SESSION['defaultModelHasBeenSet']) && $_SESSION['defaultModelHasBeenSet']){
+        if($config['setOnce'] && isset($_SESSION['defaultModelHasBeenSet']) && $_SESSION['defaultModelHasBeenSet']){
             return;
         }
+        
         $_SESSION['defaultModelHasBeenSet'] = true;
         
         require_once 'OntoWiki/Module/Registry.php';
 
         $owApp = OntoWiki::getInstance();
-        $efApp = Erfurt_App::getInstance();
         $efStore = $efApp->getStore();
-        $config = $this->_privateConfig->toArray();
         $availableModels = $efStore->getAvailableModels();
 
         if ( 
@@ -34,12 +42,6 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
         } else {
             $modelUri = false;
         }
-
-        // disable model box if config value is true and modelmanangement isn't allowed
-        if ( $config['modelsHide'] && !$efApp->getAc()->isActionAllowed($config['modelsExclusiveRight']) ) {
-            $registry = OntoWiki_Module_Registry::getInstance();
-            $registry->disableModule('modellist','main.sidewindow');
-        } 
 
         // set default model if it could be determined
         if ( $modelUri && !$efApp->getAc()->isActionAllowed($config['modelsExclusiveRight']) ) {
