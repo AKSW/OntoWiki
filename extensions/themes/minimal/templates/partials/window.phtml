@@ -9,9 +9,16 @@
  */
 
 ?>
+
 <div class="btn-group">
     <?php if ($this->has('menu')): ?>
-        <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
+        <?php if($this->layoutType == "inline") { ?>
+            <a class="btn">
+        <?php } else if($this->layoutType == "popover") { ?>
+            <a class="btn" rel="popover" id="<?php echo $this->_($this->title) ?>_Popover">
+        <?php } else if($this->layoutType == "modal") { ?>
+            <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
+        <?php } ?>
             <?php echo $this->_($this->title) ?>
         </a>
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -19,14 +26,34 @@
         </a>
         <ul class="dropdown-menu">
             <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->menu)) ?>
-           </ul>
+        </ul>
     <?php else: ?>
-           <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
+        <?php if($this->layoutType == "inline") { ?>
+            <a class="btn">
+        <?php } else if($this->layoutType == "popover") { ?>
+            <a class="btn" rel="popover" id="<?php echo $this->_($this->title) ?>_Popover">
+        <?php } else if($this->layoutType == "modal") { ?>
+            <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
+        <?php } ?>
             <?php echo $this->_($this->title) ?>
-           </a>
+        </a>
     <?php endif; ?>
 </div>
 
+<?php if($this->layoutType == "inline") { ?>
+    <div id="<?php echo $this->_($this->title) ?>_Inline">
+<?php } else if($this->layoutType == "popover") { ?>
+    <script>
+    $(document).ready(function(){
+        $('#<?php echo $this->_($this->title) ?>_Popover').popover({
+            placement: 'bottom',
+            content: <?php echo $this->_($this->title) ?>_PopoverData,
+            html:true
+        });
+    });
+    var <?php echo $this->_($this->title) ?>_PopoverData = function(){
+    <?php ob_start(); ?>
+<?php } else if($this->layoutType == "modal") { ?>
     <div id="<?php echo $this->_($this->title) ?>_Modal" class="modal hide fade" >
         <div class="modal-header">
             <a class="close" data-dismiss="modal">×</a>
@@ -34,6 +61,7 @@
         </div>
 
         <div class="modal-body">
+<?php } ?>
 
             <?php if (!$this->has('innerwindows')): ?>
                 <?php if (isset($this->messages)): ?>
@@ -83,11 +111,18 @@
                     <?php echo $this->partial('partials/contextmenu.phtml', array('contextmenu' => $this->contextmenu)) ?>
                 </div>
             <?php endif; ?>
-
+<?php if($this->layoutType == "popover") { ?>
+<?php $resString = str_replace("'", "\'", str_replace("\n", " ", ob_get_contents() ) ); ob_end_clean(); ?>
+        return '<?php echo $resString; ?>';
+    };
+    </script>
+<?php } else if($this->layoutType == "modal") { ?>
         </div> <!-- /modal body -->
 
         <div class="modal-footer">
             <a href="#" class="btn" data-dismiss="modal">Close</a>
         </div>
-
-    </div><!-- /modal -->
+    </div><!-- /layout -->
+<?php }else{ ?>
+    </div><!-- /layout -->
+<?php } ?>

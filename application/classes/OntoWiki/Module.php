@@ -225,6 +225,16 @@ abstract class OntoWiki_Module
     }
 
     /**
+     * Returns what layout the module should be displayed with
+     * Values: modal, popover, inline
+     * @return boolean
+     */
+    public function layoutType()
+    {
+        return "modal";
+    }
+
+    /**
      * Returns a string is unique to the module's state and can be used for
      * cache identification.
      *

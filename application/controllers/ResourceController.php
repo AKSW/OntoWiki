@@ -9,7 +9,8 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ResourceController extends OntoWiki_Controller_Base {
-    private function _addLastModifiedHeader() {
+    private function _addLastModifiedHeader()
+    {
         $r = $this->_owApp->selectedResource;
         $m = $this->_owApp->selectedModel;
 
@@ -66,8 +67,8 @@ class ResourceController extends OntoWiki_Controller_Base {
         // Give plugins a chance to add entries to the menu
         $this->view->placeholder('main.window.menu')->set($menu->toArray(false, true));
 
-        $title = $resource->getTitle($this->_config->languages->locale) 
-               ? $resource->getTitle($this->_config->languages->locale) 
+        $title = $resource->getTitle($this->_config->languages->locale)
+               ? $resource->getTitle($this->_config->languages->locale)
                : OntoWiki_Utils::contractNamespace((string)$resource);
         $windowTitle = sprintf($translate->_('Properties of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
@@ -127,7 +128,7 @@ class ResourceController extends OntoWiki_Controller_Base {
                     $editableFlags[$g] = false;
                 }
             }
-            
+
             $this->view->graphs        = $graphInfo;
             $this->view->editableFlags = $editableFlags;
             $this->view->values        = $values;
@@ -180,15 +181,13 @@ class ResourceController extends OntoWiki_Controller_Base {
         $toolbarEvent->graph    = (string)$graph;
         $toolbarEvent->toolbar  = $toolbar;
         $eventResult = $toolbarEvent->trigger();
-        
+
         if ($eventResult instanceof OntoWiki_Toolbar) {
             $toolbar = $eventResult;
         }
-        
+
         // add toolbar
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
-		// disable tabs
-		OntoWiki_Navigation::disableNavigation();
         //show modules
         $this->addModuleContext('main.window.properties');
     }
@@ -203,7 +202,7 @@ class ResourceController extends OntoWiki_Controller_Base {
 
         // the list is managed by a controller plugin that catches special http-parameters
         // in Ontowiki/Controller/Plugin/ListSetupHelper.php
-        
+
         //here this list is added to the view
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = 'instances';
@@ -218,11 +217,11 @@ class ResourceController extends OntoWiki_Controller_Base {
             $list = new OntoWiki_Model_Instances($store, $this->_owApp->selectedModel, array());
             $listHelper->addListPermanently($listName, $list, $this->view);
         }
-        
+
         //two usefull order
         //$list->orderByUri();
         //$list->setOrderProperty('http://ns.ontowiki.net/SysOnt/order');
-        
+
         //begin view building
         $this->view->placeholder('main.window.title')->set('Resource List');
 
@@ -244,7 +243,7 @@ class ResourceController extends OntoWiki_Controller_Base {
                 $this->view->placeholder('main.window.toolbar')->set($toolbar);
             }
         /*
-            
+
             $url = new OntoWiki_Url(
                 array(
                     'controller' => 'resource',
@@ -252,7 +251,7 @@ class ResourceController extends OntoWiki_Controller_Base {
                 ),
                 array()
             );
-            
+
             $this->view->formActionUrl = (string)$url;
             $this->view->formMethod    = 'post';
             $this->view->formName      = 'instancelist';

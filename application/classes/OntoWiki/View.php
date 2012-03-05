@@ -292,13 +292,15 @@ class OntoWiki_View extends Zend_View
             $this->_moduleView->cssClasses = $cssClasses;
             $this->_moduleView->cssId      = $cssId;
 
+            $this->_moduleView->layoutType = $module->layoutType();
+
             if (isset($moduleOptions->noChrome) && (boolean)$moduleOptions->noChrome) {
                 // render without window chrome
                 $moduleWindow = $this->_moduleView->render('partials/module.phtml');
             } else if(isset($moduleOptions->noWrap) && (boolean)$moduleOptions->noWrap) {
-				// render without any formatting 
+                // render without any formatting
                 $moduleWindow = $this->_moduleView->render('partials/module_blank.phtml');
-			} else {
+            } else {
                 // render with window chrome
                 $moduleWindow = $this->_moduleView->render('partials/window.phtml');
             }

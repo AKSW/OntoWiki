@@ -32,7 +32,7 @@ class NavigationModule extends OntoWiki_Module
     public function getMenu() {
 		// check if menu must be shown
 		if(!$this->_privateConfig->defaults->showMenu) return new OntoWiki_Menu();
-		
+
         // build main menu (out of sub menus below)
         $mainMenu = new OntoWiki_Menu();
 
@@ -89,7 +89,7 @@ class NavigationModule extends OntoWiki_Module
 
         return $mainMenu;
     }
-    
+
     /**
      * Returns the content
      */
@@ -113,8 +113,8 @@ class NavigationModule extends OntoWiki_Module
                 json_encode($this->_privateConfig->toArray()) . '\');' .PHP_EOL
             );
         }
-        
-        $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');        
+
+        $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');
         $stateSession = new Zend_Session_Namespace($sessionKey);
         if( isset($stateSession) && ( $stateSession->model == (string)$this->_owApp->selectedModel ) ){
             // load setup
@@ -130,23 +130,28 @@ class NavigationModule extends OntoWiki_Module
                 '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
             );
         }
-        
+
         // init view from scratch
         $this->view->inlineScript()->prependScript(
             '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
         );
 
         $data['session'] = $this->session->navigation;
-        $content = $this->render('navigation', $data, 'data'); // 
+        $data['modalType'] = '123';
+        $content = $this->render('navigation', $data, 'data'); //
         return $content;
     }
-	
+
     public function shouldShow(){
         if (isset($this->_owApp->selectedModel)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public function layoutType(){
+        return "inline";
     }
 
     private function checkConfig($config){
