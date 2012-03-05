@@ -2085,8 +2085,6 @@ a.ui-draggable-dragging.hasMenu span.toggle
 
 /* 6. Etcetera -------------------------------------------------------------- */
 
-.hide {display: none !important;}
-
 .onlyAural {position: absolute !important; left: -5000em !important;}
 
 .clearall {

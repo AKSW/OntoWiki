@@ -36,10 +36,6 @@
     <!-- ontowiki stylesheets -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
 
-    <!-- bootstrap stylesheets -->
-    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/bootstrap.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/bootstrap-responsive.css" type="text/css" media="screen" />
-
     <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.css" type="text/css" media="screen" / -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
@@ -51,6 +47,11 @@
     <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.dev.css" type="text/css" media="screen" / -->
     <?php endif; ?>
 
+    <!-- bootstrap stylesheets -->
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/bootstrap.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/bootstrap-responsive.css" type="text/css" media="screen" />
+
+
     <!-- IE conditional stylesheets -->
     <!--[if IE 7]><link rel="stylesheet" media="screen" href="<?php echo $this->themeUrlBase ?>styles/default.ie7.css" /><![endif]-->
 
@@ -61,15 +62,12 @@
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
 
-    <!-- bootstrap js libraries -->
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/bootstrap.js"></script>
-
     <!-- included js libraries -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.clickmenu.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.simplemodal.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.tablesorter.js"></script>
+    <!-- <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.simplemodal.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.tablesorter.js"></script> -->
 
     <!-- RDFa widgets -->
     <script type="text/javascript" id="RDFauthorScript" src="<?php echo $this->libraryUrlBase ?>RDFauthor/src/rdfauthor.js"></script>
@@ -78,6 +76,9 @@
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/main.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/support.js"></script>
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/jquery.ontowiki.js"></script>
+
+    <!-- bootstrap js libraries -->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/bootstrap.js"></script>
 
     <!-- dynamic js -->
     <?php echo $this->headScript() ?>

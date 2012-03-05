@@ -10,71 +10,84 @@
 
 ?>
 <div class="btn-group">
-	<?php if ($this->has('menu')): ?>
-	  	<a class="btn modalButton" href="#">
-		    <?php echo $this->_($this->title) ?>
-	   	</a>
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-			<span class="caret"></span>
-		</a>
+    <?php if ($this->has('menu')): ?>
+        <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
+            <?php echo $this->_($this->title) ?>
+        </a>
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            <span class="caret"></span>
+        </a>
         <ul class="dropdown-menu">
             <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->menu)) ?>
-   		</ul>
-	<?php else: ?>
-	   	<a class="btn modalButton" href="#">
-	    	<?php echo $this->_($this->title) ?>
-	   	</a>
-	<?php endif; ?>
+           </ul>
+    <?php else: ?>
+           <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
+            <?php echo $this->_($this->title) ?>
+           </a>
+    <?php endif; ?>
 </div>
-    
-    <div class="slidehelper">
-        <?php if (!$this->has('innerwindows')): ?>
-            <?php if (isset($this->messages)): ?>
-                <?php foreach ($this->messages as $message): ?>
-                    <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
-                <?php endforeach; ?>
+
+    <div id="<?php echo $this->_($this->title) ?>_Modal" class="modal hide fade" >
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3><?php echo $this->_($this->title) ?></h3>
+        </div>
+
+        <div class="modal-body">
+
+            <?php if (!$this->has('innerwindows')): ?>
+                <?php if (isset($this->messages)): ?>
+                    <?php foreach ($this->messages as $message): ?>
+                        <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             <?php endif; ?>
-        <?php endif; ?>
-        
-        <?php if ($this->has('navigation')): ?>
-            <?php echo $this->partial('partials/navigation.phtml', array('navigation' => $this->navigation)) ?>
-        <?php endif; ?>
-    
-        <?php if ($this->has('innerwindows')): ?>
-            <div class="content has-innerwindows">
-                <div class="innercontent">
-                    <?php if (isset($this->messages)): ?>
-                        <?php foreach ($this->messages as $message): ?>
-                            <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                    <?php echo $this->content ?>
-                </div><!-- .innercontent -->
-                <div class="innerwindows">
-                    <?php echo $this->innerwindows ?>
-                </div><!-- .innerwindows -->
-            </div>
-        <?php else: ?>
-            <?php if (is_array($this->content)): ?>
-                <?php foreach ($this->content as $key => $value): ?>
-                    <div class="content" id="<?php echo $key ?>">
-                        <?php echo $value ?>
-                    </div>
-                <?php endforeach; ?>
+
+            <?php if ($this->has('navigation')): ?>
+                <?php echo $this->partial('partials/navigation.phtml', array('navigation' => $this->navigation)) ?>
+            <?php endif; ?>
+
+            <?php if ($this->has('innerwindows')): ?>
+                <div class="content has-innerwindows">
+                    <div class="innercontent">
+                        <?php if (isset($this->messages)): ?>
+                            <?php foreach ($this->messages as $message): ?>
+                                <?php echo $this->partial('partials/message.phtml', array('message' => $message)) ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php echo $this->content ?>
+                    </div><!-- .innercontent -->
+                    <div class="innerwindows">
+                        <?php echo $this->innerwindows ?>
+                    </div><!-- .innerwindows -->
+                </div>
             <?php else: ?>
-                <div class="content">
-                    <?php if (isset($this->tools)): ?>
-                        <?php echo $this->partial('partials/toolbar.phtml', $this->tools) ?>
-                    <?php endif; ?>
-                    <?php echo $this->content ?>
-                </div><!-- .window .content -->
+                <?php if (is_array($this->content)): ?>
+                    <?php foreach ($this->content as $key => $value): ?>
+                        <div class="content" id="<?php echo $key ?>">
+                            <?php echo $value ?>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="content">
+                        <?php if (isset($this->tools)): ?>
+                            <?php echo $this->partial('partials/toolbar.phtml', $this->tools) ?>
+                        <?php endif; ?>
+                        <?php echo $this->content ?>
+                    </div><!-- .window .content -->
+                <?php endif; ?>
             <?php endif; ?>
-        <?php endif; ?>
-        
-        <?php if ($this->has('contextmenu')): ?>
-            <div class="contextmenu">
-                <?php echo $this->partial('partials/contextmenu.phtml', array('contextmenu' => $this->contextmenu)) ?>
-            </div>
-        <?php endif; ?>
-    
-    </div><!-- .slidehelper -->
+
+            <?php if ($this->has('contextmenu')): ?>
+                <div class="contextmenu">
+                    <?php echo $this->partial('partials/contextmenu.phtml', array('contextmenu' => $this->contextmenu)) ?>
+                </div>
+            <?php endif; ?>
+
+        </div> <!-- /modal body -->
+
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">Close</a>
+        </div>
+
+    </div><!-- /modal -->
