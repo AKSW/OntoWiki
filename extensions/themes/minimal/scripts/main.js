@@ -194,7 +194,7 @@ $(document).ready(function() {
 
         console.log( formName, formSpec );
 
-        $(this).parents('div').eq(0).find('form' + formSpec).each(function() {
+        $(this).parents('div.content').eq(0).find('form' + formSpec).each(function() {
             if ($(this).hasClass('ajaxForm')) {
                 // submit asynchronously
                 var actionUrl = $(this).attr('action');

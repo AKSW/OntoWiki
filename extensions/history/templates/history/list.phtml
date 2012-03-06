@@ -1,6 +1,6 @@
 <?php $odd = false; ?>
 <?php if (!empty($this->historyArray)) { ?>
-<table class="separated-vertical" id="history-list">
+<table class="table table-striped table-bordered table-condensed" id="history-list">
     <thead>
     <!-- history table headers -->
     <tr class="odd">
@@ -14,17 +14,17 @@
     </thead>
     <tbody>
     <!-- history table contents -->
-    <?php $i = 0; ?>      
+    <?php $i = 0; ?>
     <?php foreach ($this->historyArray as $abschnitt) :?>
     <tr class="<?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?> ">
         <td class="selector">
             <input
-                <?php if (!$this->rollbackAllowed) echo 'disabled'; ?> 
+                <?php if (!$this->rollbackAllowed) echo 'disabled'; ?>
                 type="radio"
                 id="actionid-<?php echo $abschnitt['id']; ?>"
                 name="actionid"
-                <?php 
-                    $chunk = array_chunk($this->idArray,$i++ + 1); 
+                <?php
+                    $chunk = array_chunk($this->idArray,$i++ + 1);
                     $idString = htmlentities(serialize($chunk[0]));
                 ?>
                 value="<?php echo $idString; ?>"/>
@@ -43,7 +43,7 @@
         </td>
     </tr>
     <?php endforeach; ?>
-                    
+
     </tbody>
 </table>
 <?php } ?>
