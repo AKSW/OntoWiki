@@ -6,58 +6,50 @@
 
 ?>
 
-<li><a href="#" id="loginShowBtn">Login</a></li>
+<li><a data-toggle="modal" href="#Login_Modal">Login</a></li>
 
-<div class="modal" id="loginModal" style='display:none;'>
+<div class="modal hide fade" id="Login_Modal" data-backdrop="false">
   <div class="modal-header">
     <a class="close" data-dismiss="modal">×</a>
     <h3>Login</h3>
   </div>
   <div class="modal-body">
     <form method="post" action="<?php echo $this->actionUrl ?>" class="simple-input input-justify-left" name="locallogin">
-	    <input type="hidden" name="logintype" value="locallogin" />
-	    <fieldset>
-	        <input type="hidden" name="redirect-uri" value="<?php echo $this->redirectUri ?>" />
-	        <div>
-	            <label for="username"><?php echo $this->_('Username') ?></label>
-	            <input class="text focusNextOnEnter" type="text" id="username" name="username" value="" />
-	            <br class="clearall" />
-	        </div>
-	        <div>
-	            <label for="password"><?php echo $this->_('Password') ?></label>
-	            <input class="password submitOnEnter" type="password" id="password" name="password" />
-	            <br class="clearall" />
-	        </div>
-	        <div>
-	            <label class="checkboxradio">
-	                <input class="checkbox" type="checkbox" id="login-save" name="login-save" />
-	                <?php echo $this->_('Remember me') ?>
-	            </label>
-	        </div>
-		</fieldset>
-	</form>
+        <input type="hidden" name="logintype" value="locallogin" />
+        <fieldset>
+            <input type="hidden" name="redirect-uri" value="<?php echo $this->redirectUri ?>" />
+            <div>
+                <label for="username"><?php echo $this->_('Username') ?></label>
+                <input class="text focusNextOnEnter" type="text" id="username" name="username" value="" />
+                <br class="clearall" />
+            </div>
+            <div>
+                <label for="password"><?php echo $this->_('Password') ?></label>
+                <input class="password submitOnEnter" type="password" id="password" name="password" />
+                <br class="clearall" />
+            </div>
+            <div>
+                <label class="checkboxradio">
+                    <input class="checkbox" type="checkbox" id="login-save" name="login-save" />
+                    <?php echo $this->_('Remember me') ?>
+                </label>
+            </div>
+        </fieldset>
+    </form>
   </div>
   <div class="modal-footer">
     <a href="#" id="locallogin" class="btn btn-primary"><?php echo $this->_('Login') ?></a>
-	<?php if ($this->showRegisterButton) : ?>
+    <?php if ($this->showRegisterButton) : ?>
     <a class="btn" href="<?php echo $this->registerActionUrl; ?>"><?php echo $this->_('Register') ?></a>
-	<?php endif; ?>
-    <a href="#" class="btn" id="loginCloseBtn">Close</a>
+    <?php endif; ?>
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
   </div>
 </div>
 
 <script>
 $(document).ready(function(){
-	$("#locallogin").click(function(){
-		$("form[name='locallogin']").submit();
-	})
-	
-	$("#loginCloseBtn").click(function(){
-		$("#loginModal").hide()
-	})
-	
-	$("#loginShowBtn").click(function(){
-		$("#loginModal").modal('show');
-	})
+    $("#locallogin").click(function(){
+        $("form[name='locallogin']").submit();
+    })
 })
 </script>
