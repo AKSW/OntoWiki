@@ -355,7 +355,7 @@ $(document).ready(function() {
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(),
                     viewOptions: {
                         // no statements needs popover
-                        type: $('.section-mainwindows table.Resource').length ? RDFAUTHOR_VIEW_MODE : 'popover',
+                        type: $('div.content table.Resource').length ? RDFAUTHOR_VIEW_MODE : 'popover',
                         container: function (statement) {
                             var element = RDFauthor.elementForStatement(statement);
                             var parent  = $(element).closest('div');
