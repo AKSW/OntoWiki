@@ -10,9 +10,11 @@
  * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class LastchangesModule extends OntoWiki_Module {
+class LastchangesModule extends OntoWiki_Module
+{
 
-    public function init() {
+    public function init()
+    {
     // enabling versioning
         $this->versioning = $this->_erfurt->getVersioning();
         if (!$this->versioning->isVersioningEnabled()) {
@@ -33,8 +35,14 @@ class LastchangesModule extends OntoWiki_Module {
         }
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
         return 'Latest Changes';
+    }
+
+    public function layoutType()
+    {
+        return "popover";
     }
 
     public function getContents() {

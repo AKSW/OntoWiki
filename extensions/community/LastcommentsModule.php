@@ -23,7 +23,7 @@ class LastcommentsModule extends OntoWiki_Module
         $this->store       = $this->_owApp->erfurt->getStore();
         $this->model       = $this->_owApp->selectedModel;
         // The system config is used to get the user title
-	// TODO: How can switch from ACL to Non-ACL use?
+    // TODO: How can switch from ACL to Non-ACL use?
         $this->systemModel = new Erfurt_Rdf_Model('http://localhost/OntoWiki/Config/', 'http://localhost/OntoWiki/Config/');
 
         /* prepare schema elements */
@@ -51,19 +51,24 @@ class LastcommentsModule extends OntoWiki_Module
         #var_dump($commentSparql); die();
         require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = Erfurt_Sparql_SimpleQuery::initWithString($commentSparql);
-        
-		if($this->getContext() == "main.window.dashmodelinfo"){
-			$this->results = Erfurt_App::getInstance()->getStore()->sparqlQuery($query);
-		}else{
-			$this->results = $this->model->sparqlQuery($query);
-		}
+
+        if($this->getContext() == "main.window.dashmodelinfo"){
+            $this->results = Erfurt_App::getInstance()->getStore()->sparqlQuery($query);
+        }else{
+            $this->results = $this->model->sparqlQuery($query);
+        }
     }
-    
+
     public function getTitle()
     {
         return 'Latest Discussions';
     }
-    
+
+    public function layoutType()
+    {
+        return "popover";
+    }
+
     public function getContents()
     {
         if ($this->results) {
@@ -99,7 +104,7 @@ class LastcommentsModule extends OntoWiki_Module
 
         return $this->render('lastcomments');
     }
-    
+
 }
 
 

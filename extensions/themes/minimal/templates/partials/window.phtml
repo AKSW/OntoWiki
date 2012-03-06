@@ -8,6 +8,8 @@
  * @version $Id: window.phtml 3690 2009-07-16 08:16:06Z pfrischmuth $
  */
 
+$id = str_replace(" ", "_", $this->_($this->title) );
+
 ?>
 
 <div class="btn-group">
@@ -15,9 +17,9 @@
         <?php if($this->layoutType == "inline") { ?>
             <a class="btn">
         <?php } else if($this->layoutType == "popover") { ?>
-            <a class="btn" rel="popover" id="<?php echo $this->_($this->title) ?>_Popover" onclick="javascript:$(this).popover('toggle')">
+            <a class="btn" rel="popover" id="<?php echo $id; ?>_Popover" onclick="javascript:$(this).popover('toggle')">
         <?php } else if($this->layoutType == "modal") { ?>
-            <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
+            <a class="btn" data-toggle="modal" href="#<?php echo $id; ?>_Modal">
         <?php } ?>
             <?php echo $this->_($this->title) ?>
         </a>
@@ -31,9 +33,9 @@
         <?php if($this->layoutType == "inline") { ?>
             <a class="btn">
         <?php } else if($this->layoutType == "popover") { ?>
-            <a class="btn" rel="popover" id="<?php echo $this->_($this->title) ?>_Popover"  onclick="javascript:$(this).popover('toggle')">
+            <a class="btn" rel="popover" id="<?php echo $id; ?>_Popover"  onclick="javascript:$(this).popover('toggle')">
         <?php } else if($this->layoutType == "modal") { ?>
-            <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
+            <a class="btn" data-toggle="modal" href="#<?php echo $id; ?>_Modal">
         <?php } ?>
             <?php echo $this->_($this->title) ?>
         </a>
@@ -41,21 +43,21 @@
 </div>
 
 <?php if($this->layoutType == "inline") { ?>
-    <div id="<?php echo $this->_($this->title) ?>_Inline">
+    <div id="<?php echo $id; ?>_Inline">
 <?php } else if($this->layoutType == "popover") { ?>
     <script>
     $(document).ready(function(){
-        $('#<?php echo $this->_($this->title) ?>_Popover').popover({
+        $('#<?php echo $id; ?>_Popover').popover({
             placement: 'bottom',
-            content: <?php echo $this->_($this->title) ?>_PopoverData,
+            content: <?php echo $id; ?>_PopoverData,
             trigger: 'manual',
             html:true
         });
     });
-    var <?php echo $this->_($this->title) ?>_PopoverData = function(){
+    var <?php echo $id; ?>_PopoverData = function(){
     <?php ob_start(); ?>
 <?php } else if($this->layoutType == "modal") { ?>
-    <div id="<?php echo $this->_($this->title) ?>_Modal" class="modal hide fade" >
+    <div id="<?php echo $id; ?>_Modal" class="modal hide fade" >
         <div class="modal-header">
             <a class="close" data-dismiss="modal">×</a>
             <h3><?php echo $this->_($this->title) ?></h3>
