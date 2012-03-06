@@ -102,7 +102,20 @@ class ModellistModule extends OntoWiki_Module
             $models[] = $temp;
         }
 
-        $content = $this->render('modellist', $models, 'models');
+        $canCreate = false;
+        if ($this->_erfurt->getAc()->isActionAllowed('ModelManagement')) {
+            $canCreate = true;
+        }
+
+        $data = array(
+            "models" => $models,
+            "create" => array(
+                "allowed" => $canCreate,
+                "url" => $this->_config->urlBase . 'model/create'
+            )
+        );
+
+        $content = $this->render('modellist', $data, 'data');
 
         return $content;
     }
@@ -123,7 +136,8 @@ class ModellistModule extends OntoWiki_Module
         return $id;
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
         return "Knowledge Bases";
     }
 
