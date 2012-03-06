@@ -187,12 +187,14 @@ $(document).ready(function() {
     $('.editable').makeEditable();
 
     // autosubmit
-    $('a.submit').click(function() {
+    $('a.submit').live('click', function() {
         // submit all forms inside this submit button's parent window
         var formName = $(this).attr('id');
         var formSpec = formName ? '[name=' + formName + ']' : '';
 
-        $(this).parents('.window').eq(0).find('form' + formSpec).each(function() {
+        console.log( formName, formSpec );
+
+        $(this).parents('div').eq(0).find('form' + formSpec).each(function() {
             if ($(this).hasClass('ajaxForm')) {
                 // submit asynchronously
                 var actionUrl = $(this).attr('action');
@@ -200,9 +202,10 @@ $(document).ready(function() {
                 var data      = $(this).serialize();
 
                 if ($(this).hasClass('reloadOnSuccess')) {
-                    var mainContent = $(this).parents('.content.has-innerwindows').eq(0).children('.innercontent');
+                    //var mainContent = $(this).parents('.content.has-innerwindows').eq(0).children('.innercontent');
                     var onSuccess = function() {
-                        mainContent.load(document.URL);
+                        //window.load(document.URL);
+                        location.reload();
                     }
                 }
                 // alert(data);

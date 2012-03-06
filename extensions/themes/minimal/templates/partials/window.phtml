@@ -15,7 +15,7 @@
         <?php if($this->layoutType == "inline") { ?>
             <a class="btn">
         <?php } else if($this->layoutType == "popover") { ?>
-            <a class="btn" rel="popover" id="<?php echo $this->_($this->title) ?>_Popover">
+            <a class="btn" rel="popover" id="<?php echo $this->_($this->title) ?>_Popover" onclick="javascript:$(this).popover('toggle')">
         <?php } else if($this->layoutType == "modal") { ?>
             <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
         <?php } ?>
@@ -31,7 +31,7 @@
         <?php if($this->layoutType == "inline") { ?>
             <a class="btn">
         <?php } else if($this->layoutType == "popover") { ?>
-            <a class="btn" rel="popover" id="<?php echo $this->_($this->title) ?>_Popover">
+            <a class="btn" rel="popover" id="<?php echo $this->_($this->title) ?>_Popover"  onclick="javascript:$(this).popover('toggle')">
         <?php } else if($this->layoutType == "modal") { ?>
             <a class="btn" data-toggle="modal" href="#<?php echo $this->_($this->title) ?>_Modal">
         <?php } ?>
@@ -48,6 +48,7 @@
         $('#<?php echo $this->_($this->title) ?>_Popover').popover({
             placement: 'bottom',
             content: <?php echo $this->_($this->title) ?>_PopoverData,
+            trigger: 'manual',
             html:true
         });
     });

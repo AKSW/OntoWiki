@@ -17,18 +17,24 @@ class CommentModule extends OntoWiki_Module
     {
         return 'Comment';
     }
-    
+
     public function getContents()
     {
         $url = new OntoWiki_Url(array('controller' => 'community', 'action' => 'comment'), array());
         $this->view->actionUrl = (string)$url;
-        
+
         $content = $this->render('comment');
-		
-		return $content;
+
+        return $content;
     }
-    
-    public function shouldShow(){
+
+    public function layoutType()
+    {
+        return "popover";
+    }
+
+    public function shouldShow()
+    {
         // do not show if model is not writeable
         if ( (isset($this->_owApp->selectedModel)) &&
                 ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) ) {
