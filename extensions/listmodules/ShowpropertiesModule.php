@@ -20,10 +20,15 @@ class ShowpropertiesModule extends OntoWiki_Module
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $this->_instances = $listHelper->getLastList();
     }
-    
+
     public function getTitle()
     {
         return 'Show Properties';
+    }
+
+    public function layoutType()
+    {
+        return "popover";
     }
 
     public function shouldShow()
@@ -67,19 +72,19 @@ class ShowpropertiesModule extends OntoWiki_Module
             $this->view->properties = $this->_instances->getAllProperties(false);
             $this->view->reverseProperties = $this->_instances->getAllProperties(true);
         }
-        
+
         return $this->render('showproperties');
     }
-    
+
     public function getStateId()
     {
         $id = $this->_owApp->selectedModel
             . $this->_owApp->selectedResource;
-        
+
         return $id;
     }
 
-    
+
     private function filterProperties($properties) {
 
     $uriToFilter = array();
