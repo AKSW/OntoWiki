@@ -137,19 +137,27 @@
                     $title = $event->trigger();
                 ?>
                 <div class="page-header">
-                    <h3 class="title"><?php echo $title ?></h3>
+                    <ul class="nav nav-pills" style="margin-bottom: -5px; font-size: 22px;">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <?php echo $title ?>
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <?php if (isset($this->preTabsContent)): ?>
+                                <li id="pre_tabs_content">
+                                    <?php echo $this->preTabsContent; ?>
+                                </li>
+                                <?php endif; ?>
+                                <?php echo $this->partial('partials/navigation.phtml', array('navigation' => OntoWiki_Navigation::toArray())) ?>
+                            </ul>
+                        </li>
+                    </ul>
                     <div class="innerwindows" style="float: right; width:100%; margin-top: -20px;">
                         <?php echo $this->placeholder('main.window.innerwindows') ?>
                     </div><!-- .innerwindows -->
                 </div>
                 <div class="slidehelper">
-                    <?php if (isset($this->preTabsContent)): ?>
-                        <div id="pre_tabs_content">
-                            <?php echo $this->preTabsContent; ?>
-                        </div>
-                    <?php endif; ?>
-                    <?php echo $this->partial('partials/navigation.phtml', array('navigation' => OntoWiki_Navigation::toArray())) ?>
-
                     <?php if ($this->has('main.window.innerwindows')): ?>
                         <div class="content has-innerwindows">
                             <?php if ($this->has('formActionUrl') and $this->has('formMethod')): ?>
