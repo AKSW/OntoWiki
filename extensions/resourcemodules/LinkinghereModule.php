@@ -13,7 +13,7 @@
  * @version    $Id: linkinghere.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
 class LinkinghereModule extends OntoWiki_Module
-{    
+{
     /**
      * Constructor
      */
@@ -46,14 +46,19 @@ class LinkinghereModule extends OntoWiki_Module
         }
     }
 
+    public function layoutType()
+    {
+        return "popover";
+    }
+
     public function getContents()
     {
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
 
         $query = new Erfurt_Sparql_SimpleQuery();
-        
+
         $results = false;
-                
+
         $predicates = $this->predicates;
         $properties = array();
         $instances  = array();
@@ -115,18 +120,18 @@ class LinkinghereModule extends OntoWiki_Module
         $this->view->resource = $this->_owApp->selectedResource;
         $this->view->properties = $properties;
         $this->view->instances  = $instances;
-        
+
         if (!$results) {
             $this->view->message = 'No matches.';
         }
-        
+
         return $this->render('linkinghere');
     }
-    
+
     public function getStateId() {
         $id = $this->_owApp->selectedModel->getModelIri()
             . $this->_owApp->selectedResource;
-        
+
         return $id;
     }
 }
