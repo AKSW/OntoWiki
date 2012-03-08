@@ -1,5 +1,5 @@
 <?php if (isset($this->prePropertiesContent)): ?>
-    <div><?php echo $this->prePropertiesContent; ?></div>    
+    <div><?php echo $this->prePropertiesContent; ?></div>
 <?php endif; ?>
 <?php $flag = false; ?>
 <span about="<?php echo $this->resourceUri ?>" style="display:none" class="about_span"></span>
@@ -9,7 +9,7 @@
     <?php foreach ($this->namespaces as $namespace => $prefix): ?>
         <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
     <?php endforeach; ?>>
-    
+
     <?php foreach ($this->predicates as $graph => $predicatesForGraph): ?>
         <?php $current++; ?>
         <?php if (count($this->predicates[$graph]) > 0): /* has resource predicates from graph at all? */ ?>
@@ -29,8 +29,8 @@
             <?php $currentPredicate = $this->predicates[$graph][$uri] ?>
             <tr>
                 <td width="120">
-                    <a class="hasMenu" 
-                       about="<?php echo $currentPredicate['uri'] ?>" 
+                    <a class="hasMenu"
+                       about="<?php echo $currentPredicate['uri'] ?>"
                        href="<?php echo $currentPredicate['url'] ?>"><?php echo $currentPredicate['title'] ?></a>
                 </td>
                 <td>
@@ -65,12 +65,12 @@
                             <?php foreach ($this->values[$graph][$uri] as $entry): ?>
                                 <?php if ($entry['url']): ?>
                                     <li>
-                                        <a resource="<?php echo $entry['uri'] ?>" 
-                                           rel="<?php echo $currentPredicate['curi'] ?>" 
+                                        <a resource="<?php echo $entry['uri'] ?>"
+                                           rel="<?php echo $currentPredicate['curi'] ?>"
                                            class="expandable hasMenu" href="<?php echo $entry['url'] ?>"><?php echo $entry['object'] ?></a>
                                     </li>
                                 <?php else: ?>
-                                    <li property="<?php echo $currentPredicate['curi']; ?>" 
+                                    <li property="<?php echo $currentPredicate['curi']; ?>"
                                         data-object-hash="<?php echo $entry['object_hash']; ?>"
                                         content="<?php echo $this->escape(isset($entry['content']) ? $entry['content'] : $entry['object']); ?>"
                                         <?php if (isset($entry['lang']) && !empty($entry['lang'])): ?>
@@ -78,7 +78,7 @@
                                         <?php elseif (isset($entry['datatype']) && !empty($entry['datatype'])): ?>
                                             datatype="<?php echo $entry['datatype'] ?>"
                                         <?php endif; ?>
-                                        ><?php 
+                                        ><?php
                                         echo $entry['object']
                                     ?></li>
                                 <?php endif; ?>
@@ -97,5 +97,10 @@
 </table>
 <?php endif; ?>
 <?php if (!$flag): ?>
+    <table class="separated-vertical rdfa hidden" about="<?php echo $this->resourceUri ?>"
+    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+        <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
+    <?php endforeach; ?>>
+    <tbody></tbody></table>
     <p class="messagebox info"><?php echo $this->_('No predicates found.') ?></p>
 <?php endif; ?>

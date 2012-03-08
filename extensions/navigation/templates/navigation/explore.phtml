@@ -9,7 +9,7 @@ $odd = true;
         <li class="nav-header" style="padding:0px;">
         <?php if (isset($this->rootEntry)):?>
             <a class="navFirst icon-step-backward" title="Go to root level"></a>
-			<a class="navBack icon-chevron-left" title="Go to previous level"></a>
+            <a class="navBack icon-chevron-left" title="Go to previous level"></a>
             <a class="hasMenu" href="<?php echo $this->rootEntry['url'] ?>" about="<?php echo $this->rootEntry['uri'] ?>">
                 <?php echo $this->rootEntry['title'] ?>
             </a>
@@ -39,23 +39,23 @@ $odd = true;
     <?php if ($this->entries) :?>
         <li>
         <?php foreach ($this->entries as $uri => $entry): ?>
-	        <a class="navigation navList"
-	           href="<?php echo $entry['link'] ?>"
-	           about="<?php echo $uri ?>" title="show list of instances">
-	           <?php echo $entry['title'] ?>
+            <a class="navigation navList"
+               href="<?php echo $entry['link'] ?>"
+               about="<?php echo $uri ?>" title="show list of instances">
+               <?php echo $entry['title'] ?>
 
-	           <?php if( $entry['sub'] > 0 ): ?>
-	           <span class="navDeeper navDeeperIcon icon-chevron-right" title="show deeper level"></span>
-	           <?php endif ?>
-	        </a>
+               <?php if( $entry['sub'] > 0 ): ?>
+               <span class="navDeeper navDeeperIcon icon-chevron-right" title="show deeper level"></span>
+               <?php endif ?>
+            </a>
         <?php endforeach; ?>
         </li>
     <?php endif; ?>
 
 <?php if ($this->showMeMore) :?>
 <li>
-	<a class="btn" href="javascript:navigationEvent ('more', '')" id="naviganion-more">
-		<span class="icon-arrow-down"></span> Show Me More
-	</a>
+    <a class="btn" href="javascript:navigationEvent ('more', '')" id="naviganion-more">
+        <span class="icon-arrow-down"></span> Show Me More
+    </a>
 </li>
 <?php endif; ?>

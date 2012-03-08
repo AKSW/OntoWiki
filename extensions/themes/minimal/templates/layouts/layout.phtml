@@ -137,7 +137,8 @@
                     $title = $event->trigger();
                 ?>
                 <div class="page-header">
-                    <ul class="nav nav-pills" style="margin-bottom: -5px; font-size: 22px;">
+                    <?php if ( count(OntoWiki_Navigation::toArray()) > 0 ): ?>
+                    <ul class="nav nav-pills" style="display: inline-block; vertical-align: middle; margin-bottom: -15px; font-size: 16px;">
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <?php echo $title ?>
@@ -153,6 +154,22 @@
                             </ul>
                         </li>
                     </ul>
+                    <?php else: ?>
+                    <h2 style="display: inline-block; vertical-align: middle; margin-bottom: -15px;"><?php echo $title ?></h2>
+                    <?php endif; ?>
+                    <?php if ($this->has('main.window.menu')): ?>
+                        <div class="btn-group" style="margin-left: 10px; display: inline-block; vertical-align: middle; margin-bottom: -15px;">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="icon-cog"></i>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- dropdown menu links -->
+                                <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->placeholder('main.window.menu')->getValue())) ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="innerwindows" style="float: right; width:100%; margin-top: -20px;">
                         <?php echo $this->placeholder('main.window.innerwindows') ?>
                     </div><!-- .innerwindows -->
@@ -211,12 +228,6 @@
                                 </form>
                             <?php endif;?>
                         </div><!-- .content -->
-                    <?php endif; ?>
-
-                    <?php if ($this->has('main.window.menu')): ?>
-                        <ul class="menu">
-                            <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->placeholder('main.window.menu')->getValue())) ?>
-                        </ul>
                     <?php endif; ?>
 
                     <?php echo $this->partial('partials/statusbar.phtml', array('statusbar' => $this->placeholder('main.window.statusbar'))) ?>
