@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki login module template
@@ -27,10 +33,10 @@
             <br class="clearall" />
         </div>
         <div class="actionbuttons">
-                <a id="locallogin" class="button submit"><?php echo $this->_('Login') ?></a>
+                <a id="locallogin" class="minibutton submit"><?php echo $this->_('Login') ?></a>
         <?php if ($this->showRegisterButton) : ?>
-                    <a class="button" href="<?php echo $this->registerActionUrl; ?>"><?php echo $this->_('Register') ?></a>
+                    <a class="minibutton" href="<?php echo $this->registerActionUrl; ?>"><?php echo $this->_('Register') ?></a>
         <?php endif; ?>
         </div>
-	</fieldset>
+    </fieldset>
 </form>
