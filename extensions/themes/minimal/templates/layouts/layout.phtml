@@ -145,11 +145,6 @@
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <?php if (isset($this->preTabsContent)): ?>
-                                <li id="pre_tabs_content">
-                                    <?php echo $this->preTabsContent; ?>
-                                </li>
-                                <?php endif; ?>
                                 <?php echo $this->partial('partials/navigation.phtml', array('navigation' => OntoWiki_Navigation::toArray())) ?>
                             </ul>
                         </li>
@@ -174,6 +169,11 @@
                         <?php echo $this->placeholder('main.window.innerwindows') ?>
                     </div><!-- .innerwindows -->
                 </div>
+                <?php if (isset($this->preTabsContent)): ?>
+                <div id="pre_tabs_content">
+                    <?php echo $this->preTabsContent; ?>
+                </div>
+                <?php endif; ?>
                 <div class="slidehelper">
                     <?php if ($this->has('main.window.innerwindows')): ?>
                         <div class="content has-innerwindows">
