@@ -153,16 +153,16 @@
                     <h2 style="display: inline-block; vertical-align: middle; margin-bottom: -15px;"><?php echo $title ?></h2>
                     <?php endif; ?>
                     <?php if ($this->has('main.window.menu')): ?>
-                        <div class="btn-group" style="margin-left: 10px; display: inline-block; vertical-align: middle; margin-bottom: -15px;">
-                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="icon-cog"></i>
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <!-- dropdown menu links -->
-                                <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->placeholder('main.window.menu')->getValue())) ?>
-                            </ul>
-                        </div>
+                    <div class="btn-group" style="margin-left: 10px; display: inline-block; vertical-align: middle; margin-bottom: -15px;">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="icon-cog"></i>
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- dropdown menu links -->
+                            <?php echo $this->partial('partials/menu.phtml', array('menu' => $this->placeholder('main.window.menu')->getValue())) ?>
+                        </ul>
+                    </div>
                     <?php endif; ?>
 
                     <div class="innerwindows" style="float: right; width:100%; margin-top: -20px;">

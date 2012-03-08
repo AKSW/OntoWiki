@@ -6,28 +6,54 @@
  * @version $Id$
  */
 
+//echo "<pre>";
+//var_dump($this->menu); die;
+
+$i = 0;
+
 ?>
 
-
-<!-- <li class="active"><a href="#">Home</a></li> -->
-
-<!--
- <form method="GET" action="<?php echo $this->actionUrl ?>" style="width: 200px; float:left;">
-	<?php if ($this->showSearch) : ?>
-	<p class="width98">
-		<label class="display-block" for="searchtext-input"><?php echo $this->_('Search for Resources') ?></label>
-		<input class="text width99 inner-label" type="text" id="searchtext-input" name="searchtext-input" value="<?php echo $this->searchtextinput ?>" />
-	</p>
-	<?php endif; ?>
-	<p>-->
-		<!--label class="display-block">
-		    <?php $selected = ($this->modelSelected ? '' : 'checked="checked"') ?>
-			<input class="checkbox" type="checkbox" name="allModels" id="allModels" <?php echo $selected ?>/>
-			<?php echo $this->_('Search all Knowledge Bases') ?>
-		</label-->
-		<!--<?php if ($this->has('logo')): ?>
-		    <img src="<?php echo $this->logo ?>" style="float:right;vertical-align:bottom" alt="<?php echo $this->logo_alt ?>" />
-		<?php endif; ?>-->
-		<!--a class="button submit"><?php echo $this->_('Submit') ?></a-->
-<!--	</p>
-</form> -->
+<!-- <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu<b class="caret"></b></a>
+    <ul class="dropdown-menu">-->
+        <?php
+        foreach ($this->menu as $name => $menu){
+            if (is_array($menu)){
+                //if( $i++ > 0 ) echo '<li class="divider"></li>';
+                //echo '<li class="nav-header">'.$this->_($name).'</li>';
+                echo '<li class="dropdown">';
+                echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$this->_($name).'<b class="caret"></b></a>';
+                echo '<ul class="dropdown-menu">';
+                foreach ($menu as $itemName => $itemContent){
+                    if ($itemContent === OntoWiki_Menu::SEPARATOR){
+                        echo '<li class="divider"></li>';
+                    }elseif ($itemContent instanceof OntoWiki_Menu){
+                        echo $this->partial('partials/menu.phtml', array('menu' => array($itemName => $itemContent->toArray(false, false))));
+                    }elseif (is_string($itemContent)){
+                        echo '<li><a href="'.$itemContent.'">'.$this->_($itemName).'</a></li>';
+                    }else{
+                        echo '<li>';
+                        if (isset($itemContent['url'])){
+                            echo '<a href="'.$itemContent['url'].'"';
+                        }else{
+                            echo '<a';
+                        }
+                        echo (isset($itemContent['about']) ? 'about="' . $itemContent['about'] . '"' : '');
+                        echo (isset($itemContent['class']) ? 'class="' . $itemContent['class'] . '"' : '');
+                        echo (isset($itemContent['id']) ? 'id="' . $itemContent['id'] . '"' : '');
+                        echo '>';
+                        echo $this->_($itemName);
+                        echo '</a>';
+                        echo '</li>';
+                    }
+                }
+                echo '</ul>';
+                echo '</li>';
+            }elseif ($menu instanceof OntoWiki_Menu){
+                echo $this->partial('partials/menu.phtml', array('menu' => array($name => $menu->toArray(false, false))));
+            }elseif ($menu){
+                echo '<li><a href="'.$menu.'">'.$this->_($name).'></a></li>';
+            }
+        } ?>
+<!--    </ul>
+</li> -->
