@@ -4,6 +4,12 @@
     font-weight:bold;
 }
 
+.navFirst, .navBack {
+    display: inline-block !important; 
+    margin: 4px !important;
+    padding: 4px !important;
+}
+
 #navigation .icon { width:0.7em; }
 
 #navigation .icon.icon-arrow-next
