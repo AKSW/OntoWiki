@@ -1,17 +1,20 @@
 <?php
-
-require_once 'OntoWiki/Controller/Component.php';
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * Component controller for user account related stuff
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_component_account
- * @author Christoph Rieß <c.riess.dev@googlemail.com>, Norman Heino <norman.heino@gmail.com>
+ * @author     Christoph Rieß <c.riess.dev@googlemail.com>, Norman Heino <norman.heino@gmail.com>
  */
 class AccountController extends OntoWiki_Controller_Component
 {
-
     /**
      * Handles identity recovery operations
      */
@@ -45,7 +48,7 @@ class AccountController extends OntoWiki_Controller_Component
             $this->view->hash = $params['hash'];
             $phase = 2;
         }
-        
+
         // phase 3 for cleanup and password change in ow system
         $params['password_o']   = $this->getParam('password_o');
         $params['password_r']   = $this->getParam('password_r');
@@ -56,7 +59,7 @@ class AccountController extends OntoWiki_Controller_Component
             $phase = 3;
         }
 
-        $title = sprintf($translate->_('Account Recovery Stage %s'),($phase + 1) .' / 4');
+        $title = sprintf($translate->_('Account Recovery Stage %s'), ($phase + 1) .' / 4');
 
         $this->view->placeholder('main.window.title')->set($title);
         $this->view->phase = $phase;
@@ -72,16 +75,16 @@ class AccountController extends OntoWiki_Controller_Component
                     break;
                 case 1:
                     $userInfo = $recoveryObject->validateUser($params['for']);
-                    
+
                     $tplDir   = $this->_componentRoot . 'templates/';
-                    
+
                     $userUri = $userInfo['userUri'];
                     $template = array();
 
                     $template['mailSubject'] = $translate->_('OntoWiki Account Recovery');
                     $template['mailTo'] = $userInfo[$config->ac->user->mail];
                     $template['mailUser'] = $userInfo[$config->ac->user->name];
-                    
+
                     $url = new OntoWiki_Url();
                     $url->setParam('controller', 'account');
                     $url->setParam('action', 'recover');
@@ -89,25 +92,25 @@ class AccountController extends OntoWiki_Controller_Component
                     $url->setParam('for', null);
 
                     $this->view->recoveryUrl = (string) $url;
-                    
+
                     $this->view->username = $userInfo[$config->ac->user->name];
-                    
+
                     $txtFile  = 'mail/text/' . $this->_owApp->translate->getLocale() . '.txt';
                     if (file_exists($tplDir . $txtFile) ) {
                         $template['contentText'] = $this->view->render($txtFile);
                     } else {
                         $template['contentText'] = $this->view->render('mail/text/default.txt');
                     }
-                    
+
                     $htmlFile  = 'mail/html/' . $this->_owApp->translate->getLocale() . '.phtml';
                     if (file_exists($tplDir . $htmlFile) ) {
                         $template['contentHtml'] = $this->view->render($htmlFile);
                     } else {
                         $template['contentHtml'] = $this->view->render('mail/html/default.phtml');
                     }
-                    
+
                     $recoveryObject->setTemplate($template);
-                    
+
                     $success  = $recoveryObject->recoverWithIdentity($userUri);
                     break;
                 case 2:
@@ -150,7 +153,5 @@ class AccountController extends OntoWiki_Controller_Component
         $this->view->formClass     = 'simple-input input-justify-left';
         $this->view->formMethod    = 'post';
         $this->view->formName      = 'accountrecovery';
-
     }
-
 }
