@@ -306,7 +306,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * remove a property that has been added before
      * @param string $key the uri
      */
-    public function removeShownProperty($key){
+    public function removeShownProperty($property, $inverse){
+        $key = $property.'-'.($inverse?"inverse":"direct");
         if(isset($this->_shownProperties[$key])){
             $prop =  $this->_shownProperties[$key];
             $this->_valueQuery->removeProjectionVar($prop['var']);
