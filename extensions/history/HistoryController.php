@@ -230,7 +230,7 @@ class HistoryController extends OntoWiki_Controller_Component
             }
 
             $query = clone $list->getResourceQuery();
-            $query->setLimit(1);
+            $query->setLimit(0);
             $query->setOffset(0);
             //echo htmlentities($query);
 
