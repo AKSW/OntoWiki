@@ -34,6 +34,7 @@ $this->headScript()->prependScript(
             }}), "list":listName},
             function(){
                 mainInnerContent.removeClass("is-processing");
+                $(".statustool li a").removeClass("selected");
                 $("body").trigger("ontowiki.resource-list.reloaded");
         });
     }'

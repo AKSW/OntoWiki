@@ -224,12 +224,12 @@ class HistoryController extends OntoWiki_Controller_Component
             if($listHelper->listExists($listName)){
                 $list = $listHelper->getList($listName);
             } else {
-                 $this->_owApp->appendMessage(
+                $this->_owApp->appendMessage(
                     new OntoWiki_Message('something went wrong with the list of instances', OntoWiki_Message::ERROR)
-            );
+                );
             }
-
-            $query = $list->getResourceQuery();
+            
+            $query = clone $list->getResourceQuery();
             $query->setLimit(0);
             $query->setOffset(0);
             //echo htmlentities($query);

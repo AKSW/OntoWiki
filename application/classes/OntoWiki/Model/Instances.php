@@ -306,7 +306,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * remove a property that has been added before
      * @param string $key the uri
      */
-    public function removeShownProperty($key){
+    public function removeShownProperty($property, $inverse){
+        $key = $property.'-'.($inverse?"inverse":"direct");
         if(isset($this->_shownProperties[$key])){
             $prop =  $this->_shownProperties[$key];
             $this->_valueQuery->removeProjectionVar($prop['var']);
@@ -1185,8 +1186,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $query
             ->addProjectionVar($predVar)
             ->getOrder()
-                ->clear()
-                ->add($predVar);
+                ->clear();
         return $query;
     }
 
@@ -1564,6 +1564,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param boolean $asc true if ascending, false if descending
      */ 
     public function setOrderProperty($uri, $asc = true) {
+        $this->setOffset(0);
         if($this->_sortTriple == null){
             $orderVar = new Erfurt_Sparql_Query2_Var('order');
             $this->_sortTriple = new Erfurt_Sparql_Query2_OptionalGraphPattern(
@@ -1593,6 +1594,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param boolean $asc true if ascending, false if descending
      */
     public function setOrderVar($var, $asc = true) {
+        $this->setOffset(0);
         if(!is_bool($asc)){
             $asc = true;
         }

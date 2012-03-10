@@ -97,8 +97,6 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
        
         throw new InvalidArgumentException("list was not found. check with listExists() first");
     }
-
-
 }
 
 
