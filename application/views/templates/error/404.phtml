@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * OntoWiki error template
+ *
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @version $Id: error.phtml 3331 2009-06-16 19:25:43Z norman.heino $
+ */
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Oops!</title>
+<style type="text/css">
+body {
+    font-family: sans-serif;
+    line-height: 1.5;
+    background-color: #eff9ff;
+}
+</style>
+</head>
+<body>
+<p>The resource you are trying to reach does not exist. Do you want to <a href="<?php echo $this->createUrl; ?>">create it</a>?</p>
+</body>
+</html>

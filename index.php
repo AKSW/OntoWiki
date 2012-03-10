@@ -20,15 +20,15 @@ define('REQUEST_START', microtime(true));
  * error handling for the very first includes etc.
  * http://stackoverflow.com/questions/1241728/
  */
-set_error_handler(
-    function ($errno, $errstr, $errfile, $errline, array $errcontext){
-        // error was suppressed with the @-operator
-        if (0 === error_reporting()) {
-            return false;
-        }
-        throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
+{
+    // error was suppressed with the @-operator
+    if (0 === error_reporting()) {
+        return false;
     }
-);
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}
+set_error_handler('errorHandler');
 
 /**
  * Boostrap constants
@@ -87,7 +87,7 @@ if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
         // explicitly request /index.php for non-rewritten requests
         if (!$rewriteEngineOn and ! strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
             header('Location: ' . rtrim($_SERVER['REQUEST_URI'], '/\\') . '/' . BOOTSTRAP_FILE, true, 302);
-            exit;
+            return;
         }
     }
 }
@@ -99,7 +99,7 @@ define('ONTOWIKI_REWRITE', $rewriteEngineOn);
  * Ensure compatibility for PHP <= 5.3
  */
 if (!function_exists('class_alias')) {
-    function class_alias($original, $alias) 
+    function class_alias($original, $alias)
     {
         eval('abstract class ' . $alias . ' extends ' . $original . ' {}');
     }
@@ -110,10 +110,9 @@ try {
     // use include, so we can catch it with the error handler
     include 'Zend/Application.php';
 } catch (Exception $e) {
-    die(
-       'Fatal Error: Could not load Zend library.<br />' . PHP_EOL .  
-       'Maybe you need to install it with apt-get or with "make zend"?'
-    );
+    echo 'Fatal Error: Could not load Zend library.<br />' . PHP_EOL
+         . 'Maybe you need to install it with apt-get or with "make zend"?';
+    return;
 }
 
 // create application
@@ -127,10 +126,9 @@ try {
     // use include, so we can catch it with the error handler
     include 'OntoWiki.php';
 } catch (Exception $e) {
-    die(
-            'Fatal Error: Could not load the OntoWiki Application Framework classes.<br />' . PHP_EOL .  
-            'Your installation directory seems to be screwed.'
-    );
+    echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.<br />' . PHP_EOL
+         . 'Your installation directory seems to be screwed.';
+    return;
 }
 
 /** check/include Erfurt_App */
@@ -138,10 +136,9 @@ try {
     // use include, so we can catch it with the error handler
     include 'Erfurt/App.php';
 } catch (Exception $e) {
-    die(
-            'Fatal Error: Could not load the Erfurt Framework classes.<br />' . PHP_EOL .  
-            'Maybe you should install it with apt-get or with "make erfurt"?'
-    );
+    echo 'Fatal Error: Could not load the Erfurt Framework classes.<br />' . PHP_EOL
+    . 'Maybe you should install it with apt-get or with "make erfurt"?';
+    return;
 }
 
 // restore old error handler

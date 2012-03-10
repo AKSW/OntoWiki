@@ -1,5 +1,7 @@
 # OntoWiki
 
+## Introduction
+
 is a tool providing support for agile, distributed knowledge engineering scenarios.
 OntoWiki facilitates the visual presentation of a knowledge base as an information map, with different views on instance data.
 It enables intuitive authoring of semantic content.
@@ -12,32 +14,18 @@ Other remarkable features are:
 * OntoWiki is backend independent, which means you can save your data on a MySQL database as well as on a Virtuoso Triple Store.
 * OntoWiki is easily extendible by you, since it features a sophisticated Extension System.
 
+## Installation
+
+For an installation guide have a look at our [wiki](https://github.com/AKSW/OntoWiki/wiki/GetOntowikiUsers).
+
+## Screenshot / Webinar
+Below is a screenshot showing OntoWiki in editing mode.
+
+For a longer visual presentation you can watch our [webinar@youtube](http://www.youtube.com/watch?v=vP1UDKeZsQk)
+(thanks to Phil and the Semantic Web company).
+
+![Screenshot](http://lh4.ggpht.com/-kXpKMqBBCIU/Tpx45SUaItI/AAAAAAAAA9w/aPYaNQjcpvo/s800/ontowiki.png)
+
+## License
+
 OntoWiki is licensed under the [GNU General Public License Version 2, June 1991](http://www.gnu.org/licenses/gpl-2.0.txt) (license document is in the application subfolder).
-
-## Installation for Users
-
-### via github repository
-
-* clone or [download](https://github.com/AKSW/OntoWiki/zipball/develop) the repository into your web folder (e.g. `/var/www/ontowiki`)
-* enable Apaches rewrite  module (e.g. `a2enmod rewrite`)
-* run `make deploy` to download Zend, Erfurt and RDFauthor as well as to create log and cache dir
-* copy `config.ini-dist` to `config.ini` and modify it according to your store
-* open your browser, go to your ontowiki URL, login as `Admin` without pass and change the password
-
-### via Debian package
-
-* install the LOD2 repository by downloading and adding the [lod2repository
-  package](http://stack.lod2.eu/lod2repository_current_all.deb)
-* update you package database (`sudo apt-get update`)
-* install `ontowiki-mysql` or `ontowiki-virtuoso` (`sudo apt-get ontowiki-virtuoso`)
-* open your browser, go to [your ontowiki URL](http://localhost/ontowiki/), login as `Admin` without pass and change the password
-
-## Installation for Developer
-
-* optional: fork the repository
-* clone the repository into your web folder (e.g. `/var/www/ontowiki`)
-* enable Apaches rewrite  module (e.g. `a2enmod rewrite`)
-* run `make install` to download Zend, init git submodules as well as to create log and cache dir
-* copy `config.ini-dist` to `config.ini` and modify it according to your store
-* open your browser, go to your ontowiki URL, login as `Admin` without pass and change the password
-* make sure you create your own feature branch

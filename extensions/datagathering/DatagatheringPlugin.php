@@ -204,7 +204,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         // Add the location bar menu entry.
         $menu = OntoWiki_Menu_Registry::getInstance()->getMenu('resource');
         $menu->prependEntry(OntoWiki_Menu::SEPARATOR);
-        if (!isset($session->showLocationBar) || $session->showLocationBar == false) {
+        if ($session->showLocationBar === false) {
             $entry = $translate->_('Show/Hide Location Bar');
             $menu->prependEntry($entry, array('class' => 'location_bar show'));
         } else {
@@ -246,7 +246,8 @@ class DatagatheringPlugin extends OntoWiki_Plugin
                         </span>
                     </span>';
         $message .= '</span>';
-        $message .= '<a id="dg_sync_button" class="minibutton" style="display: none; float: right; min-height: 20px; padding-top: 8px">';
+        $message .= '<a id="dg_sync_button" class="minibutton"'.
+            ' style="display: none; float: right; min-height: 20px; padding-top: 8px">';
         $message .= $translate->_('Sync') . '</a>';
         $message .= '</span>';
 
@@ -297,11 +298,13 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         $query = new Erfurt_Sparql_SimpleQuery();
         $query->setProloguePart('SELECT ?s ?o');
         $query->addFrom($this->_syncModelUri);
-        $query->setWherePart('WHERE {
+        $query->setWherePart(
+            'WHERE {
             ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
             ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
             ?s <' . $this->_properties['syncResource'] . '> ?o .
-        }');
+            }'
+        );
 
         $store = Erfurt_App::getInstance()->getStore();
         $result = $store->sparqlQuery($query, array('use_ac' => false));
@@ -331,10 +334,12 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         $query = new Erfurt_Sparql_SimpleQuery();
         $query->setProloguePart('SELECT ?s');
         $query->addFrom($this->_syncModelUri);
-        $query->setWherePart('WHERE {
+        $query->setWherePart(
+            'WHERE {
             ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
             ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
-        }');
+            }'
+        );
 
         $store = Erfurt_App::getInstance()->getStore();
         $result = $store->sparqlQuery($query, array('use_ac' => false));
@@ -403,7 +408,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
             }
 
             $retVal = array();
-            foreach($result as $row) {
+            foreach ($result as $row) {
                 if (!isset($retVal[$row['s']])) {
                     $retVal[$row['s']] = array(
                         'uri' => $row['s']
@@ -467,7 +472,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
             }
 
             $retVal = array();
-            foreach($result as $row) {
+            foreach ($result as $row) {
                 if (!isset($retVal[$row['s']])) {
                     $retVal[$row['s']] = array(
                         'uri' => $row['s']
@@ -514,7 +519,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
         return $this->_syncConfigListCache;
     }
-    
+
     private function _getProxyUri($uri)
     {
         // If at least one rewrite rule is defined, we iterate through them.
@@ -527,7 +532,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
                 }
             }
         }
-               
+
         return null;
     }
 }

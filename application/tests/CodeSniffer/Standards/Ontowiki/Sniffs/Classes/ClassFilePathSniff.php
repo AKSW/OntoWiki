@@ -7,9 +7,6 @@
  * @category  PHP
  * @package   PHP_CodeSniffer
  * @author    Lars Eidam <lars.eidam@googlemail.com>
- * @copyright 
- * @license   
- * @version   
  * @link      http://code.google.com/p/ontowiki/
  */
 
@@ -22,9 +19,6 @@
  * @category  PHP
  * @package   PHP_CodeSniffer
  * @author    Lars Eidam <lars.eidam@googlemail.com>
- * @copyright 
- * @license   
- * @version   
  * @link      http://code.google.com/p/ontowiki/
  */
 class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Sniff
@@ -73,7 +67,7 @@ class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Snif
             if (1 == count($filepathArray)) {
                 $filepathArray = explode("\\", $partedPath);
             }
-            
+
             $notFound = TRUE;
             foreach ($classNameArray as $index => $classNamePart) {
                 if ($classNamePart != $filepathArray[$index + 1]) {

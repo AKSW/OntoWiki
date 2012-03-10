@@ -199,26 +199,29 @@ class ResourceController extends OntoWiki_Controller_Base {
     public function instancesAction() {
         $store       = $this->_owApp->erfurt->getStore();
         $graph       = $this->_owApp->selectedModel;
-        $resource    = $this->_owApp->selectedResource;
-        $navigation  = $this->_owApp->navigation;
-        $translate   = $this->_owApp->translate;
 
-        //the list is setup in Ontowiki/Controller/Plugin/ListSetupHelper.php
-
+        // the list is managed by a controller plugin that catches special http-parameters
+        // in Ontowiki/Controller/Plugin/ListSetupHelper.php
+        
+        //here this list is added to the view
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
-        $listName = "instances";
+        $listName = 'instances';
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
             $listHelper->addList($listName, $list, $this->view);
         } else {
             if($this->_owApp->selectedModel == null){
-                $this->_owApp->appendMessage(new OntoWiki_Message("your session timed out. select a model",  OntoWiki_Message::ERROR));
+                $this->_owApp->appendMessage(new OntoWiki_Message('your session timed out. select a model',  OntoWiki_Message::ERROR));
                 $this->_redirect($this->_config->baseUrl);
             }
             $list = new OntoWiki_Model_Instances($store, $this->_owApp->selectedModel, array());
             $listHelper->addListPermanently($listName, $list, $this->view);
         }
-
+        
+        //two usefull order
+        //$list->orderByUri();
+        //$list->setOrderProperty('http://ns.ontowiki.net/SysOnt/order');
+        
         //begin view building
         $this->view->placeholder('main.window.title')->set('Resource List');
 

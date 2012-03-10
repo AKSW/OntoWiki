@@ -203,13 +203,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // define constants for development/debugging
         if (isset($config->debug) and (boolean)$config->debug) {
-           // display errors
-           error_reporting(E_ALL | E_STRICT);
-           ini_set('display_errors', 'On');
-           // enable debugging options
-           define('_OWDEBUG', 1);
-           // log everything
-           $config->log->level = 7;
+            // display errors
+            error_reporting(E_ALL | E_STRICT);
+            ini_set('display_errors', 'On');
+            // enable debugging options
+            define('_OWDEBUG', 1);
+            // log everything
+            $config->log->level = 7;
         }
 
         return $config;
@@ -625,13 +625,24 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $viewRenderer = new Zend_Controller_Action_Helper_ViewRenderer($view);
         Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
 
+        $themeLayoutTemplate = $themeTemplatePath
+                             . DIRECTORY_SEPARATOR
+                             . 'layouts'
+                             . DIRECTORY_SEPARATOR
+                             . 'layout.phtml';
+
+        $layoutPath = $defaultTemplatePath . DIRECTORY_SEPARATOR . 'layouts';
+        if (is_readable($themeLayoutTemplate)) {
+            $layoutPath = $themeTemplatePath
+                        . DIRECTORY_SEPARATOR
+                        . 'layouts';
+        }
+
         // initialize layout
-        Zend_Layout::startMvc(
-            array(
-                // for layouts we use the default path
-                'layoutPath' => $defaultTemplatePath . DIRECTORY_SEPARATOR . 'layouts'
-            )
-        );
+        Zend_Layout::startMvc(array(
+            // for layouts we use the default path
+            'layoutPath' => $layoutPath
+        ));
 
         return $view;
     }

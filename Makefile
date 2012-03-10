@@ -25,21 +25,28 @@ help:
 	@echo "     'make clean' (deletes all log and cache files)"
 	@echo "     'make cs-install' (install CodeSniffer)"
 	@echo "     'make cs-uninstall' (uninstall CodeSniffer)"
+	@echo "     'make cs-install-submodule MPATH=<path>' (install CodeSniffer on a submodule,"
+	@echo "             <path> must by the relativ path to the submodule)"
+	@echo "     'make cs-uninstall-submodule MPATH=<path>' (uninstall CodeSniffer on a submodule,"
+	@echo "             <path> must by the relativ path to the submodule)"
 	@echo "     'make cs-enable' (enable CodeSniffer to check code before every commit)"
 	@echo "     'make cs-disable' (disable CodeSniffer code checking)"
 	@echo "     'make cs-check-commit' (run pre-commit code checking manually)"
 	@echo "     'make cs-check-commit-emacs' (same as cs-check-commit with emacs output)"
 	@echo "     'make cs-check-commit-intensive' (run pre-commit code checking"
 	@echo "             manually with stricter coding standard)"
-	@echo "     'make cs-check-path FPATH=<path>' (run code checking on specific path)"
-	@echo "     'make cs-check-path-emacs FPATH=<path>' (same as cs-check-path"
-	@echo "             with emacs output)"
-	@echo "     'make cs-check-path-full FPATH=<path>' (run intensive code checking on"
-	@echo "             specific path)"
-	@echo "     'make cs-check-all' (run complete code checking)"
-	@echo "     'make cs-check-commit-intensive' (run complete code checking with"
+	@echo "     'make cs-check (run complete code checking)"
+	@echo "     'make cs-check-intensive' (run complete code checking with"
 	@echo "             stricter coding standard)"
-	@echo "     'make cs-check-blame' (get blame list)"
+	@echo "     'make cs-check-full' (run complete code checking with detailed output)"
+	@echo "     'make cs-check-emacs' (run complete code checking with with emacs output)"
+	@echo "     'make cs-check-blame' (run complete code checking with blame list output)"
+	@echo "     'make cs-check' (run complete code checking)"
+	@echo "     'possible Parameter:"
+	@echo "     'FPATH=<path>' (run code checking on specific relative path)"
+	@echo "     'SNIFFS=<sniff 1>,<sniff 2>' (run code checking on specific sniffs)"
+	@echo "     'OPTIONS=<option>' (run code checking with specific CodeSniffer options)"
+	
 
 
 # top level target
@@ -125,49 +132,65 @@ debianize:
 # coding standard
 
 # #### config ####
-# if severity classes were chanced aou must run 'cs-install' again
-# standard severity class they must be fulfilled to be able to commit
-SEVERITY = 7
-# intensive severity class they must not be fulfilled to be able to commit,
-# but you are able to check your code with additional coding standards
-SEVERITY_INTENSIVE = 5
-# checkt filetypes
-FILETYPES = php
-# path to the Ontowiki Coding Standard
-CSPATH = application/tests/CodeSniffer/Standards/Ontowiki
+# cs-script path
+CSSPATH = application/tests/CodeSniffer/
+# ignore pattern
+IGNOREPATTERN = */libraries/*,pclzip.lib
 
-cs-install: cs-enable
-	pear install PHP_CodeSniffer
+# Parameter check
+ifndef FPATH
+	FPATH = "*"
+endif
+ifdef SNIFFS
+	SNIFFSTR = "--sniffs="$(SNIFFS)
+else
+	SNIFFSTR =
+endif
 
-cs-uninstall: cs-disable
+REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR)  $(FPATH)
 
-cs-enable:
-	ln -s "../../application/tests/CodeSniffer/pre-commit" .git/hooks/pre-commit
+cs-default:
+	chmod ugo+x "$(CSSPATH)cs-scripts.sh"
+	
+cs-install: cs-default
+	$(CSSPATH)cs-scripts.sh -i
+	
+cs-install-submodule: cs-submodule-check cs-default
+	$(CSSPATH)cs-scripts.sh -f $(CSSPATH) -m $(MPATH)
 
-cs-disable:
-	rm .git/hooks/pre-commit
+cs-uninstall-submodule: cs-submodule-check cs-default
+	$(CSSPATH)cs-scripts.sh -n $(MPATH)
+
+cs-uninstall: cs-default
+	$(CSSPATH)cs-scripts.sh -u
+
+cs-enable: cs-default
+	$(CSSPATH)cs-scripts.sh -f $(CSSPATH) -e
+
+cs-disable: cs-default
+	$(CSSPATH)cs-scripts.sh -d
 
 cs-check-commit:
-	application/tests/CodeSniffer/pre-commit
+	$(CSSPATH)cs-scripts.sh -p ""
 cs-check-commit-emacs:
-	application/tests/CodeSniffer/pre-commit -remacs
+	$(CSSPATH)cs-scripts.sh -p "-remacs"
 cs-check-commit-intensive:
-	application/tests/CodeSniffer/pre-commit -s5
+	$(CSSPATH)cs-scripts.sh -p "-s"
 
-cs-check-path:
-	phpcs --report=summary --extensions=$(FILETYPES) --severity=$(SEVERITY) -s -p --standard=$(CSPATH) $(FPATH)
-cs-check-path-emacs:
-	phpcs --report=emacs --extensions=$(FILETYPES) --severity=$(SEVERITY) -s -p --standard=$(CSPATH) $(FPATH)
-cs-check-path-full:
-	phpcs --report=full --extensions=$(FILETYPES) --severity=$(SEVERITY) -s -p --standard=$(CSPATH) $(FPATH)
-
-cs-check-all:
-	phpcs --report=summary --extensions=$(FILETYPES) --severity=$(SEVERITY) -s -p --standard=$(CSPATH) *
-cs-check-all-intensive:
-	phpcs --report=summary --extensions=$(FILETYPES) --severity=$(SEVERITY_INTENSIVE) -s -p --standard=$(CSPATH) *
-
+cs-check:
+	$(CSSPATH)cs-scripts.sh -c "-s --report=summary $(REQUESTSTR)"
+cs-check-intensive:
+	$(CSSPATH)cs-scripts.sh -s -c "-s --report=summary $(REQUESTSTR)"
+cs-check-full:
+	$(CSSPATH)cs-scripts.sh -c "-s --report=full $(REQUESTSTR)"
+cs-check-emacs:
+	$(CSSPATH)cs-scripts.sh -c "--report=emacs $(REQUESTSTR)"
 cs-check-blame:
-	phpcs --report=gitblame -v --extensions=$(FILETYPES) --severity=$(SEVERITY_INTENSIVE) -s -p --standard=$(CSPATH) *
+	$(CSSPATH)cs-scripts.sh -s -c "--report=gitblame $(REQUESTSTR)"
 
-cs-check-blame-full:
-	phpcs --report=gitblame -s --extensions=$(FILETYPES) --severity=$(SEVERITY_INTENSIVE) -s -p --standard=$(CSPATH) *
+cs-submodule-check:
+ifndef MPATH
+	@echo "You must Set a path to the submodule."
+	@echo "Example: MPATH=path/to/the/submodule/"
+	@exit 1 
+endif

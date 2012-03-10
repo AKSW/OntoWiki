@@ -9,11 +9,30 @@
 #    are possible
 #  - not be set parameter are taken from the Makefile
 #  - only added or chanced files in the staging area be tested
-#  - if partially files in the staging area only the parts of the file in the
+#  - if partially files in the staging area, only the parts of the file in the
 #    staging area be checked, not the whole file (ATTENTION:it makes it a little
 #    bit difficult to find the right line were a error or warning is caused)
+#  - check if a commit goes to the AKSW/OntoWiki Master branch, if so the commit will
+#    be canceled, because it's forbidden to commit in this branch
 #
-#
+
+PCSOURCE="${BASH_SOURCE[0]}"
+while [ -h "$PCSOURCE" ] ; do PCSOURCE="$(dirname $0)/$(readlink "$PCSOURCE")"; done
+PCDIR="$( cd -P "$( dirname "$PCSOURCE" )" && pwd )"
+
+source $PCDIR/config;
+
+# check if the commit goes to the master branch of AKSW/OntoWiki.git, if so the commit will be canceled
+# get the remote url
+REMOTEURL=$(git config remote.`git config branch.$(git rev-parse --abbrev-ref HEAD).remote`.url)
+if [[ $REMOTEURL =~ 'AKSW/OntoWiki.git' ]]; then
+    # get the current branch
+    BRANCH=$(git config branch.$(git rev-parse --abbrev-ref HEAD).merge | cut -d "/" -f 3-)
+    if [ "$BRANCH" == "master" ]; then
+        echo "A commit in the protected Master branch of AKSW/OntoWiki is forbidden. Commit canceled!"
+        exit 1
+    fi
+fi
 
 # folder for the tempary stage files
 TMP_STAGING=".tmp_staging"
@@ -23,11 +42,11 @@ WIDTH=80;
 
 # parse parameter for severity, cspath (path to the coding standard), filetypes
 # and reporttyp
-while getopts ":s:p:f:r:" optname
+while getopts ":sp:f:r:" optname
     do
         case "$optname" in
         "s")
-            SEVERITY=$OPTARG
+            SEVERITY=$SEVERITY_INTENSIVE;
         ;;
         "p")
             CSPATH=$OPTARG
@@ -49,21 +68,14 @@ while getopts ":s:p:f:r:" optname
             echo "Unknown error while processing options"
         ;;
     esac
-    done
+done
 
 # if no parameter are set then read the parameter from the Makefile
-    if [ -e $SEVERITY ]; then
-        SEVERITY=`sed -En 's/^SEVERITY = (.)$/\1/p' Makefile`
-    fi
-    if [ -e $CSPATH ]; then
-        CSPATH=`sed -En 's/^CSPATH = (.*)$/\1/p' Makefile`
-    fi
-    if [ -e $FILETYPES ]; then
-        FILETYPES=`sed -En 's/^FILETYPES = (.*)$/\1/p' Makefile`
-    fi
-    if [ -e $REPORT ]; then
-        REPORT="full"
-    fi
+if [ -e $REPORT ]; then
+    REPORT="full"
+fi
+
+CSPATH=$PCDIR/$CSPATH
 
 # parameter for the CodeSniffer
 ARGS="-n -p -s --report=$REPORT --report-width=$WIDTH --severity=$SEVERITY --standard=$CSPATH"
@@ -89,7 +101,7 @@ fi
 COMMITFILES=$(git diff-index --name-only --cached --diff-filter=ACMR $against -- )
 
 if [ "$COMMITFILES" == "" ]; then
-    exit 0
+    exit 1
 fi
 
 # clean and create temporary copy of staging area
@@ -120,6 +132,8 @@ fi
 # if more than 5 files to check then show only a summary
 if [[ $FILES_COUNT > 5 ]]; then
     ARGS="$ARGS --report=summary"
+else
+    ARGS="$ARGS --report=$REPORT"
 fi
 
 # Copy contents of staged version of files to temporary staging area
@@ -128,8 +142,7 @@ fi
 STAGED_FILES=""
 for FILE in $FILES_TO_CHECK
 do
-ID=$(git diff-index --cached HEAD $FILE | cut -d " " -f4)
-
+  ID=$(git diff-index --cached HEAD $FILE | cut -d " " -f4)
   # create staged version of file in temporary staging area with the same
   # path as the original file so that the phpcs ignore filters can be applied
   mkdir -p "$TMP_STAGING/$(dirname $FILE)"
