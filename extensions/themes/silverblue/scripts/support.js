@@ -415,11 +415,19 @@ function populateRDFauthor(data, protect, resource, graph) {
             for (var i = 0; i < objects.length; i++) {
                 var objSpec = objects[i];
                 
+                if ( objSpec.type == 'uri' ) { 
+                    var value = '<' + objSpec.value + '>'; 
+                } else if ( objSpec.type == 'bnode' ) { 
+                    var value = '_:' + objSpec.value;
+                } else { 
+                    var value = objSpec.value; 
+                }
+
                 var newObjectSpec = {
-                    value: (objSpec.type == 'uri') ? ('<' + objSpec.value + '>') : objSpec.value, 
+                    value : value,
                     type: String(objSpec.type).replace('typed-', '')
                 }
-                
+
                 if (objSpec.value) {
                     if (objSpec.type == 'typed-literal') {
                         newObjectSpec.options = {
@@ -431,7 +439,7 @@ function populateRDFauthor(data, protect, resource, graph) {
                         }
                     }
                 }
-                
+
                 var stmt = new Statement({
                     subject: '<' + currentSubject + '>', 
                     predicate: '<' + currentProperty + '>', 
@@ -444,7 +452,7 @@ function populateRDFauthor(data, protect, resource, graph) {
                 });
 
                 // remove all values except for type
-                if (stmt._predicateLabel != "type") {
+                if ( !/type/gi.test(stmt._predicateLabel) ) {
                     stmt._object.value = "";
                 }
 
