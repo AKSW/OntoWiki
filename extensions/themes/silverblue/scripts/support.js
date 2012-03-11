@@ -252,16 +252,18 @@ function showAddInstanceMenu(event, menuData) {
     var pos = $('.init-resource').offset();
     menuX = pos.left - $('.init-resource').innerWidth() + 4;
     menuY = pos.top + $('.init-resource').outerHeight();
+    menuId = 'windowmenu-' + menuX.toFixed() + '-' + menuY.toFixed();
 
-    menuId = 'windowmenu-' + menuX + '-' + menuY;
-    
     // create the plain menu with correct style and position
     $('.contextmenu-enhanced').append('<div class="contextmenu is-processing" id="' + menuId + '"></div>');
     $('#' + menuId)
-        .attr({style: 'z-index: ' + menuZIndex + '; top: ' + menuY + 'px; left: ' + menuX + 'px;'})
-        .click(function(event) {event.stopPropagation();});
-
-    $('#' + menuId).fadeIn();
+        .css({ 
+          'z-index': menuZIndex,
+          'top': menuY + 'px',
+          'left': menuX + 'px'
+        })
+        .click(function(event) {event.stopPropagation();})
+        .fadeIn();
 
     var tempMenu = "";
     for (var key in menuData) {
@@ -273,7 +275,6 @@ function showAddInstanceMenu(event, menuData) {
     $('#' + menuId).append('<ul>' + tempMenu + '</ul>');
     // remove is-processing
     $('#' + menuId).toggleClass('is-processing');
-
     // repositioning
     menuX = pos.left - $('#' + menuId).innerWidth() + $('.init-resource').outerWidth();
     menuY = pos.top + $('.init-resource').outerHeight();
@@ -282,8 +283,7 @@ function showAddInstanceMenu(event, menuData) {
     $('#' + menuId).css({ top: menuY + 'px', left: menuX + 'px'});
 
     // remove is-processing
-    $('#' + menuId).removeClass('is-processing');
-
+    $('#' + menuId).removeClass("is-processing");
     // prevent href trigger
     event.stopPropagation();
 
