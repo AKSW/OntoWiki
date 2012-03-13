@@ -220,6 +220,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('OntoWiki');
         $ontoWiki = $this->getResource('OntoWiki');
 
+        // require Logger, since Erfurt logger should write into OW logs dir
+        $this->bootstrap('Logger');
+
         try {
             $erfurt = Erfurt_App::getInstance(false)->start($config);
         } catch (Erfurt_Exception $ee) {
@@ -257,7 +260,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // require config
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
-
+        
         // support absolute path
         if (!(preg_match('/^(\w:[\/|\\\\]|\/)/', $config->log->path) === 1)) {
             // prepend OntoWiki root for relative paths
