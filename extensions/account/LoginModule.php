@@ -1,15 +1,19 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
- * OntoWiki module – login
+ * OntoWiki login module
  *
  * Provides the OntoWiki application menu and a search field
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_modules_login
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
- * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class LoginModule extends OntoWiki_Module
 {
@@ -19,27 +23,30 @@ class LoginModule extends OntoWiki_Module
      * @return array
      */
     public function getMessage()
-    {   
+    {
         if ($authResult = $this->_owApp->authResult) {
-        
+
             // Translate partial messages before creation of message box
             $translate = OntoWiki::getInstance()->translate;
-            
+
             $message = $translate->translate($authResult[0]);
 
             $message .= '<a href="' . $this->view->urlBase . 'account/recover"> '
                      . $translate->translate('Forgot your password?')
                      . ' </a>';
 
-            
             // create messagebox for loginbox (no escape for html code)
-            $message = new OntoWiki_Message($message, OntoWiki_Message::ERROR, array('escape' => false, 'translate' => false) );
+            $message = new OntoWiki_Message(
+                $message,
+                OntoWiki_Message::ERROR,
+                array('escape' => false, 'translate' => false)
+            );
             unset($this->_owApp->authResult);
-            
+
             return $message;
         }
     }
-    
+
     /**
      * Returns the content for the model list.
      */
@@ -47,9 +54,9 @@ class LoginModule extends OntoWiki_Module
     {
         $request = $this->_owApp->request;
         $url     = $request->getServer('REQUEST_URI');
-        
+
         $data = array(
-            'actionUrl'   => $this->_config->urlBase . 'application/login', 
+            'actionUrl'   => $this->_config->urlBase . 'application/login',
             'redirectUri' => urlencode((string) $url)
         );
 
@@ -62,11 +69,13 @@ class LoginModule extends OntoWiki_Module
             $data['showRegisterButton'] = false;
         }
 
-        $content = array(
-            'Local' => $this->render('templates/local', $data),
-            'OpenID' => $this->render('templates/openid', $data),
-            'FOAFSSL' => $this->render('templates/webid', $data)
-        );
+        // insert subtemplates according to the allow array in the config
+        $content = array();
+        foreach ($this->_privateConfig->allow as $template => $value) {
+            if ($value == 1) {
+                $content[$template] = $this->render('templates/'.$template, $data);
+            }
+        }
 
         return $content;
     }
@@ -76,20 +85,18 @@ class LoginModule extends OntoWiki_Module
         if (!$this->_owApp->user || $this->_owApp->user->isAnonymousUser()) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     public function allowCaching()
     {
         // no caching
         return false;
     }
-    
+
     public function getTitle()
     {
         return "Login";
-    }    
+    }
 }
-
-

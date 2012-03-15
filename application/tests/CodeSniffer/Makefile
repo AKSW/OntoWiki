@@ -8,12 +8,13 @@ help:
 	@echo "     'make cs-check-commit-intensive' (run pre-commit code checking"
 	@echo "             manually with stricter coding standard)"
 	@echo "     'make cs-check (run complete code checking)"
-	@echo "     'make cs-check-intensive' (run complete code checking with"
-	@echo "             stricter coding standard)"
 	@echo "     'make cs-check-full' (run complete code checking with detailed output)"
 	@echo "     'make cs-check-emacs' (run complete code checking with with emacs output)"
 	@echo "     'make cs-check-blame' (run complete code checking with blame list output)"
-	@echo "     'make cs-check' (run complete code checking)"
+	@echo "     'make cs-check-intensive' (run complete code checking with"
+	@echo "             stricter coding standard)"
+	@echo "     'make cs-check-intensive-full' (run complete code checking with"
+	@echo "             stricter coding standard and detailed output)"
 	@echo "     'possible Parameter:"
 	@echo "     'FPATH=<path>' (run code checking on specific relative path)"
 	@echo "     'SNIFFS=<sniff 1>,<sniff 2>' (run code checking on specific sniffs)"
@@ -59,6 +60,8 @@ cs-check:
 	$(CSSPATH)cs-scripts.sh -c "-s --report=summary $(REQUESTSTR)"
 cs-check-intensive:
 	$(CSSPATH)cs-scripts.sh -s -c "-s --report=summary $(REQUESTSTR)"
+cs-check-intensive-full:
+	$(CSSPATH)cs-scripts.sh -s -c "-s --report=full $(REQUESTSTR)"
 cs-check-full:
 	$(CSSPATH)cs-scripts.sh -c "-s --report=full $(REQUESTSTR)"
 cs-check-emacs:

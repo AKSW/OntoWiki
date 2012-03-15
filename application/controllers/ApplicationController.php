@@ -63,20 +63,16 @@ class ApplicationController extends OntoWiki_Controller_Base
             )
         );
 
-        // check if the mercurial comand exists and ontowiki is a working directory
-        @exec("hg", $hg);
+        // check if the git comand exists and ontowiki is a working directory
         if (
-            file_exists(".hg") &&
-            isset($hg[0]) &&$hg[0] == "Mercurial Distributed SCM"
+            file_exists(".git") &&
+            substr(@exec("git --version"), 0, 11) == "git version"
         ) {
-            $csId = rtrim(exec("hg id -i"), "+");
-            exec("hg version", $version);
-            exec("hg log -r " . $csId, $log);
-
-            $data['Mercurial Versioning'] = array(
-              'Branch' => exec("hg branch"),
-              'Revision' => $log[0].", ".$log[3],
-              'Mercurial Version'  => $version[0]
+            @exec('git status', $arr);
+            $data['Git Versioning'] = array(
+              'Branch' => substr($arr[0],12),
+              'last commit' => @exec("git log --pretty=format:'%ar' -n 1"),
+              'Git Version'  => substr(@exec("git --version"),12)
             );
         }
 

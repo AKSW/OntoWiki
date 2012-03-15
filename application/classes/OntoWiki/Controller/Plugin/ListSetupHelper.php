@@ -157,7 +157,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                         if ($prop->action == 'add') {
                             $list->addShownProperty($prop->uri, $prop->label, $prop->inverse);
                         } else {
-                            $list->removeShownProperty($prop->uri.'-'.$prop->inverse);
+                            $list->removeShownProperty($prop->uri, $prop->inverse);
                         }
                     }
                 }
