@@ -289,7 +289,7 @@ class Converter
     static function convert($iniPath, $extension)
     {
         ob_start();
-        $privNS = "http://ns.ontowiki.net/Extensions/$extension/";
+        $privNS = "https://github.com/AKSW/$extension/raw/master/doap.n3#";
         //!!!!REMOVE THIS LINE AFTER YOU HAVE REVIEWED/FIXED THIS FILE!!!!
         echo <<<EOT
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.

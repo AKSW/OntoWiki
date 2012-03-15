@@ -759,7 +759,8 @@ class Ontowiki_Extension_Manager
             $doapNS.'name' => 'name',
             $doapNS.'description' => 'description',
             $doapNS.'maintainer' => 'authorUrl',
-            $owconfigNS.'authorLabel' => 'author'
+            $owconfigNS.'authorLabel' => 'author',
+            EF_RDFS_LABEL => 'title'
             
         );
         $scp = $owconfigNS.'config'; //sub config property

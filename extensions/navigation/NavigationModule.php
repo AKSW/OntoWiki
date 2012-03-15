@@ -73,7 +73,7 @@ class NavigationModule extends OntoWiki_Module
         // navigation type submenu
         /*$sortMenu = new OntoWiki_Menu();
         foreach ($this->_privateConfig->sorting as $key => $config) {
-            $sortMenu->setEntry($config->name, "javascript:navigationEvent('setSort', '$config->type')");
+            $sortMenu->setEntry($config->title, "javascript:navigationEvent('setSort', '$config->type')");
         }
         $mainMenu->setEntry('Sort', $sortMenu);*/
 
@@ -82,12 +82,12 @@ class NavigationModule extends OntoWiki_Module
         foreach ($this->_privateConfig->config as $key => $config) {
             if ($this->_privateConfig->defaults->checkTypes) {
                 if (isset($config->checkVisibility) && $config->checkVisibility == false) {
-                    $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+                    $typeMenu->setEntry($config->title, "javascript:navigationEvent('setType', '$key')");
                 } else if ($this->checkConfig($config) > 0 ) {
-                    $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+                    $typeMenu->setEntry($config->title, "javascript:navigationEvent('setType', '$key')");
                 }
             } else {
-                $typeMenu->setEntry($config->name, "javascript:navigationEvent('setType', '$key')");
+                $typeMenu->setEntry($config->title, "javascript:navigationEvent('setType', '$key')");
             }
         }
         $mainMenu->setEntry('Type', $typeMenu);
