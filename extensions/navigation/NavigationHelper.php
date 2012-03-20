@@ -332,8 +332,10 @@ class NavigationHelper extends OntoWiki_Component_Helper
         }
 
         $elements[] = new Erfurt_Sparql_Query2_Filter(
-            new Erfurt_Sparql_Query2_isUri(
-                new Erfurt_Sparql_Query2_Var('resourceUri')
+            new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                new Erfurt_Sparql_Query2_isBlank(
+                    new Erfurt_Sparql_Query2_Var('resourceUri')
+                )
             )
         );
 

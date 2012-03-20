@@ -68,14 +68,38 @@ class ErrorController extends Zend_Controller_Action
             } else {
                 $this->view->heading   = 'OntoWiki Error';
                 $this->view->errorType = 'error';
-                $this->view->code      = $exception->getCode();
+                
+                if ($exception->getCode() !== 0) {
+                    $this->view->code      = $exception->getCode();
+                }
             }
 
-            $errorString = get_class($exception) . ': ' . 
-                           $exception->getMessage() . '<br />' . 
-                           $exception->getFile() . '@' . 
-                           $exception->getLine(). '<br/>Stacktrace:<br/>' .
-                           str_replace("\n", '<br/>', htmlentities($exception->getTraceAsString()));
+            $errorString = $exception->getMessage();
+            
+            
+            
+            $this->view->exceptionType = get_class($exception);  
+            $this->view->exceptionFile = $exception->getFile() . '@' . $exception->getLine();
+            
+            $stacktrace = $exception->getTrace();
+            $stacktraceString = '';
+            foreach ($stacktrace as $i=>$spec) {
+                $lineStr = isset($spec['line']) ? ('@'.$spec['line']) : '';                
+                $stacktraceString .= '#' . $i . ': ' .$spec['class'] . $spec['type'] . $spec['function']
+                                  .  $lineStr . '<br />';
+                
+                // foreach ($spec['args'] as $arg) {
+                //                     if (is_string($arg)) {
+                //                         $stacktraceString .= '    - ' . $arg . '<br />';
+                //                     } else if (is_object($arg)) {
+                //                         $stacktraceString .= '    - ' . get_class($arg) . '<br />';
+                //                     } else {
+                //                         $stacktraceString .= '    - ' . (string)$arg . '<br />';
+                //                     }
+                //                 }
+            }
+            
+            $this->view->stacktrace = $stacktraceString;
         } else {
             $this->view->heading   = 'OntoWiki Error';
             $this->view->errorType = 'error';
