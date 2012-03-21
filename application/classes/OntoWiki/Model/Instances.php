@@ -694,6 +694,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         }
 
         $type = new Erfurt_Sparql_Query2_IriRef($options['type']);
+        $subClasses = array();
         if ($options['withChilds']) {
             $subClasses =
                 array_keys(
@@ -1565,6 +1566,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param boolean $asc true if ascending, false if descending
      */ 
     public function setOrderProperty($uri, $asc = true) {
+        $this->setOffset(0);
         if($this->_sortTriple == null){
             $orderVar = new Erfurt_Sparql_Query2_Var('order');
             $this->_sortTriple = new Erfurt_Sparql_Query2_OptionalGraphPattern(
