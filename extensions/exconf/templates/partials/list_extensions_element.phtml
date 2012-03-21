@@ -1,5 +1,6 @@
 <li class="<?php echo $this->odd ? 'odd' : 'even'; ?>">
-    <?php if($this->instance['type'] == 'uri'){       
+    <?php 
+    if($this->instance['type'] == 'uri'){       
         if(isset($this->instanceData[$this->instanceUri]['name'])){
             $name = $this->instanceData[$this->instanceUri]['name'][0]['origvalue'];
         } else {
@@ -64,12 +65,12 @@
                 <?php
                 } else {
                   ?>
-                <p class="info">installed and updated</p>
+                <p class=" messagebox info">installed and updated</p>
                 <?php
                 }
             } else {
                 ?>
-                <p class="info">missing release link</p>
+                <p class="messagebox info">missing doap:file-release link on newest doap:Version</p>
                 <?php
             }
         }
