@@ -2,9 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
- * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -13,8 +11,6 @@
  *
  * @category   OntoWiki
  * @package    OntoWiki_extensions_plugins
- * @copyright  Copyright (c) 2010 {@link http://aksw.org aksw}
- * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author     Sebastian Tramp <tramp@informatik.uni-leipzig.de>
  */
 class CorsPlugin extends OntoWiki_Plugin
@@ -30,7 +26,8 @@ class CorsPlugin extends OntoWiki_Plugin
     /*
      * here we add the header field(s)
      */
-    private function addCorsHeader() {
+    private function addCorsHeader()
+    {
         $response = Zend_Controller_Front::getInstance()->getResponse();
 
         /*
