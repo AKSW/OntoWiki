@@ -28,11 +28,15 @@
         if(isset($this->instanceData[$this->instanceUri]['authorlabel'])){
             $authorLabel = $this->instanceData[$this->instanceUri]['authorlabel'][0]['value'];
         } else {
-            $authorLabel =  'unknown author';
+            if(isset($this->instanceData[$this->instanceUri]['author'][0])){
+                $authorLabel = $this->instanceData[$this->instanceUri]['author'][0]['origvalue'];
+            } else {
+                $authorLabel =  'unknown author';
+            }
         }
         
-        if (isset($this->instanceData[$this->instanceUri]['latestReleaseLocation'])) {
-            $location = $this->instanceData[$this->instanceUri]['latestReleaseLocation'][0]['uri'];
+        if (isset($this->instanceData[$this->instanceUri]['latestZip'])) {
+            $location = $this->instanceData[$this->instanceUri]['latestZip'][0]['uri'];
         } else {
             if(strpos($this->instanceUri, 'https://github.com/AKSW') === 0){
                 $location = implode('/', array_slice(explode('/', $this->instanceUri), 0, 5)) . '/zipball/master';
@@ -40,6 +44,17 @@
                 $location = null;
             }
         }
+        
+        $ow = OntoWiki::getInstance();
+        $manager        = $ow->extensionManager;
+        $configs = $manager->getExtensions();
+        
+        $installed    = isset($configs[$name]);
+        $enabled      = isset($configs[$name]) && $configs[$name]->enabled;
+        $updateable   = isset($configs[$name]) && 
+         isset($this->instanceData[$this->instanceUri]['latestZip']) && 
+         isset($this->instanceData[$this->instanceUri]['latestRevision']) && 
+         version_compare($configs[$name]->version, $this->instanceData[$this->instanceUri]['latestRevision'][0]['value'], '<');
 
 ?>
             <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
@@ -52,10 +67,10 @@
                 $url->url = $location;
                 $url->name = $name;
                 $action = false;
-                if(!$this->installed){
+                if(!$installed){
                     $label = 'install';
                     $action = true;
-                } else if($this->updateable){
+                } else if($updateable){
                     $label = 'update';
                     $action = true;
                 }

@@ -53,6 +53,7 @@ class ExconfController extends OntoWiki_Controller_Component
     const EXTENSION_NAME_PROPERTY = 'http://usefulinc.com/ns/doap#name'; //doap:name
     const EXTENSION_DESCRIPTION_PROPERTY = 'http://usefulinc.com/ns/doap#description'; //doap:description
     const EXTENSION_LATESTRELEASELOCATION_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/latestZip';
+    const EXTENSION_LATESTREVISION_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/latestRevision';
     const EXTENSION_RELEASE_PROPERTY = 'http://usefulinc.com/ns/doap#release';
     const EXTENSION_RELEASE_ID_PROPERTY = 'http://usefulinc.com/ns/doap#revision';
     const EXTENSION_AUTHOR_PROPERTY = 'http://usefulinc.com/ns/doap#maintainer';
@@ -270,11 +271,7 @@ class ExconfController extends OntoWiki_Controller_Component
         $this->view->repoUrl = $repoUrl;
         $this->view->graph = $graph;
         $ow = OntoWiki::getInstance();
-        $manager        = $ow->extensionManager;
-        $configs = $manager->getExtensions();
-        $other = new stdClass();
-        $other->configs = $configs;
-        
+
         $ow->appendMessage(new OntoWiki_Message("Repository: ".$repoUrl, OntoWiki_Message::INFO));
         //$ow->appendMessage(new OntoWiki_Message("Graph: ".$graph, OntoWiki_Message::INFO));
        
@@ -296,10 +293,10 @@ class ExconfController extends OntoWiki_Controller_Component
             $list->addShownProperty(self::EXTENSION_DESCRIPTION_PROPERTY, 'description');
             $list->addShownProperty(self::EXTENSION_AUTHOR_PROPERTY, 'author');
             $list->addShownProperty(self::EXTENSION_AUTHORLABEL_PROPERTY, 'authorlabel');
-            //$list->addShownProperty(self::EXTENSION_LATESTVERSION_PROPERTY, 'latestVersion');
-            $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, 'latestReleaseLocation');            
+            $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, 'latestZip');            
+            $list->addShownProperty(self::EXTENSION_LATESTREVISION_PROPERTY, 'latestRevision');            
 
-            $listHelper->addListPermanently($listName, $list, $this->view, 'list_extensions_main', $other);
+            $listHelper->addListPermanently($listName, $list, $this->view, 'list_extensions_main');
         }
         //echo htmlentities($list->getResourceQuery());
         //echo htmlentities($list->getQuery());
