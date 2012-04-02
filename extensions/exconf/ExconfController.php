@@ -289,7 +289,7 @@ class ExconfController extends OntoWiki_Controller_Component
             $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceurl'=>$repoUrl, 'graphs'=>array($graph)));
             $store = new Erfurt_Store(array('adapterInstance'=>$adapter), 'sparql');
             $rdfGraphObj = new Erfurt_Rdf_Model($graph);
-            $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array());
+            $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array(STORE_USE_CACHE => false));
             $list->addTypeFilter(self::EXTENSION_CLASS, null, array('withChilds'=>false));
             $list->addShownProperty(self::EXTENSION_NAME_PROPERTY, 'name'); //internal name (folder name)
             $list->addShownProperty(self::EXTENSION_TITLE_PROPERTY, 'title'); //pretty name (label)
