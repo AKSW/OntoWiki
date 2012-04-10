@@ -26,7 +26,8 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
     <li class="<?php echo $odd ? "odd" : "even"; ?>">
         <a class="toggle icon icon-arrow-down" title="Close"><span>Close</span></a>
         <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
-                <h3><span class="name"><?php echo $extension->title; ?></span>
+            <?php $confUrl = $this->urlBase.(!isset($extension->confAction) ? 'exconf/conf/?name='. $name : $extension->confAction); ?>
+                <h3><span class="name"><a href="<?php echo $confUrl; ?>"><?php echo $extension->name; ?></a></span>
                     <?php
                         if (isset($extension->author)) {
                             echo '<em class="author">by '.(isset($extension->authorUrl)?'<a href="'.$extension->authorUrl.'">'.$extension->author.'</a>':$extension->author).'</em>';
@@ -43,7 +44,7 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
                         </span>
                     </a>
                 <?php endif; ?>
-                    <a href="<?php echo $this->urlBase; if(!isset($extension->confAction)){?>exconf/conf/?name=<?php echo $name; } else {echo $extension->confAction;}?>" class="item">
+                    <a href="<?php echo $confUrl; ?>" class="item">
                         <span title="Configure" class="icon icon-edit">
                             <span>Configure</span>
                         </span>

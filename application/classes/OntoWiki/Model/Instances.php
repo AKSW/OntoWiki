@@ -81,6 +81,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_valueQuery = null;
     protected $_valueQueryResourceFilter = null;
+    
+    protected $_useCache = true;
 
     /**
      * Constructor
@@ -88,6 +90,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array())
     {
         parent::__construct($store, $model);
+        
+        if(isset($options[STORE_USE_CACHE])){
+            $this->_useCache = $options[STORE_USE_CACHE];
+        }
 
         $this->_defaultUrl['resource']      = new OntoWiki_Url(array('route' => 'properties'), array());
         $this->_defaultUrlParam['resource'] = 'r';
@@ -328,7 +334,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if (!$this->_resultsUptodate) {
             $this->_results = $this->_store->sparqlQuery(
                 $this->_valueQuery, 
-                array('result_format' => 'extended')
+                array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
             );
             $this->_resultsUptodate = true;
         }
@@ -694,6 +700,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         }
 
         $type = new Erfurt_Sparql_Query2_IriRef($options['type']);
+        $subClasses = array();
         if ($options['withChilds']) {
             $subClasses =
                 array_keys(
@@ -1201,7 +1208,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $results = $this->_store->sparqlQuery(
             $query,
-            array('result_format' => 'extended')
+            array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
         );
 
         $properties = array();
@@ -1260,7 +1267,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $query->addProjectionVar($valueVar);
         $results = $this->_store->sparqlQuery(
             $query,
-            array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED)
+            array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
         );
 
         $values = array();
@@ -1385,7 +1392,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if (!$this->_resourcesUptodate) {
             $result = $this->_store->sparqlQuery(
                 $this->_resourceQuery,
-                array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED)
+                array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
             );
             $this->_resources = array();
             foreach ($result['results']['bindings'] as $row) {
@@ -1565,6 +1572,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param boolean $asc true if ascending, false if descending
      */ 
     public function setOrderProperty($uri, $asc = true) {
+        $this->setOffset(0);
         if($this->_sortTriple == null){
             $orderVar = new Erfurt_Sparql_Query2_Var('order');
             $this->_sortTriple = new Erfurt_Sparql_Query2_OptionalGraphPattern(
