@@ -2161,3 +2161,11 @@ a.open:hover {
 .btn-group .btn {
   float: none !important;
 }
+
+.rdfauthor-predicate-row .actions.right {
+    width: 9%;
+}
+
+.rdfauthor-widget-container input.text, .rdfauthor-widget-container textarea, .rdfauthor-selector input.text, .rdfauthor-selector textarea {
+    height: 2em;
+}
