@@ -99,15 +99,13 @@ class OntoWiki_Menu_Registry
         $owApp = OntoWiki::getInstance();
 
         // user sub menu
-        if (
-            $owApp->erfurt->isActionAllowed('RegisterNewUser') &&
-            !(
-                isset($owApp->config->ac) &&
-                ((boolean)$owApp->config->ac->deactivateRegistration === true)
-            )
-        ) {
-            $userMenu = new OntoWiki_Menu();
-            $userMenu->setEntry('Register New User', $owApp->config->urlBase . 'application/register');
+        if ($owApp->erfurt->isActionAllowed('RegisterNewUser') && 
+            !(isset($owApp->config->ac) && ((boolean)$owApp->config->ac->deactivateRegistration === true))) {
+            
+            if (!($owApp->erfurt->getAc() instanceof Erfurt_Ac_None)) {
+                $userMenu = new OntoWiki_Menu();
+                $userMenu->setEntry('Register New User', $owApp->config->urlBase . 'application/register');
+            }
         }
         if ($owApp->user && !$owApp->user->isAnonymousUser()) {
             if (!isset($userMenu)) {
