@@ -52,6 +52,7 @@ body {
 <?php if (isset($this->stacktrace)): ?>
 <br/ ><code><?php echo $this->stacktrace ?></code>
 <?php endif; ?>
+<br/><a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">back</a>&nbsp;<a href="<?php echo $this->urlBase; ?>">home</a>
 </p>
 </div>
 </body>
