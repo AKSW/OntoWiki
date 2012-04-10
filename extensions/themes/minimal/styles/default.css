@@ -2157,3 +2157,7 @@ a.open:hover {
 	float:right;
 	margin-right: 5px;
 }
+
+.btn-group .btn {
+  float: none !important;
+}

@@ -21,7 +21,7 @@
 class OntoWiki_Toolbar
 {
     /**
-     * Constants for default buttons 
+     * Constants for default buttons
      */
     const CANCEL    =   0;
     const SAVE      =   1;
@@ -33,60 +33,60 @@ class OntoWiki_Toolbar
     const SUBMIT    =  10;
     const RESET     =  11;
     const SEPARATOR = 100;
-    
+
     /**
      * Default button configurations
-     * @var array 
+     * @var array
      */
     protected $_defaultButtons = array(
-        self::CANCEL  => array('name' => 'Cancel', 'image' => 'icon-cancel', 'class' => 'edit cancel btn-warning'), 
-        self::SAVE    => array('name' => 'Save Changes', 'image' => 'icon-upload', 'class' => 'edit save btn-success'), 
-        self::EDIT    => array('name' => 'Edit', 'image' => 'icon-edit', 'class' => 'edit-enable'), 
-        self::ADD     => array('name' => 'Add', 'image' => 'icon-plus'), 
-        self::EDITADD => array('name' => 'Add', 'image' => 'icon-plus'), 
-        self::DELETE  => array('name' => 'Delete', 'image' => 'icon-remove', 'class' => 'btn-danger'), 
-        self::SUBMIT  => array('name' => 'Submit', 'class' => 'submit btn-success', 'image' => 'icon-ok'), 
+        self::CANCEL  => array('name' => 'Cancel', 'image' => 'icon-cancel', 'class' => 'edit cancel btn-warning'),
+        self::SAVE    => array('name' => 'Save Changes', 'image' => 'icon-upload', 'class' => 'edit save btn-success'),
+        self::EDIT    => array('name' => 'Edit', 'image' => 'icon-edit', 'class' => 'edit-enable'),
+        self::ADD     => array('name' => 'Add', 'image' => 'icon-plus'),
+        self::EDITADD => array('name' => 'Add', 'image' => 'icon-plus'),
+        self::DELETE  => array('name' => 'Delete', 'image' => 'icon-remove', 'class' => 'btn-danger'),
+        self::SUBMIT  => array('name' => 'Submit', 'class' => 'submit btn-success', 'image' => 'icon-ok'),
         self::RESET   => array('name' => 'Reset', 'class' => 'reset btn-warning', 'image' => 'icon-ban-circle'),
         self::EXPORT  => array('name' => 'Export', 'class' => 'export', 'image' => 'icon-share')
     );
-    
-    /** 
+
+    /**
      * Array of toolbar buttons
-     * @var array 
+     * @var array
      */
     protected $_buttons = array();
-    
-    /** 
+
+    /**
      * Singleton instance
-     * @var OntoWiki_Toolbar 
+     * @var OntoWiki_Toolbar
      */
     private static $_instance = null;
-    
-    /** 
+
+    /**
      * Translation object
-     * @var Zend_Translate 
+     * @var Zend_Translate
      */
     protected $_translate = null;
-    
+
     /**
      * Constructor
      */
     private function __construct()
     {
     }
-    
+
     /**
      * Disallow cloning
      */
     private function __clone() {}
-    
+
     /**
      * Adds a button to the global toolbar.
      *
      * @param  mixed $type either a button constant defined by OntoWiki_Toolbar or
      *         a name string that identifies a custom button.
-     * @param  array $options If $type is a custom type, providing $options is mandatory. 
-     *         For default buttons $options is optional but you can overwrite the behaviour 
+     * @param  array $options If $type is a custom type, providing $options is mandatory.
+     *         For default buttons $options is optional but you can overwrite the behaviour
      *         of default buttons by providing $options. The following keys are regognized:
      *         - name:      the button's name
      *         - class:     the button's css class(es)
@@ -103,10 +103,10 @@ class OntoWiki_Toolbar
         if ($button = $this->_getButton($type, $options)) {
             array_push($this->_buttons, $button);
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Returns an instance of OntoWiki_Toolbar
      *
@@ -117,17 +117,17 @@ class OntoWiki_Toolbar
         if (null === self::$_instance) {
             self::$_instance = new self();
         }
-        
+
         return self::$_instance;
     }
-    
+
     /**
      * Adds a button to the front of the global toolbar.
      *
      * @param  mixed $type either a button constant defined by OntoWiki_Toolbar or
      *         a name string that identifies a custom button.
-     * @param  array $options If $type is a custom type, providing $options is mandatory. 
-     *         For default buttons $options is optional but you can overwrite the behaviour 
+     * @param  array $options If $type is a custom type, providing $options is mandatory.
+     *         For default buttons $options is optional but you can overwrite the behaviour
      *         of default buttons by providing $options. The following keys are regognized:
      *         - name:      the button's name
      *         - class:     the button's css class(es)
@@ -144,10 +144,10 @@ class OntoWiki_Toolbar
         if ($button = $this->_getButton($type, $options)) {
             array_unshift($this->_buttons, $button);
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Sets the URL base for the current theme
      *
@@ -158,10 +158,10 @@ class OntoWiki_Toolbar
     public function setThemeUrlBase($themeUrlBase)
     {
         $this->_themeUrlBase = (string)$themeUrlBase;
-        
+
         return $this;
     }
-    
+
     /**
      * Sets the translation object for the current UI language
      *
@@ -172,10 +172,10 @@ class OntoWiki_Toolbar
     public function setTranslate(Zend_Translate $translate)
     {
         $this->_translate = $translate;
-        
+
         return $this;
     }
-    
+
     /**
      * Renders the toolbar as an HTML string.
      *
@@ -185,7 +185,7 @@ class OntoWiki_Toolbar
     {
         return '<div class="btn-group" style="float:right;">' . implode('', $this->_buttons) . '</div>';
     }
-    
+
     /**
      * Returns HTML for the specified button type.
      *
@@ -194,21 +194,21 @@ class OntoWiki_Toolbar
      * @return string
      */
     private function _getButton($type, $options = array())
-    {        
+    {
         if ($type == self::SEPARATOR) {
-            return '<a class="button"></a>';
+            return '';
         } else if (array_key_exists($type, $this->_defaultButtons)) {
             $options = array_merge($this->_defaultButtons[$type], $options);
         } else {
             if (empty($options)) {
                 throw new OntoWiki_Exception("Missing options for button '$type'.");
             }
-            
+
             if (!array_key_exists('name', $options)) {
                 $options['name'] = $type;
             }
         }
-        
+
         // translate name
         if (array_key_exists('name', $options)) {
             if ($this->_translate instanceof Zend_Translate) {
@@ -219,16 +219,16 @@ class OntoWiki_Toolbar
         } else {
             $label = null;
         }
-        
+
         // set class
         if (array_key_exists('+class', $options)) {
             $addedClasses = $options['+class'];
         }
-        
+
         // set class
         if (array_key_exists('class', $options)) {
             $class = $options['class'];
-            
+
             if (isset($addedClasses)) {
                 $class = $class
                        . ' '
@@ -241,45 +241,45 @@ class OntoWiki_Toolbar
                 $class = null;
             }
         }
-        
+
         // set id
         if (array_key_exists('id', $options)) {
             $id = 'id="' . $options['id'] . '"';
         } else {
             $id = null;
         }
-        
+
         if (array_key_exists('url', $options)) {
             $href = 'href="' . $options['url'] . '"';
         } else {
             $href = null;
         }
-        
+
         if (array_key_exists('title', $options)) {
             $title = 'title="' . $options['title'] . '"';
         } else {
             $title = null;
         }
-        
+
         // set image
         //if (array_key_exists('image_url', $options)) {
             //$image = $options['image_url'];
-        //} else 
-		if (array_key_exists('image', $options)) {
+        //} else
+        if (array_key_exists('image', $options)) {
             $image = /*$this->_themeUrlBase . 'images/icon-' .*/ $options['image']; // . '.png';
         } else {
             $image = null;
         }
-        
+
         // construct button link
-        $button = sprintf('<a class="btn %s" %s %s %s><i class="%s"></i><span>&nbsp;%s</span></a>', 
-						  $class, 
-                          $id, 
+        $button = sprintf('<a class="btn %s" %s %s %s><i class="%s"></i><span>&nbsp;%s</span></a>',
+                          $class,
+                          $id,
                           $href,
                           $title,
-   						  $image,
+                          $image,
                           $label);
-        
+
         return $button;
     }
 }
