@@ -57,7 +57,8 @@ class ExconfController extends OntoWiki_Controller_Component
     const EXTENSION_RELEASE_ID_PROPERTY = 'http://usefulinc.com/ns/doap#revision';
     const EXTENSION_AUTHOR_PROPERTY = 'http://usefulinc.com/ns/doap#maintainer';
     const EXTENSION_AUTHORLABEL_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorLabel';
-
+    const EXTENSION_NS = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/';
+    
     protected $use_ftp = false;
     protected $writeable = true;
 
@@ -181,7 +182,7 @@ class ExconfController extends OntoWiki_Controller_Component
             if(!is_dir($dirPath)){
                 throw new OntoWiki_Exception("invalid extension - does not exists");
             }
-            $configFilePath = $dirPath.Ontowiki_Extension_Manager::DEFAULT_CONFIG_FILE;
+            //$configFilePath = $dirPath.Ontowiki_Extension_Manager::EXTENSION_DEFAULT_DOAP_FILE;
             $localIniPath   = $manager->getExtensionPath().$name.".ini";
 
             $privateConfig       = $manager->getPrivateConfig($name);

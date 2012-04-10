@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/account/> .
+@prefix : <https://github.com/AKSW/account/raw/master/doap.n3#> .
 
 <> foaf:primaryTopic :this .
 :this a doap:Project ;
   doap:name "account" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/account/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/account/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Login Module" ;
   doap:description "provides a login module and a recover action." ;
@@ -24,6 +24,13 @@
   owconfig:caching "true"^^xsd:boolean ;
   owconfig:priority "40" ;
   owconfig:context "main.sidewindows" .
-:this doap:release :v1-0 .
+:this owconfig:config [
+      a owconfig:Config;
+      owconfig:id "allow";
+      :local "1" ;
+      :webid "" ;
+      :openid "1"
+] ;
+  doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

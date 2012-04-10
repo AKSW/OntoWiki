@@ -584,7 +584,9 @@ class Ontowiki_Extension_Manager
             foreach ($config as $extensionName => $extensionConfig) {
                 $configArrays[$extensionName] = $extensionConfig->toArray();
             }
-            file_put_contents($cachedConfigPath, json_encode($configArrays));
+            if (is_writable($cachedConfigPath)) {
+                file_put_contents($cachedConfigPath, json_encode($configArrays));
+            }
         }
     }
 

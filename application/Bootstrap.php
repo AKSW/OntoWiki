@@ -153,7 +153,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             }
             
             //write to cache
-            file_put_contents($cachedConfigPath, json_encode($config->toArray()));
+            if (is_writable($cachedConfigPath)) {
+                file_put_contents($cachedConfigPath, json_encode($config->toArray()));
+            }
         }
 
         // normalize path names
