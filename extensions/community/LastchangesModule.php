@@ -15,6 +15,10 @@ class LastchangesModule extends OntoWiki_Module {
     public function init() {
     // enabling versioning
         $this->versioning = $this->_erfurt->getVersioning();
+        if (!$this->versioning instanceof Erfurt_Versioning) {
+            return;
+        }
+        
         if (!$this->versioning->isVersioningEnabled()) {
             $this->view->warningmessage = 'Versioning/history is currently disabled. This means, you can not see the latest changes.';
         } else {
@@ -35,6 +39,15 @@ class LastchangesModule extends OntoWiki_Module {
 
     public function getTitle() {
         return 'Latest Changes';
+    }
+    
+    public function shouldShow()
+    {
+        if (!$this->versioning instanceof Erfurt_Versioning) {
+            return false;
+        }
+        
+        return true;
     }
 
     public function getContents() {
