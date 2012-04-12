@@ -18,11 +18,7 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
 </form>
 <h2 class="onlyAural">Extensions</h2>
 <ol id="extensions" class="bullets-none separated">
-<?php $odd = false; foreach($this->extensions as $name => $extension){ 
-    if($name == 'exconf'){ //dont allow to disable the extension configuration itself
-        continue;
-    }
-    ?>
+<?php $odd = false; foreach($this->extensions as $name => $extension){  ?>
     <li class="<?php echo $odd ? "odd" : "even"; ?>">
         <a class="toggle icon icon-arrow-down" title="Close"><span>Close</span></a>
         <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
@@ -34,7 +30,9 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
                         }
                     ?>
                 </h3>
+                <?php if(!isset($extension->isCoreExtension) || !$extension->isCoreExtension){ ?>
                 <div class="togglebutton" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
+                <?php } ?>
                 <p class="description"><?php echo isset($extension->description) ? $extension->description : "Extension does not provide a description."; ?></p>
                 <div class="contextmenu">
                 <?php if(isset($extension->homepage)) : ?>

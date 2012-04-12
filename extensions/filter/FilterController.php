@@ -16,18 +16,22 @@ require_once 'OntoWiki/Controller/Component.php';
  */
 class FilterController extends OntoWiki_Controller_Component
 {
-       
-    public function getpossiblevaluesAction() {
+    public function getpossiblevaluesAction()
+    {
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
-        if($listHelper->listExists($this->_request->getParam('list'))){
-            $instances   = $listHelper->getList($this->_request->getParam('list'));
-        } else {$this->view->values = array(); return;}
-        
+        $listName = $this->_request->getParam('list');
+        if ($listHelper->listExists($listName)) {
+            $instances   = $listHelper->getList($listName);
+        } else {
+            $this->view->values = array();
+            return;
+        }
+
         $predicate = $this->_request->getParam('predicate', '');
         $inverse = $this->_request->getParam('inverse', '');
-        
+
         $this->view->values = $instances->getPossibleValues($predicate, true, $inverse == "true");
-        
+
         require_once 'OntoWiki/Model/TitleHelper.php';
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);
         foreach ($this->view->values as $value) {
@@ -35,6 +39,7 @@ class FilterController extends OntoWiki_Controller_Component
                 $titleHelper->addResource($value['value']);
             }
         }
+
         foreach ($this->view->values as $key => $value) {
             if ($value['type'] == 'uri') {
                 $this->view->values[$key]['title'] = $titleHelper->getTitle($value['value']);
@@ -43,7 +48,5 @@ class FilterController extends OntoWiki_Controller_Component
             }
         }
     }
-    
-    
 }
 

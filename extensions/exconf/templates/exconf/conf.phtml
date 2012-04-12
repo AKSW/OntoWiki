@@ -129,10 +129,12 @@ function form2array(node){
     <input type="hidden" name="name" value="<?php echo $this->name; ?>"/>
     <input type="hidden" name="config" value=""/>
     <table border="1" id="topConfTable">
+        <?php if(!$this->isCoreExtension){ ?>
         <tr>
             <td width="15%">enabled</td>
             <td><div id="extEnabledSwitch" class="togglebutton" <?php if($this->enabled){ echo "selected=\"true\""; } ?>></div></td>
         </tr>
+        <?php } ?>
         <tr>
             <td width="15%">private</td>
             <td> <?php array2form($this->config); ?> </td>

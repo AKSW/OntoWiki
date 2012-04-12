@@ -105,7 +105,14 @@
                     $action = true;
                 }
                 if($action){
-                ?><a class="minibutton button install" href="<?php echo $url; ?>"><?php echo $label; ?></a>
+                ?>
+                    <div class="contextmenu">
+                        <a href="<?php echo $url; ?>" class="item">
+                            <span title="<?php echo $label; ?>" class="icon icon-add">
+                                <span><?php echo $label; ?></span>
+                            </span>
+                        </a>
+                    </diV>
                 <?php
                 } else {
                   ?><p class=" messagebox info">installed and updated</p>
