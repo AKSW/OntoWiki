@@ -229,9 +229,9 @@ class Ontowiki_Extension_Manager {
      * @param  string $componentName
      * @return boolean
      */
-    public function isExtensionRegistered($componentName)
+    public function isExtensionRegistered($exName)
     {
-        return array_key_exists($componentName, $this->_extensionRegistry);
+        return isset($this->_extensionRegistry[$exName]);
     }
 
 

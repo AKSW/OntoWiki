@@ -64,9 +64,13 @@
         $manager        = $ow->extensionManager;
         $configs = $manager->getExtensions();
         
-        $installed    = isset($configs[$name]);
-        //$enabled      = isset($configs[$name]) && $configs[$name]->enabled;
-        $updateable   = isset($configs[$name]) && 
+        $installed    = $manager->isExtensionRegistered($name);
+        //$enabled      = $manager->isExtensionActive($name);
+        $owVersion = '0.9.6';
+        //$owVersion = $this->_config->version->number;
+        $minVersion = !isset($this->instanceData[$this->instanceUri]['minOwVersion']) ? null : $this->instanceData[$this->instanceUri]['minOwVersion'][0]['value'];
+        $installable = ($minVersion == null || version_compare($minVersion, $owVersion, '<='));
+        $updateable   = $installed && $installable && 
          isset($this->instanceData[$this->instanceUri]['latestZip']) && 
          isset($this->instanceData[$this->instanceUri]['latestRevision']) && 
          version_compare($configs[$name]->version, $this->instanceData[$this->instanceUri]['latestRevision'][0]['value'], '<');
@@ -115,8 +119,11 @@
                     </diV>
                 <?php
                 } else {
-                  ?><p class=" messagebox info">installed and updated</p>
-                <?php
+                    if($installable){
+                        ?><p class="messagebox info">installed and up to date</p><?php
+                    } else {
+                        ?><p class="messagebox info">needs minimal OntoWiki version <?php echo $minVersion; ?> (current: <?php echo $owVersion; ?>)</p><?php
+                    }
                 }
             } else {
                 ?><p class="messagebox info">missing doap:file-release link on newest doap:Version</p>

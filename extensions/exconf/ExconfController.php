@@ -26,6 +26,7 @@ class ExconfController extends OntoWiki_Controller_Component
     const EXTENSION_AUTHORLABEL_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorLabel';
     const EXTENSION_AUTHORPAGE_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorPage';
     const EXTENSION_AUTHORMAIL_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorMail';
+    const EXTENSION_MINOWVERSION_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/minOWVersion';
     const EXTENSION_NS = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/';
 
     protected $_useFtp = false;
@@ -329,6 +330,7 @@ class ExconfController extends OntoWiki_Controller_Component
             $list->addShownProperty(self::EXTENSION_AUTHORMAIL_PROPERTY, 'authorMail');
             $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, 'latestZip');
             $list->addShownProperty(self::EXTENSION_LATESTREVISION_PROPERTY, 'latestRevision');
+            $list->addShownProperty(self::EXTENSION_MINOWVERSION_PROPERTY, 'minOwVersion');
 
             $listHelper->addListPermanently($listName, $list, $this->view, 'list_extensions_main');
         }
