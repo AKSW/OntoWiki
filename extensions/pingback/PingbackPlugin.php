@@ -1,10 +1,25 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
-require_once 'OntoWiki/Plugin.php';
+/**
+ * The pingback plugin is used on different events
+ *
+ * @category   OntoWiki
+ * @package    OntoWiki_extensions_pingback
+ * @author     Philipp Frischmuth
+ * @author     Sebastian Tramp <mail@sebastian.tramp.name>
+ */
 
-class PingbackPlugin extends OntoWiki_Plugin {
+class PingbackPlugin extends OntoWiki_Plugin
+{
 
-    public function onBeforeLinkedDataRedirect($event) {
+    public function onBeforeLinkedDataRedirect($event)
+    {
         if ($event->response === null) {
             return;
         }
@@ -22,7 +37,8 @@ class PingbackPlugin extends OntoWiki_Plugin {
         $response->setHeader('X-Pingback', $url, true);
     }
 
-    public function onAfterInitController($event) {
+    public function onAfterInitController($event)
+    {
         if ($event->response === null) {
             return;
         }
@@ -40,7 +56,8 @@ class PingbackPlugin extends OntoWiki_Plugin {
         $response->setHeader('X-Pingback', $url, true);
     }
 
-    public function onAddStatement($event) {
+    public function onAddStatement($event)
+    {
 
         // Check the environement... e.g. Linked Data plugin needs to be enabled.
         if (!$this->_check()) {
@@ -53,7 +70,7 @@ class PingbackPlugin extends OntoWiki_Plugin {
         $this->_checkAndPingback($s, $p, $o);
     }
 
-    public function onAddMultipleStatements($event) 
+    public function onAddMultipleStatements($event)
     {
         // Check the environement... e.g. Linked Data plugin needs to be enabled.
         if (!$this->_check()) {
@@ -70,10 +87,10 @@ class PingbackPlugin extends OntoWiki_Plugin {
         }
     }
 
-    public function onDeleteMultipleStatements($event) 
+    public function onDeleteMultipleStatements($event)
     {
         // If pingOnDelete is configured, we also ping on statement delete, otherwise we skip.
-        if (!isset($this->_privateConfig->pingOnDelete) || 
+        if (!isset($this->_privateConfig->pingOnDelete) ||
             ((boolean)$this->_privateConfig->pingOnDelete === false)) {
 
             return;
@@ -94,24 +111,36 @@ class PingbackPlugin extends OntoWiki_Plugin {
         }
     }
 
-    public function beforeExportResource($event) {
-        $r = $event->resource;
-        $additional = array();
-
+    /*
+     * used on export event to add a statement to the export
+     */
+    public function beforeExportResource($event)
+    {
         $owApp = OntoWiki::getInstance();
-        $url = $owApp->config->urlBase . 'pingback/ping/';
 
-        $additional[$r] = array();
-        $additional[$r]['http://purl.org/net/pingback/to'] = array();
-        $additional[$r]['http://purl.org/net/pingback/to'][] = array(
-            'value' => $url,
-            'type' => 'uri'
+        // this is the event value if there are other plugins before
+        $prevModel = $event->getValue();
+        // throw away non memory model values OR use the given one if valid
+        if (is_object($prevModel) && get_class($prevModel) == 'Erfurt_Rdf_MemoryModel') {
+            $newModel = $prevModel;
+        } else {
+            $newModel = new Erfurt_Rdf_MemoryModel();
+        }
+
+        // prepare the statement URIs
+        $subjectUri  = (string) $event->resource;
+        $propertyUri = 'http://purl.org/net/pingback/to';
+        $objectUri   = $owApp->config->urlBase . 'pingback/ping/';
+
+        $newModel->addRelation(
+            $subjectUri, $propertyUri, $objectUri
         );
 
-        return $additional;
+        return $newModel;
     }
 
-    protected function _check() {
+    protected function _check()
+    {
         // Check, whether linked data plugin is enabled.
         $owApp = OntoWiki::getInstance();
         $pluginManager = $owApp->erfurt->getPluginManager(false);
@@ -123,7 +152,7 @@ class PingbackPlugin extends OntoWiki_Plugin {
         return true;
     }
 
-    protected function _checkAndPingback($subject, $predicate, $object) 
+    protected function _checkAndPingback($subject, $predicate, $object)
     {
         // If at least one ping_properties value is set in config, we only ping for matching predicates.
         if (isset($this->_privateConfig->ping_properties)) {
@@ -137,7 +166,7 @@ class PingbackPlugin extends OntoWiki_Plugin {
         $base = $owApp->config->urlBase;
         $baseLen = strlen($base);
 
-        // Object (target) needs to be an external URI 
+        // Object (target) needs to be an external URI
         if ($object['type'] !== 'uri') {
             #$this->_logInfo('Object is not an URI.');
             return;
@@ -169,7 +198,8 @@ class PingbackPlugin extends OntoWiki_Plugin {
         $this->_sendPingback($subject, $object['value']);
     }
 
-    protected function _discoverPingbackServer($targetUri) {
+    protected function _discoverPingbackServer($targetUri)
+    {
         // 1. Retrieve HTTP-Header and check for X-Pingback
         $headers = get_headers($targetUri, 1);
         if (!is_array($headers)) {
@@ -177,7 +207,7 @@ class PingbackPlugin extends OntoWiki_Plugin {
         }
         if (isset($headers['X-Pingback'])) {
             if (is_array($headers['X-Pingback'])) {
-                $this->_logInfo($headers['X-Pingback'][0]); 
+                $this->_logInfo($headers['X-Pingback'][0]);
                 return $headers['X-Pingback'][0];
             }
 
@@ -187,10 +217,12 @@ class PingbackPlugin extends OntoWiki_Plugin {
 
         // 2. Check for (X)HTML Link element, if target has content type text/html
         // TODO Fetch only the first X bytes...???
-        $client = Erfurt_App::getInstance()->getHttpClient($targetUri, array(
-                    'maxredirects' => 0,
-                    'timeout' => 3
-                ));
+        $client = Erfurt_App::getInstance()->getHttpClient(
+            $targetUri, array(
+                'maxredirects' => 0,
+                'timeout' => 3
+            )
+        );
 
         $response = $client->request();
         if ($response->getStatus() === 200) {
@@ -208,10 +240,12 @@ class PingbackPlugin extends OntoWiki_Plugin {
 
         // 3. Check RDF/XML
         require_once 'Zend/Http/Client.php';
-        $client = Erfurt_App::getInstance()->getHttpClient($targetUri, array(
-                    'maxredirects' => 10,
-                    'timeout' => 3
-                ));
+        $client = Erfurt_App::getInstance()->getHttpClient(
+            $targetUri, array(
+                'maxredirects' => 10,
+                'timeout' => 3
+            )
+        );
         $client->setHeaders('Accept', 'application/rdf+xml');
 
         $response = $client->request();
@@ -240,23 +274,25 @@ class PingbackPlugin extends OntoWiki_Plugin {
         return null;
     }
 
-    protected function _logError($msg) {
+    protected function _logError($msg)
+    {
         if (is_array($msg)) {
-            $this->_log('Pingback Plugin Error - ' . print_r($msg, true));
+            $this->_log('Pingback Plugin Error - ' . var_export($msg, true));
         } else {
             $this->_log('Pingback Plugin Error - ' . $msg);
         }
     }
 
-    protected function _logInfo($msg) {
+    protected function _logInfo($msg)
+    {
         if (is_array($msg)) {
-            $this->_log('Pingback Plugin Info - ' . print_r($msg, true));
+            $this->_log('Pingback Plugin Info - ' . var_export($msg, true));
         } else {
             $this->_log('Pingback Plugin Info - ' . $msg);
         }
     }
 
-    protected function _sendPingback($sourceUri, $targetUri) 
+    protected function _sendPingback($sourceUri, $targetUri)
     {
         $pingbackServiceUrl = $this->_discoverPingbackServer($targetUri);
         if ($pingbackServiceUrl === null) {
@@ -279,8 +315,9 @@ class PingbackPlugin extends OntoWiki_Plugin {
         $synchronous = false;
         if (!$synchronous) { //a timeout of one ms is like ignoring the http response -> asynchonous
             curl_setopt($rq, CURLOPT_TIMEOUT, 1);
-            $this->_logInfo('Now sending Pingback (not waiting for response) - ' . $sourceUri . ', ' 
-                . $targetUri);
+            $this->_logInfo(
+                'Now sending Pingback (not waiting for response) - ' . $sourceUri . ', ' . $targetUri
+            );
         }
         $res = curl_exec($rq);
         if ($synchronous) {
@@ -290,7 +327,8 @@ class PingbackPlugin extends OntoWiki_Plugin {
         return true;
     }
 
-    private function _isLinkedDataUri($uri) {
+    private function _isLinkedDataUri($uri)
+    {
         $event = new Erfurt_Event('onNeedsLinkedDataUri');
         $event->uri = $uri;
 
@@ -298,7 +336,8 @@ class PingbackPlugin extends OntoWiki_Plugin {
         return $result;
     }
 
-    private function _log($msg) {
+    private function _log($msg)
+    {
         $logger = OntoWiki::getInstance()->getCustomLogger('pingback_plugin');
         $logger->debug($msg);
     }
