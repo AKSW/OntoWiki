@@ -149,6 +149,8 @@ class ExconfController extends OntoWiki_Controller_Component
                     );
                 }
             }
+            
+            $this->view->coreExtensions = $this->_config->extensions->core->toArray();
         }
         $this->view->extensions = $extensions;
     }
@@ -200,6 +202,8 @@ class ExconfController extends OntoWiki_Controller_Component
 
             $this->view->config  = $config;
             $this->view->name    = $name;
+            
+            $this->view->coreExtensions = $this->_config->extensions->core->toArray();
 
             if (!is_writeable($manager->getExtensionPath())) {
                 if (!$this->_request->isXmlHttpRequest()) {
