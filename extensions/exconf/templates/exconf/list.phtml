@@ -30,9 +30,7 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
                         }
                     ?>
                 </h3>
-                <?php if(!isset($extension->isCoreExtension) || !$extension->isCoreExtension){ ?>
-                <div class="togglebutton" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
-                <?php } ?>
+                <div class="togglebutton <?php if(isset($extension->isCoreExtension) && $extension->isCoreExtension){echo 'frozen';} ?>" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
                 <p class="description"><?php echo isset($extension->description) ? $extension->description : "Extension does not provide a description."; ?></p>
                 <div class="contextmenu">
                 <?php if(isset($extension->homepage)) : ?>
@@ -47,11 +45,13 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
                             <span>Configure</span>
                         </span>
                     </a>
+                    <?php if(!isset($extension->isCoreExtension) || !$extension->isCoreExtension){ ?>
                     <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>&remove=1" class="item">
                         <span title="Remove permanently" class="icon icon-delete">
                             <span>Remove permanently</span>
                         </span>
                     </a>
+                    <?php } ?>
                 </div>
         </div>
     </li>

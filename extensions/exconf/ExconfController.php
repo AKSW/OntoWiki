@@ -215,6 +215,9 @@ class ExconfController extends OntoWiki_Controller_Component
                     //react on post data
                     if (isset($this->_request->remove)) {
                         if (self::rrmdir($dirPath)) {
+                            OntoWiki::getInstance()->appendMessage(
+                                new OntoWiki_Message('extension deleted', OntoWiki_Message::SUCCESS)
+                            );
                             $this->_redirect($this->urlBase.'exconf/list');
                         } else {
                             OntoWiki::getInstance()->appendMessage(
