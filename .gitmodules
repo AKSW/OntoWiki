@@ -7,3 +7,6 @@
 [submodule "extensions/site"]
 	path = extensions/site
 	url = git@github.com:AKSW/site.ontowiki.git
+[submodule "extensions/feeds"]
+	path = extensions/feeds
+	url = git@github.com:AKSW/feeds.ontowiki.git
