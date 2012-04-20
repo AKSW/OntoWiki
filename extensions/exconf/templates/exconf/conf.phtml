@@ -51,8 +51,10 @@ $this->headScript()->appendScript('var exconfConfig = '.  json_encode($this->con
         $("div.toolbar a.button.submit").unbind("click");
         $("div.toolbar a.button.submit").click(function(){
             var arr = form2array($("#topConfTable"));
-            //$.dump(arr);
-            window.location = urlBase+"exconf/conf?name='.$this->name.'&config="+encodeURIComponent($.toJSON(arr));
+            $("#exConf input[name=config]").val($.toJSON(arr));
+            $("#exConf").submit();
+            //old get method cause problems with too long URIs
+            //window.location = urlBase+"exconf/conf?name='.$this->name.'&config="+encodeURIComponent($.toJSON(arr));
         });
         
         $(".addProperty").submit(function(){return false;});
@@ -118,17 +120,18 @@ function form2array(node){
     });
     return arr;
 }');
-
-
-
 ?>
-    <p class="info">you can change values of your local config here. <br/>you can also change the structure of the config, but only do it when you really know what you are doing.</p>
-<form id="exConf" action="<?php echo $this->urlBase;?>">
+<p class="info">you can change values of your local config here. <br/>you can also change the structure of the config, but only do it when you really know what you are doing.</p>
+<form id="exConf" action="<?php echo $this->urlBase;?>/exconf/conf/?name=<?php echo $this->name; ?>" method="post">
+    <input type="hidden" name="name" value="<?php echo $this->name; ?>"/>
+    <input type="hidden" name="config" value=""/>
     <table border="1" id="topConfTable">
+        <?php if(!in_array($this->name, $this->coreExtensions)){ ?>
         <tr>
             <td width="15%">enabled</td>
             <td><div id="extEnabledSwitch" class="togglebutton" <?php if($this->enabled){ echo "selected=\"true\""; } ?>></div></td>
         </tr>
+        <?php } ?>
         <tr>
             <td width="15%">private</td>
             <td> <?php array2form($this->config); ?> </td>

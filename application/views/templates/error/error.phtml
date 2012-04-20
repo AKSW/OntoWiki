@@ -36,10 +36,27 @@ body {
 </head>
 <body>
 <div class="<?php echo $this->errorType ?>">
-<h1><?php echo $this->heading ?></h1>
+<h1><?php echo $this->heading ?>
+<?php if (isset($this->code)): ?>
+ (<?php echo $this->code ?>)
+<?php endif; ?>    
+</h1>
+<h4><?php echo $this->errorText ?></h4>
 <p>
-    <?php echo $this->errorText ?>
-    <?php if (isset($this->code)): ?>(<?php echo $this->code ?>)<?php endif; ?>
+<?php if (isset($this->exceptionType)): ?>
+<code><?php echo $this->exceptionType ?></code><br/ >
+<?php endif; ?>
+<?php if (isset($this->exceptionFile)): ?>
+<code><?php echo $this->exceptionFile ?></code><br/ >
+<?php endif; ?>
+<?php if (isset($this->stacktrace)): ?>
+<br/ ><code><?php echo $this->stacktrace ?></code>
+<?php endif; ?>
+<br/>
+<?php if(isset($_SERVER['HTTP_REFERER'])){ ?>
+     <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>">back</a>&nbsp;
+<?php } ?>
+<a href="<?php echo $this->urlBase; ?>">home</a>
 </p>
 </div>
 </body>

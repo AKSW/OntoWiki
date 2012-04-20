@@ -590,11 +590,13 @@ class ModelController extends OntoWiki_Controller_Base
     private function _handleImport($postData, $createGraph = false)
     {        
         $newModelUri = trim($postData['modelUri']);
-        $newBaseUri  = isset($postData['baseUri']) ? trim($postData['baseUri']) : null;
+        $newBaseUri  = isset($postData['baseUri']) ? trim($postData['baseUri']) : '';
+        $newType = isset($postData['type']) ? $postData['type'] : Erfurt_Store::MODEL_TYPE_OWL;
         
         switch ($postData['activeForm']) {
             case 'empty':
-                $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $postData['type']);
+                $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $newType);
+                $createGraph = false;
                 $this->_erfurt->getAc()->setUserModelRight($model->getModelIri(), 'edit', 'grant');
                 $this->_redirect($this->_config->urlBase . 'model/select/?m=' . urlencode($model->getModelIri()), array('code' => 302));
                 return;
@@ -642,7 +644,7 @@ class ModelController extends OntoWiki_Controller_Base
         
         // create graph
         if ($createGraph) {
-            $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, (isset($postData['type']) ? $postData['type'] : Erfurt_Store::MODEL_TYPE_OWL));
+            $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $newType);
         }
         
         // import statements
@@ -654,7 +656,7 @@ class ModelController extends OntoWiki_Controller_Base
                 $this->_erfurt->getStore()->deleteModel($newModelUri);
             }
             // re-throw
-            throw new OntoWiki_Controller_Exception("Graph '<$postData[modelUri]>' could not be imported: " . $e->getMessage());
+            throw new OntoWiki_Controller_Exception('Graph <'.$postData['modelUri'].'> could not be imported: ' . $e->getMessage(), 0, $e);
         }
     }
     
@@ -673,11 +675,12 @@ class ModelController extends OntoWiki_Controller_Base
                         ($this->_owApp->selectedModel->getModelIri() === $model)) {
                     
                     $this->_owApp->selectedModel = null;
-                    
+                    $this->view->clearModuleCache(); //deletes selected model - always needed?
+                    $this->_redirect($this->_owApp->getUrlBase() , array('code' => 302));
                 }
             } catch (Exception $e) {
                 $this->_owApp->appendMessage(
-                    new OntoWiki_Message('Error deleting model: ' . $e->getMessage(), OntoWiki_Message::ERROR)
+                    new OntoWiki_Message('Error deleting model: ' . $e->getMessage().'<br/>'.$e->getTraceAsString(), OntoWiki_Message::ERROR)
                 );
             }
         } else {
@@ -805,37 +808,57 @@ class ModelController extends OntoWiki_Controller_Base
             
             $values = $model->getValues();
             $predicates = $model->getPredicates();
+            
+            $titleHelper = new OntoWiki_Model_TitleHelper($graph);
+            $graphs = array_keys($predicates);
+            $titleHelper->addResources($graphs);
+
+            $graphInfo = array();
+            $editableFlags = array();
+            foreach ($graphs as $g) {
+                $graphInfo[$g] = $titleHelper->getTitle($g, $this->_config->languages->locale);
+                $editableFlags[$g] = false;
+            }
+            
+            $this->view->graphs             = $graphInfo;
+            $this->view->resourceIri        = (string)$resource;
+            $this->view->graphIri           = $graph->getModelIri();
+            $this->view->values             = $values;
+            $this->view->predicates         = $predicates;
+            $this->view->graphBaseIri       = $graph->getBaseIri();
+            $this->view->namespacePrefixes  = $graph->getNamespacePrefixes();
+            $this->view->editableFlags = $editableFlags;
+
+            if (!is_array($this->view->namespacePrefixes)) {
+                    $this->view->namespacePrefixes  = array();
+            }
+            $this->view->namespacePrefixes['__default'] = $graph->getModelIri();
+
+            $infoUris = $this->_config->descriptionHelper->properties;
+            //echo (string)$resource;
+            
             if (count($values) > 0) {
-                // TODO: show imported infos as well?
-                $this->view->values             = $values[(string)$graph];
-                $this->view->predicates         = $predicates[(string)$graph];
-                $this->view->resourceIri        = (string)$resource;
-                $this->view->graphIri           = $graph->getModelIri();
-                $this->view->graphBaseIri       = $graph->getBaseIri();
-                $this->view->namespacePrefixes  = $graph->getNamespacePrefixes();
-
-                if (!is_array($this->view->namespacePrefixes)) {
-                        $this->view->namespacePrefixes  = array();
-                }
-                $this->view->namespacePrefixes['__default'] = $graph->getModelIri();
-
-                $infoUris = $this->_config->descriptionHelper->properties;
-                //echo (string)$resource;
                 $query = 'ASK FROM <'.(string)$resource.'> WHERE {<'.(string)$resource.'> a <http://xmlns.com/foaf/0.1/PersonalProfileDocument>}';
                 $q = Erfurt_Sparql_SimpleQuery::initWithString($query);
                 if($this->_owApp->extensionManager->isExtensionActive('foafprofileviewer') && $store->sparqlAsk($q) === true){
                     $this->view->showFoafLink = true;
                     $this->view->foafLink = $this->_config->urlBase.'foafprofileviewer/display';
                 } 
+            }
 
-                $this->view->infoPredicates = array();
-                foreach ($infoUris as $infoUri) {
-                    if (array_key_exists($infoUri, $this->view->predicates)) {
-                        $this->view->infoPredicates[$infoUri] = $this->view->predicates[$infoUri];
-                        unset($this->view->predicates[$infoUri]);
-                    }
+            $this->view->infoPredicates = array();
+            foreach ($infoUris as $infoUri) {
+                if (isset($predicates[(string)$graph]) && array_key_exists($infoUri, $predicates[(string)$graph])) {
+                    $this->view->infoPredicates[$infoUri] = $predicates[(string)$graph][$infoUri];
                 }
             }
+
+            $namespaces = $graph->getNamespaces();
+            $graphBase  = $graph->getBaseUri();
+            if (!array_key_exists($graphBase, $namespaces)) {
+                $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
+            }
+            $this->view->namespaces = $namespaces;
         }
 
         $this->addModuleContext('main.window.modelinfo');

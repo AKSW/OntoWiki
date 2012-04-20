@@ -1,7 +1,18 @@
 ZENDVERSION=1.11.5
 
 default:
+	@echo "Typical targets your could want to reach:"
+	@echo ""
+	@echo "--> 'make deploy' : install OntoWiki <-- in doubt, use this"
+	@echo "                    (use this for server installations)"
+	@echo "    'make install': install OntoWiki for developer"
+	@echo "                    (you will need github access and ssh for this)"
+	@echo "    'make help'   : show more (developer related) make targets"
+	@echo "                    (this includes all code sniffing targets)"
+
+help:
 	@echo "please use:"
+	@echo "     'make deploy' (-> runs everything which is needed for a deployment)"
 	@echo "     'make install' (-> make directories, zend and libraries)"
 	@echo "     'make directories' (create cache/log dir and chmod environment)"
 	@echo "     'make zend' (download and install Zend under libraries)"
@@ -14,17 +25,41 @@ default:
 	@echo "     'make clean' (deletes all log and cache files)"
 	@echo "     'make cs-install' (install CodeSniffer)"
 	@echo "     'make cs-uninstall' (uninstall CodeSniffer)"
+	@echo "     'make cs-install-submodule MPATH=<path>' (install CodeSniffer on a submodule,"
+	@echo "             <path> must by the relativ path to the submodule)"
+	@echo "     'make cs-uninstall-submodule MPATH=<path>' (uninstall CodeSniffer on a submodule,"
+	@echo "             <path> must by the relativ path to the submodule)"
 	@echo "     'make cs-enable' (enable CodeSniffer to check code before every commit)"
 	@echo "     'make cs-disable' (disable CodeSniffer code checking)"
-	@echo "     'make cs-check-commit' (run pre ciommit code checking manually)"
-	@echo "     'make cs-check-commit-intensive' (run pre ciommit code checking"
+	@echo "     'make cs-check-commit' (run pre-commit code checking manually)"
+	@echo "     'make cs-check-commit-emacs' (same as cs-check-commit with emacs output)"
+	@echo "     'make cs-check-commit-intensive' (run pre-commit code checking"
 	@echo "             manually with stricter coding standard)"
-	@echo "     'make cs-check-all' (run complete code checking)"
-	@echo "     'make cs-check-commit-intensive' (run complete code checking with"
+	@echo "     'make cs-check (run complete code checking)"
+	@echo "     'make cs-check-full' (run complete code checking with detailed output)"
+	@echo "     'make cs-check-emacs' (run complete code checking with with emacs output)"
+	@echo "     'make cs-check-blame' (run complete code checking with blame list output)"
+	@echo "     'make cs-check-intensive' (run complete code checking with"
 	@echo "             stricter coding standard)"
+	@echo "     'make cs-check-intensive-full' (run complete code checking with"
+	@echo "             stricter coding standard and detailed output)"
+	@echo "     'possible Parameter:"
+	@echo "     'FPATH=<path>' (run code checking on specific relative path)"
+	@echo "     'SNIFFS=<sniff 1>,<sniff 2>' (run code checking on specific sniffs)"
+	@echo "     'OPTIONS=<option>' (run code checking with specific CodeSniffer options)"
+	
 
 
 # top level target
+
+deploy: directories clean zend
+	rm -rf libraries/RDFauthor
+	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
+	git clone git://github.com/AKSW/RDFauthor.git libraries/RDFauthor
+	rm -rf libraries/Erfurt
+	@echo 'Cloning Erfurt into libraries/Erfurt ...'
+	git clone git://github.com/AKSW/Erfurt.git libraries/Erfurt
+
 
 install: directories libraries
 
@@ -45,22 +80,23 @@ submodules:
 
 pull:
 	git pull
-	cd libraries/RDFauthor && git pull
-	cd libraries/Erfurt && git pull
+	git submodule foreach git pull
 
-update: pull
+fetch: 
+	git fetch
+	git submodule foreach git fetch
 
-force-update: pull
+info:
+	@git --no-pager log -1 --oneline --decorate
+	@git submodule foreach git --no-pager log -1 --oneline --decorate
 
 status:
 	git status -sb
-	cd libraries/RDFauthor && git status -sb
-	cd libraries/Erfurt && git status -sb
+	git submodule foreach git status -sb
 
 branch-check:
-	git rev-parse --abbrev-ref HEAD
-	git --work-tree=libraries/Erfurt rev-parse --abbrev-ref HEAD
-	git --work-tree=libraries/RDFauthor rev-parse --abbrev-ref HEAD
+	@git rev-parse --abbrev-ref HEAD
+	@git submodule foreach git rev-parse --abbrev-ref HEAD
 
 # libraries
 
@@ -74,19 +110,9 @@ zend:
 rdfauthor:
 	rm -rf libraries/RDFauthor
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
-	git clone git://github.com/AKSW/RDFauthor.git libraries/RDFauthor
-
-rdfauthor-dev:
-	rm -rf libraries/RDFauthor
-	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	git clone git@github.com:AKSW/RDFauthor.git libraries/RDFauthor
 
 erfurt:
-	rm -rf libraries/Erfurt
-	@echo 'Cloning Erfurt into libraries/Erfurt ...'
-	git clone git://github.com/AKSW/Erfurt.git libraries/Erfurt
-
-erfurt-dev:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
 	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt
@@ -107,34 +133,67 @@ debianize:
 # coding standard
 
 # #### config ####
-# if severity classes were chanced aou must run 'cs-install' again
-# standard severity class they must be fulfilled to be able to commit
-severity = 7
-# intensive severity class they must not be fulfilled to be able to commit,
-# but you are able to check your code with additional coding standards
-severity_intensive = 5
-# checkt filetypes
-filetypes = php
-# path to the Ontowiki Coding Standard
-cspath = application/tests/CodeSniffer/Standards/Ontowiki
+# cs-script path
+CSSPATH = application/tests/CodeSniffer/
+# ignore pattern
+IGNOREPATTERN = */libraries/*,pclzip.lib
 
-cs-install: cs-enable
-	pear install PHP_CodeSniffer
+# Parameter check
+ifndef FPATH
+	FPATH = "*"
+endif
+ifdef SNIFFS
+	SNIFFSTR = "--sniffs="$(SNIFFS)
+else
+	SNIFFSTR =
+endif
 
-cs-uninstall: cs-disable
+REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR)  $(FPATH)
 
-cs-enable:
-	./application/tests/CodeSniffer/add-hook.sh
+cs-default:
+	chmod ugo+x "$(CSSPATH)cs-scripts.sh"
+	
+cs-install: cs-default
+	$(CSSPATH)cs-scripts.sh -i
+	
+cs-install-submodule: cs-submodule-check cs-default
+	$(CSSPATH)cs-scripts.sh -f $(CSSPATH) -m $(MPATH)
 
-cs-disable:
-	./application/tests/CodeSniffer/remove-hook.sh
+cs-uninstall-submodule: cs-submodule-check cs-default
+	$(CSSPATH)cs-scripts.sh -n $(MPATH)
+
+cs-uninstall: cs-default
+	$(CSSPATH)cs-scripts.sh -u
+
+cs-enable: cs-default
+	$(CSSPATH)cs-scripts.sh -f $(CSSPATH) -e
+
+cs-disable: cs-default
+	$(CSSPATH)cs-scripts.sh -d
 
 cs-check-commit:
-	hg status -nam | grep '\.$(filetypes)$\' | xargs --no-run-if-empty phpcs --report=full --severity=$(severity) -p -s --standard=$(cspath)
+	$(CSSPATH)cs-scripts.sh -p ""
+cs-check-commit-emacs:
+	$(CSSPATH)cs-scripts.sh -p "-remacs"
 cs-check-commit-intensive:
-	hg status -nam | grep '\.$(filetypes)$\' | xargs --no-run-if-empty phpcs --report=full --severity=$(severity_intensive) -p -s --standard=$(cspath)
+	$(CSSPATH)cs-scripts.sh -p "-s"
 
-cs-check-all:
-	phpcs --report=summary --extensions=$(filetypes) --severity=$(severity) -s -p --standard=$(cspath) *
-cs-check-all-intensive:
-	phpcs --report=summary --extensions=$(filetypes) --severity=$(severity_intensive) -s -p --standard=$(cspath) *
+cs-check:
+	$(CSSPATH)cs-scripts.sh -c "-s --report=summary $(REQUESTSTR)"
+cs-check-intensive:
+	$(CSSPATH)cs-scripts.sh -s -c "-s --report=summary $(REQUESTSTR)"
+cs-check-intensive-full:
+	$(CSSPATH)cs-scripts.sh -s -c "-s --report=full $(REQUESTSTR)"
+cs-check-full:
+	$(CSSPATH)cs-scripts.sh -c "-s --report=full $(REQUESTSTR)"
+cs-check-emacs:
+	$(CSSPATH)cs-scripts.sh -c "--report=emacs $(REQUESTSTR)"
+cs-check-blame:
+	$(CSSPATH)cs-scripts.sh -s -c "--report=gitblame $(REQUESTSTR)"
+
+cs-submodule-check:
+ifndef MPATH
+	@echo "You must Set a path to the submodule."
+	@echo "Example: MPATH=path/to/the/submodule/"
+	@exit 1 
+endif

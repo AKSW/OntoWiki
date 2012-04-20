@@ -28,32 +28,35 @@ $this->headScript()->prependScript(
 <div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
 <div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
 <?php
-//call subtemplate in a loop
-    if ($this->instances->hasData()): ?>
+
+    if ($this->instances->hasData()): 
+        ?>
 <table class="resource-list separated-vertical"
         <?php foreach ($this->other->namespaces as $namespace => $prefix): ?>
                    <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
                    <?php endforeach; ?>>
         <?php if (!empty($this->propertyInfo)): ?>
     <tr>
-        <!--th></th--><th></th><th></th>
-            <?php foreach ($this->propertyInfo as $property):  if($property['hidden']){continue;}?>
+        <?php /* column for selector checkboxes (disabled for now)*/?>
+        <!--th></th-->
+        <?php /* column for the numbers*/?>
+        <th></th>
+        <?php /* column for the instance title/label*/?>
+        <th></th>
+        <?php /* a column for each property */
+        foreach ($this->propertyInfo as $property):  if($property['hidden']){continue;}?>
         <th>
             <a class="hasMenu Property"
                about="<?php echo $property['uri'] ?>"
                href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
-                <?php if ($property['inverse']): ?><sup>-1</sup><?php endif; ?>
+                <?php if ($property['inverse']){ ?><sup>-1</sup><?php } ?>
         </th>
-            <?php endforeach; ?>
-        <?php if(isset($this->additionalElementView)): ?>
-        <th>
-            Actions
-        </th>
-        <?php endif; ?>
+        <?php endforeach; ?>
     </tr>
             <?php endif; ?>
             <?php $i = $this->start ?>
         <?php foreach ($this->instanceInfo as $instance){
+            //call subtemplate in a loop (for each instance a row)
             echo $this->partial('partials/list_std_element.phtml',
                 array(
                     'instanceUri'  => $instance['uri'],

@@ -4,3 +4,6 @@ Invalid recovery session identifier.
 You received a mail with further information for account %s. Please follow these instructions to reset your password.
 You should able to login with your new password now.
 Username or email
+local;Local
+openid;OpenID
+webid;WebID

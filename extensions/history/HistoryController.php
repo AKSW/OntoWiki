@@ -229,7 +229,7 @@ class HistoryController extends OntoWiki_Controller_Component
             );
             }
 
-            $query = $list->getResourceQuery();
+            $query = clone $list->getResourceQuery();
             $query->setLimit(0);
             $query->setOffset(0);
             //echo htmlentities($query);
@@ -248,6 +248,8 @@ class HistoryController extends OntoWiki_Controller_Component
                 (string) $this->_owApp->selectedModel,
                 $page
             );
+            //var_dump($historyArray);
+            
             $singleResource = false;
         } else {
             // setting default title
@@ -299,7 +301,7 @@ class HistoryController extends OntoWiki_Controller_Component
         if (empty($historyArray))  {
             $this->_owApp->appendMessage(
                 new OntoWiki_Message(
-                    'No matches.' ,
+                    'No history for the selected resource(s).' ,
                     OntoWiki_Message::INFO
                 )
             );

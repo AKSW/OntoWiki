@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# #### config ####
+# if severity classes were chanced aou must run 'cs-install' again
+# standard severity class they must be fulfilled to be able to commit
+SEVERITY=5
+# intensive severity class they must not be fulfilled to be able to commit,
+# but you are able to check your code with additional coding standards
+SEVERITY_INTENSIVE=3
+# checkt filetypes
+FILETYPES=php
+# path to the Ontowiki Coding Standard
+CSPATH=Standards/Ontowiki

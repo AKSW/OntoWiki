@@ -229,9 +229,9 @@ class Ontowiki_Extension_Manager {
      * @param  string $componentName
      * @return boolean
      */
-    public function isExtensionRegistered($componentName)
+    public function isExtensionRegistered($exName)
     {
-        return array_key_exists($componentName, $this->_extensionRegistry);
+        return isset($this->_extensionRegistry[$exName]);
     }
 
 
@@ -402,8 +402,12 @@ class Ontowiki_Extension_Manager {
 
         // load helper class
         require_once $helperSpec['path'];
-        // instantiate helper object
-        $helperInstance = new $helperSpec['class']($this);
+        if(class_exists($helperSpec['class'])){
+            // instantiate helper object
+            $helperInstance = new $helperSpec['class']($this);
+        } else {
+            throw new OntoWiki_Component_Exception("Defined helper class could not be found for component '$componentName'.");
+        }
 
         // register helper events
         if (isset($helperSpec['events'])) {

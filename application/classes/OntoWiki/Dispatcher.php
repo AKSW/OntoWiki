@@ -144,8 +144,14 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
          * mechanisms that do not allow a controller/action mapping from URL
          * parts.
          */
+
+        $pathInfo = ltrim($request->getPathInfo(), '/');
+
+        // URI may not contain a whitespace character!
+        $pathInfo = str_replace(' ', '+', $pathInfo);
+
         $event = new Erfurt_Event('onIsDispatchable');
-        $event->uri     = $this->urlBase . ltrim($request->getPathInfo(), '/');
+        $event->uri     = $this->urlBase . $pathInfo;
         $event->request = $request;
 
         // We need to make sure that registered plugins return a boolean value!

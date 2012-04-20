@@ -528,7 +528,7 @@ class ServiceController extends Zend_Controller_Action
                 // JSONp
                 $type = 'application/sparql-results+json';
             } else if (empty($type)) {
-                // dafault: XML
+                // default: XML
                 $type = 'application/sparql-results+xml';
             }
 
@@ -702,7 +702,14 @@ class ServiceController extends Zend_Controller_Action
         // delete
         if ($deleteModel && $deleteModel->isEditable()) {
             try {
-                $count = $deleteModel->deleteMultipleStatements((array)$delete);
+                $deleteModel->deleteMultipleStatements((array)$delete);
+                
+                $flag = true;
+                if (defined('_OWDEBUG')) {
+                    OntoWiki::getInstance()->logger->info(
+                        sprintf('Deleted statements from graph <%s>', $deleteModel->getModelUri())
+                    );
+                }
             } catch (Erfurt_Store_Exception $e) {
                 if (defined('_OWDEBUG')) {
                     OntoWiki::getInstance()->logger->info(
@@ -712,16 +719,14 @@ class ServiceController extends Zend_Controller_Action
                 }
             }
 
-            $flag = true;
-            if (defined('_OWDEBUG')) {
-                OntoWiki::getInstance()->logger->info(
-                    sprintf('Deleted %i statements from graph <%s>', $count, $deleteModel->getModelUri())
-                );
-            }
+            
         }
 
         // insert
         if ($insertModel && $insertModel->isEditable()) {
+            OntoWiki::getInstance()->logger->info(
+                        'add Statements: ' . print_r($delete, true)
+                    );
             $count = $insertModel->addMultipleStatements((array)$insert);
             $flag = true;
             if (defined('_OWDEBUG')) {
@@ -1102,6 +1107,10 @@ class ServiceController extends Zend_Controller_Action
                         $value->value = $currentValue;
                         $value->type  = $currentType;
                     }
+                    if ( $workingMode == 'class' ) {
+                        $value->value = '';
+                        $value->type = $currentType;
+                    }
                 }
 
                 // deal with multiple values of a property
@@ -1131,7 +1140,6 @@ class ServiceController extends Zend_Controller_Action
             $value->title = 'label';
             $uri = EF_RDFS_LABEL;
             $newProperties->$uri = array($value);
-
             $output->$resourceUri = $newProperties;
         }
 

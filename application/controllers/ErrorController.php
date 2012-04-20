@@ -19,6 +19,18 @@ class ErrorController extends Zend_Controller_Action
      */
     public function errorAction()
     {
+        if (defined('_OWDEBUG')) {
+            $this->_debugError();
+        } else {
+            $this->_gracefulError();
+        }
+
+        // we provide a complete page
+        $this->_helper->layout()->disableLayout();
+    }
+
+    protected function _debugError()
+    {
         if ($this->_request->has('error_handler')) {
             // get errors passed by error handler plug-in
             $errors    = $this->_getParam('error_handler');
@@ -56,14 +68,38 @@ class ErrorController extends Zend_Controller_Action
             } else {
                 $this->view->heading   = 'OntoWiki Error';
                 $this->view->errorType = 'error';
-                $this->view->code      = $exception->getCode();
+                
+                if ($exception->getCode() !== 0) {
+                    $this->view->code      = $exception->getCode();
+                }
             }
 
-            $errorString = get_class($exception) . ': ' . 
-                           $exception->getMessage() . '<br />' . 
-                           $exception->getFile() . '@' . 
-                           $exception->getLine(). '<br/>Stacktrace:<br/>' .
-                           str_replace("\n", '<br/>', htmlentities($exception->getTraceAsString()));
+            $errorString = $exception->getMessage();
+            
+            
+            
+            $this->view->exceptionType = get_class($exception);  
+            $this->view->exceptionFile = $exception->getFile() . '@' . $exception->getLine();
+            
+            $stacktrace = $exception->getTrace();
+            $stacktraceString = '';
+            foreach ($stacktrace as $i=>$spec) {
+                $lineStr = isset($spec['line']) ? ('@'.$spec['line']) : '';                
+                $stacktraceString .= '#' . $i . ': ' .$spec['class'] . $spec['type'] . $spec['function']
+                                  .  $lineStr . '<br />';
+                
+                // foreach ($spec['args'] as $arg) {
+                //                     if (is_string($arg)) {
+                //                         $stacktraceString .= '    - ' . $arg . '<br />';
+                //                     } else if (is_object($arg)) {
+                //                         $stacktraceString .= '    - ' . get_class($arg) . '<br />';
+                //                     } else {
+                //                         $stacktraceString .= '    - ' . (string)$arg . '<br />';
+                //                     }
+                //                 }
+            }
+            
+            $this->view->stacktrace = $stacktraceString;
         } else {
             $this->view->heading   = 'OntoWiki Error';
             $this->view->errorType = 'error';
@@ -78,10 +114,21 @@ class ErrorController extends Zend_Controller_Action
         }
         
         $this->view->errorText = $errorString;
-        
-        // we provide a complete page
-        $this->_helper->layout()->disableLayout();
+    }
+
+    protected function _gracefulError()
+    {
+        $requestExtra = str_replace($this->getRequest()->getBaseUrl(),
+                                    '',
+                                    $this->getRequest()->getRequestUri());
+        $requestedUri = OntoWiki::getInstance()->config->urlBase . ltrim($requestExtra, '/');
+
+        $createUrl = new OntoWiki_Url(array(), array());
+        $createUrl->controller = 'resource';
+        $createUrl->action = 'new';
+        $createUrl->setParam('r', $requestedUri);
+        $this->view->createUrl = (string)$createUrl;
+        $this->_helper->viewRenderer->setScriptAction('404');
     }
 }
-
 

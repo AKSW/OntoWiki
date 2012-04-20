@@ -140,101 +140,100 @@ class QueriesController extends OntoWiki_Controller_Component {
 
         $format = $this->_request->getParam('result_format', 'plain');
 
-        if ($this->_request->isPost() || isset($this->_request->immediate)) {
-            $post = $this->_request->getPost();
+        if (!empty($query)) {
+            //handle a posted query
             $store = $this->_erfurt->getStore();
 
-            if (trim($query) != '') {
-                if ($format == 'list') {
-                    $url = new OntoWiki_Url(array('controller' => 'list'), array());
-                    $query = str_replace("\r\n", " ", $query);
-                    $url .= '?init=1&instancesconfig=' . urlencode(json_encode(array('filter' => array(array('mode' => 'query', 'action' => 'add', 'query' => $query)))));
+            if ($format == 'list') {
+                $url = new OntoWiki_Url(array('controller' => 'list'), array());
+                $query = str_replace("\r\n", " ", $query);
+                $url .= '?init=1&instancesconfig=' . urlencode(json_encode(array('filter' => array(array('mode' => 'query', 'action' => 'add', 'query' => $query)))));
 
-                    //redirect
-                    header('Location: ' . $url);
+                //redirect
+                header('Location: ' . $url);
+                exit;
+            }
+
+            if (stristr($query, 'select') && !stristr($query, 'limit')) {
+                $query .= PHP_EOL . 'LIMIT 20';
+            }
+
+            $this->view->query = $query;
+
+            foreach ($prefixes as $prefix => $namespace) {
+                $query = 'PREFIX ' . $prefix . ': <' . $namespace . '>' . PHP_EOL . $query;
+            }
+
+            $result = null;
+            try {
+                $start = microtime(true);
+
+                //this switch is for the target selection module
+                if ($this->_request->getParam('target') == 'all') {
+                    //query all models
+                    $result = $store->sparqlQuery($query, array(
+                                'result_format' => $format
+                            ));
+                } else {
+                    //query selected model
+                    $result = $this->_owApp->selectedModel->sparqlQuery($query, array(
+                                'result_format' => $format
+                            ));
+                }
+
+                //this is for the "output to file option
+                if (($format == 'json' || $format == 'xml') && $this->_request->getParam('result_outputfile') == 'true') {
+                    $this->_helper->viewRenderer->setNoRender();
+                    $this->_helper->layout()->disableLayout();
+                    $response = $this->getResponse();
+
+                    switch ($format) {
+                        case 'xml':
+                            $contentType = 'application/rdf+xml';
+                            $filename = 'query-result.xml';
+                            break;
+                        case 'json':
+                            $contentType = 'application/json';
+                            $filename = 'query-result.json';
+                            break;
+                    }
+
+                    $response->setHeader('Content-Type', $contentType, true);
+                    $response->setHeader('Content-Disposition', ('filename="' . $filename . '"'));
+
+                    $response->setBody($result)
+                            ->sendResponse();
                     exit;
                 }
 
-                if (stristr($query, 'select') && !stristr($query, 'limit')) {
-                    $query .= PHP_EOL . 'LIMIT 20';
+                $this->view->time = ((microtime(true) - $start) * 1000);
+
+                $header = array();
+                if (is_array($result) && isset($result[0]) && is_array($result[0])) {
+                    $header = array_keys($result[0]);
+                } else
+                if (is_bool($result)) {
+                    $result = $result ? 'yes' : 'no';
+                } else
+                if (is_int($result)) {
+                    $result = (string) $result;
+                } else
+                if (is_string($result)) {
+                    // json
+                    $result = $result;
+                } else {
+                    $result = 'no result';
                 }
-
-                $this->view->query = $query;
-
-                foreach ($prefixes as $prefix => $namespace) {
-                    $query = 'PREFIX ' . $prefix . ': <' . $namespace . '>' . PHP_EOL . $query;
-                }
-
-                $result = null;
-                try {
-                    $start = microtime(true);
-
-                    //this switch is for the target selection module
-                    if ($this->_request->getParam('target') == 'all') {
-                        //query all models
-                        $result = $store->sparqlQuery($query, array(
-                                    'result_format' => $format
-                                ));
-                    } else {
-                        //query selected model
-                        $result = $this->_owApp->selectedModel->sparqlQuery($query, array(
-                                    'result_format' => $format
-                                ));
-                    }
-
-                    //this is for the "output to file option
-                    if (($format == 'json' || $format == 'xml') && $this->_request->getParam('result_outputfile') == 'true') {
-                        $this->_helper->viewRenderer->setNoRender();
-                        $this->_helper->layout()->disableLayout();
-                        $response = $this->getResponse();
-
-                        switch ($format) {
-                            case 'xml':
-                                $contentType = 'application/rdf+xml';
-                                $filename = 'query-result.xml';
-                                break;
-                            case 'json':
-                                $contentType = 'application/json';
-                                $filename = 'query-result.json';
-                                break;
-                        }
-
-                        $response->setHeader('Content-Type', $contentType, true);
-                        $response->setHeader('Content-Disposition', ('filename="' . $filename . '"'));
-
-                        $response->setBody($result)
-                                ->sendResponse();
-                        exit;
-                    }
-
-                    $this->view->time = ((microtime(true) - $start) * 1000);
-
-                    $header = array();
-                    if (is_array($result) && isset($result[0]) && is_array($result[0])) {
-                        $header = array_keys($result[0]);
-                    } else
-                    if (is_bool($result)) {
-                        $result = $result ? 'yes' : 'no';
-                    } else
-                    if (is_int($result)) {
-                        $result = (string) $result;
-                    } else
-                    if (is_string($result)) {
-                        // json
-                        $result = $result;
-                    } else {
-                        $result = 'no result';
-                    }
-                } catch (Exception $e) {
-                    $this->view->error = $e->getMessage();
-                    $header = '';
-                    $result = '';
-                    $this->view->time = 0;
-                }
-
-                $this->view->data = $result;
-                $this->view->header = $header;
+            } catch (Exception $e) {
+                $this->view->error = $e->getMessage();
+                $header = '';
+                $result = '';
+                $this->view->time = 0;
             }
+
+            $this->view->data = $result;
+            $this->view->header = $header;
+            
         }
 
         //load js for sparql syntax highlighting
@@ -284,7 +283,7 @@ class QueriesController extends OntoWiki_Controller_Component {
 
             $list->addShownProperty($this->_privateConfig->saving->ModelUri, "modelUri", false, null, true);
             $list->addShownProperty($this->_privateConfig->saving->JsonUri, "json", false, null, true);
-            $list->addShownProperty($this->_privateConfig->saving->DescriptionUri, "description", false, null, false);
+            $list->addShownProperty($this->_privateConfig->saving->NameUri, "name", false, null, false);
             $list->addShownProperty($this->_privateConfig->saving->QueryUri, "query", false, null, true);
             $list->addShownProperty($this->_privateConfig->saving->GeneratorUri, "generator", false, null, true);
             $list->addShownProperty($this->_privateConfig->saving->NumViewsUri, "numViews", false, null, false);
@@ -515,16 +514,15 @@ class QueriesController extends OntoWiki_Controller_Component {
         $store = $this->_erfurt->getStore();
         $newModel = $store->getNewModel($proposedDBname);
 
-        $options = array();
         $object = array();
 
         // add english label for this db
-        $options['object_type'] = Erfurt_Store :: TYPE_LITERAL;
+        $object['object_type'] = Erfurt_Store :: TYPE_LITERAL;
         $object['value'] = 'GQB Query DB of ' . $this->userName;
         $newModel->addStatement($proposedDBname, EF_RDFS_LABEL, $object);
 
         // german label
-        $options['literal_language'] = 'de';
+        $object['literal_language'] = 'de';
         $object['value'] = 'GQB Anfrage-DB von ' . $this->userName;
         $newModel->addStatement($proposedDBname, EF_RDFS_LABEL, $object);
 
@@ -534,7 +532,7 @@ class QueriesController extends OntoWiki_Controller_Component {
 
         //domain of this db (needed?)
         $object['value'] = $this->_privateConfig->saving->baseQueryDbUri;
-        $options['object_type'] = Erfurt_Store :: TYPE_IRI;
+        $object['object_type'] = Erfurt_Store :: TYPE_IRI;
         $newModel->addStatement($proposedDBname, EF_RDFS_DOMAIN, $object);
 
         //add owner/maker of this db
@@ -547,13 +545,29 @@ class QueriesController extends OntoWiki_Controller_Component {
     }
 
     protected function getQuery($uri) {
-        $queryString = Erfurt_Sparql_SimpleQuery :: initWithString('SELECT *
+        $queryString = 'SELECT *
              WHERE {
              <' . $uri . '> <' . $this->_privateConfig->saving->QueryUri . '> ?query
-             }');
+             }';
         $queryData = $this->_erfurt->getStore()->sparqlQuery($queryString);
         if (isset($queryData[0])) {
-            return $queryData[0]["query"];
+            //increment view counter
+            $countQuery = 'SELECT *
+             WHERE {
+             <' . $uri . '> <' . $this->_privateConfig->saving->NumViewsUri . '> ?count
+             }';
+            $countRes = $this->_erfurt->getStore()->sparqlQuery($countQuery);
+            if(isset($countRes[0])){
+                $i = $countRes[0]['count'];
+                $graphUri =  (string) $this->_owApp->selectedModel;
+                $this->_erfurt->getStore()->deleteMatchingStatements($graphUri, $uri, $this->_privateConfig->saving->NumViewsUri, null);
+                $this->_erfurt->getStore()->addStatement(
+                    $graphUri, $uri, 
+                    $this->_privateConfig->saving->NumViewsUri, 
+                    array('value'=>$i+1, 'type'=>'literal')
+                ); 
+            }
+            return $queryData[0]['query'];
         }
     }
 
