@@ -41,3 +41,8 @@
 #Require valid-user
 ### NOTE: This is needed to be included in /etc/apache2/mods-enabled/authnz_external.load or .conf
 #DefineExternalAuth ontowiki pipe /path/to/ontowiki/application/scripts/mod-auth-external/ontowiki.php
+
+### Fast Cache Loader
+# this files parses the config ini generates the cache id and directly
+# looks for the object cache and outputs it
+php_value auto_prepend_file 'extensions/site/FastCacheLoad.php'
