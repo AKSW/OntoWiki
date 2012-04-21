@@ -59,12 +59,17 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                             <?php $i++; if($i==OW_SHOW_MAX+1) {
                                 // show a "..." after 5(configurable) values
                                 ?>&hellip;<?php
-                                break;
+                                //break; don't leave foreach, >OW_SHOW_MAX won't show
                             }
                             if($i==2){
                                 //if there is more than one value, show the "show as list" link (looks like this is printed between the first and second value, but its hidden and shown as a context menu)
                             ?>
                                 <div class="contextmenu">
+                                    <a class="item rdfauthor-edit-property" onclick="editPropertyListmode(event)">
+                                        <span class="icon icon-edit" title="Edit Values">
+                                            <span>Show as List</span>
+                                        </span>
+                                    </a>
                                     <a class="item"
                                        href="<?php $url->setParam('instancesconfig', json_encode(array('filter'=>array(array(
                                            'id'=>'moreValues','action'=>'add','mode'=>'box',
@@ -82,15 +87,28 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                 </div>
                                 <?php
                             }
-                            //print the value itself
-                            if (isset($value['url']) && $value['url'] !== null): ?>
+                            //print the value itself until OW_SHOW_MAX
+                            if (isset($value['url']) && $value['url'] !== null && $i<OW_SHOW_MAX+1): ?>
                                 <li>
-                                    <a class="hasMenu" href="<?php echo $value['url'] ?>" resource="<?php echo $value['uri'] ?>">
+                                    <a about="<?php echo $this->instanceUri ?>" 
+                                       class="hasMenu"
+                                       rel="<?php echo $this->curie($value['uri']) ?>"
+                                       href="<?php echo $value['url'] ?>" 
+                                       resource="<?php echo $value['uri'] ?>">
                                            <?php echo $value['value']; ?>
                                     </a>
                                 </li>
-                            <?php else: ?>
-                                <li content="<?php echo $this->escape($value['value']) ?>">muhelse<?php echo $value['value'] ?></li>
+                            <?php else: //don't show value, which are > OW_SHOW_MAX ?>
+                                <li>
+                                    <a about="<?php echo $this->instanceUri ?>" 
+                                       style="display: none;"
+                                       class="hasMenu"
+                                       rel="<?php echo $this->curie($value['uri']) ?>"
+                                       href="<?php echo $value['url'] ?>" 
+                                       resource="<?php echo $value['uri'] ?>">
+                                           <?php echo $value['value']; ?>
+                                    </a>
+                                </li>
                             <?php endif; ?>
                         <?php endforeach;?>
                     </ul>
@@ -105,12 +123,20 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                     </span>
                                 </a>
                             </div>
-                            <a about="<?php echo $this->instanceUri ?>"
+                            <a about="<?php if (!$property['inverse']) { 
+                                 echo $this->instanceUri;
+                               } else {
+                                 echo $this->instanceData[$this->instanceUri][$property['varName']][0]['uri'];
+                               }?>"
                                class="hasMenu"
                                rel="<?php echo $this->curie($property['uri']) ?>"
-                               resource="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['uri'] ?>"
+                               resource="<?php if ($property['inverse']) {
+                                 echo $this->instanceUri;
+                               } else {
+                                 echo $this->instanceData[$this->instanceUri][$property['varName']][0]['uri'];
+                               }?>"
                                href="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['url'] ?>">
-                                            <?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['value'] ?>
+                               <?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['value'] ?>
                             </a>
                         </div>
                                                     <?php else: ?>
