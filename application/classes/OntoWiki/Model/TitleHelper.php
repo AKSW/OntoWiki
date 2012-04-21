@@ -16,16 +16,6 @@
 class OntoWiki_Model_TitleHelper
 {
     /**
-     * Maximum number of allowed resources.
-     */
-    const MAX_RESOURCES = 30;
-
-    /**
-     * Variable used for the resource URI in SPARQL queries.
-     */
-    const RESOURCE_VARIABLE = '__resource';
-
-    /**
      * Static title cache per graph
      */
     protected static $_titleCache = array();
@@ -254,45 +244,8 @@ class OntoWiki_Model_TitleHelper
             $this->_resources = array(); //sync
             return array();
         }
-
-        // why not simply:
+        
         return array_keys($this->_resources);
-        // ?
-
-        //what happens here? $wtf++ :)
-        $query = $this->getResourceQuery();
-
-        if (null !== $this->_model) {
-            $result = $this->_model->sparqlQuery($query);
-        } else {
-            $result = $this->_store->sparqlQuery($query);
-        }
-
-        if ($result) {
-            foreach ($result as $row) {
-                $uri = $row[self::RESOURCE_VARIABLE];
-                $this->_resources[$uri] = $uri;
-            }
-        }
-
-        return array_keys((array)$this->_resources);
-    }
-
-    /**
-     * Returns the SPARQL query for the resources
-     *
-     * @return Erfurt_Sparql_SimpleQuery
-     */
-    public function getResourceQuery()
-    {
-        if (null === $this->_resourceQuery) {
-            $this->_resourceQuery = new Erfurt_Sparql_SimpleQuery();
-            $this->_resourceQuery->setProloguePart('SELECT DISTINCT ?' . self::RESOURCE_VARIABLE)
-                                 ->setWherePart('WHERE {?' . self::RESOURCE_VARIABLE . ' ' . $this->_resourcePattern . '}')
-                                 ->setLimit(self::MAX_RESOURCES);
-        }
-
-        return $this->_resourceQuery;
     }
 
     /**
@@ -323,16 +276,9 @@ class OntoWiki_Model_TitleHelper
                 $this->addResource($resourceUri);
             }
 
-            // HACK: fix a probable Virtuoso bug with querying
-            // for only one resource
-            if (count((array)$this->_resources) < 2) {
-                // add a dummy resource ;)
-                $this->addResource('http://example.com/dummy');
-            }
-
             // if this is the first getTitle request, fetch titles
             if (null === $this->_resourceTitles) {
-                $this->_fetchResourceTitlesFromQueryResult(self::RESOURCE_VARIABLE);
+                $this->_fetchResourceTitlesFromQueryResult();
             }
 
             // prepend the language that is asked for to the array
@@ -395,21 +341,21 @@ class OntoWiki_Model_TitleHelper
     public function getTitleQueryResult()
     {
         if (null === $this->_titleQueryResults) {
-            $numQueries = (int)ceil(max(count($this->_resources), self::MAX_RESOURCES) / self::MAX_RESOURCES);
             $execObject = $this->_model ? $this->_model : $this->_store;
             $this->_titleQueryResults = array();
 
             // get results for all queries
-            foreach ($this->getTitleQueries($numQueries) as $currentQuery) {
+            $queries = $this->getTitleQueries();
+            foreach ($queries as $resourceUri=>$currentQuery) {
                 $queryResults = $execObject->sparqlQuery($currentQuery, array('result_format' => 'extended'));
-                // var_dump((string)$currentQuery, $queryResults);
-
+                
                 if (is_array($queryResults) && isset($queryResults['head']['vars']) && !empty($queryResults['head']['vars'])) {
-                    array_push($this->_titleQueryResults, $queryResults);
+                    $this->_titleQueryResults[$resourceUri] = $queryResults;
                 }
             }
 
             if (defined('_OWDEBUG')) {
+                $numQueries = count($queries);
                 $logger = OntoWiki::getInstance()->logger;
                 $logger->info('TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.');
             }
@@ -420,34 +366,26 @@ class OntoWiki_Model_TitleHelper
 
     /**
      * Returns the queries for the title properties of all resources.
-     * If the number of resources exceeds MAX_RESOURCES, the number of queries is increased
-     * so that not more than MAX_RESOURCES occur per query.
      *
      * @return Erfurt_Sparql_SimpleQuery
      */
-    public function getTitleQueries($numQueries)
+    public function getTitleQueries()
     {
         $currentQuery = null;
         $queries = array();
-        $select = 'SELECT DISTINCT ?'
-                . self::RESOURCE_VARIABLE
-                . ' ?property ?value';
-
-        for ($i = 0; $i < $numQueries; ++$i) {
-            $start = $i * self::MAX_RESOURCES;
-            $end   = $start + self::MAX_RESOURCES;
-
+        $select = 'SELECT DISTINCT ?property ?value';
+        foreach ($this->_resources as $resourceUri) {
             $where = 'WHERE {'
-                   . $this->_getTitleWhere(self::RESOURCE_VARIABLE, $start, $end)
+                   . $this->_getTitleWhere($resourceUri)
                    . '}';
-
+                   
             $currentQuery = new Erfurt_Sparql_SimpleQuery();
             $currentQuery->setProloguePart($select)
                          ->setWherePart($where);
-
-            array_push($queries, $currentQuery);
+            
+            $queries[$resourceUri] = $currentQuery;
         }
-
+        
         return $queries;
     }
 
@@ -489,23 +427,17 @@ class OntoWiki_Model_TitleHelper
     /**
      * Fetches information (e.g. title properties) of resources from a query result set.
      *
-     * @param string $resourceVariable The query variable used for resources
-     * @throws OntoWiki_Model_Exception if the query result doesn't contain the variable
      */
-    protected function _fetchResourceTitlesFromQueryResult($resourceVariable)
+    protected function _fetchResourceTitlesFromQueryResult()
     {
         $this->_resourceTitles = array();
 
-        foreach ($this->getTitleQueryResult() as $titleQueryResult) {
+        foreach ($this->getTitleQueryResult() as $resourceUri=>$titleQueryResult) {
             // fetch result
             $queryResult = $titleQueryResult;
             $head        = $queryResult['head'];
             $bindings    = $queryResult['results']['bindings'];
 
-            // check if variable is contained in query result
-            if (!in_array($resourceVariable, $head['vars'])) {
-                return;
-            }
             if (defined('_OWDEBUG')) {
                 $logger = OntoWiki::getInstance()->logger;
                 $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
@@ -513,7 +445,7 @@ class OntoWiki_Model_TitleHelper
 
             foreach ($bindings as $row) {
                 // get the resource URI
-                $currentResource = $row[$resourceVariable]['value'];
+                $currentResource = $resourceUri;
                 $currentProperty = $row['property']['value'];
                 $titleValue      = $row['value']['value'];
 
@@ -542,25 +474,14 @@ class OntoWiki_Model_TitleHelper
     }
 
     /**
-     * Returns graph patterns for all title properties for a variable.
+     * Returns graph patterns for all title properties for a resource URI.
      *
-     * @param string $variable the variable name
+     * @param string $resourceUri the resource URI
      * @return string
      */
-    protected function _getTitleWhere($variableName, $start, $end)
+    protected function _getTitleWhere($resourceUri)
     {
-        $where = 'OPTIONAL {?' . $variableName . ' ?property ?value . }';
-
-        // build resource sameTerm filters
-        $resourceFilters = array();
-        $resources       = $this->getResources();
-        $end             = min(count($resources), $end);
-        for ($i = $start; $i < $end; ++$i) {
-            array_push($resourceFilters, 'sameTerm(?' . $variableName . ', <' . $resources[$i] . '>)');
-        }
-        if (!empty($resourceFilters)) {
-            $where .= PHP_EOL . 'FILTER(' . implode(' || ', $resourceFilters) . ')';
-        }
+        $where = 'OPTIONAL { <' . $resourceUri . '> ?property ?value . }';
 
         // build title property sameTerm filters
         $propertyFilters = array();

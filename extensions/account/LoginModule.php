@@ -82,6 +82,10 @@ class LoginModule extends OntoWiki_Module
 
     public function shouldShow()
     {
+        if ($this->_owApp->erfurt->getAc() instanceof Erfurt_Ac_None) {
+            return false;
+        }
+        
         if (!$this->_owApp->user || $this->_owApp->user->isAnonymousUser()) {
             return true;
         }

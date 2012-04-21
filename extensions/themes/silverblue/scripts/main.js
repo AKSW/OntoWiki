@@ -24,6 +24,41 @@ tempHrefs = new Array();
  * core css assignments
  */
 $(document).ready(function() {
+    // Object.keys support in older environments that do not natively support it
+    if (!Object.keys) {
+        Object.keys = (function () {
+            var hasOwnProperty = Object.prototype.hasOwnProperty,
+                hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+                dontEnums = [
+                  'toString',
+                  'toLocaleString',
+                  'valueOf',
+                  'hasOwnProperty',
+                  'isPrototypeOf',
+                  'propertyIsEnumerable',
+                  'constructor'
+                ],
+                dontEnumsLength = dontEnums.length
+
+            return function (obj) {
+                if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) throw new TypeError('Object.keys called on non-object')
+
+                var result = []
+
+                for (var prop in obj) {
+                    if (hasOwnProperty.call(obj, prop)) result.push(prop)
+                }
+
+                if (hasDontEnumBug) {
+                    for (var i=0; i < dontEnumsLength; i++) {
+                        if (hasOwnProperty.call(obj, dontEnums[i])) result.push(dontEnums[i])
+                    }
+                }
+              return result
+            }
+        })()
+    };
+
     // the body gets a new class to indicate that javascript is turned on
     $('body').removeClass('javascript-off').addClass('javascript-on');
 
@@ -224,26 +259,27 @@ $(document).ready(function() {
      *  simulate Safari behaviour for other browsers
      *  on return/enter, submit the form
      */
-    if (!$.browser.safari) {
-        $('.submitOnEnter').keypress(function(event) {
-            // return pressed
-            if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
-                $(this).parents('form').submit();
-            }
-        });
-    }
+    $('.submitOnEnter').keypress(function(event) {
+        // return pressed
+        if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
+            $(this).parents('form').submit();
+        }
+    });
+    
     /*
-     *  on press enter, this type of textbox looses focus and gives it to the next textfield
+     *  on press enter, this type of textbox looses focus and gives it to the next element of the same type
      */
     $('.focusNextOnEnter').keypress(function(event) {
         // return pressed
         if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
             var me = $(this)
-            var next = me.next();
-            if(next.get(0).tagName.toLowerCase() == me.get(0).tagName.toLowerCase()){
+            var meType = me.get(0).tagName.toLowerCase()
+            var next = me.next(); //next element
+            if(next.get(0).tagName.toLowerCase() == meType){
                 next.focus();
             } else {
-                var next2 = me.parent().next().find('>'+me.get(0).tagName.toLowerCase()+':first')
+                // if thats not of the same type, go to "parent and "cousin""
+                var next2 = me.parent().next().find('>'+meType+':first')
                 if (next2.length != 0){
                     next2.focus();
                 } 

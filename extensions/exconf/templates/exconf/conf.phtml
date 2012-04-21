@@ -120,19 +120,18 @@ function form2array(node){
     });
     return arr;
 }');
-
-
-
 ?>
-    <p class="info">you can change values of your local config here. <br/>you can also change the structure of the config, but only do it when you really know what you are doing.</p>
+<p class="info">you can change values of your local config here. <br/>you can also change the structure of the config, but only do it when you really know what you are doing.</p>
 <form id="exConf" action="<?php echo $this->urlBase;?>/exconf/conf/?name=<?php echo $this->name; ?>" method="post">
     <input type="hidden" name="name" value="<?php echo $this->name; ?>"/>
     <input type="hidden" name="config" value=""/>
     <table border="1" id="topConfTable">
+        <?php if(!in_array($this->name, $this->coreExtensions)){ ?>
         <tr>
             <td width="15%">enabled</td>
             <td><div id="extEnabledSwitch" class="togglebutton" <?php if($this->enabled){ echo "selected=\"true\""; } ?>></div></td>
         </tr>
+        <?php } ?>
         <tr>
             <td width="15%">private</td>
             <td> <?php array2form($this->config); ?> </td>

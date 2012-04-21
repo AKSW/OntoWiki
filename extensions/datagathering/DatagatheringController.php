@@ -57,6 +57,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
     CONST IMPORT_NOT_EDITABLE = 50;
     CONST IMPORT_WRAPPER_EXCEPTION = 60;
     CONST IMPORT_WRAPPER_NOT_AVAILABLE = 70;
+    CONST IMPORT_CUSTOMFILTER_EXCEPTION = 80;
 
     // ------------------------------------------------------------------------
     // --- Import and Sync related private properties -------------------------
@@ -957,6 +958,20 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
                     $newStatements = $wrapperResult['add'];
 
+                    //default filter
+                    $newStatements = self::filterStatements(
+                        $newStatements, $uri, $all, $presets, $exceptedProperties, $fetchMode
+                    );
+                    
+                    //custom filter
+                    if ($filterCallback != null && is_array($filterCallback)) {
+                        try {
+                            $newStatements = call_user_func($filterCallback, $newStatements);
+                        } catch (Exception $e) {
+                            return self::IMPORT_CUSTOMFILTER_EXCEPTION;
+                        }
+                    }
+
                     $stmtBeforeCount = $store->countWhereMatches(
                         $graphUri,
                         '{ ?s ?p ?o }',
@@ -974,13 +989,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                         // Start action, add statements, finish action.
                         $versioning->startAction($actionSpec);
-                    }
-
-                    $newStatements = self::filterStatements(
-                        $newStatements, $uri, $all, $presets, $exceptedProperties, $fetchMode
-                    );
-                    if ($filterCallback != null && is_array($filterCallback)) {
-                        $newStatements = call_user_func($filterCallback, $newStatements);
                     }
 
                     if ($action == 'add') {

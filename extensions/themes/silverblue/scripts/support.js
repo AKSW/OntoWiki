@@ -419,8 +419,9 @@ function populateRDFauthor(data, protect, resource, graph) {
                     var value = '<' + objSpec.value + '>'; 
                 } else if ( objSpec.type == 'bnode' ) { 
                     var value = '_:' + objSpec.value;
-                } else { 
-                    var value = objSpec.value; 
+                } else {
+                    // IE fix, object keys with empty strings are removed
+                    var value = objSpec.value ? objSpec.value : ""; 
                 }
 
                 var newObjectSpec = {

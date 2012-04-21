@@ -66,7 +66,8 @@ class NavigationHelper extends OntoWiki_Component_Helper
         }
 
         // create filter for types
-        $filterType = array();
+        $filter_type = array();
+        $filterUris = array();
         $counted = array();
         foreach ($classes as $class) {
             // get uri
@@ -83,16 +84,25 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 }
             }
 
-            $filterType[] = new Erfurt_Sparql_Query2_sameTerm($classVar, new Erfurt_Sparql_Query2_IriRef($uri));
+            $uriElem = new Erfurt_Sparql_Query2_IriRef($uri);
+            $filterUris[] = new Erfurt_Sparql_Query2_IriRef($uriElem);
+            $filter_type[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
 
             // add uri to counted
             $counted[] = $uri;
         }
-        // add filter
-        $elements[] = new Erfurt_Sparql_Query2_Filter(
-            new Erfurt_Sparql_Query2_ConditionalOrExpression($filterType)
-        );
 
+        if ($store->isInSyntaxSupported()) { // e.g. Virtuoso
+            $elements[] = new Erfurt_Sparql_Query2_Filter(
+                new Erfurt_Sparql_Query2_InExpression($classVar, $filterUris)
+            );
+        } else { // sameTerm || sameTerm ... as supported by EfZendDb adapter
+            // add filter
+            $elements[] = new Erfurt_Sparql_Query2_Filter(
+                new Erfurt_Sparql_Query2_ConditionalOrExpression($filter_type)
+            );
+        }
+        
         return $elements;
     }
 
@@ -254,20 +264,28 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 //$mainUnion->addElement($unionSub);
                 if ($unionSub->size() > 0) $optional->addElement($unionSub);
                 $elements[] = $optional;
-
+                
                 // create filter for types
-                $filterType = array();
+                $filter_type = array();
+                $filterUris = array();
                 foreach ($setup->config->hierarchyTypes as $type) {
-                    $filterType[] = 
-                        new Erfurt_Sparql_Query2_sameTerm(
-                            $classVar, 
-                            new Erfurt_Sparql_Query2_IriRef($type)
-                        );
+                    $uriElem = new Erfurt_Sparql_Query2_IriRef($type);
+                    $filterUris[] = $uriElem;
+                    $filter_type[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
                 }
-                // add filter
-                $elements[] = new Erfurt_Sparql_Query2_Filter(
-                    new Erfurt_Sparql_Query2_ConditionalOrExpression($filterType)
-                );
+                
+                $owApp = OntoWiki::getInstance();
+                $store = $owApp->erfurt->getStore();
+                if ($store->isInSyntaxSupported()) { // e.g. Virtuoso
+                    $elements[] = new Erfurt_Sparql_Query2_Filter(
+                        new Erfurt_Sparql_Query2_InExpression($classVar, $filterUris)
+                    );
+                } else { // sameTerm || sameTerm ... as supported by EfZendDb adapter
+                    // add filter
+                    $elements[] = new Erfurt_Sparql_Query2_Filter(
+                        new Erfurt_Sparql_Query2_ConditionalOrExpression($filter_type)
+                    );
+                }
             } else {
                 // define subvar
                 $subVar = new Erfurt_Sparql_Query2_Var('sub');
@@ -350,8 +368,10 @@ class NavigationHelper extends OntoWiki_Component_Helper
         }
 
         $elements[] = new Erfurt_Sparql_Query2_Filter(
-            new Erfurt_Sparql_Query2_isUri(
-                new Erfurt_Sparql_Query2_Var('resourceUri')
+            new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                new Erfurt_Sparql_Query2_isBlank(
+                    new Erfurt_Sparql_Query2_Var('resourceUri')
+                )
             )
         );
 
@@ -513,4 +533,3 @@ class NavigationHelper extends OntoWiki_Component_Helper
         return $elements;
     }
 }
-

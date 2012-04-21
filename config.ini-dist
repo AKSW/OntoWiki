@@ -50,6 +50,9 @@ store.arc.password = "ow"
 store.arc.host = "localhost"
 store.arc.store = "ef"
 
+;store.sparql.serviceUrl = "http://dbpedia.org/sparql";
+;store.sparql.graphs[] = "http://dbpedia.org"
+
 ;;;;
 ;; Comparer backend specific options
 ;;

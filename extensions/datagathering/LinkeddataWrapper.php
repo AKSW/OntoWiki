@@ -120,23 +120,8 @@ class LinkeddataWrapper extends Erfurt_Wrapper
             
             $tempArray = $this->_handleResponseBody($response, $baseUri);
             $ns = $tempArray['ns'];
-            $tempArray = $tempArray['data'];
-            
-            if (!$all) {
-                //only load statements, that have the $uri as subject
-                if (isset($tempArray[$uri])) {
-                    $data = array($uri => $tempArray[$uri]);
-                    $retVal = true;
-                } else {
-                    $data = array();
-                    $ns = array();
-                    $retVal = false;
-                }
-            } else {
-                //all statements that were found
-                $data = $tempArray;
-                $retVal = true;
-            }
+            $data = $tempArray['data'];
+            $retVal = true;
         } else {
             // try n3
             $client->setHeaders('Accept', 'text/n3');
@@ -144,18 +129,10 @@ class LinkeddataWrapper extends Erfurt_Wrapper
 
             $success = $this->_handleResponse($client, $response);
             if ($success === true) {
-                $tempArray = $this->_handleResponseBody($client->getLastResponse());
+                $tempArray = $this->_handleResponseBody($client->getLastResponse(), $url);
                 $ns = $tempArray['ns'];
-                $tempArray = $tempArray['data'];
-
-                if (isset($tempArray[$uri])) {
-                    $data = array($uri => $tempArray[$uri]);
-                    $retVal = true;
-                } else {
-                    $data = array();
-                    $ns = array();
-                    $retVal = false;
-                }
+                $data = $tempArray['data'];
+                $retVal = true;
             } else {
                 // try text/html...
                 $client->setHeaders('Accept', 'text/html');
@@ -163,18 +140,10 @@ class LinkeddataWrapper extends Erfurt_Wrapper
              
                 $success = $this->_handleResponse($client, $response);
                 if ($success === true) {
-                    $tempArray = $this->_handleResponseBody($client->getLastResponse());
+                    $tempArray = $this->_handleResponseBody($client->getLastResponse(), $url);
                     $ns = $tempArray['ns'];
-                    $tempArray = $tempArray['data'];
-
-                    if (isset($tempArray[$uri])) {
-                        $data = array($uri => $tempArray[$uri]);
-                        $retVal = true;
-                    } else {
-                        $data = array();
-                        $ns = array();
-                        $retVal = false;
-                    }
+                    $data = $tempArray['data'];
+                    $retVal = true;
                 }    
             }
         } 
@@ -344,8 +313,8 @@ class LinkeddataWrapper extends Erfurt_Wrapper
         $found = false;
         if($contentType == 'text/plain' && !empty($baseUri)){
             //if the mime type does not reveal anything, try file endings. duh
-            $parts = explode('.', $baseUri);
-            $ending = end($parts);
+            $parts = parse_url($baseUri);
+            $ending = pathinfo($parts['path'], PATHINFO_EXTENSION);
             $found = true;
             switch ($ending) {
                 case 'n3':
