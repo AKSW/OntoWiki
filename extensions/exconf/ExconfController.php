@@ -26,6 +26,7 @@ class ExconfController extends OntoWiki_Controller_Component
     const EXTENSION_AUTHORLABEL_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorLabel';
     const EXTENSION_AUTHORPAGE_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorPage';
     const EXTENSION_AUTHORMAIL_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorMail';
+    const EXTENSION_MINOWVERSION_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/minOWVersion';
     const EXTENSION_NS = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/';
 
     protected $_useFtp = false;
@@ -50,7 +51,7 @@ class ExconfController extends OntoWiki_Controller_Component
                 'route'      => null,
                 'action'     => 'list',
                 'controller' => 'exconf',
-                'name'   => 'List Installed'
+                'name'   => 'Locally Installed'
             )
         );
         OntoWiki_Navigation::register(
@@ -59,9 +60,10 @@ class ExconfController extends OntoWiki_Controller_Component
                 'route'      => null,
                 'action'     => 'explorerepo',
                 'controller' => 'exconf',
-                'name'   => 'Install from Repo'
+                'name'   => 'Install / Upgrade from Repo'
             )
         );
+        /*
         OntoWiki_Navigation::register(
             'upload',
             array(
@@ -70,7 +72,7 @@ class ExconfController extends OntoWiki_Controller_Component
                 'action'     => 'archiveuploadform',
                 'name'   => 'Install from local upload'
             )
-        );
+        );*/
 
         $ow = OntoWiki::getInstance();
         $modMan = $ow->extensionManager;
@@ -147,6 +149,8 @@ class ExconfController extends OntoWiki_Controller_Component
                     );
                 }
             }
+            
+            $this->view->coreExtensions = $this->_config->extensions->core->toArray();
         }
         $this->view->extensions = $extensions;
     }
@@ -193,9 +197,13 @@ class ExconfController extends OntoWiki_Controller_Component
             $privateConfig       = $manager->getPrivateConfig($name);
             $config              = ($privateConfig != null ? $privateConfig->toArray() : array());
             $this->view->enabled = $manager->isExtensionActive($name);
+            $fullConfig = $manager->getExtensionConfig($name);
+            $this->view->isCoreExtension = isset($fullConfig->isCoreExtension) && $fullConfig->isCoreExtension;
 
             $this->view->config  = $config;
             $this->view->name    = $name;
+            
+            $this->view->coreExtensions = $this->_config->extensions->core->toArray();
 
             if (!is_writeable($manager->getExtensionPath())) {
                 if (!$this->_request->isXmlHttpRequest()) {
@@ -211,6 +219,9 @@ class ExconfController extends OntoWiki_Controller_Component
                     //react on post data
                     if (isset($this->_request->remove)) {
                         if (self::rrmdir($dirPath)) {
+                            OntoWiki::getInstance()->appendMessage(
+                                new OntoWiki_Message('extension deleted', OntoWiki_Message::SUCCESS)
+                            );
                             $this->_redirect($this->urlBase.'exconf/list');
                         } else {
                             OntoWiki::getInstance()->appendMessage(
@@ -305,10 +316,10 @@ class ExconfController extends OntoWiki_Controller_Component
 
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = 'extensions';
-        if (false && $listHelper->listExists($listName)) {
+        if ($listHelper->listExists($listName)) {
             $list = $listHelper->getList($listName);
             $list->invalidate(); //remote repo may change data
-            $listHelper->addList($listName, $list, $this->view, 'list_extensions_main', $other);
+            $listHelper->addList($listName, $list, $this->view, 'list_extensions_main');
         } else {
             //define the list on a new store, that queries a sparql endpoint
             $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceurl'=>$repoUrl, 'graphs'=>array($graph)));
@@ -325,10 +336,14 @@ class ExconfController extends OntoWiki_Controller_Component
             $list->addShownProperty(self::EXTENSION_AUTHORPAGE_PROPERTY, 'authorPage');
             $list->addShownProperty(self::EXTENSION_AUTHORMAIL_PROPERTY, 'authorMail');
             $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, 'latestZip');
-            $list->addShownProperty(self::EXTENSION_LATESTREVISION_PROPERTY, 'latestRevision');     
+            $list->addShownProperty(self::EXTENSION_LATESTREVISION_PROPERTY, 'latestRevision');
+            $list->addShownProperty(self::EXTENSION_MINOWVERSION_PROPERTY, 'minOwVersion');
 
             $listHelper->addListPermanently($listName, $list, $this->view, 'list_extensions_main');
         }
+
+        $this->addModuleContext('main.window.list');
+
         //echo htmlentities($list->getResourceQuery());
         //echo htmlentities($list->getQuery());
     }

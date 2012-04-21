@@ -12,6 +12,10 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         }
     }
 
+    /**
+     *
+     * @return OntoWiki_Model_Instances 
+     */
     public function getLastList()
     {
         $name = $this->_owApp->session->lastList;
@@ -24,11 +28,19 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         return null;
     }
 
+     /**
+     *
+     * @return string 
+     */
     public function getLastListName()
     {
         return $this->_owApp->session->lastList;
     }
 
+    /**
+     *
+     * @return bool 
+     */
     public function listExists($name)
     {
         $lists = $this->_owApp->session->managedLists;
@@ -38,12 +50,17 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         return false;
     }
 
+    /**
+     *
+     * @return OntoWiki_Model_Instances 
+     */
     public function getList($name)
     {
         $lists = $this->_owApp->session->managedLists;
 
         if (key_exists($name, $lists)) {
-            $lists[$name]->setStore($this->_owApp->erfurt->getStore()); //after serialization the store is compromized
+             //after deserialization the store is compromized
+            $lists[$name]->setStore(clone $lists[$name]->getStore());
             return $lists[$name];
         }
 

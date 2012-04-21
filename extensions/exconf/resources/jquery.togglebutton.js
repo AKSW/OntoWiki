@@ -1,5 +1,5 @@
 /*
-  turn a div or checkbox into a sliding toggle switch (like the apple controlls)
+  turn a div or checkbox into a sliding toggle switch (like the apple slide to unlock)
 */
 
 /*# AVOID COLLISIONS #*/
@@ -61,14 +61,15 @@ if(window.jQuery) (function($){
 
                     var slider = $("<div></div>").addClass("slider");
                     container.append(slider);
-                    slider.draggable({
-                        axis:"x",
-                        containment:"parent",
-                        snapMode:"inner",
-                        snapTolerance:10,
-                        scroll: false
-                    });
-                    
+                    if(!container.hasClass("frozen")){
+                        slider.draggable({
+                            axis:"x",
+                            containment:"parent",
+                            snapMode:"inner",
+                            snapTolerance:10,
+                            scroll: false
+                        });
+                    }
                     
                     var ref = slider.position().left;
                     
@@ -81,6 +82,9 @@ if(window.jQuery) (function($){
                     container.droppable({
                         accept: ".slider",
                         drop: function(){
+                            if(container.hasClass("frozen")){
+                                return;
+                            }
                             var l = slider.position().left  - ref;
 
                             var r = container.width() - l - slider.width();
@@ -93,6 +97,9 @@ if(window.jQuery) (function($){
                     });
                     
                     container.click(function(){
+                        if(container.hasClass("frozen")){
+                            return;
+                        }
                         if(container.attr('selected')=='true'){
                             disable(container, true);
                         } else  {
