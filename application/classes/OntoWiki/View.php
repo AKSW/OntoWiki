@@ -143,7 +143,7 @@ class OntoWiki_View extends Zend_View
      * @param string $context The module context whose modules should be rendered
      * @return string
      */
-    public function modules($context, Zend_Config $renderOptions = null)
+    public function modules($context, $renderOptions = null)
     {
         $modules = '';
         foreach (OntoWiki_Module_Registry::getInstance()->getModulesForContext($context) as $moduleSpec) {
