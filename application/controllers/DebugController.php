@@ -35,11 +35,7 @@ class DebugController extends OntoWiki_Controller_Base
             Zend_Translate::clearCache();
         }
         
-<<<<<<< HEAD
         $this->_redirect($_SERVER['HTTP_REFERER'] , array('code' => 302));
-=======
-        $this->_redirect($_SERVER['HTTP_REFERER']);
->>>>>>> develop
     }
     
     /**
@@ -67,11 +63,7 @@ class DebugController extends OntoWiki_Controller_Base
         $objectCache = $this->_erfurt->getCache();
         $objectCacheReturnValue = $objectCache->clean();
         
-<<<<<<< HEAD
         $this->_redirect($_SERVER['HTTP_REFERER'] , array('code' => 302));
-=======
-        $this->_redirect($_SERVER['HTTP_REFERER']);
->>>>>>> develop
         
     }
 }
