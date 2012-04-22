@@ -5,17 +5,17 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/markdown/> .
+@prefix : <https://github.com/AKSW/markdown/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :markdown .
+:markdown a doap:Project ;
   doap:name "markdown" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/markdown/> ;
-  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
+  owconfig:privateNamespace <https://github.com/AKSW/markdown/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Markdown" ;
   doap:description "A plug-in that renders markdown values of certain properties as html." ;
   owconfig:authorLabel "Marvin Frommhold" ;
+  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
   :properties <http://purl.org/dc/elements/1.1/description> ;
   :properties <http://rdfs.org/sioc/ns#content> ;
   :datatypes <http://ns.ontowiki.net/SysOnt/Markdown> ;

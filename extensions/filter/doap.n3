@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/filter/> .
+@prefix : <https://github.com/AKSW/filter/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :filter .
+:filter a doap:Project ;
   doap:name "filter" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/filter/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/filter/raw/master/doap.n3#> ;
   owconfig:templates "templates" ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Filter Resource Lists" ;
@@ -22,7 +22,7 @@
   rdfs:label "Filter" ;
   owconfig:priority "30" ;
   owconfig:context "main.window.list" .
-:this owconfig:config [
+:filter owconfig:config [
       a owconfig:Config;
       owconfig:id "customfilter";
       owconfig:config [
@@ -62,6 +62,6 @@
         ]
     ]
 ] .
-:this doap:release :v1-0 .
+:filter doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

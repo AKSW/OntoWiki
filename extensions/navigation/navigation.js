@@ -98,7 +98,7 @@ function navigationEvent (navEvent, eventParameter) {
             }
             // remove init sign and setup module title
             navigationContainer.removeClass('init-me-please');
-            $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
+            $('#navigation h1.title').text('Navigation: '+setup['config']['title']);
             break;
         case 'reset':
             if(setup['config']['showEmptyElements'] == '1'){
@@ -113,7 +113,7 @@ function navigationEvent (navEvent, eventParameter) {
         case 'setType':
             // remove init sign and setup module title
             navigationContainer.removeClass('init-me-please');
-            $('#navigation h1.title').text('Navigation: '+setup['config']['name']);
+            $('#navigation h1.title').text('Navigation: '+setup['config']['title']);
             break;
 
         case 'refresh':

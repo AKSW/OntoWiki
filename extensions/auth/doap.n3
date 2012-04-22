@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/auth/> .
+@prefix : <https://github.com/AKSW/auth/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :auth .
+:auth a doap:Project ;
   doap:name "auth" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/auth/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/auth/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   owconfig:templates "templates/" ;
   owconfig:languages "languages/" ;

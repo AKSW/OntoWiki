@@ -5,18 +5,18 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/weblink/> .
+@prefix : <https://github.com/AKSW/weblink/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :weblink .
+:weblink a doap:Project ;
   doap:name "weblink" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/weblink/> ;
-  owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
-  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
+  owconfig:privateNamespace <https://github.com/AKSW/weblink/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Weblink" ;
   doap:description "A plug-in that renders values of certain properties as HTML links." ;
   owconfig:authorLabel "Norman Heino" ;
+  owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
+  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
   :weblink <http://xmlns.com/foaf/0.1/homepage> ;
   :weblink <http://xmlns.com/foaf/0.1/page> ;
   :weblink <http://xmlns.com/foaf/0.1/weblog> ;

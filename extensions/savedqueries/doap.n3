@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/savedqueries/> .
+@prefix : <https://github.com/AKSW/savedqueries/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :savedqueries .
+:savedqueries a doap:Project ;
   doap:name "savedqueries" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/savedqueries/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/savedqueries/raw/master/doap.n3#> ;
   owconfig:enabled "false"^^xsd:boolean ;
   owconfig:defaultAction "init" ;
   rdfs:label "Saved Queries" ;
@@ -25,7 +25,7 @@
   rdfs:label "Default" ;
   owconfig:priority "30" ;
   owconfig:context "main.sidewindows" .
-:this :title "saved Queries" ;
+:savedqueries :title "saved Queries" ;
   :queryClass <http://ns.ontowiki.net/SysOnt/SparqlQuery> ;
   :queryLabel <http://purl.org/dc/elements/1.1/title> ;
   :queryId <http://rdfs.org/sioc/ns#id> ;

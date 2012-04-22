@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/queries/> .
+@prefix : <https://github.com/AKSW/queries/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :queries .
+:queries a doap:Project ;
   doap:name "queries" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/queries/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/queries/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "SPARQL Query" ;
   doap:description "allows to execute and manage SPARQL queries." ;
@@ -23,31 +23,31 @@
 :Default a owconfig:Module ;
   rdfs:label "Default" ;
   owconfig:caching "false"^^xsd:boolean .
-:this owconfig:hasModule :Sparqloptions .
+:queries owconfig:hasModule :Sparqloptions .
 :Sparqloptions a owconfig:Module ;
   rdfs:label "Sparqloptions" ;
   owconfig:context "main.window.queryeditor" ;
   owconfig:priority "5" .
-:this owconfig:hasModule :Queryeditorfromsetter .
+:queries owconfig:hasModule :Queryeditorfromsetter .
 :Queryeditorfromsetter a owconfig:Module ;
   rdfs:label "Queryeditorfromsetter" ;
   owconfig:context "main.window.queryeditor" ;
   owconfig:priority "6" .
-:this owconfig:hasModule :Savequery .
+:queries owconfig:hasModule :Savequery .
 :Savequery a owconfig:Module ;
   rdfs:label "Savequery" ;
   owconfig:context "main.window.savequery" ;
   owconfig:priority "7" .
-:this owconfig:config [
+:queries owconfig:config [
       a owconfig:Config;
       owconfig:id "general";
       owconfig:config [
           a owconfig:Config;
           owconfig:id "enabled";
-          :saving "1" ;
-          :editor "1" ;
-          :gqb "" ;
-          :builder ""
+          :saving "true"^^xsd:boolean ;
+          :editor "true"^^xsd:boolean ;
+          :gqb "false"^^xsd:boolean ;
+          :builder "false"^^xsd:boolean
     ]
 ];
  owconfig:config [
@@ -72,6 +72,6 @@
       :SelClassUri <http://ns.ontowiki.net/GQB/UserQueries/Pattern/Type> ;
       :SelClassLabelUri <http://ns.ontowiki.net/GQB/UserQueries/Pattern/TypeLabel>
 ] .
-:this doap:release :v1-0 .
+:queries doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

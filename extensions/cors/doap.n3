@@ -5,18 +5,19 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/cors/> .
+@prefix : <https://github.com/AKSW/cors/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :cors .
+:cors a doap:Project ;
   doap:name "cors" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/cors/> ;
-  owconfig:pluginEvent event:onRouteStartup ;
-  owconfig:enabled "false"^^xsd:boolean ;
+  owconfig:privateNamespace <https://github.com/AKSW/cors/raw/master/doap.n3#> ;
+  owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "CORS" ;
   doap:description "Setup Cross-Origin Resource Sharing (CORS)" ;
   owconfig:authorLabel "Sebastian Tramp" ;
   doap:maintainer <http://sebastian.tramp.name> ;
+  :url <http://enable-cors.org/> ;
+  owconfig:pluginEvent event:onRouteStartup ;
   :accessControlAllowOrigin "*" ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

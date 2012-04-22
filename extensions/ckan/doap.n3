@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/ckan/> .
+@prefix : <https://github.com/AKSW/ckan/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :ckan .
+:ckan a doap:Project ;
   doap:name "ckan" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/ckan/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/ckan/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "CKAN Integration" ;
   doap:description "allows for registration of CKAN datasets from your OntoWiki instance" ;

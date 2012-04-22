@@ -7,8 +7,8 @@
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
 @prefix : <https://github.com/AKSW/account/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :account .
+:account a doap:Project ;
   doap:name "account" ;
   owconfig:privateNamespace <https://github.com/AKSW/account/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
@@ -24,12 +24,12 @@
   owconfig:caching "true"^^xsd:boolean ;
   owconfig:priority "40" ;
   owconfig:context "main.sidewindows" .
-:this owconfig:config [
+:account owconfig:config [
       a owconfig:Config;
       owconfig:id "allow";
-      :local "1" ;
-      :webid "" ;
-      :openid "1"
+      :local "true"^^xsd:boolean ;
+      :webid "false"^^xsd:boolean ;
+      :openid "true"^^xsd:boolean
 ] ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

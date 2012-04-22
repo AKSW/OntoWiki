@@ -5,24 +5,24 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/pingback/> .
+@prefix : <https://github.com/AKSW/pingback/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :pingback .
+:pingback a doap:Project ;
   doap:name "pingback" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/pingback/> ;
-  owconfig:pluginEvent event:onBeforeLinkedDataRedirect ;
-  owconfig:pluginEvent event:onAfterInitController ;
-  owconfig:pluginEvent event:onAddStatement ;
-  owconfig:pluginEvent event:onAddMultipleStatements ;
-  owconfig:pluginEvent event:onDeleteMultipleStatements ;
-  owconfig:pluginEvent event:beforeExportResource ;
+  owconfig:privateNamespace <https://github.com/AKSW/pingback/raw/master/doap.n3#> ;
   owconfig:templates "templates" ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Pingback Server" ;
   doap:description "provides a Semantic Pingback Server and pingback enables all linked data resources" ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
+  owconfig:pluginEvent event:onBeforeLinkedDataRedirect ;
+  owconfig:pluginEvent event:onAfterInitController ;
+  owconfig:pluginEvent event:onAddStatement ;
+  owconfig:pluginEvent event:onAddMultipleStatements ;
+  owconfig:pluginEvent event:onDeleteMultipleStatements ;
+  owconfig:pluginEvent event:beforeExportResource ;
   :generic_relation <http://rdfs.org/sioc/ns#links_to> ;
   owconfig:config [
       a owconfig:Config;
@@ -39,7 +39,7 @@
   :title_properties <http://xmlns.com/foaf/0.1/nick> ;
   :title_properties <http://xmlns.com/foaf/0.1/surname> ;
   :ping_properties <http://xmlns.com/foaf/0.1/knows> ;
-  :pingOnDelete "" .
-:this doap:release :v1-0 .
+  :pingOnDelete "false"^^xsd:boolean .
+:pingback doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

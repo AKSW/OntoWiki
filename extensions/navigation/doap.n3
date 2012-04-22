@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/navigation/> .
+@prefix : <https://github.com/AKSW/navigation/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :navigation .
+:navigation a doap:Project ;
   doap:name "navigation" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/navigation/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/navigation/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Navigation Module" ;
   doap:description "an extensible and highly customizable module to navigate in knowledge bases via tree-based information (e.g. classes)" ;
@@ -23,13 +23,13 @@
   rdfs:label "Default" ;
   owconfig:context "main.sidewindows" ;
   owconfig:priority "30" .
-:this owconfig:config [
+:navigation owconfig:config [
       a owconfig:Config;
       owconfig:id "defaults";
       :config "classes" ;
       :limit "10" ;
-      :checkTypes "1" ;
-      :showMenu "1"
+      :checkTypes "true"^^xsd:boolean ;
+      :showMenu "true"^^xsd:boolean
 ];
  owconfig:config [
       a owconfig:Config;
@@ -48,9 +48,9 @@
           a owconfig:Config;
           owconfig:id "classes";
           rdfs:label "Classes" ;
-          :cache "" ;
+          :cache "false"^^xsd:boolean ;
           :titleMode "titleHelper" ;
-          :checkVisibility "" ;
+          :checkVisibility "false"^^xsd:boolean ;
           :hierarchyTypes <http://www.w3.org/2002/07/owl#Class> ;
           :hierarchyTypes <http://www.w3.org/2000/01/rdf-schema#Class> ;
           owconfig:config [
@@ -67,11 +67,11 @@
           :hiddenNS <http://www.w3.org/2000/01/rdf-schema#> ;
           :hiddenNS <http://www.w3.org/2002/07/owl#> ;
           :hiddenRelation <http://ns.ontowiki.net/SysOnt/hidden> ;
-          :showImplicitElements "1" ;
-          :showEmptyElements "1" ;
-          :showCounts "" ;
-          :checkSub "1" ;
-          :hideDefaultHierarchy "" ;
+          :showImplicitElements "true"^^xsd:boolean ;
+          :showEmptyElements "true"^^xsd:boolean ;
+          :showCounts "false"^^xsd:boolean ;
+          :checkSub "true"^^xsd:boolean ;
+          :hideDefaultHierarchy "false"^^xsd:boolean ;
  owconfig:config [
               a owconfig:Config;
               owconfig:id "list";
@@ -97,11 +97,11 @@
               owconfig:id "instanceRelation";
               :out <http://www.w3.org/2000/01/rdf-schema#subPropertyOf>
         ];
- :showImplicitElements "" ;
-          :showEmptyElements "1" ;
-          :showCounts "" ;
-          :hideDefaultHierarchy "" ;
-          :checkSub "1" ;
+ :showImplicitElements "false"^^xsd:boolean ;
+          :showEmptyElements "true"^^xsd:boolean ;
+          :showCounts "false"^^xsd:boolean ;
+          :hideDefaultHierarchy "false"^^xsd:boolean ;
+          :checkSub "true"^^xsd:boolean ;
  owconfig:config [
               a owconfig:Config;
               owconfig:id "list";
@@ -152,7 +152,7 @@
               :out <http://purl.org/net/faunistics#identifiesAs>
         ];
  :titleMode "titleHelper" ;
-          :checkSub "1"
+          :checkSub "true"^^xsd:boolean
     ];
  owconfig:config [
           a owconfig:Config;
@@ -172,7 +172,7 @@
               :out <http://www.w3.org/2004/02/skos/core#broader>
         ];
  :titleMode "titleHelper" ;
-          :showCounts ""
+          :showCounts "false"^^xsd:boolean
     ];
  owconfig:config [
           a owconfig:Config;
@@ -192,7 +192,7 @@
               :out <http://xmlns.com/foaf/0.1/member_of>
         ];
  :titleMode "titleHelper" ;
-          :showCounts "1"
+          :showCounts "true"^^xsd:boolean
     ];
  owconfig:config [
           a owconfig:Config;
@@ -205,9 +205,9 @@
               :in <http://www.geneontology.org/dtds/go.dtd#is_a>
         ] ;
           :titleMode "titleHelper" ;
-          :showCounts "" ;
-          :checkSub "1" ;
-          :hideDefaultHierarchy "" ;
+          :showCounts "false"^^xsd:boolean ;
+          :checkSub "true"^^xsd:boolean ;
+          :hideDefaultHierarchy "false"^^xsd:boolean ;
  owconfig:config [
               a owconfig:Config;
               owconfig:id "list";
@@ -225,7 +225,7 @@
               owconfig:id "hierarchyRelations";
               :in <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within>
         ] ;
-          :checkSub "1" ;
+          :checkSub "true"^^xsd:boolean ;
  owconfig:config [
               a owconfig:Config;
               owconfig:id "list";
@@ -236,6 +236,6 @@
           :rootURI <http://db.caucasus-spiders.info/Area/152>
     ]
 ] .
-:this doap:release :v1-0 .
+:navigation doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

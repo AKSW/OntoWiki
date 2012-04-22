@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/modellist/> .
+@prefix : <https://github.com/AKSW/modellist/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :modellist .
+:modellist a doap:Project ;
   doap:name "modellist" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/modellist/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/modellist/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Knowledge Bases Module" ;
   doap:description "provides a model list with create and view menu." ;
@@ -23,6 +23,6 @@
   owconfig:caching "true"^^xsd:boolean ;
   owconfig:priority "20" ;
   owconfig:context "main.sidewindows" .
-:this doap:release :v1-0 .
+:modellist doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

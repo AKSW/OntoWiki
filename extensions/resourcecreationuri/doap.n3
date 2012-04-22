@@ -5,18 +5,18 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/resourcecreationuri/> .
+@prefix : <https://github.com/AKSW/resourcecreationuri/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :resourcecreationuri .
+:resourcecreationuri a doap:Project ;
   doap:name "resourcecreationuri" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/resourcecreationuri/> ;
-  owconfig:pluginEvent event:onUpdateServiceAction ;
+  owconfig:privateNamespace <https://github.com/AKSW/resourcecreationuri/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Custom Resource URI Creation" ;
   doap:description "plugin to create nice URIs on instance creation via RDFauthor/updateService" ;
   owconfig:authorLabel "Christoph Rieß" ;
-  :fromModel "1" ;
+  owconfig:pluginEvent event:onUpdateServiceAction ;
+  :fromModel "true"^^xsd:boolean ;
   :namingSchemeProperty <http://ns.ontowiki.net/SysOnt/instanceNamingScheme> ;
   :newResourceUri "NewResource" ;
   :defaultNamingScheme "type/label" ;
@@ -43,6 +43,6 @@
           :skosAlabel <http://www.w3.org/2004/02/skos/core#altLabel>
     ]
 ] .
-:this doap:release :v1-0 .
+:resourcecreationuri doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

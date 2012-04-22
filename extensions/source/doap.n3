@@ -5,18 +5,18 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/source/> .
+@prefix : <https://github.com/AKSW/source/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :source .
+:source a doap:Project ;
   doap:name "source" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/source/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/source/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Source" ;
   doap:description "a tab for the list and resource view which displays the N3 source and allows source based editing" ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
-  :navigation "1" ;
+  :navigation "true"^^xsd:boolean ;
   :position "100" ;
   owconfig:templates "templates" ;
   owconfig:defaultAction "edit" ;

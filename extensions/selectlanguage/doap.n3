@@ -5,18 +5,18 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/selectlanguage/> .
+@prefix : <https://github.com/AKSW/selectlanguage/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :selectlanguage .
+:selectlanguage a doap:Project ;
   doap:name "selectlanguage" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/selectlanguage/> ;
-  owconfig:pluginEvent event:onPostBootstrap ;
-  owconfig:pluginEvent event:onBeforeInitController ;
+  owconfig:privateNamespace <https://github.com/AKSW/selectlanguage/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Select Language" ;
   doap:description "This plugin is used for switching to a specific language" ;
   owconfig:authorLabel "Michael Martin" ;
+  owconfig:pluginEvent event:onPostBootstrap ;
+  owconfig:pluginEvent event:onBeforeInitController ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "languages";
@@ -29,6 +29,6 @@
       owconfig:id "langzages";
       :ru "русский язык (ru)"
 ] .
-:this doap:release :v1-0 .
+:selectlanguage doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

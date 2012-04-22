@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/resourcemodules/> .
+@prefix : <https://github.com/AKSW/resourcemodules/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :resourcemodules .
+:resourcemodules a doap:Project ;
   doap:name "resourcemodules" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/resourcemodules/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/resourcemodules/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Resource Modules" ;
   doap:description "Modules showed in the single resource view (Linking Here, Similar Instances, Predicates, Usage as Property)" ;
@@ -20,29 +20,29 @@
 :Default a owconfig:Module ;
   rdfs:label "Default" ;
   owconfig:caching "true"^^xsd:boolean .
-:this owconfig:hasModule :Linkinghere .
+:resourcemodules owconfig:hasModule :Linkinghere .
 :Linkinghere a owconfig:Module ;
   rdfs:label "Linkinghere" ;
   owconfig:priority "20" ;
   rdfs:label "Linking Here" ;
   owconfig:context "main.window.properties" ;
   owconfig:context "main.window.modelinfo" .
-:this owconfig:hasModule :Similarinstances .
+:resourcemodules owconfig:hasModule :Similarinstances .
 :Similarinstances a owconfig:Module ;
   rdfs:label "Similarinstances" ;
   owconfig:priority "10" ;
   rdfs:label "Similar Instances" ;
   owconfig:context "main.window.properties" .
-:this owconfig:hasModule :Usage .
+:resourcemodules owconfig:hasModule :Usage .
 :Usage a owconfig:Module ;
   owconfig:priority "30" ;
   rdfs:label "Usage as Property" ;
   owconfig:context "main.window.properties" .
-:this owconfig:config [
+:resourcemodules owconfig:config [
       a owconfig:Config;
       owconfig:id "show";
-      :similarinstances "" ;
-      :usage "1"
+      :similarinstances "false"^^xsd:boolean ;
+      :usage "true"^^xsd:boolean
 ] ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

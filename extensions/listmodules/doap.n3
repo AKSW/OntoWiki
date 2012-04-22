@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/listmodules/> .
+@prefix : <https://github.com/AKSW/listmodules/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :listmodules .
+:listmodules a doap:Project ;
   doap:name "listmodules" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/listmodules/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/listmodules/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "List Modules" ;
   doap:description "Modules showed in the list view (show properties)" ;
@@ -22,8 +22,8 @@
   owconfig:caching "false"^^xsd:boolean ;
   owconfig:priority "20" ;
   owconfig:context "main.window.list" .
-:this :filterhidden "" ;
-  :filterlist "" ;
+:listmodules :filterhidden "false"^^xsd:boolean ;
+  :filterlist "false"^^xsd:boolean ;
   :property <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ;
   :property <http://www.w3.org/2003/01/geo/wgs84_pos#long> ;
   doap:release :v1-0 .

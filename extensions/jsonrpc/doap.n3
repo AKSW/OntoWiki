@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/jsonrpc/> .
+@prefix : <https://github.com/AKSW/jsonrpc/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :jsonrpc .
+:jsonrpc a doap:Project ;
   doap:name "jsonrpc" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/jsonrpc/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/jsonrpc/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "JSON RPC Server" ;
   doap:description "provides a service for remote control (e.g. with owcli)." ;

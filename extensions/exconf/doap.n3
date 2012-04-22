@@ -5,25 +5,26 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/exconf/> .
+@prefix : <https://github.com/AKSW/exconf/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :exconf .
+:exconf a doap:Project ;
   doap:name "exconf" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/exconf/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/exconf/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Extensions Configuration" ;
   doap:description "provides this component to configure / toggle extensions." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:templates "templates" ;
+  :isCoreExtension "true"^^xsd:boolean ;
   owconfig:hasModule :Outline .
 :Outline a owconfig:Module ;
   rdfs:label "Extension Outline" ;
   owconfig:caching "false"^^xsd:boolean ;
   owconfig:priority "4" ;
   owconfig:context "main.window.exconf" .
-:this :repoUrl <http://extensions.ontowiki.net/index.php/service/sparql> ;
+:exconf :repoUrl <http://extensions.ontowiki.net/index.php/service/sparql> ;
   :graph <http://extensions.ontowiki.net/> ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;

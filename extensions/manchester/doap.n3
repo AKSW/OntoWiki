@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/manchester/> .
+@prefix : <https://github.com/AKSW/manchester/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :manchester .
+:manchester a doap:Project ;
   doap:name "manchester" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/manchester/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/manchester/raw/master/doap.n3#> ;
   owconfig:enabled "false"^^xsd:boolean ;
   owconfig:templates "templates" ;
   owconfig:languages "languages" ;
@@ -23,6 +23,6 @@
   owconfig:caching "false"^^xsd:boolean ;
   owconfig:priority "3" ;
   owconfig:context "main.window.properties" .
-:this doap:release :v1-0 .
+:manchester doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

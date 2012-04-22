@@ -5,12 +5,12 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/community/> .
+@prefix : <https://github.com/AKSW/community/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :community .
+:community a doap:Project ;
   doap:name "community" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/community/> ;
+  owconfig:privateNamespace <https://github.com/AKSW/community/raw/master/doap.n3#> ;
   owconfig:enabled "true"^^xsd:boolean ;
   owconfig:templates "templates" ;
   owconfig:languages "languages/" ;
@@ -19,34 +19,33 @@
   doap:description "rate and comment on resources." ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
-  :confAction "community/configure" ;
   owconfig:hasModule :Comment .
 :Comment a owconfig:Module ;
   rdfs:label "Comment" ;
   owconfig:priority "19" ;
   rdfs:label "Comment" ;
   owconfig:context "main.window.community" .
-:this owconfig:hasModule :Lastchanges .
+:community owconfig:hasModule :Lastchanges .
 :Lastchanges a owconfig:Module ;
   rdfs:label "Lastchanges" ;
   owconfig:priority "18" ;
   rdfs:label "Last Changes" ;
   owconfig:context "main.window.modelinfo" ;
   owconfig:context "main.window.dashmodelinfo" .
-:this owconfig:hasModule :Lastcomments .
+:community owconfig:hasModule :Lastcomments .
 :Lastcomments a owconfig:Module ;
   rdfs:label "Lastcomments" ;
   owconfig:priority "15" ;
   rdfs:label "Last Comments" ;
   owconfig:context "main.window.modelinfo" ;
   owconfig:context "main.window.dashmodelinfo" .
-:this owconfig:hasModule :Rating .
+:community owconfig:hasModule :Rating .
 :Rating a owconfig:Module ;
   rdfs:label "Rating" ;
   owconfig:caching "false"^^xsd:boolean ;
   owconfig:priority "20" ;
   owconfig:context "main.window.properties" .
-:this :enableRating "" ;
+:community :enableRating "false"^^xsd:boolean ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "about";
@@ -82,6 +81,6 @@
       owconfig:id "note";
       :property <http://rdfs.org/sioc/ns#note>
 ] .
-:this doap:release :v1-0 .
+:community doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

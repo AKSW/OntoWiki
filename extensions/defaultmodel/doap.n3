@@ -5,21 +5,22 @@
 @prefix extension: <http://ns.ontowiki.net/Extensions/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
-@prefix : <http://ns.ontowiki.net/Extensions/defaultmodel/> .
+@prefix : <https://github.com/AKSW/defaultmodel/raw/master/doap.n3#> .
 
-<> foaf:primaryTopic :this .
-:this a doap:Project ;
+<> foaf:primaryTopic :defaultmodel .
+:defaultmodel a doap:Project ;
   doap:name "defaultmodel" ;
-  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/defaultmodel/> ;
-  owconfig:pluginEvent event:onAfterInitController ;
+  owconfig:privateNamespace <https://github.com/AKSW/defaultmodel/raw/master/doap.n3#> ;
   owconfig:enabled "false"^^xsd:boolean ;
   rdfs:label "Default Model" ;
   doap:description "Plugin to select default model if only one available or always" ;
   owconfig:authorLabel "Christoph Rieß" ;
+  owconfig:pluginEvent event:onAfterInitController ;
   :modelUri <http://showcase.ontowiki.net/> ;
-  :modelsHide "1" ;
+  :setOnce "true"^^xsd:boolean ;
+  :modelsHide "true"^^xsd:boolean ;
   :modelsExclusiveRight "ModelManagement" ;
-  :setSelectedResource "" ;
+  :setSelectedResource "false"^^xsd:boolean ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .
