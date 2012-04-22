@@ -1,18 +1,57 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki error controller.
  * Fetched by default through the Zend_Controller_Plugin_ErrorHandler
- * 
+ *
  * @package    application
  * @subpackage mvc
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: ErrorController.php 3470 2009-06-29 06:58:02Z pfrischmuth $
  */
 class ErrorController extends Zend_Controller_Action
 {
+    /**
+     * OntoWiki Application
+     * @var OntoWiki
+     */
+    protected $_owApp = null;
+
+    /**
+     * OntoWiki Application config
+     * @var Zend_Config
+     */
+    protected $_config = null;
+
+    /**
+     * The session store
+     * @var Zend_Session
+     */
+    protected $_session = null;
+
+    /**
+     * Erfurt App
+     * @var Erfurt_App
+     */
+    protected $_erfurt = null;
+
+    /**
+     * Constructor
+     */
+    public function init()
+    {
+        // init controller variables
+        $this->_owApp   = OntoWiki::getInstance();
+        $this->_config  = $this->_owApp->config;
+        $this->_session = $this->_owApp->session;
+        $this->_erfurt  = $this->_owApp->erfurt;
+    }
+
     /**
      * Default action that is triggered when an error occures
      * during the dispatch process.
@@ -45,17 +84,17 @@ class ErrorController extends Zend_Controller_Action
                 default:
                     // don't change headers
             }
-            
+
             switch (true) {
                 case ($exception instanceof OntoWiki_Http_Exception):
                     $this->_helper->layout()->disableLayout();
                     $this->_helper->viewRenderer->setNoRender();
-                    
+
                     $response = $this->getResponse();
                     $response->setHttpResponseCode($exception->getResponseCode());
                     $response->setBody($exception->getResponseMessage());
                     $response->sendResponse();
-                    
+
                     exit;
             }
 
@@ -68,26 +107,24 @@ class ErrorController extends Zend_Controller_Action
             } else {
                 $this->view->heading   = 'OntoWiki Error';
                 $this->view->errorType = 'error';
-                
+
                 if ($exception->getCode() !== 0) {
                     $this->view->code      = $exception->getCode();
                 }
             }
 
             $errorString = $exception->getMessage();
-            
-            
-            
-            $this->view->exceptionType = get_class($exception);  
+
+            $this->view->exceptionType = get_class($exception);
             $this->view->exceptionFile = $exception->getFile() . '@' . $exception->getLine();
-            
+
             $stacktrace = $exception->getTrace();
             $stacktraceString = '';
             foreach ($stacktrace as $i=>$spec) {
-                $lineStr = isset($spec['line']) ? ('@'.$spec['line']) : '';                
+                $lineStr = isset($spec['line']) ? ('@'.$spec['line']) : '';
                 $stacktraceString .= '#' . $i . ': ' .$spec['class'] . $spec['type'] . $spec['function']
                                   .  $lineStr . '<br />';
-                
+
                 // foreach ($spec['args'] as $arg) {
                 //                     if (is_string($arg)) {
                 //                         $stacktraceString .= '    - ' . $arg . '<br />';
@@ -98,12 +135,12 @@ class ErrorController extends Zend_Controller_Action
                 //                     }
                 //                 }
             }
-            
+
             $this->view->stacktrace = $stacktraceString;
         } else {
             $this->view->heading   = 'OntoWiki Error';
             $this->view->errorType = 'error';
-            
+
             $message = current(OntoWiki::getInstance()->drawMessages());
             if ($message instanceof OntoWiki_Message) {
                 $errorString = $message->getText();
@@ -112,15 +149,18 @@ class ErrorController extends Zend_Controller_Action
                 $this->_redirect($this->config->urlBase, array('code' => 302));
             }
         }
-        
+
+        $this->view->urlBase = $this->_config->urlBase;
         $this->view->errorText = $errorString;
     }
 
     protected function _gracefulError()
     {
-        $requestExtra = str_replace($this->getRequest()->getBaseUrl(),
-                                    '',
-                                    $this->getRequest()->getRequestUri());
+        $requestExtra = str_replace(
+            $this->getRequest()->getBaseUrl(),
+            '',
+            $this->getRequest()->getRequestUri()
+        );
         $requestedUri = OntoWiki::getInstance()->config->urlBase . ltrim($requestExtra, '/');
 
         $createUrl = new OntoWiki_Url(array(), array());
