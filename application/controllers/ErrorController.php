@@ -68,6 +68,9 @@ class ErrorController extends Zend_Controller_Action
         $this->_helper->layout()->disableLayout();
     }
 
+    /*
+     * the debug error output has a stacktrace and other debug information
+     */
     protected function _debugError()
     {
         if ($this->_request->has('error_handler')) {
@@ -154,6 +157,9 @@ class ErrorController extends Zend_Controller_Action
         $this->view->errorText = $errorString;
     }
 
+    /*
+     * the graceful error output tries to be as nice as possible
+     */
     protected function _gracefulError()
     {
         $requestExtra = str_replace(
@@ -167,8 +173,33 @@ class ErrorController extends Zend_Controller_Action
         $createUrl->controller = 'resource';
         $createUrl->action = 'new';
         $createUrl->setParam('r', $requestedUri);
-        $this->view->createUrl = (string)$createUrl;
-        $this->_helper->viewRenderer->setScriptAction('404');
+        $this->view->requestedUrl = (string) $requestedUri;
+        $this->view->createUrl = (string) $createUrl;
+
+        if ($this->_request->has('error_handler')) {
+            // get errors passed by error handler plug-in
+            $errors        = $this->_getParam('error_handler');
+            $exception     = $errors->exception;
+            $exceptionType = get_class($exception);
+            $errorString   = $exception->getMessage();
+            OntoWiki::getInstance()->logger->emerg(
+                $exceptionType . ': ' . $errorString . ' -> ' .
+                $exception->getFile() . '@' . $exception->getLine()
+            );
+        }
+
+        // Zend_Controller_Dispatcher_Exception means invalid controller 
+        // -> resource not found
+        if (
+            ($this->_request->has('error_handler')) &&
+            ($exceptionType != 'Zend_Controller_Dispatcher_Exception')
+        ) {
+            $this->getResponse()->setHttpResponseCode(500);
+            $this->_helper->viewRenderer->setScriptAction('500');
+        } else {
+            $this->getResponse()->setHttpResponseCode(404);
+            $this->_helper->viewRenderer->setScriptAction('404');
+        }
     }
 }
 
