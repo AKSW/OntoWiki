@@ -528,7 +528,7 @@ class ServiceController extends Zend_Controller_Action
                 // JSONp
                 $type = 'application/sparql-results+json';
             } else if (empty($type)) {
-                // dafault: XML
+                // default: XML
                 $type = 'application/sparql-results+xml';
             }
 
@@ -1107,6 +1107,10 @@ class ServiceController extends Zend_Controller_Action
                         $value->value = $currentValue;
                         $value->type  = $currentType;
                     }
+                    if ( $workingMode == 'class' ) {
+                        $value->value = '';
+                        $value->type = $currentType;
+                    }
                 }
 
                 // deal with multiple values of a property
@@ -1136,7 +1140,6 @@ class ServiceController extends Zend_Controller_Action
             $value->title = 'label';
             $uri = EF_RDFS_LABEL;
             $newProperties->$uri = array($value);
-
             $output->$resourceUri = $newProperties;
         }
 

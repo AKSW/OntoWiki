@@ -17,7 +17,7 @@ function cs-install() {
         user=`whoami`;
         if [[ $user == "root" ]]
         then
-            pear install PHP_CodeSniffer;
+            pear install PHP_CodeSniffer-1.3.2;
             echo " CodeSniffer PEAR Package installed.";
             return_value=0
         else
@@ -86,6 +86,8 @@ function cs-disable() {
 # on a submodule
 function cs-install-submodule() {
     return_value=0
+    
+    # check if last letter is an "/", if not add a "/" at the end
     LASTLETTER=${1: -1}
     if  [[ $LASTLETTER != "/" ]]
     then
@@ -93,6 +95,14 @@ function cs-install-submodule() {
     else
         MPATH=$1
     fi
+    
+    # check if first letters are "./", if so cut this letters
+    FIRSTLETTERS=${MPATH: 0: 2}
+    if  [[ $FIRSTLETTERS == "./" ]]
+    then
+        MPATH=${MPATH: 2}
+    fi
+    
     BACKMPATH=${MPATH//[^\/]}
     BACKMPATH=${BACKMPATH//\//..\/}
     cs-install;
@@ -111,6 +121,8 @@ function cs-install-submodule() {
 # on a submodule
 function cs-uninstall-submodule() {
     return_value=0
+    
+    # check if last letter is an "/", if not add a "/" at the end
     LASTLETTER=${1: -1}
     if  [[ $LASTLETTER != "/" ]]
     then
@@ -118,6 +130,14 @@ function cs-uninstall-submodule() {
     else
         MPATH=$1
     fi
+    
+    # check if first letters are "./", if so cut this letters
+    FIRSTLETTERS=${MPATH: 0: 2}
+    if  [[ $FIRSTLETTERS == "./" ]]
+    then
+        MPATH=${MPATH: 2}
+    fi
+    
     echo -n " Do you really want to uninstall CodeSniffer for Submodule '$MPATH'? (y/n): "
     read CONFIRM;
     if [[ $CONFIRM == "y" ]]

@@ -14,6 +14,8 @@
  */
 class LinkinghereModule extends OntoWiki_Module
 {    
+    private $predicates = null;
+    
     /**
      * Constructor
      */
@@ -21,14 +23,26 @@ class LinkinghereModule extends OntoWiki_Module
     {
         $query = new Erfurt_Sparql_SimpleQuery();
 
-        $query->setProloguePart('SELECT DISTINCT ?uri')
+        $query->setProloguePart('SELECT DISTINCT ?subject ?uri')
               ->setWherePart('WHERE {
-                    ?subject ?uri <' . (string) $this->_owApp->selectedResource . '> .
-                    FILTER (isURI(?subject))
-                }')
-              ->setLimit(OW_SHOW_MAX);
+                   ?subject ?uri <' . (string) $this->_owApp->selectedResource . '> .
+                }');
+        
+        $result = $this->_owApp->selectedModel->sparqlQuery($query, array('result_format' => 'extended'));       
+        $predicatesResult = array();
+        if (isset($result['results']['bindings'])) {
+            foreach ($result['results']['bindings'] as $row) {
+                if ($row['subject']['type'] === 'uri') {
+                    $predicatesResult[] = array(
+                        'uri' => $row['uri']['value']
+                    );
+                }
+            }
+        }       
+        $this->predicates = $predicatesResult;
 
-        $this->predicates = $this->_owApp->selectedModel->sparqlQuery($query);
+        // I removed the isURI(?subject) here as well as the limit, since the query is way faster
+        // without filter! We kick out bnodes manually!
     }
 
     public function getTitle()

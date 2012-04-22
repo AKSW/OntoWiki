@@ -18,22 +18,27 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
 </form>
 <h2 class="onlyAural">Extensions</h2>
 <ol id="extensions" class="bullets-none separated">
-<?php $odd = false; foreach($this->extensions as $name => $extension){ 
-    if($name == 'exconf'){ //dont allow to disable the extension configuration itself
-        continue;
+<?php 
+$odd = false; 
+foreach($this->extensions as $name => $extension){  
+    if(in_array($name, $this->coreExtensions)){
+        $isCoreExtension = true;
+    } else {
+        $isCoreExtension = false;
     }
     ?>
     <li class="<?php echo $odd ? "odd" : "even"; ?>">
         <a class="toggle icon icon-arrow-down" title="Close"><span>Close</span></a>
         <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
-                <h3><span class="name"><?php echo $extension->name; ?></span>
+            <?php $confUrl = $this->urlBase.(!isset($extension->confAction) ? 'exconf/conf/?name='. $name : $extension->confAction); ?>
+                <h3><span class="name"><a href="<?php echo $confUrl; ?>"><?php echo $extension->name; ?></a></span>
                     <?php
                         if (isset($extension->author)) {
                             echo '<em class="author">by '.(isset($extension->authorUrl)?'<a href="'.$extension->authorUrl.'">'.$extension->author.'</a>':$extension->author).'</em>';
                         }
                     ?>
                 </h3>
-                <div class="togglebutton" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
+                <div class="togglebutton <?php if($isCoreExtension){echo 'frozen';} ?>" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
                 <p class="description"><?php echo isset($extension->description) ? $extension->description : "Extension does not provide a description."; ?></p>
                 <div class="contextmenu">
                 <?php if(isset($extension->homepage)) : ?>
@@ -43,16 +48,18 @@ $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exco
                         </span>
                     </a>
                 <?php endif; ?>
-                    <a href="<?php echo $this->urlBase; if(!isset($extension->confAction)){?>exconf/conf/?name=<?php echo $name; } else {echo $extension->confAction;}?>" class="item">
+                    <a href="<?php echo $confUrl; ?>" class="item">
                         <span title="Configure" class="icon icon-edit">
                             <span>Configure</span>
                         </span>
                     </a>
+                    <?php if(!$isCoreExtension){ ?>
                     <a href="<?php echo $this->urlBase; ?>exconf/conf/?name=<?php echo $name; ?>&remove=1" class="item">
                         <span title="Remove permanently" class="icon icon-delete">
                             <span>Remove permanently</span>
                         </span>
                     </a>
+                    <?php } ?>
                 </div>
         </div>
     </li>

@@ -24,6 +24,41 @@ tempHrefs = new Array();
  * core css assignments
  */
 $(document).ready(function() {
+    // Object.keys support in older environments that do not natively support it
+    if (!Object.keys) {
+        Object.keys = (function () {
+            var hasOwnProperty = Object.prototype.hasOwnProperty,
+                hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+                dontEnums = [
+                  'toString',
+                  'toLocaleString',
+                  'valueOf',
+                  'hasOwnProperty',
+                  'isPrototypeOf',
+                  'propertyIsEnumerable',
+                  'constructor'
+                ],
+                dontEnumsLength = dontEnums.length
+
+            return function (obj) {
+                if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) throw new TypeError('Object.keys called on non-object')
+
+                var result = []
+
+                for (var prop in obj) {
+                    if (hasOwnProperty.call(obj, prop)) result.push(prop)
+                }
+
+                if (hasDontEnumBug) {
+                    for (var i=0; i < dontEnumsLength; i++) {
+                        if (hasOwnProperty.call(obj, dontEnums[i])) result.push(dontEnums[i])
+                    }
+                }
+              return result
+            }
+        })()
+    };
+
     // the body gets a new class to indicate that javascript is turned on
     $('body').removeClass('javascript-off').addClass('javascript-on');
 
@@ -224,26 +259,27 @@ $(document).ready(function() {
      *  simulate Safari behaviour for other browsers
      *  on return/enter, submit the form
      */
-    if (!$.browser.safari) {
-        $('.submitOnEnter').keypress(function(event) {
-            // return pressed
-            if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
-                $(this).parents('form').submit();
-            }
-        });
-    }
+    $('.submitOnEnter').keypress(function(event) {
+        // return pressed
+        if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
+            $(this).parents('form').submit();
+        }
+    });
+    
     /*
-     *  on press enter, this type of textbox looses focus and gives it to the next textfield
+     *  on press enter, this type of textbox looses focus and gives it to the next element of the same type
      */
     $('.focusNextOnEnter').keypress(function(event) {
         // return pressed
         if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
             var me = $(this)
-            var next = me.next();
-            if(next.get(0).tagName.toLowerCase() == me.get(0).tagName.toLowerCase()){
+            var meType = me.get(0).tagName.toLowerCase()
+            var next = me.next(); //next element
+            if(next.get(0).tagName.toLowerCase() == meType){
                 next.focus();
             } else {
-                var next2 = me.parent().next().find('>'+me.get(0).tagName.toLowerCase()+':first')
+                // if thats not of the same type, go to "parent and "cousin""
+                var next2 = me.parent().next().find('>'+meType+':first')
                 if (next2.length != 0){
                     next2.focus();
                 } 
@@ -261,31 +297,17 @@ $(document).ready(function() {
 
     // init new resource based on type
     $('.init-resource').click(function(event) {
-        var instances = {};
-        var size = 0;
-        var key = "";
-        $('.resource-list a').each(function() {
-          var element    = $(this).attr('typeof').split(' ');
-          for (var t in element) {
-            var type         = element[t];
-            var label        = $(this).parent().find('span.Resource').eq(t).text();
-            var namespace    = type.split(':')[0];
-            var instance     = type.split(':')[1];
-            var namespaceUri = $('.resource-list').attr('xmlns:'+namespace);
-            instances[label] = namespaceUri+instance;
-          };
-        })
-        // get size of types
-        for (key in instances) {
-          size++;
-        }
-        // if only one type is available open immediately the add instance dialog
-        // otherwise show context menu
-        if ( size == 1 ) {
-            createInstanceFromClassURI(instances[key]);
+        // parse .resource-list and query for all types
+        var types = $('.resource-list').rdf()
+                                       .where('?type a rdfs:Class')
+                                       .where('?type rdfs:label ?value')
+                                       .dump();
+
+        if (Object.keys(types).length == 1) {
+            createInstanceFromClassURI(Object.keys(types)[0]);
         } else {
-            showAddInstanceMenu(event, instances);
-        }
+            showAddInstanceMenu(event, types);
+        } 
     });
 
     $('.edit.save').click(function() {

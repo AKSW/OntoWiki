@@ -1,19 +1,25 @@
-syntax: glob
+# OntoWiki configs
+/config.ini
+/extensions/*.ini
+/local.ini
 
-extensions/*.ini
-local.ini
-./debian
+# OntoWiki muck
+*.log
+/cache
+/uploads
+/libraries/Zend
+
+# aksw specific mud
+/BlogPost
+/extensions/dssn/libraries/lib-dssn-php
+
+# ide and editor dirt
 .settings
 .project
 .idea
 .buildpath
 .DS_Store
-*.log
-config.ini
 nbproject
-cache
-uploads
-libraries/Zend
-libraries/ZendFramework-1.*
-BlogPost
-extensions/dssn/libraries/lib-dssn-php
+*~
+*.swp
+

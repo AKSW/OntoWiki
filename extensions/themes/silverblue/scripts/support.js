@@ -252,27 +252,29 @@ function showAddInstanceMenu(event, menuData) {
     var pos = $('.init-resource').offset();
     menuX = pos.left - $('.init-resource').innerWidth() + 4;
     menuY = pos.top + $('.init-resource').outerHeight();
+    menuId = 'windowmenu-' + menuX.toFixed() + '-' + menuY.toFixed();
 
-    menuId = 'windowmenu-' + menuX + '-' + menuY;
-    
     // create the plain menu with correct style and position
     $('.contextmenu-enhanced').append('<div class="contextmenu is-processing" id="' + menuId + '"></div>');
     $('#' + menuId)
-        .attr({style: 'z-index: ' + menuZIndex + '; top: ' + menuY + 'px; left: ' + menuX + 'px;'})
-        .click(function(event) {event.stopPropagation();});
-
-    $('#' + menuId).fadeIn();
+        .css({ 
+          'z-index': menuZIndex,
+          'top': menuY + 'px',
+          'left': menuX + 'px'
+        })
+        .click(function(event) {event.stopPropagation();})
+        .fadeIn();
 
     var tempMenu = "";
     for (var key in menuData) {
-        tempMenu += '<li><a href="javascript:createInstanceFromClassURI(\'' + menuData[key] + '\');">' + key + '</a></li>'
+        var label = menuData[key]['http://www.w3.org/2000/01/rdf-schema#label'][0].value;
+        tempMenu += '<li><a href="javascript:createInstanceFromClassURI(\'' + key + '\');">' + label + '</a></li>'
     }
     // append menu
     // console.log(tempMenu);
     $('#' + menuId).append('<ul>' + tempMenu + '</ul>');
     // remove is-processing
     $('#' + menuId).toggleClass('is-processing');
-
     // repositioning
     menuX = pos.left - $('#' + menuId).innerWidth() + $('.init-resource').outerWidth();
     menuY = pos.top + $('.init-resource').outerHeight();
@@ -281,8 +283,7 @@ function showAddInstanceMenu(event, menuData) {
     $('#' + menuId).css({ top: menuY + 'px', left: menuX + 'px'});
 
     // remove is-processing
-    $('#' + menuId).removeClass('is-processing');
-
+    $('#' + menuId).removeClass("is-processing");
     // prevent href trigger
     event.stopPropagation();
 
@@ -390,7 +391,7 @@ function showResourceMenu(event, json) {
 function loadRDFauthor(callback) {
     var loaderURI = RDFAUTHOR_BASE + 'src/rdfauthor.js';
     
-    if ($('head').children('script[src=' + loaderURI + ']').length > 0) {
+    if ($('head').children('script[src="' + loaderURI + '"]').length > 0) {
         callback();
     } else {
         RDFAUTHOR_READY_CALLBACK = callback;
@@ -414,11 +415,20 @@ function populateRDFauthor(data, protect, resource, graph) {
             for (var i = 0; i < objects.length; i++) {
                 var objSpec = objects[i];
                 
+                if ( objSpec.type == 'uri' ) { 
+                    var value = '<' + objSpec.value + '>'; 
+                } else if ( objSpec.type == 'bnode' ) { 
+                    var value = '_:' + objSpec.value;
+                } else {
+                    // IE fix, object keys with empty strings are removed
+                    var value = objSpec.value ? objSpec.value : ""; 
+                }
+
                 var newObjectSpec = {
-                    value: (objSpec.type == 'uri') ? ('<' + objSpec.value + '>') : objSpec.value, 
+                    value : value,
                     type: String(objSpec.type).replace('typed-', '')
                 }
-                
+
                 if (objSpec.value) {
                     if (objSpec.type == 'typed-literal') {
                         newObjectSpec.options = {
@@ -430,8 +440,8 @@ function populateRDFauthor(data, protect, resource, graph) {
                         }
                     }
                 }
-                
-                RDFauthor.addStatement(new Statement({
+
+                var stmt = new Statement({
                     subject: '<' + currentSubject + '>', 
                     predicate: '<' + currentProperty + '>', 
                     object: newObjectSpec
@@ -440,7 +450,14 @@ function populateRDFauthor(data, protect, resource, graph) {
                     title: objSpec.title, 
                     protected: protect ? true : false, 
                     hidden: objSpec.hidden ? objSpec.hidden : false
-                }));
+                });
+
+                // remove all values except for type
+                if ( !/type/gi.test(stmt._predicateLabel) ) {
+                    stmt._object.value = "";
+                }
+
+                RDFauthor.addStatement(stmt);
             }
         }
     }

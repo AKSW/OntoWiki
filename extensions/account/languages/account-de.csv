@@ -4,3 +4,7 @@ Invalid recovery session identifier.;Ungültige Wiederherstellungssitzungskennun
 You received a mail with further information for account %s. Please follow these instructions to reset your password.;Sie haben eine E-Mail mit weiteren Informationen zu dem Account %s erhalten. Bitte folgen sie diesen Anweisungen um ihr Passwort wiederherzustellen.
 You should able to login with your new password now.;Sie können sich nun mit ihrem neuen Passwort anmelden.
 Username or email;Benutzername oder E-Mail
+local;Lokal
+openid;OpenID
+webid;WebID
+
