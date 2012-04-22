@@ -107,16 +107,13 @@ class NavigationModule extends OntoWiki_Module
         // this gives the complete config array as json to the javascript parts
         $this->view->inlineScript()->prependScript(
             '/* from modules/navigation/ */'.PHP_EOL.
-            'var navigationConfigString = \''.
-            json_encode($this->_privateConfig->toArray()) . '\'' .PHP_EOL.
-            'var navigationConfig = $.evalJSON(navigationConfigString);' .PHP_EOL
+            'var navigationConfig = '.json_encode($this->_privateConfig->toArray()).';'.PHP_EOL
         );
         // this gives the navigation session config to the javascript parts
         if ($this->_session->navigation) {
             $this->view->inlineScript()->prependScript(
                 '/* from modules/navigation/ */'.PHP_EOL.
-                'var navigationConfig = $.evalJSON(\''.
-                json_encode($this->_privateConfig->toArray()) . '\');' .PHP_EOL
+                'var navigationConfig = '.json_encode($this->_privateConfig->toArray()) . ';' .PHP_EOL
             );
         }
         
@@ -126,8 +123,7 @@ class NavigationModule extends OntoWiki_Module
             // load setup
             $this->view->inlineScript()->prependScript(
                 '/* from modules/navigation/ */'.PHP_EOL.
-                'var navigationStateSetupString = \''.$stateSession->setup.'\';'.PHP_EOL.
-                'var navigationStateSetup = $.evalJSON(navigationStateSetupString);' .PHP_EOL
+                'var navigationStateSetup = '.$stateSession->setup .';'.PHP_EOL
             );
             // load view
             $this->view->stateView = $stateSession->view;
@@ -149,11 +145,7 @@ class NavigationModule extends OntoWiki_Module
 	
     public function shouldShow()
     {
-        if (isset($this->_owApp->selectedModel)) {
-            return true;
-        } else {
-            return false;
-        }
+        return isset($this->_owApp->selectedModel);
     }
 
     private function checkConfig($config)
