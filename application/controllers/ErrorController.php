@@ -174,7 +174,8 @@ class ErrorController extends Zend_Controller_Action
         $createUrl->action = 'new';
         $createUrl->setParam('r', $requestedUri);
         $this->view->requestedUrl = (string) $requestedUri;
-        $this->view->createUrl = (string) $createUrl;
+        $this->view->createUrl    = (string) $createUrl;
+        $this->view->urlBase      = OntoWiki::getInstance()->config->urlBase;
 
         if ($this->_request->has('error_handler')) {
             // get errors passed by error handler plug-in
