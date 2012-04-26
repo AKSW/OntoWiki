@@ -357,7 +357,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param string $literaltype
      * @return string id
      */
-    public function addFilter ($property, $isInverse, $propertyLabel, $filter, $value1 = null, $value2 = null, $valuetype = 'literal', $literaltype = null, $hidden = false, $id = null, $negate = false)
+    public function addFilter ($property, $isInverse, $propertyLabel, $filter, $value1 = null, $value2 = null, $valuetype = 'literal', $literaltype = null, $hidden = false, $id = null, $negate = false, $optional = false)
     {
         if($id == null){
             $id = "box" . count($this->_filter);
@@ -460,7 +460,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 if ($valuetype=="literal") {
                     $valueVar = new Erfurt_Sparql_Query2_Var($propertyLabel);
                     if (!$isInverse) {
-                        $triple = $this->_resourceQuery->addTriple(
+                        $triple = new Erfurt_Sparql_Query2_Triple(
                             $this->_resourceVar, 
                             $prop, 
                             $valueVar
@@ -470,15 +470,37 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                             'literal as value for an inverse property '.
                             'is a literal subject which is not allowed');
                     }
-                    
-                    $filterObj = $this->_resourceQuery->addFilter(
-                        new Erfurt_Sparql_Query2_Regex(
-                            new Erfurt_Sparql_Query2_Str($valueVar),
-                            new Erfurt_Sparql_Query2_RDFLiteral(
-                                 '^'.str_replace("\\", "\\\\", preg_quote($value1)).'$'
+
+                    if ($negate) {
+                        $optional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+                        $optional->addElement($triple);
+                        $this->_resourceQuery->addElement($optional);
+                        $triple = $optional;
+
+                        if ($optional) {
+                            $orExpression = new Erfurt_Sparql_Query2_ConditionalOrExpression();
+                            $orExpression->addElement(new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                                new Erfurt_Sparql_Query2_bound($valueVar)
+                            ));
+                            $orExpression->addElement(new Erfurt_Sparql_Query2_NotEquals($valueVar, $value1_obj));
+
+                            $filterObj = $this->_resourceQuery->addFilter($orExpression);
+                        } else {
+                            $filterObj = $this->_resourceQuery->addFilter(
+                                new Erfurt_Sparql_Query2_NotEquals($valueVar, $value1_obj)
+                            );
+                        }
+                    } else {
+                        $this->_resourceQuery->addTriple($triple);
+                        $filterObj = $this->_resourceQuery->addFilter(
+                            new Erfurt_Sparql_Query2_Regex(
+                                new Erfurt_Sparql_Query2_Str($valueVar),
+                                new Erfurt_Sparql_Query2_RDFLiteral(
+                                     '^'.str_replace("\\", "\\\\", preg_quote($value1)).'$'
+                                )
                             )
-                        )
-                    );
+                        );
+                    }
                 } else {
                     if (!$isInverse) {
                         $triple = $this->_resourceQuery->addTriple(
