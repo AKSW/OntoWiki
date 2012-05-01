@@ -149,9 +149,20 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         //$this->updateValueQuery();
     }
+    
+    /**
+     * save all but except the store
+     * @return array
+     */
+    function __sleep(){
+        $vars = get_object_vars($this);
+        unset($vars['store']);
+        return array_keys($vars);
+    }
 
     function __wakeUp(){
         $this->_lang = NULL;
+        $this->_store = Erfurt_App::getInstance()->getStore();
     }
 
     private function _getLanguage () {
