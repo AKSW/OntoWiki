@@ -322,7 +322,7 @@ class ExconfController extends OntoWiki_Controller_Component
             $listHelper->addList($listName, $list, $this->view, 'list_extensions_main');
         } else {
             //define the list on a new store, that queries a sparql endpoint
-            $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceurl'=>$repoUrl, 'graphs'=>array($graph)));
+            $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceUrl'=>$repoUrl, 'graphs'=>array($graph)));
             $store = new Erfurt_Store(array('adapterInstance'=>$adapter), 'sparql');
             $rdfGraphObj = new Erfurt_Rdf_Model($graph);
             $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array(STORE_USE_CACHE => false));
