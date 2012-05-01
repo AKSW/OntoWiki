@@ -851,7 +851,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function addTripleFilter($triples, $id = null){
         if($id == null){
-            $id = "triple" . count($this->_filter);
+            $id = 'triple' . count($this->_filter);
         } else {
             if(isset($this->_filter[$id])){
                 $this->removeFilter($id);

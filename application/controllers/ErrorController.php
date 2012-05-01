@@ -124,7 +124,7 @@ class ErrorController extends Zend_Controller_Action
             $stacktrace = $exception->getTrace();
             $stacktraceString = '';
             foreach ($stacktrace as $i=>$spec) {
-                $lineStr = isset($spec['line']) ? ('@'.$spec['line']) : '';
+                $lineStr = isset($spec['line']) ? ('@'.$spec['file'].':'.$spec['line']) : $spec['file'];
                 $stacktraceString .= '#' . $i . ': ' .$spec['class'] . $spec['type'] . $spec['function']
                                   .  $lineStr . '<br />';
 
