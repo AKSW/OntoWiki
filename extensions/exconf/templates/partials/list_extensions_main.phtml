@@ -2,7 +2,32 @@
 
 if ($this->instances->hasData()): ?>
 <ol class="bullets-none separated">
-    <?php foreach ($this->instanceInfo as $instance){
+    <?php
+    $highestVersions = array(); 
+    foreach ($this->instanceInfo as $instance){
+        $instanceUri = $instance['uri'];
+        if(isset($this->instanceData[$instanceUri]['name'])){
+            $name = $this->instanceData[$instanceUri]['name'][0]['origvalue'];
+        } else {
+            continue;
+        }
+        if(isset($this->instanceData[$instanceUri]['revision'])){
+            $revision = $this->instanceData[$instanceUri]['revision'][0]['value'];
+        } else {
+            continue;
+        }
+        $owVersion = '0.9.6';
+        //$owVersion = $this->_config->version->number;
+        $minVersion = !isset($this->instanceData[$instanceUri]['minOwVersion']) ? null : $this->instanceData[$instanceUri]['minOwVersion'][0]['value'];
+        $installable = ($minVersion == null || version_compare($minVersion, $owVersion, '<='));
+        if(!$installable){
+            continue; //skip
+        }
+        if(!isset($highestVersions[$name]) || version_compare($highestVersions[$name], $revision, '<')){
+            $highestVersions[$name] = $revision;
+        }
+    }
+    foreach ($this->instanceInfo as $instance){
             ?><li class="<?php echo $odd ? 'odd' : 'even'; ?>">
     <?php 
     $instanceUri = $instance['uri'];
@@ -71,6 +96,10 @@ if ($this->instances->hasData()): ?>
             $revision =  null;
         }
         
+        //only display the highest revision
+        if($highestVersions[$name] != $revision){
+            continue;
+        }
         
         $ow = OntoWiki::getInstance();
         $manager        = $ow->extensionManager;
@@ -78,14 +107,8 @@ if ($this->instances->hasData()): ?>
         
         $installed    = $manager->isExtensionRegistered($name);
         //$enabled      = $manager->isExtensionActive($name);
-        $owVersion = '0.9.6';
-        //$owVersion = $this->_config->version->number;
-        $minVersion = !isset($this->instanceData[$instanceUri]['minOwVersion']) ? null : $this->instanceData[$instanceUri]['minOwVersion'][0]['value'];
-        $installable = ($minVersion == null || version_compare($minVersion, $owVersion, '<='));
-        if(!$installable){
-            continue; //skip
-        }
-        $updateable   = $installed && $installable && 
+        
+        $updateable   = $installed && 
           $location != null && 
           $revision != null && version_compare($configs[$name]->version, $revision, '<');
         ?>
@@ -132,11 +155,7 @@ if ($this->instances->hasData()): ?>
                     </diV>
                 <?php
                 } else {
-                    if($installable){
-                        ?><p class="messagebox info">installed and up to date</p><?php
-                    } else {
-                        ?><p class="messagebox info">needs minimal OntoWiki version <?php echo $minVersion; ?> (current: <?php echo $owVersion; ?>)</p><?php
-                    }
+                    ?><p class="messagebox info">installed and up to date</p><?php
                 }
             } else {
                 ?><p class="messagebox info">missing doap:file-release link on newest doap:Version</p>
