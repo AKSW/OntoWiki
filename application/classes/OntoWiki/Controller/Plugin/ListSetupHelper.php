@@ -27,6 +27,10 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
      */
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
+        if (isset($request->noListRedirect)) {
+            return;
+        }
+
         $ontoWiki        = OntoWiki::getInstance();
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         // only once and only when possible
