@@ -20,9 +20,25 @@ $config = Erfurt_App::getInstance()->getConfig();
 $urlBase = $config->urlBase;
 
 $this->headScript()->prependScript(
-        'function showPermaLink(){$("#permalink").slideToggle(400);}
-            function showresQuery(){$("#resQuery").slideToggle(400);}
-            function showvalQuery(){$("#valQuery").slideToggle(400);}');
+    'function showPermaLink(){$("#permalink").slideToggle(400);}
+    function showresQuery(){$("#resQuery").slideToggle(400);}
+    function showvalQuery(){$("#valQuery").slideToggle(400);}
+    function changeSorting(n){
+        var mainInnerContent = $(n).parents(".innercontent");
+        mainInnerContent.addClass("is-processing");
+        mainInnerContent.load(
+            reloadUrl+"",
+            {"instancesconfig": $.toJSON({ sort : {
+                "uri" : $(n).attr("p"),
+                "asc" : $(n).hasClass("up")
+            }}), "list":listName},
+            function(){
+                mainInnerContent.removeClass("is-processing");
+                $(".statustool li a").removeClass("selected");
+                $("body").trigger("ontowiki.resource-list.reloaded");
+        });
+    }'
+);
 ?>
 <div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
 <div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
@@ -50,6 +66,8 @@ $this->headScript()->prependScript(
                about="<?php echo $property['uri'] ?>"
                href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
                 <?php if ($property['inverse']){ ?><sup>-1</sup><?php } ?>
+                <a class="tablesort up" p="<?php echo $property['uri'] ?>" onclick="javascript:changeSorting(this)">&uArr;</a>
+                <a class="tablesort down" p="<?php echo $property['uri'] ?>" onclick="javascript:changeSorting(this)">&dArr;</a>
         </th>
         <?php endforeach; ?>
     </tr>

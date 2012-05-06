@@ -1215,8 +1215,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $query
             ->addProjectionVar($predVar)
             ->getOrder()
-                ->clear()
-                ->add($predVar);
+                ->clear();
         return $query;
     }
 
@@ -1613,6 +1612,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             );
         } else {
             $this->_sortTriple->getElement(0)->setP(new Erfurt_Sparql_Query2_IriRef($uri));
+            if($asc){$this->_resourceQuery->getOrder()->setAsc(0);} else {$this->_resourceQuery->getOrder()->setDesc(0);}
         }
     }
     
@@ -1623,6 +1623,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param boolean $asc true if ascending, false if descending
      */
     public function setOrderVar($var, $asc = true) {
+        $this->setOffset(0);
         if(!is_bool($asc)){
             $asc = true;
         }
