@@ -357,7 +357,7 @@ class ExconfController extends OntoWiki_Controller_Component
             $listHelper->addListPermanently($listName, $list, $this->view, 'list_extensions_main');
         }
 
-        $this->addModuleContext('main.window.list');
+        //$this->addModuleContext('main.window.list');
 
         //echo htmlentities($list->getResourceQuery());
         //echo htmlentities($list->getQuery());
