@@ -2,17 +2,169 @@
 
 if ($this->instances->hasData()): ?>
 <ol class="bullets-none separated">
-    <?php foreach ($this->instanceInfo as $instance){
-            echo $this->partial('partials/list_extensions_element.phtml',
-                array(
-                    'instanceUri'  => $instance['uri'],
-                    'instance'     => $instance,
-                    'instanceData' => $this->instanceData,
-                    'instanceInfo' => $this->instanceInfo,
-                    'propertyInfo' => $this->propertyInfo,
-                    'odd'          => $odd
-                )
-             );
+    <?php
+    $highestVersions = array(); 
+    foreach ($this->instanceInfo as $instance){
+        $instanceUri = $instance['uri'];
+        if(isset($this->instanceData[$instanceUri]['name'])){
+            $name = $this->instanceData[$instanceUri]['name'][0]['origvalue'];
+        } else {
+            continue;
+        }
+        if(isset($this->instanceData[$instanceUri]['revision'])){
+            $revision = $this->instanceData[$instanceUri]['revision'][0]['value'];
+        } else {
+            continue;
+        }
+        $owVersion = '0.9.6';
+        //$owVersion = $this->_config->version->number;
+        $minVersion = !isset($this->instanceData[$instanceUri]['minOwVersion']) ? null : $this->instanceData[$instanceUri]['minOwVersion'][0]['value'];
+        $installable = ($minVersion == null || version_compare($minVersion, $owVersion, '<='));
+        if(!$installable){
+            continue; //skip
+        }
+        if(!isset($highestVersions[$name]) || version_compare($highestVersions[$name], $revision, '<')){
+            $highestVersions[$name] = $revision;
+        }
+    }
+    foreach ($this->instanceInfo as $instance){
+            ?><li class="<?php echo $odd ? 'odd' : 'even'; ?>">
+    <?php 
+    $instanceUri = $instance['uri'];
+        if(isset($this->instanceData[$instanceUri]['name'])){
+            $name = $this->instanceData[$instanceUri]['name'][0]['origvalue'];
+        } else {
+            $name =  $instanceUri; //TODO title helper
+        }
+        
+        if(isset($this->instanceData[$instanceUri]['title'])){
+            $title = $this->instanceData[$instanceUri]['title'][0]['value'];
+        }  else {
+            $title = $name;
+        }
+        
+        if(isset($this->instanceData[$instanceUri]['description'])){
+            $description = $this->instanceData[$instanceUri]['description'][0]['value'];
+        } else {
+            $description =  'no description';
+        }
+        
+        if(isset($this->instanceData[$instanceUri]['page'])){
+            $page = $this->instanceData[$instanceUri]['page'][0]['origvalue'];
+        } else {
+            $page =  null;
+        }
+        
+        if(isset($this->instanceData[$instanceUri]['author'])){
+            $author = $this->instanceData[$instanceUri]['author'][0]['url'];
+        } else {
+            $author =  null;
+        }
+        
+        if(isset($this->instanceData[$instanceUri]['authorLabel'])){
+            $authorLabel = $this->instanceData[$instanceUri]['authorLabel'][0]['value'];
+        } else {
+            if(isset($this->instanceData[$instanceUri]['author'][0])){
+                $authorLabel = $this->instanceData[$instanceUri]['author'][0]['value'];
+            } else {
+                $authorLabel =  'unknown author';
+            }
+        }
+        if(isset($this->instanceData[$instanceUri]['homepage'])){
+            $authorPage = $this->instanceData[$instanceUri]['homepage'][0]['origvalue'];
+        } else {
+            $authorPage =  null;
+        }
+        if(isset($this->instanceData[$instanceUri]['mbox'])){
+            $authorMail = $this->instanceData[$instanceUri]['mbox'][0]['value'];
+        } else {
+            $authorMail =  null;
+        }
+        
+        if (isset($this->instanceData[$instanceUri]['zip'])) {
+            $location = $this->instanceData[$instanceUri]['zip'][0]['uri'];
+        } else {
+            if(strpos($instanceUri, 'https://github.com/AKSW') === 0){
+                $location = implode('/', array_slice(explode('/', $instanceUri), 0, 5)) . '/zipball/master';
+            } else {
+                $location = null;
+            }
+        }
+        if(isset($this->instanceData[$instanceUri]['revision'])){
+            $revision = $this->instanceData[$instanceUri]['revision'][0]['value'];
+        } else {
+            $revision =  null;
+        }
+        
+        //only display the highest revision
+        if($highestVersions[$name] != $revision){
+            continue;
+        }
+        
+        $ow = OntoWiki::getInstance();
+        $manager        = $ow->extensionManager;
+        $configs = $manager->getExtensions();
+        
+        $installed    = $manager->isExtensionRegistered($name);
+        //$enabled      = $manager->isExtensionActive($name);
+        
+        $updateable   = $installed && 
+          $location != null && 
+          $revision != null && version_compare($configs[$name]->version, $revision, '<');
+        ?>
+            <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
+                <h3><span class="name">
+                     <?php if ($page != null) { ?>
+                        <a href="<?php echo $page; ?>" >
+                     <?php } 
+                     echo $title . ($revision != null ? ' (version '.$revision.')' : '');
+                     if ($page != null) { ?>
+                        </a>
+                     <?php } ?>
+                </span></h3>
+                <span class="author">by 
+                    <?php if ($authorPage !== null) { ?>
+                        <a href="<?php echo $authorPage;?>"><?php echo $authorLabel;?></a> 
+                    <?php } else echo $authorLabel;
+                if($authorMail != null){
+                    ?>&nbsp;<a href="<?php echo $authorMail; ?>">mail</a>
+                <?php } ?>
+                </span>
+            <p class="description"><?php echo $description; ?></p>
+            <?php
+            if($location !== null){
+                $url = new OntoWiki_Url(array('controller' => 'exconf', 'action'=>'installarchiveremote'));
+                $url->url = $location;
+                $url->name = $name;
+                $action = false;
+                if(!$installed){
+                    $label = 'install';
+                    $action = true;
+                } else if($updateable){
+                    $label = 'update';
+                    $action = true;
+                }
+                if($action){
+                ?>
+                    <div class="contextmenu">
+                        <a href="<?php echo $url; ?>" class="item">
+                            <span title="<?php echo $label; ?>" class="icon icon-add">
+                                <span><?php echo $label; ?></span>
+                            </span>
+                        </a>
+                    </diV>
+                <?php
+                } else {
+                    ?><p class="messagebox info">installed and up to date</p><?php
+                }
+            } else {
+                ?><p class="messagebox info">missing doap:file-release link on newest doap:Version</p>
+                <?php
+            }
+        ?>
+        </div>
+    </li>
+<?php
             $odd = !$odd;
         } ?>
 </ol>

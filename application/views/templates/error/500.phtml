@@ -7,15 +7,13 @@
  */
 
 /**
- * OntoWiki error template
- *
- * @author Norman Heino <norman.heino@gmail.com>
+ * OntoWiki internal server error template
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>404: Resource not found</title>
+<title>500: Internal Server Error</title>
 <style type="text/css">
 body {
     font-family: sans-serif;
@@ -29,11 +27,14 @@ h1 {
 </style>
 </head>
 <body>
-<h1>Resource not found</h1>
+<h1>Internal Server Error</h1>
 <p>
-The resource <code><?php echo $this->requestedUrl; ?></code> you are trying to reach does not exist.<br />
-Do you want to <a href="<?php echo $this->createUrl; ?>">create it</a>?<br />
-Otherwise, try to <a href"<?php echo $this->urlBase; ?>">go back</a>.
+We're sorry, but something went wrong (e.g. configuration).<br />
+Please inform your system administrator.<br />
+Details are logged and debug mode can be turned on.
+</p>
+<p>
+<a href="<?php echo $this->urlBase; ?>">go back</a>
 </p>
 </body>
 </html>

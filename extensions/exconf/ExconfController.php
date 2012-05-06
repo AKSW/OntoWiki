@@ -14,18 +14,18 @@
 class ExconfController extends OntoWiki_Controller_Component
 {
     const EXTENSION_CLASS = 'http://usefulinc.com/ns/doap#Project';
+    const VERSION_CLASS = 'http://usefulinc.com/ns/doap#Version';    
     const EXTENSION_TITLE_PROPERTY = 'http://www.w3.org/2000/01/rdf-schema#label'; //rdfs:label
     const EXTENSION_NAME_PROPERTY = 'http://usefulinc.com/ns/doap#name'; //doap:name
     const EXTENSION_DESCRIPTION_PROPERTY = 'http://usefulinc.com/ns/doap#description'; //doap:description
-    const EXTENSION_LATESTRELEASELOCATION_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/latestZip';
-    const EXTENSION_LATESTREVISION_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/latestRevision';
+    const EXTENSION_RELEASELOCATION_PROPERTY = 'http://usefulinc.com/ns/doap#file-release';
     const EXTENSION_RELEASE_PROPERTY = 'http://usefulinc.com/ns/doap#release';
     const EXTENSION_PAGE_PROPERTY = 'http://usefulinc.com/ns/doap#homepage';
     const EXTENSION_RELEASE_ID_PROPERTY = 'http://usefulinc.com/ns/doap#revision';
     const EXTENSION_AUTHOR_PROPERTY = 'http://usefulinc.com/ns/doap#maintainer';
-    const EXTENSION_AUTHORLABEL_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorLabel';
-    const EXTENSION_AUTHORPAGE_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorPage';
-    const EXTENSION_AUTHORMAIL_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/authorMail';
+    const EXTENSION_AUTHORLABEL_PROPERTY = 'http://xmlns.com/foaf/0.1/name';
+    const EXTENSION_AUTHORPAGE_PROPERTY = 'http://xmlns.com/foaf/0.1/homepage';
+    const EXTENSION_AUTHORMAIL_PROPERTY = 'http://xmlns.com/foaf/0.1/mbox';
     const EXTENSION_MINOWVERSION_PROPERTY = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/minOWVersion';
     const EXTENSION_NS = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/';
 
@@ -322,21 +322,36 @@ class ExconfController extends OntoWiki_Controller_Component
             $listHelper->addList($listName, $list, $this->view, 'list_extensions_main');
         } else {
             //define the list on a new store, that queries a sparql endpoint
-            $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceurl'=>$repoUrl, 'graphs'=>array($graph)));
+            $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceUrl'=>$repoUrl, 'graphs'=>array($graph)));
             $store = new Erfurt_Store(array('adapterInstance'=>$adapter), 'sparql');
             $rdfGraphObj = new Erfurt_Rdf_Model($graph);
             $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array(STORE_USE_CACHE => false));
-            $list->addTypeFilter(self::EXTENSION_CLASS, null, array('withChilds'=>false));
-            $list->addShownProperty(self::EXTENSION_NAME_PROPERTY, 'name'); //internal name (folder name)
-            $list->addShownProperty(self::EXTENSION_TITLE_PROPERTY, 'title'); //pretty name (label)
-            $list->addShownProperty(self::EXTENSION_DESCRIPTION_PROPERTY, 'description');
-            $list->addShownProperty(self::EXTENSION_PAGE_PROPERTY, 'page');
-            $list->addShownProperty(self::EXTENSION_AUTHOR_PROPERTY, 'author');
-            $list->addShownProperty(self::EXTENSION_AUTHORLABEL_PROPERTY, 'authorLabel');
-            $list->addShownProperty(self::EXTENSION_AUTHORPAGE_PROPERTY, 'authorPage');
-            $list->addShownProperty(self::EXTENSION_AUTHORMAIL_PROPERTY, 'authorMail');
-            $list->addShownProperty(self::EXTENSION_LATESTRELEASELOCATION_PROPERTY, 'latestZip');
-            $list->addShownProperty(self::EXTENSION_LATESTREVISION_PROPERTY, 'latestRevision');
+            $list->addTypeFilter(self::VERSION_CLASS, null, array('withChilds'=>false));
+            $projectVar = new Erfurt_Sparql_Query2_Var('project');
+            $list->addTripleFilter(
+                array(
+                    new Erfurt_Sparql_Query2_Triple(
+                        $projectVar, 
+                        new Erfurt_Sparql_Query2_IriRef(self::EXTENSION_RELEASE_PROPERTY),
+                        $list->getResourceVar()
+                    )
+                )
+            );
+            
+            //$list->addShownProperty(self::EXTENSION_RELEASE_PROPERTY, 'project', true);
+            
+            $this->addProjectProperty(self::EXTENSION_NAME_PROPERTY, $projectVar, $list);//internal name (folder name)
+            $this->addProjectProperty(self::EXTENSION_TITLE_PROPERTY, $projectVar, $list);//pretty name (label)
+            $this->addProjectProperty(self::EXTENSION_DESCRIPTION_PROPERTY, $projectVar, $list);
+            $this->addProjectProperty(self::EXTENSION_PAGE_PROPERTY, $projectVar, $list);
+            $this->addProjectProperty(self::EXTENSION_AUTHOR_PROPERTY, $projectVar, $list);
+
+            $this->addAuthorProperty(self::EXTENSION_AUTHORLABEL_PROPERTY, $projectVar, $list, 'authorLabel');
+            $this->addAuthorProperty(self::EXTENSION_AUTHORPAGE_PROPERTY, $projectVar, $list);
+            $this->addAuthorProperty(self::EXTENSION_AUTHORMAIL_PROPERTY, $projectVar, $list);
+            
+            $list->addShownProperty(self::EXTENSION_RELEASELOCATION_PROPERTY, 'zip');
+            $list->addShownProperty(self::EXTENSION_RELEASE_ID_PROPERTY, 'revision');
             $list->addShownProperty(self::EXTENSION_MINOWVERSION_PROPERTY, 'minOwVersion');
 
             $listHelper->addListPermanently($listName, $list, $this->view, 'list_extensions_main');
@@ -346,6 +361,30 @@ class ExconfController extends OntoWiki_Controller_Component
 
         //echo htmlentities($list->getResourceQuery());
         //echo htmlentities($list->getQuery());
+    }
+    private function addProjectProperty($p, $projectVar, $list, $name = null){
+        $pIri = new Erfurt_Sparql_Query2_IriRef($p);
+        if($name == null){
+            $var = new Erfurt_Sparql_Query2_Var($pIri);
+        } else {
+            $var = new Erfurt_Sparql_Query2_Var($name);
+        }
+        $t1 =  new Erfurt_Sparql_Query2_Triple($projectVar, new Erfurt_Sparql_Query2_IriRef(self::EXTENSION_RELEASE_PROPERTY), $list->getResourceVar());
+        $t2 = new Erfurt_Sparql_Query2_Triple($projectVar, $pIri, $var);
+        $list->addShownPropertyCustom(array($t1, $t2), $var);
+    }
+     private function addAuthorProperty($p, $projectVar, $list, $name = null){
+        $pIri = new Erfurt_Sparql_Query2_IriRef($p);
+        if($name == null){
+            $var = new Erfurt_Sparql_Query2_Var($pIri);
+        } else {
+            $var = new Erfurt_Sparql_Query2_Var($name);
+        }
+        $authorVar = new Erfurt_Sparql_Query2_Var('author');
+        $t0 =  new Erfurt_Sparql_Query2_Triple($projectVar, new Erfurt_Sparql_Query2_IriRef(self::EXTENSION_RELEASE_PROPERTY), $list->getResourceVar());
+        $t1 = new Erfurt_Sparql_Query2_Triple($projectVar, new Erfurt_Sparql_Query2_IriRef(self::EXTENSION_AUTHOR_PROPERTY), $authorVar);
+        $t2 = new Erfurt_Sparql_Query2_Triple($authorVar, $pIri, $var);
+        $list->addShownPropertyCustom(array($t0, $t1, $t2), $var);
     }
 
     /**
