@@ -444,15 +444,6 @@ class Ontowiki_Extension_Manager
         return $helperInstance;
     }
 
-    private function _getLastConfigEditTime()
-    {
-        if (stristr(PHP_OS, 'win')) {
-            return time()+1; //this causes all subfolder timestamps to be evaluated
-        } else {
-            return filemtime($this->_extensionPath); //false positives (any file edit)
-        }
-    }
-
     private function _getModifiedConfigsSince($time)
     {
         $dir = new DirectoryIterator($this->_extensionPath);
@@ -515,7 +506,7 @@ class Ontowiki_Extension_Manager
 
         $reloadConfigs = array();
         //parse all extensions whose configs have been modified
-        if ($cacheExists && $cacheCreation < $this->_getLastConfigEditTime()) { //this check speeds up the scan on linux
+        if ($cacheExists) { //this check speeds up the scan on linux
             $reloadConfigs = $this->_getModifiedConfigsSince($cacheCreation);
             foreach ($reloadConfigs as $extensionName => $code) {
                 //code: 0=>local-config, 1=>default-config, 2=>both (has been modified)
@@ -685,7 +676,6 @@ class Ontowiki_Extension_Manager
 
         // register for context(s)
         foreach ($contexts as $context) {
-            //echo "register ".$moduleName." for ".$context.PHP_EOL;
             $this->_moduleRegistry->register($extensionName, $moduleFilename, $context, $config);
         }
     }
@@ -834,10 +824,13 @@ class Ontowiki_Extension_Manager
             unset($config['events']);
         }
 
+        //pull up the default module
         if (isset($config['modules']['default'])) {
             $config = array_merge($config, $config['modules']['default']);
             unset($config['modules']['default']);
         }
+        
+        //pull up the default section
         $config = array_merge($config, $config['default']);
         unset($config['default']);
 
@@ -873,25 +866,23 @@ class Ontowiki_Extension_Manager
         if (isset($mapping[$key])) {
             return $mapping[$key];
         }
-        $newKey = str_replace($privateNS, '', $key);
-        if (preg_match('/^[a-zA-Z0-9]*$/', $newKey) != 1) {
-            //echo 'illegal '.$key.PHP_EOL;
-            return null;
-        }
-        return $newKey;
+        $newKey = substr($key, strlen($privateNS)-1); //strip private NS, only keep last part
+        return preg_replace('[^A-Za-z0-9-_]', '', $newKey); //strip bad chars
     }
 
     private static function getSubConfig($memModel, $bnUri, $privateNS, $mapping)
     {
         $kv = array();
-        $name = null;
+        $name = $memModel->getValue($bnUri, self::$_owconfigNS.'id');
+        if ($name == null) {
+            return array();
+        } 
+        
         foreach ($memModel->getPO($bnUri) as $key => $values) {
-            if ($key == EF_RDF_TYPE) {
+            if ($key == EF_RDF_TYPE || $key == self::$_owconfigNS.'id') {
                 continue;
             }
-            if ($key == self::$_owconfigNS.'id') {
-                $name = $values[0]['value'];
-            } else if ($key == self::$_owconfigNS.'config') {
+            if ($key == self::$_owconfigNS.'config') {
                 foreach ($values as $value) {
                     $kv = array_merge($kv, self::getSubConfig($memModel, $value['value'], $privateNS, $mapping));
                 }
@@ -903,9 +894,8 @@ class Ontowiki_Extension_Manager
                 }
             }
         }
-        if ($name != null) {
-            return array($name=>$kv);
-        } else echo 'no name for '.$bnUri;
+        $r = array($name=>$kv);
+        return $r;
     }
 
     private function _loadConfigs($name)
