@@ -805,13 +805,18 @@ class Ontowiki_Extension_Manager
         }
 
         foreach ($modules as $moduleUri) {
+            //echo "module ".$moduleUri."<br/>\n";
+            //echo "privateNS ".$privateNS."<br/>\n";
             $name = strtolower(self::getPrivateKey($moduleUri, $privateNS));
+            //echo "name ".$name."<br/>\n";
             $config['modules'][$name] = array();
             foreach ($memModel->getPO($moduleUri) as $key => $values) {
+                //echo "key ".$key."<br/>\n";
                 $mappedKey = self::getPrivateKey($key, $owconfigNS);
                 if ($mappedKey == null) {
                     continue; //modules can only have specific properties
                 }
+                //echo "mappedKey ".$mappedKey."<br/>\n";
 
                 foreach ($values as $value) {
                     $value = self::getValue($value);
@@ -866,7 +871,19 @@ class Ontowiki_Extension_Manager
         if (isset($mapping[$key])) {
             return $mapping[$key];
         }
-        $newKey = substr($key, strlen($privateNS)-1); //strip private NS, only keep last part
+        if(strpos($key, $privateNS) === 0){
+            echo $key." startswith ".$privateNS."<br/>\n";
+            $newKey = substr($key, strlen($privateNS)); //strip private NS, only keep last part
+        } else {
+            $l1 = strrpos($key, '/');
+            $l2 = strrpos($key, '#');
+            if($l1 < $l2){$l = $l2;} else {$l = $l1;}
+            if($l == false){
+                $newKey = $key;
+            } else {
+                $newKey =  substr($key, $l+1);
+            }
+        }
         return preg_replace('[^A-Za-z0-9-_]', '', $newKey); //strip bad chars
     }
 
