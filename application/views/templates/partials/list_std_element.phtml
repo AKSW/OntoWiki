@@ -65,11 +65,13 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                 //if there is more than one value, show the "show as list" link (looks like this is printed between the first and second value, but its hidden and shown as a context menu)
                             ?>
                                 <div class="contextmenu">
+                                    <?php if (!$property['inverse']): ?>
                                     <a class="item rdfauthor-edit-property" onclick="editPropertyListmode(event)">
                                         <span class="icon icon-edit" title="Edit Values">
                                             <span>Show as List</span>
                                         </span>
                                     </a>
+                                    <?php endif; ?>
                                     <a class="item"
                                        href="<?php $url->setParam('instancesconfig', json_encode(array('filter'=>array(array(
                                            'id'=>'moreValues','action'=>'add','mode'=>'box',
@@ -92,7 +94,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                 <li>
                                     <a about="<?php echo $this->instanceUri ?>" 
                                        class="hasMenu"
-                                       rel="<?php echo $this->curie($value['uri']) ?>"
+                                       rel="<?php echo $this->curie($property['uri']) ?>"
                                        href="<?php echo $value['url'] ?>" 
                                        resource="<?php echo $value['uri'] ?>">
                                            <?php echo $value['value']; ?>
@@ -103,7 +105,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                     <a about="<?php echo $this->instanceUri ?>" 
                                        style="display: none;"
                                        class="hasMenu"
-                                       rel="<?php echo $this->curie($value['uri']) ?>"
+                                       rel="<?php echo $this->curie($property['uri']) ?>"
                                        href="<?php echo $value['url'] ?>" 
                                        resource="<?php echo $value['uri'] ?>">
                                            <?php echo $value['value']; ?>
