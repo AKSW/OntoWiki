@@ -8,7 +8,7 @@ require_once 'OntoWiki/Module.php';
  * show last comments on resources of one knowledge base
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_lastcomments
+ * @package    OntoWiki_Extensions_Community
  * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
  * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)

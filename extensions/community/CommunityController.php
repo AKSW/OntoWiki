@@ -1,12 +1,8 @@
-<?php 
-/**
- * @category   OntoWiki
- * @package    OntoWiki_extensions_components_community
- */
+<?php
 
 /**
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_community
+ * @package    OntoWiki_Extensions_Community
  */
 class CommunityController extends OntoWiki_Controller_Component {
 
@@ -28,7 +24,7 @@ class CommunityController extends OntoWiki_Controller_Component {
         //Loading data for list of saved queries
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = "community-".$this->_request->getParam('mode');
-        
+
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
             $listHelper->addList($listName, $list, $this->view, 'list_community_main', $this->_privateConfig);

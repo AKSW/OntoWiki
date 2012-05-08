@@ -7,7 +7,8 @@ require_once 'OntoWiki/Module.php';
  *
  * Allows to post a comment about a resource.
  *
- * @package    ontowiki
+ * @category   OntoWiki
+ * @package    OntoWiki_Extensions_Community
  * @author     Christian Maier, Niederstätter Michael
  * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
