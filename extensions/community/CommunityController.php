@@ -2,7 +2,7 @@
 
 /**
  * @category   OntoWiki
- * @package    OntoWiki_Extensions_Community
+ * @package    Extensions_Community
  */
 class CommunityController extends OntoWiki_Controller_Component {
 

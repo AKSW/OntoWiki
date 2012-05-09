@@ -9,7 +9,7 @@
  *   (this should be undone if the community tab can be created from a Query2 too)
  *
  * @category   OntoWiki
- * @package    OntoWiki_Extensions_Community
+ * @package    Extensions_Community
  * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
