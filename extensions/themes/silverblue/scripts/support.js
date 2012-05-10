@@ -474,7 +474,6 @@ function createInstanceFromClassURI(type, dataCallback) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
 
     // check if an resource is in editing mode
-    console.log($(body).data('editingMode'));
     if($(body).data('editingMode')) {
         RDFauthor.cancel();
         RDFauthor.reset();
