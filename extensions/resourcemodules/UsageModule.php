@@ -3,24 +3,14 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_usage
- * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- */
-
-
-/**
  * OntoWiki usage module
  *
  * Adds the "Usage as Property" box to the properties context
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_usage
+ * @package    Extensions_Resourcemodule
  * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @category  extensions
- * @package   modules
  * @author    Norman Heino <norman.heino@gmail.com>
  */
 class UsageModule extends OntoWiki_Module
