@@ -473,6 +473,12 @@ function populateRDFauthor(data, protect, resource, graph, workingmode) {
 function createInstanceFromClassURI(type, dataCallback) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
 
+    // check if an resource is in editing mode
+    if($(body).data('editingMode')) {
+        RDFauthor.cancel();
+        RDFauthor.reset();
+    }
+
     // remove resource menus
     removeResourceMenus();
 
