@@ -5,7 +5,7 @@
  * show last activities in a knowledge base and link to the resources
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_lastchanges
+ * @package    Extensions_Community
  * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
  * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)

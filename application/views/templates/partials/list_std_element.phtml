@@ -90,7 +90,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                 <?php
                             }
                             //print the value itself until OW_SHOW_MAX
-                            if (isset($value['url']) && $value['url'] !== null && $i<OW_SHOW_MAX+1): ?>
+                            if (isset($value['url']) && $value['url'] !== null && $i<OW_SHOW_MAX+1): //show uris until OW_SHOW_MAX ?>
                                 <li>
                                     <a about="<?php echo $this->instanceUri ?>" 
                                        class="hasMenu"
@@ -100,7 +100,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                            <?php echo $value['value']; ?>
                                     </a>
                                 </li>
-                            <?php else: //don't show value, which are > OW_SHOW_MAX ?>
+                            <?php elseif (isset($value['url']) && $value['url'] !== null): //don't show uri value, which are > OW_SHOW_MAX ?>
                                 <li>
                                     <a about="<?php echo $this->instanceUri ?>" 
                                        style="display: none;"
@@ -110,6 +110,23 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                        resource="<?php echo $value['uri'] ?>">
                                            <?php echo $value['value']; ?>
                                     </a>
+                                </li>
+                            <?php elseif ($value['url'] == null && $i < OW_SHOW_MAX+1): //show literals until OW_SHOW_MAX ?>
+                                <li>
+                                    <span about="<?php echo $this->instanceUri ?>" 
+                                       property="<?php echo $this->curie($property['uri']) ?>"
+                                       content="<?php echo $value['uri'] ?>">
+                                           <?php echo $value['value']; ?>
+                                    </a>
+                                </li>
+                            <?php elseif ($value['url'] == null): //don't show literal values, which are > OW_SHOW_MAX ?>
+                                <li>
+                                    <span about="<?php echo $this->instanceUri ?>" 
+                                       style="display: none;"
+                                       property="<?php echo $this->curie($property['uri']) ?>"
+                                       content="<?php echo $value['uri'] ?>">
+                                           <?php echo $value['value']; ?>
+                                    </span>
                                 </li>
                             <?php endif; ?>
                         <?php endforeach;?>
@@ -132,7 +149,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                class="hasMenu"
                                rel="<?php echo $this->curie($property['uri']) ?>"
                                resource="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['uri'] ?>"
-                               href="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['url'] ?>">
+                               content="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['value'] ?>">
                                             <?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['value'] ?>
                             </a>
                         </div>
