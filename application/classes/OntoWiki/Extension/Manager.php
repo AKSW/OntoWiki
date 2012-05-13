@@ -872,18 +872,20 @@ class Ontowiki_Extension_Manager
             return $mapping[$key];
         }
         if(strpos($key, $privateNS) === 0){
-            echo $key." startswith ".$privateNS."<br/>\n";
-            $newKey = substr($key, strlen($privateNS)); //strip private NS, only keep last part
+            //strip private NS, only keep last part
+            $newKey = substr($key, strlen($privateNS)); 
         } else {
+            //return only local part 
             $l1 = strrpos($key, '/');
             $l2 = strrpos($key, '#');
-            if($l1 < $l2){$l = $l2;} else {$l = $l1;}
+            if($l1 < $l2){$l = $l2;} else {$l = $l1;} //take the right most / or #
             if($l == false){
-                $newKey = $key;
+                $newKey = $key; //no / or #
             } else {
                 $newKey =  substr($key, $l+1);
             }
         }
+        
         return preg_replace('[^A-Za-z0-9-_]', '', $newKey); //strip bad chars
     }
 
