@@ -291,30 +291,31 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onDeleteResources($event)
     {
-        $modelUri = $event->modelUri;
-        $uriArray = $event->resourceArray;
+        if ($this->_properties->sync->enabled) {
+            $modelUri = $event->modelUri;
+            $uriArray = $event->resourceArray;
 
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
-        $query = new Erfurt_Sparql_SimpleQuery();
-        $query->setProloguePart('SELECT ?s ?o');
-        $query->addFrom($this->_syncModelUri);
-        $query->setWherePart(
-            'WHERE {
-            ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
-            ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
-            ?s <' . $this->_properties['syncResource'] . '> ?o .
-            }'
-        );
+            require_once 'Erfurt/Sparql/SimpleQuery.php';
+            $query = new Erfurt_Sparql_SimpleQuery();
+            $query->setProloguePart('SELECT ?s ?o');
+            $query->addFrom($this->_syncModelUri);
+            $query->setWherePart(
+                'WHERE {
+                ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
+                ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
+                ?s <' . $this->_properties['syncResource'] . '> ?o .
+                }'
+            );
 
-        $store = Erfurt_App::getInstance()->getStore();
-        $result = $store->sparqlQuery($query, array('use_ac' => false));
+            $store = Erfurt_App::getInstance()->getStore();
+            $result = $store->sparqlQuery($query, array('use_ac' => false));
 
-        foreach ($result as $row) {
-            if (in_array($row['o'], $uriArray)) {
-                $store->deleteMatchingStatements($this->_syncModelUri, $row['s'], null, null, array('use_ac' => false));
+            foreach ($result as $row) {
+                if (in_array($row['o'], $uriArray)) {
+                    $store->deleteMatchingStatements($this->_syncModelUri, $row['s'], null, null, array('use_ac' => false));
+                }
             }
         }
-
         return true;
     }
 
