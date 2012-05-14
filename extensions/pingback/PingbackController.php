@@ -7,7 +7,8 @@
  * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class PingbackController extends OntoWiki_Controller_Component {
+class PingbackController extends OntoWiki_Controller_Component
+{
 
     protected $_targetGraph = null;
     protected $_sourceRdf = null;
@@ -16,7 +17,8 @@ class PingbackController extends OntoWiki_Controller_Component {
     /**
      * receive a ping
      */
-    public function pingAction() {
+    public function pingAction()
+    {
         $this->_logInfo('Pingback Server Init.');
 
         $this->_owApp->appendMessage(
@@ -26,7 +28,7 @@ class PingbackController extends OntoWiki_Controller_Component {
         if (isset($_POST['source']) && isset($_POST['target'])) {
             // Simplified Semantic Pingback
             echo $this->ping($_POST['source'], $_POST['target']);
-            exit;
+            return;
         } else {
             // Create XML RPC Server
             $server = new Zend_XmlRpc_Server();
@@ -36,7 +38,7 @@ class PingbackController extends OntoWiki_Controller_Component {
             $response = $this->getResponse();
             $response->setBody($server->handle());
             $response->sendResponse();
-            exit;
+            return;
         }
     }
 
@@ -48,7 +50,8 @@ class PingbackController extends OntoWiki_Controller_Component {
      *
      * @return integer An integer (fault) code
      */
-    public function ping($sourceUri, $targetUri) {
+    public function ping($sourceUri, $targetUri)
+    {
         $this->_logInfo('Method ping was called.');
 
         // Is $targetUri a valid linked data resource in this namespace?
@@ -61,10 +64,13 @@ class PingbackController extends OntoWiki_Controller_Component {
         $foundPingbackTriples = array();
 
         // 1. Try to dereference the source URI as RDF/XML
-        $client = Erfurt_App::getInstance()->getHttpClient($sourceUri, array(
-                    'maxredirects' => 10,
-                    'timeout' => 30
-                ));
+        $client = Erfurt_App::getInstance()->getHttpClient(
+            $sourceUri,
+            array(
+                'maxredirects' => 10,
+                'timeout' => 30
+            )
+        );
         $client->setHeaders('Accept', 'application/rdf+xml');
         $client->setHeaders('Content-Type', 'application/rdf+xml');
         try {
@@ -84,10 +90,13 @@ class PingbackController extends OntoWiki_Controller_Component {
         // 2. If nothing was found, try to use as RDFa service
         if (((boolean) $config->rdfa->enabled) && (count($foundPingbackTriples) === 0)) {
             $service = $config->rdfa->service . urlencode($sourceUri);
-            $client = Erfurt_App::getInstance()->getHttpClient($service, array(
-                        'maxredirects' => 10,
-                        'timeout' => 30
-                    ));
+            $client = Erfurt_App::getInstance()->getHttpClient(
+                $service,
+                array(
+                    'maxredirects' => 10,
+                    'timeout' => 30
+                )
+            );
 
             try {
                 $response = $client->request();
@@ -105,18 +114,23 @@ class PingbackController extends OntoWiki_Controller_Component {
         }
 
         $versioning = Erfurt_App::getInstance()->getVersioning();
-        $versioning->startAction(array(
-            'type' => '9000',
-            'modeluri' => $this->_targetGraph,
-            'resourceuri' => $sourceUri
-        ));
+        $versioning->startAction(
+            array(
+                'type' => '9000',
+                'modeluri' => $this->_targetGraph,
+                'resourceuri' => $sourceUri
+            )
+        );
 
         // 3. If still nothing was found, try to find a link in the html
         if (count($foundPingbackTriples) === 0) {
-            $client = Erfurt_App::getInstance()->getHttpClient($sourceUri, array(
-                        'maxredirects' => 10,
-                        'timeout' => 30
-                    ));
+            $client = Erfurt_App::getInstance()->getHttpClient(
+                $sourceUri,
+                array(
+                    'maxredirects' => 10,
+                    'timeout' => 30
+                )
+            );
 
             try {
                 $response = $client->request();
@@ -188,18 +202,20 @@ class PingbackController extends OntoWiki_Controller_Component {
         return 'Pingback has been registered or updated... Keep spinning the Data Web ;-)';
     }
 
-    protected function _addPingback($s, $p, $o) {
+    protected function _addPingback($s, $p, $o)
+    {
         if ($this->_targetGraph === null) {
             return false;
         }
 
         $store = Erfurt_App::getInstance()->getStore();
 
-        $sql = 'INSERT INTO ow_pingback_pingbacks (source, target, relation) VALUES ("' . $s . '", "' . $o . '", "' . $p . '")';
+        $sql = 'INSERT INTO ow_pingback_pingbacks (source, target, relation) '
+            . 'VALUES ("' . $s . '", "' . $o . '", "' . $p . '")';
         $this->_query($sql);
 
         $store->addStatement(
-                $this->_targetGraph, $s, $p, array('value' => $o, 'type' => 'uri'), false
+            $this->_targetGraph, $s, $p, array('value' => $o, 'type' => 'uri'), false
         );
 
         if ($this->_sourceRdf !== null) {
@@ -207,7 +223,7 @@ class PingbackController extends OntoWiki_Controller_Component {
                 $titleProps = $this->_privateConfig->title_properties->toArray();
                 if (in_array($prop, $titleProps)) {
                     $store->addStatement(
-                            $this->_targetGraph, $s, $prop, $oArray[0], false
+                        $this->_targetGraph, $s, $prop, $oArray[0], false
                     );
                     break; // only one title
                 }
@@ -220,11 +236,11 @@ class PingbackController extends OntoWiki_Controller_Component {
         $event->o = $o;
         $event->trigger();
 
-
         return true;
     }
 
-    protected function _checkTargetExists($targetUri) {
+    protected function _checkTargetExists($targetUri)
+    {
         if ($this->_targetGraph == null) {
             $event = new Erfurt_Event('onNeedsGraphForLinkedDataUri');
             $event->uri = $targetUri;
@@ -241,7 +257,8 @@ class PingbackController extends OntoWiki_Controller_Component {
         }
     }
 
-    function _deleteInvalidPingbacks($sourceUri, $targetUri, $foundPingbackTriples = array()) {
+    function _deleteInvalidPingbacks($sourceUri, $targetUri, $foundPingbackTriples = array())
+    {
         $store = Erfurt_App::getInstance()->getStore();
 
         $sql = 'SELECT * FROM ow_pingback_pingbacks WHERE source="' . $sourceUri . '" AND target="' . $targetUri . '"';
@@ -266,7 +283,13 @@ class PingbackController extends OntoWiki_Controller_Component {
                     'type' => 'uri'
                 );
 
-                $store->deleteMatchingStatements($this->_targetGraph, $sourceUri, $row['relation'], $oSpec, array('use_ac' => false));
+                $store->deleteMatchingStatements(
+                    $this->_targetGraph,
+                    $sourceUri,
+                    $row['relation'],
+                    $oSpec,
+                    array('use_ac' => false)
+                );
                 $removed = true;
             }
         }
@@ -274,11 +297,15 @@ class PingbackController extends OntoWiki_Controller_Component {
         return $removed;
     }
 
-    protected function _determineInverseProperty($propertyUri) {
-        $client = Erfurt_App::getInstance()->getHttpClient($propertyUri, array(
-                    'maxredirects' => 10,
-                    'timeout' => 30
-                ));
+    protected function _determineInverseProperty($propertyUri)
+    {
+        $client = Erfurt_App::getInstance()->getHttpClient(
+            $propertyUri,
+            array(
+                'maxredirects' => 10,
+                'timeout' => 30
+            )
+        );
         $client->setHeaders('Accept', 'application/rdf+xml');
         try {
             $response = $client->request();
@@ -307,7 +334,8 @@ class PingbackController extends OntoWiki_Controller_Component {
         }
     }
 
-    protected function _getPingbackTriplesFromRdfXmlString($rdfXml, $sourceUri, $targetUri) {
+    protected function _getPingbackTriplesFromRdfXmlString($rdfXml, $sourceUri, $targetUri)
+    {
         $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('rdfxml');
         try {
             $result = $parser->parse($rdfXml, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
@@ -350,30 +378,35 @@ class PingbackController extends OntoWiki_Controller_Component {
         return $foundTriples;
     }
 
-    protected function _logError($msg) {
+    protected function _logError($msg)
+    {
         $owApp = OntoWiki::getInstance();
         $logger = $owApp->logger;
 
         if (is_array($msg)) {
-            $logger->debug('Pingback Component Error: ' . print_r($msg, true));
+            $logger->debug('Pingback Component Error: ' . var_export($msg, true));
         } else {
             $logger->debug('Pingback Component Error: ' . $msg);
         }
     }
 
-    protected function _logInfo($msg) {
+    protected function _logInfo($msg)
+    {
         $owApp = OntoWiki::getInstance();
         $logger = $owApp->logger;
 
         if (is_array($msg)) {
-            $logger->debug('Pingback Component Info: ' . print_r($msg, true));
+            $logger->debug('Pingback Component Info: ' . var_export($msg, true));
         } else {
             $logger->debug('Pingback Component Info: ' . $msg);
         }
     }
 
-    protected function _pingbackExists($s, $p, $o) {
-        $sql = 'SELECT * FROM ow_pingback_pingbacks WHERE source="' . $s . '" AND target="' . $o . '" AND relation="' . $p . '" LIMIT 1';
+    protected function _pingbackExists($s, $p, $o)
+    {
+        $sql = 'SELECT * FROM ow_pingback_pingbacks '
+            . 'WHERE source="' . $s . '" AND target="' . $o . '" AND relation="' . $p . '" '
+            . 'LIMIT 1';
         $result = $this->_query($sql);
         if (is_array($result) && (count($result) === 1)) {
             return true;
@@ -382,7 +415,8 @@ class PingbackController extends OntoWiki_Controller_Component {
         return false;
     }
 
-    private function _checkDb() {
+    private function _checkDb()
+    {
         if ($this->_dbChecked) {
             return;
         }
@@ -399,7 +433,8 @@ class PingbackController extends OntoWiki_Controller_Component {
         $this->_dbChecked = true;
     }
 
-    private function _createTable() {
+    private function _createTable()
+    {
         $store = Erfurt_App::getInstance()->getStore();
 
         $sql = 'CREATE TABLE IF NOT EXISTS ow_pingback_pingbacks (
@@ -412,7 +447,8 @@ class PingbackController extends OntoWiki_Controller_Component {
         return $this->_query($sql, false);
     }
 
-    protected function _query($sql, $withCheck = true) {
+    protected function _query($sql, $withCheck = true)
+    {
         if ($withCheck) {
             $this->_checkDb();
         }
