@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -14,7 +14,7 @@ require_once 'OntoWiki/Controller/Component.php';
  * provides services for URI search, statement import and statement sync.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_datagathering
+ * @package    OntoWiki_Extensions_Datagathering
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class DatagatheringController extends OntoWiki_Controller_Component
@@ -109,7 +109,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      *
      * @var Erfurt_Wrapper_Registry
      */
-    private $_wrapperRegisty = null;
+    private $_wrapperRegistry = null;
 
 
     // ------------------------------------------------------------------------
@@ -125,7 +125,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         //$this->_properties = $this->_privateConfig->properties->toArray();
 
-        $this->_wrapperRegisty = Erfurt_Wrapper_Registry::getInstance();
+        $this->_wrapperRegistry = Erfurt_Wrapper_Registry::getInstance();
 
         $owApp = OntoWiki::getInstance();
         if (null !== $owApp->selectedModel) {
@@ -181,7 +181,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (null === $q) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The q parameter is missing.';
-            exit;
+            return;
         }
         $termsArray = explode(' ', $q);
 
@@ -219,7 +219,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $limit = self::SEARCH_DEFAULT_LIMIT;
         }
 
-
         // Check whether given term is a URI! If a URI is given we return an empty result, for some users
         // may want to enter URIs themself.
         if (count($termsArray) === 1) {
@@ -228,11 +227,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                 if (preg_match($regExp, $t)) {
                     echo json_encode('');
-                    exit;
+                    return;
                 }
                 if (strlen($t) > 20) {
                     echo json_encode('');
-                    exit;
+                    return;
                 }
             }
         }
@@ -351,8 +350,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
         //$response->setHeader('Content-Type', 'application/json');
         $response->setBody($body);
         $response->sendResponse();
-
-        exit;
     }
 
     /**
@@ -683,7 +680,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         $result = false;
         try {
-            $result = $this->_wrapperRegisty->getWrapperInstance($wrapperName)->isAvailable($uri, $this->_graphUri);
+            $result = $this->_wrapperRegistry->getWrapperInstance($wrapperName)->isAvailable($uri, $this->_graphUri);
         } catch (Exception $e) {
             $result = false;
         }
@@ -962,7 +959,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     $newStatements = self::filterStatements(
                         $newStatements, $uri, $all, $presets, $exceptedProperties, $fetchMode
                     );
-                    
+
                     //custom filter
                     if ($filterCallback != null && is_array($filterCallback)) {
                         try {
@@ -1076,7 +1073,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $this->_response->setHeader('Content-Type', 'application/json', true);
         $this->_response->setBody(json_encode($returnValue));
         $this->_response->sendResponse();
-        exit;
     }
 
     // ------------------------------------------------------------------------
@@ -1596,7 +1592,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
     private function _getData($uri, $wrapperName, $modelUri)
     {
         try {
-            $wrapper = $this->_wrapperRegisty->getWrapperInstance($wrapperName);
+            $wrapper = $this->_wrapperRegistry->getWrapperInstance($wrapperName);
 
             $wrapperResult = $wrapper->run($uri, $modelUri);
             if (is_array($wrapperResult) && isset($wrapperResult['add'])) {
