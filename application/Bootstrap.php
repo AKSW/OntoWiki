@@ -172,7 +172,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             error_reporting(E_ALL | E_STRICT);
             ini_set('display_errors', 'On');
             // enable debugging options
-            define('_OWDEBUG', 1);
+            if (false == defined ('_OWDEBUG')) 
+                define('_OWDEBUG', 1);
             // log everything
             $config->log->level = 7;
         }
