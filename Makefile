@@ -116,7 +116,10 @@ rdfauthor:
 	git clone git@github.com:AKSW/RDFauthor.git libraries/RDFauthor
 
 test:
-	phpunit --stderr  application/tests
+	phpunit --stderr application/tests
+
+test-extensions:
+	phpunit --stderr extensions
 
 install-test-environment:
 	sudo apt-get install php-pear

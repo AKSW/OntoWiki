@@ -79,7 +79,7 @@ class CkanController extends OntoWiki_Controller_Component
         // m (model) is automatically used and selected
         if ((!isset($this->request->m)) && (!$this->_owApp->selectedModel)) {
             throw new OntoWiki_Exception('No model pre-selected model and missing parameter m (model)!');
-            exit;
+            return;
         } else {
             $model = $this->_owApp->selectedModel;
         }

@@ -230,7 +230,7 @@ class AuthController extends OntoWiki_Controller_Component
                 
                 header("Content-Type: application/x-x509-user-cert");
                 echo $cert['certData'];
-                exit;
+                return;
             }
         }
         
@@ -260,7 +260,7 @@ class AuthController extends OntoWiki_Controller_Component
         
         if (null === $this->_request->id) {
             echo '"id" parameter is missing.';
-            exit;
+            return;
         }
         
         $id = $this->_config->urlBase . 'auth/users/id/' . $this->_request->id;
@@ -274,7 +274,7 @@ class AuthController extends OntoWiki_Controller_Component
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'application/rdf+xml', true);
         $response->sendResponse();
-        exit;
+        return;
     }
     
     public function agentAction()
@@ -296,7 +296,7 @@ class AuthController extends OntoWiki_Controller_Component
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'application/rdf+xml', true);
         $response->sendResponse();
-        exit;
+        return;
     }
     
     

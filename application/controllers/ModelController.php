@@ -136,7 +136,7 @@ class ModelController extends OntoWiki_Controller_Base
         
         if (!$this->_request->getParam('m')) {
             throw new OntoWiki_Controller_Exception("Missing parameter 'm'.");
-            exit;
+            return;
         }
         
         $store      = $this->_owApp->erfurt->getStore();
@@ -317,7 +317,7 @@ class ModelController extends OntoWiki_Controller_Base
             // Forward to info action
             $this->_redirect($this->_config->urlBase . 'model/config/?m=' . urlencode($this->_request->m), 
                              array('code' => 302));
-            exit;
+            return;
 		} else if (isset($this->_request->delete_prefix)) {
 			try {
 				$model->deleteNamespacePrefix($this->_request->delete_prefix);
@@ -338,7 +338,7 @@ class ModelController extends OntoWiki_Controller_Base
 			// Forward to info action
             $this->_redirect($this->_config->urlBase . 'model/config/?m=' . urlencode($this->_request->m), 
                              array('code' => 302));
-            exit;
+            return;
 		} else {
             // Set the window title in the appropriate language.
             $translate  = $this->_owApp->translate;
@@ -714,7 +714,7 @@ class ModelController extends OntoWiki_Controller_Base
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
             $response->sendResponse();
             throw new OntoWiki_Controller_Exception("Format '$format' not supported.");
-            exit;
+            return;
         }
         
         // Check whether a model uri is given
@@ -727,7 +727,7 @@ class ModelController extends OntoWiki_Controller_Base
                 $response->setRawHeader('HTTP/1.0 404 Not Found');
                 $response->sendResponse();
                 throw new OntoWiki_Controller_Exception("Model '$modelUri' not found.");
-                exit;
+                return;
             }
             
             // Check whether model is available (with acl). If not: 403 Forbidden.
@@ -736,7 +736,7 @@ class ModelController extends OntoWiki_Controller_Base
                 $response->setRawHeader('HTTP/1.0 403 Forbidden');
                 $response->sendResponse();
                 throw new OntoWiki_Controller_Exception("Model '$modelUri' not available.");
-                exit;
+                return;
             }
             
             $filename = 'export' . date('Y-m-d_Hi');
@@ -768,7 +768,7 @@ class ModelController extends OntoWiki_Controller_Base
             $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
             echo $serializer->serializeGraphToString($modelUri);
             $response->sendResponse();
-            exit;
+            return;
         }
         // Else use all available models.
         else {
@@ -777,7 +777,7 @@ class ModelController extends OntoWiki_Controller_Base
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
             $response->sendResponse();
             throw new OntoWiki_Controller_Exception("No Graph URI given.");
-            exit;
+            return;
         }
     }
     
@@ -930,7 +930,7 @@ class ModelController extends OntoWiki_Controller_Base
                 $response = $this->getResponse();
                 $response->setRawHeader('HTTP/1.0 400 Bad Request');
                 throw new OntoWiki_Controller_Exception(implode(PHP_EOL, $errors));
-                exit;
+                return;
             } else {
                 // We have a redirect uri given, so we do not redirect, but show the error messages
                 foreach ($errors as $e) {

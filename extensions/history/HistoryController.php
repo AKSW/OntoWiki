@@ -32,13 +32,13 @@ class HistoryController extends OntoWiki_Controller_Component
         
 
         if (!$model || !$resource) {
-            var_dump('r or m missing');exit;
+            var_dump('r or m missing');return;
         }
 
         $versioning = $this->_erfurt->getVersioning();
         $versioning->setLimit($limit);
         if (!$versioning->isVersioningEnabled()) {
-            var_dump('versioning disabled');exit;
+            var_dump('versioning disabled');return;
         }
 
         $title = $resource->getTitle();

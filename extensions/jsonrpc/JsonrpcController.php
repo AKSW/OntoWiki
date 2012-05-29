@@ -61,8 +61,8 @@ class JsonrpcController extends OntoWiki_Controller_Component
             return;
         } else {
             $this->_response->setRawHeader('HTTP/1.0 404 Not Found');
-            echo '400 Not Found - The given JSONRPC Server has no corresponding wrapper class.';
-            exit;
+            echo '400 Not Found - The given JSONRPC Server has no corresponding wrapper class.';    
+            return;
         }
     }
 }

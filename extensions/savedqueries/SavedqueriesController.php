@@ -29,7 +29,7 @@ class SavedqueriesController extends OntoWiki_Controller_Component
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
             require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('No model pre-selected and missing parameter m (model)!');
-            exit;
+            return;
         } else {
             $this->model = $this->_owApp->selectedModel;
         }

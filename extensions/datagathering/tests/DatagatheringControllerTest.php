@@ -2,7 +2,7 @@
 
 require_once 'TestHelper.php';
 
-class LinkeddataWrapperTest extends Zend_Test_PHPUnit_ControllerTestCase
+class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
 {   
     protected $_testAc = null;
     protected $_testAdapter = null;
@@ -248,8 +248,6 @@ class LinkeddataWrapperTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         
         $this->dispatch('/datagathering/import');
-        
-        //echo $this->_response->getBody();exit;
         
         $this->assertController('datagathering');
         $this->assertAction('import');

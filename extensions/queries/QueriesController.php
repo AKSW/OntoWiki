@@ -151,7 +151,7 @@ class QueriesController extends OntoWiki_Controller_Component {
 
                 //redirect
                 header('Location: ' . $url);
-                exit;
+                return;
             }
 
             if (stristr($query, 'select') && !stristr($query, 'limit')) {
@@ -203,7 +203,7 @@ class QueriesController extends OntoWiki_Controller_Component {
 
                     $response->setBody($result)
                             ->sendResponse();
-                    exit;
+                    return;
                 }
 
                 $this->view->time = ((microtime(true) - $start) * 1000);
@@ -413,7 +413,7 @@ class QueriesController extends OntoWiki_Controller_Component {
         }
         $response->setBody($res);
         $response->sendResponse();
-        exit;
+        return;
     }
 
     /**
@@ -453,7 +453,7 @@ class QueriesController extends OntoWiki_Controller_Component {
 
         $response->setBody($res);
         $response->sendResponse();
-        exit;
+        return;
     }
 
     private function getUserQueryDB($create = true) {
@@ -877,7 +877,7 @@ class QueriesController extends OntoWiki_Controller_Component {
                     $count = -3;
                     $response->setBody($count);
                     $response->sendResponse();
-                    exit;
+                    return;
                 }
             }
 
@@ -892,7 +892,7 @@ class QueriesController extends OntoWiki_Controller_Component {
                 $count = -2;
                 $response->setBody($count);
                 $response->sendResponse();
-                exit;
+                return;
             }
         } else {
             $count = -1;
@@ -900,7 +900,7 @@ class QueriesController extends OntoWiki_Controller_Component {
 
         $response->setBody($count);
         $response->sendResponse();
-        exit;
+        return;
     }
 
     public function getresulttableAction() {

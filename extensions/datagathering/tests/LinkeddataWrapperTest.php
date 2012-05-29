@@ -1,7 +1,6 @@
 <?php
 
 require_once 'TestHelper.php';
-require_once 'LinkeddataWrapper.php';
 
 class LinkeddataWrapperTest extends PHPUnit_Framework_TestCase
 {   
@@ -9,7 +8,7 @@ class LinkeddataWrapperTest extends PHPUnit_Framework_TestCase
      
     public function setUp()
     {
-        $this->_wrapper = new LinkeddataWrapper();
+        $this->_wrapper = new Erfurt_Wrapper_LinkeddataWrapper();
     }
     
     public function testGetDescription()
