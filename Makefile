@@ -23,6 +23,9 @@ help:
 	@echo "     'make status' ('git status' for all repos)"
 	@echo "     'make branch-check' ('git rev-parse' for all repos)"
 	@echo "     'make clean' (deletes all log and cache files)"
+	@echo "     'make test' (execute 'phpunit TestSuite')"
+	@echo "     'make test-erfurt' (execute Erfurts TestSuite)"
+	@echo "     'make install-test-environment' (Install neccessary software (PHPUnit,...))"
 	@echo "     'make cs-install' (install CodeSniffer)"
 	@echo "     'make cs-uninstall' (uninstall CodeSniffer)"
 	@echo "     'make cs-install-submodule MPATH=<path>' (install CodeSniffer on a submodule,"
@@ -112,10 +115,26 @@ rdfauthor:
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	git clone git@github.com:AKSW/RDFauthor.git libraries/RDFauthor
 
+test:
+	phpunit --stderr  application/tests
+
+install-test-environment:
+	sudo apt-get install php-pear
+	sudo pear config-set auto_discover 1
+	sudo pear channel-update pear.php.net
+	sudo pear upgrade pear
+	sudo pear install -a pear.phpunit.de/PHPUnit
+	sudo pear install phpunit/PHPUnit_Selenium
+	sudo pear install phpunit/DbUnit
+
 erfurt:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
 	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt
+
+test-erfurt:
+	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..
+
 
 # packaging
 

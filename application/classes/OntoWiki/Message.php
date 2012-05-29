@@ -94,9 +94,6 @@ class OntoWiki_Message
         $this->_type = $type;
         $this->_text = $text;
         
-        // get translation for current language
-        $this->_translate = OntoWiki::getInstance()->translate;
-        
         // Clone view
         if (null === $this->_view) {
             $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
@@ -106,6 +103,9 @@ class OntoWiki_Message
             $this->_view = clone $viewRenderer->view;
             $this->_view->clearVars();
         }
+        
+        // get translation for current language
+        $this->_translate = $this->_view->translate;
     }
     
     /**

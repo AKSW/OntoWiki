@@ -125,8 +125,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         //$this->_properties = $this->_privateConfig->properties->toArray();
 
-        $this->_wrapperRegistry = Erfurt_Wrapper_Registry::getInstance();
-
+        // For testability we reset the wrapper registry first, since
+        // multiple calls of this method would fail otherwise.
+        Erfurt_Wrapper_Registry::reset();
+        $this->_wrapperRegisty = Erfurt_Wrapper_Registry::getInstance();
+        
         $owApp = OntoWiki::getInstance();
         if (null !== $owApp->selectedModel) {
             $this->_graphUri = $owApp->selectedModel->getModelIri();

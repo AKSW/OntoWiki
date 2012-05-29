@@ -39,9 +39,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //because serialized erfurt objects in the session need constants defined in erfurt
         //is this ok?
 
+        Erfurt_Wrapper_Registry::reset();
+
         // require Erfurt
         $this->bootstrap('Erfurt');
-        // $erfurt = $this->getResource('Erfurt');
+        //$erfurt = $this->getResource('Erfurt');
 
         // require Session
         $this->bootstrap('Session');
@@ -128,9 +130,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->themes->default  = rtrim($config->themes->default, '/\\') . '/';
         $config->extensions->base = rtrim($config->extensions->base, '/\\') . '/';
 
-        if (!defined('EXTENSION_PATH')) {
+        if ( false === defined ( 'EXTENSION_PATH' ) )
             define('EXTENSION_PATH', $config->extensions->base);
-        }
+            
         $config->extensions->legacy     = EXTENSION_PATH . rtrim($config->extensions->legacy, '/\\') . '/';
         $config->languages->path        = EXTENSION_PATH . rtrim($config->languages->path, '/\\') . '/';
 
@@ -172,8 +174,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             error_reporting(E_ALL | E_STRICT);
             ini_set('display_errors', 'On');
             // enable debugging options
-            if (false == defined ('_OWDEBUG')) 
+            if ( false === defined ('_OWDEBUG') )
+            {
                 define('_OWDEBUG', 1);
+            }
             // log everything
             $config->log->level = 7;
         }
@@ -222,7 +226,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $ontoWiki = $this->getResource('OntoWiki');
 
         // require Logger, since Erfurt logger should write into OW logs dir
-        $this->bootstrap('Logger');
+        // TODO: Neccessary?
+        // $this->bootstrap('Logger');
+
+        // Reset the Erfurt app for testability... needs to be refactored.
+        Erfurt_App::reset();
 
         try {
             $erfurt = Erfurt_App::getInstance(false)->start($config);
@@ -302,6 +310,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
+
+        OntoWiki_Navigation::reset();
 
         // get current action name
         $currentAction = $request->getActionName();
@@ -427,9 +437,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $session    = new Zend_Session_Namespace($sessionKey);
 
         // define the session key as a constant for global reference
-        if (!defined('_OWSESSION')) {
+
+        if ( false === defined ( '_OWSESSION' ) )
             define('_OWSESSION', $sessionKey);
-        }
 
         // inject session vars into OntoWiki
         if (array_key_exists('sessionVars', $this->_options['bootstrap'])) {
@@ -609,27 +619,5 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         ));
 
         return $view;
-    }
-
-    /**
-     * Initializes the wrapper manager
-     *
-     * @since 0.9.5
-     */
-    public function _initWrapperManager()
-    {
-        // require Erfurt
-        $this->bootstrap('Erfurt');
-        $erfurt = $this->getResource('Erfurt');
-
-        // require Config
-        $this->bootstrap('Config');
-        $config = $this->getResource('Config');
-
-        // initialize wrapper manager and load wrapper
-        $wrapperManager = $erfurt->getWrapperManager(false);
-        $wrapperManager->addWrapperPath(ONTOWIKI_ROOT . $config->extensions->wrapper);
-
-        return $wrapperManager;
     }
 }

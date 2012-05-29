@@ -174,15 +174,19 @@ class OntoWiki_Module_Registry
             $options = $default->merge($options);
             
             // set css classes according to module state
-            switch ($this->_moduleStates->{$options->id}) {
-                case self::MODULE_STATE_OPEN:
-                    break;
-                case self::MODULE_STATE_MINIMIZED:
-                    $options->classes .= ' is-minimized';
-                    break;
-                case self::MODULE_STATE_HIDDEN:
-                    $options->classes .= ' is-disabled';
-                    break;
+            if ( true == property_exists ( $options, 'id' ) ) {
+                switch ($this->_moduleStates->{$options->id}) {
+                    case self::MODULE_STATE_OPEN:
+                        break;
+                    case self::MODULE_STATE_MINIMIZED:
+                        $options->classes .= ' is-minimized';
+                        break;
+                    case self::MODULE_STATE_HIDDEN:
+                        $options->classes .= ' is-disabled';
+                        break;
+                }
+            } else {
+                // throw new Exception ('$options->id is not set for Module '. $moduleName .' and context '. $context);
             }
 
             // register module

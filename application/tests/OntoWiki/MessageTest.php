@@ -1,30 +1,118 @@
 <?php
+/**
+ * OntoWiki
+ *
+ * LICENSE
+ *
+ * This file is part of the OntoWiki project.
+ * Copyright (C) 2006-2010, AKSW
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the 
+ * Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details.
+ *
+ * A copy of the GNU General Public License is bundled with this package in
+ * the file LICENSE.txt. It is also available through the world-wide-web at 
+ * this URL: http://opensource.org/licenses/gpl-2.0.php
+ *
+ * @category   OntoWiki
+ * @package    OntoWiki
+ * @subpackage UnitTests
+ * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
+ * @version    $Id: $
+ */
+ 
+/*
+ * Helper file, that adjusts the include_path and initializes the test environment.
+ */
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'TestHelper.php';
 
-require_once 'test_base.php';
-require_once 'OntoWiki/Message.php';
+// This constant will not be defined iff this file is executed directly.
+if (!defined('PHPUnit_MAIN_METHOD')) {
+    define('PHPUnit_MAIN_METHOD', 'OntoWiki_MessageTest::main');
+}
 
-// PHPUnit
-require_once 'PHPUnit/Framework.php';
-
+/**
+ * This test class comtains tests for the OntoWiki index controller.
+ * 
+ * @category   OntoWiki
+ * @package    OntoWiki
+ * @subpackage UnitTests
+ * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
+ * @author     Norman Heino <norman.heino@gmail.com>
+ * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
+ */
 class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
 {
+    protected $_owApp = null;
     
-    protected $_fixture;
-    
-    public function setUp()
+    /**
+     * The main method, which executes all tests inside this class.
+     * 
+     * @return void
+     */
+    public static function main()
     {
-        $this->_fixture = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
+        PHPUnit_TextUI_TestRunner::run(new ReflectionClass('OntoWiki_MessageTest'));
     }
     
-    public function testMessageType()
+    public function setUp () 
     {
-        $this->assertEquals($this->_fixture->getType(), 'success');
+        $this->_owApp       = new Zend_Application( 'default', APPLICATION_PATH . 'config/application.ini');
+        $this->_owApp->bootstrap();
     }
     
-    public function testMessageText()
+    public function tearDown ()
     {
-        $this->assertEquals($this->_fixture->getText(), 'The test string for the message object.');
+        OntoWiki_Navigation::reset();
+    }
+    
+    public function testMessageGetTypeDefaultInfo()
+    {
+        $msg = new OntoWiki_Message('ttt');
+        $this->assertEquals($msg->getType(), OntoWiki_Message::INFO);
+    }
+    
+    public function testMessageGetTypeSuccess()
+    {
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::SUCCESS);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::SUCCESS);
+    }
+    
+    public function testMessageGetTypeInfo()
+    {
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::INFO);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::INFO);
+    }
+    
+    public function testMessageGetTypeWarning()
+    {
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::WARNING);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::WARNING);
+    }
+    
+    public function testMessageGetTypeError()
+    {
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::ERROR);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::ERROR);
+    }
+    
+    public function testMessageGetText()
+    {
+        $msg = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
+        $this->assertEquals($msg->getText(), 'The test string for the message object.');
     }
 }
 
-?>
+// If this file is executed directly, execute the tests.
+if (PHPUnit_MAIN_METHOD === 'OntoWiki_MessageTest::main') {
+    OntoWiki_MessageTest::main();
+}
