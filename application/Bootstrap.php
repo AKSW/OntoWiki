@@ -3,20 +3,21 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
- /**
-  * OntoWiki bootstrap class.
-  *
-  * Provides on-demand loading of application resources.
-  *
-  * @category OntoWiki
-  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
-  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
-  * @author Norman Heino <norman.heino@gmail.com>
-  */
+/**
+ * OntoWiki bootstrap class.
+ *
+ * Provides on-demand loading of application resources.
+ *
+ * @category OntoWiki
+ * @package Bootstrap
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Norman Heino <norman.heino@gmail.com>
+ */
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
     /**
