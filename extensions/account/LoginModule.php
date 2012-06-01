@@ -12,7 +12,7 @@
  * Provides the OntoWiki application menu and a search field
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_login
+ * @package    Extensions_Account
  * @author     Norman Heino <norman.heino@gmail.com>
  */
 class LoginModule extends OntoWiki_Module

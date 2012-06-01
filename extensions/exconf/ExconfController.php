@@ -1,14 +1,21 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * edit extension configuration via a gui
  *
  * file permissions for the folders that contain a extension needs to allow modification
  * mostly that would be 0777
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_exconf
+ * @package    Extensions_Exconf
  * @author     Jonas Brekle <jonas.brekle@gmail.com>
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ExconfController extends OntoWiki_Controller_Component

@@ -1,10 +1,17 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * semantic pingback controller
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_pingback
- * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @package    Extensions_Pingback
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class PingbackController extends OntoWiki_Controller_Component

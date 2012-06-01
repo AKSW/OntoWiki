@@ -2,11 +2,17 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package    Extensions_Googletracking
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id:$
  */
 
 require_once 'OntoWiki/Plugin.php';

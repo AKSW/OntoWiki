@@ -1,13 +1,20 @@
 <?php
+/**
+* This file is part of the {@link http://ontowiki.net OntoWiki} project.
+*
+* @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+* @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+*/
 
 /**
- * 
+ *
  * Enter description here ...
+ * @package    Extensions_Resourcecreationuri
  * @author criess
  *
  */
 class ResourceUriGenerator {
-    
+
     /**
      * @var Array that holds multibyte and special chars in UTF-8 to uri compatible chars.
      *      All other non-alphanumeric will be deleted

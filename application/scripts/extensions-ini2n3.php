@@ -1,5 +1,19 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
+/**
+ * Script to convert extensions ini configuration to the new N3 format
+ *
+ * @category OntoWiki
+ * @package OntoWiki_Scripts
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 class INI {
     /**
      *  WRITE

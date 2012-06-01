@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 require_once 'OntoWiki/Module.php';
 
@@ -10,9 +16,8 @@ require_once 'OntoWiki/Module.php';
  * @category   OntoWiki
  * @package    Extensions_Community
  * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: lastcomments.php 4239 2009-10-05 15:07:39Z yamalight $
  */
 class LastcommentsModule extends OntoWiki_Module
 {

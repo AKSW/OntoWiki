@@ -1,4 +1,11 @@
 <?php
+/**
+* This file is part of the {@link http://ontowiki.net OntoWiki} project.
+*
+* @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+* @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+*/
+
 require_once 'OntoWiki/Plugin.php';
 require_once OntoWiki::getInstance()->extensionManager->getExtensionPath().'resourcecreationuri/classes/ResourceUriGenerator.php';
 
@@ -6,7 +13,7 @@ require_once OntoWiki::getInstance()->extensionManager->getExtensionPath().'reso
  * Plugin that tries to make nice uris if new resources are created.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
+ * @package    Extensions_Resourcecreationuri
  */
 class ResourcecreationuriPlugin extends OntoWiki_Plugin
 {

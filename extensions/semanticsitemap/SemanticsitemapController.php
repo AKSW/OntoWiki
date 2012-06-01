@@ -1,11 +1,19 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * Semantic Sitemap plug-in controller
  *
+ * @category   OntoWiki
+ * @package    Extensions_Semanticsitemap
  * @author Sebastian Dietzold <sebastian@dietzold.de>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: $
  */
 class SemanticsitemapController extends OntoWiki_Controller_Component
 {

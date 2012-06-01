@@ -1,14 +1,18 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki debug controller.
- * 
- * @package    application
- * @subpackage mvc
+ *
+ * @package    OntoWiki_Controller
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: DebugController.php 3687 2009-07-16 07:32:29Z c.riess.dev $
  */
 class DebugController extends OntoWiki_Controller_Base
 {

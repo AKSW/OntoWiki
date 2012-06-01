@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -13,7 +12,7 @@
  * Provides on-demand loading of application resources.
  *
  * @category OntoWiki
- * @package Bootstrap
+ * @package OntoWiki_Bootstrap
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

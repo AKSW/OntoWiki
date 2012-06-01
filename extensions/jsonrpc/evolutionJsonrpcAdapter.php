@@ -1,14 +1,11 @@
 <?php
-
 /**
- * JSON RPC Class, this wrapper class is for all Evolution Engine RPC calls.
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category    OntoWiki
- * @package     extensions_jsonrpc
- * @copyright   Copyright (c) 2010, {@link http://aksw.org AKSW}
- * @license     http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author      Marvin Frommhold
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
+
 $ep = OntoWiki::getInstance()->extensionManager->getExtensionPath();
 require_once $ep.'patternmanager/classes/PatternEngine.php';
 require_once $ep.'patternmanager/classes/ComplexPattern.php';
@@ -16,6 +13,15 @@ require_once $ep.'patternmanager/classes/BasicPattern.php';
 require_once $ep.'patternmanager/classes/PatternFunction.php';
 unset($ep);
 
+/**
+ * JSON RPC Class, this wrapper class is for all Evolution Engine RPC calls.
+ *
+ * @category    OntoWiki
+ * @package     Extensions_Jsonrpc
+ * @copyright   Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license     http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author      Marvin Frommhold
+ */
 class evolutionJsonrpcAdapter {
 
     private $owApp = null;
