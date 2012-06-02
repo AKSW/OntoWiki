@@ -12,7 +12,7 @@ require_once 'OntoWiki/Plugin.php';
  * Plugin to load a additional css with some fancy rounded corners and maybe more thats not release-friendly looking
  *
  * @category   OntoWiki
- * @package    Rxtensions_Fancystyle
+ * @package    Extensions_Fancystyle
  */
 class FancystylePlugin extends OntoWiki_Plugin
 {
