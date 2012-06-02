@@ -12,7 +12,7 @@
  * Shows a list of all models in a store
  *
  * @category   OntoWiki
- * @package    Extensions_;odellist
+ * @package    Extensions_Modellist
  * @author     Norman Heino <norman.heino@gmail.com>
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
