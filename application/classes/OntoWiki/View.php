@@ -14,7 +14,7 @@
  * provide a faster interface to important helpers.
  *
  * @category OntoWiki
- * @package  OntoWiki_View
+ * @package  OntoWiki_Classes
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_View extends Zend_View

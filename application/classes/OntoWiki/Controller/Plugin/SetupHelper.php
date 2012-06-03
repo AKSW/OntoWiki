@@ -14,7 +14,7 @@
  * but after the request object exists.
  *
  * @category OntoWiki
- * @package OntoWiki_Controller_Plugin
+ * @package OntoWiki_Classes_Controller_Plugin
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

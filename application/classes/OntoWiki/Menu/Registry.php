@@ -14,7 +14,7 @@
  * and retrieving menu instances.
  *
  * @category OntoWiki
- * @package OntoWiki_Menu
+ * @package OntoWiki_Classes_Menu
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

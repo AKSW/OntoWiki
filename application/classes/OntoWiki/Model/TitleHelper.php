@@ -11,7 +11,7 @@
  * The resources can be defined explicitly or via a SPARQL graph pattern.
  *
  * @category OntoWiki
- * @package OntoWiki_Model
+ * @package OntoWiki_Classes_Model
  */
 class OntoWiki_Model_TitleHelper
 {

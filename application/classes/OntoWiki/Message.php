@@ -13,7 +13,7 @@
  * Encapsulates a message that needs to be saved for the user.
  *
  * @category OntoWiki
- * @package OntoWiki_Message
+ * @package OntoWiki_Classes
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

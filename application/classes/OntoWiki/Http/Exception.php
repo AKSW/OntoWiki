@@ -11,7 +11,7 @@
  * OntoWiki exception base class
  *
  * @category OntoWiki
- * @package OntoWiki_Http
+ * @package OntoWiki_Classes_Http
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

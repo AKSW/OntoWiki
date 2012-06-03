@@ -13,7 +13,7 @@
  * Facilitates the programmatical construction of toolbars.
  *
  * @category OntoWiki
- * @package OntoWiki_Toolbar
+ * @package OntoWiki_Classes
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

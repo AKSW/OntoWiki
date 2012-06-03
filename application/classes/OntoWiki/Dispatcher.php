@@ -13,7 +13,7 @@
  * multiple (component) controller directories.
  *
  * @category OntoWiki
- * @package OntoWiki
+ * @package OntoWiki_Classes
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>

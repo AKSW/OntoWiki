@@ -11,7 +11,7 @@
  * Manage the session variable that stores multiple lists (mostly the current instance list)
  *
  * @category OntoWiki
- * @package  OntoWiki_Controller_ActionHelper
+ * @package  OntoWiki_Classes_Controller_ActionHelper
  */
 class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helper_Abstract{
     protected $_owApp;
