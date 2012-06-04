@@ -1,4 +1,11 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
 /*--------------------------------------------------
  | TAR/GZIP/BZIP2/ZIP ARCHIVE CLASSES 2.1
  | By Devin Doucette
@@ -13,6 +20,12 @@
  | only if this copyright statement is not removed
  +--------------------------------------------------*/
 
+/**
+ * Component controller for user account related stuff
+ *
+ * @category   OntoWiki
+ * @package    Extensions_Exconf
+ */
 class archive
 {
 	function archive($name)

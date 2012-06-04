@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -18,7 +19,7 @@
  * - the folder as well contains a 'plugin.ini' config file
  *
  * @category OntoWiki
- * @package  Plugin
+ * @package  OntoWiki_Classes
  * @author   Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Plugin extends Erfurt_Plugin

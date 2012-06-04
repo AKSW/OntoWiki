@@ -1,16 +1,22 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+require_once 'Erfurt/Sparql/Query2.php';
+
+/**
  * Controller for OntoWiki Navigation Module
  *
  * @category   OntoWiki
- * @package    extensions_components_navigation
+ * @package    Extensions_Navigation
  * @author     Sebastian Tramp <tramp@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
- 
-require_once 'Erfurt/Sparql/Query2.php';
-
 class NavigationController extends OntoWiki_Controller_Component
 {
     private $store;

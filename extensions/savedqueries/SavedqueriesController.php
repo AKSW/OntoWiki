@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 require_once 'OntoWiki/Controller/Component.php';
 
@@ -7,12 +13,11 @@ require_once 'OntoWiki/Controller/Component.php';
  *
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_geocoder
+ * @package    Extensions_Savedqueries
  * @author     Michael Martin <martin@informatik.uni-leipzig.de>
  * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id$
  */
 class SavedqueriesController extends OntoWiki_Controller_Component
 {

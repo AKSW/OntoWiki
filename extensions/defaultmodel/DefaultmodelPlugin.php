@@ -1,10 +1,18 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
 require_once 'OntoWiki/Plugin.php';
+
 /**
  * Plugin to select default model if only one available or always.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
+ * @package    Extensions_Defaultmodel
  */
 class DefaultmodelPlugin extends OntoWiki_Plugin
 {   

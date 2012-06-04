@@ -2,9 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -12,8 +10,8 @@
  * The main class for the datagathering plugin.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
- * @copyright  Copyright (c) 2011 {@link http://aksw.org aksw}
+ * @package    Extensions_Datagathering
+ * @copyright  Copyright (c) 2012 {@link http://aksw.org aksw}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */

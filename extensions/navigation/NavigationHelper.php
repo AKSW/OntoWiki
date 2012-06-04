@@ -1,8 +1,15 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * Nav helper. builds a query for the nav controller and for the resource controller
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_navigation
+ * @package    Extensions_Navigation
  */
 class NavigationHelper extends OntoWiki_Component_Helper
 {

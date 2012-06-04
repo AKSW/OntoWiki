@@ -2,17 +2,16 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki application controller.
  *
- * @package    application
- * @subpackage mvc
- * @author     Norman Heino <norman.heino@gmail.com>
- * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @package OntoWiki_Controller
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class ApplicationController extends OntoWiki_Controller_Base
 {

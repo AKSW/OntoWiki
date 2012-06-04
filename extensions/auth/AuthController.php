@@ -2,23 +2,19 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_components_auth
- * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: AuthController.php 4327 2009-10-21 08:21:36Z christian.wuerker $
  */
 
 require_once 'OntoWiki/Controller/Component.php';
- 
+
 /**
  * Controller class for auth component. 
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_auth
- * @copyright  Copyright (c) 2009 {@link http://aksw.org aksw}
+ * @package    Extensions_Auth
+ * @copyright  Copyright (c) 2012 {@link http://aksw.org aksw}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @subpackage component
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class AuthController extends OntoWiki_Controller_Component

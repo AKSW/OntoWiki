@@ -10,8 +10,7 @@
  * OntoWiki error controller.
  * Fetched by default through the Zend_Controller_Plugin_ErrorHandler
  *
- * @package    application
- * @subpackage mvc
+ * @package    OntoWiki_Controller
  * @author     Norman Heino <norman.heino@gmail.com>
  */
 class ErrorController extends Zend_Controller_Action

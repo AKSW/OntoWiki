@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -10,7 +11,7 @@
  * OntoWiki controller base class.
  *
  * @category OntoWiki
- * @package  Controller
+ * @package  OntoWiki_Classes_Controller
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Controller_Base extends Zend_Controller_Action

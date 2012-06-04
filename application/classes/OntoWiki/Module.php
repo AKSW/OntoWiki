@@ -12,7 +12,7 @@
  * Serves as a base class for all OntoWiki modules.
  *
  * @category OntoWiki
- * @package  Module
+ * @package  OntoWiki_Classes
  * @author Norman Heino <norman.heino@gmail.com>
  */
 abstract class OntoWiki_Module

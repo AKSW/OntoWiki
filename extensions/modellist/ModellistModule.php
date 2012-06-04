@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki module – modellist
@@ -6,10 +12,10 @@
  * Shows a list of all models in a store
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_modellist
+ * @package    Extensions_Modellist
  * @author     Norman Heino <norman.heino@gmail.com>
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ModellistModule extends OntoWiki_Module

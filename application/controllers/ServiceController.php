@@ -10,8 +10,7 @@
 /**
  * OntoWiki service controller.
  *
- * @package    application
- * @subpackage mvc
+ * @package OntoWiki_Controller
  */
 class ServiceController extends Zend_Controller_Action
 {

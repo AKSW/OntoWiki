@@ -1,15 +1,19 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki model controller.
- * 
- * @package    application
- * @subpackage mvc
+ *
+ * @package    OntoWiki_Controller
  * @author     Norman Heino <norman.heino@gmail.com>
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: ModelController.php 4162 2009-09-13 13:27:48Z jonas.brekle@gmail.com $
  */
 class ModelController extends OntoWiki_Controller_Base
 {

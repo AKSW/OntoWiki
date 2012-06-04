@@ -14,7 +14,7 @@ require_once 'OntoWiki/Controller/Component.php';
  * provides services for URI search, statement import and statement sync.
  *
  * @category   OntoWiki
- * @package    OntoWiki_Extensions_Datagathering
+ * @package    Extensions_Datagathering
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class DatagatheringController extends OntoWiki_Controller_Component

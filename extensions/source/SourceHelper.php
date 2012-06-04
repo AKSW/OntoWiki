@@ -1,9 +1,8 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -13,9 +12,8 @@
  * - register the tab for all navigations 
  *
  * @category OntoWiki
- * @package Extensions
- * @subpackage Source
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package Extensions_Source
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class SourceHelper extends OntoWiki_Component_Helper

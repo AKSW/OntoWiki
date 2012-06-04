@@ -10,7 +10,7 @@
  * The main class for the cors plugin.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
+ * @package    Extensions_Cors
  * @author     Sebastian Tramp <tramp@informatik.uni-leipzig.de>
  */
 class CorsPlugin extends OntoWiki_Plugin

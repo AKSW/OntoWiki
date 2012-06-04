@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -10,8 +10,7 @@
  * The main ckan controller provides the register and (later) the browser action
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_ckan
- * @subpackage component
+ * @package    Extensions_Ckan
  */
 class CkanController extends OntoWiki_Controller_Component
 {

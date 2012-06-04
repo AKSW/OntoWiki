@@ -1,9 +1,20 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
 require_once 'Erfurt/Sparql/SimpleQuery.php';
 require_once 'OntoWiki/Module.php';
 require_once 'OntoWiki/Url.php';
 require_once 'OntoWiki/Utils.php';
 
+/**
+ * @category   OntoWiki
+ * @package    Extensions_Savedqueries
+ */
 class SavedqueriesModule extends OntoWiki_Module
 {
 	const SERVICE_URL = 'savedQueries';

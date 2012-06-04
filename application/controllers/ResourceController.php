@@ -9,8 +9,7 @@
 /**
  * OntoWiki resource controller.
  *
- * @package    application
- * @subpackage mvc
+ * @package OntoWiki_Controller
  */
 class ResourceController extends OntoWiki_Controller_Base
 {

@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 require_once 'OntoWiki/Module.php';
 
@@ -8,11 +14,10 @@ require_once 'OntoWiki/Module.php';
  * Add instance properties to the list view
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_filter
+ * @package    Extensions_Filter
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: filter.php 4279 2009-10-11 23:20:25Z jonas.brekle@gmail.com $
  */
 class CustomfilterModule extends OntoWiki_Module
 {

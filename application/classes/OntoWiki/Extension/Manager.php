@@ -1,8 +1,19 @@
 <?php
 
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * will be used by OntoWiki to scan the extension folder and load the needed extension
  *
+ * @category OntoWiki
+ * @package OntoWiki_Classes_Extension
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Jonas Brekle <jonas.brekle@gmail.com>
  */
 class Ontowiki_Extension_Manager
