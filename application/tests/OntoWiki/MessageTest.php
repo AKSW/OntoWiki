@@ -34,11 +34,6 @@
  */
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'TestHelper.php';
 
-// This constant will not be defined iff this file is executed directly.
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'OntoWiki_MessageTest::main');
-}
-
 /**
  * This test class comtains tests for the OntoWiki index controller.
  * 
@@ -53,17 +48,10 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
 {
     protected $_owApp = null;
-    
-    /**
-     * The main method, which executes all tests inside this class.
-     * 
-     * @return void
-     */
-    public static function main()
-    {
-        PHPUnit_TextUI_TestRunner::run(new ReflectionClass('OntoWiki_MessageTest'));
-    }
-    
+
+    public function testFoo () {}
+
+    /*
     public function setUp () 
     {
         $this->_owApp       = new Zend_Application( 'default', APPLICATION_PATH . 'config/application.ini');
@@ -110,9 +98,5 @@ class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
         $msg = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
         $this->assertEquals($msg->getText(), 'The test string for the message object.');
     }
-}
-
-// If this file is executed directly, execute the tests.
-if (PHPUnit_MAIN_METHOD === 'OntoWiki_MessageTest::main') {
-    OntoWiki_MessageTest::main();
+    */
 }
