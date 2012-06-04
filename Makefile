@@ -27,9 +27,10 @@ help:
 	@echo "     branch-check ............... 'git rev-parse' for all repos"
 	@echo "     clean ...................... Deletes all log and cache files"
 	@echo "     install-test-environment ... Install neccessary software (PHPUnit,...))"
-	@echo "     test ....................... Execute 'phpunit TestSuite'"
-	@echo "     test-erfurt ................ Execute Erfurts TestSuite"
-	@echo "     test-extension ............. Execute TestSuites of each extension, if available"
+	@echo "     test ....................... Executes OntoWiki's TestSuite"
+	@echo "     test-erfurt ................ Executes Erfurts TestSuite"
+	@echo "     test-extension ............. Executes TestSuites of each extension, if available"
+	@echo "     test-all ................... Executes PHPUnit TestSuites (OW, Ext) and CodeSniffer"
 	
 help-cs:
 	@echo "Please use: (e.g. make cs-install)"
@@ -126,6 +127,17 @@ test:
 
 test-extensions:
 	phpunit --stderr extensions
+
+test-all: 
+	@make test
+	@echo ""
+	@echo "-----------------------------------"
+	@echo ""
+	@make test-extensions
+	@echo ""
+	@echo "-----------------------------------"
+	@echo ""
+	@make cs-check
 
 install-test-environment:
 	sudo apt-get install php-pear
