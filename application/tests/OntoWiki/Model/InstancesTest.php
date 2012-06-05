@@ -1,15 +1,15 @@
 <?php
 
-require_once dirname (__FILE__). '/../TestHelper.php';
+require_once dirname (__FILE__). '/../../TestHelper.php';
 
-require_once dirname (__FILE__). '/../../../libraries/Erfurt/tests/Erfurt/TestCase.php';
+require_once dirname (__FILE__). '/../../../../libraries/Erfurt/tests/Erfurt/TestCase.php';
 
 /**
- * InstancesTest tests the behavior of Ontowiki_Model_Instances
+ * It tests the behavior of Ontowiki_Model_Instances
  *
  * @author Jonas Brekle <jonas.brekle@gmail.com>
  */
-class InstancesTest extends Erfurt_TestCase {
+class OntoWiki_Model_InstancesTest extends Erfurt_TestCase {
 
     protected $instances;
 
