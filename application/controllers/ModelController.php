@@ -792,7 +792,7 @@ class ModelController extends OntoWiki_Controller_Base
         $store      = $this->_owApp->erfurt->getStore();
         $graph      = $this->_owApp->selectedModel;        
         $resource   = $this->_owApp->selectedResource;
-        $navigation = $this->_owApp->navigation;
+        //$navigation = $this->_owApp->navigation;
         $translate  = $this->_owApp->translate;
         
         $event = new Erfurt_Event('onPropertiesAction');
@@ -805,7 +805,9 @@ class ModelController extends OntoWiki_Controller_Base
         
         $title = $resource->getTitle($this->_owApp->getConfig()->languages->locale);
         $this->view->modelTitle = $title ? $title : OntoWiki_Utils::contractNamespace((string)$resource);
-        $this->view->resourcesUrl = $this->_config->staticUrlBase . 'index.php/list/init/1';
+        $resourcesUrl = new OntoWiki_Url(array('controller'=>'resource','action'=>'instances'), array());
+        $resourcesUrl->init = true;
+        $this->view->resourcesUrl = (string) $resourcesUrl;
 
         if (!empty($resource)) {
             $model = new OntoWiki_Model_Resource($store, $graph, (string)$resource);
