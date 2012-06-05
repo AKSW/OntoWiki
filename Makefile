@@ -140,7 +140,7 @@ IGNOREPATTERN = */libraries/*,pclzip.lib
 
 # Parameter check
 ifndef FPATH
-	FPATH = "*"
+	FPATH = "./"
 endif
 ifdef SNIFFS
 	SNIFFSTR = "--sniffs="$(SNIFFS)
