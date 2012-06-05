@@ -43,12 +43,6 @@ class OntoWiki_Model
     protected $_logger = null;
     
     /**
-     * The language currently set
-     * @var string
-     */
-    //protected $_lang = null;
-    
-    /**
      * Model instance
      * @var Erfurt_Rdf_Model
      */
@@ -76,9 +70,7 @@ class OntoWiki_Model
         $this->_config          = OntoWiki::getInstance()->config;
         $this->_logger          = OntoWiki::getInstance()->logger;
         $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
-        
-        //$this->_lang = OntoWiki::getInstance()->config->languages->locale;
-        
+
         if (isset($this->_config->system->inference) && !(bool)$this->_config->system->inference) {
             $this->_inference = false;
         }

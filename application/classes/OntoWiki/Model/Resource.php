@@ -115,7 +115,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
 
                     if (!array_key_exists($predicateUri, $this->_predicateResults)) {
                         // title
-                        $predicateTitle = $this->_titleHelper->getTitle($predicateUri, $this->_lang);
+                        $predicateTitle = $this->_titleHelper->getTitle($predicateUri);
                         // url
                         $url->setParam('r', $predicateUri, true);
 
@@ -228,7 +228,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             $value['uri'] = $row['object']['value'];
 
                             // title
-                            $title = $this->_titleHelper->getTitle($row['object']['value'], $this->_lang);
+                            $title = $this->_titleHelper->getTitle($row['object']['value']);
 
                             /**
                              * @trigger onDisplayObjectPropertyValue Triggered if an object value of some 

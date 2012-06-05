@@ -130,6 +130,11 @@ class OntoWiki_Model_TitleHelper
 
         // always use local name for unknown resources?
         $this->_alwaysUseLocalNames = (bool)$config->titleHelper->useLocalNames;
+
+        if (null === $this->_languages) {
+            $this->_languages = array();
+        }
+        array_unshift($this->_languages, (string)OntoWiki::getInstance()->config->languages->locale);
     }
 
     // ------------------------------------------------------------------------
