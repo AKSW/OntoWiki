@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 require_once 'OntoWiki/Module.php';
 
@@ -10,7 +16,7 @@ require_once 'OntoWiki/Module.php';
  * @category   OntoWiki
  * @package    Extensions_Community
  * @author     Christian Maier, Niederstätter Michael
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class RatingModule extends OntoWiki_Module {

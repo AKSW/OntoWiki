@@ -9,8 +9,7 @@
 /**
  * OntoWiki resource controller.
  *
- * @package    application
- * @subpackage mvc
+ * @package OntoWiki_Controller
  */
 class ResourceController extends OntoWiki_Controller_Base
 {
@@ -315,9 +314,14 @@ class ResourceController extends OntoWiki_Controller_Base
         if ($this->_erfurt->getAc()->isModelAllowed('edit', $modelIri)) {
             foreach ($resources as $resource) {
 
-                # if we have only a nice uri, fill to full uri
+                // if we have only a nice uri, fill to full uri
                 if (Zend_Uri::check($resource) == false) {
-                    $resource = $model->getBaseIri() . $resource;
+                    // check for namespace
+                    if (strstr($resource, ':')) {
+                        $resource = OntoWiki_Utils::expandNamespace($resource);
+                    } else {
+                        $resource = $model->getBaseIri() . $resource;
+                    }
                 }
 
                 // action spec for versioning
@@ -477,6 +481,5 @@ class ResourceController extends OntoWiki_Controller_Base
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
         echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $addedStatements);
         $response->sendResponse();
-        exit;
     }
 }

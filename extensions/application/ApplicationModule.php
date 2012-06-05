@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki module – application
@@ -6,8 +12,8 @@
  * Provides the OntoWiki application menu and a search field
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_application
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @package    Extensions_Application
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ApplicationModule extends OntoWiki_Module

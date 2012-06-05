@@ -10,7 +10,7 @@
  * The pingback plugin is used on different events
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_pingback
+ * @package    Extensions_Pingback
  * @author     Philipp Frischmuth
  * @author     Sebastian Tramp <mail@sebastian.tramp.name>
  */

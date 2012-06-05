@@ -1,10 +1,17 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * Controller for OntoWiki Filter Module
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_queries
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @package    Extensions_Queries
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class QueriesController extends OntoWiki_Controller_Component

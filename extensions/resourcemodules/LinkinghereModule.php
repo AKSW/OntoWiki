@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki module – linkinhere
@@ -8,9 +14,8 @@
  * @category   OntoWiki
  * @package    Extensions_Resourcemodule
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: linkinghere.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
 class LinkinghereModule extends OntoWiki_Module
 {    

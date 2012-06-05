@@ -1,10 +1,17 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * JSON RPC Class, this wrapper class is for all store RPC calls
  *
  * @category   OntoWiki
- * @package    extensions_jsonrpc
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @package    Extensions_Jsonrpc
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class storeJsonrpcAdapter
