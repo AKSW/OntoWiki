@@ -31,16 +31,16 @@ class CommunityHelper extends OntoWiki_Component_Helper
           || ($request->getControllerName() == 'resource'
                   && $request->getActionName() == 'instances'
                   && $request->getParam('mode') == 'multi')){
-            OntoWiki_Navigation::register('community', array(
-                'controller' => 'community',     // history controller
-                'action'     => 'list',       // list action
+            OntoWiki::getInstance ()->getNavigation()->register('community', array(
+                'controller' => 'community',    // history controller
+                'action'     => 'list',         // list action
                 'name'       => 'Community',
                 'mode'       => 'multi',
                 'priority'   => 50));
         } else {
-            OntoWiki_Navigation::register('community', array(
+            OntoWiki::getInstance ()->getNavigation()->register('community', array(
                 'controller' => 'community',     // history controller
-                'action'     => 'list',       // list action
+                'action'     => 'list',          // list action
                 'name'       => 'Community',
                 'mode'       => 'single',
                 'priority'   => 50));

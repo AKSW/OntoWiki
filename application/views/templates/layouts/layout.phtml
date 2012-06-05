@@ -94,7 +94,7 @@
     <?php echo $this->inlineScript() ?>
     
     <div class="section-mainwindows <?php echo $this->placeholder('main.window.additionalclasses') ?>">
-        <div class="window<?php echo (OntoWiki_Navigation::isDisabled() ? '' : ' tabbed') ?>">
+        <div class="window<?php echo (OntoWiki::getInstance()->getNavigation()->isDisabled() ? '' : ' tabbed') ?>">
             <?php
                 /**
                  * @trigger onDisplayMainWindowTitle
@@ -111,7 +111,7 @@
                         <?php echo $this->preTabsContent; ?>
                     </div>
                 <?php endif; ?>
-                <?php echo $this->partial('partials/navigation.phtml', array('navigation' => OntoWiki_Navigation::toArray())) ?>
+                <?php echo $this->partial('partials/navigation.phtml', array('navigation' => OntoWiki::getInstance ()->getNavigation()->toArray())) ?>
                 
                 <?php if ($this->has('main.window.innerwindows')): ?>
                     <div class="content has-innerwindows">

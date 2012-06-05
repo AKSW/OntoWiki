@@ -57,7 +57,12 @@ class OntoWiki
      * Singleton instance
      * @var OntoWiki 
      */
-    private static $_instance = null;
+    protected static $_instance = null;
+    
+    /**
+     * OntoWiki_Navigation instance
+     */
+    protected $_navigation = null;
 
     // ------------------------------------------------------------------------
     // --- Magic Methods
@@ -378,8 +383,23 @@ class OntoWiki
         return $this;
     }
 
+    /**
+     * 
+     */
     public static function reset()
     {
         self::$_instance = null;
+    }
+    
+    /**
+     *
+     */
+    public function getNavigation () 
+    {
+        if (null == $this->_navigation) {
+            $this->_navigation = new OntoWiki_Navigation ();
+        }
+        
+        return $this->_navigation;
     }
 }

@@ -54,7 +54,7 @@ class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     
     public function tearDown()
     {
-        OntoWiki_Navigation::reset();
+        // OntoWiki_Navigation::reset();
     }
     
     public function testNoControllerAndActionDefaultToNewsAction()

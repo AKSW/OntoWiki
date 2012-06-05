@@ -24,7 +24,7 @@ class ModelController extends OntoWiki_Controller_Base
     {
         $this->view->placeholder('main.window.title')->set('Add Statements to Model');
         $this->_helper->viewRenderer->setScriptAction('create');
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         
         $this->view->formActionUrl    = $this->_config->urlBase . 'model/add';
         $this->view->formEncoding     = 'multipart/form-data';
@@ -136,7 +136,7 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function configAction()
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         
         if (!$this->_request->getParam('m')) {
             throw new OntoWiki_Controller_Exception("Missing parameter 'm'.");
@@ -436,7 +436,7 @@ class ModelController extends OntoWiki_Controller_Base
     {
         $this->view->clearModuleCache('modellist');
         
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         $this->view->placeholder('main.window.title')->set('Create New Knowledge Base');
         $this->view->formActionUrl = $this->_config->urlBase . 'model/create';
         $this->view->formEncoding  = 'multipart/form-data';
@@ -787,7 +787,7 @@ class ModelController extends OntoWiki_Controller_Base
     
     public function infoAction()
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         $this->_owApp->selectedResource = new OntoWiki_Resource($this->_request->getParam('m'), $this->_owApp->selectedModel);
         $store      = $this->_owApp->erfurt->getStore();
         $graph      = $this->_owApp->selectedModel;        

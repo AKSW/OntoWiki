@@ -30,12 +30,12 @@ class QueriesController extends OntoWiki_Controller_Component
         parent :: init();
 
         // setup the navigation
-        OntoWiki_Navigation::reset();
+        OntoWiki::getInstance()->resetNavigation();
         $tabExist = false;
         $ow = OntoWiki::getInstance();
 
         if ($this->_privateConfig->general->enabled->saving) {
-            OntoWiki_Navigation::register(
+            OntoWiki::getInstance()->getNavigation()->register(
                 'listquery',
                 array(
                     'controller' => 'queries',
@@ -51,7 +51,7 @@ class QueriesController extends OntoWiki_Controller_Component
             $tabExist = true;
         }
         if ($this->_privateConfig->general->enabled->editor) {
-            OntoWiki_Navigation::register(
+            OntoWiki::getInstance()->getNavigation()->register(
                 'queryeditor',
                 array(
                     'controller' => 'queries',
@@ -65,7 +65,7 @@ class QueriesController extends OntoWiki_Controller_Component
         }
 
         if ($this->_privateConfig->general->enabled->builder) {
-            OntoWiki_Navigation::register(
+            OntoWiki::getInstance()->getNavigation()->register(
                 'savedqueries',
                 array(
                     'controller' => 'queries',
@@ -79,7 +79,7 @@ class QueriesController extends OntoWiki_Controller_Component
         }
 
         if ($this->_privateConfig->general->enabled->gqb) {
-            OntoWiki_Navigation::register(
+            OntoWiki::getInstance()->getNavigation()->register(
                 'gqb',
                 array(
                     'controller' => 'queries',
@@ -93,7 +93,7 @@ class QueriesController extends OntoWiki_Controller_Component
         }
 
         if (!$tabExist) {
-            OntoWiki_Navigation :: disableNavigation();
+            OntoWiki::getInstance()->getNavigation()->disableNavigation();
         }
 
         $user = $this->_erfurt->getAuth()->getIdentity();
@@ -335,7 +335,7 @@ class QueriesController extends OntoWiki_Controller_Component
     public function listqueryAction()
     {
         // set the active tab navigation
-        OntoWiki_Navigation :: setActive('listquery', true);
+        OntoWiki::getInstance()->getNavigation()->setActive('listquery');
 
         $store = $this->_owApp->erfurt->getStore();
         $graph = $this->_owApp->selectedModel;
@@ -362,7 +362,6 @@ class QueriesController extends OntoWiki_Controller_Component
             $listHelper->addListPermanently($listName, $list, $this->view, 'list_queries_main');
         }
         $this->view->placeholder('main.window.title')->set($this->_owApp->translate->_('Saved Queries'));
-        //print_r(OntoWiki::getInstance()->_properties);
     }
 
     /**
@@ -745,7 +744,7 @@ class QueriesController extends OntoWiki_Controller_Component
         //TODO: to enable saving add a <input id="editortype" type="hidden" value="querybuilder" /> to the template
 
         // set the active tab navigation
-        OntoWiki_Navigation::setActive('savedqueries', true);
+        OntoWiki::getInstance()->getNavigation()->setActive('savedqueries', true);
 
         // creates toolbar and adds two buttons
         $toolbar = $this->_owApp->toolbar;

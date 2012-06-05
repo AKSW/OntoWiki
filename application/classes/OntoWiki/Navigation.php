@@ -153,6 +153,11 @@ class OntoWiki_Navigation
                 $this->_unordered[] = $key;
             }
         }
+        
+        // if this is the first element, set it active
+        if(1 == count($this->_navigation)) {
+            $this->setActive ($key);
+        }
     }
     
     /**
@@ -224,7 +229,6 @@ class OntoWiki_Navigation
         if (false == $this->_isDisabled) {
             $return = array();
             
-            // $session = new Zend_Session_Namespace(_OWSESSION . 'ONTOWIKI_NAVIGATION');
             $session = new Zend_Session_Namespace('ONTOWIKI_NAVIGATION');
             if (isset($session->tabOrder)) {
                 $over = array_diff($this->_ordered, $session->tabOrder);
@@ -319,5 +323,19 @@ class OntoWiki_Navigation
     public function getNavigation () 
     {
         return $this->_navigation;
+    }
+    
+    /**
+     * 
+     */
+    public function reset ()
+    {
+        $this->_navigation = array ();
+        $this->_activeKey = null;
+        $this->_isDisabled = false;
+        $this->_defaultGroups = array ();
+        $this->_ordered = array ();
+        $this->_unordered = array ();
+        $this->_keepParams = array ('r');
     }
 }

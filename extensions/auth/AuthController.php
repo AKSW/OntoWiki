@@ -22,7 +22,7 @@ class AuthController extends OntoWiki_Controller_Component
     public function certAction()
     {
         $translate = $this->_owApp->translate;
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         
         $this->_helper->viewRenderer->setScriptAction('cert1');
         $this->view->placeholder('main.window.title')->set($translate->_('Create Certificate - Step 1'));

@@ -41,7 +41,7 @@ class SavedqueriesController extends OntoWiki_Controller_Component
 
         // disable tabs
         require_once 'OntoWiki/Navigation.php';
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         // get translation object
         $this->translate = $this->_owApp->translate;

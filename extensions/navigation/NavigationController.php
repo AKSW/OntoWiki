@@ -68,7 +68,7 @@ class NavigationController extends OntoWiki_Controller_Component
      */
     public function exploreAction() {
         // disable standart navigation
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         // log action
         //$this->_owApp->logger->info('NavigationController Stage 1');
         // translate navigation title to selected language

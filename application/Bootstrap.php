@@ -76,8 +76,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $extensionPathBase = $config->staticUrlBase
                         . $config->extensions->base;
 
-        OntoWiki_Navigation::reset();
-
         $extensionManager = new OntoWiki_Extension_Manager($extensionPath);
         $extensionManager->setTranslate($translate)
                          ->setComponentUrlBase($extensionPathBase);
@@ -314,8 +312,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('Config');
         $config = $this->getResource('Config');
 
-        OntoWiki_Navigation::reset();
-
         // get current action name
         $currentAction = $request->getActionName();
 
@@ -330,15 +326,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                ? $session->lastRoute
                : $config->route->default->name;
 
-        // Reset navigation for multiple boostraping (tests)
-        OntoWiki_Navigation::reset();
-
         // register with navigation
         if (isset($config->routes->{$route})) {
             extract($config->routes->{$route}->defaults->toArray());
 
             // and add last routed component
-            OntoWiki_Navigation::register(
+            OntoWiki::getInstance ()->getNavigation()->register(
                 'index',
                 array(
                     'route'      => $route,
