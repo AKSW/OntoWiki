@@ -1379,18 +1379,19 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $uris[] = $resource['value'];
         }
         $titleHelper->addResources($uris);
+        $lang = OntoWiki::getInstance()->config->languages->locale;
 
         $resourceResults = array();
         foreach ($resources as $resource) {
             $thisResource = $resource;
             $thisResource['uri'] = $resource['value'];
             // the URL to view this resource in detail
-            $url = new OntoWiki_Url(array('controller'=>'resource','action'=>'properties'), array());
+            $url = new OntoWiki_Url(array('controller'=>'resource', 'action'=>'properties'), array());
             $url->r = $resource['value'];
 
             $thisResource['url'] = (string) $url;
             // title
-            $thisResource['title'] = $titleHelper->getTitle($resource['value'], $this->_getLanguage());
+            $thisResource['title'] = $titleHelper->getTitle($resource['value'], $lang);
 
             $resourceResults[] = $thisResource;
         }

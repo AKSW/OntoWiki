@@ -372,8 +372,8 @@ class ExconfController extends OntoWiki_Controller_Component
 
         //$this->addModuleContext('main.window.list');
 
-        echo htmlentities($list->getResourceQuery());
-        echo htmlentities($list->getQuery());
+        //echo htmlentities($list->getResourceQuery());
+        //echo htmlentities($list->getQuery());
     }
 
     private function addProjectProperty($p, $projectVar, $list, $name = null)

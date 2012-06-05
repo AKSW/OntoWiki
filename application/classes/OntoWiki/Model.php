@@ -77,7 +77,7 @@ class OntoWiki_Model
         $this->_logger          = OntoWiki::getInstance()->logger;
         $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
         
-        //$this->_lang = $this->_config->languages->locale;
+        //$this->_lang = OntoWiki::getInstance()->config->languages->locale;
         
         if (isset($this->_config->system->inference) && !(bool)$this->_config->system->inference) {
             $this->_inference = false;
