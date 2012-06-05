@@ -761,6 +761,7 @@ class OntoWiki_Extension_Manager
             $owconfigNS.'enabled' => 'enabled',
             $owconfigNS.'helperEvent' => 'helperEvents',
             $owconfigNS.'templates' => 'templates',
+            $owconfigNS.'helpers' => 'helpers',
             $owconfigNS.'languages' => 'languages',
             $owconfigNS.'defaultAction' => 'action',
             $owconfigNS.'class' => 'classes',
