@@ -80,12 +80,13 @@ class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Snif
                     break;
                 }
             }
+            array_shift($filepathArray);
             if (FALSE === $notFound) {
                 $error = '%s name doesn\'t match filepath; expected "%s %s"';
                 $data  = array(
                           ucfirst($tokens[$stackPtr]['content']),
                           $tokens[$stackPtr]['content'],
-                          $tokens[$decName]['content'],
+                          implode('_', $filepathArray),
                          );
                 $phpcsFile->addError($error, $stackPtr, 'NoMatch', $data);
             }
