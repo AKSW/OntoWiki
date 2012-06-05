@@ -129,9 +129,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->themes->default  = rtrim($config->themes->default, '/\\') . '/';
         $config->extensions->base = rtrim($config->extensions->base, '/\\') . '/';
 
-        if ( false === defined ( 'EXTENSION_PATH' ) )
+        if ( false === defined('EXTENSION_PATH'))
             define('EXTENSION_PATH', $config->extensions->base);
-            
+
         $config->extensions->legacy     = EXTENSION_PATH . rtrim($config->extensions->legacy, '/\\') . '/';
         $config->languages->path        = EXTENSION_PATH . rtrim($config->languages->path, '/\\') . '/';
 
@@ -178,8 +178,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             error_reporting(E_ALL | E_STRICT);
             ini_set('display_errors', 'On');
             // enable debugging options
-            if ( false === defined ('_OWDEBUG') )
-            {
+            if ( false === defined('_OWDEBUG')) {
                 define('_OWDEBUG', 1);
             }
             // log everything
@@ -378,7 +377,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $frontController = $this->getResource('frontController');
 
         // Needs to be done first!
-        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_HttpAuth(), 1); 
+        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_HttpAuth(), 1);
         $frontController->registerPlugin(new OntoWiki_Controller_Plugin_SetupHelper(), 2);
         //needs to be done after SetupHelper
         $frontController->registerPlugin(new OntoWiki_Controller_Plugin_ListSetupHelper(), 3);
@@ -447,7 +446,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // define the session key as a constant for global reference
 
-        if ( false === defined ( '_OWSESSION' ) )
+        if ( false === defined('_OWSESSION'))
             define('_OWSESSION', $sessionKey);
 
         // inject session vars into OntoWiki
