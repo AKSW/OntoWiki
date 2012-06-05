@@ -21,7 +21,9 @@ define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application/');
 define('ONTOWIKI_REWRITE', false);
 
 // path to tests
-define('_TESTROOT', rtrim(dirname(__FILE__), '/') . '/');
+if (!defined('_TESTROOT')) {
+    define('_TESTROOT', rtrim(dirname(__FILE__), '/') . '/');
+}
 
 // path to OntoWiki
 define('_OWROOT', ONTOWIKI_ROOT);
