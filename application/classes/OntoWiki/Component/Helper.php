@@ -1,10 +1,9 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -28,46 +27,42 @@ class OntoWiki_Component_Helper
      * @var string 
      */
     protected $_componentRoot = null;
-    
+
     /** 
      * The components URL base
      * @var string 
      */
     protected $_componentUrlBase = null;
-    
+
     /**
      * OntoWiki Application config
      * @var Zend_Config
      */
     protected $_config;
-    
+
     /**
      * The component private config
      * @var Zend_Config
      */
     protected $_privateConfig;
-    
+
     /**
      * OntoWiki Application
      * @var OntoWiki
      */
     protected $_owApp;
-    
+
     /**
      * Constructor
      *
      * @param OntoWiki_Component_Manager $componentManager
      */
-    public function __construct($componentManager)
-    {        
-        $componentName           = strtolower(str_replace('Helper', '', get_class($this)));
+    public function __construct($config)
+    {
         $this->_owApp            = OntoWiki::getInstance();
-        $this->_config           = $this->_owApp->config;
-        $this->_componentManager = $componentManager;
-        $config = $this->_componentManager->getExtensionConfig($componentName);
         $this->_privateConfig    = isset($config->private) ? $config->private : new Zend_Config(array(), true);
     }
-    
+
     /**
      * Overwritten in subclasses
      */
@@ -79,30 +74,24 @@ class OntoWiki_Component_Helper
     {
         return $this->_privateConfig;
     }
-    
+
     public function getComponentRoot()
     {
         $componentName = strtolower(str_replace('Helper', '', get_class($this)));
-        
+
         // set component root dir
-        $this->_componentRoot = $this->_componentManager->getComponentPath() 
-                              . $componentName 
-                              . '/';
-        
+        $this->_componentRoot = $this->_owApp->extensionManager->getComponentPath() . $componentName . '/';
+
         return $this->_componentRoot;
     }
-    
+
     public function getComponentUrlBase()
     {
         $componentName = strtolower(str_replace('Helper', '', get_class($this)));
-        
+
         // set component root url
-        $this->_componentUrlBase = $this->_config->staticUrlBase 
-                                 . $this->_config->extensions->base
-                                 . $componentName 
-                                 . '/';
-        
+        $this->_componentUrlBase = $this->_config->staticUrlBase.$this->_config->extensions->base.$componentName . '/';
+
         return $this->_componentUrlBase;
     }
 }
-
