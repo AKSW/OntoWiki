@@ -46,16 +46,6 @@ class OntoWikiTest extends PHPUnit_Framework_TestCase
 {
     protected $_application;
     
-    /**
-     * The main method, which executes all tests inside this class.
-     * 
-     * @return void
-     */
-    public static function main()
-    {
-        PHPUnit_TextUI_TestRunner::run(new ReflectionClass('OntoWikiTest'));
-    }
-    
     public function setUp()
     {
         $this->_application = OntoWiki::getInstance();

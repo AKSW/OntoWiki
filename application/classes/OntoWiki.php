@@ -204,6 +204,14 @@ class OntoWiki
 
         return $this->_bootstrap;
     }
+    
+    /**
+     * 
+     */
+    public function setBootstrap($bootstrap)
+    {
+        $this->_bootstrap = $bootstrap;
+    }
 
     /**
      * Returns the system config object

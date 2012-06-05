@@ -104,7 +104,8 @@ class OntoWiki_Message
         }
         
         // get translation for current language
-        $this->_translate = $this->_view->translate;
+        $this->_translate = OntoWiki::getInstance()->translate;
+        // $this->_translate = $this->_view->translate;
     }
     
     /**

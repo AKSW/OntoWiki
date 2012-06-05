@@ -121,7 +121,6 @@ class IndexController extends OntoWiki_Controller_Base
             ) {
                 $this->_forward('news', 'index');
             } else {
-                echo $this->_config->index->default->controller .' --> '. $this->_config->index->default->action;
                 $this->_forward($this->_config->index->default->action, $this->_config->index->default->controller);
             }
         }

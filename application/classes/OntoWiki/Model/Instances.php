@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -159,19 +158,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->_resourceQuery->addFrom((string)$model);
 
         //$this->updateValueQuery();
-    }
-
-    public function __wakeUp()
-    {
-        $this->_lang = NULL;
-    }
-
-    private function _getLanguage ()
-    {
-        if ($this->_lang == NULL) {
-            $this->_lang = OntoWiki::getInstance()->config->languages->locale;
-        }
-        return $this->_lang;
     }
 
     /**
@@ -1089,7 +1075,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
                     // set default if event has not been handled
                     if (!$event->handled()) {
-                        $value = $titleHelper->getTitle($objectUri, $this->_getLanguage());
+                        $value = $titleHelper->getTitle($objectUri);
                     }
                 } else {
                     // object is a literal
@@ -1300,7 +1286,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $property['curi'] = OntoWiki_Utils::contractNamespace($property['uri']);
 
-            $property['title'] = $titleHelper->getTitle($property['uri'], $this->_getLanguage());
+            $property['title'] = $titleHelper->getTitle($property['uri']);
 
             $propertyResults[
                 $property['uri'].'-'.((isset($property['inverse']) && $property['inverse']) ? 'inverse' : 'direct')

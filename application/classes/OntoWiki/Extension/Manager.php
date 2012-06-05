@@ -1,10 +1,9 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -16,7 +15,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Jonas Brekle <jonas.brekle@gmail.com>
  */
-class Ontowiki_Extension_Manager
+class OntoWiki_Extension_Manager
 {
     const EXTENSION_DEFAULT_DOAP_FILE = 'doap.n3';
 
@@ -35,7 +34,7 @@ class Ontowiki_Extension_Manager
     const EVENT_NS = 'http://ns.ontowiki.net/SysOnt/Events/';
 
     /**
-     * Array where component information is kept
+     * Array (extension name -> config)
      * @var array
      */
     protected $_extensionRegistry = array();
@@ -403,7 +402,7 @@ class Ontowiki_Extension_Manager
             foreach ($this->_helpers as $componentName => &$helper) {
                 // only if helper has not been previously loaded
                 if (!isset($helper['instance'])) {
-                    $helperInstance = $this->_loadHelper($componentName);
+                    $helperInstance = $this->_loadHelper($componentName, $this->getExtensionConfig($componentName));
                 } else {
                     $helperInstance = $this->_helpers[$componentName]['instance'];
                 }
@@ -419,7 +418,7 @@ class Ontowiki_Extension_Manager
     // --- Private Methods ----------------------------------------------------
     // ------------------------------------------------------------------------
 
-    protected function _loadHelper($componentName)
+    protected function _loadHelper($componentName, $config)
     {
         if (!isset($this->_helpers[$componentName])) {
             throw new OntoWiki_Component_Exception("No helper defined for component '$componentName'.");
@@ -431,10 +430,10 @@ class Ontowiki_Extension_Manager
         require_once $helperSpec['path'];
         if (class_exists($helperSpec['class'])) {
             // instantiate helper object
-            $helperInstance = new $helperSpec['class']($this);
+            $helperInstance = new $helperSpec['class']($config);
         } else {
             throw new OntoWiki_Component_Exception(
-                "Defined helper class could not be found for component '$componentName'."
+                "required helper class '".$helperSpec['class']."' could not be found for component '$componentName'."
             );
         }
 
@@ -540,10 +539,13 @@ class Ontowiki_Extension_Manager
                 //or in a folder specified in  config
                 $view->addScriptPath($currentExtensionPath.$extensionConfig->templates);
             }
-            
+
             //check for other helpers
             if (isset($extensionConfig->helpers)) {
-                $view->addHelperPath($currentExtensionPath.$extensionConfig->helpers, ucfirst($extensionName) .'_View_Helper_');
+                $view->addHelperPath(
+                    $currentExtensionPath.$extensionConfig->helpers,
+                    ucfirst($extensionName) .'_View_Helper_'
+                );
             }
 
             //check for component class (only one per extension for now)
@@ -632,7 +634,7 @@ class Ontowiki_Extension_Manager
 
                 // event helpers need to be called early
                 if (!empty($helperSpec['events'])) {
-                    $this->_loadHelper($componentName);
+                    $this->_loadHelper($componentName, $config);
                 }
 
                 //helpers without events will be instantiated onRouteShutdown
@@ -759,6 +761,7 @@ class Ontowiki_Extension_Manager
             $owconfigNS.'enabled' => 'enabled',
             $owconfigNS.'helperEvent' => 'helperEvents',
             $owconfigNS.'templates' => 'templates',
+            $owconfigNS.'helpers' => 'helpers',
             $owconfigNS.'languages' => 'languages',
             $owconfigNS.'defaultAction' => 'action',
             $owconfigNS.'class' => 'classes',
@@ -850,7 +853,7 @@ class Ontowiki_Extension_Manager
             $config = array_merge($config, $config['modules']['default']);
             unset($config['modules']['default']);
         }
-        
+
         //pull up the default section
         $config = array_merge($config, $config['default']);
         unset($config['default']);
@@ -887,21 +890,27 @@ class Ontowiki_Extension_Manager
         if (isset($mapping[$key])) {
             return $mapping[$key];
         }
-        if(strpos($key, $privateNS) === 0){
+        if (strpos($key, $privateNS) === 0) {
             //strip private NS, only keep last part
-            $newKey = substr($key, strlen($privateNS)); 
+            $newKey = substr($key, strlen($privateNS));
         } else {
-            //return only local part 
-            $l1 = strrpos($key, '/');
-            $l2 = strrpos($key, '#');
-            if($l1 < $l2){$l = $l2;} else {$l = $l1;} //take the right most / or #
-            if($l == false){
+            //return only local part
+            //take the right most / or #
+            $slashPos = strrpos($key, '/');
+            $hashPos = strrpos($key, '#');
+            if ($slashPos < $hashPos) {
+                $l = $hashPos;
+            } else {
+                $l = $slashPos;
+            }
+
+            if ($l == false) {
                 $newKey = $key; //no / or #
             } else {
                 $newKey =  substr($key, $l+1);
             }
         }
-        
+
         return preg_replace('[^A-Za-z0-9-_]', '', $newKey); //strip bad chars
     }
 
@@ -911,8 +920,8 @@ class Ontowiki_Extension_Manager
         $name = $memModel->getValue($bnUri, self::$_owconfigNS.'id');
         if ($name == null) {
             return array();
-        } 
-        
+        }
+
         foreach ($memModel->getPO($bnUri) as $key => $values) {
             if ($key == EF_RDF_TYPE || $key == self::$_owconfigNS.'id') {
                 continue;

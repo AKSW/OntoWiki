@@ -36,7 +36,8 @@ class ServiceController extends Zend_Controller_Action
         }
 
         // fetch params
-        if (isset($this->_request->logout)) {
+        $l = $this->_request->logout;
+        if (isset($l) && ('true' == $l || 'false' == $l)) {
             $logout = $this->_request->logout == 'true' ? true : false;
         } elseif (isset($this->_request->u)) {
             $username = $this->_request->u;
@@ -55,7 +56,7 @@ class ServiceController extends Zend_Controller_Action
             return;
         } else {
             // authenticate
-            $result = $owApp->erfurt->authenticate($username, $password);
+            $result = $this->_owApp->erfurt->authenticate($username, $password);
         }
 
         // return HTTP result

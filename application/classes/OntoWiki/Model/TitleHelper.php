@@ -130,6 +130,11 @@ class OntoWiki_Model_TitleHelper
 
         // always use local name for unknown resources?
         $this->_alwaysUseLocalNames = (bool)$config->titleHelper->useLocalNames;
+
+        if (null === $this->_languages) {
+            $this->_languages = array();
+        }
+        array_unshift($this->_languages, (string)OntoWiki::getInstance()->config->languages->locale);
     }
 
     // ------------------------------------------------------------------------
@@ -163,8 +168,9 @@ class OntoWiki_Model_TitleHelper
         } else {
             // throw exeption in debug mode only
             if (defined('_OWDEBUG')) {
-                require_once 'OntoWiki/Model/Exception.php';
-                //throw new OntoWiki_Model_Exception('Supplied resource ' . htmlentities('<'.$resource.'>') . ' is not a valid URI.');
+                throw new OntoWiki_Model_Exception(
+                    'Supplied resource ' . htmlentities('<'.$resource.'>') . ' is not a valid URI.'
+                );
             }
         }
 
@@ -244,7 +250,7 @@ class OntoWiki_Model_TitleHelper
             $this->_resources = array(); //sync
             return array();
         }
-        
+
         return array_keys($this->_resources);
     }
 
@@ -298,10 +304,13 @@ class OntoWiki_Model_TitleHelper
                     // has the property been found for the resource?
                     if (array_key_exists($currentTitleProperty, $titleProperties)) {
 
-                        for ($i = 0, $max = count($languages); $i  < $max; $i++) {
+                        for ($i = 0, $max = count($languages); $i < $max; ++$i) {
                             $currentLanguage = $languages[$i];
 
-                            if (($i < $currentBestLanguage) && isset($titleProperties[$currentTitleProperty][$currentLanguage])) {
+                            if (
+                                ($i < $currentBestLanguage)
+                                && isset($titleProperties[$currentTitleProperty][$currentLanguage])
+                            ) {
                                 $title = $titleProperties[$currentTitleProperty][$currentLanguage];
                                 $currentBestLanguage = $i;
                                 // var_dump(sprintf('%d/%d: %s', $currentBestLanguage, $i, $title));
@@ -348,8 +357,12 @@ class OntoWiki_Model_TitleHelper
             $queries = $this->getTitleQueries();
             foreach ($queries as $resourceUri=>$currentQuery) {
                 $queryResults = $execObject->sparqlQuery($currentQuery, array('result_format' => 'extended'));
-                
-                if (is_array($queryResults) && isset($queryResults['head']['vars']) && !empty($queryResults['head']['vars'])) {
+
+                if (
+                    is_array($queryResults)
+                    && isset($queryResults['head']['vars'])
+                    && !empty($queryResults['head']['vars'])
+                ) {
                     $this->_titleQueryResults[$resourceUri] = $queryResults;
                 }
             }
@@ -357,11 +370,10 @@ class OntoWiki_Model_TitleHelper
             if (defined('_OWDEBUG')) {
                 $numQueries = count($queries);
                 $logger = OntoWiki::getInstance()->logger;
-                
-                $writer = new Zend_Log_Writer_Stream(dirname(__FILE__).'/../../../../logs/ontowiki.log');
-                $logger = new Zend_Log($writer);
-                
-                $logger->info('TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.');
+
+                $logger->info(
+                    'TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.'
+                );
             }
         }
 
@@ -382,14 +394,14 @@ class OntoWiki_Model_TitleHelper
             $where = 'WHERE {'
                    . $this->_getTitleWhere($resourceUri)
                    . '}';
-                   
+
             $currentQuery = new Erfurt_Sparql_SimpleQuery();
             $currentQuery->setProloguePart($select)
                          ->setWherePart($where);
-            
+
             $queries[$resourceUri] = $currentQuery;
         }
-        
+
         return $queries;
     }
 
@@ -401,7 +413,7 @@ class OntoWiki_Model_TitleHelper
         // check if we have a valid URI
         if (Erfurt_Uri::check($propertyUri)) {
             // remove the property from the list if it already exist
-            foreach($this->_titleProperties as $key => $value) {
+            foreach ($this->_titleProperties as $key => $value) {
                 if ($value == $propertyUri) unset($this->_titleProperties[$key]);
             }
             // rewrite the array

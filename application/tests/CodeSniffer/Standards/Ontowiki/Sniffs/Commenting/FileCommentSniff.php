@@ -7,7 +7,7 @@
  */
 
 /**
- * Ontowiki_Sniffs_Function_ForbiddenFunctionsSniff.
+ * Ontowiki_Sniffs_Commenting_FileCommentSniff.
  * 
  * Test for forbidden functions
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * Ontowiki_Sniffs_Function_ForbiddenFunctionsSniff.
+ * Ontowiki_Sniffs_Commenting_FileCommentSniff.
  * Check for functions, they are not allowed.
  *
  * @category  PHP
@@ -88,13 +88,20 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
                 if ($this->_dateLine == $commentStrLineNumber) {
                     preg_match_all($this->_yearRegEx, $tokens[$tokenNumber]['content'], $matches);
                     if (isset($matches['year'][0]) && $this->_date != $matches['year'][0]) {
-                            $error = 'Wrong DocComment: Found "%s" instead of "' . $this->_date . '".';
-                            $phpcsFile->addError($error, $tokenNumber, 'WrongFileCommentYear', $matches['year'][0]);
-                            return;
+                        $error = 'Wrong DocComment: Found "%s" instead of "' . $this->_date . '".';
+                        $phpcsFile->addError(
+                            $error,
+                            $tokenNumber,
+                            'WrongFileCommentYear',
+                            $matches['year'][0]
+                        );
+                        return;
                     }
                 }
                 $data = addcslashes($tokens[$tokenNumber]['content'], "\n");
-                $error = 'Wrong DocComment: Found "%s" instead of "' . addcslashes($commentStrLine, "\n") . '".';
+                $error = 'Wrong DocComment: Found "%s" instead of "'.
+                    addcslashes($commentStrLine, "\n") .
+                    '".';
                 $phpcsFile->addError($error, $tokenNumber, 'WrongFileCommentLine', $data);
                 return;
             }
@@ -104,7 +111,12 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
         if ("T_WHITESPACE" != $tokens[$stackPtr+count($this->_commentStr)+2]['type']) {
             $data = addcslashes($tokens[$stackPtr+count($this->_commentStr)+2]['content'], "\n");
             $error = 'Wrong DocComment: Found "%s" instead of the blank line.';
-            $phpcsFile->addError($error, $stackPtr+count($this->_commentStr)+2, 'NoBlankLineAfterFileComment', $data);
+            $phpcsFile->addError(
+                $error,
+                $stackPtr+count($this->_commentStr)+2,
+                'NoBlankLineAfterFileComment',
+                $data
+            );
         }
     }//end process()
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OntoWiki test base file
  *
@@ -12,12 +11,10 @@
  * @version    $Id: test_base.php 2327 2008-05-26 15:47:55Z norman.heino $
  */
 
-?>
-<?php
-
 define('BOOTSTRAP_FILE', basename(__FILE__));
 define('ONTOWIKI_ROOT', realpath(dirname(__FILE__) . '/../..') . '/');
 define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application/');
+define('APPLICATION_ENV', 'unittesting');
 define('ONTOWIKI_REWRITE', false);
 define('CACHE_PATH', ONTOWIKI_ROOT . 'cache'.DIRECTORY_SEPARATOR);
 
