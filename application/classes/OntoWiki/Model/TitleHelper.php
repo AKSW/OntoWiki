@@ -369,8 +369,10 @@ class OntoWiki_Model_TitleHelper
 
             if (defined('_OWDEBUG')) {
                 $numQueries = count($queries);
-                $logger = OntoWiki::getInstance()->logger;
-
+                
+                $writer = new Zend_Log_Writer_Stream(dirname(FILE_).'/../../../../logs/ontowiki.log');
+                $logger = new Zend_Log($writer);
+                
                 $logger->info(
                     'TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.'
                 );
