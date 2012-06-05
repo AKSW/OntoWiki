@@ -22,7 +22,9 @@ define('ONTOWIKI_REWRITE', false);
 define('CACHE_PATH', ONTOWIKI_ROOT . 'cache'.DIRECTORY_SEPARATOR);
 
 // path to tests
-define('_TESTROOT', rtrim(dirname(__FILE__), '/') . '/');
+if (!defined('_TESTROOT')) {
+    define('_TESTROOT', rtrim(dirname(__FILE__), '/') . '/');
+}
 
 // path to OntoWiki
 define('_OWROOT', ONTOWIKI_ROOT);

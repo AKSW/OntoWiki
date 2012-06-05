@@ -540,6 +540,11 @@ class Ontowiki_Extension_Manager
                 //or in a folder specified in  config
                 $view->addScriptPath($currentExtensionPath.$extensionConfig->templates);
             }
+            
+            //check for other helpers
+            if (isset($extensionConfig->helpers)) {
+                $view->addHelperPath($currentExtensionPath.$extensionConfig->helpers, ucfirst($extensionName) .'_View_Helper_');
+            }
 
             //check for component class (only one per extension for now)
             if (file_exists($currentExtensionPath.ucfirst($extensionName).self::COMPONENT_FILE_POSTFIX)) {
