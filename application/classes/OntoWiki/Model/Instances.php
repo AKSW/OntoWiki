@@ -161,7 +161,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         //$this->updateValueQuery();
     }
 
-    function __wakeUp()
+    public function __wakeUp()
     {
         $this->_lang = NULL;
     }
@@ -204,6 +204,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
         }
     }
+
     /**
      * redirect calls that cant be handled - both to the resource and value query. 
      * currently only methods regarding the FROM are allowed
@@ -221,10 +222,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         }
     }
 
-   /**
-    * add ?resourceUri ?p ?o to the resource query
-    * TODO: support objects as resources? optionally?
-    */
+    /**
+     * add ?resourceUri ?p ?o to the resource query
+     * TODO: support objects as resources? optionally?
+     */
     public function addAllTriple()
     {
         $this->_resourceQuery->addElement($this->_allTriple);
@@ -237,13 +238,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param $propertyName Name to be used for the variable
      * @return OntoWiki_Model_Instances
      */
-    public function addShownProperty (
-        $propertyUri,
-        $propertyName = null,
-        $inverse = false,
-        $datatype = null,
-        $hidden = false
-    )
+    public function addShownProperty ($propertyUri, $propertyName = null, $inverse = false, $datatype = null, $hidden = false )
     {
         if (in_array($propertyUri, $this->_ignoredShownProperties)) {
             return $this; //no action
@@ -385,20 +380,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param string $literaltype
      * @return string id
      */
-    public function addFilter (
-        $property,
-        $isInverse,
-        $propertyLabel,
-        $filter,
-        $value = null,
-        $valueSecondary = null,
-        $valuetype = 'literal',
-        $literaltype = null,
-        $hidden = false,
-        $id = null,
-        $negate = false,
-        $optional = false
-    )
+    public function addFilter ($property, $isInverse, $propertyLabel, $filter, $value = null, $valueSecondary = null, 
+        $valuetype = 'literal', $literaltype = null, $hidden = false, $id = null, $negate = false, $optional = false ) 
     {
         if ($id == null) {
             $id = 'box' . count($this->_filter);

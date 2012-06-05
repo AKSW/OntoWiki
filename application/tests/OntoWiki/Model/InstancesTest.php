@@ -11,26 +11,24 @@ require_once dirname (__FILE__). '/../../../../libraries/Erfurt/tests/Erfurt/Tes
  */
 class OntoWiki_Model_InstancesTest extends Erfurt_TestCase {
 
-    protected $instances;
+    protected $_instances;
 
     protected $_store;
 
     public function setUp(){
         $this->markTestNeedsDatabase();
         $this->_store = Erfurt_App::getInstance()->getStore();
-        //$c = Erfurt_App::getInstance()->getConfig();
-        //$c->titleHelper->properties = array();
-        $this->instances = new OntoWiki_Model_Instances($this->_store, new Erfurt_Rdf_Model('http://graph.com')); // no config given
+        $this->_instances = new OntoWiki_Model_Instances($this->_store, new Erfurt_Rdf_Model('http://graph.com')); // no config given
     }
 
     public function testQuery(){
-        echo $this->instances->getResourceQuery();
+        echo $this->_instances->getResourceQuery();
     }
     
     public function testSerialization(){
         ob_start();
-        $this->instances = unserialize(serialize($this->instances));
-        $v = $this->instances->getValues();
+        $this->_instances = unserialize(serialize($this->_instances));
+        $v = $this->_instances->getValues();
         $o = ob_get_contents();
         ob_end_clean();
         $this->assertTrue(empty($o)); //no warnings
