@@ -17,7 +17,7 @@
 class OntoWiki_Model_Instances extends OntoWiki_Model
 {
     //all triple (?s ?p ?o). is added and removed to the resorceQuery on demand, but always stored here
-    protected $allTriple;
+    protected $_allTriple;
 
     /**
      * Properties whose values are to be fetched for each resource.
@@ -29,7 +29,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_ignoredShownProperties = array(
         //EF_RDF_TYPE
     );
-    
+
     /**
      * values of the set properties for all resources
      */
@@ -37,7 +37,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_valuesUptodate = false;
 
     protected $_valueQueryUptodate = false;
-    
+
     /**
      * all resources
      */
@@ -68,20 +68,20 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_results = null;
     protected $_resultsUptodate = false;
-    
+
     /**
      * @var Erfurt_Sparql_Query2 the manged query that selects the resources in the list
      */
     protected $_resourceQuery = null;
-    
+
     protected $_sortTriple = null;
-    
+
     /**
      * @var Erfurt_Sparql_Query2
      */
     protected $_valueQuery = null;
     protected $_valueQueryResourceFilter = null;
-    
+
     protected $_useCache = true;
 
     /**
@@ -90,20 +90,24 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     public function __construct (Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array())
     {
         parent::__construct($store, $model);
-        
-        if(isset($options[STORE_USE_CACHE])){
+
+        if (isset($options[STORE_USE_CACHE])) {
             $this->_useCache = $options[STORE_USE_CACHE];
         }
 
         $this->_defaultUrl['resource']      = new OntoWiki_Url(array('route' => 'properties'), array());
         $this->_defaultUrlParam['resource'] = 'r';
-        
-        $this->_resourceQuery   =  new Erfurt_Sparql_Query2();
-        $this->_resourceVar = new Erfurt_Sparql_Query2_Var("resourceUri");
 
-        $this->allTriple = new Erfurt_Sparql_Query2_Triple($this->_resourceVar, new Erfurt_Sparql_Query2_Var("p"), new Erfurt_Sparql_Query2_Var("o"));
+        $this->_resourceQuery   =  new Erfurt_Sparql_Query2();
+        $this->_resourceVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+
+        $this->_allTriple = new Erfurt_Sparql_Query2_Triple(
+            $this->_resourceVar,
+            new Erfurt_Sparql_Query2_Var('p'),
+            new Erfurt_Sparql_Query2_Var('o')
+        );
         $this->addAllTriple();
-        
+
         //show resource uri
         $this->_resourceQuery->addProjectionVar($this->_resourceVar);
         $this->_resourceQuery
@@ -117,7 +121,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             new Erfurt_Sparql_Query2_ConditionalAndExpression(
                 array(
                     //new Erfurt_Sparql_Query2_isUri($this->_resourceVar),
-                    
+
                     new Erfurt_Sparql_Query2_UnaryExpressionNot(
                         new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
                     )
@@ -150,17 +154,19 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         //$this->updateValueQuery();
     }
 
-    function __wakeUp(){
+    function __wakeUp()
+    {
         $this->_lang = NULL;
     }
 
-    private function _getLanguage () {
+    private function _getLanguage ()
+    {
         if ($this->_lang == NULL) {
             $this->_lang = OntoWiki::getInstance()->config->languages->locale;
         }
         return $this->_lang;
     }
-    
+
     /**
      * 
      * Method for setting the store explicitely
@@ -170,7 +176,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @throws Exception for parameter type being incorrect (no Erfurt_Store Object)
      * @return null
      */
-    public function setStore($store) {
+    public function setStore($store)
+    {
         if ($store instanceof Erfurt_Store) {
             $this->_store = $store;
         } else {
@@ -181,7 +188,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     /**
      * dont keep the references to the query objects in $this->resourceQuery (the must be cloned too)
      */
-    public function __clone(){
+    public function __clone()
+    {
         foreach ($this as $key => $val) {
             if (is_object($val)||(is_array($val))) {
                 $this->{$key} = unserialize(serialize($val));
@@ -190,13 +198,17 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         }
     }
     /**
-     * redirect calls that ant be handled both to the resource and value query. currently only methods regarding the from are allowed
+     * redirect calls that cant be handled - both to the resource and value query. 
+     * currently only methods regarding the FROM are allowed
      * @param string $name
      * @param array $arguments
      */
-    public function  __call($name,  $arguments) {
-        $allowedMethods = array("addFrom","addFroms","removeFrom","removeFroms","hasFrom","getFrom","getFroms","setFrom", "setFroms");
-        if(in_array($name, $allowedMethods)){
+    public function  __call($name,  $arguments)
+    {
+        $allowedMethods = array(
+            'addFrom', 'addFroms', 'removeFrom', 'removeFroms', 'hasFrom', 'getFrom', 'getFroms', 'setFrom', 'setFroms'
+        );
+        if (in_array($name, $allowedMethods)) {
             call_user_func(array($this->_valueQuery, $name), $arguments);
             call_user_func(array($this->_resourceQuery, $name), $arguments);
         }
@@ -206,10 +218,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     * add ?resourceUri ?p ?o to the resource query
     * TODO: support objects as resources? optionally?
     */
-    public function addAllTriple(){
-        $this->_resourceQuery->addElement($this->allTriple);
+    public function addAllTriple()
+    {
+        $this->_resourceQuery->addElement($this->_allTriple);
     }
-    
+
     /**
      * Adds a property to the properties fetched for every resource.
      *
@@ -217,7 +230,13 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param $propertyName Name to be used for the variable
      * @return OntoWiki_Model_Instances
      */
-    public function addShownProperty ($propertyUri, $propertyName = null, $inverse = false, $datatype = null, $hidden = false)
+    public function addShownProperty (
+        $propertyUri,
+        $propertyName = null,
+        $inverse = false,
+        $datatype = null,
+        $hidden = false
+    )
     {
         if (in_array($propertyUri, $this->_ignoredShownProperties)) {
             return $this; //no action
@@ -241,7 +260,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $name = $propertyName . $counter++;
                 $used = false;
                 foreach ($this->_shownProperties as $shownProp) {
-                    if ($shownProp['name'] == $name){
+                    if ($shownProp['name'] == $name) {
                         $used = true;
                     }
                 }
@@ -249,29 +268,30 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $propertyName = $name;
         }
-        
+
         $ret = Erfurt_Sparql_Query2_Abstraction_ClassNode::addShownPropertyHelper(
-            $this->_valueQuery, 
-            $this->_resourceVar, 
-            $propertyUri, 
-            $propertyName, 
+            $this->_valueQuery,
+            $this->_resourceVar,
+            $propertyUri,
+            $propertyName,
             $inverse
         );
-        
-        $this->_shownProperties[$propertyUri.'-'.($inverse?"inverse":"direct")] = array(
+
+        $this->_shownProperties[$propertyUri.'-'.($inverse?'inverse':'direct')] = array(
             'uri' => $propertyUri,
-            'name' => $propertyName, 
-            'inverse' => $inverse, 
-            'datatype' => $datatype, 
+            'name' => $propertyName,
+            'inverse' => $inverse,
+            'datatype' => $datatype,
             'varName' => $ret['var']->getName(),
             'var' => $ret['var'],
             'optionalpart' => $ret['optional'],
             'filter' => $ret['filter'],
             'hidden' => $hidden
         );
+
         $this->_valuesUptodate = false; // getValues will not use the cache next time
         $this->_resultsUptodate = false;
-        
+
         return $this;
     }
 
@@ -283,7 +303,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param boolean $hidden
      * @return OntoWiki_Model_Instances
      */
-    public function addShownPropertyCustom($triples, $var, $hidden = false){
+    public function addShownPropertyCustom($triples, $var, $hidden = false)
+    {
         //add
         $optional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
         $optional->addElements($triples);
@@ -312,9 +333,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * remove a property that has been added before
      * @param string $key the uri
      */
-    public function removeShownProperty($property, $inverse){
-        $key = $property.'-'.($inverse?"inverse":"direct");
-        if(isset($this->_shownProperties[$key])){
+    public function removeShownProperty($property, $inverse)
+    {
+        $key = $property.'-'.($inverse?'inverse':'direct');
+        if (isset($this->_shownProperties[$key])) {
             $prop =  $this->_shownProperties[$key];
             $this->_valueQuery->removeProjectionVar($prop['var']);
             $prop['optionalpart']->remove($this->_resourceQuery);
@@ -330,10 +352,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     public function getResults ()
     {
         $this->updateValueQuery();
-        
+
         if (!$this->_resultsUptodate) {
             $this->_results = $this->_store->sparqlQuery(
-                $this->_valueQuery, 
+                $this->_valueQuery,
                 array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
             );
             $this->_resultsUptodate = true;
@@ -341,7 +363,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         return $this->_results;
     }
-    
 
     /**
      * add a filter from the filter box - these filters match some predefined schemes
@@ -351,124 +372,141 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param boolean $isInverse
      * @param string $propertyLabel
      * @param string $filter
-     * @param string $value1
-     * @param string $value2
+     * @param string $value
+     * @param string $valueSecondary
      * @param string $valuetype
      * @param string $literaltype
      * @return string id
      */
-    public function addFilter ($property, $isInverse, $propertyLabel, $filter, $value1 = null, $value2 = null, $valuetype = 'literal', $literaltype = null, $hidden = false, $id = null, $negate = false, $optional = false)
+    public function addFilter (
+        $property,
+        $isInverse,
+        $propertyLabel,
+        $filter,
+        $value = null,
+        $valueSecondary = null,
+        $valuetype = 'literal',
+        $literaltype = null,
+        $hidden = false,
+        $id = null,
+        $negate = false,
+        $optional = false
+    )
     {
-        if($id == null){
-            $id = "box" . count($this->_filter);
+        if ($id == null) {
+            $id = 'box' . count($this->_filter);
         } else {
-            if(isset($this->_filter[$id])){
+            if (isset($this->_filter[$id])) {
                 $this->removeFilter($id);
             }
         }
         $prop = new Erfurt_Sparql_Query2_IriRef($property);
-        if(!empty($value1)){
+        if (!empty($value)) {
             switch($valuetype) {
                 case 'uri':
-                    $value1_obj = new Erfurt_Sparql_Query2_IriRef($value1);
+                    $valueObj = new Erfurt_Sparql_Query2_IriRef($value);
 
-                    if (!empty($value2)){
-                        $value2_obj = new Erfurt_Sparql_Query2_IriRef($value2);
+                    if (!empty($valueSecondary)) {
+                        $valueSecondaryObj = new Erfurt_Sparql_Query2_IriRef($valueSecondary);
                     }
-                break;
+                    break;
                 case 'literal':
                     if (!empty($literaltype)) {
-                            //with language tags
-                            $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral(
-                                $value1,
+                        //with language tags
+                        $valueObj = new Erfurt_Sparql_Query2_RDFLiteral(
+                            $value,
+                            $literaltype
+                        );
+                        if (!empty($valueSecondary)) {
+                            $valueSecondaryObj = new Erfurt_Sparql_Query2_RDFLiteral(
+                                $valueSecondary,
                                 $literaltype
                             );
-                            if (!empty($value2)){
-                                $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral(
-                                    $value2,
-                                    $literaltype);
-                            }
-                        } else {
-                            //no language tags
-                            $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1);
-                            if (!empty($value2)){
-                                $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral($value2);
-                            }
                         }
-                break;
+                    } else {
+                        //no language tags
+                        $valueObj = new Erfurt_Sparql_Query2_RDFLiteral($value);
+                        if (!empty($valueSecondary)) {
+                            $valueSecondaryObj = new Erfurt_Sparql_Query2_RDFLiteral($valueSecondary);
+                        }
+                    }
+                    break;
                 case 'typed-literal':
                     if (in_array($literaltype, Erfurt_Sparql_Query2_RDFLiteral::$knownShortcuts)) {
                         //is something like "bool" or "int" - will be converted from "1"^^xsd:int to 1
-                        $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1, $literaltype);
-                        if (!empty($value2)){
-                            $value2_obj =
-                            new Erfurt_Sparql_Query2_RDFLiteral($value2, $literaltype);
+                        $valueObj = new Erfurt_Sparql_Query2_RDFLiteral($value, $literaltype);
+                        if (!empty($valueSecondary)) {
+                            $valueSecondaryObj = new Erfurt_Sparql_Query2_RDFLiteral($valueSecondary, $literaltype);
                         }
                     } else {
                         // is a uri
-                        $value1_obj = new Erfurt_Sparql_Query2_RDFLiteral($value1, new Erfurt_Sparql_Query2_IriRef($literaltype));
-                        if (!empty($value2)){
-                            $value2_obj = new Erfurt_Sparql_Query2_RDFLiteral(
-                                $value2,
+                        $valueObj = new Erfurt_Sparql_Query2_RDFLiteral(
+                            $value,
+                            new Erfurt_Sparql_Query2_IriRef($literaltype)
+                        );
+                        if (!empty($valueSecondary)) {
+                            $valueSecondaryObj = new Erfurt_Sparql_Query2_RDFLiteral(
+                                $valueSecondary,
                                 new Erfurt_Sparql_Query2_IriRef($literaltype)
                             );
                         }
                     }
-                break;
+                    break;
                 default:
                     throw new RuntimeException(
                         'called Ontowiki_Model_Instances::addFilter with '.
                         'unknown param-value: valuetype = "'.$valuetype.'"'
                     );
-                break;
+                    break;
             }
         }
-        
-        switch($filter) {
+
+        switch ($filter) {
             case 'contains':
                 $var = new Erfurt_Sparql_Query2_Var($propertyLabel);
                 if (!$isInverse) {
                     $triple = $this->_resourceQuery->addTriple(
-                        $this->_resourceVar, 
-                        $prop, 
+                        $this->_resourceVar,
+                        $prop,
                         $var
                     );
                 } else {
                     $triple = $this->_resourceQuery->addTriple(
-                        $var, 
-                        $prop, 
+                        $var,
+                        $prop,
                         $this->_resourceVar
                     );
                 }
-                $value1_obj->setValue(str_replace("\\", "\\\\", preg_quote($value1_obj->getValue())));
+                $valueObj->setValue(str_replace("\\", "\\\\", preg_quote($valueObj->getValue())));
                 $filterObj = $this->_resourceQuery->addFilter(
                     !$negate ?
                     new Erfurt_Sparql_Query2_Regex(
-                        new Erfurt_Sparql_Query2_Str($var), 
-                        $value1_obj
+                        new Erfurt_Sparql_Query2_Str($var),
+                        $valueObj
                     )
                     :
                     new Erfurt_Sparql_Query2_UnaryExpressionNot(
                         new Erfurt_Sparql_Query2_Regex(
                             new Erfurt_Sparql_Query2_Str($var),
-                            $value1_obj
+                            $valueObj
                         )
                     )
                 );
-            break;
+                break;
             case 'equals':
-                if ($valuetype=="literal") {
+                if ($valuetype == 'literal') {
                     $valueVar = new Erfurt_Sparql_Query2_Var($propertyLabel);
                     if (!$isInverse) {
                         $triple = new Erfurt_Sparql_Query2_Triple(
-                            $this->_resourceVar, 
-                            $prop, 
+                            $this->_resourceVar,
+                            $prop,
                             $valueVar
                         );
                     } else {
                         throw new RuntimeException(
                             'literal as value for an inverse property '.
-                            'is a literal subject which is not allowed');
+                            'is a literal subject which is not allowed'
+                        );
                     }
 
                     if ($negate) {
@@ -479,15 +517,17 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
                         if ($optional) {
                             $orExpression = new Erfurt_Sparql_Query2_ConditionalOrExpression();
-                            $orExpression->addElement(new Erfurt_Sparql_Query2_UnaryExpressionNot(
-                                new Erfurt_Sparql_Query2_bound($valueVar)
-                            ));
-                            $orExpression->addElement(new Erfurt_Sparql_Query2_NotEquals($valueVar, $value1_obj));
+                            $orExpression->addElement(
+                                new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                                    new Erfurt_Sparql_Query2_bound($valueVar)
+                                )
+                            );
+                            $orExpression->addElement(new Erfurt_Sparql_Query2_NotEquals($valueVar, $valueObj));
 
                             $filterObj = $this->_resourceQuery->addFilter($orExpression);
                         } else {
                             $filterObj = $this->_resourceQuery->addFilter(
-                                new Erfurt_Sparql_Query2_NotEquals($valueVar, $value1_obj)
+                                new Erfurt_Sparql_Query2_NotEquals($valueVar, $valueObj)
                             );
                         }
                     } else {
@@ -496,7 +536,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                             new Erfurt_Sparql_Query2_Regex(
                                 new Erfurt_Sparql_Query2_Str($valueVar),
                                 new Erfurt_Sparql_Query2_RDFLiteral(
-                                     '^'.str_replace("\\", "\\\\", preg_quote($value1)).'$'
+                                    '^'.str_replace("\\", "\\\\", preg_quote($value)).'$'
                                 )
                             )
                         );
@@ -504,19 +544,19 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 } else {
                     if (!$isInverse) {
                         $triple = $this->_resourceQuery->addTriple(
-                            $this->_resourceVar, 
-                            $prop, 
-                            $value1_obj
+                            $this->_resourceVar,
+                            $prop,
+                            $valueObj
                         );
                     } else {
                         $triple = $this->_resourceQuery->addTriple(
-                            $value1_obj,
-                            $prop, 
+                            $valueObj,
+                            $prop,
                             $this->_resourceVar
                         );
                     }
                 }
-            break;
+                break;
             case 'larger':
                 $var = new Erfurt_Sparql_Query2_Var($propertyLabel);
                 if (!$isInverse) {
@@ -534,9 +574,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 }
 
                 $filterObj = $this->_resourceQuery->addFilter(
-                    new Erfurt_Sparql_Query2_Larger($var, $value1_obj)
+                    new Erfurt_Sparql_Query2_Larger($var, $valueObj)
                 );
-            break;
+                break;
             case 'smaller':
                 $var = new Erfurt_Sparql_Query2_Var($propertyLabel);
                 if (!$isInverse) {
@@ -554,9 +594,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 }
 
                 $filterObj = $this->_resourceQuery->addFilter(
-                    new Erfurt_Sparql_Query2_Smaller($var, $value1_obj)
+                    new Erfurt_Sparql_Query2_Smaller($var, $valueObj)
                 );
-            break;
+                break;
             case 'between':
                 $var = new Erfurt_Sparql_Query2_Var($propertyLabel);
                 if (!$isInverse) {
@@ -576,15 +616,15 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $filterObj = $this->_resourceQuery->addFilter(
                     new Erfurt_Sparql_Query2_ConditionalAndExpression(
                         array(
-                            new Erfurt_Sparql_Query2_Larger($var, $value1_obj),
-                            new Erfurt_Sparql_Query2_Smaller($var, $value2_obj)
+                            new Erfurt_Sparql_Query2_Larger($var, $valueObj),
+                            new Erfurt_Sparql_Query2_Smaller($var, $valueSecondaryObj)
                         )
                     )
                 );
-            break;
+                break;
             case 'bound':
                 $var = new Erfurt_Sparql_Query2_Var($propertyLabel);
-                
+
                 if (!$isInverse) {
                     $triple = new Erfurt_Sparql_Query2_Triple(
                         $this->_resourceVar,
@@ -598,7 +638,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                         $this->_resourceVar
                     );
                 }
-                if($negate){
+                if ($negate) {
                     $optional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
                     $optional->addElement($triple);
                     $this->_resourceQuery->addElement($optional);
@@ -607,25 +647,24 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                     $this->_resourceQuery->addElement($triple);
                 }
 
-                if($negate){
+                if ($negate) {
                     $filterObj = $this->_resourceQuery->addFilter(
                         new Erfurt_Sparql_Query2_UnaryExpressionNot(
                             new Erfurt_Sparql_Query2_bound($var)
                         )
                     );
                 }
-            break;
+                break;
             default:
                 throw new RuntimeException(
                     'called Ontowiki_Model_Instances::addFilter with '.
                     'unknown param-value: filtertype='.$filter
                 );
-            break;
-            
+                break;
         }
 
         //these filters bring there own triple
-        $this->allTriple->remove($this->_resourceQuery);
+        $this->_allTriple->remove($this->_resourceQuery);
 
         //save
         $this->_filter[$id] = array(
@@ -635,8 +674,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
              'isInverse'        => $isInverse,
              'propertyLabel'    => $propertyLabel,
              'filter'           => $filter,
-             'value1'           => $value1,
-             'value2'           => $value2,
+             'value1'           => $value,
+             'value2'           => $valueSecondary,
              'valuetype'        => $valuetype,
              'literaltype'      => $literaltype,
              'hidden'           => $hidden,
@@ -653,18 +692,20 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param string $id
      * @return OntoWiki_Model_Instances $this
      */
-    public function removeFilter($id){
-        if (isset($this->_filter[$id])){
-            foreach($this->_filter[$id]['objects'] as $obj){
-                if($obj instanceof Erfurt_Sparql_Query2_ElementHelper){
+    public function removeFilter($id)
+    {
+        if (isset($this->_filter[$id])) {
+            foreach ($this->_filter[$id]['objects'] as $obj) {
+                if ($obj instanceof Erfurt_Sparql_Query2_ElementHelper) {
                     $obj->remove($this->_resourceQuery);
                 }
             }
 
             unset($this->_filter[$id]);
-            
+
             //when all deleted
-            if (count($this->_resourceQuery->getWhere()->getElements()) == 1){ //this last element is the "isUri and !isBlank"-filter
+            //empty == 1 left because this last element is the "isUri and !isBlank"-filter
+            if (count($this->_resourceQuery->getWhere()->getElements()) == 1) {
                 $this->addAllTriple();
             }
 
@@ -674,10 +715,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     }
 
     /**
-     * get the array that holds the filters
+     * get the internal array that holds the filters
      * @return array
      */
-    public function getFilter(){
+    public function getFilter()
+    {
         return $this->_filter;
     }
 
@@ -688,12 +730,12 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param array $options
      * @return int id
      */
-    public function addTypeFilter($type, $id = null, $option = array()){
-        
-        if($id == null){
-            $id = "type" . count($this->_filter);
+    public function addTypeFilter($type, $id = null, $option = array())
+    {
+        if ($id == null) {
+            $id = 'type' . count($this->_filter);
         } else {
-            if(isset($this->_filter[$id])){
+            if (isset($this->_filter[$id])) {
                 $this->removeFilter($id);
             }
         }
@@ -709,16 +751,17 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         //$options['hierarchyDown'] = null;
         $options['direction'] = 1; // down the tree
 
-        $member_predicate = $options['memberPredicate'];
-        if (is_string($member_predicate)){
-            $member_predicate = new Erfurt_Sparql_Query2_IriRef($member_predicate);
+        $memberPredicate = $options['memberPredicate'];
+        if (is_string($memberPredicate)) {
+            $memberPredicate = new Erfurt_Sparql_Query2_IriRef($memberPredicate);
         }
 
-        if (!($member_predicate instanceof Erfurt_Sparql_Query2_Verb)) {
+        if (!($memberPredicate instanceof Erfurt_Sparql_Query2_Verb)) {
             throw new RuntimeException(
                 'Option "member_predicate" passed to Ontowiki_Model_Instances '.
                 'must be an instance of Erfurt_Sparql_Query2_IriRef '.
-                'or string instance of '.typeHelper($member_predicate).' given');
+                'or string instance of '.typeHelper($memberPredicate).' given'
+            );
         }
 
         $type = new Erfurt_Sparql_Query2_IriRef($options['type']);
@@ -734,19 +777,20 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                         $options['hierarchyIsInverse']
                     )
                 );
-        } else if(isset($options['subtypes'])){ //dont query, take the given. maybe the new navigation can use this
+        } else if (isset($options['subtypes'])) { //dont query, take the given. maybe the new navigation can use this
             $subClasses = $options['subtypes'];
         } else {
             $subClasses = array();
         }
 
-        if (count($subClasses)>1) {
+        if (count($subClasses) > 1) {
             // there are subclasses. "1" because the class itself is somehow included in the subclasses...
             $typeVar = new Erfurt_Sparql_Query2_Var($type);
             $triple = $this->_resourceQuery->addTriple(
                 $this->_resourceVar,
-                $member_predicate,
-                $typeVar);
+                $memberPredicate,
+                $typeVar
+            );
 
             $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
             foreach ($subClasses as $subclass) {
@@ -763,7 +807,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             // no subclasses
             $triple = $this->_resourceQuery->addTriple(
                 $this->_resourceVar,
-                $member_predicate,
+                $memberPredicate,
                 new Erfurt_Sparql_Query2_IriRef($type->getIri())
             );
         }
@@ -772,13 +816,13 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->_filter[$id] = array(
              'id'               => $id,
              'mode'             => 'rdfsclass',
-             'rdfsclass'             => $options['type'],
+             'rdfsclass'        => $options['type'],
              'withChilds'       => $options['withChilds'],
-             'objects'           => array($triple, isset($filterObj) ? $filterObj : null)
+             'objects'          => array($triple, isset($filterObj) ? $filterObj : null)
         );
 
         //these filters bring there own triple
-        $this->allTriple->remove($this->_resourceQuery);
+        $this->_allTriple->remove($this->_resourceQuery);
 
         $this->invalidate();
         return $id;
@@ -790,11 +834,12 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param string $id optional
      * @return string the id used
      */
-    public function addSearchFilter($str, $id = null){
-        if($id == null){
-            $id = "search" . count($this->_filter);
+    public function addSearchFilter($str, $id = null)
+    {
+        if ($id == null) {
+            $id = 'search' . count($this->_filter);
         } else {
-            if(isset($this->_filter[$id])){
+            if (isset($this->_filter[$id])) {
                 $this->removeFilter($id);
             }
         }
@@ -805,19 +850,19 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $vars = array();
 
-        foreach($pattern as $element){
-            if(method_exists($element, 'getVars')){
+        foreach ($pattern as $element) {
+            if (method_exists($element, 'getVars')) {
                 $vars = array_merge($vars, $element->getVars());
-            } 
+            }
         }
         $count = count($this->_filter);
-        foreach($vars as $var){
-            if($var->getName() == 'o' || $var->getName() == 'p') {
+        foreach ($vars as $var) {
+            if ($var->getName() == 'o' || $var->getName() == 'p') {
                 $var->setName($var->getName().$count);
             }
         }
         $this->_resourceQuery->addElements($pattern);
-        //var_dump($pattern);
+
         //save
         $this->_filter[$id] = array(
              'id'               => $id,
@@ -827,10 +872,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         );
 
         //these filters bring there own triple
-        $this->allTriple->remove($this->_resourceQuery);
+        $this->_allTriple->remove($this->_resourceQuery);
 
         $this->invalidate();
-        
+
         return $id;
     }
 
@@ -840,11 +885,12 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @param string $id
      * @return string the id used
      */
-    public function addTripleFilter($triples, $id = null){
-        if($id == null){
+    public function addTripleFilter($triples, $id = null)
+    {
+        if ($id == null) {
             $id = 'triple' . count($this->_filter);
         } else {
-            if(isset($this->_filter[$id])){
+            if (isset($this->_filter[$id])) {
                 $this->removeFilter($id);
             }
         }
@@ -856,10 +902,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
              'mode'             => 'triples',
              'objects'           => $triples
         );
-        
+
         //these filters bring there own triple
-        $this->allTriple->remove($this->_resourceQuery);
-        
+        $this->_allTriple->remove($this->_resourceQuery);
 
         $this->invalidate();
         return $id;
@@ -869,7 +914,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * get the query used to get the values (shownproperties)
      * @return Erfurt_Sparql_Query2
      */
-    public function getQuery ()
+    public function getQuery()
     {
         return $this->_valueQuery;
     }
@@ -878,7 +923,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * get the query used for getting the resources. incl. filter
      * @return Erfurt_Sparql_Query2
      */
-    public function getResourceQuery ()
+    public function getResourceQuery()
     {
         return $this->_resourceQuery;
     }
@@ -887,24 +932,25 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * build a link that recreates the current state on a different system
      * @return string
      */
-    public function getPermalink($listname){
+    public function getPermalink($listname)
+    {
         $url = new OntoWiki_Url();
         $url->init = true;
 
-        if($this->getOffset() != 0 && $this->getLimit() != 0){
+        if ($this->getOffset() != 0 && $this->getLimit() != 0) {
             $url->p=(($this->getOffset() / $this->getLimit()) + 1 );
         }
-        if($this->getLimit() != 10){
+        if ($this->getLimit() != 10) {
             $url->limit=$this->getLimit();
         }
         $url->list=$listname;
 
         $conf = array();
 
-        if(is_array($this->_shownProperties) && count($this->_shownProperties) > 0){
+        if (is_array($this->_shownProperties) && count($this->_shownProperties) > 0) {
             $conf['shownProperties'] = array();
 
-            foreach($this->_shownProperties as $shownProperty){
+            foreach ($this->_shownProperties as $shownProperty) {
                 $conf['shownProperties'][] = array(
                     'uri' => $shownProperty['uri'],
                     'label' => $shownProperty['name'],
@@ -913,10 +959,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 );
             }
         }
-        if(is_array($this->_filter) && count($this->_filter) > 0){
+        if (is_array($this->_filter) && count($this->_filter) > 0) {
             $conf['filter'] = array();
 
-            foreach($this->_filter as $filter){
+            foreach ($this->_filter as $filter) {
                 switch($filter['mode']){
                     case 'box':
                         $arr = array(
@@ -925,22 +971,22 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                         );
                         $arr = array_merge($arr, $filter);
                         $conf['filter'][] = $arr;
-                    break;
-                    case "search":
+                        break;
+                    case 'search':
                         $conf['filter'][] = array(
                             'action' => 'add',
                             'mode' => 'search',
                             'searchText' => $filter['searchText']
                         );
-                    break;
-                    case "rdfsclass":
+                        break;
+                    case 'rdfsclass':
                         $conf['filter'][] = array(
                             'action' => 'add',
                             'mode' => 'rdfsclass',
                             'rdfsclass' => $filter['rdfsclass']
                         );
-                    break;
-                    case "triples":
+                        break;
+                    case 'triples':
                         //problem: php objects can not be json encoded ...
                         /*
                         $conf['filter'][] = array(
@@ -949,85 +995,18 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                             'triples' => $filter['triples']
                         );
                         */
-                    break;
+                        break;
                 }
             }
             $url->m= (string) $this->_model;
-            if(!empty($conf)){
+            if (!empty($conf)) {
                 $url->instancesconfig = json_encode($conf);
             }
         }
-//        $url = '?init=1';
-//        if($this->getOffset() != 0 && $this->getLimit() != 0){
-//            $url .= '&p='. (($this->getOffset() / $this->getLimit()) + 1 );
-//        }
-//        if($this->getLimit() != 10){
-//            $url .= '&limit='.$this->getLimit();
-//        }
-//        $url = '&list='.$listname;
-//
-//        $conf = array();
-//
-//        if(is_array($this->_shownProperties) && count($this->_shownProperties) > 0){
-//            $conf['shownProperties'] = array();
-//
-//            foreach($this->_shownProperties as $shownProperty){
-//                $conf['shownProperties'][] = array(
-//                    'uri' => $shownProperty['uri'],
-//                    'label' => $shownProperty['name'],
-//                    'inverse' => $shownProperty['inverse'],
-//                    'action' => 'add'
-//                );
-//            }
-//        }
-//        if(is_array($this->_filter) && count($this->_filter) > 0){
-//            $conf['filter'] = array();
-//
-//            foreach($this->_filter as $filter){
-//                switch($filter['mode']){
-//                    case 'box':
-//                        $arr = array(
-//                            'action' => 'add',
-//                            'mode' => 'box'
-//                        );
-//                        $arr = array_merge($arr, $filter);
-//                        $conf['filter'][] = $arr;
-//                    break;
-//                    case "search":
-//                        $conf['filter'][] = array(
-//                            'action' => 'add',
-//                            'mode' => 'search',
-//                            'searchText' => $filter['searchText']
-//                        );
-//                    break;
-//                    case "rdfsclass":
-//                        $conf['filter'][] = array(
-//                            'action' => 'add',
-//                            'mode' => 'rdfsclass',
-//                            'rdfsclass' => $filter['rdfsclass']
-//                        );
-//                    break;
-//                    case "triples":
-//                        //problem: php objects can not be json encoded ...
-//                        /*
-//                        $conf['filter'][] = array(
-//                            'action' => 'add',
-//                            'mode' => 'triples',
-//                            'triples' => $filter['triples']
-//                        );
-//                        */
-//                    break;
-//                }
-//            }
-//            $url .= '&m=' . urlencode((string) $this->_model);
-//            if(!empty($conf)){
-//                $url .= '&instancesconfig=' . urlencode(json_encode($conf));
-//            }
-//        }
 
         return $url;
     }
-    
+
     /**
      * @return Erfurt_sparql_Query2_Var the var that is used as subject in the query
      */
@@ -1035,7 +1014,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     {
         return $this->_resourceVar;
     }
-    
+
     /**
      * Returns the property values for all resources at once.
      *
@@ -1046,15 +1025,15 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if ($this->_valuesUptodate) {
             return $this->_values;
         } else $this->updateValueQuery();
-        
+
         if (empty($this->_resources)) {
             return array();
         }
-        
+
         $this->getResults();
 
         $result = $this->_results['results']['bindings'];
-        
+
         //fill titlehelper
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
         foreach ($result as $row) {
@@ -1062,13 +1041,12 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 if (
                     isset($row[$property['varName']])
                     && $row[$property['varName']]['type'] == 'uri'
-                    && substr($row[$property['varName']]['value'], 0, 2) != "_:"
+                    && substr($row[$property['varName']]['value'], 0, 2) != '_:'
                 ) {
                     $titleHelper->addResource($row[$property['varName']]['value']);
                 }
             }
-            if ( isset($row['__TYPE'])
-                 &&
+            if (isset($row['__TYPE']) &&
                  $row['__TYPE']['type'] == 'uri' //sould both be true
                 ) {
                     $titleHelper->addResource($row['__TYPE']['value']);
@@ -1095,7 +1073,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 }
 
                 if ($data['type'] == 'uri') {
-                    if(substr($data['value'], 0, 2) == "_:"){
+                    if (substr($data['value'], 0, 2) == '_:') {
                         continue; // skip blanknode values here due to backend problems with filters
                     }
 
@@ -1109,12 +1087,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
                     //find uri
                     foreach ($this->_shownProperties as $property) {
-                        
                         if ($varName == $property['varName']) {
                             $event->property = $property['uri'];
                         }
                     }
-                    
+
                     $event->value    = $objectUri;
 
                     // trigger
@@ -1146,17 +1123,17 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                         $value = $event->trigger();
                     }
                 }
-                
+
                 //check for dulplicate values
-                if(isset($valueResults[$resourceUri][$varName])){
-                    foreach($valueResults[$resourceUri][$varName] as $old){
-                        if($old['origvalue'] == $data['value'] && $old['type'] == $data['type']){
+                if (isset($valueResults[$resourceUri][$varName])) {
+                    foreach ($valueResults[$resourceUri][$varName] as $old) {
+                        if ($old['origvalue'] == $data['value'] && $old['type'] == $data['type']) {
                             $link = null;
                             continue 2; // dont add this value
                         }
                     }
                 }
-                
+
                 //add value
                 $valueResults[$resourceUri][$varName][] = array(
                   'value' => $value,
@@ -1171,8 +1148,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
         }
 
-        foreach($this->getShownResources() as $resource){
-            if(!isset($valueResults[$resource['value']])){
+        foreach ($this->getShownResources() as $resource) {
+            if (!isset($valueResults[$resource['value']])) {
                 //there are no statements about this resource
                 $valueResults[$resource['value']] = array();
             }
@@ -1184,7 +1161,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         return $valueResults;
     }
 
-    public function getAllPropertiesQuery($inverse = false){
+    public function getAllPropertiesQuery($inverse = false)
+    {
         $query = clone $this->_resourceQuery;
         $query
             ->removeAllProjectionVars()
@@ -1193,14 +1171,14 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             ->setOffset(0);
         $vars = $query->getWhere()->getVars();
         $resourceVar = $this->getResourceVar();
-        foreach($vars as $var){
-            if($var->getName() == $resourceVar->getName()){
+        foreach ($vars as $var) {
+            if ($var->getName() == $resourceVar->getName()) {
                 $var->setName('listresource');
             }
         }
         $listResource = new Erfurt_Sparql_Query2_Var('listresource');
         $predVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        if(!$inverse){
+        if (!$inverse) {
             $query->addTriple(
                 $listResource,
                 $predVar,
@@ -1223,7 +1201,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
     public function getAllProperties ($inverse = false)
     {
-        if(empty($this->_resources) && $this->_resourcesUptodate){
+        if (empty($this->_resources) && $this->_resourcesUptodate) {
             return array();
         }
 
@@ -1269,9 +1247,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             ->setDistinct($distinct)
             ->setLimit(0)
             ->setOffset(0);
-        
+
         $valueVar = new Erfurt_Sparql_Query2_Var('obj');
-        if($inverse){
+        if ($inverse) {
             $query->addTriple($valueVar, $property, $this->_resourceVar);
         } else {
             $query->addTriple($this->_resourceVar, $property, $valueVar);
@@ -1309,17 +1287,17 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected function convertProperties ($properties)
     {
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-        
+
         $uris = array();
         foreach ($properties as $property) {
             $uris[] = $property['uri'];
         }
-        
+
         $titleHelper->addResources($uris);
-        
+
         $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
-    
-       $propertyResults = array();
+
+        $propertyResults = array();
         foreach ($properties as $property) {
             if (in_array($property['uri'], $this->_ignoredShownProperties)) {
                 continue;
@@ -1334,12 +1312,14 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $property['title'] = $titleHelper->getTitle($property['uri'], $this->_getLanguage());
 
-            $propertyResults[$property['uri'].'-'.((isset($property['inverse']) && $property['inverse']) ?'inverse':'direct')] = $property;
+            $propertyResults[
+                $property['uri'].'-'.((isset($property['inverse']) && $property['inverse']) ? 'inverse' : 'direct')
+            ] = $property;
         }
-        
+
         return $propertyResults;
     }
-    
+
     /**
      * Returns information about the properties fetched (title etc.)
      *
@@ -1350,9 +1330,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if ($this->_shownPropertiesConvertedUptodate) {
             return $this->_shownPropertiesConverted;
         }
-            
+
         $this->getResults();
-            
+
         $converted = $this->convertProperties($this->_shownProperties);
         $this->_shownPropertiesConverted = $converted;
         $this->_shownPropertiesConvertedUptodate = true;
@@ -1373,10 +1353,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * )
      * @return array
      */
-    public function getShownPropertiesPlain () {
+    public function getShownPropertiesPlain ()
+    {
         return $this->_shownProperties;
     }
-    
+
     /**
      * get titles and build link-urls (for a sparql result of the resource query)
      * @param array $resources an array of resource uris
@@ -1394,22 +1375,21 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $resourceResults = array();
         foreach ($resources as $resource) {
-            $thisResource = $resource; 
+            $thisResource = $resource;
             $thisResource['uri'] = $resource['value'];
             // the URL to view this resource in detail
             $url = new OntoWiki_Url(array('controller'=>'resource','action'=>'properties'), array());
             $url->r = $resource['value'];
-            
+
             $thisResource['url'] = (string) $url;
             // title
-            $thisResource['title'] =
-                $titleHelper->getTitle($resource['value'], $this->_getLanguage());
-            
+            $thisResource['title'] = $titleHelper->getTitle($resource['value'], $this->_getLanguage());
+
             $resourceResults[] = $thisResource;
         }
         return $resourceResults;
     }
-    
+
     public function getShownResources ()
     {
         if (!$this->_resourcesUptodate) {
@@ -1422,11 +1402,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $this->_resources[] = $row[$this->_resourceVar->getName()];
             }
             $this->_resourcesUptodate = true;
-        } 
-        
+        }
+
         return $this->_resources;
     }
-    
+
     /**
      * Returns information about the resources queried
      *
@@ -1443,7 +1423,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->_resourcesConvertedUptodate = true;
         return $this->_resourcesConverted;
     }
-    
+
     /**
      * Returns whether the model has data.
      *
@@ -1454,7 +1434,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->getShownResources();
         return !empty($this->_resources);
     }
-    
+
     /**
      * Sets the maximum number of resources to fetch for one page.
      *
@@ -1463,11 +1443,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function setLimit ($limit)
     {
-        if($this->_resourceQuery->getLimit() == $limit){
+        if ($this->_resourceQuery->getLimit() == $limit) {
             return $this;
         }
 
-        if($limit < 0){
+        if ($limit < 0) {
             $limit *= -1;
         }
 
@@ -1475,7 +1455,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->invalidate();
         return $this;
     }
-    
+
     /**
      * Sets the number of resources to be skipped for the current page.
      *
@@ -1484,11 +1464,11 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function setOffset ($offset)
     {
-        if($this->_resourceQuery->getOffset() == $offset){
+        if ($this->_resourceQuery->getOffset() == $offset) {
             return $this;
         }
 
-        if($offset < 0){
+        if ($offset < 0) {
             $offset *= -1;
         }
 
@@ -1496,7 +1476,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->invalidate();
         return $this;
     }
-    
+
     /** Gets the maximum number of resources to fetch for one page.
      *
      * @return int
@@ -1505,7 +1485,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     {
         return $this->_resourceQuery->getLimit();
     }
-    
+
     /**
      * Gets the number of resources to be skipped for the current page.
      *
@@ -1538,12 +1518,12 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function updateValueQuery ()
     {
-        if($this->_valueQueryUptodate){
+        if ($this->_valueQueryUptodate) {
             return $this;
-        } 
-        
+        }
+
         $resources = $this->getShownResources();
-        
+
         foreach ($resources as $key => $resource) {
             $resources[$key] =
                 new Erfurt_Sparql_Query2_SameTerm(
@@ -1558,55 +1538,60 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             );
             $this->_valueQuery->addElement($this->_valueQueryResourceFilter);
         }
-        
+
         $this->_valueQueryResourceFilter->setConstraint(
-            empty($resources) ? 
-                new Erfurt_Sparql_Query2_BooleanLiteral(false) :
-                new Erfurt_Sparql_Query2_ConditionalOrExpression($resources)
+            empty($resources) ?
+            new Erfurt_Sparql_Query2_BooleanLiteral(false) :
+            new Erfurt_Sparql_Query2_ConditionalOrExpression($resources)
         );
 
-        
-        //fix for a strange issue where a query with only optionals fails (but there is a magic/unkown condition, that makes it work for some queries!?)
+        //fix for a strange issue where a query with only optionals fails
+        //(but there is a magic/unkown condition, that makes it work for some queries!?)
         //if($this->_store->getBackendName() == 'ZendDb'){
             $hasTriple = false;
-            foreach($this->_valueQuery->getWhere()->getElements() as $element){
-                if($element instanceof Erfurt_Sparql_Query2_IF_TriplesSameSubject){
+            foreach ($this->_valueQuery->getWhere()->getElements() as $element) {
+                if ($element instanceof Erfurt_Sparql_Query2_IF_TriplesSameSubject) {
                     $hasTriple = true;
                     break;
                 }
             }
-            if(!$hasTriple){
+            if (!$hasTriple) {
                 $this->_valueQuery->getWhere()->addElement(
-                   new Erfurt_Sparql_Query2_Triple($this->_resourceVar, new Erfurt_Sparql_Query2_Var("p"), new Erfurt_Sparql_Query2_Var("o"))
+                    new Erfurt_Sparql_Query2_Triple(
+                        $this->_resourceVar,
+                        new Erfurt_Sparql_Query2_Var('p'),
+                        new Erfurt_Sparql_Query2_Var('o')
+                    )
                 );
             }
         //}
         //remove duplicate triples...
         $this->_valueQuery->optimize();
-       
+
         $this->_valueQueryUptodate = true;
 
         return $this;
     }
-    
+
     /**
      * order by a property (must be set as shown property before)
      * @param type $uri the property to order by
      * @param boolean $asc true if ascending, false if descending
-     */ 
-    public function setOrderProperty($uri, $asc = true) {
+     */
+    public function setOrderProperty($uri, $asc = true)
+    {
         $this->setOffset(0);
-        if($this->_sortTriple == null){
+        if ($this->_sortTriple == null) {
             $orderVar = new Erfurt_Sparql_Query2_Var('order');
             $this->_sortTriple = new Erfurt_Sparql_Query2_OptionalGraphPattern(
-                    array(
-                        new Erfurt_Sparql_Query2_Triple(
-                            $this->getResourceVar(), 
-                            new Erfurt_Sparql_Query2_IriRef($uri),  
-                            $orderVar
-                        )
+                array(
+                    new Erfurt_Sparql_Query2_Triple(
+                        $this->getResourceVar(),
+                        new Erfurt_Sparql_Query2_IriRef($uri),
+                        $orderVar
                     )
-                );
+                )
+            );
             $this->_resourceQuery->getWhere()->addElement($this->_sortTriple);
             $this->_resourceQuery->getOrder()->add(
                 $orderVar,
@@ -1614,25 +1599,34 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             );
         } else {
             $this->_sortTriple->getElement(0)->setP(new Erfurt_Sparql_Query2_IriRef($uri));
-            if($asc){$this->_resourceQuery->getOrder()->setAsc(0);} else {$this->_resourceQuery->getOrder()->setDesc(0);}
+            if ($asc) {
+                $this->_resourceQuery->getOrder()->setAsc(0);
+            } else {
+                $this->_resourceQuery->getOrder()->setDesc(0);
+            }
         }
     }
-    
-    
+
     /**
      * order by a var, that is used in the resource query
      * @param Erfurt_Sparql_Query2_Var $var the var to order by
      * @param boolean $asc true if ascending, false if descending
      */
-    public function setOrderVar($var, $asc = true) {
+    public function setOrderVar($var, $asc = true)
+    {
         $this->setOffset(0);
-        if(!is_bool($asc)){
+        if (!is_bool($asc)) {
             $asc = true;
         }
-        if($var instanceof Erfurt_Sparql_Query2_Var){
-            $this->_resourceQuery->getOrder()->setExpression(array('exp'=>$var,'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC ));
-        } else if(is_string($var)){
-            if($var == $this->getResourceVar()->getName()){
+        if ($var instanceof Erfurt_Sparql_Query2_Var) {
+            $this->_resourceQuery->getOrder()->setExpression(
+                array(
+                    'exp'=>$var,
+                    'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC
+                )
+            );
+        } else if (is_string($var)) {
+            if ($var == $this->getResourceVar()->getName()) {
                 $this->setOrderVar($this->getResourceVar(), $asc);
             } else {
                 /*foreach($this->_shownProperties as $prop){
@@ -1644,19 +1638,26 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
         }
     }
-    
+
     /**
      * order the resources by their URI
      * @param type $asc 
      */
-    public function orderByUri($asc = true){
+    public function orderByUri($asc = true)
+    {
         $this->setOrderVar($this->getResourceVar(), $asc);
     }
 
+    /**
+     * a lagacy nethod to determine the class, whose instances are shown in this list
+     * unfortunatley , it is not as easy as this anymore - we support other list too - then -1 is returned
+     * @deprecated since version 0.9.5
+     * @return string|int
+     */
     public static function getSelectedClass()
     {
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
-        $listName = "instances";
+        $listName = 'instances';
         if ($listHelper->listExists($listName)) {
             $list = $listHelper->getList($listName);
             $filter = $list->getFilter();
@@ -1667,4 +1668,3 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         return  -1;
     }
 }
-

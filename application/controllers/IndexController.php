@@ -12,14 +12,14 @@
  */
 class IndexController extends OntoWiki_Controller_Base
 {
-	/**
+    /**
      * Displays the OntoWiki news feed short summary (dashboard part)
      */
     public function newsshortAction()
     {
         // requires zend Feed module
-		// number of news
-		$feed_count = 3;
+        // number of news
+        $feedCount = 3;
         // create empty var for feed
         $owFeed  = null;
         // get current version
@@ -46,19 +46,17 @@ class IndexController extends OntoWiki_Controller_Base
             $tempdata = array(
                 'link' => $feedItem->link(),
                 'title' => $feedItem->title(),
-                'description' => substr($feedItem->description(),0, strpos($feedItem->description()," ",40) )." [...]"
+                'description' => substr($feedItem->description(), 0, strpos($feedItem->description(), ' ', 40)).' [...]'
             );
             // append temporary array to data array
             $data[] = $tempdata;
 
             // take only needed items
-            if(count($data) == $feed_count) break;
+            if (count($data) == $feedCount) break;
         }
         // assign data array to view rss data variable
         $this->view->rssData = $data;
-    } 
-	
-	
+    }
 
     /**
      * Displays messages only without any othe content.
@@ -69,7 +67,7 @@ class IndexController extends OntoWiki_Controller_Base
         $this->view->placeholder('main.window.title')->set('OntoWiki Messages');
         $this->_helper->viewRenderer->setNoRender();
     }
-    
+
     /**
      * Displays the OntoWiki news feed
      */
@@ -77,34 +75,31 @@ class IndexController extends OntoWiki_Controller_Base
     {
         $owFeed  = null;
         $version = $this->_config->version;
-        
+
         $this->view->placeholder('main.window.title')->set('News');
-        
+
         try {
-            $url = 'http://blog.aksw.org/feed/?cat=5&client=' 
-                 . $version->label 
-                 . '&version=' 
-                 . $version->number 
-                 . '&suffix=' 
+            $url = 'http://blog.aksw.org/feed/?cat=5&client='
+                 . $version->label
+                 . '&version='
+                 . $version->number
+                 . '&suffix='
                  . $version->suffix;
-            
+
             $owFeed = Zend_Feed::import($url);
-            
+
             $this->view->feed        = $owFeed;
             $this->view->title       = $owFeed->title();
             $this->view->link        = $owFeed->link();
             $this->view->description = $owFeed->description();
-            
         } catch (Exception $e) {
             $this->view->messages = array(new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::ERROR));
             $this->view->feed     = array();
-            // var_dump($url);
-            // exit;
         }
-        
+
         OntoWiki_Navigation::disableNavigation();
     }
-    
+
     /**
      * Default action if called action wasn't found
      */
@@ -116,15 +111,17 @@ class IndexController extends OntoWiki_Controller_Base
         if ($this->_owApp->hasMessages()) {
             $this->_forward('messages', 'index');
         } else {
-            if ((!isset($this->_config->index->default->controller)) || (!isset($this->_config->index->default->action))) {
+            if (
+                (!isset($this->_config->index->default->controller)) ||
+                (!isset($this->_config->index->default->action))
+            ) {
                 $this->_forward('news', 'index');
             } else {
                 $this->_forward($this->_config->index->default->action, $this->_config->index->default->controller);
             }
-
         }
     }
-    
+
     /**
      * This action display simply no main window section and is useful
      * in combination with index.default.controller and index.default.action
@@ -136,7 +133,5 @@ class IndexController extends OntoWiki_Controller_Base
         OntoWiki_Navigation::disableNavigation();
         // sorry for this hack, but I dont wanted to modify the the main layout too much ...
         $this->view->placeholder('main.window.additionalclasses')->set('hidden');
-    }    
+    }
 }
-
-
