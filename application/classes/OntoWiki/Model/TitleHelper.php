@@ -304,7 +304,7 @@ class OntoWiki_Model_TitleHelper
                     // has the property been found for the resource?
                     if (array_key_exists($currentTitleProperty, $titleProperties)) {
 
-                        for ($i = 0, $max = count($languages); $i  < $max; $i++) {
+                        for ($i = 0, $max = count($languages); $i < $max; ++$i) {
                             $currentLanguage = $languages[$i];
 
                             if (
@@ -369,7 +369,10 @@ class OntoWiki_Model_TitleHelper
 
             if (defined('_OWDEBUG')) {
                 $numQueries = count($queries);
-                $logger = OntoWiki::getInstance()->logger;
+                
+                $writer = new Zend_Log_Writer_Stream(dirname(__FILE__).'/../../../../logs/ontowiki.log');
+                $logger = new Zend_Log($writer);
+                
                 $logger->info(
                     'TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.'
                 );
@@ -455,6 +458,10 @@ class OntoWiki_Model_TitleHelper
 
             if (defined('_OWDEBUG')) {
                 $logger = OntoWiki::getInstance()->logger;
+                
+                $writer = new Zend_Log_Writer_Stream(dirname(__FILE__).'/../../../../logs/ontowiki.log');
+                $logger = new Zend_Log($writer);
+                
                 $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
             }
 

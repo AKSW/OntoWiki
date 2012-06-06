@@ -9,7 +9,7 @@ function executeSparqlQuery($endpointURI, $graphUri = 'NULL',  $sparqlQuery, $us
     
     if (!function_exists('odbc_connect')) {
         echo 'Virtuoso adapter requires PHP ODBC extension to be loaded.';
-        exit;
+        return;
     }
     
     // try to connect
@@ -17,7 +17,7 @@ function executeSparqlQuery($endpointURI, $graphUri = 'NULL',  $sparqlQuery, $us
     
     if (null == $con) {
          echo 'Unable to connect to Virtuoso Universal Server via ODBC: '."\n";
-        exit;
+        return;
     }
     
     /*$normalmode = true;

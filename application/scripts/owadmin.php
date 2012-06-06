@@ -92,7 +92,7 @@ function _importData()
                 $output = shell_exec($cmd);
                 if (null !== $output) {
                     echo 'Error while converting source file to TTL.';
-                    exit;
+                    return;
                 }
                 $fullPath = $newPath;
                 break;
@@ -217,7 +217,7 @@ function _importFile($file, $graph)
     $command = "isql 1111 dba dba \"EXEC=TTLP(file_to_string_output('$file'), '', '$graph', 255)\" 2>&1 1> /dev/null";
     $output = shell_exec($command);
     if (null !== $output) {
-        var_dump($output);exit;
+        var_dump($output);return;
         return false;
     }
     

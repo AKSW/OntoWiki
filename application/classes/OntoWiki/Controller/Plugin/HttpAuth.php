@@ -45,7 +45,7 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                         $response->setRawHeader('HTTP/1.1 401 Unauthorized');
                         $response->sendResponse();
                         echo 'HTTP/1.1 401 Unauthorized';
-                        exit;
+                        return;
                     }
                     break;
                 case 'foaf+ssl':
