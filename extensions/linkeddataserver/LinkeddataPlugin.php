@@ -86,7 +86,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 $response->setRedirect((string)$matchedUri, 301)
                          ->sendResponse();
                 // FIXME: exit here prevents unit testing
-                exit;
+                return;
             }
 
             // Prepare for redirect according to the given type.
@@ -164,7 +164,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 // set redirect and send immediately
                 $response->setRedirect((string)$url, 303)
                          ->sendResponse();
-                exit;
+                return;
             }
 
             return !$shouldRedirect; // will default to false

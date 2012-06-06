@@ -108,14 +108,13 @@ $other->graphbase = $graphBase;
 
 //call the requested template
 echo $this->partial('partials/'.$this->mainTemplate.'.phtml',
-                array(
-                    'instances'    => $instances,
-                    'instanceData' => $instanceData,
-                    'instanceInfo' => $instanceInfo,
-                    'propertyInfo' => $propertyInfo,
-                    'other'        => $other,
-                    'listName'    => $this->listName,
-                    'start'        => $start
-                )
-             );
-?>
+    array(
+        'instances'    => $instances,
+        'instanceData' => $instanceData,
+        'instanceInfo' => $instanceInfo,
+        'propertyInfo' => $propertyInfo,
+        'other'        => $other,
+        'listName'    => $this->listName,
+        'start'        => $start
+    )
+);

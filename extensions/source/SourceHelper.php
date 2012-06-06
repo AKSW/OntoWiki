@@ -20,14 +20,7 @@ class SourceHelper extends OntoWiki_Component_Helper
 {
     public function init()
     {
-        // get the main application
-        $owApp = OntoWiki::getInstance();
-
-        // get current route info
-        $front  = Zend_Controller_Front::getInstance();
-        $router = $front->getRouter();
-
-        OntoWiki_Navigation::register('source', array(
+        OntoWiki::getInstance ()->getNavigation()->register('source', array(
             'controller' => 'source',     // source controller
             'action'     => 'edit',       // ecit action
             'name'       => 'Source',

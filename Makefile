@@ -3,51 +3,61 @@ ZENDVERSION=1.11.5
 default:
 	@echo "Typical targets your could want to reach:"
 	@echo ""
-	@echo "--> 'make deploy' : install OntoWiki <-- in doubt, use this"
-	@echo "                    (use this for server installations)"
-	@echo "    'make install': install OntoWiki for developer"
-	@echo "                    (you will need github access and ssh for this)"
-	@echo "    'make help'   : show more (developer related) make targets"
-	@echo "                    (this includes all code sniffing targets)"
+	@echo "-->   make deploy ............... Install OntoWiki <-- in doubt, use this"
+	@echo "                                  (use this for server installations)"
+	@echo ""
+	@echo "      make install .............. Install OntoWiki for developer"
+	@echo "                                  (you will need github access and ssh for this)"
+	@echo ""
+	@echo "      make help ................. Show more (developer related) make targets"
+	@echo ""
+	@echo "      make help-cs .............. Show code sniffing targets"
 
 help:
-	@echo "please use:"
-	@echo "     'make deploy' (-> runs everything which is needed for a deployment)"
-	@echo "     'make install' (-> make directories, zend and libraries)"
-	@echo "     'make directories' (create cache/log dir and chmod environment)"
-	@echo "     'make zend' (download and install Zend under libraries)"
-	@echo "     'make libraries' ('git clone' all subrepos - in case submodules do not work)"
-	@echo "     'make erfurt' (clone under libraries)"
-	@echo "     'make rdfauthor' (clone under libraries)"
-	@echo "     'make pull' ('git pull' for all repos)"
-	@echo "     'make status' ('git status' for all repos)"
-	@echo "     'make branch-check' ('git rev-parse' for all repos)"
-	@echo "     'make clean' (deletes all log and cache files)"
-	@echo "     'make cs-install' (install CodeSniffer)"
-	@echo "     'make cs-uninstall' (uninstall CodeSniffer)"
-	@echo "     'make cs-install-submodule MPATH=<path>' (install CodeSniffer on a submodule,"
-	@echo "             <path> must by the relativ path to the submodule)"
-	@echo "     'make cs-uninstall-submodule MPATH=<path>' (uninstall CodeSniffer on a submodule,"
-	@echo "             <path> must by the relativ path to the submodule)"
-	@echo "     'make cs-enable' (enable CodeSniffer to check code before every commit)"
-	@echo "     'make cs-disable' (disable CodeSniffer code checking)"
-	@echo "     'make cs-check-commit' (run pre-commit code checking manually)"
-	@echo "     'make cs-check-commit-emacs' (same as cs-check-commit with emacs output)"
-	@echo "     'make cs-check-commit-intensive' (run pre-commit code checking"
-	@echo "             manually with stricter coding standard)"
-	@echo "     'make cs-check (run complete code checking)"
-	@echo "     'make cs-check-full' (run complete code checking with detailed output)"
-	@echo "     'make cs-check-emacs' (run complete code checking with with emacs output)"
-	@echo "     'make cs-check-blame' (run complete code checking with blame list output)"
-	@echo "     'make cs-check-intensive' (run complete code checking with"
-	@echo "             stricter coding standard)"
-	@echo "     'make cs-check-intensive-full' (run complete code checking with"
-	@echo "             stricter coding standard and detailed output)"
-	@echo "     'possible Parameter:"
-	@echo "     'FPATH=<path>' (run code checking on specific relative path)"
-	@echo "     'SNIFFS=<sniff 1>,<sniff 2>' (run code checking on specific sniffs)"
-	@echo "     'OPTIONS=<option>' (run code checking with specific CodeSniffer options)"
+	@echo "Please use: (e.g. make deploy)"
+	@echo "     deploy ..................... Runs everything which is needed for a deployment"
+	@echo "     install .................... Make directories, zend and libraries"
+	@echo "     directories ................ Create cache/log dir and chmod environment"
+	@echo "     zend ....................... Download and install Zend under libraries"
+	@echo "     libraries .................. 'git clone' all subrepos - in case submodules do not work"
+	@echo "     erfurt ..................... Clone under libraries"
+	@echo "     rdfauthor .................. Clone under libraries"
+	@echo "     pull ....................... 'git pull' for all repos"
+	@echo "     status ..................... 'git status' for all repos"
+	@echo "     branch-check ............... 'git rev-parse' for all repos"
+	@echo "     clean ...................... Deletes all log and cache files"
+	@echo "     install-test-environment ... Install neccessary software (PHPUnit,...))"
+	@echo "     test ....................... Executes OntoWiki's TestSuite"
+	@echo "     test-erfurt ................ Executes Erfurts TestSuite"
+	@echo "     test-extension ............. Executes TestSuites of each extension, if available"
+	@echo "     test-all ................... Executes PHPUnit TestSuites (OW, Ext) and CodeSniffer"
 	
+help-cs:
+	@echo "Please use: (e.g. make cs-install)"
+	@echo "     cs-install ............................ Install CodeSniffer"
+	@echo "     cs-uninstall .......................... Uninstall CodeSniffer)"
+	@echo "     cs-install-submodule MPATH=<path> ..... Install CodeSniffer on a submodule,"
+	@echo "                                             <path> must by the relativ path to the submodule"
+	@echo "     cs-uninstall-submodule MPATH=<path> ... Uninstall CodeSniffer on a submodule,"
+	@echo "                                             <path> must by the relativ path to the submodule"
+	@echo "     cs-enable ............................. Enable CodeSniffer to check code before every commit"
+	@echo "     cs-disable ............................ Disable CodeSniffer code checking"
+	@echo "     cs-check-commit ....................... Run pre-commit code checking manually"
+	@echo "     cs-check-commit-emacs ................. Same as cs-check-commit with emacs output)"
+	@echo "     cs-check-commit-intensive ............. Run pre-commit code checking"
+	@echo "                                             manually with stricter coding standard"
+	@echo "     cs-check .............................. Run complete code checking"
+	@echo "     cs-check-full ......................... Run complete code checking with detailed output"
+	@echo "     cs-check-emacs ........................ Run complete code checking with with emacs output"
+	@echo "     cs-check-blame ........................ Run complete code checking with blame list output"
+	@echo "     cs-check-intensive .................... Run complete code checking with"
+	@echo "                                             stricter coding standard"
+	@echo "     cs-check-intensive-full ............... Run complete code checking with"
+	@echo "                                             stricter coding standard and detailed output"
+	@echo "     possible Parameter:"
+	@echo "     > FPATH=<path> ................. Run code checking on specific relative path"
+	@echo "     > SNIFFS=<sniff 1>,<sniff 2> ... Run code checking on specific sniffs"
+	@echo "     > OPTIONS=<option> ............. Run code checking with specific CodeSniffer options"
 
 
 # top level target
@@ -112,10 +122,40 @@ rdfauthor:
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	git clone git@github.com:AKSW/RDFauthor.git libraries/RDFauthor
 
+test:
+	phpunit --stderr application/tests
+
+test-extensions:
+	phpunit --stderr extensions
+
+test-all: 
+	@make test
+	@echo ""
+	@echo "-----------------------------------"
+	@echo ""
+	@make test-extensions
+	@echo ""
+	@echo "-----------------------------------"
+	@echo ""
+	@make cs-check
+
+install-test-environment:
+	sudo apt-get install php-pear
+	sudo pear config-set auto_discover 1
+	sudo pear channel-update pear.php.net
+	sudo pear upgrade pear
+	sudo pear install -a pear.phpunit.de/PHPUnit
+	sudo pear install phpunit/PHPUnit_Selenium
+	sudo pear install phpunit/DbUnit
+
 erfurt:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
 	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt
+
+test-erfurt:
+	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..
+
 
 # packaging
 

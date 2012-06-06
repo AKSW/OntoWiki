@@ -647,7 +647,7 @@ class OntoWiki_Extension_Manager
 
         if (isset($config->navigation) && (boolean)$config->navigation && $config->enabled) {
             // register with navigation
-            OntoWiki_Navigation::register(
+            OntoWiki::getInstance()->getNavigation()->register(
                 $componentName,
                 array(
                     'controller' => $componentName,

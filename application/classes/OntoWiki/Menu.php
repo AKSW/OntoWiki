@@ -106,7 +106,7 @@ class OntoWiki_Menu
         }
         
         if (!$replace and array_key_exists($entryKey, $this->_entries)) {
-            throw new OntoWiki_Exception("An entry with key '$key' already exists.");
+            throw new OntoWiki_Exception("An entry with key '$entryKey' already exists.");
         }
         
         if ($entryKey == self::SEPARATOR) {
