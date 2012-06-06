@@ -51,7 +51,7 @@ class ServiceController extends Zend_Controller_Action
             return;
         }
 
-        if ($logout) {
+        if (isset($logout) && true == $logout) {
             // logout
             Erfurt_Auth::getInstance()->clearIdentity();
             session_destroy();
@@ -507,14 +507,16 @@ class ServiceController extends Zend_Controller_Action
                 if (!$ac->isModelAllowed('view', $graphUri)) {
                     if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
                         // In this case we allow the requesting party to authorize...
-                        $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                        $response->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"');
-                        $response->sendResponse();
+                        $response->setRawHeader('HTTP/1.1 401 Unauthorized')
+                                 ->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"')
+                                 ->setHttpResponseCode(401)
+                                 ->sendResponse();
                         return;
 
                     } else {
                         $response->setRawHeader('HTTP/1.1 500 Internal Server Error')
                                  ->setBody('QueryRequestRefused')
+                                 ->setHttpResponseCode(500)
                                  ->sendResponse();
                         return;
                     }
@@ -547,6 +549,7 @@ class ServiceController extends Zend_Controller_Action
             } catch (Exception $e) {
                 $response->setRawHeader('HTTP/1.1 400 Bad Request')
                          ->setBody('MalformedQuery: ' . $e->getMessage())
+                         ->setHttpResponseCode(400)
                          ->sendResponse();
                 return;
             }
@@ -562,7 +565,7 @@ class ServiceController extends Zend_Controller_Action
                 // return normally
                 $response->setBody($result);
             }
-
+            $response->setHttpResponseCode(200);
             $response->sendResponse();
             return;
         }
