@@ -24,12 +24,15 @@
  * @category   OntoWiki
  * @package    controllers
  * @subpackage UnitTests
- * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
  * @version    $Id: $
  */
 
-require_once dirname (__FILE__) .'/../TestHelper.php';
+/*
+ * Helper file, that adjusts the include_path and initializes the test environment.
+ */
+require_once dirname(__FILE__) . '/../TestHelper.php';
 
 /**
  * This test class comtains tests for the OntoWiki service controller.
@@ -37,7 +40,7 @@ require_once dirname (__FILE__) .'/../TestHelper.php';
  * @category   OntoWiki
  * @package    controlers
  * @subpackage UnitTests
- * @copyright  Copyright (c) 2006-2010, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  * @author     Konrad Abicht <k.abicht@googlemail.com>
@@ -50,16 +53,12 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
             'default',
             ONTOWIKI_ROOT . 'application/config/application.ini'
         );
-        
-        $this->getFrontController()->setParam('bootstrap', $this->bootstrap->getBootstrap());
-        
         parent::setUp();
     }
     
     public function tearDown()
     {
-        // OntoWiki_Navigation::reset();
-        parent::tearDown ();
+        parent::tearDown();
     }
     
     // ------------------------------------------------------------------------
@@ -83,9 +82,10 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $config->service->auth->allowGet = false;
         
         $this->dispatch('/service/auth');
+        
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(405, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
+        $this->assertResponseCode(405);
         $this->assertHeaderContains('allow', 'POST');
     }
     
@@ -96,13 +96,13 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     public function testAuthActionGetAllowed()
     {
         $config = OntoWiki::getInstance()->config;
-        $config->service->allowGetAuth = true;
+        $config->service->auth->allowGet = true;
         
         $this->dispatch('/service/auth');
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(400, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
+        $this->assertResponseCode(400);
     }
     
     public function testAuthActionNoParams()
@@ -113,7 +113,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(400, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
+        $this->assertResponseCode(400);
     }
     
     public function testAuthActionLogoutTrue()
@@ -127,7 +127,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
+        $this->assertResponseCode(200);
     }
     
     public function testAuthActionLogoutInvalidValue()
@@ -141,7 +141,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(400, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
+        $this->assertResponseCode(400);
     }
     
     public function testAuthActionAnonymousUserNoPasswordSuccess()
@@ -155,7 +155,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
+        $this->assertResponseCode(200);
     }
     
     public function testAuthActionAnonymousUserPasswordSetSuccess()
@@ -169,7 +169,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->dispatch('/service/auth');
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
+        $this->assertResponseCode(200);
     }
     
     public function testAuthActionInvalidUser()
@@ -184,7 +184,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
+        $this->assertResponseCode(401);
     }
     
     // ------------------------------------------------------------------------
@@ -213,7 +213,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
      * @test
      */
     public function sparqlNoAuthWithInvalidQuery()
-    {     
+    {        
         // Send invalid query
         $this->request->setMethod('POST')
                       ->setPost(
@@ -224,70 +224,8 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
                 
         $this->assertController('service');
         $this->assertAction('sparql');
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(400);
     }
-    
-    /**
-     * No auth, valid query. Expected XML.
-     * @test
-     */
-     /*
-    public function sparqlNoAuthWithValidQueryResultAsXML()
-    {        
-        // Send invalid query
-        $this->request->setMethod('POST')
-                      ->setPost(
-                        array( 'query' => 'SELECT ?s WHERE { ?s ?p ?o. }')
-                      );
-        
-        $this->dispatch('/service/sparql');
-                
-        $this->assertController('service');
-        $this->assertAction('sparql');
-        $this->assertResponseCode(200);
-        
-        $expected = '<?xml version="1.0" encoding="UTF-8"?>
-<sparql xmlns="http://www.w3.org/2005/sparql-results#">
-<head>
-<variable name="s" />
-</head>
-<results>
-</results>
-</sparql>
-';
-        
-        $this->assertEquals ($expected, $this->response->getBody());
-    }
-    */
-    
-    /**
-     * No auth, valid query. Expected JSON.
-     * @test
-     */
-     /*
-    public function sparqlNoAuthWithValidQueryResultAsJSON()
-    {        
-        // Send invalid query
-        $this->request->setMethod('POST')
-                      ->setPost(
-                        array( 'query' => 'SELECT ?s WHERE { ?s ?p ?o. }')
-                      );
-        
-        $this->request->setHeaders ( 
-            array ( 'Accept' => 'application/sparql-results+json' ) 
-        );
-        
-        $this->dispatch('/service/sparql');
-                
-        $this->assertController('service');
-        $this->assertAction('sparql');
-        $this->assertResponseCode(200);
-        
-        $expected = '{"head":{"vars":["s"]},"bindings":[],"results":{"bindings":[]}}';
-        
-        $this->assertEquals ( $expected, $this->response->getBody () );
-    }
-    */
     
     // ------------------------------------------------------------------------
     // Update Action
@@ -299,8 +237,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->request->setMethod('POST')
                       ->setPost(array('insert' => '{}', 'delete' => '{}'));
         
-
-        $storeMock = $this->getMock('Erfurt_Store', array('foo'=>array()), '');
+        $storeMock = $this->getMock('Erfurt_Store');
         $storeMock->expects($this->any())
                   ->method('getModel')
                   ->will($this->returnValue($modelMock));
@@ -311,6 +248,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('update');
+        $this->assertResponseCode(200);
         */
     }
 }
