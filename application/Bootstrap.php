@@ -136,6 +136,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->libraries->path = rtrim($config->libraries->path, '/\\') . '/';
         $config->cache->path     = rtrim($config->cache->path, '/\\') . '/';
         $config->log->path       = rtrim($config->log->path, '/\\') . '/';
+        
+        //force caching
+        if(!is_writable($config->cache->path)){
+            throw new OntoWiki_Exception('<p>OntoWiki can not write to the "cache" folder.</p>' . PHP_EOL .
+                '<p>Maybe you have to create the folder or allow write access for the webserver user?</p>');
+        }
 
         // support absolute path
         $matches = array();
