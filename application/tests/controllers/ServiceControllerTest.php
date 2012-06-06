@@ -171,10 +171,10 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('auth');
         $this->assertResponseCode(200);
     }
-    /*
+    
     public function testAuthActionInvalidUser()
     {
-        My system runs on 100% and out of memory (210 MB!) Any ideas?
+        //My system runs on 100% and out of memory (210 MB!) Any ideas?
          
         $this->request->setMethod('POST')
                       ->setPost(array(
@@ -187,7 +187,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertController('service');
         $this->assertAction('auth');
         $this->assertResponseCode(401);
-    }*/
+    }
     
     // ------------------------------------------------------------------------
     // SPARQL Action
