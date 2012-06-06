@@ -29,8 +29,10 @@ class ServiceController extends Zend_Controller_Action
         if (!$this->_config->service->allowGetAuth) {
             // disallow get
             if (!$this->_request->isPost()) {
-                $this->_response->setRawHeader('HTTP/1.0 405 Method Not Allowed');
-                $this->_response->setRawHeader('Allow: POST');
+                //$this->_response->setRawHeader('HTTP/1.0 405 Method Not Allowed');
+                $this->_response->setHttpResponseCode(405);
+                $this->_response->setHeader('Allow', 'POST');
+                $this->_response->sendResponse();
                 return;
             }
         }
@@ -43,8 +45,9 @@ class ServiceController extends Zend_Controller_Action
             $username = $this->_request->u;
             $password = $this->_request->getParam('p', '');
         } else {
-            $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
-            // $this->_response->setRawHeader('');
+            //$this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
+            $this->_response->setHttpResponseCode(400);
+            $this->_response->sendResponse();
             return;
         }
 
@@ -52,7 +55,9 @@ class ServiceController extends Zend_Controller_Action
             // logout
             Erfurt_Auth::getInstance()->clearIdentity();
             session_destroy();
-            $this->_response->setRawHeader('HTTP/1.0 200 OK');
+            //$this->_response->setRawHeader('HTTP/1.0 200 OK');
+            $this->_response->setHttpResponseCode(200);
+            $this->_response->sendResponse();
             return;
         } else {
             // authenticate
@@ -62,11 +67,15 @@ class ServiceController extends Zend_Controller_Action
         // return HTTP result
         if ($result->isValid()) {
             // return success (200)
-            $this->_response->setRawHeader('HTTP/1.0 200 OK');
+            //$this->_response->setRawHeader('HTTP/1.0 200 OK');
+            $this->_response->setHttpResponseCode(200);
+            $this->_response->sendResponse();
             return;
         } else {
             // return fail (401)
-            $this->_response->setRawHeader('HTTP/1.0 401 Unauthorized');
+            //$this->_response->setRawHeader('HTTP/1.0 401 Unauthorized');
+            $this->_response->setHttpResponseCode(401);
+            $this->_response->sendResponse();
             return;
         }
     }

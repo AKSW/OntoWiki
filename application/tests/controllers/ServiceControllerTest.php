@@ -83,10 +83,9 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $config->service->auth->allowGet = false;
         
         $this->dispatch('/service/auth');
-        
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(405);
+        $this->assertResponseCode(405, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
         $this->assertHeaderContains('allow', 'POST');
     }
     
@@ -97,13 +96,13 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     public function testAuthActionGetAllowed()
     {
         $config = OntoWiki::getInstance()->config;
-        $config->service->auth->allowGet = true;
+        $config->service->allowGetAuth = true;
         
         $this->dispatch('/service/auth');
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(400, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
     }
     
     public function testAuthActionNoParams()
@@ -114,7 +113,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(400, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
     }
     
     public function testAuthActionLogoutTrue()
@@ -128,7 +127,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(200, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
     }
     
     public function testAuthActionLogoutInvalidValue()
@@ -142,7 +141,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(400, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
     }
     
     public function testAuthActionAnonymousUserNoPasswordSuccess()
@@ -156,7 +155,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(200, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
     }
     
     public function testAuthActionAnonymousUserPasswordSetSuccess()
@@ -170,7 +169,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->dispatch('/service/auth');
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(200, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
     }
     
     public function testAuthActionInvalidUser()
@@ -185,7 +184,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(200, 'Instead: ' . $this->getResponse()->getHttpResponseCode());
     }
     
     // ------------------------------------------------------------------------
