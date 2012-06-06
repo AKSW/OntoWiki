@@ -124,7 +124,7 @@ class ExconfController extends OntoWiki_Controller_Component
             //sort by name property
             $volume = array();
             foreach ($extensions as $key => $row) {
-                $volume[$key]  = $row->name;
+                $volume[$key]  = $row->title;
             }
             array_multisort($volume, SORT_ASC, $extensions);
 
