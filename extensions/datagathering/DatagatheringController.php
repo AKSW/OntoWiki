@@ -727,17 +727,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $this->_graphUri,
             $uri,
             $this->_getProxyUri($uri),
-            isset(
-                $this->_privateConfig->fetch->allData
-            ) && (
-                (boolean) $this->_privateConfig->fetch->allData === true
-            ),
-            !isset(
-                $this->_privateConfig->fetch->preset
-            ) ? array() : $this->_privateConfig->fetch->preset->toArray(),
-            !isset(
-                $this->_privateConfig->fetch->default->exception
-            ) ? array() : $this->_privateConfig->fetch->default->exception->toArray(),
+            isset($this->_privateConfig->fetch->allData ) && ((boolean) $this->_privateConfig->fetch->allData === true),
+            !isset($this->_privateConfig->fetch->preset) ? 
+              array() : 
+              $this->_privateConfig->fetch->preset->toArray(),
+            !isset($this->_privateConfig->fetch->default->exception) ? 
+              array() : 
+              $this->_privateConfig->fetch->default->exception->toArray(),
             $wrapperName,
             $this->_privateConfig->fetch->default->mode
         );
@@ -984,7 +980,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                             'resourceuri' => $uri
                         );
 
-                        // Start action, add statements, finish action.
+                        // Start action
                         $versioning->startAction($actionSpec);
                     }
 
