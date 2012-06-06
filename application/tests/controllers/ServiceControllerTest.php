@@ -96,7 +96,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     public function testAuthActionGetAllowed()
     {
         $config = OntoWiki::getInstance()->config;
-        $config->service->auth->allowGet = true;
+        $config->service->allowGetAuth = true;
         
         $this->dispatch('/service/auth');
         
