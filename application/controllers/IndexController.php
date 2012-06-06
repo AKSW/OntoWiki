@@ -39,9 +39,8 @@ class IndexController extends OntoWiki_Controller_Base
 
             $owFeed = Zend_Feed::import($url);
         } catch (Exception $e) {
-            $owFeed = $e;
+            $owFeed = array();
         }
-
         // create new array for data
         $data = array();
         // parse feed items into array
