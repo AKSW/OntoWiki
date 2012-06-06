@@ -370,7 +370,7 @@ class OntoWiki_Model_TitleHelper
             if (defined('_OWDEBUG')) {
                 $numQueries = count($queries);
                 
-                $writer = new Zend_Log_Writer_Stream(dirname(FILE_).'/../../../../logs/ontowiki.log');
+                $writer = new Zend_Log_Writer_Stream(dirname(__FILE__).'/../../../../logs/ontowiki.log');
                 $logger = new Zend_Log($writer);
                 
                 $logger->info(
