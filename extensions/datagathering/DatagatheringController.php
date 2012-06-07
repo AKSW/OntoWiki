@@ -6,9 +6,6 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
-require_once 'Erfurt/Wrapper/Registry.php';
-require_once 'OntoWiki/Controller/Component.php';
-
 /**
  * The main controller class for the datagathering component. This class
  * provides services for URI search, statement import and statement sync.
@@ -125,8 +122,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         //$this->_properties = $this->_privateConfig->properties->toArray();
 
-        $this->_wrapperRegistry = Erfurt_Wrapper_Registry::getInstance();
-
+        // For testability we reset the wrapper registry first, since
+        // multiple calls of this method would fail otherwise.
+        Erfurt_Wrapper_Registry::reset();
+        $this->_wrapperRegisty = Erfurt_Wrapper_Registry::getInstance();
+        
         $owApp = OntoWiki::getInstance();
         if (null !== $owApp->selectedModel) {
             $this->_graphUri = $owApp->selectedModel->getModelIri();
@@ -668,7 +668,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
 
@@ -687,7 +687,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         $this->_response->setHeader('Content-Type', 'application/json', true);
         echo json_encode($result);
-        exit;
+        return;
     }
     */
 
@@ -1086,7 +1086,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $syncModel = $this->_getSyncModel();
             if (!$syncModel) {
                 echo 'Something went wrong.';
-                exit;
+                return;
             }
 
             $filename = $this->_componentRoot . $this->_privateConfig->syncModelFilename;
@@ -1099,10 +1099,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             );
 
             echo 'Init done...';
-            exit;
+            return;
         } catch (Exception $e) {
             echo 'Something went wrong.';
-            exit;
+            return;
         }
     }
     */
@@ -1119,7 +1119,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         OntoWiki_Navigation::disableNavigation();
@@ -1309,13 +1309,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
 
@@ -1333,11 +1333,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(false);
-                    exit;
+                    return;
                 } else {
                     $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
                     echo '400 Bad Request - No sync config found.';
-                    exit;
+                    return;
                 }
 
             }
@@ -1360,29 +1360,29 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(array('redirect' => $redirect));
-                    exit;
+                    return;
                 } else {
                     $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
                     echo '400 Bad Request - No sync config found.';
-                    exit;
+                    return;
                 }
             } else if ($syncResult === self::SYNC_SUCCESS) {
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(true);
-                    exit;
+                    return;
                 } else {
                     echo 'Successfully synced.';
-                    exit;
+                    return;
                 }
             } else {
                  if ($this->_request->isXmlHttpRequest()) {
                      $this->_response->setHeader('Content-Type', 'application/json', true);
                      echo json_encode(false);
-                     exit;
+                     return;
                  } else {
                      echo '400 Bad Request - No sync config found.';
-                     exit;
+                     return;
                  }
             }
         }
@@ -1408,13 +1408,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
         $modelUri = $this->_graphUri;
@@ -1429,10 +1429,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'No sync config found.';
-                exit;
+                return;
             }
         }
 
@@ -1441,10 +1441,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'Not configured for update check.';
-                exit;
+                return;
             }
         }
 
@@ -1482,15 +1482,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode($result);
-                    exit;
+                    return;
                 } else {
                     if ($this->_request->isXmlHttpRequest()) {
                         $this->_response->setHeader('Content-Type', 'application/json', true);
                         echo json_encode(false);
-                        exit;
+                        return;
                     } else {
                         echo 'No changes since last sync.';
-                        exit;
+                        return;
                     }
                 }
 
@@ -1499,20 +1499,20 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(false);
-                    exit;
+                    return;
                 } else {
                     echo 'No valid date/time found.';
-                    exit;
+                    return;
                 }
             }
         } else {
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'No Last-Modified information found.';
-                exit;
+                return;
             }
         }
     }*/

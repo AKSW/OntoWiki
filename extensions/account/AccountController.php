@@ -20,8 +20,7 @@ class AccountController extends OntoWiki_Controller_Component
      */
     public function recoverAction()
     {
-
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         $config = Erfurt_App::getInstance()->getConfig();
         $translate = $this->_owApp->translate;
 

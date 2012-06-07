@@ -481,5 +481,6 @@ class ResourceController extends OntoWiki_Controller_Base
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
         echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $addedStatements);
         $response->sendResponse();
+        return;
     }
 }

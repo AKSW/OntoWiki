@@ -652,7 +652,7 @@ function editPropertyListmode(event) {
             cancelButtonTitle: 'Cancel',
             title: 'Edit Resource ' + resourceUri,
             autoParse: false, 
-            showPropertyButton: true, 
+            showPropertyButton: false, 
             onSubmitSuccess: function () {
                 // HACK: reload whole page after 500 ms
                 window.setTimeout(function () {

@@ -21,16 +21,9 @@ class HistoryHelper extends OntoWiki_Component_Helper
 {
     public function init()
     {
-        // get the main application
-        $owApp = OntoWiki::getInstance();
-
-        // get current route info
-        $front  = Zend_Controller_Front::getInstance();
-        $router = $front->getRouter();
-
-        OntoWiki_Navigation::register('history', array(
+        OntoWiki::getInstance ()->getNavigation()->register('history', array(
             'controller' => 'history',     // history controller
-            'action'     => 'list',       // list action
+            'action'     => 'list',        // list action
             'name'       => 'History',
             'priority'   => 30));
     }

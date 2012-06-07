@@ -70,7 +70,7 @@
  owconfig:config [
           a owconfig:Config;
           owconfig:id "go";
-          :pattern "/^http:\\/\\/www.geneontology.org\\/go#GO:([0-9]+)$/" ;
+          :pattern "/^http:\/\/www.geneontology.org\/go#GO:([0-9]+)$/" ;
           :replacement <http://go.ontowiki.de/$1>
     ]
 ];

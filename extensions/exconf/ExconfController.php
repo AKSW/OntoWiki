@@ -47,12 +47,12 @@ class ExconfController extends OntoWiki_Controller_Component
         $this->_forward('list');
     }
 
-    public function  init()
+    public function init()
     {
         parent::init();
-        OntoWiki_Navigation::reset();
+        OntoWiki::getInstance()->resetNavigation ();
 
-        OntoWiki_Navigation::register(
+        OntoWiki::getInstance()->getNavigation()->register(
             'list',
             array(
                 'route'      => null,
@@ -61,7 +61,7 @@ class ExconfController extends OntoWiki_Controller_Component
                 'name'   => 'Locally Installed'
             )
         );
-        OntoWiki_Navigation::register(
+        OntoWiki::getInstance()->getNavigation()->register(
             'repo',
             array(
                 'route'      => null,
@@ -70,16 +70,6 @@ class ExconfController extends OntoWiki_Controller_Component
                 'name'   => 'Install / Upgrade from Repo'
             )
         );
-        /*
-        OntoWiki_Navigation::register(
-            'upload',
-            array(
-                'route'      => null,
-                'controller' => 'exconf',
-                'action'     => 'archiveuploadform',
-                'name'   => 'Install from local upload'
-            )
-        );*/
 
         $ow = OntoWiki::getInstance();
         $modMan = $ow->extensionManager;
@@ -164,7 +154,7 @@ class ExconfController extends OntoWiki_Controller_Component
 
     function confAction()
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         $this->view->placeholder('main.window.title')->set(
             $this->_owApp->translate->_('Configure ').' '.$this->_request->getParam('name')
         );
