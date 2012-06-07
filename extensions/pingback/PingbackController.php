@@ -13,6 +13,10 @@
  * @package    Extensions_Pingback
  * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @author     Sebastian Tramp <mail@sebastian.tramp.name>
+ * @author     Jonas Brekle <jonas.brekle@gmail.com>
+ * @author     Natanael Arndt <arndtn@gmail.com>
  */
 class PingbackController extends OntoWiki_Controller_Component
 {
@@ -68,54 +72,25 @@ class PingbackController extends OntoWiki_Controller_Component
         }
 
         $config = $this->_privateConfig;
-        $foundPingbackTriples = array();
+        $foundPingbackTriplesGraph = array();
 
-        // 1. Try to dereference the source URI as RDF/XML
-        $client = Erfurt_App::getInstance()->getHttpClient(
-            $sourceUri,
-            array(
-                'maxredirects' => 10,
-                'timeout' => 30
-            )
-        );
-        $client->setHeaders('Accept', 'application/rdf+xml');
-        $client->setHeaders('Content-Type', 'application/rdf+xml');
-        try {
-            $response = $client->request();
-        } catch (Exception $e) {
-            $this->_logError($e->getMessage());
-            return 0x0000;
-        }
-        if ($response->getStatus() === 200) {
-            $data = $response->getBody();
-            $result = $this->_getPingbackTriplesFromRdfXmlString($data, $sourceUri, $targetUri);
-            if (is_array($result)) {
-                $foundPingbackTriples = $result;
-            }
-        }
+        // 1. Try to dereference the source URI as RDF/XML, N3, Truples, Turtle
+        $foundPingbackTriplesGraph = $this->_getResourceFromWrapper($sourceUri, $targetUri, 'Linkeddata');
 
         // 2. If nothing was found, try to use as RDFa service
-        if (((boolean) $config->rdfa->enabled) && (count($foundPingbackTriples) === 0)) {
-            $service = $config->rdfa->service . urlencode($sourceUri);
-            $client = Erfurt_App::getInstance()->getHttpClient(
-                $service,
-                array(
-                    'maxredirects' => 10,
-                    'timeout' => 30
-                )
-            );
+        if (((boolean) $config->rdfa->enabled) && (count($foundPingbackTriplesGraph) === 0)) {
+            $foundPingbackTriplesGraph = $this->_getResourceFromWrapper($sourceUri, $targetUri, 'Rdfa');
+        }
 
-            try {
-                $response = $client->request();
-            } catch (Exception $e) {
-                $this->_logError($e->getMessage());
-                return 0x0000;
-            }
-            if ($response->getStatus() === 200) {
-                $data = $response->getBody();
-                $result = $this->_getPingbackTriplesFromRdfXmlString($data, $sourceUri, $targetUri);
-                if ($result) {
-                    $foundPingbackTriples = $result;
+        $foundPingbackTriples = array();
+        foreach ($foundPingbackTriplesGraph as $s => $predicates) {
+            foreach ($predicates as $p => $objects) {
+                foreach ($objects as $o) {
+                    $foundPingbackTriples[] = array(
+                        's' => $s,
+                        'p' => $p,
+                        'o' => $o['value']
+                    );
                 }
             }
         }
@@ -168,6 +143,7 @@ class PingbackController extends OntoWiki_Controller_Component
                 return 0x0010;
             }
         }
+
 
         // 4. If still nothing was found, the sourceUri does not contain any link to targetUri
         if (count($foundPingbackTriples) === 0) {
@@ -272,32 +248,34 @@ class PingbackController extends OntoWiki_Controller_Component
         $result = $this->_query($sql);
 
         $removed = false;
-        foreach ($result as $row) {
-            $found = false;
-            foreach ($foundPingbackTriples as $triple) {
-                if ($triple['p'] === $row['relation']) {
-                    $found = true;
-                    break;
+        if ($result !== false) {
+            foreach ($result as $row) {
+                $found = false;
+                foreach ($foundPingbackTriples as $triple) {
+                    if ($triple['p'] === $row['relation']) {
+                        $found = true;
+                        break;
+                    }
                 }
-            }
 
-            if (!$found) {
-                $sql = 'DELETE FROM ow_pingback_pingbacks WHERE id=' . $row['id'];
-                $this->_query($sql);
+                if (!$found) {
+                    $sql = 'DELETE FROM ow_pingback_pingbacks WHERE id=' . $row['id'];
+                    $this->_query($sql);
 
-                $oSpec = array(
-                    'value' => $targetUri,
-                    'type' => 'uri'
-                );
+                    $oSpec = array(
+                        'value' => $targetUri,
+                        'type' => 'uri'
+                    );
 
-                $store->deleteMatchingStatements(
-                    $this->_targetGraph,
-                    $sourceUri,
-                    $row['relation'],
-                    $oSpec,
-                    array('use_ac' => false)
-                );
-                $removed = true;
+                    $store->deleteMatchingStatements(
+                        $this->_targetGraph,
+                        $sourceUri,
+                        $row['relation'],
+                        $oSpec,
+                        array('use_ac' => false)
+                    );
+                    $removed = true;
+                }
             }
         }
 
@@ -341,48 +319,32 @@ class PingbackController extends OntoWiki_Controller_Component
         }
     }
 
-    protected function _getPingbackTriplesFromRdfXmlString($rdfXml, $sourceUri, $targetUri)
+    private function _getResourceFromWrapper($sourceUri, $targetUri, $wrapperName = 'Linkeddata')
     {
-        $parser = Erfurt_Syntax_RdfParser::rdfParserWithFormat('rdfxml');
-        try {
-            $result = $parser->parse($rdfXml, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
-        } catch (Exception $e) {
-            $this->_logError($e->getMessage());
-            return false;
+        $r = new Erfurt_Rdf_Resource($sourceUri);
+
+        // Try to instanciate the requested wrapper
+        new Erfurt_Wrapper_Manager();
+        $wrapper = Erfurt_Wrapper_Registry::getInstance()->getWrapperInstance($wrapperName);
+
+        $wrapperResult = null;
+        $wrapperResult = $wrapper->run($r, null, true);
+
+        $newStatements = null;
+        if ($wrapperResult === false) {
+            // IMPORT_WRAPPER_NOT_AVAILABLE;
+        } else if (is_array($wrapperResult)) {
+            $newStatements = $wrapperResult['add'];
+            // TODO make sure to only import the specified resource
+            $newModel = new Erfurt_Rdf_MemoryModel($newStatements);
+            $newStatements = array();
+            $object = array('type' => 'uri', 'value' => $targetUri);
+            $newStatements = $newModel->getP($sourceUri, $object);
+        } else {
+            // IMPORT_WRAPPER_ERR;
         }
 
-        if (isset($result[$sourceUri])) {
-            $this->_sourceRdf = $result[$sourceUri];
-        }
-
-        $foundTriples = array();
-        foreach ($result as $s => $pArray) {
-            foreach ($pArray as $p => $oArray) {
-                foreach ($oArray as $oSpec) {
-                    if ($s === $sourceUri) {
-                        if (($oSpec['type'] === 'uri') && ($oSpec['value'] === $targetUri)) {
-                            $foundTriples[] = array(
-                                's' => $s,
-                                'p' => $p,
-                                'o' => $oSpec['value']
-                            );
-                        }
-                    } else if (($oSpec['type'] === 'uri') && ($oSpec['value'] === $sourceUri)) {
-                        // Try to find inverse property for $p
-                        $inverseProp = $this->_determineInverseProperty($p);
-                        if ($inverseProp !== null) {
-                            $foundTriples[] = array(
-                                's' => $oSpec['value'],
-                                'p' => $inverseProp,
-                                'o' => $s
-                            );
-                        }
-                    }
-                }
-            }
-        }
-
-        return $foundTriples;
+        return $newStatements;
     }
 
     protected function _logError($msg)
@@ -470,5 +432,4 @@ class PingbackController extends OntoWiki_Controller_Component
 
         return $result;
     }
-
 }
