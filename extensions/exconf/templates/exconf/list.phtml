@@ -31,7 +31,7 @@ foreach($this->extensions as $name => $extension){
         <a class="toggle icon icon-arrow-down" title="Close"><span>Close</span></a>
         <div class="extension has-contextmenu-area" id="<?php echo $name; ?>">
             <?php $confUrl = $this->urlBase.(!isset($extension->confAction) ? 'exconf/conf/?name='. $name : $extension->confAction); ?>
-                <h3><span class="name"><a href="<?php echo $confUrl; ?>"><?php echo $extension->name; ?></a></span>
+                <h3><span class="name"><a href="<?php echo $confUrl; ?>"><?php echo $extension->title; ?></a></span>
                     <?php
                         if (isset($extension->author)) {
                             echo '<em class="author">by '.(isset($extension->authorUrl)?'<a href="'.$extension->authorUrl.'">'.$extension->author.'</a>':$extension->author).'</em>';

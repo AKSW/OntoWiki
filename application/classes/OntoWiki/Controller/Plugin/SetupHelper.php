@@ -72,7 +72,7 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                         OntoWiki_Message::ERROR, array('escape' => false)));
                     // hard redirect since finishing the dispatch cycle will lead to errors
                     header('Location:' . $ontoWiki->config->urlBase . 'error/error');
-                    exit;
+                    return;
                 }
             }
             
@@ -90,7 +90,7 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                         OntoWiki_Message::ERROR, array('escape' => false)));
                     // hard redirect since finishing the dispatch cycle will lead to errors
                     header('Location:' . $ontoWiki->config->urlBase . 'error/error');
-                    exit;
+                    return;
                 }
             }
             

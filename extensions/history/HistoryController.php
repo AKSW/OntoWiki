@@ -369,7 +369,7 @@ class HistoryController extends OntoWiki_Controller_Component
         }
 
         // set active tab to history
-        Ontowiki_Navigation::setActive('history');
+        OntoWiki::getInstance()->getNavigation()->setActive('history');
 
         // setting default title
         $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());

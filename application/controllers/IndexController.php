@@ -39,9 +39,8 @@ class IndexController extends OntoWiki_Controller_Base
 
             $owFeed = Zend_Feed::import($url);
         } catch (Exception $e) {
-            $owFeed = $e;
+            $owFeed = array();
         }
-
         // create new array for data
         $data = array();
         // parse feed items into array
@@ -67,7 +66,7 @@ class IndexController extends OntoWiki_Controller_Base
      */
     public function messagesAction()
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         $this->view->placeholder('main.window.title')->set('OntoWiki Messages');
         $this->_helper->viewRenderer->setNoRender();
     }
@@ -101,7 +100,7 @@ class IndexController extends OntoWiki_Controller_Base
             $this->view->feed     = array();
         }
 
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance ()->getNavigation()->disableNavigation();
     }
 
     /**
@@ -109,7 +108,7 @@ class IndexController extends OntoWiki_Controller_Base
      */
     public function __call($action, $params)
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance ()->getNavigation()->disableNavigation();
         $this->view->placeholder('main.window.title')->set('Welcome to OntoWiki');
 
         if ($this->_owApp->hasMessages()) {
@@ -134,7 +133,7 @@ class IndexController extends OntoWiki_Controller_Base
     {
         // service controller needs no view renderer
         $this->_helper->viewRenderer->setNoRender();
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         // sorry for this hack, but I dont wanted to modify the the main layout too much ...
         $this->view->placeholder('main.window.additionalclasses')->set('hidden');
     }
