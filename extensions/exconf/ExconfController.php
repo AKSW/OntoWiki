@@ -50,9 +50,10 @@ class ExconfController extends OntoWiki_Controller_Component
     public function init()
     {
         parent::init();
-        OntoWiki::getInstance()->resetNavigation ();
+        $nav = OntoWiki::getInstance()->getNavigation();
+        $nav->reset();
 
-        OntoWiki::getInstance()->getNavigation()->register(
+        $nav->register(
             'list',
             array(
                 'route'      => null,
@@ -61,7 +62,7 @@ class ExconfController extends OntoWiki_Controller_Component
                 'name'   => 'Locally Installed'
             )
         );
-        OntoWiki::getInstance()->getNavigation()->register(
+        $nav->register(
             'repo',
             array(
                 'route'      => null,
