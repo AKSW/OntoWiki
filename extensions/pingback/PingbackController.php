@@ -32,6 +32,9 @@ class PingbackController extends OntoWiki_Controller_Component
     {
         $this->_logInfo('Pingback Server Init.');
 
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout->disableLayout();
+
         $this->_owApp->appendMessage(
             new OntoWiki_Message('Ping received.', OntoWiki_Message::INFO)
         );
@@ -143,7 +146,6 @@ class PingbackController extends OntoWiki_Controller_Component
                 return 0x0010;
             }
         }
-
 
         // 4. If still nothing was found, the sourceUri does not contain any link to targetUri
         if (count($foundPingbackTriples) === 0) {
