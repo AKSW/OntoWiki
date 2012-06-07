@@ -6,9 +6,6 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
-require_once 'Erfurt/Wrapper/Registry.php';
-require_once 'OntoWiki/Controller/Component.php';
-
 /**
  * The main controller class for the datagathering component. This class
  * provides services for URI search, statement import and statement sync.
