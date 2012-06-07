@@ -25,7 +25,7 @@
 </IfModule>
 
 # if you allow short open tags, xml templates will crash
-# please refer http://code.google.com/p/ontowiki/wiki/RecommendedPHPSettings
+# please refer https://github.com/AKSW/OntoWiki/wiki/php.ini-recommendations
 # for recommended PHP settings
 # maybe php_flag is not allowed in your environment,
 # but if you allow short open tags, xml templates will crash
