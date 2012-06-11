@@ -864,6 +864,9 @@ class ModelController extends OntoWiki_Controller_Base
                     break;
             }
 
+            $this->_helper->viewRenderer->setNoRender();
+            $this->_helper->layout->disableLayout();
+
             $response = $this->getResponse();
             $response->setHeader('Content-Type', $contentType, true);
             $response->setHeader('Content-Disposition', ('filename="'.$filename.'"'));
