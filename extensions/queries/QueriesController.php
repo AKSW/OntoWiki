@@ -30,7 +30,7 @@ class QueriesController extends OntoWiki_Controller_Component
         parent :: init();
 
         // setup the navigation
-        OntoWiki::getInstance()->resetNavigation();
+        OntoWiki::getInstance()->getNavigation()->reset();
         $tabExist = false;
         $ow = OntoWiki::getInstance();
 
