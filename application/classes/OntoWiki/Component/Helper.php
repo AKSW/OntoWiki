@@ -60,6 +60,7 @@ class OntoWiki_Component_Helper
     public function __construct($config)
     {
         $this->_owApp            = OntoWiki::getInstance();
+        $this->_config           = $this->_owApp->getConfig();
         $this->_privateConfig    = isset($config->private) ? $config->private : new Zend_Config(array(), true);
     }
 
