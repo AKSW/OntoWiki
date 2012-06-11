@@ -805,7 +805,7 @@ class ModelController extends OntoWiki_Controller_Base
         
         $title = $resource->getTitle($this->_owApp->getConfig()->languages->locale);
         $this->view->modelTitle = $title ? $title : OntoWiki_Utils::contractNamespace((string)$resource);
-        $resourcesUrl = new OntoWiki_Url(array('controller'=>'resource','action'=>'instances'), array());
+        $resourcesUrl = new OntoWiki_Url(array('route'=>'instances'), array());
         $resourcesUrl->init = true;
         $this->view->resourcesUrl = (string) $resourcesUrl;
 
