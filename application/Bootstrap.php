@@ -233,8 +233,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $ontoWiki = $this->getResource('OntoWiki');
 
         // require Logger, since Erfurt logger should write into OW logs dir
-        // TODO: Neccessary?
-        // $this->bootstrap('Logger');
+        $this->bootstrap('Logger');
 
         // Reset the Erfurt app for testability... needs to be refactored.
         Erfurt_App::reset();
@@ -245,6 +244,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             throw new OntoWiki_Exception('Error loading Erfurt framework: ' . $ee->getMessage());
         } catch (Exception $e) {
             throw new OntoWiki_Exception('Unexpected error: ' . $e->getMessage());
+        }
+
+        // Access the store in order to check whether connection works
+        if (!$erfurt->getStore()) {
+            return false;
         }
 
         // make available
