@@ -149,7 +149,12 @@ restore_error_handler();
 class_alias('OntoWiki', 'OntoWiki_Application');
 
 // bootstrap
-$application->bootstrap();
+try {
+    $application->bootstrap();
+} catch (Exception $e) {
+    echo $e->getMessage();
+    return;
+}
 
 $event = new Erfurt_Event('onPostBootstrap');
 $event->bootstrap = $application->getBootstrap();
