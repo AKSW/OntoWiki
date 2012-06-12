@@ -67,8 +67,8 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     {
         /*
         $this->_testAdapter->createModel('http://example.org/testModel1');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'deny');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'view', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'edit', 'deny');
         
         $this->request->setQuery(array(
             'uri' => 'http://example.org/testResource1',
@@ -87,8 +87,8 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     {
         /*
         $this->_testAdapter->createModel('http://example.org/testModel1');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'view', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'edit', 'grant');
         
         $this->request->setQuery(array(
             'uri'     => 'http://example.org/testResource1',
@@ -110,8 +110,8 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     {
         /*
         $this->_testAdapter->createModel('http://example.org/testModel1');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'view', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'edit', 'grant');
         
         Erfurt_Wrapper_Test::$runResult = array();
         
@@ -135,8 +135,8 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     {
         /*
         $this->_testAdapter->createModel('http://example.org/testModel1');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'view', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'edit', 'grant');
         
         Erfurt_Wrapper_Test::$runResult = array('status_codes' => array());
         
@@ -162,8 +162,8 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         Erfurt_App::getInstance()->getVersioning()->enableVersioning(false);
         
         $this->_testAdapter->createModel('http://example.org/testModel1');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'view', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'edit', 'grant');
         
         Erfurt_Wrapper_Test::$runResult = array(
             'status_codes' => array(Erfurt_Wrapper::RESULT_HAS_ADD),
@@ -192,8 +192,8 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         Erfurt_App::getInstance()->getVersioning()->enableVersioning(false);
         
         $this->_testAdapter->createModel('http://example.org/testModel1');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'view', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'edit', 'grant');
         
         $add = array(
             'http://example.org/testResource1' => array(
@@ -238,8 +238,8 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         Erfurt_App::getInstance()->getVersioning()->enableVersioning(false);
         
         $this->_testAdapter->createModel('http://example.org/testModel1');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
-        $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'view', 'grant');
+        $this->_testAc->addUserModelRight('http://example.org/testModel1', 'edit', 'grant');
         
         $add = array(
             'http://dbpedia.org/resource/Leipzig' => array(

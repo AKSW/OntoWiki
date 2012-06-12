@@ -99,7 +99,7 @@ class OntoWiki_Menu_Registry
         $owApp = OntoWiki::getInstance();
 
         // user sub menu
-        if ($owApp->erfurt->isActionAllowed('RegisterNewUser') && 
+        if ($owApp->erfurt->isActionAllowed(Erfurt_Ac::ACTION_REGISTER) && 
             !(isset($owApp->config->ac) && ((boolean)$owApp->config->ac->deactivateRegistration === true))) {
             
             if (!($owApp->erfurt->getAc() instanceof Erfurt_Ac_None)) {

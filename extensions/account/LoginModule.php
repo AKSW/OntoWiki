@@ -60,7 +60,7 @@ class LoginModule extends OntoWiki_Module
             'redirectUri' => urlencode((string) $url)
         );
 
-        if ($this->_erfurt->getAc()->isActionAllowed('RegisterNewUser')) {
+        if ($this->_erfurt->getAc()->isActionAllowed(Erfurt_Ac::ACTION_REGISTER)) {
             $data['showRegisterButton'] = true;
             $data['registerActionUrl'] = $this->_config->urlBase . 'application/register';
             $data['openIdRegisterActionUrl'] = $this->_config->urlBase . 'application/openidreg';

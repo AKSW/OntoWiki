@@ -222,12 +222,12 @@ class ApplicationController extends OntoWiki_Controller_Base
             $passwordTwo = $post['password2'];
 
             $emailValidator = new Zend_Validate_EmailAddress();
+            
+            $actionConfig = $this->_erfurt->getAc()->getActionConfig(Erfurt_Ac::ACTION_REGISTER);
 
-            if (!$this->_erfurt->isActionAllowed('RegisterNewUser') or
-                !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))) {
+            if (!$this->_erfurt->isActionAllowed(Erfurt_Ac::ACTION_REGISTER) || !$actionConfig) {
                 $message    = 'Action not permitted for the current user.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-
             } else if (trim($email) == '') {
                 $message    = 'Email address must not be empty.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
@@ -317,10 +317,10 @@ class ApplicationController extends OntoWiki_Controller_Base
 
                 $emailValidator = new Zend_Validate_EmailAddress();
 
-                // Is register action allowed for current user?
-                if (!$this->_erfurt->isActionAllowed('RegisterNewUser') ||
-                    !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))) {
+                $actionConfig = $this->_erfurt->getAc()->getActionConfig(Erfurt_Ac::ACTION_REGISTER);
 
+                // Is register action allowed for current user?
+                if (!$this->_erfurt->isActionAllowed(Erfurt_Ac::ACTION_REGISTER) || !$actionConfig) {
                     $message = 'Action not permitted for the current user.';
                     $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
                 } else if (empty($openId)) {
@@ -387,7 +387,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                 $label  = $post['label'];
 
                 // Give user default group?
-                $actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser');
+                $actionConfig = $this->_erfurt->getAc()->getActionConfig(Erfurt_Ac::ACTION_REGISTER);
                 $group = null;
                 if (isset($actionConfig['defaultGroup'])) {
                     $group = $actionConfig['defaultGroup'];
@@ -585,9 +585,10 @@ class ApplicationController extends OntoWiki_Controller_Base
 
             $emailValidator = new Zend_Validate_EmailAddress();
 
+            $actionConfig = $this->_erfurt->getAc()->getActionConfig(Erfurt_Ac::ACTION_REGISTER);
+
             // Is register action allowed for current user?
-            if (!$this->_erfurt->isActionAllowed('RegisterNewUser') ||
-                !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))) {
+            if (!$this->_erfurt->isActionAllowed(Erfurt_Ac::ACTION_REGISTER) || !$actionConfig) {
 
                 $message = 'Action not permitted for the current user.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
@@ -606,7 +607,6 @@ class ApplicationController extends OntoWiki_Controller_Base
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
             } else {
                 // Everything seems to be OK...
-                $actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser');
                 $group = null;
                 if (isset($actionConfig['defaultGroup'])) {
                     $group = $actionConfig['defaultGroup'];

@@ -632,9 +632,8 @@ class ModelController extends OntoWiki_Controller_Base
 
             // set userModelsEdit
             try {
-                // TODO: do not interface with ac directly
                 // give creator write access
-                $this->_erfurt->getAc()->setUserModelRight($model->getModelIri(), 'edit', 'grant');
+                $this->_erfurt->getAc()->addUserModelRule($model->getModelIri(), Erfurt_Ac::ACCESS_TYPE_EDIT, Erfurt_Ac::ACCESS_PERM_GRANT);
 
                 // create model resource with type SysOnt:Model
                 $store = $this->_erfurt->getStore();
@@ -684,11 +683,10 @@ class ModelController extends OntoWiki_Controller_Base
             case 'empty':
                 $model = $this->_erfurt->getStore()->getNewModel($newModelUri, $newBaseUri, $newType);
                 $createGraph = false;
-                $this->_erfurt->getAc()->setUserModelRight($model->getModelIri(), 'edit', 'grant');
-                $this->_redirect(
-                    $this->_config->urlBase . 'model/select/?m=' . urlencode($model->getModelIri()),
-                    array('code' => 302)
-                );
+
+                $this->_erfurt->getAc()->addUserModelRule($model->getModelIri(), Erfurt_Ac::ACCESS_TYPE_EDIT, Erfurt_Ac::ACCESS_PERM_GRANT);
+                $this->_redirect($this->_config->urlBase . 'model/select/?m=' . urlencode($model->getModelIri()), array('code' => 302));
+
                 return;
                 break;
             case 'paste':
