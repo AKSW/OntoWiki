@@ -95,8 +95,6 @@ class ErrorController extends Zend_Controller_Action
                     $response = $this->getResponse();
                     $response->setHttpResponseCode($exception->getResponseCode());
                     $response->setBody($exception->getResponseMessage());
-                    $response->sendResponse();
-
                     return;
             }
 

@@ -32,7 +32,6 @@ class ServiceController extends Zend_Controller_Action
                 //$this->_response->setRawHeader('HTTP/1.0 405 Method Not Allowed');
                 $this->_response->setHttpResponseCode(405);
                 $this->_response->setHeader('Allow', 'POST');
-                $this->_response->sendResponse();
                 return;
             }
         }
@@ -47,7 +46,6 @@ class ServiceController extends Zend_Controller_Action
         } else {
             //$this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             $this->_response->setHttpResponseCode(400);
-            $this->_response->sendResponse();
             return;
         }
 
@@ -57,7 +55,6 @@ class ServiceController extends Zend_Controller_Action
             session_destroy();
             //$this->_response->setRawHeader('HTTP/1.0 200 OK');
             $this->_response->setHttpResponseCode(200);
-            $this->_response->sendResponse();
             return;
         } else {
             // authenticate
@@ -69,13 +66,11 @@ class ServiceController extends Zend_Controller_Action
             // return success (200)
             //$this->_response->setRawHeader('HTTP/1.0 200 OK');
             $this->_response->setHttpResponseCode(200);
-            $this->_response->sendResponse();
             return;
         } else {
             // return fail (401)
             //$this->_response->setRawHeader('HTTP/1.0 401 Unauthorized');
             $this->_response->setHttpResponseCode(401);
-            $this->_response->sendResponse();
             return;
         }
     }
@@ -509,15 +504,13 @@ class ServiceController extends Zend_Controller_Action
                         // In this case we allow the requesting party to authorize...
                         $response->setRawHeader('HTTP/1.1 401 Unauthorized')
                                  ->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"')
-                                 ->setHttpResponseCode(401)
-                                 ->sendResponse();
+                                 ->setHttpResponseCode(401);
                         return;
 
                     } else {
                         $response->setRawHeader('HTTP/1.1 500 Internal Server Error')
                                  ->setBody('QueryRequestRefused')
-                                 ->setHttpResponseCode(500)
-                                 ->sendResponse();
+                                 ->setHttpResponseCode(500);
                         return;
                     }
                 }
@@ -549,8 +542,7 @@ class ServiceController extends Zend_Controller_Action
             } catch (Exception $e) {
                 $response->setRawHeader('HTTP/1.1 400 Bad Request')
                          ->setBody('MalformedQuery: ' . $e->getMessage())
-                         ->setHttpResponseCode(400)
-                         ->sendResponse();
+                         ->setHttpResponseCode(400);
                 return;
             }
 
@@ -566,7 +558,6 @@ class ServiceController extends Zend_Controller_Action
                 $response->setBody($result);
             }
             $response->setHttpResponseCode(200);
-            $response->sendResponse();
             return;
         }
     }
@@ -755,7 +746,6 @@ class ServiceController extends Zend_Controller_Action
                 // In this case we allow the requesting party to authorize
                 $response->setRawHeader('HTTP/1.1 401 Unauthorized');
                 $response->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"');
-                $response->sendResponse();
                 return;
             }
         }
@@ -884,7 +874,6 @@ class ServiceController extends Zend_Controller_Action
         // send the response
         $response->setHeader('Content-Type', 'application/json');
         $response->setBody(json_encode($closure));
-        $response->sendResponse();
         return;
     }
 
@@ -983,7 +972,6 @@ class ServiceController extends Zend_Controller_Action
         // send the response
         $response->setHeader('Content-Type', 'application/json');
         $response->setBody(json_encode($output));
-        $response->sendResponse();
         return;
     }
 
@@ -1158,7 +1146,6 @@ class ServiceController extends Zend_Controller_Action
         // send the response
         $response->setHeader('Content-Type', 'application/json');
         $response->setBody(json_encode($output));
-        $response->sendResponse();
         return;
     }
 

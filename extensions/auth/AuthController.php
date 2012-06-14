@@ -269,7 +269,6 @@ class AuthController extends OntoWiki_Controller_Component
         
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'application/rdf+xml', true);
-        $response->sendResponse();
         return;
     }
     
@@ -291,7 +290,6 @@ class AuthController extends OntoWiki_Controller_Component
         
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'application/rdf+xml', true);
-        $response->sendResponse();
         return;
     }
     

@@ -83,9 +83,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                     $matchedUri .= '.' . $type;
                 }
                 // Redirect to new (correct URI)
-                $response->setRedirect((string)$matchedUri, 301)
-                         ->sendResponse();
-                // FIXME: exit here prevents unit testing
+                $response->setRedirect((string)$matchedUri, 301);
                 return;
             }
 
@@ -162,8 +160,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $shouldRedirect = $event->trigger();
             if ($shouldRedirect) {
                 // set redirect and send immediately
-                $response->setRedirect((string)$url, 303)
-                         ->sendResponse();
+                $response->setRedirect((string)$url, 303);
                 return;
             }
 

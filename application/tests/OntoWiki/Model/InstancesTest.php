@@ -21,7 +21,7 @@ class OntoWiki_Model_InstancesTest extends Erfurt_TestCase {
     }
 
     public function testQuery(){
-        echo $this->_instances->getResourceQuery();
+        //echo $this->_instances->getResourceQuery();
     }
     
     public function testSerialization(){

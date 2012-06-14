@@ -349,7 +349,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // comment from seebi: why this issnt set to application/json? with
         //$response->setHeader('Content-Type', 'application/json');
         $response->setBody($body);
-        $response->sendResponse();
     }
 
     /**
@@ -1068,7 +1067,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         $this->_response->setHeader('Content-Type', 'application/json', true);
         $this->_response->setBody(json_encode($returnValue));
-        $this->_response->sendResponse();
     }
 
     // ------------------------------------------------------------------------

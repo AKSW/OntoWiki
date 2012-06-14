@@ -63,8 +63,7 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
                 //$response = Zend_Controller_Front::getInstance()->getResponse();
                 //$url = new OntoWiki_Url(array('controller' => 'model', 'action' => 'info'), array());
                 //$response->setRedirect((string)$url, 303)
-                //         ->sendResponse();
-                //exit;
+                return;
             }
             if($config['setSelectedResource']){
                 $owApp->selectedResource = $modelUri;

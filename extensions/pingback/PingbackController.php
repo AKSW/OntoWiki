@@ -51,7 +51,6 @@ class PingbackController extends OntoWiki_Controller_Component
             // Let the server handle the RPC calls.
             $response = $this->getResponse();
             $response->setBody($server->handle());
-            $response->sendResponse();
             return;
         }
     }

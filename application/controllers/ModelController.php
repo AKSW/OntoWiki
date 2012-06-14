@@ -819,7 +819,6 @@ class ModelController extends OntoWiki_Controller_Base
         if (!in_array($format, array_keys(Erfurt_Syntax_RdfSerializer::getSupportedFormats()))) {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("Format '$format' not supported.");
         }
 
@@ -831,7 +830,6 @@ class ModelController extends OntoWiki_Controller_Base
             if (!$store->isModelAvailable($modelUri, false)) {
                 $response = $this->getResponse();
                 $response->setRawHeader('HTTP/1.0 404 Not Found');
-                $response->sendResponse();
                 throw new OntoWiki_Controller_Exception("Model '$modelUri' not found.");
             }
 
@@ -839,7 +837,6 @@ class ModelController extends OntoWiki_Controller_Base
             if (!$store->isModelAvailable($modelUri)) {
                 $response = $this->getResponse();
                 $response->setRawHeader('HTTP/1.0 403 Forbidden');
-                $response->sendResponse();
                 throw new OntoWiki_Controller_Exception("Model '$modelUri' not available.");
             }
 
@@ -873,14 +870,12 @@ class ModelController extends OntoWiki_Controller_Base
 
             $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
             echo $serializer->serializeGraphToString($modelUri);
-            $response->sendResponse();
             return;
         } else {
             // Else use all available models.
             // TODO Exporters need to support this feature...
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("No Graph URI given.");
         }
     }

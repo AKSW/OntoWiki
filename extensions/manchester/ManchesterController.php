@@ -57,7 +57,6 @@ class ManchesterController extends OntoWiki_Controller_Component {
         // send the response
         $response->setHeader('Content-Type', 'application/json');
         $response->setBody(json_encode($output));
-        $response->sendResponse();
         return;
     }
 

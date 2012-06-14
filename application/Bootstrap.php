@@ -290,12 +290,35 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // initialize logger
         if (is_writable($config->log->path) && ((boolean)$config->log->level !== false)) {
             $levelFilter = new Zend_Log_Filter_Priority((int)$config->log->level, '<=');
+            
+            $logName = $config->log->path . 'ontowiki';
+            
+            // Check whether log can be created with $logName... otherwise append a number.
+            // This needs to be done, since logs may be created by other processes (e.g. with 
+            // testing) and thus can't be opened anymore.
+            for ($i = 0; $i<10; ++$i) {
+                try {
+                    $fullLogName = $logName;
+                    if ($i > 0) {
+                        $fullLogName .= '_' . $i;
+                    }
+                    $fullLogName .= '.log';
+                    
+                    $writer = new Zend_Log_Writer_Stream($fullLogName);
+                    if (null !== $writer) {
+                        break;
+                    }
+                } catch (Zend_Log_Exception $e) {
+                    // Nothing to do... just continue
+                }
+            }
+            
+            if (null !== $writer) {
+                $logger = new Zend_Log($writer);
+                $logger->addFilter($levelFilter);
 
-            $writer = new Zend_Log_Writer_Stream($config->log->path . 'ontowiki.log');
-            $logger = new Zend_Log($writer);
-            $logger->addFilter($levelFilter);
-
-            return $logger;
+                return $logger;
+            }
         }
 
         // fallback to NULL logger

@@ -395,7 +395,6 @@ class ResourceController extends OntoWiki_Controller_Base
         } else {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("No model given.");
         }
 
@@ -416,7 +415,6 @@ class ResourceController extends OntoWiki_Controller_Base
         if (!in_array($format, array_keys(Erfurt_Syntax_RdfSerializer::getSupportedFormats()))) {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("Format '$format' not supported.");
         }
 
@@ -424,7 +422,6 @@ class ResourceController extends OntoWiki_Controller_Base
         if (!$store->isModelAvailable($modelUri, false)) {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 404 Not Found');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("Model '$modelUri' not found.");
         }
 
@@ -432,7 +429,6 @@ class ResourceController extends OntoWiki_Controller_Base
         if (!$store->isModelAvailable($modelUri)) {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 403 Forbidden');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("Model '$modelUri' not available.");
         }
 
@@ -480,7 +476,6 @@ class ResourceController extends OntoWiki_Controller_Base
 
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
         echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $addedStatements);
-        $response->sendResponse();
         return;
     }
 }
