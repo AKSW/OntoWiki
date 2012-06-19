@@ -152,19 +152,30 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // set path variables
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
-        $port        = (isset($_SERVER['SERVER_PORT']) &&
-            $_SERVER['SERVER_PORT'] != '80' &&
-            $_SERVER['SERVER_PORT'] != '443'
-        )
-             ? (':' . $_SERVER['SERVER_PORT'])
-             : '';
-        $urlBase     = sprintf(
-            '%s://%s%s%s',
-            $protocol,
-            isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost',
-            $port,
-            $rewriteBase
-        );
+
+        if (isset($_SERVER['SERVER_PORT'])
+            && $_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') {
+            $port = ':' . $_SERVER['SERVER_PORT'];
+        } else {
+            $port = '';
+        }
+
+        if (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], ':') !== false) {
+            // IPv6
+            $serverName = '[' . $_SERVER['SERVER_NAME'] . ']';
+        } else if (isset($_SERVER['SERVER_NAME'])) {
+            // IPv4 or host name
+            $serverName = $_SERVER['SERVER_NAME'];
+        } else {
+            // localhost
+            $serverName = 'localhost';
+        }
+
+        $urlBase = sprintf('%s://%s%s%s',
+                           $protocol,
+                           $serverName,
+                           $port,
+                           $rewriteBase);
 
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);
