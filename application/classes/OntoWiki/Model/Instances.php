@@ -97,8 +97,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     {
         parent::__construct($store, $model);
 
-        if (isset($options[STORE_USE_CACHE])) {
-            $this->_useCache = $options[STORE_USE_CACHE];
+        if (isset($options[Erfurt_Store::USE_CACHE])) {
+            $this->_useCache = $options[Erfurt_Store::USE_CACHE];
         }
 
         $this->_defaultUrl['resource']      = new OntoWiki_Url(array('route' => 'properties'), array());
@@ -344,7 +344,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if (!$this->_resultsUptodate) {
             $this->_results = $this->_store->sparqlQuery(
                 $this->_valueQuery,
-                array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
+                array(Erfurt_Store::RESULTFORMAT => Erfurt_Store::RESULTFORMAT_EXTENDED, Erfurt_Store::USE_CACHE => $this->_useCache)
             );
             $this->_resultsUptodate = true;
         }
@@ -1185,7 +1185,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $results = $this->_store->sparqlQuery(
             $query,
-            array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
+            array(Erfurt_Store::RESULTFORMAT => Erfurt_Store::RESULTFORMAT_EXTENDED, Erfurt_Store::USE_CACHE => $this->_useCache)
         );
 
         $properties = array();
@@ -1244,7 +1244,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $query->addProjectionVar($valueVar);
         $results = $this->_store->sparqlQuery(
             $query,
-            array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
+            array(Erfurt_Store::RESULTFORMAT => Erfurt_Store::RESULTFORMAT_EXTENDED, Erfurt_Store::USE_CACHE => $this->_useCache)
         );
 
         $values = array();
@@ -1372,7 +1372,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if (!$this->_resourcesUptodate) {
             $result = $this->_store->sparqlQuery(
                 $this->_resourceQuery,
-                array(STORE_RESULTFORMAT => STORE_RESULTFORMAT_EXTENDED, STORE_USE_CACHE => $this->_useCache)
+                array(Erfurt_Store::RESULTFORMAT => Erfurt_Store::RESULTFORMAT_EXTENDED, Erfurt_Store::USE_CACHE => $this->_useCache)
             );
             $this->_resources = array();
             foreach ($result['results']['bindings'] as $row) {

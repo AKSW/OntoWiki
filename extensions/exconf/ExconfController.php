@@ -324,7 +324,7 @@ class ExconfController extends OntoWiki_Controller_Component
             $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceUrl'=>$repoUrl, 'graphs'=>array($graph)));
             $store = new Erfurt_Store(array('adapterInstance'=>$adapter), 'sparql');
             $rdfGraphObj = new Erfurt_Rdf_Model($graph);
-            $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array(STORE_USE_CACHE => false));
+            $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array(Erfurt_Store::USE_CACHE => false));
             $list->addTypeFilter(self::VERSION_CLASS, null, array('withChilds'=>false));
 
             //the version needs to be related to a project (inverse)

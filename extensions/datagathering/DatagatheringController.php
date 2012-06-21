@@ -988,7 +988,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     } else if ($action == 'update') {
                         $queryoptions = array(
                             'use_ac'                 => false,
-                            'result_format'          => STORE_RESULTFORMAT_EXTENDED,
+                            'result_format'          => Erfurt_Store::RESULTFORMAT_EXTENDED,
                             'use_additional_imports' => false
                         );
                         $oldStatements = $store->sparqlQuery(

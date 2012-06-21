@@ -70,7 +70,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
 
         //TODO fix query
         $queryHidden = 'PREFIX sysont: <http://ns.ontowiki.net/SysOnt/> SELECT ?p WHERE {?p sysont:hidden ?o }';
-        $res = $store->sparqlQuery($queryHidden, array("result_format" => STORE_RESULTFORMAT_EXTENDED));
+        $res = $store->sparqlQuery($queryHidden, array("result_format" => Erfurt_Store::RESULTFORMAT_EXTENDED));
         if (isset($res['bindings'])) {
             $bindings    = $res['bindings'];
         } else if (isset($res['results']['bindings'])) {
