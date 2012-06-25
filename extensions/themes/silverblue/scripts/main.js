@@ -24,6 +24,30 @@ tempHrefs = new Array();
  * core css assignments
  */
 $(document).ready(function() {
+    // keyboard shortcuts
+    $(document).keypress(function(e) {
+        if (/view\/?|resource\/properties\/?/gi.test(window.document.baseURI)) {
+            console.log('trigger');
+            switch(e.which) {
+                //e - edit
+                case 101 : $('.edit-enable').trigger('click'); break;
+                //a - add property
+                case 97 : $('.property-add').trigger('click'); break;
+                //s - save
+                case 115 : if ($('.edit-enable').hasClass('active')) { 
+                               $('.edit.save').trigger('click'); 
+                           }; 
+                           break;
+                //c - cancel
+                case 99 : if ($('.edit-enable').hasClass('active')) { 
+                              $('.edit.cancel').trigger('click'); 
+                          }; 
+                          break;
+                //l - clone
+                case 108 : $('.clone-resource').trigger('click'); break;
+            }
+        }
+    });
     // Object.keys support in older environments that do not natively support it
     if (!Object.keys) {
         Object.keys = (function () {
