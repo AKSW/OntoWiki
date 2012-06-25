@@ -44,7 +44,7 @@ class OntoWiki_Toolbar
         self::EDIT    => array('name' => 'Edit', 'image' => 'edit', 'class' => 'edit-enable'), 
         self::ADD     => array('name' => 'Add', 'image' => 'add'), 
         self::EDITADD => array('name' => 'Add', 'image' => 'editadd'), 
-        self::DELETE  => array('name' => 'Delete', 'image' => 'delete'), 
+        self::DELETE  => array('name' => 'Delete', 'image' => 'delete', 'class' => 'delete'), 
         self::SUBMIT  => array('name' => 'Submit', 'class' => 'submit', 'image' => 'go2'), 
         self::RESET   => array('name' => 'Reset', 'class' => 'reset', 'image' => 'reset'),
         self::EXPORT  => array('name' => 'Export', 'class' => 'export', 'image' => 'save')
