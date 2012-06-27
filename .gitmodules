@@ -3,4 +3,4 @@
 	url = git@github.com:AKSW/RDFauthor.git
 [submodule "libraries/Erfurt"]
 	path = libraries/Erfurt
-	url = git@github.com:AKSW/Erfurt.git
+	url = git@github.com:pfrischmuth/Erfurt.git

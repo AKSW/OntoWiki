@@ -151,7 +151,7 @@ install-test-environment:
 erfurt:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
-	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt
+	git clone git@github.com:pfrischmuth/Erfurt.git libraries/Erfurt
 
 test-erfurt:
 	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..
