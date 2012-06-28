@@ -105,7 +105,6 @@ class OntoWiki_Message
         
         // get translation for current language
         $this->_translate = OntoWiki::getInstance()->translate;
-        // $this->_translate = $this->_view->translate;
     }
     
     /**
@@ -125,8 +124,17 @@ class OntoWiki_Message
      */
     public function getText()
     {
-        $text = $this->_options['translate'] ? $this->_translate->translate($this->_text) : $this->_text;
+        $text = $this->_translate($this->_text);
         $text = $this->_options['escape'] ? $this->_view->escape($text) : $text;
+        
+        return $text;
+    }
+    
+    private function _translate($text)
+    {
+        if (($this->_options['translate'] === true) && (null !== $this->_translate)) {
+            return $this->_translate->translate($text);
+        }
         
         return $text;
     }

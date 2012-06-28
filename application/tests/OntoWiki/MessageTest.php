@@ -32,7 +32,7 @@
 /*
  * Helper file, that adjusts the include_path and initializes the test environment.
  */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'TestHelper.php';
+require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'TestHelper.php';
 
 /**
  * This test class comtains tests for the OntoWiki index controller.
@@ -46,23 +46,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATO
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
-{
-    protected $_owApp = null;
-
-    public function testFoo () {}
-
-    /*
-    public function setUp () 
-    {
-        $this->_owApp       = new Zend_Application( 'default', APPLICATION_PATH . 'config/application.ini');
-        $this->_owApp->bootstrap();
-    }
-    
-    public function tearDown ()
-    {
-        OntoWiki_Navigation::reset();
-    }
-    
+{ 
     public function testMessageGetTypeDefaultInfo()
     {
         $msg = new OntoWiki_Message('ttt');
@@ -98,5 +82,4 @@ class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
         $msg = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
         $this->assertEquals($msg->getText(), 'The test string for the message object.');
     }
-    */
 }
