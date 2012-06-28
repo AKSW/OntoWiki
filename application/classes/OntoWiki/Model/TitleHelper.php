@@ -113,28 +113,41 @@ class OntoWiki_Model_TitleHelper
      *
      * @param Erfrt_Rdf_Model $model The model instance to operate on
      */
-    public function __construct(Erfurt_Rdf_Model $model = null)
+    public function __construct(Erfurt_Rdf_Model $model = null, Erfurt_Store $store = null)
     {
         if (null !== $model) {
             $this->_model = $model;
         }
 
-        $this->_store = Erfurt_App::getInstance()->getStore();
-        $config       = OntoWiki::getInstance()->config;
-
-        // naming properties for resources
-        $this->_titleProperties = array_values($config->titleHelper->properties->toArray());
-
+        if (null !== $store) {
+            $this->_store = $store;
+        } else {
+            $this->_store = Erfurt_App::getInstance()->getStore();
+        }
+        
+        $config  = OntoWiki::getInstance()->config;
+        if (isset($config->titleHelper->properties)) {// naming properties for resources
+             $this->_titleProperties = array_values($config->titleHelper->properties->toArray());
+        } else {
+            $this->_titleProperties = array();
+        }
+       
         // fetch mode
-        $this->_alwaysSearchAllProperties = (strtolower($config->titleHelper->searchMode) == 'language');
-
+        if (isset($config->titleHelper->searchMode)) {
+            $this->_alwaysSearchAllProperties = (strtolower($config->titleHelper->searchMode) == 'language');
+        }
+        
         // always use local name for unknown resources?
-        $this->_alwaysUseLocalNames = (bool)$config->titleHelper->useLocalNames;
-
+        if (isset($config->titleHelper->useLocalNames)) {
+            $this->_alwaysUseLocalNames = (bool)$config->titleHelper->useLocalNames;
+        }
+        
         if (null === $this->_languages) {
             $this->_languages = array();
         }
-        array_unshift($this->_languages, (string)OntoWiki::getInstance()->config->languages->locale);
+        if (isset($config->languages->locale)) {
+            array_unshift($this->_languages, (string)$config->languages->locale);
+        }
     }
 
     // ------------------------------------------------------------------------
