@@ -50,9 +50,10 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     public function setUp()
     {
         $this->bootstrap = new Zend_Application(
-            'default',
+            'testing',
             ONTOWIKI_ROOT . 'application/config/application.ini'
         );
+        
         parent::setUp();
     }
     
@@ -85,7 +86,10 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         
         $this->assertController('service');
         $this->assertAction('auth');
-        $this->assertResponseCode(405);
+        
+        // TODO: Remove the @ again, when the ZF issue is resolved
+        // Currently there is a interface mismatch between PHPUnit >= 3.6 and ZF 1.x
+        @$this->assertResponseCode(405);
         $this->assertHeaderContains('allow', 'POST');
     }
     
@@ -174,8 +178,6 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     
     public function testAuthActionInvalidUser()
     {
-        //My system runs on 100% and out of memory (210 MB!) Any ideas?
-         
         $this->request->setMethod('POST')
                       ->setPost(array(
                           'u' => 'xyz',
@@ -235,22 +237,13 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     
     public function testUpdateDoesNothingWithEmptyParameters()
     {
-        /*
         $this->request->setMethod('POST')
                       ->setPost(array('insert' => '{}', 'delete' => '{}'));
-        
-        $storeMock = $this->getMock('Erfurt_Store');
-        $storeMock->expects($this->any())
-                  ->method('getModel')
-                  ->will($this->returnValue($modelMock));
-        
-        Erfurt_App::setStore();
         
         $this->dispatch('/service/update');
         
         $this->assertController('service');
         $this->assertAction('update');
         $this->assertResponseCode(200);
-        */
     }
 }
