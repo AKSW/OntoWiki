@@ -153,6 +153,8 @@ class OntoWiki_Module_Registry
 
         if ($options == null) {
             $options = new Zend_Config(array(), true);
+        } else if (is_array($options)) {
+            $options = new Zend_Config($options, true);
         }
 
         //if not already registered
@@ -169,7 +171,6 @@ class OntoWiki_Module_Registry
                 ), 
                 true
             );
-            
             $options = $default->merge($options);
             
             // set css classes according to module state
