@@ -101,10 +101,12 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         // PATCH
         // if component manager has controller registered
         // redirect to specific controller dir index
-        if ($this->_extensionManager->isComponentRegistered($controllerName)) {
-            $this->_curDirectory = $controllerDirs[$this->_extensionManager->getComponentPrefix() . $controllerName];
+        if (null !== $this->_extensionManager) {
+            if ($this->_extensionManager->isComponentRegistered($controllerName)) {
+                $this->_curDirectory = $controllerDirs[$this->_extensionManager->getComponentPrefix() . $controllerName];
+            }
         }
-
+        
         return $className;
     }
 
