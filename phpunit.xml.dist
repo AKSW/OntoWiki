@@ -17,7 +17,7 @@
                 
                 <exclude>
                     <directory>application/scripts</directory>
-                    <directory>application/tests/CodeSniffer</directory>
+                    <directory>application/tests</directory>
                 </exclude>
             </whitelist>
         </filter>
