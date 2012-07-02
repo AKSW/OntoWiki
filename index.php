@@ -58,7 +58,12 @@ if ((int) substr(ini_get('memory_limit'), 0, -1) < 256) {
 // add libraries to include path
 $includePath = get_include_path() . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
-$includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
+
+if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/Erfurt/App.php')) {
+    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
+} else if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/library/Erfurt/App.php')) {
+    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/library' . PATH_SEPARATOR;
+}
 set_include_path($includePath);
 
 // use default timezone from php.ini or let PHP guess it
@@ -132,7 +137,7 @@ try {
     return;
 }
 
-/** check/include Erfurt_App */
+/* check/include Erfurt_App */
 try {
     // use include, so we can catch it with the error handler
     include 'Erfurt/App.php';
