@@ -25,26 +25,28 @@ tempHrefs = new Array();
  */
 $(document).ready(function() {
     // keyboard shortcuts
-    $(document).keypress(function(e) {
+    $(document).keydown(function(e) {
         if (/view\/?|resource\/properties\/?/gi.test(window.document.baseURI)) {
-            console.log('trigger');
-            switch(e.which) {
-                //e - edit
-                case 101 : $('.edit-enable').trigger('click'); break;
-                //a - add property
-                case 97 : $('.property-add').trigger('click'); break;
-                //s - save
-                case 115 : if ($('.edit-enable').hasClass('active')) { 
-                               $('.edit.save').trigger('click'); 
-                           }; 
-                           break;
-                //c - cancel
-                case 99 : if ($('.edit-enable').hasClass('active')) { 
-                              $('.edit.cancel').trigger('click'); 
-                          }; 
-                          break;
-                //l - clone
-                case 108 : $('.clone-resource').trigger('click'); break;
+            if (e.shiftKey && e.altKey) {
+                e.preventDefault();
+                switch(e.which) {
+                    //e - 101 - edit E - 69
+                    case 69 : $('.edit-enable').trigger('click'); break;
+                    //a - 97 - add property - A - 65
+                    case 65 : $('.property-add').trigger('click'); break;
+                    //s - 115 - save S - 83
+                    case 83 : if ($('.edit-enable').hasClass('active')) { 
+                                   $('.edit.save').trigger('click'); 
+                               }; 
+                               break;
+                    //c  - 99 - cancel C - 67
+                    case 67 : if ($('.edit-enable').hasClass('active')) { 
+                                  $('.edit.cancel').trigger('click'); 
+                              }; 
+                              break;
+                    //l - 108 - clone L - 76
+                    case 76 : $('.clone-resource').trigger('click'); break;
+                }
             }
         }
     });
