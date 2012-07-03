@@ -31,7 +31,12 @@ $includePath  = get_include_path()                              . PATH_SEPARATOR
 $includePath .= _TESTROOT                                       . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'application/classes/'          . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'libraries/'                    . PATH_SEPARATOR;
-$includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/'             . PATH_SEPARATOR;
+
+if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/Erfurt/App.php')) {
+    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
+} else if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/library/Erfurt/App.php')) {
+    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/library' . PATH_SEPARATOR;
+}
 set_include_path($includePath);
 
 // start dummy session before any PHPUnit output
