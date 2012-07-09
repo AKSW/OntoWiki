@@ -161,11 +161,12 @@ class ResourceController extends OntoWiki_Controller_Base
                 $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)
         ) {
             // TODO: check acl
-            $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties'));
+            $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties', 'title' => 'SHIFT + ALT + e'));
             $toolbar->appendButton(
                 OntoWiki_Toolbar::EDITADD, array(
                     'name'  => 'Clone',
-                    'class' => 'clone-resource'
+                    'class' => 'clone-resource',
+                    'title' => 'SHIFT + ALT + l'
                 )
             );
             // ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Property', 'class' => 'property-add'));
@@ -177,11 +178,26 @@ class ResourceController extends OntoWiki_Controller_Base
                     ->appendButton(OntoWiki_Toolbar::DELETE, $params);
 
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::ADD, array('name' => 'Add Property', '+class' => 'property-add'));
+                    ->prependButton(OntoWiki_Toolbar::ADD, array(
+                        'name' => 'Add Property', 
+                        '+class' => 'property-add', 
+                        'title' => 'SHIFT + ALT + a'
+                    )
+            );
 
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::CANCEL, array('+class' => 'hidden'))
-                    ->prependButton(OntoWiki_Toolbar::SAVE, array('+class' => 'hidden'));
+                    ->prependButton(OntoWiki_Toolbar::CANCEL, array(
+                        '+class' => 'hidden', 
+                        'title' => 'SHIFT + ALT + c'
+                    )
+            );
+
+            $toolbar->prependButton(
+                OntoWiki_Toolbar::SAVE, array(
+                    '+class' => 'hidden', 
+                    'title' => 'SHIFT + ALT + s'
+                )
+            );
         }
 
         // let plug-ins add buttons
