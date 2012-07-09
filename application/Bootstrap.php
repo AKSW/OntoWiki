@@ -43,7 +43,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // require Erfurt
         $this->bootstrap('Erfurt');
-        //$erfurt = $this->getResource('Erfurt');
 
         // require Session
         $this->bootstrap('Session');
@@ -112,14 +111,27 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         // load user application configuration files
+        $tryDistConfig = false;
         try {
             $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini', 'private', true);
             $config->merge($privateConfig);
         } catch (Zend_Config_Exception $e) {
-            $message = '<p>OntoWiki can not find a proper configuration.</p>' . PHP_EOL .
-                '<p>Maybe you have to copy and modify the distributed <code>config.ini-dist</code> file?</p>'. PHP_EOL .
-                '<details><summary>Error Details</summary>' . $e->getMessage() . '</details>';
-            throw new OntoWiki_Exception($message);
+            $tryDistConfig = true;
+        }
+        
+        if ($tryDistConfig === true) {
+            try {
+                $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini.dist', 'private', true);
+                $config->merge($privateConfig);
+            } catch (Zend_Config_Exception $e) {
+                $message = '<p>OntoWiki can not find a proper configuration.</p>' . PHP_EOL 
+                         . '<p>Maybe you have to copy and modify the distributed ' 
+                         . '<code>config.ini.dist</code> file?</p>'. PHP_EOL 
+                         . '<details><summary>Error Details</summary>' 
+                         . $e->getMessage() . '</details>';
+                         
+                throw new OntoWiki_Exception($message);
+            }
         }
 
         // normalize path names
@@ -137,16 +149,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->cache->path     = rtrim($config->cache->path, '/\\') . '/';
         $config->log->path       = rtrim($config->log->path, '/\\') . '/';
         
-        //force caching
-        if(!is_writable($config->cache->path)){
-            throw new OntoWiki_Exception('<p>OntoWiki can not write to the "cache" folder.</p>' . PHP_EOL .
-                '<p>Maybe you have to create the folder or allow write access for the webserver user?</p>');
-        }
-
         // support absolute path
         $matches = array();
         if (!(preg_match('/^(\w:[\/|\\\\]|\/)/', $config->cache->path, $matches) === 1)) {
             $config->cache->path = ONTOWIKI_ROOT . $config->cache->path;
+        }
+        
+        //force caching
+        if(!is_writable($config->cache->path)){
+            throw new OntoWiki_Exception('<p>OntoWiki can not write to the "cache" folder.</p>' . PHP_EOL .
+                '<p>Maybe you have to create the folder or allow write access for the webserver user?</p>');
         }
 
         // set path variables

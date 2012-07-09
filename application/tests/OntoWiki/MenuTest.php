@@ -1,12 +1,43 @@
 <?php
 
-require_once dirname (__FILE__) .'/../TestHelper.php';
+require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'TestHelper.php';
 
 class OntoWiki_MenuTest extends PHPUnit_Framework_TestCase
 {
-    protected $_menu;
+    private $_menu = null;
     
     public function setUp()
+    {
+        $this->_menu = new OntoWiki_Menu();
+    }
+    
+    public function testSetEntryString()
+    {
+        $this->_menu->setEntry('Entry 1', 'Value 1');
+        
+        $this->assertEquals($this->_menu->toArray(), array('Entry 1' => 'Value 1'));
+    }
+    
+    public function testSetEntryObject()
+    {
+        $subMenu1 = new OntoWiki_Menu();
+        $subMenu1->setEntry('Sub Entry 1', 'Sub Value 1');
+        
+        $this->_menu->setEntry('Sub Menu 1', $subMenu1);
+        
+        $this->assertEquals($this->_menu->toArray(), array('Sub Menu 1' => array('Sub Entry 1' => 'Sub Value 1')));
+        
+    }
+    
+    public function testReplaceEntry()
+    {
+        $this->_menu->setEntry('Entry 1', 'Old Value')
+                    ->setEntry('Entry 1', 'New Value');
+        
+        $this->assertEquals($this->_menu->toArray(), array('Entry 1' => 'New Value'));
+    }
+    
+    public function testToArray()
     {
         $subMenu1 = new OntoWiki_Menu();
         $subMenu1->setEntry('Sub Entry 1', 'Sub Value 1');
@@ -15,43 +46,10 @@ class OntoWiki_MenuTest extends PHPUnit_Framework_TestCase
         $subMenu2->setEntry('Sub Entry 2', 'Old Sub Value 2')
                  ->setEntry('Sub Entry 2', 'New Sub Value 2');
         
-        $this->_menu = new OntoWiki_Menu();
         $this->_menu->setEntry('Entry 1', 'Value 1')
                     ->setEntry('Sub Menu 1', $subMenu1)
                     ->setEntry('Sub Menu 2', $subMenu2);
-    }
-    
-    public function testSetEntryString()
-    {
-        $menu = new OntoWiki_Menu();
-        $menu->setEntry('Entry 1', 'Value 1');
         
-        $this->assertEquals($menu->toArray(), array('Entry 1' => 'Value 1'));
-    }
-    
-    public function testSetEntryObject()
-    {
-        $subMenu1 = new OntoWiki_Menu();
-        $subMenu1->setEntry('Sub Entry 1', 'Sub Value 1');
-        
-        $menu = new OntoWiki_Menu();
-        $menu->setEntry('Sub Menu 1', $subMenu1);
-        
-        $this->assertEquals($menu->toArray(), array('Sub Menu 1' => array('Sub Entry 1' => 'Sub Value 1')));
-        
-    }
-    
-    public function testReplaceEntry()
-    {
-        $menu = new OntoWiki_Menu();
-        $menu->setEntry('Entry 1', 'Old Value')
-             ->setEntry('Entry 1', 'New Value');
-        
-        $this->assertEquals($menu->toArray(), array('Entry 1' => 'New Value'));
-    }
-    
-    public function testToArray()
-    {
         $expected = array(
             'Entry 1' => 'Value 1', 
             'Sub Menu 1' => array('Sub Entry 1' => 'Sub Value 1'), 
@@ -70,51 +68,47 @@ class OntoWiki_MenuTest extends PHPUnit_Framework_TestCase
     
     public function testToJson()
     {
+        $subMenu1 = new OntoWiki_Menu();
+        $subMenu1->setEntry('Sub Entry 1', 'Sub Value 1');
+        
+        $subMenu2 = new OntoWiki_Menu();
+        $subMenu2->setEntry('Sub Entry 2', 'Old Sub Value 2')
+                 ->setEntry('Sub Entry 2', 'New Sub Value 2');
+        
+        $this->_menu->setEntry('Entry 1', 'Value 1')
+                    ->setEntry('Sub Menu 1', $subMenu1)
+                    ->setEntry('Sub Menu 2', $subMenu2);
+        
         $expected = '{"Entry 1":"Value 1","Sub Menu 1":{"Sub Entry 1":"Sub Value 1"},"Sub Menu 2":{"Sub Entry 2":"New Sub Value 2"}}';
         $this->assertEquals($expected, $this->_menu->toJson(false));
         
         $this->_menu->setEntry('Sub Menu 1', 'Replaced Sub Menu Entry');
         $expected = '{"Entry 1":"Value 1","Sub Menu 1":"Replaced Sub Menu Entry","Sub Menu 2":{"Sub Entry 2":"New Sub Value 2"}}';
+        $this->assertEquals($expected, $this->_menu->toJson(false));
     }
     
     /**
-     * 
+     * @expectedException OntoWiki_Exception
      */
     public function testWrongKey()
     {
-        try {
-            $menu = new OntoWiki_Menu();
-            $menu->setEntry(null, 'Bar');
-            $this->markTestIncomplete ();
-        } catch ( OntoWiki_Exception $e ) {
-            
-        }
+        $this->_menu->setEntry(null, 'Bar');
     }
     
     /**
-     * 
+     * @expectedException OntoWiki_Exception
      */
     public function testContentError()
     {
-        try {
-            $menu = new OntoWiki_Menu();
-            $menu->setEntry('Foo', 12345);
-        } catch ( OntoWiki_Exception $e ) {
-            
-        }
+        $this->_menu->setEntry('Foo', 12345);
     }
     
     /**
-     * 
+     * @expectedException OntoWiki_Exception
      */
     public function testReplaceError()
     {
-        try {            
-            $menu = new OntoWiki_Menu();
-            $menu->setEntry('Existing Key', 'Bar');
-            $menu->setEntry('Existing Key', 'Baz', false);            
-        } catch ( OntoWiki_Exception $e ) {
-            
-        }
+        $this->_menu->setEntry('Existing Key', 'Bar');
+        $this->_menu->setEntry('Existing Key', 'Baz', false);
     }
 }

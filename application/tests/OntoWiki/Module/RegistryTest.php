@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname (__FILE__) .'/../../TestHelper.php';
+require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'TestHelper.php';
 
 class OntoWiki_Module_RegistryTest extends PHPUnit_Framework_TestCase
 {
@@ -18,96 +18,105 @@ class OntoWiki_Module_RegistryTest extends PHPUnit_Framework_TestCase
     
     public function testRegisterModuleEnabled()
     {
-        /*
-        $this->_registry->register('testmodule', 'testmodule');
+        $moduleName = 'test';
+        $this->_registry->register($moduleName, 'TestModule.php');
         
-        $this->assertEquals(true, $this->_registry->isModuleEnabled('testmodule'));
-        */
+        $this->assertEquals(true, $this->_registry->isModuleEnabled($moduleName));
     }
     
     public function testRegisterModuleDisabled()
     {
-        /*
-         * TODO: fix this
-        $this->_registry->register('testmodule', OntoWiki_Module_Registry::DEFAULT_NAMESPACE, array('enabled' => false));
+        $moduleName = 'test';
+        $this->_registry->register($moduleName, 'TestModule.php', OntoWiki_Module_Registry::DEFAULT_CONTEXT, array('enabled' => false));
         
-        $this->assertEquals(false, $this->_registry->isModuleEnabled('testmodule'));
-        */
-    }
-    
-    public function testRegisterModuleWithNamespace()
-    {
-        /*
-        $this->_registry->register('testmodule', 'test namespace');
-        
-        $this->assertEquals(false, $this->_registry->isModuleEnabled('testmodule'));
-        $this->assertEquals(true, $this->_registry->isModuleEnabled('testmodule', 'test namespace'));
-        */
+        $this->assertEquals(false, $this->_registry->isModuleEnabled($moduleName));
     }
     
     public function testDisableModule()
     {
-        /*
-        $this->_registry->register('testmodule');
+        $moduleName = 'test';
+        $this->_registry->register($moduleName, 'TestModule.php');
         
-        $this->assertEquals(true, $this->_registry->isModuleEnabled('testmodule'));
-        $this->_registry->disableModule('testmodule');
-        $this->assertEquals(false, $this->_registry->isModuleEnabled('testmodule'));
-        */
+        $this->assertEquals(true, $this->_registry->isModuleEnabled($moduleName));
+        $this->_registry->disableModule($moduleName);
+        $this->assertEquals(false, $this->_registry->isModuleEnabled($moduleName));
     }
     
-    public function testGetModulesReturnesEnabledModulesOnly()
+    public function testGetModulesReturnesAllModules()
     {
-        /*
-        $this->_registry->register('enabledmodule1');
+        $this->_registry->register('enabledmodule1', 'Enabledmodule1Module.php');
         $this->assertEquals(true, $this->_registry->isModuleEnabled('enabledmodule1'));
         
-        $this->_registry->register('disabledmodule', OntoWiki_Module_Registry::DEFAULT_NAMESPACE, array('enabled' => false));
+        $this->_registry->register('disabledmodule', 'DisabledmoduleModule.php', OntoWiki_Module_Registry::DEFAULT_CONTEXT, array('enabled' => false));
         $this->assertEquals(false, $this->_registry->isModuleEnabled('disabledmodule'));
         
-        $this->_registry->register('enabledmodule2', OntoWiki_Module_Registry::DEFAULT_NAMESPACE);
+        $this->_registry->register('enabledmodule2', 'Enabledmodule2Module.php');
         $this->assertEquals(true, $this->_registry->isModuleEnabled('enabledmodule2'));
         
         $expected = array(
             'enabledmodule1' => array(
-                'enabled' => true, 
-                'id'      => 'enabledmodule1', 
-                'classes' => '', 
-                'name'    => 'enabledmodule1'
+                'enabled'       => true, 
+                'id'            => 'enabledmodule1', 
+                'classes'       => '', 
+                'name'          => 'Enabledmodule1',
+                'extensionName' => 'enabledmodule1',
+                'private'       => array()
             ), 
             'enabledmodule2' => array(
-                'enabled' => true, 
-                'name'    => 'enabledmodule2', 
-                'id'      => 'enabledmodule2', 
-                'classes' => ''
+                'enabled'       => true, 
+                'name'          => 'Enabledmodule2', 
+                'id'            => 'enabledmodule2', 
+                'classes'       => '',
+                'extensionName' => 'enabledmodule2',
+                'private'       => array()
+            ),
+            'disabledmodule' => array(
+                'enabled'       => false, 
+                'name'          => 'Disabledmodule', 
+                'id'            => 'disabledmodule', 
+                'classes'       => '',
+                'extensionName' => 'disabledmodule',
+                'private'       => array()
             )
         );
         
-        $this->assertEquals($expected, $this->_registry->getModules());
-        $this->assertEquals(array(), $this->_registry->getModules('othernamespace'));
-        */
+        $actualModules = $this->_registry->getModules();
+        $this->assertTrue(isset($actualModules['enabledmodule1']));
+        $this->assertTrue(isset($actualModules['enabledmodule2']));
+        $this->assertTrue(isset($actualModules['disabledmodule']));
+        $this->assertEquals($expected['enabledmodule1'], $actualModules['enabledmodule1']->toArray());
+        $this->assertEquals($expected['enabledmodule2'], $actualModules['enabledmodule2']->toArray());
+        $this->assertEquals($expected['disabledmodule'], $actualModules['disabledmodule']->toArray());   
     }
     
     public function testGetModulesReturnesAllOptions()
     {
-        /*
         $options1 = array(
-            'enabled' => true, 
-            'class'   => 'foo-class', 
-            'id'      => 'bar-id', 
-            'name'    => 'foomodule', 
-            'classes' => ''
+            'enabled'       => true, 
+            'class'         => 'foo-class', 
+            'id'            => 'bar-id', 
+            'name'          => 'foo', 
+            'classes'       => '',
+            'extensionName' => 'disabledmodule',
+            'private'      => array()
         );
-        $this->_registry->register('foomodule', 'foo', $options1);
+        $this->_registry->register('foo', 'FooModule.php', OntoWiki_Module_Registry::DEFAULT_CONTEXT, $options1);
         
         $options2 = array(
-            'enabled' => false, 
-            'class'   => 'fuu-class', 
-            'id'      => 'baz-id'
+            'enabled'       => false, 
+            'class'         => 'fuu-class', 
+            'id'            => 'baz-id',
+            'name'          => 'foo',
+            'classes'       => '',
+            'extensionName' => 'disabledmodule',
+            'private'       => array()
         );
-        $this->_registry->register('barmodule', 'foo', $options2);
+        $this->_registry->register('bar', 'BarModule.php', OntoWiki_Module_Registry::DEFAULT_CONTEXT, $options2);
         
-        $this->assertEquals(array('foomodule' => $options1), $this->_registry->getModules('foo'));
-        */
+        $actualModules = $this->_registry->getModules();
+        $this->assertTrue(isset($actualModules['foo']));
+        $this->assertTrue(isset($actualModules['bar']));
+        $this->assertEquals($options1, $actualModules['foo']->toArray());
+        $this->assertEquals($options2, $actualModules['bar']->toArray());
     }
 }

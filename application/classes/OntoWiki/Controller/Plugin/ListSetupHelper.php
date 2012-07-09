@@ -42,7 +42,14 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
             return;
         }
 
-        $ontoWiki        = OntoWiki::getInstance();
+        $ontoWiki   = OntoWiki::getInstance();
+        
+        // TODO: Refactor! The list helper is from an extension! Do not access extensions
+        // from core code!
+        if (!Zend_Controller_Action_HelperBroker::hasHelper('List')) {
+            return;
+        }
+        
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         // only once and only when possible
         if (

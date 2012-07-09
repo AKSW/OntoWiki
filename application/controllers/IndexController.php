@@ -39,6 +39,7 @@ class IndexController extends OntoWiki_Controller_Base
 
             $owFeed = Zend_Feed::import($url);
         } catch (Exception $e) {
+            $this->_owApp->appendMessage(new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::WARNING));
             $owFeed = array();
         }
         // create new array for data
@@ -96,8 +97,8 @@ class IndexController extends OntoWiki_Controller_Base
             $this->view->link        = $owFeed->link();
             $this->view->description = $owFeed->description();
         } catch (Exception $e) {
-            $this->view->messages = array(new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::ERROR));
-            $this->view->feed     = array();
+            $this->_owApp->appendMessage(new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::WARNING));
+            $this->view->feed = array();
         }
 
         OntoWiki::getInstance ()->getNavigation()->disableNavigation();

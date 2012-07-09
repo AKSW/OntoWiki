@@ -122,6 +122,10 @@ class OntoWiki_Navigation
             throw new OntoWiki_Exception("Navigation component with key '$key' already registered.");
         }
         
+        if (!is_string($key)) {
+            throw new OntoWiki_Exception("Key needs to be a string.");
+        }
+        
         if ( 0 == strlen((string)$key) ) {
             throw new OntoWiki_Exception("No key was set.");
         }

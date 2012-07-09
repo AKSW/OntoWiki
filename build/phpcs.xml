@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<ruleset name="OntoWikiRuleSet">
+<description>OntoWiki rule set for PHP_CodeSniffer</description>
+    <rule ref="Zend" />
+</ruleset>

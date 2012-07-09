@@ -120,7 +120,9 @@ class OntoWiki_Url
                 $routeName = 'default';
             }
             
-            $this->_route = $router->getRoute($routeName);
+            if ($router->hasRoute($routeName)) {
+                $this->_route = $router->getRoute($routeName);
+            }
         }
         
         // check default controller/action and leave those empty
