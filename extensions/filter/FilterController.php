@@ -26,7 +26,11 @@ class FilterController extends OntoWiki_Controller_Component
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = $this->_request->getParam('list');
         if ($listHelper->listExists($listName)) {
-            $instances   = $listHelper->getList($listName);
+            $list   = $listHelper->getList($listName);
+            //TODO the store is not serialized anymore. it is missing by default. Controllers have to set it
+            //how to determine here?
+            //use the default store here - but also Sparql-Adapters are possible
+            $list->setStore($this->_erfurt->getStore());
         } else {
             $this->view->values = array();
             return;
@@ -35,7 +39,7 @@ class FilterController extends OntoWiki_Controller_Component
         $predicate = $this->_request->getParam('predicate', '');
         $inverse = $this->_request->getParam('inverse', '');
 
-        $this->view->values = $instances->getPossibleValues($predicate, true, $inverse == "true");
+        $this->view->values = $list->getPossibleValues($predicate, true, $inverse == "true");
 
         require_once 'OntoWiki/Model/TitleHelper.php';
         $titleHelper = new OntoWiki_Model_TitleHelper($this->_owApp->selectedModel);

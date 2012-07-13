@@ -312,17 +312,18 @@ class ExconfController extends OntoWiki_Controller_Component
 
         $ow->appendMessage(new OntoWiki_Message('Repository: '.$repoUrl, OntoWiki_Message::INFO));
         //$ow->appendMessage(new OntoWiki_Message("Graph: ".$graph, OntoWiki_Message::INFO));
+        //define the list on a new store, that queries a sparql endpoint
+        $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceUrl'=>$repoUrl, 'graphs'=>array($graph)));
+        $store = new Erfurt_Store(array('adapterInstance'=>$adapter), 'sparql');
 
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = 'extensions';
         if ($listHelper->listExists($listName)) {
             $list = $listHelper->getList($listName);
+            $list->setStore($store);
             $list->invalidate(); //remote repo may change data
             $listHelper->addList($listName, $list, $this->view, 'list_extensions_main');
         } else {
-            //define the list on a new store, that queries a sparql endpoint
-            $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceUrl'=>$repoUrl, 'graphs'=>array($graph)));
-            $store = new Erfurt_Store(array('adapterInstance'=>$adapter), 'sparql');
             $rdfGraphObj = new Erfurt_Rdf_Model($graph);
             $list = new OntoWiki_Model_Instances($store, $rdfGraphObj, array(Erfurt_Store::USE_CACHE => false));
             $list->addTypeFilter(self::VERSION_CLASS, null, array('withChilds'=>false));

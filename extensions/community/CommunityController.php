@@ -35,6 +35,7 @@ class CommunityController extends OntoWiki_Controller_Component {
 
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
+            $list->setStore($store);
             $listHelper->addList($listName, $list, $this->view, 'list_community_main', $this->_privateConfig);
         } else {
             $list = new OntoWiki_Model_Instances($store, $graph, array());

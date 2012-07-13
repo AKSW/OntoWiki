@@ -228,13 +228,14 @@ class ResourceController extends OntoWiki_Controller_Base
         $graph       = $this->_owApp->selectedModel;
 
         // the list is managed by a controller plugin that catches special http-parameters
-        // in Ontowiki/Controller/Plugin/ListSetupHelper.php
+        // @see Ontowiki/Controller/Plugin/ListSetupHelper.php
 
         //here this list is added to the view
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = 'instances';
         if ($listHelper->listExists($listName)) {
             $list = $listHelper->getList($listName);
+            $list->setStore($store);
             $listHelper->addList($listName, $list, $this->view);
         } else {
             if ($this->_owApp->selectedModel == null) {

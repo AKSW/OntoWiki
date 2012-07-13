@@ -236,6 +236,7 @@ class HistoryController extends OntoWiki_Controller_Component
             $listName = "instances";
             if ($listHelper->listExists($listName)) {
                 $list = $listHelper->getList($listName);
+                $list->setStore($store);
             } else {
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('something went wrong with the list of instances', OntoWiki_Message::ERROR)

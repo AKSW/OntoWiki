@@ -344,6 +344,7 @@ class QueriesController extends OntoWiki_Controller_Component
         $listName = 'queries';
         if ($listHelper->listExists($listName)) {
             $list = $listHelper->getList($listName);
+            $list->setStore($store);
             $listHelper->addList($listName, $list, $this->view, 'list_queries_main');
         } else {
             $list = new OntoWiki_Model_Instances($store, $graph, array());
