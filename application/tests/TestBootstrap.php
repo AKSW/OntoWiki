@@ -53,9 +53,12 @@ class TestBootstrap extends Bootstrap
             throw new OntoWiki_Exception('Unexpected error: ' . $e->getMessage());
         }
 
-        $store = new Erfurt_Store(array(
-            'adapterInstance' => new Erfurt_Store_Adapter_Test()
-        ), 'Test');
+        $store = new Erfurt_Store(
+            array(
+                'adapterInstance' => new Erfurt_Store_Adapter_Test()
+            ), 
+            'Test'
+        );
         $erfurt->setStore($store);
 
         // make available
