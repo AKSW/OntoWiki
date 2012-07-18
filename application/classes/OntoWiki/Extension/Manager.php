@@ -771,10 +771,16 @@ class OntoWiki_Extension_Manager
             $owconfigNS.'authorLabel' => 'author',
             EF_RDFS_LABEL => 'title'
         );
-        $scp = $owconfigNS.'config'; //sub config property
-        $mp = $owconfigNS.'hasModule'; //module property
-        $base = dirname($path).DIRECTORY_SEPARATOR;
+
+        $scp = $owconfigNS . 'config'; //sub config property
+        $mp = $owconfigNS . 'hasModule'; //module property
+        $base = 'file://' . dirname($path) . DIRECTORY_SEPARATOR;
         $extensionUri = $memModel->getValue($base, 'http://xmlns.com/foaf/0.1/primaryTopic');
+
+        if ($extensionUri == null) {
+            throw new Exception('No primary topic/extension URI given in doap file: "' . $base . '" from path: "' . $path . '".' );
+        }
+
         $privateNS = $memModel->getValue($extensionUri, $owconfigNS.'privateNamespace');
 
         $modules = array();
