@@ -157,6 +157,7 @@ class_alias('OntoWiki', 'OntoWiki_Application');
 try {
     $application->bootstrap();
 } catch (Exception $e) {
+    echo 'Error on bootstrapping application: ';
     echo $e->getMessage();
     return;
 }
