@@ -774,11 +774,11 @@ class OntoWiki_Extension_Manager
 
         $scp = $owconfigNS . 'config'; //sub config property
         $mp = $owconfigNS . 'hasModule'; //module property
-        $base = 'file://' . dirname($path) . DIRECTORY_SEPARATOR;
+        $base = $parser->getBaseUri();
         $extensionUri = $memModel->getValue($base, 'http://xmlns.com/foaf/0.1/primaryTopic');
 
         if ($extensionUri == null) {
-            throw new Exception('No primary topic/extension URI given in doap file: "' . $base . '" from path: "' . $path . '".' );
+            throw new Exception('Extension DOAP config for '.$name.' needs triple (@base, foaf:primaryTopic, <extensionUri>). Not present. Base was: "' . $base . '". In doap file: "' . $path . '".' );
         }
 
         $privateNS = $memModel->getValue($extensionUri, $owconfigNS.'privateNamespace');
