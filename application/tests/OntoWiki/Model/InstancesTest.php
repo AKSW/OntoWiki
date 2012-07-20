@@ -44,8 +44,6 @@ class OntoWiki_Model_InstancesTest extends PHPUnit_Framework_TestCase
             new Erfurt_Rdf_Model('http://graph.com/123/', null, $this->_store)
         );
         
-        //echo $this->_instances->getResourceQuery();
-        //echo $this->_instances->getValueQuery();
     }
 
     public function testGetResourceQuery()
@@ -205,6 +203,25 @@ class OntoWiki_Model_InstancesTest extends PHPUnit_Framework_TestCase
         $triples = $i->getValueQuery()->getElements();
         $this->assertCount(1 + $this->_valueQueryDefaultTriples, $triples);
     }
+    /**
+     * 
+     */
+    public function testShownPropertiesCustomAddTriple()
+    {
+        $var = new Erfurt_Sparql_Query2_Var("sp");
+        $triples = array(
+            new Erfurt_Sparql_Query2_Triple(
+                $this->_instances->getResourceVar(), 
+                new Erfurt_Sparql_Query2_IriRef('http://ex.com/'),
+                $var
+            )
+        );
+        $r = $this->_instances->addShownPropertyCustom($triples, $var);
+        //verify two triple in value query, alltriple (?resourceuri ?p ?o), filter(isuri) and the optional triple
+        $triplesQuery = $this->_instances->getValueQuery()->getElements();
+
+        $this->assertCount(1 + $this->_valueQueryDefaultTriples, $triplesQuery);
+    }
     
     /**
      * 
@@ -261,31 +278,63 @@ class OntoWiki_Model_InstancesTest extends PHPUnit_Framework_TestCase
     {
         //test add
         $this->_instances->addFilter("http://abc", false, "abc", "bound");
+        $this->assertCount(1, $this->_instances->getFilter());
     }
     
     public function testFilterAddContains()
     {
         $this->_instances->addFilter("http://abc", false, "abc", "contains", "xyz");
+        $this->assertCount(1, $this->_instances->getFilter());
     }
     
     public function testFilterAddEquals()
     {
         $this->_instances->addFilter("http://abc", false, "abc", "equals", "xyz");
+        $this->assertCount(1, $this->_instances->getFilter());
     }
     
     public function testFilterAddLarger()
     {
         $this->_instances->addFilter("http://abc", false, "abc", "larger", 4);
+        $this->assertCount(1, $this->_instances->getFilter());
     }
     
     public function testFilterAddSmaller()
     {
         $this->_instances->addFilter("http://abc", false, "abc", "smaller", 4);
+        $this->assertCount(1, $this->_instances->getFilter());
     }
     
     public function testFilterAddBetween()
     {
         $this->_instances->addFilter("http://abc", false, "abc", "between", 5, 6);
+        $this->assertCount(1, $this->_instances->getFilter());
+    }
+    
+    public function testFilterAddType()
+    {
+        $this->_instances->addTypeFilter("http://class.com");
+        $this->assertCount(1, $this->_instances->getFilter());
+    }
+    public function testFilterAddSearch()
+    {
+        $this->_instances->addSearchFilter("term");
+        $this->assertCount(1, $this->_instances->getFilter());
+    }
+    public function testFilterAddTriples()
+    {
+        $triples = array(
+            new Erfurt_Sparql_Query2_Triple(
+                $this->_instances->getResourceVar(), 
+                new Erfurt_Sparql_Query2_IriRef('http://ex.com/'),
+                new Erfurt_Sparql_Query2_Var("sp")
+            )
+        );
+        $this->_instances->addTripleFilter($triples);
+        //verify two triple in value query, alltriple (?resourceuri ?p ?o), filter(isuri) and the optional triple
+        $triplesQuery = $this->_instances->getResourceQuery()->getElements();
+        $this->assertContains($triples[0], $triplesQuery);
+        $this->assertCount(1, $this->_instances->getFilter());
     }
     
     public function testFilterAddUndef()
@@ -318,5 +367,39 @@ class OntoWiki_Model_InstancesTest extends PHPUnit_Framework_TestCase
         $this->_instances->setTitleHelper($newTH);
         $this->assertSame($newTH, $this->_instances->getTitleHelper());
     }
+    
+    public function testGetProperties()
+    {
+        $p = $this->_instances->getAllProperties();
+        $this->assertEmpty($p); //on a stub store, there should be no results
+    }
+    
+    public function testGetPropertiesQuery()
+    {
+        $q = $this->_instances->getAllPropertiesQuery();
+        $this->assertInstanceOf('Erfurt_Sparql_Query2', $q);
+    }
+    
+    public function testGetValues()
+    {
+        $v = $this->_instances->getValues();
+        $this->assertEmpty($v); //on a stub store, there should be no results
+    }
+    
+    public function testResults()
+    {
+        $r = $this->_instances->getResults();
+        $this->assertArrayHasKey('results', $r);
+        $this->assertArrayHasKey('bindings', $r['results']);
+        $this->assertEmpty($r['results']['bindings']); //on a stub store, there should be no results
+    }
+    
+    public function testPossibleValues()
+    {
+        $v = $this->_instances->getPossibleValues("http://abc");
+        $this->assertEmpty($v); //on a stub store, there should be no results
+    }
+    
+    
 }
  
