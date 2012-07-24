@@ -154,49 +154,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->_valueQuery->addFrom((string)$model);
         $this->_resourceQuery->addFrom((string)$model);
 
-        //$this->updateValueQuery();
-    }
-
-    /**
-     * 
-     * Method for setting the store explicitely
-     * (necessary after unserialization from session for unavailable _dbconn 
-     * resource handles etc.)
-     * @param Erfurt_Store $store
-     * @throws Exception for parameter type being incorrect (no Erfurt_Store Object)
-     * @return null
-     */
-    public function setStore(Erfurt_Store $store)
-    {
-        $this->_store = $store;
-        $this->restoreTitleHelper();
-    }
-    
-    /**
-     * 
-     * @throws OntoWiki_Exception
-     */
-    protected function restoreTitleHelper()
-    {
-        $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model, $this->_store);
-    }
-    
-    /**
-     * set title helper (for unittests)
-     * @param OntoWiki_Model_TitleHelper $t
-     */
-    public function setTitleHelper(OntoWiki_Model_TitleHelper $t)
-    {
-        $this->_titleHelper = $t;
-    }
-    
-    /**
-     * get title helper (for unittests)
-     * @return OntoWiki_Model_TitleHelper 
-     */
-    public function getTitleHelper()
-    {
-        return $this->_titleHelper;
+        $this->invalidate();
     }
 
     /**
@@ -247,10 +205,52 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     }
 
     /**
+     * 
+     * Method for setting the store explicitely
+     * (necessary after unserialization from session for unavailable _dbconn 
+     * resource handles etc.)
+     * @param Erfurt_Store $store
+     * @throws Exception for parameter type being incorrect (no Erfurt_Store Object)
+     * @return null
+     */
+    public function setStore(Erfurt_Store $store)
+    {
+        $this->_store = $store;
+        $this->restoreTitleHelper();
+    }
+    
+    /**
+     * 
+     * @throws OntoWiki_Exception
+     */
+    protected function restoreTitleHelper()
+    {
+        $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model, $this->_store);
+    }
+    
+    /**
+     * set title helper (for unittests)
+     * @param OntoWiki_Model_TitleHelper $t
+     */
+    public function setTitleHelper(OntoWiki_Model_TitleHelper $t)
+    {
+        $this->_titleHelper = $t;
+    }
+    
+    /**
+     * get title helper (for unittests)
+     * @return OntoWiki_Model_TitleHelper 
+     */
+    public function getTitleHelper()
+    {
+        return $this->_titleHelper;
+    }
+
+    /**
      * add ?resourceUri ?p ?o to the resource query
      * TODO: support objects as resources? optionally?
      */
-    public function addAllTriple()
+    protected function addAllTriple()
     {
         $this->_resourceQuery->addElement($this->_allTriple);
     }
@@ -258,15 +258,16 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     /**
      * remove ?resourceUri ?p ?o from the resource query
      */
-    public function removeAllTriple()
+    protected function removeAllTriple()
     {
         $this->_allTriple->remove($this->_resourceQuery);
     }
     
     /**
-     * remove ?resourceUri ?p ?o from the resource query
+     * get the object that represents the "?resourceUri ?p ?o" from the resource query.
+     * object exists, even if not part of the query
      */
-    public function getAllTriple()
+    protected function getAllTriple()
     {
         return $this->_allTriple;
     }
@@ -1447,7 +1448,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         return $resourceResults;
     }
 
-    public function getShownResources ()
+    protected function getShownResources ()
     {
         if (!$this->_resourcesUptodate) {
             $result = $this->_store->sparqlQuery(
@@ -1560,7 +1561,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * set all "uptodate" flags to false
      * @return OntoWiki_Model_Instances
      */
-    public function invalidate ()
+    protected function invalidate ()
     {
         $this->_resourcesConvertedUptodate = false;
         $this->_resourcesUptodate = false;
@@ -1577,7 +1578,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * we have to change the value query as well (because the resources are mentioned as subjects)
      * @return OntoWiki_Model_Instances $this
      */
-    public function updateValueQuery ()
+    protected function updateValueQuery ()
     {
         if ($this->_valueQueryUptodate) {
             return $this;

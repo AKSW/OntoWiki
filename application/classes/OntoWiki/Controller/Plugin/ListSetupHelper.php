@@ -293,13 +293,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 $redirector->gotoUrl($url);
             }
         }
-        
-        // even if the was no change made to the resource query -> update the value-query
-        // because the dataset may have changed since the last request
-        // and controllers using this list then get the newest data
-        foreach($listHelper->getAllLists() as $aList){
-            $aList->invalidate();
-        }
     }
 }
 ?>
