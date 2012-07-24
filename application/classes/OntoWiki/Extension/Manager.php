@@ -708,7 +708,8 @@ class OntoWiki_Extension_Manager
     protected function _addWrapper($filename, $wrapperPath, $config)
     {
         $owApp = OntoWiki::getInstance();
-        $wrapperManager = $owApp->erfurt->getWrapperManager(false);
+        
+        $wrapperManager = new Erfurt_Wrapper_Manager();
         $wrapperManager->addWrapperExternally(
             strtolower(substr($filename, 0, strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))),
             $wrapperPath,
