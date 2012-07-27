@@ -123,7 +123,7 @@ rdfauthor:
 	git clone git@github.com:AKSW/RDFauthor.git libraries/RDFauthor
 
 test:
-	phpunit --stderr application/tests
+	phpunit
 
 test-extensions:
 	phpunit --stderr extensions
@@ -154,7 +154,7 @@ erfurt:
 	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt
 
 test-erfurt:
-	cd libraries/Erfurt/tests && phpunit Erfurt_TestSuite && cd ../../..
+	cd libraries/Erfurt && phpunit && cd ../../..
 
 
 # packaging

@@ -14,7 +14,7 @@
   owconfig:templates "." ;
   owconfig:enabled "false"^^xsd:boolean ;
   rdfs:label "Pages" ;
-  doap:description "redirect controller actions to template calls. a minimal filesystem-based CMS. see the \'site\' extension for a more sophisticated variant" ;
+  doap:description "redirect controller actions to template calls. a minimal filesystem-based CMS. see the 'site' extension for a more sophisticated variant" ;
   owconfig:authorLabel "AKSW" ;
   doap:maintainer <http://aksw.org> ;
   owconfig:config [
