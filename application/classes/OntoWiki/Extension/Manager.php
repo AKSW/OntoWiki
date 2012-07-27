@@ -708,7 +708,8 @@ class OntoWiki_Extension_Manager
     protected function _addWrapper($filename, $wrapperPath, $config)
     {
         $owApp = OntoWiki::getInstance();
-        $wrapperManager = $owApp->erfurt->getWrapperManager(false);
+        
+        $wrapperManager = new Erfurt_Wrapper_Manager();
         $wrapperManager->addWrapperExternally(
             strtolower(substr($filename, 0, strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))),
             $wrapperPath,
@@ -743,16 +744,8 @@ class OntoWiki_Extension_Manager
 
     private static $_owconfigNS = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/';
 
-    /**
-     * load the doap.n3 file of a extension and transform it into a associative array thats corresponds to ini
-     * @param string $path
-     * @param string $name
-     * @return array config array 
-     */
-    public static function loadDoapN3($path, $name)
+    public static function triples2configArray($triples, $name, $base, $path)
     {
-        $parser =  Erfurt_Syntax_RdfParser::rdfParserWithFormat('n3');
-        $triples = $parser->parse($path, Erfurt_Syntax_RdfParser::LOCATOR_FILE);
         $memModel = new Erfurt_Rdf_MemoryModel($triples);
 
         $owconfigNS = self::$_owconfigNS;
@@ -771,10 +764,15 @@ class OntoWiki_Extension_Manager
             $owconfigNS.'authorLabel' => 'author',
             EF_RDFS_LABEL => 'title'
         );
-        $scp = $owconfigNS.'config'; //sub config property
-        $mp = $owconfigNS.'hasModule'; //module property
-        $base = dirname($path).DIRECTORY_SEPARATOR;
+
+        $scp = $owconfigNS . 'config'; //sub config property
+        $mp = $owconfigNS . 'hasModule'; //module property
         $extensionUri = $memModel->getValue($base, 'http://xmlns.com/foaf/0.1/primaryTopic');
+
+        if ($extensionUri == null) {
+            throw new Exception('Extension DOAP config for '.$name.' needs triple (@base, foaf:primaryTopic, <extensionUri>). Not present. Base was: "' . $base . '". In doap file: "' . $path . '".' );
+        }
+
         $privateNS = $memModel->getValue($extensionUri, $owconfigNS.'privateNamespace');
 
         $modules = array();
@@ -859,6 +857,20 @@ class OntoWiki_Extension_Manager
         unset($config['default']);
 
         return $config;
+    }
+
+    /**
+     * load the doap.n3 file of a extension and transform it into a associative array thats corresponds to ini
+     * @param string $path
+     * @param string $name
+     * @return array config array 
+     */
+    public static function loadDoapN3($path, $name)
+    {
+        $parser =  Erfurt_Syntax_RdfParser::rdfParserWithFormat('n3');
+        $triples = $parser->parse($path, Erfurt_Syntax_RdfParser::LOCATOR_FILE);
+        $base = $parser->getBaseUri();
+        return self::triples2configArray($triples, $name, $base, $path);
     }
 
     private static function getValue($value)
