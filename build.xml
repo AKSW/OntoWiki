@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="OntoWiki" default="build"> 
-    <target name="build" depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,phpunit,phpcb"/>
+    <target name="build-unit" depends="prepare,lint,phpunit,phpdoc,phpcb" />
+    <target name="build-integration" depends="prepare,lint,phpunit-integration,phpdoc,phpcb" />
+    <target name="build-full" depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,phpunit-integration,phpcb"/>
+
+     <target name="build" depends="build-integration"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="${basedir}/build/api"/>
@@ -110,7 +114,11 @@
     </target>
 
     <target name="phpunit" description="Run unit tests with PHPUnit">
-        <exec executable="phpunit" failonerror="true"/>
+        <exec dir="${basedir}/application/tests/unit/" executable="phpunit" failonerror="true" />
+    </target>
+    
+    <target name="phpunit-integration" depends="phpunit" description="Run unit tests with PHPUnit">
+        <exec dir="${basedir}/application/tests/integration/" executable="phpunit" failonerror="true" />
     </target>
 
     <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">

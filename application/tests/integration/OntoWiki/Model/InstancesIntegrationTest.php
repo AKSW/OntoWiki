@@ -5,7 +5,7 @@
  *
  * @author Jonas Brekle <jonas.brekle@gmail.com>
  */
-class InstancesIntegrationTest extends Erfurt_TestCase {
+class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
     /**
      *
      * @var OntoWiki_Model_Instances 
@@ -19,7 +19,9 @@ class InstancesIntegrationTest extends Erfurt_TestCase {
     protected $_store = null;
 
     public function setUp()
-    {        
+    {
+        $this->markTestNeedsDatabase();
+        
         $this->_store = $this->getStore();
         
         $this->_instances = new OntoWiki_Model_Instances(

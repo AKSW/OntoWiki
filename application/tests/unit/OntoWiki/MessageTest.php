@@ -28,9 +28,7 @@
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
  * @version    $Id: $
  */
-
-require_once dirname (__FILE__) .'/TestHelper.php';
-
+ 
 /**
  * This test class comtains tests for the OntoWiki index controller.
  * 
@@ -42,40 +40,41 @@ require_once dirname (__FILE__) .'/TestHelper.php';
  * @author     Norman Heino <norman.heino@gmail.com>
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
-class OntoWikiTest extends PHPUnit_Framework_TestCase
-{
-    protected $_application;
-    
-    public function setUp()
+class OntoWiki_MessageTest extends PHPUnit_Framework_TestCase
+{ 
+    public function testMessageGetTypeDefaultInfo()
     {
-        $this->_application = OntoWiki::getInstance();
+        $msg = new OntoWiki_Message('ttt');
+        $this->assertEquals($msg->getType(), OntoWiki_Message::INFO);
     }
     
-    public function testGetInstance()
+    public function testMessageGetTypeSuccess()
     {
-        $newInstance = OntoWiki::getInstance();
-        
-        $this->assertSame($this->_application, $newInstance);
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::SUCCESS);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::SUCCESS);
     }
     
-    public function testSetValue()
+    public function testMessageGetTypeInfo()
     {
-        $this->_application->foo = 'bar';
-
-        $this->assertEquals($this->_application->foo, 'bar');
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::INFO);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::INFO);
     }
     
-    public function testIssetValue()
+    public function testMessageGetTypeWarning()
     {
-        $this->assertEquals(isset($this->_application->anotherFoo), false);
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::WARNING);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::WARNING);
     }
     
-    public function testGetValue()
+    public function testMessageGetTypeError()
     {
-        $this->assertEquals($this->_application->YetAnotherFoo, null);
-        
-        $this->_application->YetAnotherFoo = 'bar';
-        
-        $this->assertEquals($this->_application->YetAnotherFoo, 'bar');
+        $msg = new OntoWiki_Message('ttt', OntoWiki_Message::ERROR);
+        $this->assertEquals($msg->getType(), OntoWiki_Message::ERROR);
+    }
+    
+    public function testMessageGetText()
+    {
+        $msg = new OntoWiki_Message('The test string for the message object.', OntoWiki_Message::SUCCESS);
+        $this->assertEquals($msg->getText(), 'The test string for the message object.');
     }
 }

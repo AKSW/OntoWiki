@@ -250,7 +250,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * add ?resourceUri ?p ?o to the resource query
      * TODO: support objects as resources? optionally?
      */
-    protected function addAllTriple()
+    public function addAllTriple()
     {
         $this->_resourceQuery->addElement($this->_allTriple);
     }
@@ -258,7 +258,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     /**
      * remove ?resourceUri ?p ?o from the resource query
      */
-    protected function removeAllTriple()
+    public function removeAllTriple()
     {
         $this->_allTriple->remove($this->_resourceQuery);
     }
@@ -267,7 +267,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * get the object that represents the "?resourceUri ?p ?o" from the resource query.
      * object exists, even if not part of the query
      */
-    protected function getAllTriple()
+    public function getAllTriple()
     {
         return $this->_allTriple;
     }

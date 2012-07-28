@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'TestHelper.php';
-
 class OntoWiki_NavigationTest extends PHPUnit_Framework_TestCase
 {
     private $_ontoWikiNavigation = null;

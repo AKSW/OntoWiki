@@ -28,8 +28,6 @@
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
  */
  
-require_once dirname (__FILE__) .'/../TestHelper.php';
-
 /**
  * This test class comtains tests for the OntoWiki index controller.
  * 

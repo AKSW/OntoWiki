@@ -1,6 +1,4 @@
 <?php
-require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'TestHelper.php';
-require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))). DIRECTORY_SEPARATOR."libraries/Erfurt/library/Erfurt/include/vocabulary.php";
 /**
  * It tests the behavior of Ontowiki_Model_Instances
  *

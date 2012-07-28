@@ -1,7 +1,4 @@
 <?php
-
-require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'TestHelper.php';
-
 class OntoWiki_MenuTest extends PHPUnit_Framework_TestCase
 {
     private $_menu = null;

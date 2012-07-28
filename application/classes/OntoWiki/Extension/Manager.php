@@ -768,7 +768,6 @@ class OntoWiki_Extension_Manager
         $scp = $owconfigNS . 'config'; //sub config property
         $mp = $owconfigNS . 'hasModule'; //module property
         
-        $base = $parser->getBaseUri();
         $extensionUri = $memModel->getValue($base, 'http://xmlns.com/foaf/0.1/primaryTopic');
 
         if ($extensionUri == null) {

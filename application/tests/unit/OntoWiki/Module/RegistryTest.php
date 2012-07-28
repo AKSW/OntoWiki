@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'TestHelper.php';
-
 class OntoWiki_Module_RegistryTest extends PHPUnit_Framework_TestCase
 {
     protected $_registry;

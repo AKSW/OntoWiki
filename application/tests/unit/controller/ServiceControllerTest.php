@@ -29,11 +29,6 @@
  * @version    $Id: $
  */
 
-/*
- * Helper file, that adjusts the include_path and initializes the test environment.
- */
-require_once dirname(__FILE__) . '/../TestHelper.php';
-
 /**
  * This test class comtains tests for the OntoWiki service controller.
  * 
