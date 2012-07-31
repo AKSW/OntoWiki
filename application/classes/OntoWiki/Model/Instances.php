@@ -22,7 +22,10 @@
  */
 class OntoWiki_Model_Instances extends OntoWiki_Model
 {
-    //all triple (?s ?p ?o). is added and removed to the resorceQuery on demand, but always stored here
+    /**
+     * all triple (?s ?p ?o). is added and removed to the resorceQuery on demand, but always stored here
+     * @var Erfurt_Sparql_Query2_IF_TriplesSameSubject
+     */
     protected $_allTriple;
 
     /**
@@ -30,8 +33,20 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @var array
      */
     protected $_shownProperties = array();
-    protected $_shownPropertiesConverted;
+
+    /**
+     * @var array
+     */
+    protected $_shownPropertiesConverted = array();
+
+    /**
+     * @var bool
+     */
     protected $_shownPropertiesConvertedUptodate  = false;
+
+    /**
+     * @var array
+     */
     protected $_ignoredShownProperties = array(
         //EF_RDF_TYPE
     );
@@ -40,6 +55,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * values of the set properties for all resources
      */
     protected $_values;
+
+    /**
+     * @var bool
+     */
     protected $_valuesUptodate = false;
 
     protected $_valueQueryUptodate = false;
@@ -48,6 +67,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * all resources
      */
     protected $_resources;
+
+    /**
+     * @var bool
+     */
     protected $_resourcesUptodate = false;
 
     /**
@@ -55,6 +78,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @var array transformed
      */
     protected $_resourcesConverted;
+
+    /**
+     * @var bool
+     */
     protected $_resourcesConvertedUptodate = false;
 
     /**
@@ -73,6 +100,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * @var array
      */
     protected $_results = null;
+
+    /**
+     * @var bool
+     */
     protected $_resultsUptodate = false;
 
     /**
@@ -80,18 +111,29 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_resourceQuery = null;
 
+    /**
+     * @var Erfurt_Sparql_Query2_IF_TriplesSameSubject
+     */
     protected $_sortTriple = null;
 
     /**
      * @var Erfurt_Sparql_Query2
      */
     protected $_valueQuery = null;
+
+    /**
+     * @var Erfurt_Sparql_Query2_Filter
+     */
     protected $_valueQueryResourceFilter = null;
 
+    /**
+     * @var bool
+     */
     protected $_useCache = true;
 
-    
-    
+    /**
+     * @var OntoWiki_Model_TitleHelper
+     */
     protected $_titleHelper = null;
     
     /**
@@ -1429,7 +1471,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $uris[] = $resource['value'];
         }
         $this->_titleHelper->addResources($uris);
-        $lang = OntoWiki::getInstance()->config->languages->locale;
+        //$lang = OntoWiki::getInstance()->getConfig()->languages->locale;
 
         $resourceResults = array();
         foreach ($resources as $resource) {
@@ -1441,7 +1483,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
             $thisResource['url'] = (string) $url;
             // title
-            $thisResource['title'] = $this->_titleHelper->getTitle($resource['value'], $lang);
+            $thisResource['title'] = $this->_titleHelper->getTitle($resource['value']);
 
             $resourceResults[] = $thisResource;
         }
@@ -1667,6 +1709,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $this->_resourceQuery->getOrder()->setDesc(0);
             }
         }
+        $this->invalidate();
     }
 
     /**
@@ -1683,7 +1726,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         if ($var instanceof Erfurt_Sparql_Query2_Var) {
             $this->_resourceQuery->getOrder()->setExpression(
                 array(
-                    'exp'=>$var,
+                    'exp'=> $var,
                     'dir'=> $asc ? Erfurt_Sparql_Query2_OrderClause::ASC : Erfurt_Sparql_Query2_OrderClause::DESC
                 )
             );
@@ -1699,6 +1742,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 }*/
             }
         }
+        $this->invalidate();
     }
 
     /**
