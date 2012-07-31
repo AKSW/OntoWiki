@@ -22,16 +22,10 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
 
     public function setUp()
     {
-
-        $this->bootstrap = new Zend_Application(
-            'testing',
-            ONTOWIKI_ROOT . 'application/config/application.ini'
-        );
-
         $this->markTestNeedsDatabase();
+        $this->_store = $this->getStore();
         $this->authenticateDbUser();
 
-        $this->_store = $this->getStore();
 
         //create model
         $model = $this->_store->getNewModel($this->_modelUri, '', Erfurt_Store::MODEL_TYPE_OWL, false);
@@ -50,18 +44,19 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
 
     public function addTestData()
     {
+        $this->authenticateDbUser();
         $turtleString = '<http://model.org/model#i1> a
                             <'.$this->_class.'> ;
                             <http://www.w3.org/2000/01/rdf-schema#label> "instance1";
                             <http://model.org/prop> "val1", "val2" .
-                        <http://model.org/model#i2> a 
+                        <http://model.org/model#i2> a
                             <'.$this->_class.'> ;
                             <http://www.w3.org/2000/01/rdf-schema#label> "instance2" ;
                             <http://model.org/prop> "val3" .';
 
         $this->_store->importRdf($this->_modelUri, $turtleString, 'turtle', Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING, false);
     }
-    
+
     public function getStore()
     {
         return Erfurt_App::getInstance()->getStore();
@@ -97,7 +92,7 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
         $this->assertCount(3, $v);
         $this->assertArrayHasKey('http://model.org/model#i1', $v);
         $this->assertArrayHasKey('http://model.org/model#i2', $v);
-        
+
         // the __TYPE and resourceUri
         $this->assertCount(2, $v['http://model.org/model#i1']);
         $this->assertArrayHasKey('__TYPE', $v['http://model.org/model#i1']);
@@ -212,7 +207,7 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
         $this->_instances->orderByUri(false);
         $r = $this->_instances->getResources();
         $this->assertEquals($r[0]['uri'], 'http://model.org/model#i2');
-    }   
+    }
 
     protected static function _onlyValues($arr)
     {

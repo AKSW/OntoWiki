@@ -127,6 +127,7 @@ class OntoWiki_Extension_Manager
         if (!(substr($extensionPath, -1) == DIRECTORY_SEPARATOR)) {
             $extensionPath .= DIRECTORY_SEPARATOR;
         }
+
         $this->_extensionPath = $extensionPath;
 
         OntoWiki_Module_Registry::reset();
@@ -481,6 +482,16 @@ class OntoWiki_Extension_Manager
         return $mod;
     }
 
+    public static function getCachePath()
+    {
+        return CACHE_PATH . "extensions.json";
+    }
+
+    public static function clearCache()
+    {
+        if(file_exists(self::getCachePath()))
+            unlink(self::getCachePath());
+    }
     /**
      * Scans the component path for conforming components and
      * announces their paths to appropriate components.
@@ -488,12 +499,11 @@ class OntoWiki_Extension_Manager
     private function _scanExtensionPath()
     {
         clearstatcache();
-        $cachedConfigPath = CACHE_PATH . 'extensions.json';
-        $cacheCreation = @filemtime($cachedConfigPath);
-        $cacheExists = file_exists($cachedConfigPath);
+        $cacheCreation = @filemtime(self::getCachePath());
+        $cacheExists = file_exists(self::getCachePath());
         if ($cacheExists) {
             //load from cache
-            $config = json_decode(file_get_contents($cachedConfigPath), true);
+            $config = json_decode(file_get_contents(self::getCachePath()), true);
             foreach ($config as $extensionName => $extensionConfig) {
                 $config[$extensionName] = new Zend_Config($extensionConfig, true); //cast
             }
@@ -516,7 +526,7 @@ class OntoWiki_Extension_Manager
 
         $reloadConfigs = array();
         //parse all extensions whose configs have been modified
-        if ($cacheExists) { //this check speeds up the scan on linux
+        if ($cacheExists) {
             $reloadConfigs = $this->_getModifiedConfigsSince($cacheCreation);
             foreach ($reloadConfigs as $extensionName => $code) {
                 //code: 0=>local-config, 1=>default-config, 2=>both (has been modified)
@@ -593,7 +603,7 @@ class OntoWiki_Extension_Manager
             foreach ($config as $extensionName => $extensionConfig) {
                 $configArrays[$extensionName] = $extensionConfig->toArray();
             }
-            file_put_contents($cachedConfigPath, json_encode($configArrays));
+            file_put_contents(self::getCachePath(), json_encode($configArrays));
         }
     }
 

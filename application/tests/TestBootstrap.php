@@ -66,4 +66,34 @@ class TestBootstrap extends Bootstrap
 
         return $erfurt;
     }
+
+    /**
+     * Sets up the view environment
+     *
+     * @since 0.9.5
+     */
+    public function _initView()
+    {
+        $viewOptions = array(
+            'use_module_cache' => false,
+            'cache_path'        => '/',
+            'lang'              => 'en'
+        );
+
+        // init view
+        $view = new OntoWiki_View($viewOptions, null);
+
+        // set Zend_View to emit notices in debug mode
+        $view->strictVars(true);
+
+        // initialize layout
+        Zend_Layout::startMvc(
+            array(
+                // for layouts we use the default path
+                'layoutPath' => '/'
+            )
+        );
+
+        return $view;
+    }
 }
