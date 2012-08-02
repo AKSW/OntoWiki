@@ -166,7 +166,7 @@ class NavigationModule extends OntoWiki_Module
         if (is_string($config->hierarchyTypes)) {
             $config->hierarchyTypes = array($config->hierarchyTypes);
         }
-        foreach ($config->hierarchyTypes as $type) {
+        foreach (self::a($config->hierarchyTypes) as $type) {
             $ggp = new Erfurt_Sparql_Query2_GroupGraphPattern();
             $ggp->addTriple(
                 $resVar,
@@ -187,6 +187,10 @@ class NavigationModule extends OntoWiki_Module
         );*/
 
         return count($allResults);
+    }
+
+    protected static function a($a){
+        return OntoWiki_Extension_Manager::doapArrayFixer($a);
     }
 }
 

@@ -1063,4 +1063,16 @@ class OntoWiki_Extension_Manager
             }
         }
     }
+
+    static function doapArrayFixer($prop){
+        if(is_scalar($prop)){
+            return array($prop);
+        } if (is_object($prop) && $prop instanceof Zend_Config){
+            return $prop->toArray();
+        } else if(is_array($prop)){
+            return $prop;
+        } else {
+            throw new Exception('unexpected content of config '.print_r($prop, true));
+        }
+    }
 }
