@@ -11,7 +11,6 @@ class ManagerIntegrationTest extends Erfurt_TestCase {
 
     protected function setUp()
     {
-        OntoWiki_Extension_Manager::clearCache();
         $this->_resourcesDirectory = realpath(dirname(__FILE__)) . '/_files/';
 
         $this->markTestNeedsTestConfig();
@@ -38,7 +37,7 @@ class ManagerIntegrationTest extends Erfurt_TestCase {
      */
     public function testScan()
     {
-        $em = new OntoWiki_Extension_Manager($this->_resourcesDirectory);
+        $em = new OntoWiki_Extension_Manager($this->_resourcesDirectory, CACHE_PATH . 'extensions_test.json');
         $this->assertCount(2, $em->getExtensions());
     }
 }

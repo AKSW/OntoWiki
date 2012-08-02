@@ -34,6 +34,12 @@ class OntoWiki_Extension_Manager
     const EVENT_NS = 'http://ns.ontowiki.net/SysOnt/Events/';
 
     /**
+     * location of the cache for extension configs
+     * @var string
+     */
+    protected $_cachePath;
+
+    /**
      * Array (extension name -> config)
      * @var array
      */
@@ -122,10 +128,17 @@ class OntoWiki_Extension_Manager
     /**
      * Constructor
      */
-    public function __construct($extensionPath)
+    public function __construct($extensionPath, $cachePath = null)
     {
         if (!(substr($extensionPath, -1) == DIRECTORY_SEPARATOR)) {
             $extensionPath .= DIRECTORY_SEPARATOR;
+        }
+
+        if($cachePath != null){
+            $this->setCachePath($cachePath);
+        } else {
+            //default cache
+            $this->setCachePath(CACHE_PATH . 'extensions.json');
         }
 
         $this->_extensionPath = $extensionPath;
@@ -482,15 +495,22 @@ class OntoWiki_Extension_Manager
         return $mod;
     }
 
-    public static function getCachePath()
+
+
+    public function getCachePath()
     {
-        return CACHE_PATH . "extensions.json";
+        return $this->_cachePath;
     }
 
-    public static function clearCache()
+    public function setCachePath($path)
     {
-        if(file_exists(self::getCachePath()))
-            unlink(self::getCachePath());
+        $this->_cachePath = $path;
+    }
+
+    public function clearCache()
+    {
+        if(file_exists($this->getCachePath()))
+            unlink($this->getCachePath());
     }
     /**
      * Scans the component path for conforming components and
@@ -499,11 +519,12 @@ class OntoWiki_Extension_Manager
     private function _scanExtensionPath()
     {
         clearstatcache();
-        $cacheCreation = @filemtime(self::getCachePath());
-        $cacheExists = file_exists(self::getCachePath());
+        $cachePath = $this->getCachePath();
+        $cacheCreation = @filemtime($cachePath);
+        $cacheExists = file_exists($cachePath);
         if ($cacheExists) {
             //load from cache
-            $config = json_decode(file_get_contents(self::getCachePath()), true);
+            $config = json_decode(file_get_contents($cachePath), true);
             foreach ($config as $extensionName => $extensionConfig) {
                 $config[$extensionName] = new Zend_Config($extensionConfig, true); //cast
             }
@@ -565,31 +586,33 @@ class OntoWiki_Extension_Manager
 
             //check for modules and plugins (multiple possible)
             //TODO declare them in the config?
-            $extensionDir = new DirectoryIterator($currentExtensionPath);
-            foreach ($extensionDir as $extensionDirFile) {
-                $filename = $extensionDirFile->getFilename();
+            if(is_dir($currentExtensionPath)){
+                $extensionDir = new DirectoryIterator($currentExtensionPath);
+                foreach ($extensionDir as $extensionDirFile) {
+                    $filename = $extensionDirFile->getFilename();
 
-                if ( //ends with Module postfix
-                    substr(
-                        $filename,
-                        -strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)
-                    ) === OntoWiki_Module_Registry::MODULE_FILE_POSTFIX
-                ) {
-                    $this->_addModule($extensionName, $filename, $currentExtensionPath, $extensionConfig);
-                } else if (
-                    substr(
-                        $filename,
-                        -strlen(self::PLUGIN_FILE_POSTFIX)
-                    ) === self::PLUGIN_FILE_POSTFIX
-                ) {
-                    $this->_addPlugin($filename, $currentExtensionPath, $extensionConfig);
-                } elseif (
-                    substr(
-                        $filename,
-                        -strlen(self::WRAPPER_FILE_POSTFIX)
-                    ) === self::WRAPPER_FILE_POSTFIX
-                ) {
-                    $this->_addWrapper($filename, $currentExtensionPath, $extensionConfig);
+                    if ( //ends with Module postfix
+                        substr(
+                            $filename,
+                            -strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)
+                        ) === OntoWiki_Module_Registry::MODULE_FILE_POSTFIX
+                    ) {
+                        $this->_addModule($extensionName, $filename, $currentExtensionPath, $extensionConfig);
+                    } else if (
+                        substr(
+                            $filename,
+                            -strlen(self::PLUGIN_FILE_POSTFIX)
+                        ) === self::PLUGIN_FILE_POSTFIX
+                    ) {
+                        $this->_addPlugin($filename, $currentExtensionPath, $extensionConfig);
+                    } elseif (
+                        substr(
+                            $filename,
+                            -strlen(self::WRAPPER_FILE_POSTFIX)
+                        ) === self::WRAPPER_FILE_POSTFIX
+                    ) {
+                        $this->_addWrapper($filename, $currentExtensionPath, $extensionConfig);
+                    }
                 }
             }
         }
@@ -603,7 +626,7 @@ class OntoWiki_Extension_Manager
             foreach ($config as $extensionName => $extensionConfig) {
                 $configArrays[$extensionName] = $extensionConfig->toArray();
             }
-            file_put_contents(self::getCachePath(), json_encode($configArrays));
+            file_put_contents($cachePath, json_encode($configArrays));
         }
     }
 
