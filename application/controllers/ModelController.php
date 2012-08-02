@@ -68,8 +68,22 @@ class ModelController extends OntoWiki_Controller_Base
         // evaluate post data
         $messages = array();
         $post = $this->_request->getPost();
+
         $errorFlag = false;
         switch (true) {
+            case empty($_FILES):
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('upload went wrong. check post_max_size in your php.ini.', OntoWiki_Message::ERROR)
+                );
+                $errorFlag = true;
+                break;
+            case (empty($post) || !isset($post['modelUri'])):
+                $message = 'missing post parameters.';
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message($message, OntoWiki_Message::ERROR)
+                );
+                $errorFlag = true;
+                break;
             /*
              * TODO: The $_FILES super global must not be accessed directly
              * use Zend_Controller_Front::getInstance()->getRequest() instead
@@ -536,9 +550,16 @@ class ModelController extends OntoWiki_Controller_Base
         }
 
         $post = $this->_request->getPost();
+
         $errorFlag = false;
         $newModelUri = isset($post['modelUri']) ? trim($post['modelUri']) : "";
         switch (true) {
+            case empty($_FILES):
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('upload went wrong. check post_max_size in your php.ini.', OntoWiki_Message::ERROR)
+                );
+                $errorFlag = true;
+            break;
             case $newModelUri == '':
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Model URI must not be empty.', OntoWiki_Message::ERROR)
