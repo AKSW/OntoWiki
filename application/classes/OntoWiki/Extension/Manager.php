@@ -904,7 +904,8 @@ class OntoWiki_Extension_Manager
         $parser =  Erfurt_Syntax_RdfParser::rdfParserWithFormat('n3');
         $triples = $parser->parse($path, Erfurt_Syntax_RdfParser::LOCATOR_FILE);
         $base = $parser->getBaseUri();
-        return self::triples2configArray($triples, $name, $base, $path);
+        $a = self::triples2configArray($triples, $name, $base, $path);
+        return $a;
     }
 
     private static function getValue($value)

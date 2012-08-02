@@ -26,7 +26,6 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
         $this->_store = $this->getStore();
         $this->authenticateDbUser();
 
-
         //create model
         $model = $this->_store->getNewModel($this->_modelUri, '', Erfurt_Store::MODEL_TYPE_OWL, false);
 
