@@ -65,7 +65,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     {
         $this->dispatch('/service');
         
-        // We expect the error controller with error action here, since ther is
+        // We expect the error controller with error action here, since there is
         // no default index action for this controller.
         $this->assertController('error');
         $this->assertAction('error');

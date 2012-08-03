@@ -1883,7 +1883,7 @@ class ManagerTest extends PHPUnit_Framework_TestCase {
         );
         $base = 'file:///home/jonas/programming/php-workspace/ow/extensions/navigation/';
         $conf = OntoWiki_Extension_Manager::triples2configArray($triples , "navigation", $base, "file:///tmp/test");
-        var_dump($conf);
+        //var_dump($conf);
         $this->assertArrayHasKey('private', $conf);
         //TODO more assertions
     }
