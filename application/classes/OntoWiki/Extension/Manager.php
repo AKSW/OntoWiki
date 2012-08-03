@@ -134,7 +134,7 @@ class OntoWiki_Extension_Manager
             $extensionPath .= DIRECTORY_SEPARATOR;
         }
 
-        if($cachePath != null){
+        if ($cachePath != null) {
             $this->setCachePath($cachePath);
         } else {
             //default cache
@@ -273,7 +273,6 @@ class OntoWiki_Extension_Manager
         return isset($this->_extensionRegistry[$exName]);
     }
 
-
     /**
      * Checks whether a specific component is registered.
      * 
@@ -405,10 +404,11 @@ class OntoWiki_Extension_Manager
         return $this;
     }
 
-    // ------------------------------------------------------------------------
-    // --- Event Handlers -----------------------------------------------------
-    // ------------------------------------------------------------------------
-
+    /**
+     * Event Handler, called by event dispatcher after controller and action is determined
+     * initializes the component helpers, so they can react
+     * @param Erfurt_Event $event
+     */
     public function onRouteShutdown(Erfurt_Event $event)
     {
         // init component helpers
@@ -428,10 +428,13 @@ class OntoWiki_Extension_Manager
         }
     }
 
-    // ------------------------------------------------------------------------
-    // --- Private Methods ----------------------------------------------------
-    // ------------------------------------------------------------------------
-
+    /**
+     * load helpers for a component
+     * @param $componentName
+     * @param $config
+     * @return mixed
+     * @throws OntoWiki_Component_Exception
+     */
     protected function _loadHelper($componentName, $config)
     {
         if (!isset($this->_helpers[$componentName])) {
@@ -468,6 +471,16 @@ class OntoWiki_Extension_Manager
         return $helperInstance;
     }
 
+    /**
+     * scan the extension folder for configs modified after $time
+     * the default doap file could have been touched OR the local ini
+     * return an array(string->int) where the key is the extension name and the value is
+     * 0 - local ini modified after $time
+     * 1 - default doap file modified after $time
+     * 2 - both modified after $time
+     * @param $time int unix timestamp
+     * @return array
+     */
     private function _getModifiedConfigsSince($time)
     {
         $dir = new DirectoryIterator($this->_extensionPath);
@@ -495,18 +508,27 @@ class OntoWiki_Extension_Manager
         return $mod;
     }
 
-
-
+    /**
+     * get the location of the cache
+     * @return string
+     */
     public function getCachePath()
     {
         return $this->_cachePath;
     }
 
-    public function setCachePath($path)
+    /**
+     * set the cache location
+     * @param $path string
+     */
+    protected function setCachePath($path)
     {
         $this->_cachePath = $path;
     }
 
+    /**
+     * invalidate the cache
+     */
     public function clearCache()
     {
         if(file_exists($this->getCachePath()))
@@ -586,7 +608,7 @@ class OntoWiki_Extension_Manager
 
             //check for modules and plugins (multiple possible)
             //TODO declare them in the config?
-            if(is_dir($currentExtensionPath)){
+            if (is_dir($currentExtensionPath)) {
                 $extensionDir = new DirectoryIterator($currentExtensionPath);
                 foreach ($extensionDir as $extensionDirFile) {
                     $filename = $extensionDirFile->getFilename();
@@ -695,11 +717,19 @@ class OntoWiki_Extension_Manager
         $this->_componentRegistry[$componentName] = $config;
     }
 
+    /**
+     *
+     * @param $extensionName
+     * @param $moduleFilename
+     * @param $modulePath
+     * @param null $config
+     */
     protected function _addModule($extensionName, $moduleFilename, $modulePath, $config = null)
     {
         //one extension can contain many modules - so they share a config file
         //but each module needs different settings
-        //so we got this hack to change the config like it was when every module had its own config
+        //so we got this trickery to enables per-module-config
+        //everything within the config key "config->module->$modulename" will be made toplevel config
         if (isset($config->modules)) {
             $moduleName = strtolower(
                 substr(
@@ -715,6 +745,7 @@ class OntoWiki_Extension_Manager
             }
         }
 
+        //read context(s)
         if (isset($config->context) && is_string($config->context)) {
             $contexts = array($config->context);
         } else if (isset($config->context) && is_object($config->context)) {
@@ -741,7 +772,7 @@ class OntoWiki_Extension_Manager
     protected function _addWrapper($filename, $wrapperPath, $config)
     {
         $owApp = OntoWiki::getInstance();
-        
+
         $wrapperManager = new Erfurt_Wrapper_Manager();
         $wrapperManager->addWrapperExternally(
             strtolower(substr($filename, 0, strlen($filename) - strlen(self::WRAPPER_FILE_POSTFIX))),
@@ -777,6 +808,16 @@ class OntoWiki_Extension_Manager
 
     private static $_owconfigNS = 'http://ns.ontowiki.net/SysOnt/ExtensionConfig/';
 
+    /**
+     * interpret a doap triple-set to a config array
+     * @static
+     * @param $triples
+     * @param $name string name of the extension
+     * @param $base string base URI from parsing
+     * @param $path string path of the original file (just for error reporting)
+     * @return array
+     * @throws Exception
+     */
     public static function triples2configArray($triples, $name, $base, $path)
     {
         $memModel = new Erfurt_Rdf_MemoryModel($triples);
@@ -800,11 +841,15 @@ class OntoWiki_Extension_Manager
 
         $scp = $owconfigNS . 'config'; //sub config property
         $mp = $owconfigNS . 'hasModule'; //module property
-        
+
         $extensionUri = $memModel->getValue($base, 'http://xmlns.com/foaf/0.1/primaryTopic');
 
         if ($extensionUri == null) {
-            throw new Exception('Extension DOAP config for '.$name.' needs triple (@base, foaf:primaryTopic, <extensionUri>). Not present. Base was: "' . $base . '". In doap file: "' . $path . '".' );
+            throw new Exception(
+                'DOAP config for extension '.$name.
+                ': missing triple (@base, foaf:primaryTopic, <extensionUri>). '.
+                'Base was: "' . $base . '". In doap file: "' . $path . '".'
+            );
         }
 
         $privateNS = $memModel->getValue($extensionUri, $owconfigNS.'privateNamespace');
@@ -856,18 +901,13 @@ class OntoWiki_Extension_Manager
         }
 
         foreach ($modules as $moduleUri) {
-            //echo "module ".$moduleUri."<br/>\n";
-            //echo "privateNS ".$privateNS."<br/>\n";
             $name = strtolower(self::getPrivateKey($moduleUri, $privateNS));
-            //echo "name ".$name."<br/>\n";
             $config['modules'][$name] = array();
             foreach ($memModel->getPO($moduleUri) as $key => $values) {
-                //echo "key ".$key."<br/>\n";
                 $mappedKey = self::getPrivateKey($key, $owconfigNS);
                 if ($mappedKey == null) {
                     continue; //modules can only have specific properties
                 }
-                //echo "mappedKey ".$mappedKey."<br/>\n";
 
                 foreach ($values as $value) {
                     $value = self::getValue($value);
@@ -894,7 +934,7 @@ class OntoWiki_Extension_Manager
     }
 
     /**
-     * load the doap.n3 file of a extension and transform it into a associative array thats corresponds to ini
+     * load the doap.n3 file of a extension and transform it into a config array
      * @param string $path
      * @param string $name
      * @return array config array 
@@ -908,6 +948,13 @@ class OntoWiki_Extension_Manager
         return $a;
     }
 
+    /**
+     * convert a php-rdf value to a php value
+     * respects booleans especially (literals and URIs are trivial)
+     * @static
+     * @param $value
+     * @return bool
+     */
     private static function getValue($value)
     {
         if ($value['type'] == 'literal' &&
@@ -921,6 +968,14 @@ class OntoWiki_Extension_Manager
         return $value;
     }
 
+    /**
+     * add an value to an array using a key
+     * if the key is already used, cast it to array and add to that array
+     * @static
+     * @param $key string
+     * @param $value mixed
+     * @param $to array
+     */
     private static function addValue($key, $value, &$to)
     {
         if (!isset($to[$key])) { //first entry for that key
@@ -932,6 +987,14 @@ class OntoWiki_Extension_Manager
         }
     }
 
+    /**
+     * clean a config property URI to obtain a config array key
+     * @static
+     * @param $key string
+     * @param $privateNS string
+     * @param array $mapping
+     * @return mixed
+     */
     private static function getPrivateKey($key, $privateNS, $mapping = array())
     {
         if (isset($mapping[$key])) {
@@ -961,7 +1024,16 @@ class OntoWiki_Extension_Manager
         return preg_replace('[^A-Za-z0-9-_]', '', $newKey); //strip bad chars
     }
 
-    private static function getSubConfig($memModel, $bnUri, $privateNS, $mapping)
+    /**
+     * read a private config part from a doap Erfurt_Rdf_MemoryModel (recursive)
+     * @static
+     * @param $memModel
+     * @param $bnUri
+     * @param $privateNS
+     * @param $mapping
+     * @return array
+     */
+    private static function getSubConfig(Erfurt_Rdf_MemoryModel $memModel, $bnUri, $privateNS, $mapping)
     {
         $kv = array();
         $name = $memModel->getValue($bnUri, self::$_owconfigNS.'id');
@@ -989,6 +1061,13 @@ class OntoWiki_Extension_Manager
         return $r;
     }
 
+    /**
+     * load configs for an extension
+     * - respect local ini's
+     * - fix missing or dirty values
+     * @param $name string
+     * @return Zend_Config
+     */
     private function _loadConfigs($name)
     {
         $path = $this->_extensionPath . $name . DIRECTORY_SEPARATOR;
@@ -1065,15 +1144,23 @@ class OntoWiki_Extension_Manager
         }
     }
 
-    static function doapArrayFixer($prop){
-        if(is_scalar($prop)){
-            return array($prop);
-        } if (is_object($prop) && $prop instanceof Zend_Config){
-            return $prop->toArray();
-        } else if(is_array($prop)){
-            return $prop;
+    /**
+     * cast $prop to an array
+     * @static
+     * @param $val mixed a value from a Zend_Config object
+     * @return array
+     * @throws Exception
+     */
+    static function doapArrayFixer($val)
+    {
+        if (is_scalar($val)) {
+            return array($val);
+        } if (is_object($val) && $val instanceof Zend_Config) {
+            return $val->toArray();
+        } else if (is_array($val)) {
+            return $val;
         } else {
-            throw new Exception('unexpected content of config '.print_r($prop, true));
+            throw new Exception('unexpected content of config '.$val);
         }
     }
 }
