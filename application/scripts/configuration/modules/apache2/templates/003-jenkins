@@ -1,0 +1,10 @@
+<VirtualHost *:80>
+    ServerName <%= jenkins_server_name %>
+    ProxyRequests Off
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+    ProxyPreserveHost on
+    ProxyPass / http://192.168.33.10:8080/
+</VirtualHost>

@@ -1,0 +1,11 @@
+<VirtualHost *:80>
+        ServerName  <%= vpu_server_name %>
+        
+        DocumentRoot "<%= "#{vpu_path}" %>"
+        <Directory <%= "#{vpu_path}" %>>
+                Options FollowSymLinks -ExecCGI -Indexes
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+        </Directory>
+</VirtualHost>

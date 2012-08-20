@@ -1,0 +1,27 @@
+<VirtualHost *:80>
+        ServerName  <%= ow_server_name %>
+        SetEnv APPLICATION_ENV "<%= ow_application_env %>"
+        SetEnv VAGRANT "yes"
+
+        DocumentRoot "<%= ow_document_root %>"
+
+        <Directory <%= ow_document_root %>>
+                Options FollowSymLinks -ExecCGI -Indexes
+                AllowOverride all
+                Order allow,deny
+                Allow from all
+
+            <IfModule mod_php5.c>
+                php_value upload_max_filesize 20M
+                php_value post_max_size 20M
+                php_value error_reporting "E_ALL | E_STRICT"
+            </IfModule>
+        </Directory>
+
+        # %h (Remote host), %u (Remote user), %t (time), %r (first line of reqest),
+        # %>s (status last request), %b (bytes), %{Referer}i (Referer header), 
+        # %{User-agent} (User-agent header), %T (time to serve request), %f (filename)
+        LogFormat "%h %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\" %T \"%f\"" ow
+        ErrorLog <%= "#{ow_document_root}/logs/#{ow_server_name}_error.log" %>
+        CustomLog <%= "#{ow_document_root}/logs/#{ow_server_name}_access.log ow" %>
+</VirtualHost>
