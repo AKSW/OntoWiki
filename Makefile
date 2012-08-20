@@ -17,6 +17,7 @@ help:
 	@echo "Please use: (e.g. make deploy)"
 	@echo "     deploy ..................... Runs everything which is needed for a deployment"
 	@echo "     install .................... Make directories, zend and libraries"
+	@echo "     vagrant .................... Prepare environment to run with Vagrant"
 	@echo "     directories ................ Create cache/log dir and chmod environment"
 	@echo "     zend ....................... Download and install Zend under libraries"
 	@echo "     libraries .................. 'git clone' all subrepos - in case submodules do not work"
@@ -72,6 +73,9 @@ deploy: directories clean zend
 
 
 install: directories libraries
+
+vagrant: directories erfurt rdfauthor
+	vagrant up
 
 clean:
 	rm -rf cache/* logs/*

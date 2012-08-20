@@ -31,3 +31,6 @@ application/tests/config.ini
 build/
 !build/phpcs.xml
 !build/phpcmd.xml
+
+# vagrant stuff
+.vagrant

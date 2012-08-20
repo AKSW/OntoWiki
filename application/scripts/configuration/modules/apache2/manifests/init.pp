@@ -63,10 +63,16 @@ class apache2 {
         require => Package["apache2"]
     }
     file { "/var/www/index.html":
-        ensure => absent,
+        ensure => present,
+        replace => true,
+        owner   => "root",
+        group   => "root",
+        mode    => "0755",
+        source => "puppet:///modules/apache2/index.html",
         require => Package["apache2"]
     }
 
+    
     # enable modules and sites
     exec { "enable-mod-rewrite":
         command => "/usr/sbin/a2enmod rewrite ; /etc/init.d/apache2 restart",
