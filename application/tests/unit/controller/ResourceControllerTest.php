@@ -56,6 +56,12 @@ class ResourceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
     {
         parent::tearDown();
     }
+
+    public function testDummyTestUnlessNoWorkingActualTestExists()
+    {
+        $this->assertTrue(true);
+    }
+
 /*
     public function testListInstantiation()
     {
