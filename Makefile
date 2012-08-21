@@ -32,6 +32,7 @@ help:
 	@echo "     test-erfurt ................ Executes Erfurts TestSuite"
 	@echo "     test-extension ............. Executes TestSuites of each extension, if available"
 	@echo "     test-all ................... Executes PHPUnit TestSuites (OW, Ext) and CodeSniffer"
+	@echo "     odbctest ................... Executes some tests to check the Virtuoso connection"
 	
 help-cs:
 	@echo "Please use: (e.g. make cs-install)"
@@ -152,7 +153,7 @@ install-test-environment:
 	sudo pear install phpunit/PHPUnit_Selenium
 	sudo pear install phpunit/DbUnit
 
-erfurt:
+erfurt@:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
 	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt
@@ -160,6 +161,8 @@ erfurt:
 test-erfurt:
 	cd libraries/Erfurt && phpunit && cd ../../..
 
+odbctest:
+	@application/scripts/odbctest.php
 
 # packaging
 
