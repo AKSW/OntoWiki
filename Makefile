@@ -11,16 +11,19 @@ default:
 	@echo ""
 	@echo "      make help ................. Show more (developer related) make targets"
 	@echo ""
-	@echo "      make help-cs .............. Show code sniffing targets"
+	@echo "      make help-cs .............. Show help for code sniffing targets"
 
 help:
 	@echo "Please use: (e.g. make deploy)"
 	@echo "     deploy ..................... Runs everything which is needed for a deployment"
 	@echo "     install .................... Make directories, zend and libraries"
-	@echo "     vagrant .................... Prepare environment to run with Vagrant"
+	@echo "     help ....................... This help screen"
+	@echo "     help-cs .................... Show help for code sniffing targets"
+	@echo "     -------------------------------------------------------------------"
+	@echo "     vagrant .................... Prepare environment to run with Vagrant (no zend)"
 	@echo "     directories ................ Create cache/log dir and chmod environment"
 	@echo "     zend ....................... Download and install Zend under libraries"
-	@echo "     libraries .................. 'git clone' all subrepos - in case submodules do not work"
+	@echo "     libraries .................. Zend, Erfurt and RDFauthor submodules (read-write)"
 	@echo "     erfurt ..................... Clone under libraries"
 	@echo "     rdfauthor .................. Clone under libraries"
 	@echo "     pull ....................... 'git pull' for all repos"
@@ -64,19 +67,14 @@ help-cs:
 
 # top level target
 
-deploy: directories clean zend
-	rm -rf libraries/RDFauthor
-	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
-	git clone git://github.com/AKSW/RDFauthor.git libraries/RDFauthor
-	rm -rf libraries/Erfurt
-	@echo 'Cloning Erfurt into libraries/Erfurt ...'
-	git clone git://github.com/AKSW/Erfurt.git libraries/Erfurt
-
+deploy: directories clean zend submodules
 
 install: directories libraries
 
-vagrant: directories erfurt rdfauthor
-	vagrant up
+vagrant: directories clean submodules-developer
+	rm -rf libraries/Zend # vagrant has own zend
+	@echo ""
+	@echo '=> Now type "vagrant up"'
 
 clean:
 	rm -rf cache/* logs/*
@@ -85,10 +83,18 @@ directories: clean
 	mkdir -p logs cache
 	chmod 777 logs cache extensions
 
-libraries: zend submodules
+libraries: zend submodules-developer
 
-submodules:
+submodules: # read-only
 	git submodule init
+	git config submodule.libraries/Erfurt.url "git://github.com/AKSW/RDFauthor.git"
+	git config submodule.libraries/RDFauthor.url "git://github.com/AKSW/Erfurt.git"
+	git submodule update
+
+submodules-developer: # read-write
+	git submodule init
+	git config submodule.libraries/Erfurt.url "git@github.com:AKSW/Erfurt.git"
+	git config submodule.libraries/RDFauthor.url "git@github.com:AKSW/RDFauthor.git"
 	git submodule update
 
 # developer targets
