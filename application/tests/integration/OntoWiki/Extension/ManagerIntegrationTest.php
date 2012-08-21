@@ -43,6 +43,6 @@ class ManagerIntegrationTest extends Erfurt_TestCase {
         $this->assertArrayHasKey('test1', $ex);
         $this->assertArrayHasKey('test2', $ex);
         //test local ini
-        $this->assertFalse($ex['test2']->sub->b);
+        $this->assertFalse((bool)$ex['test2']->private->sub->b);
     }
 }
