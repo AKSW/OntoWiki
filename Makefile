@@ -189,7 +189,7 @@ debianize:
 # cs-script path
 CSSPATH = application/tests/CodeSniffer/
 # ignore pattern
-IGNOREPATTERN = */libraries/*,pclzip.lib
+IGNOREPATTERN = libraries,pclzip.lib
 
 # Parameter check
 ifndef FPATH

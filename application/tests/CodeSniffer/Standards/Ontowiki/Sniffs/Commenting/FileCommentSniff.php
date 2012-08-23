@@ -9,7 +9,7 @@
 /**
  * Ontowiki_Sniffs_Commenting_FileCommentSniff.
  * 
- * Test for forbidden functions
+ * Test for the right file comment in all php files. Seperated check for the copyright Year
  *
  * PHP version 5
  *
