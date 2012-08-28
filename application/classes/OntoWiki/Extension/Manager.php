@@ -565,6 +565,7 @@ class OntoWiki_Extension_Manager
                     }
                 }
             }
+            $config = array_reverse($config);
         }
 
         $reloadConfigs = array();
