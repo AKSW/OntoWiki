@@ -13,5 +13,5 @@ Getting Started
 - [1] https://www.virtualbox.org
 - [2] http://vagrantup.com
 
-5. Just type `http://192.168.33.10` or `http://localhost:8081` into your browser
+5. Just type `http://192.168.33.10` into your browser
 
