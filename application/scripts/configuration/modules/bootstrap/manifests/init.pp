@@ -17,6 +17,13 @@ class bootstrap {
         require => Exec["apt-update"]
     }
 
+    # remove vagrant user password (such that ssh login with password is not working)
+    exec { "remove-vagrant-user-password":
+        command => "/usr/bin/passwd --delete vagrant",
+        require => [Exec["apt-update"]]
+    }
+
+
     exec { "chsh-to-zsh":
         command => "/usr/bin/chsh -s /usr/bin/zsh vagrant",
         require => Package["zsh"]
