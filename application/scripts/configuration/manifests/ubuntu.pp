@@ -23,7 +23,6 @@ class ubuntu {
     include zend
     include ontowiki
     #include jenkins
-    #include visualphpunit
 }
 
 include ubuntu
