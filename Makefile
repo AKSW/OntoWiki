@@ -21,6 +21,7 @@ help:
 	@echo "     help-cs .................... Show help for code sniffing targets"
 	@echo "     -------------------------------------------------------------------"
 	@echo "     vagrant .................... Prepare environment to run with Vagrant (no zend)"
+	@echo "     vagrant-clean .............. Removes owdev box in order to ensure you have the latest version"
 	@echo "     directories ................ Create cache/log dir and chmod environment"
 	@echo "     zend ....................... Download and install Zend under libraries"
 	@echo "     libraries .................. Zend, Erfurt and RDFauthor submodules (read-write)"
@@ -73,8 +74,12 @@ install: directories libraries
 
 vagrant: directories clean submodules-developer
 	rm -rf libraries/Zend # vagrant has own zend
+	vagrant box add -f owdev http://files.ontowiki.net/owdev.box
 	@echo ""
 	@echo '=> Now type "vagrant up"'
+
+vagrant-clean:
+	vagrant box remove owdev
 
 clean:
 	rm -rf cache/* logs/*

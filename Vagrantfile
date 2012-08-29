@@ -6,13 +6,17 @@ Vagrant::Config.run do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "precise64"
+  #config.vm.box = "precise64" # use a fresh ubuntu box
+  config.vm.box = "owdev" # use custom owdev box (possibly faster setup)
 
   config.vm.host_name = "owdev"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  #config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  # use make vagrant instead
+  #config.vm.box_url = "http://files.ontowiki.net/owdev.box"
+
 
   config.vm.customize ["modifyvm", :id, "--rtcuseutc", "on", "--memory", "2048", "--cpus", "2"]
   config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
