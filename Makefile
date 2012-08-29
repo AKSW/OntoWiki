@@ -74,11 +74,14 @@ install: directories libraries
 
 vagrant: directories clean submodules-developer
 	rm -rf libraries/Zend # vagrant has own zend
-	vagrant box add -f owdev http://files.ontowiki.net/owdev.box
+	rm -f Vagrantfile
+	ln -s $(PWD)/application/scripts/Vagrantfile-dist $(PWD)/Vagrantfile 
+	(ls $(HOME)/.vagrant.d/boxes/owdev > /dev/null 2> /dev/null) || vagrant box add owdev http://files.ontowiki.net/owdev.box
 	@echo ""
 	@echo '=> Now type "vagrant up"'
 
 vagrant-clean:
+	rm -f Vagrantfile
 	vagrant box remove owdev
 
 clean:

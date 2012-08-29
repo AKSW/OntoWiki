@@ -33,4 +33,5 @@ build/
 !build/phpcmd.xml
 
 # vagrant stuff
+Vagrantfile
 .vagrant
