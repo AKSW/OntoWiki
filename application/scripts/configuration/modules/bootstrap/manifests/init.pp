@@ -12,7 +12,7 @@ class bootstrap {
     }
 
     # install some useful applications
-    package { ["htop", "vim", "unzip", "graphviz", "git", "curl", "openjdk-6-jdk", "ant", "zsh", "raptor2-utils"]:
+    package { ["htop", "vim", "unzip", "graphviz", "git", "curl", "openjdk-6-jdk", "ant", "zsh", "raptor2-utils", "byobu"]:
         ensure => installed,
         require => Exec["apt-update"]
     }
@@ -39,4 +39,11 @@ class bootstrap {
         logoutput => "on_failure",
         require => [Package["zsh"], Package["git"]]
     }
+
+    file { "/home/vagrant/.config/zsh/private.final.zsh":
+        ensure => present,
+        source => "puppet:///modules/bootstrap/private.final.zsh",
+        require => [Package["zsh"], Exec["clone-seebi-zshrc"]]
+    }
 }
+
