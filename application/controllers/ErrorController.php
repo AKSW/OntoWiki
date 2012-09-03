@@ -121,10 +121,10 @@ class ErrorController extends Zend_Controller_Action
             $stacktrace = $exception->getTrace();
             $stacktraceString = '';
             foreach ($stacktrace as $i=>$spec) {
-                $lineStr = isset($spec['file']) ? 
-                    ('@'.$spec['file'] . (isset($spec['line']) ? ':'.$spec['line'] : '') ) : 
+                $lineStr = isset($spec['file']) ?
+                    ('@'.$spec['file'] . (isset($spec['line']) ? ':'.$spec['line'] : '') ) :
                     '';
-                $stacktraceString .= '#' . $i . ': ' .(isset($spec['class']) ? $spec['class'] : '') . 
+                $stacktraceString .= '#' . $i . ': ' .(isset($spec['class']) ? $spec['class'] : '') .
                     (isset($spec['type']) ?$spec['type'] : '') . $spec['function'] .
                     $lineStr . '<br />';
 
@@ -177,6 +177,8 @@ class ErrorController extends Zend_Controller_Action
         $this->view->createUrl    = (string) $createUrl;
         $this->view->urlBase      = OntoWiki::getInstance()->config->urlBase;
 
+        $exception = null;
+        $exceptionType = null;
         if ($this->_request->has('error_handler')) {
             // get errors passed by error handler plug-in
             $errors        = $this->_getParam('error_handler');
@@ -189,14 +191,19 @@ class ErrorController extends Zend_Controller_Action
             );
         }
 
-        // Zend_Controller_Dispatcher_Exception means invalid controller 
+        // Zend_Controller_Dispatcher_Exception means invalid controller
         // -> resource not found
         if (
             ($this->_request->has('error_handler')) &&
             ($exceptionType != 'Zend_Controller_Dispatcher_Exception')
         ) {
-            $this->getResponse()->setHttpResponseCode(500);
-            $this->_helper->viewRenderer->setScriptAction('500');
+            if ((null !== $exception) && (null !== $exception->getResponseCode())) {
+                $this->getResponse()->setHttpResponseCode($exception->getResponseCode());
+                $this->_helper->viewRenderer->setScriptAction('error');
+            } else {
+                $this->getResponse()->setHttpResponseCode(500);
+                $this->_helper->viewRenderer->setScriptAction('500');
+            }
         } else {
             $this->getResponse()->setHttpResponseCode(404);
             $this->_helper->viewRenderer->setScriptAction('404');

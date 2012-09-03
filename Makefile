@@ -12,6 +12,8 @@ default:
 	@echo "      make help ................. Show more (developer related) make targets"
 	@echo ""
 	@echo "      make help-cs .............. Show help for code sniffing targets"
+	@echo ""
+	@echo "      make help-test ............ Show help for test related targets"
 
 help:
 	@echo "Please use: (e.g. make deploy)"
@@ -19,6 +21,7 @@ help:
 	@echo "     install .................... Make directories, zend and libraries"
 	@echo "     help ....................... This help screen"
 	@echo "     help-cs .................... Show help for code sniffing targets"
+	@echo "     help-test .................. Show help for test related targets"
 	@echo "     -------------------------------------------------------------------"
 	@echo "     vagrant .................... Prepare environment to run with Vagrant (no zend)"
 	@echo "     vagrant-clean .............. Removes owdev box in order to ensure you have the latest version"
@@ -32,12 +35,8 @@ help:
 	@echo "     branch-check ............... 'git rev-parse' for all repos"
 	@echo "     clean ...................... Deletes all log and cache files"
 	@echo "     install-test-environment ... Install neccessary software (PHPUnit,...))"
-	@echo "     test ....................... Executes OntoWiki's TestSuite"
-	@echo "     test-erfurt ................ Executes Erfurts TestSuite"
-	@echo "     test-extension ............. Executes TestSuites of each extension, if available"
-	@echo "     test-all ................... Executes PHPUnit TestSuites (OW, Ext) and CodeSniffer"
 	@echo "     odbctest ................... Executes some tests to check the Virtuoso connection"
-	
+
 help-cs:
 	@echo "Please use: (e.g. make cs-install)"
 	@echo "     cs-install ............................ Install CodeSniffer"
@@ -65,6 +64,11 @@ help-cs:
 	@echo "     > SNIFFS=<sniff 1>,<sniff 2> ... Run code checking on specific sniffs"
 	@echo "     > OPTIONS=<option> ............. Run code checking with specific CodeSniffer options"
 
+help-test:
+	@echo "     test ....................... Execute all tests"
+	@echo "     test-unit .................. Run OntoWiki unit tests"
+	@echo "     test-integration ........... Run OntoWiki integration tests"
+	@echo "     test-extensions ............ Run tests for extensions"
 
 # top level target
 
@@ -112,7 +116,7 @@ pull:
 	git pull
 	git submodule foreach git pull
 
-fetch: 
+fetch:
 	git fetch
 	git submodule foreach git fetch
 
@@ -142,14 +146,23 @@ rdfauthor:
 	@echo 'Cloning RDFauthor into libraries/RDFauthor ...'
 	git clone git@github.com:AKSW/RDFauthor.git libraries/RDFauthor
 
-test:
-	phpunit
+# test stuff
+
+test-unit:
+	@cd application/tests/unit && phpunit
+
+test-integration:
+	@cd application/tests/integration && phpunit
 
 test-extensions:
-	phpunit --stderr extensions
+	@phpunit --bootstrap application/tests/Bootstrap.php extensions
 
-test-all: 
-	@make test
+test:
+	@make test-unit
+	@echo ""
+	@echo "-----------------------------------"
+	@echo ""
+	@make test-integration
 	@echo ""
 	@echo "-----------------------------------"
 	@echo ""
@@ -172,9 +185,6 @@ erfurt@:
 	rm -rf libraries/Erfurt
 	@echo 'Cloning Erfurt into libraries/Erfurt ...'
 	git clone git@github.com:AKSW/Erfurt.git libraries/Erfurt
-
-test-erfurt:
-	cd libraries/Erfurt && phpunit && cd ../../..
 
 odbctest:
 	@application/scripts/odbctest.php
@@ -214,10 +224,10 @@ REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR)  $(FPATH)
 
 cs-default:
 	chmod ugo+x "$(CSSPATH)cs-scripts.sh"
-	
+
 cs-install: cs-default
 	$(CSSPATH)cs-scripts.sh -i
-	
+
 cs-install-submodule: cs-submodule-check cs-default
 	$(CSSPATH)cs-scripts.sh -f $(CSSPATH) -m $(MPATH)
 
@@ -257,5 +267,5 @@ cs-submodule-check:
 ifndef MPATH
 	@echo "You must Set a path to the submodule."
 	@echo "Example: MPATH=path/to/the/submodule/"
-	@exit 1 
+	@exit 1
 endif

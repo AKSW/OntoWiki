@@ -126,16 +126,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // multiple calls of this method would fail otherwise.
         Erfurt_Wrapper_Registry::reset();
         $this->_wrapperRegisty = Erfurt_Wrapper_Registry::getInstance();
-        
+
         $owApp = OntoWiki::getInstance();
         if (null !== $owApp->selectedModel) {
             $this->_graphUri = $owApp->selectedModel->getModelIri();
-        } else {
-            if (isset($this->_request->m)) {
-                $this->_graphUri = $this->_request->m;
-            } else {
-                throw new Ontowiki_Exception("model must be selected or sprecified with the m parameter");
-            }
+        } else if (isset($this->_request->m)) {
+            $this->_graphUri = $this->_request->m;
         }
     }
 
@@ -174,6 +170,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
     public function searchAction()
     {
         // Use the selected graph if present. If not, search all available graphs.
+        if (null === $this->_graphUri) {
+            throw new OntoWiki_Exception("model must be selected or specified with the m parameter");
+        }
         $modelUri = $this->_graphUri;
 
         // Check for the mandatory q parameter.
@@ -722,16 +721,20 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $wrapperName = $this->_request->wrapper;
         }
 
+        if (null === $this->_graphUri) {
+            throw new OntoWiki_Exception("model must be selected or specified with the m parameter");
+        }
+
         $res = self::import(
             $this->_graphUri,
             $uri,
             $this->_getProxyUri($uri),
             isset($this->_privateConfig->fetch->allData ) && ((boolean) $this->_privateConfig->fetch->allData === true),
-            !isset($this->_privateConfig->fetch->preset) ? 
-              array() : 
+            !isset($this->_privateConfig->fetch->preset) ?
+              array() :
               $this->_privateConfig->fetch->preset->toArray(),
-            !isset($this->_privateConfig->fetch->default->exception) ? 
-              array() : 
+            !isset($this->_privateConfig->fetch->default->exception) ?
+              array() :
               $this->_privateConfig->fetch->default->exception->toArray(),
             $wrapperName,
             $this->_privateConfig->fetch->default->mode
