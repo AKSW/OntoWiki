@@ -20,14 +20,14 @@
 ;; Backend type:
 ;; Possible values are zenddb (mysql), virtuoso, arc, comparer and sparql
 ;;
-store.backend = zenddb
+store.backend = virtuoso
 
 ;;;;
 ;; ZendDB / MySQL backend specific options
 ;;
 store.zenddb.dbname   = "ontowiki"
-store.zenddb.username = "ow"
-store.zenddb.password = "ow"
+store.zenddb.username = "php"
+store.zenddb.password = "php"
 store.zenddb.dbtype   = mysql
 store.zenddb.host     = localhost
 
