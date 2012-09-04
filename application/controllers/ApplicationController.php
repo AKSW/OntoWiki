@@ -37,7 +37,7 @@ class ApplicationController extends OntoWiki_Controller_Base
 
         $data = array(
             'System' => array(
-                'OntoWiki Version' => $version,
+                'OntoWiki Release' => $version,
                 'PHP Version'      => phpversion(),
                 'Backend'          => $this->_owApp->erfurt->getStore()->getBackendName(),
                 'Debug Mode'       => defined('_OWDEBUG') ? 'enabled' : 'disabled'
@@ -69,9 +69,10 @@ class ApplicationController extends OntoWiki_Controller_Base
         ) {
             @exec('git status', $arr);
             $data['Git Versioning'] = array(
+              'Version' => @exec("git describe"),
               'Branch' => substr($arr[0],12),
-              'last commit' => @exec("git log --pretty=format:'%ar' -n 1"),
-              'Git Version'  => substr(@exec("git --version"),12)
+              'last commit' => @exec("git log --pretty=format:'%ar' -n 1")
+              //'Git Version'  => substr(@exec("git --version"),12),
             );
         }
 
