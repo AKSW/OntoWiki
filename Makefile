@@ -68,7 +68,7 @@ help-cs:
 	@echo "     > OPTIONS=<option> ............. Run code checking with specific CodeSniffer options"
 
 help-test:
-	@echo "     test ....................... Execute all tests"
+	@echo "     test ....................... Execute unit and integration tests"
 	@echo "     test-unit .................. Run OntoWiki unit tests"
 	@echo "     test-integration ........... Run OntoWiki integration tests"
 	@echo "     test-extensions ............ Run tests for extensions"
@@ -175,14 +175,6 @@ test:
 	@echo "-----------------------------------"
 	@echo ""
 	@make test-integration
-	@echo ""
-	@echo "-----------------------------------"
-	@echo ""
-	@make test-extensions
-	@echo ""
-	@echo "-----------------------------------"
-	@echo ""
-	@make cs-check
 
 install-test-environment:
 	sudo apt-get install php-pear
