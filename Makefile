@@ -31,6 +31,9 @@ help:
 	@echo "     erfurt ..................... Clone under libraries"
 	@echo "     rdfauthor .................. Clone under libraries"
 	@echo "     pull ....................... 'git pull' for all repos"
+	@echo "     fetch ...................... 'git fetch' for all repos"
+	@echo "     fetch-all .................. 'git fetch --all', i.e. fetch all repos on all remotes"
+	@echo "     add-upstream ............... Adds standard AKSW git repo as remote/upstream"
 	@echo "     status ..................... 'git status' for all repos"
 	@echo "     branch-check ............... 'git rev-parse' for all repos"
 	@echo "     clean ...................... Deletes all log and cache files"
@@ -40,15 +43,15 @@ help:
 help-cs:
 	@echo "Please use: (e.g. make cs-install)"
 	@echo "     cs-install ............................ Install CodeSniffer"
-	@echo "     cs-uninstall .......................... Uninstall CodeSniffer)"
+	@echo "     cs-uninstall .......................... Uninstall CodeSniffer"
 	@echo "     cs-install-submodule MPATH=<path> ..... Install CodeSniffer on a submodule,"
-	@echo "                                             <path> must by the relativ path to the submodule"
+	@echo "                                             <path> must by the relative path to the submodule"
 	@echo "     cs-uninstall-submodule MPATH=<path> ... Uninstall CodeSniffer on a submodule,"
-	@echo "                                             <path> must by the relativ path to the submodule"
+	@echo "                                             <path> must by the relative path to the submodule"
 	@echo "     cs-enable ............................. Enable CodeSniffer to check code before every commit"
 	@echo "     cs-disable ............................ Disable CodeSniffer code checking"
 	@echo "     cs-check-commit ....................... Run pre-commit code checking manually"
-	@echo "     cs-check-commit-emacs ................. Same as cs-check-commit with emacs output)"
+	@echo "     cs-check-commit-emacs ................. Same as cs-check-commit with emacs output"
 	@echo "     cs-check-commit-intensive ............. Run pre-commit code checking"
 	@echo "                                             manually with stricter coding standard"
 	@echo "     cs-check .............................. Run complete code checking"
@@ -119,6 +122,15 @@ pull:
 fetch:
 	git fetch
 	git submodule foreach git fetch
+
+fetch-all:
+	# Remember to add the aprorpriate upstream sources frist
+	# e.g. by using `make add-upstream`
+	git fetch --all
+	git submodule foreach git fetch --all
+
+add-upstream:
+	git remote add upstream git://github.com/AKSW/OntoWiki.git
 
 info:
 	@git --no-pager log -1 --oneline --decorate

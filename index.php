@@ -143,7 +143,7 @@ try {
     include 'Erfurt/App.php';
 } catch (Exception $e) {
     echo 'Fatal Error: Could not load the Erfurt Framework classes.<br />' . PHP_EOL
-    . 'Maybe you should install it with apt-get or with "make erfurt"?';
+    . 'Maybe you should install it with apt-get or with "make deploy"?';
     return;
 }
 
