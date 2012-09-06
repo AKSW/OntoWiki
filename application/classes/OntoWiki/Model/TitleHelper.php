@@ -323,7 +323,7 @@ class OntoWiki_Model_TitleHelper
             if (null !== $language) {
                 array_unshift($languages, (string)$language);
             }
-            $languages = array_unique($languages);
+            $languages = array_values(array_unique($languages));
 
             $title = null;
             // has anything been found for the resource?
