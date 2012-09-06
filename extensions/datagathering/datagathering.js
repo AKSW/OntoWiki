@@ -52,9 +52,19 @@ $(document).ready(function()
         }
         var url = urlBase + 'datagathering/import/';
         $(this).replaceWith('<span class="is-processing" style="min-height: 16px; display: block"></span>');
-        $.getJSON(url, {uri: uriValue, wrapper: wrapperName}, function(data) {
-            $('.contextmenu-enhanced .contextmenu').fadeOut(effectTime, function(){ $(this).remove(); })
-            window.location = document.URL;
+
+        var request = $.ajax({
+           url: url,
+           data: { uri: uriValue, wrapper: wrapperName },
+           success: function(data, textStatus, jqXHR) {
+               $('.contextmenu-enhanced .contextmenu').fadeOut(effectTime, function(){ $(this).remove(); });
+               window.location = document.URL;
+           },
+           error: function(jqXHR, textStatus, errorThrown) {
+               $('.contextmenu-enhanced .contextmenu').fadeOut(effectTime, function(){ $(this).remove(); });
+               window.location = document.URL;
+           },
+           timeout: 30000
         });
 
         return false;

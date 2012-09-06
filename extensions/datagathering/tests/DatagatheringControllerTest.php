@@ -7,6 +7,13 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
 
     public function setUp()
     {
+        $this->bootstrap = new Zend_Application(
+            'default',
+            ONTOWIKI_ROOT . 'application/config/application.ini'
+        );
+
+        parent::setUp();
+
         $this->_testAc = new Erfurt_Ac_Test();
         Erfurt_App::getInstance()->setAc($this->_testAc);
 
@@ -15,17 +22,11 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
             array('adapterInstance' => $this->_testAdapter),
             'Test'
         ));
-
-        $this->bootstrap = new Zend_Application(
-            'testing',
-            ONTOWIKI_ROOT . 'application/config/application.ini'
-        );
-        parent::setUp();
     }
 
     public function testImportActionRequestTypeNotGetBadRequest()
     {
-        $this->request->setMethod('POST');
+        //$this->request->setMethod('POST');
         $this->dispatch('/datagathering/import');
 
         $this->assertController('error');
@@ -73,7 +74,7 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         @$this->assertResponseCode(403);
     }
 
-    public function testImportActionWrapperResultNoArrayFalse()
+    public function testImportActionWrapperResultFalse()
     {
         $this->_testAdapter->createModel('http://example.org/testModel1');
         $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
@@ -91,10 +92,15 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('import');
         @$this->assertResponseCode(200);
 
-        $this->assertFalse(json_decode($this->_response->getBody()));
+        $result = json_decode($this->_response->getBody(), true);
+
+        $this->assertArrayHasKey('code', $result);
+        $this->assertFalse($result['code']);
+        $this->assertArrayHasKey('message', $result);
+        $this->assertNotEmpty($result['message']);
     }
 
-    public function testImportActionWrapperResultEmptyArrayFalse()
+    public function testImportActionWrapperResultEmptyArray()
     {
         $this->_testAdapter->createModel('http://example.org/testModel1');
         $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
@@ -114,10 +120,15 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('import');
         @$this->assertResponseCode(200);
 
-        $this->assertFalse(json_decode($this->_response->getBody()));
+        $result = json_decode($this->_response->getBody(), true);
+
+        $this->assertArrayHasKey('code', $result);
+        $this->assertFalse($result['code']);
+        $this->assertArrayHasKey('message', $result);
+        $this->assertNotEmpty($result['message']);
     }
 
-    public function testImportActionWrapperResultArrayNoAddTrue()
+    public function testImportActionWrapperResultArrayNoAdd()
     {
         $this->_testAdapter->createModel('http://example.org/testModel1');
         $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
@@ -137,10 +148,15 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('import');
         @$this->assertResponseCode(200);
 
-        $this->assertTrue(json_decode($this->_response->getBody()));
+        $result = json_decode($this->_response->getBody(), true);
+
+        $this->assertArrayHasKey('code', $result);
+        $this->assertFalse($result['code']);
+        $this->assertArrayHasKey('message', $result);
+        $this->assertNotEmpty($result['message']);
     }
 
-    public function testImportActionWrapperResultArrayWithAddButNothingAddedTrue()
+    public function testImportActionWrapperResultArrayWithAddButNothingAdded()
     {
         Erfurt_App::getInstance()->getVersioning()->enableVersioning(false);
 
@@ -165,16 +181,24 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('import');
         @$this->assertResponseCode(200);
 
-        $this->assertTrue(json_decode($this->_response->getBody()));
+        $result = json_decode($this->_response->getBody(), true);
+
+        $this->assertArrayHasKey('code', $result);
+        $this->assertFalse($result['code']);
+        $this->assertArrayHasKey('message', $result);
+        $this->assertNotEmpty($result['message']);
     }
 
-    public function testImportActionWrapperResultArrayWithAddTrue()
+    public function testImportActionWrapperResultArrayWithAdd()
     {
         Erfurt_App::getInstance()->getVersioning()->enableVersioning(false);
 
         $this->_testAdapter->createModel('http://example.org/testModel1');
         $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
         $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
+
+        $this->_testAdapter->addCountResult(0);
+        $this->_testAdapter->addCountResult(2);
 
         $add = array(
             'http://example.org/testResource1' => array(
@@ -207,18 +231,26 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('import');
         @$this->assertResponseCode(200);
 
-        $this->assertTrue(json_decode($this->_response->getBody()));
+        $result = json_decode($this->_response->getBody(), true);
+
+        $this->assertArrayHasKey('code', $result);
+        $this->assertTrue($result['code']);
+        $this->assertArrayHasKey('message', $result);
+        $this->assertNotEmpty($result['message']);
 
         $this->assertEquals($add, $this->_testAdapter->getStatementsForGraph('http://example.org/testModel1'));
     }
 
-    public function testImportActionWrapperResultArrayWithAddMatchingPresetTrue()
+    public function testImportActionWrapperResultArrayWithAddMatchingPreset()
     {
         Erfurt_App::getInstance()->getVersioning()->enableVersioning(false);
 
         $this->_testAdapter->createModel('http://example.org/testModel1');
         $this->_testAc->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
         $this->_testAc->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
+
+        $this->_testAdapter->addCountResult(0);
+        $this->_testAdapter->addCountResult(2);
 
         $add = array(
             'http://dbpedia.org/resource/Leipzig' => array(
@@ -251,7 +283,12 @@ class DatagatheringControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
         $this->assertAction('import');
         @$this->assertResponseCode(200);
 
-        $this->assertTrue(json_decode($this->_response->getBody()));
+        $result = json_decode($this->_response->getBody(), true);
+
+        $this->assertArrayHasKey('code', $result);
+        $this->assertTrue($result['code']);
+        $this->assertArrayHasKey('message', $result);
+        $this->assertNotEmpty($result['message']);
 
         $this->assertEquals(array(), $this->_testAdapter->getStatementsForGraph('http://example.org/testModel1'));
     }

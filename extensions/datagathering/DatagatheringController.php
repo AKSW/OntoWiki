@@ -47,14 +47,16 @@ class DatagatheringController extends OntoWiki_Controller_Component
     /**
      * IMPORT STATUS CODES
      */
-    CONST IMPORT_OK = 10;
-    CONST IMPORT_NO_DATA = 20;
-    CONST IMPORT_WRAPPER_ERR = 30;
-    CONST IMPORT_WRAPPER_INSTANCIATION_ERR = 40;
-    CONST IMPORT_NOT_EDITABLE = 50;
-    CONST IMPORT_WRAPPER_EXCEPTION = 60;
-    CONST IMPORT_WRAPPER_NOT_AVAILABLE = 70;
-    CONST IMPORT_CUSTOMFILTER_EXCEPTION = 80;
+    const IMPORT_OK = 10;
+    const IMPORT_NO_DATA = 20;
+    const IMPORT_NO_NEW_DATA = 21;
+    const IMPORT_WRAPPER_ERR = 30;
+    const IMPORT_WRAPPER_INSTANCIATION_ERR = 40;
+    const IMPORT_NOT_EDITABLE = 50;
+    const IMPORT_WRAPPER_NOT_AVAILABLE = 70;
+    const IMPORT_WRAPPER_RESULT_NOT_AVAILABLE = 71;
+    const IMPORT_CUSTOMFILTER_EXCEPTION = 80;
+    const IMPORT_GENERAL_EXCEPTION = 90;
 
     // ------------------------------------------------------------------------
     // --- Import and Sync related private properties -------------------------
@@ -725,20 +727,29 @@ class DatagatheringController extends OntoWiki_Controller_Component
             throw new OntoWiki_Exception("model must be selected or specified with the m parameter");
         }
 
-        $res = self::import(
-            $this->_graphUri,
-            $uri,
-            $this->_getProxyUri($uri),
-            isset($this->_privateConfig->fetch->allData ) && ((boolean) $this->_privateConfig->fetch->allData === true),
-            !isset($this->_privateConfig->fetch->preset) ?
-              array() :
-              $this->_privateConfig->fetch->preset->toArray(),
-            !isset($this->_privateConfig->fetch->default->exception) ?
-              array() :
-              $this->_privateConfig->fetch->default->exception->toArray(),
-            $wrapperName,
-            $this->_privateConfig->fetch->default->mode
-        );
+        try {
+            $res = self::import(
+                $this->_graphUri,
+                $uri,
+                $this->_getProxyUri($uri),
+                isset($this->_privateConfig->fetch->allData ) && ((boolean) $this->_privateConfig->fetch->allData === true),
+                !isset($this->_privateConfig->fetch->preset) ?
+                    array() :
+                    $this->_privateConfig->fetch->preset->toArray(),
+                !isset($this->_privateConfig->fetch->default->exception) ?
+                    array() :
+                    $this->_privateConfig->fetch->default->exception->toArray(),
+                $wrapperName,
+                $this->_privateConfig->fetch->default->mode
+            );
+        } catch (Exception $e) {
+            if (defined('_EFDEBUG')) {
+                return $this->_sendResponse(false, 'An error occured: ' . $e->getMessage(), OntoWiki_Message::ERROR);
+            } else {
+                $res = null;
+            }
+        }
+
         if ($res == self::IMPORT_OK) {
             return $this->_sendResponse(
                 true,
@@ -746,19 +757,21 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 OntoWiki_Message::INFO
             );
         } else if ($res == self::IMPORT_WRAPPER_ERR) {
-            return $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
+            return $this->_sendResponse(false, 'The requested wrapper failed with an error.', OntoWiki_Message::ERROR);
         } else if ($res == self::IMPORT_NO_DATA) {
             return $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
+        } else if ($res == self::IMPORT_NO_NEW_DATA) {
+            return $this->_sendResponse(false, 'No new statements were found.', OntoWiki_Message::ERROR);
         } else if ($res == self::IMPORT_WRAPPER_INSTANCIATION_ERR) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
             return $this->_sendResponse(false, 'could not get wrapper instance.', OntoWiki_Message::ERROR);
-            //$this->_response->setException(new OntoWiki_Http_Exception(400));
         } else if ($res == self::IMPORT_NOT_EDITABLE) {
+            $this->_response->setException(new OntoWiki_Http_Exception(403));
             return $this->_sendResponse(false, 'you cannot write to this model.', OntoWiki_Message::ERROR);
-            //$this->_response->setException(new OntoWiki_Http_Exception(403));
-        } else if ($res == self::IMPORT_WRAPPER_EXCEPTION) {
-            return $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
         } else if ($res == DatagatheringController::IMPORT_WRAPPER_NOT_AVAILABLE) {
-            return $this->_sendResponse($res, 'the data is not available.', OntoWiki_Message::ERROR);
+            return $this->_sendResponse(false, 'The requested wrapper is not available.', OntoWiki_Message::ERROR);
+        } else if ($res == DatagatheringController::IMPORT_WRAPPER_RESULT_NOT_AVAILABLE) {
+            return $this->_sendResponse(false, 'The requested wrapper returned no result.', OntoWiki_Message::ERROR);
         } else {
             return $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
         }
@@ -769,6 +782,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $exceptedProperties = array(), $fetchMode = 'none'
     )
     {
+
         // TODO handle configuration for import...
         if ($all) {
             // Keep all data...
@@ -806,7 +820,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $presetMatch = false;
         foreach ($presets as $i => $preset) {
             if (self::_matchUriStatic($preset['match'], $uri)) {
-                $presetMatch = true;
+                $presetMatch = $i;
                 break;
             }
         }
@@ -938,16 +952,19 @@ class DatagatheringController extends OntoWiki_Controller_Component
         } catch (Erfurt_Wrapper_Exception $e) {
             return self::IMPORT_WRAPPER_INSTANCIATION_ERR;
         }
+        if (null == $wrapper) {
+            return self::IMPORT_WRAPPER_NOT_AVAILABLE;
+        }
 
         $wrapperResult = null;
         try {
             $wrapperResult = $wrapper->run($r, $graphUri, $all);
         } catch (Erfurt_Wrapper_Exception $e) {
-            return self::IMPORT_WRAPPER_EXCEPTION;
+            return self::IMPORT_WRAPPER_ERR;
         }
 
         if ($wrapperResult === false) {
-            return self::IMPORT_WRAPPER_NOT_AVAILABLE;
+            return self::IMPORT_WRAPPER_RESULT_NOT_AVAILABLE;
         } else if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
@@ -987,7 +1004,16 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     }
 
                     if ($action == 'add') {
-                        $store->addMultipleStatements($graphUri, $newStatements);
+                        try {
+                            $store->addMultipleStatements($graphUri, $newStatements);
+                        } catch (Exception $e) {
+                            $versioning->abortAction();
+
+                            if (defined('_EFDEBUG')) {
+                                throw $e;
+                            }
+                            return self::IMPORT_GENERAL_EXCEPTION;
+                        }
                     } else if ($action == 'update') {
                         $queryoptions = array(
                             'use_ac'                 => false,
@@ -1044,7 +1070,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         return self::IMPORT_OK;
 
                     } else {
-                        return self::IMPORT_NO_DATA;
+                        if (count($newStatements) > 0) {
+                            return self::IMPORT_NO_NEW_DATA;
+                        } else {
+                            return self::IMPORT_NO_DATA;
+                        }
                     }
                 } else {
                     return self::IMPORT_NO_DATA;
@@ -1067,6 +1097,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 new OntoWiki_Message($message, $messageType)
             );
         }
+
+        $returnValue = array(
+            'code'    => $returnValue,
+            'message' => $message
+        );
 
         $this->_response->setHeader('Content-Type', 'application/json', true);
         $this->_response->setBody(json_encode($returnValue));
