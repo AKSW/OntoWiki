@@ -68,10 +68,14 @@ help-cs:
 	@echo "     > OPTIONS=<option> ............. Run code checking with specific CodeSniffer options"
 
 help-test:
-	@echo "     test ....................... Execute unit and integration tests"
-	@echo "     test-unit .................. Run OntoWiki unit tests"
-	@echo "     test-integration ........... Run OntoWiki integration tests"
-	@echo "     test-extensions ............ Run tests for extensions"
+	@echo "  test ......................... Execute unit, integration and extension tests"
+	@echo "  test-unit .................... Run OntoWiki unit tests"
+	@echo "  test-unit-cc ................. Same as above plus code coverage report"
+	@echo "  test-integration-virtuoso .... Run OntoWiki integration tests with virtuoso"
+	@echo "  test-integration-virtuoso-cc . Same as above plus code coverage report"
+	@echo "  test-integration-mysql ....... Run OntoWiki integration tests with mysql"
+	@echo "  test-integration-mysql-cc .... Same as above plus code coverage report"
+	@echo "  test-extensions .............. Run tests for extensions"
 
 # top level target
 
@@ -160,21 +164,42 @@ rdfauthor:
 
 # test stuff
 
-test-unit:
+test-unit: directories
+	@cd application/tests && phpunit --bootstrap Bootstrap.php unit/
+
+test-unit-cc: directories
 	@cd application/tests/unit && phpunit
 
-test-integration:
-	@cd application/tests/integration && phpunit
+test-integration-virtuoso: directories
+	@cd application/tests && EF_STORE_ADAPTER=virtuoso phpunit --bootstrap Bootstrap.php integration/
 
-test-extensions:
+test-integration-virtuoso-cc: directories
+	@cd application/tests/integration && EF_STORE_ADAPTER=virtuoso phpunit
+
+test-integration-mysql: directories
+	@cd application/tests && EF_STORE_ADAPTER=zenddb phpunit --bootstrap Bootstrap.php integration/
+
+test-integration-mysql-cc: directories
+	@cd application/tests/integration && EF_STORE_ADAPTER=zenddb phpunit
+
+test-extensions: directories
 	@phpunit --bootstrap application/tests/Bootstrap.php extensions
 
 test:
-	@make test-unit
+	make test-unit
 	@echo ""
 	@echo "-----------------------------------"
 	@echo ""
-	@make test-integration
+	make test-integration-virtuoso
+	@echo ""
+	@echo "-----------------------------------"
+	@echo ""
+	make test-integration-mysql
+	@echo ""
+	@echo "-----------------------------------"
+	@echo ""
+	make test-extensions
+
 
 install-test-environment:
 	sudo apt-get install php-pear

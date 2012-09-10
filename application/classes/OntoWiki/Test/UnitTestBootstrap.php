@@ -1,5 +1,5 @@
 <?php
-require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'Bootstrap.php'; 
+require_once realpath(dirname(dirname(dirname(dirname(__FILE__))))). DIRECTORY_SEPARATOR . 'Bootstrap.php';
 
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
@@ -19,7 +19,7 @@ require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'Bootstrap.php';
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
-class TestBootstrap extends Bootstrap
+class OntoWiki_Test_UnitTestBootstrap extends Bootstrap
 {
     public function _initExtensionManager()
     {

@@ -13,10 +13,10 @@ class ManagerIntegrationTest extends Erfurt_TestCase {
     {
         $this->_resourcesDirectory = realpath(dirname(__FILE__)) . '/_files/';
 
-        $this->markTestNeedsTestConfig();
+        $this->markTestNeedsDatabase();
 
         $this->_bootstrap = new Zend_Application(
-            'testing',
+            'integration_testing',
             ONTOWIKI_ROOT . 'application/config/application.ini'
         );
 

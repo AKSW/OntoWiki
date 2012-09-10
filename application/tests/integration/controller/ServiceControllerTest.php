@@ -40,23 +40,13 @@
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  * @author     Konrad Abicht <k.abicht@googlemail.com>
  */
-class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
+class ServiceControllerTest extends OntoWiki_Test_ControllerTestCase
 {
     public function setUp()
     {
-        $this->bootstrap = new Zend_Application(
-            'testing',
-            ONTOWIKI_ROOT . 'application/config/application.ini'
-        );
-        
-        parent::setUp();
+        $this->setUpIntegrationTest();
     }
-    
-    public function tearDown()
-    {
-        parent::tearDown();
-    }
-    
+
     // ------------------------------------------------------------------------
     // Auth Action
     // ------------------------------------------------------------------------
@@ -212,7 +202,7 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
      * @test
      */
     public function sparqlNoAuthWithInvalidQuery()
-    {        
+    {
         // Send invalid query
         $this->request->setMethod('POST')
                       ->setPost(
@@ -220,10 +210,12 @@ class ServiceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
                       );
         
         $this->dispatch('/service/sparql');
-                
+
+        $code = $this->_response->getHttpResponseCode();
+
         $this->assertController('service');
         $this->assertAction('sparql');
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(400, "$code returned instead");
     }
     
     // ------------------------------------------------------------------------

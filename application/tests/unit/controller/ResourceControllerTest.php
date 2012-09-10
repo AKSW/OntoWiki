@@ -39,22 +39,11 @@
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
  * @author     Jonas Brekle <jonas.brekle@gmail.com>
  */
-class ResourceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
+class ResourceControllerTest extends OntoWiki_Test_ControllerTestCase
 {
     public function setUp()
     {
-        $this->bootstrap = new Zend_Application(
-            'testing',
-            ONTOWIKI_ROOT . 'application/config/application.ini'
-        );
-        Zend_Controller_Action_HelperBroker::addHelper(new OntoWiki_Controller_ActionHelper_List());
-
-        parent::setUp();
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
+        $this->setUpUnitTest();
     }
 
     public function testDummyTestUnlessNoWorkingActualTestExists()

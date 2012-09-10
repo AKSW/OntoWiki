@@ -39,25 +39,13 @@
  * @author     Norman Heino <norman.heino@gmail.com>
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
-class IndexControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
+class IndexControllerTest extends OntoWiki_Test_ControllerTestCase
 {    
     public function setUp()
     {
-        //error_reporting(E_ALL ^ E_WARNING);
-        
-        $this->bootstrap = new Zend_Application(
-            'testing',
-            ONTOWIKI_ROOT . 'application/config/application.ini'
-        );
-        
-        parent::setUp();
+        $this->setUpUnitTest();
     }
-    
-    public function tearDown()
-    {
-        parent::tearDown();
-    }
-    
+
     public function testNoControllerAndActionDefaultToNewsAction()
     {
         $this->dispatch('/');
