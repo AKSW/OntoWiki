@@ -18,7 +18,7 @@ class OntoWiki_Model_TitleHelper
     /**
      * Static title cache per graph
      */
-    protected static $_titleCache = array();
+    private static $_titleCache = array();
 
     /**
      * Whether to always search all configured title properties
@@ -296,7 +296,7 @@ class OntoWiki_Model_TitleHelper
      */
     public function getTitle($resourceUri, $language = null)
     {
-        if (!isset(self::$_titleCache[(string) $this->_model][$resourceUri])) {
+        if (!$this->_cache($resourceUri, (string)$this->_model)) {
             // * means any language
             if (trim($language) == '*') {
                 $language = null;
@@ -366,10 +366,10 @@ class OntoWiki_Model_TitleHelper
                 }
             }
 
-            self::$_titleCache[(string)$this->_model][$resourceUri] = $title;
+            $this->_cache($resourceUri, (string)$this->_model, $title);
         } else {
             // cached title
-            $title = self::$_titleCache[(string) $this->_model][$resourceUri];
+            $title = $this->_cache($resourceUri, (string)$this->_model);
         }
 
         return $title;
@@ -547,5 +547,33 @@ class OntoWiki_Model_TitleHelper
 
         return $where;
     }
-}
 
+    private function _cache($resourceUri, $graphUri, $newValue = null)
+    {
+        $cacheBucketId = md5(serialize($this->_titleProperties));
+        if (null !== $newValue) {
+            if (!isset(self::$_titleCache[$cacheBucketId])) {
+                self::$_titleCache[$cacheBucketId] = array();
+            }
+            if (!isset(self::$_titleCache[$cacheBucketId][$graphUri])) {
+                self::$_titleCache[$cacheBucketId][$graphUri] = array();
+            }
+            self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri] = $newValue;
+            return true;
+        }
+
+        if (isset(self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri])) {
+            return self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri];
+        }
+
+        return false;
+    }
+
+    private function _resetCache()
+    {
+        $cacheBucketId = md5(serialize($this->_titleProperties));
+        if (isset(self::$_titleCache[$cacheBucketId])) {
+            self::$_titleCache[$cacheBucketId] = array();
+        }
+    }
+}
