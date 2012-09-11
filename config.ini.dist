@@ -91,7 +91,7 @@ mail.localname.recovery = "ontowiki-account-recovery"
 ;proxy.password = ""
 
 ;;;;
-;; Uncomment this line to turn of the query and object cache (NOT recommended)
+;; Uncomment this line to turn off the query and object cache (NOT recommended)
 ;;
 ;cache.enable       = false
 ;cache.query.enable = false
