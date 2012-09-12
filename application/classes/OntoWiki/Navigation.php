@@ -192,14 +192,14 @@ class OntoWiki_Navigation
      * @param string $key the identifier for the component
      */
     public function setActive($key)
-    {        
+    {
         if (false == array_key_exists($key, $this->_navigation)) {
             throw new OntoWiki_Exception('Navigation component with key \''. $key .'\' not registered.');
         }
-        
+
         // set the current active to unactive
         if ($this->_activeKey != null) {
-            $this->_navigation[$this->_activeKey]['active'] = 'inactive';
+           unset($this->_navigation[$this->_activeKey]['active']);
         }
         
         // set new active
@@ -243,32 +243,38 @@ class OntoWiki_Navigation
             $request = Zend_Controller_Front::getInstance()->getRequest();
             $currentController = $request->getControllerName();
             $currentAction     = $request->getActionName();
-            
+
             ksort($this->_ordered);
             // first the order requests
             foreach ($this->_ordered as $orderKey => $elementKey) {
                 
                 if (array_key_exists($elementKey, $this->_navigation)) {
-                    $this->_navigation[$elementKey]['url'] = self::_getUrl($elementKey, $currentController, $currentAction);
+                    $this->_navigation[$elementKey]['url'] = $this->_getUrl($elementKey, $currentController, $currentAction);
                     
                     // set active if current
                     if ($currentController == $this->_navigation[$elementKey]['controller'] && 
                         $currentAction == $this->_navigation[$elementKey]['action']) {
-                        self::setActive($elementKey);
+                        $this->setActive($elementKey);
                     }
 
-                    $return[$elementKey] = $this->_navigation[$elementKey];
+                    $return[$elementKey] = true;
                 }
             }
 
+            $newReturn = array();
+            foreach ($return as $key => $true) {
+                $newReturn[$key] = $this->_navigation[$key];
+            }
+            $return = $newReturn;
+
             // finally the unordered
             foreach ($this->_unordered as $name => $elementKey) {
-                $this->_navigation[$elementKey]['url'] = self::_getUrl($elementKey, $currentController, $currentAction);
+                $this->_navigation[$elementKey]['url'] = $this->_getUrl($elementKey, $currentController, $currentAction);
                 
                 // set active if current
                 if ($currentController == $this->_navigation[$elementKey]['controller'] && 
                     $currentAction == $this->_navigation[$elementKey]['action']) {
-                    self::setActive($elementKey);
+                    $this->setActive($elementKey);
                 }
                 
                 $return[$elementKey] = $this->_navigation[$elementKey];
