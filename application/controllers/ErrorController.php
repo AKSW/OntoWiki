@@ -197,7 +197,11 @@ class ErrorController extends Zend_Controller_Action
             ($this->_request->has('error_handler')) &&
             ($exceptionType != 'Zend_Controller_Dispatcher_Exception')
         ) {
-            if ((null !== $exception) && (null !== $exception->getResponseCode())) {
+            if (
+                (null !== $exception) &&
+                (method_exists($exception, 'getResponseCode')) &&
+                (null !== $exception->getResponseCode())
+            ) {
                 $this->getResponse()->setHttpResponseCode($exception->getResponseCode());
                 $this->_helper->viewRenderer->setScriptAction('error');
             } else {
