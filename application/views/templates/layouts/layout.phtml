@@ -39,6 +39,11 @@
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
 
+    <!-- additional ontowiki stylesheets -->
+    <?php foreach($this->themeExtraStyles as $stylesheet_extra): ?>
+        <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>../<?php echo trim($stylesheet_extra); ?>/styles/default.css" type="text/css" media="screen" />
+    <?php endforeach; ?>
+
     <?php if (defined('_OWDEBUG')): ?>
     <!-- developer styles, e.g. for deprecated and legacy gui elements -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.dev.css" type="text/css" media="screen" />
