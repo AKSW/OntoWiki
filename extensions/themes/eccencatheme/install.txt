@@ -1,0 +1,9 @@
+The Eccenca Linked Data Suite Stylesheet is an add-on top of the default
+Silverblue theme styles and the Dark Orange styles.
+
+## Activation
+
+Add to you config.ini:
+
+    themes.styles.darkorange = "darkorange"
+    themes.styles.eccencatheme = "eccencatheme"

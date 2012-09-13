@@ -1,0 +1,87 @@
+/**
+ *
+ * OntoWiki Extra Styles
+ * ECCENCA LINKED DATA SUITE THEME
+ *
+ * @depends OntoWiki Darkorange Styles
+ * @author http://michael.haschke.biz/
+ *
+ *************************************************************************/
+
+body
+{
+    background-image: url(./../images/layout-watermark.png);
+}
+
+/* -- 1. Upper Control Panel ------------------------------------------- */
+
+#application.window h1.title
+{
+    width: 3em;
+    background: url(./../images/logo-eccenca.png) no-repeat center transparent;
+}
+
+#application .slidehelper
+{
+    margin-left: 5em;
+}
+
+#application ul.clickMenu > li.main.hover
+{
+    background-color: #ff8f00;
+}
+
+/* -- 2. Dropdown Menus ------------------------------------------------ */
+
+ul.clickMenu li.hover
+{
+    background-color: #ff8f00;
+}
+
+/* -- 3. Input fields -------------------------------------------------- */
+
+input.text:focus, input.password:focus, textarea:focus
+{
+    box-shadow: 0px 0px 0.35em #ff8f00 inset;
+}
+
+/* -- 4. Tabs ---------------------------------------------------------- */
+
+div.window .tabs li.active a
+{
+    background-image: -webkit-linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -moz-linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -ms-linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+}
+
+/* -- 5. Buttons ------------------------------------------------------- */
+
+a.formbutton:focus,
+button:focus, input.formbutton:focus,
+div.window .content a.button:focus,
+input.button:focus, input.submit:focus, input.reset:focus,
+ul.minibutton li a:focus, li.minibutton a:focus, a.minibutton:focus,
+.ui-state-default.ui-button:focus,
+a.formbutton:hover,
+button:hover, input.formbutton:hover,
+div.window .content a.button:hover,
+input.button:hover, input.submit:hover, input.reset:hover,
+ul.minibutton li a:hover, li.minibutton a:hover, a.minibutton:hover,
+.ui-state-default.ui-button:hover
+{
+    box-shadow: 0 0 2px #ff8f00;
+}
+
+/* -- 8. Contextmenu ------------------------------------------------------
+*/
+
+.contextmenu ul a:hover,
+.contextmenu ol a:hover,
+.contextmenu ul span:hover,
+.contextmenu ol span:hover
+{
+    background-color: #ff8f00;
+    border-color: #ee7e00;
+}
