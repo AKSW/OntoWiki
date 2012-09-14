@@ -104,7 +104,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 $list = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
             } else {
                 // use the object from the session
-                if(isset($request->list) && $request->list != $listHelper->getLastListName()) {
+                if (isset($request->list) && $request->list != $listHelper->getLastListName()) {
                     if($listHelper->listExists($request->list)){
                         $list = $listHelper->getList($request->list);
                         $ontoWiki->appendMessage(new OntoWiki_Message("reuse list"));
@@ -112,6 +112,8 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                         throw new OntoWiki_Exception('your trying to configure a list, but there is no list name specified');
                     }
                 }
+
+                $list->setStore($store); // store is not serialized in session! reset it
             }
 
             //local function :)
