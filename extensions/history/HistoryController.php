@@ -296,18 +296,20 @@ class HistoryController extends OntoWiki_Controller_Component
                 $historyArray[$key]['url'] = $this->_config->urlBase . "view?r=" . urlencode($entry['resource']);
                 $titleHelper->addResource($entry['resource']);
             }
+
             if ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->anonymousUser) {
                 $userArray[$entry['useruri']] = 'Anonymous';
             } else if ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->superAdmin) {
                 $userArray[$entry['useruri']] = 'SuperAdmin';
-            } else if (
-                is_array($userArray[$entry['useruri']]) &&
-                array_key_exists('userName', $userArray[$entry['useruri']])
-            ) {
-                $userArray[$entry['useruri']] = $userArray[$entry['useruri']]['userName'];
+            } else if (is_array($userArray[$entry['useruri']])) {
+                if (isset($userArray[$entry['useruri']]['userName'])) {
+                    $userArray[$entry['useruri']] = $userArray[$entry['useruri']]['userName'];
+                } else {
+                    $titleHelper->addResource($entry['useruri']);
+                    $userArray[$entry['useruri']] = $titleHelper->getTitle($entry['useruri']);
+                }
             }
         }
-
         $this->view->userArray = $userArray;
         $this->view->idArray = $idArray;
         $this->view->historyArray = $historyArray;

@@ -61,6 +61,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $response = Zend_Controller_Front::getInstance()->getResponse();
 
         $uri = $event->uri;
+
         try {
             // Check for a supported type by investigating the suffix of the URI or by
             // checking the Accept header (content negotiation). The $matchingSuffixFlag
@@ -92,6 +93,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             switch ($type) {
                 case 'rdf':
                 case 'n3':
+                case 'ttl':
                     // Check the config, whether provenance information should be included.
                     $prov = false;
                     if (isset($this->_privateConfig->provenance) &&
