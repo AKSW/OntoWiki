@@ -261,12 +261,6 @@ class OntoWiki_Navigation
                 }
             }
 
-            $newReturn = array();
-            foreach ($return as $key => $true) {
-                $newReturn[$key] = $this->_navigation[$key];
-            }
-            $return = $newReturn;
-
             // finally the unordered
             foreach ($this->_unordered as $name => $elementKey) {
                 $this->_navigation[$elementKey]['url'] = $this->_getUrl($elementKey, $currentController, $currentAction);
@@ -279,6 +273,13 @@ class OntoWiki_Navigation
                 
                 $return[$elementKey] = $this->_navigation[$elementKey];
             }
+
+            // now use the most recent version from $this->_navigation, since it contains the real active state
+            $newReturn = array();
+            foreach ($return as $key => $true) {
+                $newReturn[$key] = $this->_navigation[$key];
+            }
+            $return = $newReturn;
 
             return $return;
         }
