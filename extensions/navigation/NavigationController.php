@@ -17,7 +17,6 @@ class NavigationController extends OntoWiki_Controller_Component
 {
     private $_store;
     private $_translate;
-    private $_session;
     private $_ac;
     private $_model;
     /* an array of arrays, each has type and text */
@@ -35,7 +34,6 @@ class NavigationController extends OntoWiki_Controller_Component
         parent::init();
         $this->_store     = $this->_owApp->erfurt->getStore();
         $this->_translate = $this->_owApp->translate;
-        $this->_session   = $this->_owApp->session->navigation;
         $this->_ac        = $this->_erfurt->getAc();
 
         $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');
