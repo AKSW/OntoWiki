@@ -19,8 +19,8 @@ class NavigationHelper extends OntoWiki_Component_Helper
     public static function getInstancesTriples($uri, $setup)
     {
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        $classVar = new Erfurt_Sparql_Query2_Var('classUri');
-        $elements = array();
+        $classVar  = new Erfurt_Sparql_Query2_Var('classUri');
+        $elements  = array();
 
         // init union var
         $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
@@ -39,6 +39,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 $union->addElement($ggp);
             }
         }
+
         // parse config
         if (isset($setup->config->instanceRelation->out)) {
             foreach (self::a($setup->config->instanceRelation->out) as $rel) {
@@ -56,9 +57,10 @@ class NavigationHelper extends OntoWiki_Component_Helper
         }
         $elements[] = $union;
 
-        $owApp = OntoWiki::getInstance();
+        $owApp    = OntoWiki::getInstance();
         $modelIRI = (string)$owApp->selectedModel;
-        $store = $owApp->erfurt->getStore();
+        $store    = $owApp->erfurt->getStore();
+
         // get all subclass of the super class
         $classes = array();
         if (isset($setup->config->hierarchyRelations->out)) {
@@ -73,9 +75,9 @@ class NavigationHelper extends OntoWiki_Component_Helper
         }
 
         // create filter for types
-        $filter_type = array();
-        $filterUris = array();
-        $counted = array();
+        $filterType = array();
+        $filterUris  = array();
+        $counted     = array();
         foreach ($classes as $class) {
             // get uri
             $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
@@ -93,7 +95,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
             $uriElem = new Erfurt_Sparql_Query2_IriRef($uri);
             $filterUris[] = $uriElem;
-            $filter_type[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
+            $filterType[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
 
             // add uri to counted
             $counted[] = $uri;
@@ -106,10 +108,10 @@ class NavigationHelper extends OntoWiki_Component_Helper
         } else { // sameTerm || sameTerm ... as supported by EfZendDb adapter
             // add filter
             $elements[] = new Erfurt_Sparql_Query2_Filter(
-                new Erfurt_Sparql_Query2_ConditionalOrExpression($filter_type)
+                new Erfurt_Sparql_Query2_ConditionalOrExpression($filterType)
             );
         }
-        
+
         return $elements;
     }
 
@@ -271,16 +273,16 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 //$mainUnion->addElement($unionSub);
                 if ($unionSub->size() > 0) $optional->addElement($unionSub);
                 $elements[] = $optional;
-                
+
                 // create filter for types
-                $filter_type = array();
+                $filterType = array();
                 $filterUris = array();
                 foreach (self::a($setup->config->hierarchyTypes) as $type) {
                     $uriElem = new Erfurt_Sparql_Query2_IriRef($type);
                     $filterUris[] = $uriElem;
-                    $filter_type[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
+                    $filterType[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
                 }
-                
+
                 $owApp = OntoWiki::getInstance();
                 $store = $owApp->erfurt->getStore();
                 if ($store->isInSyntaxSupported()) { // e.g. Virtuoso
@@ -290,7 +292,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 } else { // sameTerm || sameTerm ... as supported by EfZendDb adapter
                     // add filter
                     $elements[] = new Erfurt_Sparql_Query2_Filter(
-                        new Erfurt_Sparql_Query2_ConditionalOrExpression($filter_type)
+                        new Erfurt_Sparql_Query2_ConditionalOrExpression($filterType)
                     );
                 }
             } else {
@@ -347,7 +349,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     $ggp = new Erfurt_Sparql_Query2_GroupGraphPattern();
                     // add triplen
                     $ggp->addTriple(
-                        $searchVar, 
+                        $searchVar,
                         new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
                         new Erfurt_Sparql_Query2_IriRef($setup->config->rootElement)
                     );
@@ -435,7 +437,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
             if ($backend == "zenddb") {
                 $queryUnion = new Erfurt_Sparql_Query2_OptionalGraphPattern();
             } else {
-                $queryUnion = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern(); 
+                $queryUnion = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
             }
             if (isset($setup->config->hierarchyRelations->in)) {
                 if (count(self::a($setup->config->hierarchyRelations->in)) > 1) {
@@ -511,7 +513,6 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     $queryOptional->addElement($queryUnion);
                     $elements[] = $queryOptional;
                 }
-                
 
                 $filter[] = new Erfurt_Sparql_Query2_Regex(
                     new Erfurt_Sparql_Query2_Str(new Erfurt_Sparql_Query2_Var('super')),
@@ -540,7 +541,8 @@ class NavigationHelper extends OntoWiki_Component_Helper
         return $elements;
     }
 
-    protected static function a($a){
+    protected static function a($a)
+    {
         return OntoWiki_Extension_Manager::doapArrayFixer($a);
     }
 }
