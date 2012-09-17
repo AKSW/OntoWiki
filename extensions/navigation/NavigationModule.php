@@ -11,22 +11,20 @@
  *
  * this is the main navigation module
  *
- * @category   OntoWiki
- * @package    Extensions_Navigation
- * @author     Sebastian Dietzold <sebastian@dietzold.de>
- * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @category OntoWiki
+ * @package  Extensions_Navigation
+ * @author   {@link http://sebastian.tramp.name Sebastian Tramp}
  */
 class NavigationModule extends OntoWiki_Module
 {
     protected $_session = null;
 
-    public function init() 
+    public function init()
     {
         $this->_session = $this->_owApp->session;
     }
 
-    public function getTitle() 
+    public function getTitle()
     {
         return "Navigation";
     }
@@ -37,13 +35,13 @@ class NavigationModule extends OntoWiki_Module
      *
      * @return string
      */
-    public function getMenu() 
+    public function getMenu()
     {
         // check if menu must be shown
         if (!$this->_privateConfig->defaults->showMenu) {
             return new OntoWiki_Menu();
         }
-		
+
         // build main menu (out of sub menus below)
         $mainMenu = new OntoWiki_Menu();
 
@@ -100,11 +98,11 @@ class NavigationModule extends OntoWiki_Module
 
         return $mainMenu;
     }
-    
+
     /**
      * Returns the content
      */
-    public function getContents() 
+    public function getContents()
     {
         // scripts and css only if module is visible
         $this->view->headScript()->appendFile($this->view->moduleUrl . 'navigation.js');
@@ -122,8 +120,8 @@ class NavigationModule extends OntoWiki_Module
                 'var navigationConfig = '.json_encode($this->_privateConfig->toArray()) . ';' .PHP_EOL
             );
         }
-        
-        $sessionKey = 'Navigation'.(isset($config->_session->identifier) ? $config->_session->identifier : '');        
+
+        $sessionKey = 'Navigation'.(isset($config->_session->identifier) ? $config->_session->identifier : '');
         $stateSession = new Zend_Session_Namespace($sessionKey);
         if (isset($stateSession) && ( $stateSession->model == (string)$this->_owApp->selectedModel)) {
             // load setup
@@ -138,17 +136,17 @@ class NavigationModule extends OntoWiki_Module
                 '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
             );
         }
-        
+
         // init view from scratch
         $this->view->inlineScript()->prependScript(
             '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
         );
 
         $data['session'] = $this->_session->navigation;
-        $content = $this->render('navigation', $data, 'data'); // 
+        $content = $this->render('navigation', $data, 'data'); //
         return $content;
     }
-	
+
     public function shouldShow()
     {
         return isset($this->_owApp->selectedModel);
@@ -156,10 +154,9 @@ class NavigationModule extends OntoWiki_Module
 
     private function checkConfig($config)
     {
-        $resVar = new Erfurt_Sparql_Query2_Var('resourceUri');
+        $resVar  = new Erfurt_Sparql_Query2_Var('resourceUri');
         $typeVar = new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE);
-
-        $query = new Erfurt_Sparql_Query2();
+        $query   = new Erfurt_Sparql_Query2();
         $query->addProjectionVar($resVar)->setDistinct(true);
 
         $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
@@ -189,9 +186,8 @@ class NavigationModule extends OntoWiki_Module
         return count($allResults);
     }
 
-    protected static function a($a){
+    protected static function a($a)
+    {
         return OntoWiki_Extension_Manager::doapArrayFixer($a);
     }
 }
-
-
