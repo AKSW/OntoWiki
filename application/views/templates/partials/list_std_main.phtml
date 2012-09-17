@@ -66,8 +66,8 @@ $this->headScript()->prependScript(
                about="<?php echo $property['uri'] ?>"
                href="<?php echo $property['url'] ?>"><?php echo $property['title']; ?></a>
                 <?php if ($property['inverse']){ ?><sup>-1</sup><?php } ?>
-                <a class="tablesort up" p="<?php echo $property['uri'] ?>" onclick="javascript:changeSorting(this)">&uArr;</a>
-                <a class="tablesort down" p="<?php echo $property['uri'] ?>" onclick="javascript:changeSorting(this)">&dArr;</a>
+                <a class="tablesort up small" p="<?php echo $property['uri'] ?>" onclick="javascript:changeSorting(this)">&#9650;</a>
+                <a class="tablesort down small" p="<?php echo $property['uri'] ?>" onclick="javascript:changeSorting(this)">&#9660;</a>
         </th>
         <?php endforeach; ?>
     </tr>
