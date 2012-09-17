@@ -2156,6 +2156,10 @@ a.open:hover {
     display: none;
 }
 
+.small {
+    font-size: 0.8em;
+}
+
 /* 8. GUI-Facelift ---------------------------------------------------------- */
 
 /**
