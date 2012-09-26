@@ -1,6 +1,10 @@
-<?php 
+<?php
 //url will be used to generate links to related lists (show properties as list)
-$url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));$url->setParam('init', true);
+$url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'));
+$url->setParam('init', true);
+
+// viewUrl will be used to generate links to object resources
+$viewUrl = new OntoWiki_Url(array('controller' => 'resource','action' => 'properties'));
 ?>
 <tr class="<?php echo $this->odd ? 'odd' : 'even'; ?>">
         <!--td class="selector">
@@ -8,8 +12,8 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
         </td-->
         <td class="enumeration"><label for="selector-<?php echo $this->i ?>"><?php echo $this->i ?>.</label></td>
         <td>
-            <?php if($this->instance['type'] == 'uri'){ 
-            //first table cell in row - instance title/label    
+            <?php if($this->instance['type'] == 'uri'){
+            //first table cell in row - instance title/label
             ?>
             <a class="hasMenu expandable"
                about="<?php echo $this->instanceUri ?>"
@@ -23,7 +27,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                         <?php echo $this->instance['title'] ?>
             </a>
             <br/>
-                <?php if (isset($this->instanceData[$this->instanceUri]) && isset($this->instanceData[$this->instanceUri]['__TYPE'])): 
+                <?php if (isset($this->instanceData[$this->instanceUri]) && isset($this->instanceData[$this->instanceUri]['__TYPE'])):
                 //print the types/classes this instance belongs to
                 ?>
                     <?php if (count($this->instanceData[$this->instanceUri]['__TYPE']) > 1): ?>
@@ -43,14 +47,14 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                 Literal
             <?php } ?>
         </td>
-            <?php foreach ($this->propertyInfo as $property):   
-                if($property['hidden']){continue;} 
+            <?php foreach ($this->propertyInfo as $property):
+                if($property['hidden']){continue;}
                 //print all properties of that instance, each in a table cell
                 ?><td>
                 <?php if (array_key_exists($this->instanceUri, $this->instanceData) &&
                           array_key_exists($property['varName'], $this->instanceData[$this->instanceUri]) &&
                           !empty($this->instanceData[$this->instanceUri][$property['varName']])):
-                    
+
                         if(count($this->instanceData[$this->instanceUri][$property['varName']]) > 1): ?>
                     <ul class="bullets-none has-contextmenu-area">
                         <?php $i=0;
@@ -92,28 +96,28 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                             //print the value itself until OW_SHOW_MAX
                             if (isset($value['url']) && $value['url'] !== null && $i<OW_SHOW_MAX+1): //show uris until OW_SHOW_MAX ?>
                                 <li>
-                                    <a about="<?php echo $this->instanceUri ?>" 
+                                    <a about="<?php echo $this->instanceUri ?>"
                                        class="hasMenu"
                                        rel="<?php echo $this->curie($property['uri']) ?>"
-                                       href="<?php echo $value['url'] ?>" 
+                                       href="<?php echo $value['url'] ?>"
                                        resource="<?php echo $value['uri'] ?>">
                                            <?php echo $value['value']; ?>
                                     </a>
                                 </li>
                             <?php elseif (isset($value['url']) && $value['url'] !== null): //don't show uri value, which are > OW_SHOW_MAX ?>
                                 <li>
-                                    <a about="<?php echo $this->instanceUri ?>" 
+                                    <a about="<?php echo $this->instanceUri ?>"
                                        style="display: none;"
                                        class="hasMenu"
                                        rel="<?php echo $this->curie($property['uri']) ?>"
-                                       href="<?php echo $value['url'] ?>" 
+                                       href="<?php echo $value['url'] ?>"
                                        resource="<?php echo $value['uri'] ?>">
                                            <?php echo $value['value']; ?>
                                     </a>
                                 </li>
                             <?php elseif ($value['url'] == null && $i < OW_SHOW_MAX+1): //show literals until OW_SHOW_MAX ?>
                                 <li>
-                                    <span about="<?php echo $this->instanceUri ?>" 
+                                    <span about="<?php echo $this->instanceUri ?>"
                                        property="<?php echo $this->curie($property['uri']) ?>"
                                        content="<?php echo $value['uri'] ?>">
                                            <?php echo $value['value']; ?>
@@ -121,7 +125,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                 </li>
                             <?php elseif ($value['url'] == null): //don't show literal values, which are > OW_SHOW_MAX ?>
                                 <li>
-                                    <span about="<?php echo $this->instanceUri ?>" 
+                                    <span about="<?php echo $this->instanceUri ?>"
                                        style="display: none;"
                                        property="<?php echo $this->curie($property['uri']) ?>"
                                        content="<?php echo $value['uri'] ?>">
@@ -131,7 +135,7 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                             <?php endif; ?>
                         <?php endforeach;?>
                     </ul>
-                    
+
                     <?php else: ?>
                         <?php if (isset($this->instanceData[$this->instanceUri][$property['varName']]) && $this->instanceData[$this->instanceUri][$property['varName']][0]['url']): ?>
                         <?php /*inverse properties section*/ ?>
@@ -145,7 +149,16 @@ $url = new OntoWiki_Url(array('controller' => 'resource','action' => 'instances'
                                 </a>
                             </div>
                             <?php endif; ?>
+                            <?php
+                                // setup the viewUrl to be rendered as a link
+                                // to the objects properties page
+                                $viewUrl->setParam(
+                                    'r',
+                                    $this->instanceData[$this->instanceUri][$property['varName']][0]['uri']
+                                );
+                            ?>
                             <a about="<?php echo $this->instanceUri ?>"
+                                href="<?php echo $viewUrl ?>"
                                class="hasMenu"
                                rel="<?php echo $this->curie($property['uri']) ?>"
                                resource="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['uri'] ?>"
