@@ -34,6 +34,7 @@ set_error_handler('errorHandler');
  * Boostrap constants
  * @since 0.9.5
  */
+if (!defined('__DIR__')) define('__DIR__', dirname(__FILE__)); // fix for PHP < 5.3.0
 define('BOOTSTRAP_FILE', basename(__FILE__));
 define('ONTOWIKI_ROOT', rtrim(__DIR__, '/\\') . DIRECTORY_SEPARATOR);
 define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application'.DIRECTORY_SEPARATOR);

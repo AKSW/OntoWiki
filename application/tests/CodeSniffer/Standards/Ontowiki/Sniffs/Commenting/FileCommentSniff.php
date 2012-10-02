@@ -8,7 +8,7 @@
 
 /**
  * Ontowiki_Sniffs_Commenting_FileCommentSniff.
- * 
+ *
  * Test for the right file comment in all php files. Seperated check for the copyright Year
  *
  * PHP version 5
@@ -16,7 +16,6 @@
  * @category  PHP
  * @package   PHP_CodeSniffer_Sniff
  * @author    Lars Eidam <lars.eidam@googlemail.com>
- * @link      http://code.google.com/p/ontowiki/
  */
 
 /**
@@ -26,7 +25,6 @@
  * @category  PHP
  * @package   PHP_CodeSniffer_Sniff
  * @author    Lars Eidam <lars.eidam@googlemail.com>
- * @link      http://code.google.com/p/ontowiki/
  */
 class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 {
@@ -37,6 +35,8 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
 
     function __construct()
     {
+        // this avoid timezone warnings
+        date_default_timezone_set('Europe/Berlin');
         $this->_date = date("Y");
         $this->_commentStr = array(
         "/**\n",
@@ -121,5 +121,3 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
     }//end process()
 
 }//end class
-
-?>
