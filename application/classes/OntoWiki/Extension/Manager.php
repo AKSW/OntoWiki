@@ -889,7 +889,7 @@ class OntoWiki_Extension_Manager
             }
 
             foreach ($values as $value) {
-                $value = self::getValue($value);
+                $value = self::getValue($value, $memModel);
                 self::addValue($mappedKey, $value, $config[$section]);
             }
         }
@@ -911,7 +911,7 @@ class OntoWiki_Extension_Manager
                 }
 
                 foreach ($values as $value) {
-                    $value = self::getValue($value);
+                    $value = self::getValue($value, $memModel);
                     self::addValue($mappedKey, $value, $config['modules'][$name]);
                 }
             }
@@ -956,13 +956,42 @@ class OntoWiki_Extension_Manager
      * @param $value
      * @return bool
      */
-    private static function getValue($value)
+    private static function getValue($value, Erfurt_Rdf_MemoryModel $memModel = null)
     {
         if ($value['type'] == 'literal' &&
             isset($value['datatype']) &&
             $value['datatype'] == 'http://www.w3.org/2001/XMLSchema#boolean'
         ) {
             $value = $value['value'] == 'true';
+        } else if ($memModel !== null && ($value['type'] == 'uri' || $value['type'] == 'bnode')) {
+            // Handle collections and containers (rdf:Bag, rdf:Seq) not rdf:Alt because of a bug
+            $type = $memModel->getValue($value['value'], EF_RDF_NS.'type');
+            if ($type == EF_RDF_NS.'Bag' || $type == EF_RDF_NS.'Seq') {
+                // This is a container, convert it to an array
+                $properties = $memModel->getPO($value['value']);
+                $value = array();
+                foreach ($properties as $property => $entry) {
+                    if (strstr($property, EF_RDF_NS.'_')) {
+                        $value[] = $entry[0]['value'];
+                    }
+                }
+            } else if ($type == EF_RDF_NS.'nil') {
+                $value = array();
+            } else {
+                $first = $memModel->getValue($value['value'], EF_RDF_NS.'first');
+                $rest = $memModel->getValue($value['value'], EF_RDF_NS.'rest');
+                if (count($first) > 0 && count($rest) > 0) {
+                    // This is a collection, convert it to an array
+                    $value = array($first);
+                    while ($rest != EF_RDF_NS.'nil') {
+                        $value[] = $memModel->getValue($rest, EF_RDF_NS.'first');
+                        $rest = $memModel->getValue($rest, EF_RDF_NS.'rest');
+                    }
+                } else {
+                    // unknown Resource
+                    $value = $value['value'];
+                }
+            }
         } else {
             $value = $value['value'];
         }
@@ -982,9 +1011,17 @@ class OntoWiki_Extension_Manager
         if (!isset($to[$key])) { //first entry for that key
             $to[$key] = $value;
         } else if (is_array($to[$key])) { //there are already multiple values for that key
-            $to[$key][] = $value;
+            if (is_array($value)) {
+                $to[$key] = array_merge($value, $to[$key]);
+            } else {
+                $to[$key][] = $value;
+            }
         } else {        //it the second entry for that key, turn to array
-            $to[$key] = array($to[$key], $value);
+            if (is_array($value)) {
+                $to[$key] = array_merge(array($to[$key]), $value);
+            } else {
+                $to[$key] = array($to[$key], $value);
+            }
         }
     }
 
@@ -1053,7 +1090,7 @@ class OntoWiki_Extension_Manager
             } else {
                 $mappedKey = self::getPrivateKey($key, $privateNS, $mapping);
                 foreach ($values as $value) {
-                    $value = self::getValue($value);
+                    $value = self::getValue($value, $memModel);
                     self::addValue($mappedKey, $value, $kv);
                 }
             }
@@ -1066,7 +1103,7 @@ class OntoWiki_Extension_Manager
      * load configs for an extension
      * - respect local ini's
      * - fix missing or dirty values
-     * @param $name string
+     * @param $name string containing the name of an extension
      * @return Zend_Config
      */
     private function _loadConfigs($name)
