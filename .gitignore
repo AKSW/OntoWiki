@@ -8,6 +8,7 @@
 /cache
 /uploads
 /libraries/Zend
+/logs
 
 # aksw specific mud
 /BlogPost
