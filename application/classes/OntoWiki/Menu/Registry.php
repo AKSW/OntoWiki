@@ -1,10 +1,9 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -15,8 +14,6 @@
  *
  * @category OntoWiki
  * @package OntoWiki_Classes_Menu
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Menu_Registry
@@ -99,9 +96,9 @@ class OntoWiki_Menu_Registry
         $owApp = OntoWiki::getInstance();
 
         // user sub menu
-        if ($owApp->erfurt->isActionAllowed('RegisterNewUser') && 
+        if ($owApp->erfurt->isActionAllowed('RegisterNewUser') &&
             !(isset($owApp->config->ac) && ((boolean)$owApp->config->ac->deactivateRegistration === true))) {
-            
+
             if (!($owApp->erfurt->getAc() instanceof Erfurt_Ac_None)) {
                 $userMenu = new OntoWiki_Menu();
                 $userMenu->setEntry('Register New User', $owApp->config->urlBase . 'application/register');
@@ -146,8 +143,8 @@ class OntoWiki_Menu_Registry
                         ->*/setEntry('Extras', $extrasMenu)
                         ->setEntry('Help', $helpMenu);
 
-        // add cache entry only in debug mode
-        if (defined('_OWDEBUG')) {
+        // add cache entry only if use is allowed to use debug action
+        if ($owApp->erfurt->isActionAllowed('Debug')) {
             $debugMenu = new OntoWiki_Menu();
             $debugMenu->setEntry('Clear Module Cache', $owApp->config->urlBase . 'debug/clearmodulecache')
                       ->setEntry('Clear Translation Cache', $owApp->config->urlBase . 'debug/cleartranslationcache')

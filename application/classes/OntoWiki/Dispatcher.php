@@ -126,9 +126,12 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
     {
         // Zend 1.10+ changes
         $className = $this->getControllerClass($request);
+        $actionMethod = strtolower($request->getActionName()) . 'Action';
 
         if (class_exists($className, false)) {
-            return true;
+            if (method_exists($className, $actionMethod)) {
+                return true;
+            }
         }
 
         $fileSpec    = $this->classToFilename($className);
@@ -136,7 +139,11 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         $test        = $dispatchDir . DIRECTORY_SEPARATOR . $fileSpec;
 
         if (Zend_Loader::isReadable($test)) {
-            return true;
+            require_once $test;
+
+            if (method_exists($className, $actionMethod)) {
+                return true;
+            }
         }
 
         /**
@@ -156,13 +163,13 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         $event->uri     = $this->urlBase . $pathInfo;
         $event->request = $request;
 
-        // We need to make sure that registered plugins return a boolean value!
-        // Otherwise we return false.
-        $eventResult = $event->trigger();
-        if (is_bool($eventResult)) {
-            return $eventResult;
+        $eventResult = (bool)$event->trigger();
+        if (!$eventResult) {
+            if (class_exists($className, false)) {
+                // give a chance to let class handle (e.g. index controller news action default)
+                return true;
+            }
         }
-
-        return false;
+        return $eventResult;
     }
 }
