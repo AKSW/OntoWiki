@@ -1,0 +1,8 @@
+The OntoWiki "Dark Orange" Stylesheet is an add-on top of the default
+Silverblue theme styles.
+
+## Activation
+
+Add to you config.ini:
+
+    themes.styles.darkorange = "darkorange"

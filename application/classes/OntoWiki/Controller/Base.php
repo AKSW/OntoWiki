@@ -90,6 +90,14 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
                 );
             }
         }
+        
+        // check config for additional styles
+        if ($styles_extra = $this->_config->themes->styles) {
+            $this->view->themeExtraStyles = $styles_extra->toArray();
+        }
+        else {
+            $this->view->themeExtraStyles = array();
+        }
 
         // disable layout for Ajax requests
         if ($this->_request->isXmlHttpRequest()) {
