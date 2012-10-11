@@ -66,7 +66,7 @@
  owconfig:config [
               a owconfig:Config;
               owconfig:id "instanceRelation";
-              :out (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#subClassOf>)
+              :out (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
         ];
           :hiddenNS (
                 <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -106,7 +106,7 @@
               owconfig:id "instanceRelation";
               :out (<http://www.w3.org/2000/01/rdf-schema#subPropertyOf>)
         ];
- :showImplicitElements "false"^^xsd:boolean ;
+          :showImplicitElements "false"^^xsd:boolean ;
           :showEmptyElements "true"^^xsd:boolean ;
           :showCounts "false"^^xsd:boolean ;
           :hideDefaultHierarchy "false"^^xsd:boolean ;

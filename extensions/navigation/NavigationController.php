@@ -678,6 +678,36 @@ class NavigationController extends OntoWiki_Controller_Component
         // init union var
         $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
         // parse config
+        if (isset($setup->config->hierarchyRelations->out)) {
+            foreach ($setup->config->hierarchyRelations->out as $rel) {
+                // create new graph pattern
+                $groupPattern = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $groupPattern->addTriple(
+                    $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    $subVar
+                );
+                // add triplet to union var
+                $union->addElement($groupPattern);
+            }
+        }
+        // parse config
+        if (isset($setup->config->hierarchyRelations->in)) {
+            foreach ($setup->config->hierarchyRelations->in as $rel) {
+                // create new graph pattern
+                $groupPattern = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $groupPattern->addTriple(
+                    $subVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    $searchVar
+                );
+                // add triplet to union var
+                $union->addElement($groupPattern);
+            }
+        }
+        // parse config
         if (isset($setup->config->instanceRelation->out)) {
             foreach ($setup->config->instanceRelation->out as $rel) {
                 // create new graph pattern
