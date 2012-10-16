@@ -905,7 +905,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $or = new Erfurt_Sparql_Query2_ConditionalOrExpression();
             foreach ($subClasses as $subclass) {
                 $or->addElement(
-                    new Erfurt_Sparql_Query2_sameTerm(
+                    new Erfurt_Sparql_Query2_Equals(
                         $typeVar,
                         new Erfurt_Sparql_Query2_IriRef($subclass)
                     )
