@@ -138,9 +138,15 @@ class ModelController extends OntoWiki_Controller_Base
             try {
                 $this->_handleImport($post, false);
             } catch (Exception $e) {
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message('Error importing statements: ' . $e->getMessage(), OntoWiki_Message::ERROR)
-                );
+                if (defined('_OWDEBUG')) {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message('Error importing statements: ' . $e->getMessage(), OntoWiki_Message::ERROR)
+                    );
+                } else {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message('There was a problem while importing the data. Please contact your administrator.', OntoWiki_Message::ERROR)
+                    );
+                }
                 return;
             }
 
