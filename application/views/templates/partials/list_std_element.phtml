@@ -161,8 +161,7 @@ $viewUrl = new OntoWiki_Url(array('controller' => 'resource','action' => 'proper
                                 href="<?php echo $viewUrl ?>"
                                class="hasMenu"
                                rel="<?php echo $this->curie($property['uri']) ?>"
-                               resource="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['uri'] ?>"
-                               content="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['value'] ?>">
+                               resource="<?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['uri'] ?>">
                                             <?php echo $this->instanceData[$this->instanceUri][$property['varName']][0]['value'] ?>
                             </a>
                         </div>
