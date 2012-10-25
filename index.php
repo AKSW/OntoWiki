@@ -31,7 +31,7 @@ function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
 set_error_handler('errorHandler');
 
 /**
- * Boostrap constants
+ * Bootstrap constants
  * @since 0.9.5
  */
 if (!defined('__DIR__')) define('__DIR__', dirname(__FILE__)); // fix for PHP < 5.3.0

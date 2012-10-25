@@ -106,7 +106,7 @@
               owconfig:id "instanceRelation";
               :out (<http://www.w3.org/2000/01/rdf-schema#subPropertyOf>)
         ];
- :showImplicitElements "false"^^xsd:boolean ;
+          :showImplicitElements "false"^^xsd:boolean ;
           :showEmptyElements "true"^^xsd:boolean ;
           :showCounts "false"^^xsd:boolean ;
           :hideDefaultHierarchy "false"^^xsd:boolean ;

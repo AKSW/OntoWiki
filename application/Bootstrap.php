@@ -13,8 +13,6 @@
  *
  * @category OntoWiki
  * @package OntoWiki_Bootstrap
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
@@ -120,18 +118,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         } catch (Zend_Config_Exception $e) {
             $tryDistConfig = true;
         }
-        
+
         if ($tryDistConfig === true) {
             try {
                 $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini.dist', 'private', true);
                 $config->merge($privateConfig);
             } catch (Zend_Config_Exception $e) {
-                $message = '<p>OntoWiki can not find a proper configuration.</p>' . PHP_EOL 
-                         . '<p>Maybe you have to copy and modify the distributed ' 
-                         . '<code>config.ini.dist</code> file?</p>'. PHP_EOL 
-                         . '<details><summary>Error Details</summary>' 
+                $message = '<p>OntoWiki can not find a proper configuration.</p>' . PHP_EOL
+                         . '<p>Maybe you have to copy and modify the distributed '
+                         . '<code>config.ini.dist</code> file?</p>'. PHP_EOL
+                         . '<details><summary>Error Details</summary>'
                          . $e->getMessage() . '</details>';
-                         
+
                 throw new OntoWiki_Exception($message);
             }
         }
@@ -150,17 +148,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->libraries->path = rtrim($config->libraries->path, '/\\') . '/';
         $config->cache->path     = rtrim($config->cache->path, '/\\') . '/';
         $config->log->path       = rtrim($config->log->path, '/\\') . '/';
-        
+
         // support absolute path
         $matches = array();
         if (!(preg_match('/^(\w:[\/|\\\\]|\/)/', $config->cache->path, $matches) === 1)) {
             $config->cache->path = ONTOWIKI_ROOT . $config->cache->path;
         }
-        
+
         //force caching
-        if(!is_writable($config->cache->path)){
-            throw new OntoWiki_Exception('<p>OntoWiki can not write to the "cache" folder.</p>' . PHP_EOL .
-                '<p>Maybe you have to create the folder or allow write access for the webserver user?</p>');
+        if (!is_writable($config->cache->path)) {
+            throw new OntoWiki_Exception(
+                '<p>OntoWiki can not write to the "cache" folder.</p>' . PHP_EOL .
+                '<p>Maybe you have to create the folder or allow write access for the webserver user?</p>'
+            );
         }
 
         // set path variables
@@ -185,11 +185,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             $serverName = 'localhost';
         }
 
-        $urlBase = sprintf('%s://%s%s%s',
-                           $protocol,
-                           $serverName,
-                           $port,
-                           $rewriteBase);
+        $urlBase = sprintf(
+            '%s://%s%s%s',
+            $protocol,
+            $serverName,
+            $port,
+            $rewriteBase
+        );
 
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);
@@ -315,11 +317,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // initialize logger
         if (is_writable($config->log->path) && ((boolean)$config->log->level !== false)) {
             $levelFilter = new Zend_Log_Filter_Priority((int)$config->log->level, '<=');
-            
+
             $logName = $config->log->path . 'ontowiki';
-            
+
             // Check whether log can be created with $logName... otherwise append a number.
-            // This needs to be done, since logs may be created by other processes (e.g. with 
+            // This needs to be done, since logs may be created by other processes (e.g. with
             // testing) and thus can't be opened anymore.
             for ($i = 0; $i<10; ++$i) {
                 try {
@@ -328,7 +330,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                         $fullLogName .= '_' . $i;
                     }
                     $fullLogName .= '.log';
-                    
+
                     $writer = new Zend_Log_Writer_Stream($fullLogName);
                     if (null !== $writer) {
                         break;
@@ -337,7 +339,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     // Nothing to do... just continue
                 }
             }
-            
+
             if (null !== $writer) {
                 $logger = new Zend_Log($writer);
                 $logger->addFilter($levelFilter);
@@ -389,7 +391,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             extract($config->routes->{$route}->defaults->toArray());
 
             // and add last routed component
-            OntoWiki::getInstance ()->getNavigation()->register(
+            OntoWiki::getInstance()->getNavigation()->register(
                 'index',
                 array(
                     'route'      => $route,

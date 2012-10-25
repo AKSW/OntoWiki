@@ -24,6 +24,39 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
         // init union var
         $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+
+        // parse config
+        if (isset($setup->config->hierarchyRelations->out)) {
+            foreach ($setup->config->hierarchyRelations->out as $rel) {
+                // create new graph pattern
+                $ggp = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $ggp->addTriple(
+                    $classVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    $searchVar
+                );
+                // add triplet to union var
+                $union->addElement($ggp);
+            }
+        }
+
+        // parse config
+        if (isset($setup->config->hierarchyRelations->in)) {
+            foreach ($setup->config->hierarchyRelations->in as $rel) {
+                // create new graph pattern
+                $ggp = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                // add triplen
+                $ggp->addTriple(
+                    $searchVar,
+                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    $classVar
+                );
+                // add triplet to union var
+                $union->addElement($ggp);
+            }
+        }
+
         // parse config
         if (isset($setup->config->instanceRelation->in)) {
             foreach ($setup->config->instanceRelation->in as $rel) {
@@ -300,6 +333,42 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 $subVar = new Erfurt_Sparql_Query2_Var('sub');
                 // init union var
                 $union = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+                // parse config
+                if (isset($setup->config->hierarchyRelations->out)) {
+                    if (is_string($setup->config->hierarchyRelations->out)) {
+                        $setup->config->hierarchyRelations->out = array($setup->config->hierarchyRelations->out);
+                    }
+                    foreach ($setup->config->hierarchyRelations->out as $rel) {
+                        // create new graph pattern
+                        $ggp = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        // add triplen
+                        $ggp->addTriple(
+                            $searchVar,
+                            new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                            $subVar
+                        );
+                        // add triplet to union var
+                        $union->addElement($ggp);
+                    }
+                }
+                // parse config
+                if (isset($setup->config->hierarchyRelations->in)) {
+                    if (is_string($setup->config->hierarchyRelations->in)) {
+                        $setup->config->hierarchyRelations->in = array($setup->config->hierarchyRelations->in);
+                    }
+                    foreach ($setup->config->hierarchyRelations->in as $rel) {
+                        // create new graph pattern
+                        $ggp = new Erfurt_Sparql_Query2_GroupGraphPattern();
+                        // add triplen
+                        $ggp->addTriple(
+                            $subVar,
+                            new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                            $searchVar
+                        );
+                        // add triplet to union var
+                        $union->addElement($ggp);
+                    }
+                }
                 // parse config
                 if (isset($setup->config->instanceRelation->out)) {
                     if (is_string($setup->config->instanceRelation->out)) {
