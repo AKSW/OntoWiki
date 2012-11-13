@@ -58,7 +58,7 @@ class PingbackController extends OntoWiki_Controller_Component
             }
 
             $ping = new Erfurt_Ping($options);
-            echo $ping->ping($_POST['source'], $_POST['target']);
+            echo $ping->receive($_POST['source'], $_POST['target']);
 
             return;
         } else {
