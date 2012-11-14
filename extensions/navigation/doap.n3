@@ -180,14 +180,9 @@
               :in (<http://www.w3.org/2004/02/skos/core#broader>) ;
               :out (<http://www.w3.org/2004/02/skos/core#narrower>)
         ];
- owconfig:config [
-              a owconfig:Config;
-              owconfig:id "instanceRelation";
-              :in (<http://www.w3.org/2004/02/skos/core#narrower>) ;
-              :out (<http://www.w3.org/2004/02/skos/core#broader>)
-        ];
- :titleMode "titleHelper" ;
-          :showCounts "false"^^xsd:boolean
+        :checkSub "true"^^xsd:boolean ;
+        :titleMode "titleHelper" ;
+        :showCounts "true"^^xsd:boolean
     ];
  owconfig:config [
           a owconfig:Config;

@@ -186,9 +186,9 @@ class NavigationController extends OntoWiki_Controller_Component
         // set cache id
         $cid = 'nav_'.md5(serialize($setup).$this->_model);
 
-        /*$this->_owApp->logger->info(
+        $this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Input: ' .PHP_EOL . print_r($setup,true)
-        );*/
+        );//*/
 
         // try to load results from cache
         if (
@@ -258,9 +258,9 @@ class NavigationController extends OntoWiki_Controller_Component
         }
 
         // error logging
-        /*$this->_owApp->logger->info(
+        $this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
-        );*/
+        );//*/
 
         // get extended results
         $allResults = $this->_model->sparqlQuery(
@@ -340,9 +340,9 @@ class NavigationController extends OntoWiki_Controller_Component
         }
 
         // log results
-        /*$this->_owApp->logger->info(
+        $this->_owApp->logger->info(
             'NavigationController _queryNavigationEntries Result: '  . PHP_EOL . print_r($allResults,true)
-        );*/
+        );//*/
 
         // set titleMode from config or set it to null if config is not assigned
         if (isset($setup->config->titleMode)) {
@@ -469,7 +469,7 @@ class NavigationController extends OntoWiki_Controller_Component
             if($show) $entries[$uri] = $entry;
         }
 
-        //$this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
+        $this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
 
         if (isset($setup->config->cache) && $setup->config->cache == true) {
             // save results to cache
@@ -761,6 +761,12 @@ class NavigationController extends OntoWiki_Controller_Component
         $query->setCountStar(true);
         $query->setDistinct();
         $query->addElements(NavigationHelper::getInstancesTriples($uri, $setup));
+
+        // error logging
+        $this->_owApp->logger->info(
+            'NavigationController: COUNTQUERY: ' .$query->__toString()
+        );//*/
+
         return $query;
     }
 
@@ -788,8 +794,10 @@ class NavigationController extends OntoWiki_Controller_Component
         $query->addProjectionVar($subVar);
         $query->setDistinct();
 
-        //$this->_owApp->logger->info("data: ".print_r($query,true));
+        $this->_owApp->logger->info("data: ".print_r($query,true));
         $elements = array();
+        $in = array();
+        $out = array();
 
         if (isset($setup->config->hierarchyRelations->in)) {
             if (count($setup->config->hierarchyRelations->in) > 1) {
@@ -808,7 +816,7 @@ class NavigationController extends OntoWiki_Controller_Component
                     // add triplet to union var
                     $unionSub->addElement($groupPattern);
                 }
-                $elements[] = $unionSub;
+                $in[] = $unionSub;
             } else {
                 $rel = $setup->config->hierarchyRelations->in;
                 // add optional sub relation
@@ -819,7 +827,7 @@ class NavigationController extends OntoWiki_Controller_Component
                     new Erfurt_Sparql_Query2_IriRef($rel[0]),
                     $searchVar
                 );
-                $elements[] = $queryOptional;
+                $in[] = $queryOptional;
             }
         }
         if (isset($setup->config->hierarchyRelations->out)) {
@@ -839,7 +847,7 @@ class NavigationController extends OntoWiki_Controller_Component
                     // add triplet to union var
                     $unionSub->addElement($optPattern);
                 }
-                $elements[] = $unionSub;
+                $out[] = $unionSub;
             } else {
                 $rel = $setup->config->hierarchyRelations->out;
                 // add optional sub relation
@@ -850,9 +858,13 @@ class NavigationController extends OntoWiki_Controller_Component
                     new Erfurt_Sparql_Query2_IriRef($rel[0]),
                     $subVar
                 );
-                $elements[] = $queryOptional;
+                $out[] = $queryOptional;
             }
         }
+        $inout = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
+        $inout->addElements($in);
+        $inout->addElements($out);
+        $elements[] = $inout;
         /*$elements[] = new Erfurt_Sparql_Query2_Triple(
             $searchVar,
             new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
@@ -866,9 +878,9 @@ class NavigationController extends OntoWiki_Controller_Component
         $query->setLimit(1);
 
         // log results
-        /*$this->_owApp->logger->info(
+        $this->_owApp->logger->info(
             'NavigationController CHECK SUB: '  . PHP_EOL . $query->__toString()
-        );*/
+        );
 
         return $query;
     }
