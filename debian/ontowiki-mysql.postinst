@@ -28,9 +28,7 @@ echo "GRANT ALL PRIVILEGES ON $ow_db . * TO '$ow_user'@'localhost';" | $mysql_ru
 echo "flush privileges"
 echo "FLUSH PRIVILEGES ;" | $mysql_run
 
-chown www-data:www-data /usr/share/ontowiki/extensions
-chown www-data:www-data /var/log/ontowiki
-chown www-data:www-data /var/cache/ontowiki
+### APACHE CONFIG
 chown www-data:www-data /etc/ontowiki/config.ini
 chmod 600 /etc/ontowiki/config.ini
 

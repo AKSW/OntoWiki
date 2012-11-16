@@ -6,12 +6,10 @@ application/config usr/share/ontowiki/application
 application/controllers usr/share/ontowiki/application
 application/views usr/share/ontowiki/application
 application/favicon.png usr/share/ontowiki/application
+application/favicon.ico usr/share/ontowiki/application
 
 extensions      usr/share/ontowiki
 
 libraries/ARC2 usr/share/ontowiki/libraries/
 libraries/Mimeparse.php usr/share/ontowiki/libraries/
-libraries/RDFauthor/img usr/share/ontowiki/libraries/RDFauthor
-libraries/RDFauthor/libraries usr/share/ontowiki/libraries/RDFauthor
-libraries/RDFauthor/src usr/share/ontowiki/libraries/RDFauthor
 
