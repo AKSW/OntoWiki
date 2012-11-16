@@ -1,3 +1,12 @@
+ontowiki (0.9.7) lod; urgency=low
+
+  * GUI niceups
+  * lots of fixes
+  * https://github.com/AKSW/OntoWiki/issues?milestone=1&page=1&state=closed
+  * RDFauthor is now a separate package
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Fri, 16 Nov 2012 08:30:17 -0800
+
 ontowiki (0.9.6-21) lod2; urgency=low
 
   * fix RDFauthor integration
