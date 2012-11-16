@@ -96,6 +96,9 @@ class NavigationController extends OntoWiki_Controller_Component
             $this->view->showRoot = false;
         }*/
 
+        // trigger before output event
+        $this->startOutput($this->_setup);
+
         // set view variable for the show more button
         if ( (count($this->view->entries) > $this->_limit) && $this->_setup->state->lastEvent != "search") {
             // return only $_limit entries
@@ -148,8 +151,25 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->view->messages = $this->_messages;
         $this->view->setup    = $this->_setup;
 
+        // trigger after end output
+        $this->endOutput($this->_setup);
+
         // save state to session
         $this->savestateServer($this->view, $this->_setup);
+    }
+
+    private function startOutput($config)
+    {
+        $event = new Erfurt_Event('onNavigationStartOutput');
+        $event->config = $config;
+        $event->trigger();
+    }
+
+    private function endOutput($config)
+    {
+        $event = new Erfurt_Event('onNavigationEndOutput');
+        $event->config = $config;
+        $event->trigger();
     }
 
     /*
