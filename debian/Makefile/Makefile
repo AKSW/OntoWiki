@@ -16,6 +16,8 @@ clean:
 	rm -rf ../ontowiki-common
 	rm -rf ../ontowiki-mysql
 	rm -rf ../ontowiki-virtuoso
+	rm -rf ../files
+	rm -rf ../*.substvars
 
 package:
 
