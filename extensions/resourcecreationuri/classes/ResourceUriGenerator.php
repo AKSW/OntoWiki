@@ -312,7 +312,7 @@ class ResourceUriGenerator
             }
         }
 
-        $nameParts = $this->loadNamingSchema($uri);
+        $nameParts = $this->loadNamingSchema($newInstance);
         $uriParts = array();
 
         foreach ($nameParts as $part) {
@@ -381,44 +381,52 @@ class ResourceUriGenerator
 
     /**
      * Load Naming Scheme from Model or Ini
+     * @param $resource String|Array eigther the resource URI or an array with its properties
      * @return Array
      */
-    private function loadNamingSchema($resourceUri, $typeHint = null)
+    private function loadNamingSchema($resource)
     {
-        if ( $this->_config->fromModel ) {
+        if (isset($this->_config->namingSchemeProperty)) {
+            $schemeProperty = $this->_config->namingSchemeProperty;
 
-            // TODO Needs to be completly rewritten.
-            /*
-            $query          = new Erfurt_Sparql_Query2();
-            $schemaVar      = new Erfurt_Sparql_Query2_Var('schema');
+            // set the query result as empty array so we can be sure its an array
+            $result = array();
 
-            $subjectArray   = array_keys($this->insertData);
-
-            // Test if exists at least one subject and if this first subject has a type statement
-            if ( sizeof($subjectArray) > 0 &&
-                 array_key_exists($this->_config->property->type, $subjectArray)
-            ) {
-                $subjectUri     = current($subjectArray);
-                $typeArray      = current($this->insertData[$subjectUri][$this->_config->property->type]);
-                $type           = $typeArray['value'];
-
-                $query->addTriple(
-                    new Erfurt_Sparql_Query2_IriRef($type),
-                    new Erfurt_Sparql_Query2_IriRef($this->_config->namingSchemeProperty),
-                    $schemaVar
-                );
-
-                $query->setDistinct(true);
+            if (is_string($resource)) {
+                $resourceUri = $resource;
+                $query = 'SELECT ?scheme' . PHP_EOL;
+                $query.= 'WHERE {' . PHP_EOL;
+                $query.= '  <' . $resourceUri . '> a ?type .' . PHP_EOL;
+                $query.= '  ?type <' . $schemeProperty . '> ?scheme .' . PHP_EOL;
+                $query.= '}' . PHP_EOL;
 
                 $result = $this->_model->sparqlQuery($query);
 
-                if ( !empty($result['results']['bindings']) ) {
-                    $schema = current($result);
-                    return explode('/',$schema['schema']['value']);
+            } else if (is_array($resource)) {
+                $resourceProps = $resource;
+
+                $types = $resourceProps[$this->_config->property->type];
+
+                foreach ($types as $type) {
+                    if ($type['type'] == 'uri') {
+                        $query = 'SELECT ?scheme' . PHP_EOL;
+                        $query.= 'WHERE {' . PHP_EOL;
+                        $query.= '  <' . $type['value'] . '> <' . $schemeProperty . '> ?scheme .' . PHP_EOL;
+                        $query.= '}' . PHP_EOL;
+
+                        $result = $this->_model->sparqlQuery($query);
+                        if (count($result) > 0) {
+                            // break with the first type which has a sheme defined
+                            break;
+                        }
+                    }
                 }
             }
-            */
 
+            if (count($result) > 0) {
+                $scheme = $result[0]['scheme'];
+                return explode('/', $scheme);
+            }
         }
 
         return explode('/', $this->_config->defaultNamingScheme);
