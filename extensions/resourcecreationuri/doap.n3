@@ -21,27 +21,27 @@
   :newResourceUri "NewResource" ;
   :defaultNamingScheme "type/label" ;
   owconfig:config [
-      a owconfig:Config;
-      owconfig:id "property";
-      :type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ;
-      owconfig:config [
-          a owconfig:Config;
-          owconfig:id "label";
-          :skosPlabel <http://www.w3.org/2004/02/skos/core#prefLabel> ;
-          :dcTitle <http://purl.org/dc/elements/1.1/title> ;
-          :dcTitle2 <http://purl.org/dc/terms/title> ;
-          :swrcTitle <http://swrc.ontoware.org/ontology#title> ;
-          :foafName <http://xmlns.com/foaf/0.1/name> ;
-          :siocName <http://rdfs.org/sioc/ns#name> ;
-          :tagName <http://www.holygoat.co.uk/owl/redwood/0.1/tags/name> ;
-          :lgeodName <http://linkedgeodata.org/vocabulary#name> ;
-          :geoName <http://www.geonames.org/ontology#name> ;
-          :rdfsLabel <http://www.w3.org/2000/01/rdf-schema#label> ;
-          :accountName <http://xmlns.com/foaf/0.1/accountName> ;
-          :foafNick <http://xmlns.com/foaf/0.1/nick> ;
-          :foafSurname <http://xmlns.com/foaf/0.1/surname> ;
-          :skosAlabel <http://www.w3.org/2004/02/skos/core#altLabel>
-    ]
+    a owconfig:Config;
+    owconfig:id "property";
+    :title <http://aksw.org/schema/creationLabel> ;
+    :type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ;
+    :label (
+        <http://aksw.org/schema/creationLabel>
+        <http://www.w3.org/2004/02/skos/core#prefLabel>
+        <http://purl.org/dc/elements/1.1/title>
+        <http://purl.org/dc/terms/title>
+        <http://swrc.ontoware.org/ontology#title>
+        <http://xmlns.com/foaf/0.1/name>
+        <http://rdfs.org/sioc/ns#name>
+        <http://www.holygoat.co.uk/owl/redwood/0.1/tags/name>
+        <http://linkedgeodata.org/vocabulary#name>
+        <http://www.geonames.org/ontology#name>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+        <http://xmlns.com/foaf/0.1/accountName>
+        <http://xmlns.com/foaf/0.1/nick>
+        <http://xmlns.com/foaf/0.1/surname>
+        <http://www.w3.org/2004/02/skos/core#altLabel>
+    )
 ] .
 :resourcecreationuri doap:release :v1-0 .
 :v1-0 a doap:Version ;

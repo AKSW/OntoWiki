@@ -129,15 +129,21 @@ class ResourceUriGenerator {
      * @return string generated 'nice' URI
      */
     public function generateUri($resourceUri, $format = self::FORMAT_SPARQL, $data = array()) {
+        $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
+
+        if (isset($this->_config->property->title)) {
+            $titleHelper->prependTitleProperty($this->_config->property->title);
+        }
 
         // call format specific generation function
         switch ($format) {
             case self::FORMAT_SPARQL :
-                $return = $this->generateUriFromSparql($resourceUri, $data);
+                $return = $this->generateUriFromSparql($resourceUri, $titleHelper);
                 break;
             case self::FORMAT_RDFPHP :
                 if (is_array($data) && sizeof($data) > 0) {
-                    $return = $this->generateUriFromRdfphp($resourceUri, $data);
+                    $newInstance = $data[$resourceUri];
+                    $return = $this->generateUriFromRdfphp($resourceUri, $newInstance, $titleHelper);
                 } else {
                     //TODO what else
                 }
@@ -157,19 +163,15 @@ class ResourceUriGenerator {
     /**
      * 
      * Enter description here ...
-     * @param string $uri
-     * @param array $data
+     * @param   $uri string to convert to nice uri
+     * @param   $titleHelper TitleHelper instance to use to get titles for URIs
      */
-    private function generateUriFromSparql($uri,$data) {
-
-        $properties = array();
-        
+    private function generateUriFromSparql($uri, $titleHelper)
+    {
         $schema = $this->loadNamingSchema($uri);
-        
-        $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-        
+        $properties = array();
+
         foreach ($schema as $element) {
-            
             if (is_string($this->_config->property->$element)) {
                 $properties[$this->_config->property->$element] = array('element' => $element,'rank' => '1');
             } elseif (is_array($this->_config->property->$element->toArray())) {
@@ -279,18 +281,16 @@ class ResourceUriGenerator {
         return $base . $localName;
         
     }
-    
+
     /**
      * Nice uri building method
      * @param   $uri string to convert to nice uri
+     * @param   $newInstance array with properties of the new Resource
+     * @param   $titleHelper TitleHelper instance to use to get titles for URIs
      * @return  string nice uri
      */
-    private function generateUriFromRdfphp($uri,$data)
+    private function generateUriFromRdfphp($uri, $newInstance, $titleHelper)
     {
-        $newInstance = $data[$uri];
-        
-        $titleHelper = new OntoWiki_Model_TitleHelper($this->_model);
-        
         // prepare TitleHelper by adding all possible resources
         foreach ($newInstance as $prop => $object) {
             $titleHelper->addResource($prop);
@@ -299,57 +299,75 @@ class ResourceUriGenerator {
                     $titleHelper->addResource($value['value']);
                 }
             }
-        } 
-        
-        $nameParts = $this->loadNamingSchema($uri);
+        }
 
+        $nameParts = $this->loadNamingSchema($uri);
         $uriParts = array();
 
         foreach($nameParts as $part) {
-            if ( is_string($this->_config->property->$part) ) {
-                $property = $this->_config->property->$part;
-                if ( array_key_exists($property,$newInstance) && $value = current($newInstance[$property]) ) {
-                    if ($value['type'] === 'uri') {
-                        $uriParts[$part] = $this->convertChars($titleHelper->getTitle($value['value']));
-                    } else {
-                        $uriParts[$part] = $this->convertChars($value['value']);
-                    }
+            if (is_string($this->_config->property->$part)) {
+                $partProperties = array($this->_config->property->$part);
+            } else if (is_array($this->_config->property->$part->toArray())) {
+                $partProperties = $this->_config->property->$part->toArray();
+            } else {
+                // No propeties for the given part. Create empty array for the loop
+                $partProperties = array();
+            }
+
+            foreach ($partProperties as $property) {
+                if (array_key_exists($property, $newInstance) && $value = current($newInstance[$property])) {
+                    $uriParts[$part] = $this->_getTitle($value, $titleHelper);
+                    // on first value exit foreach
+                    break;
                 } else {
                     // do nothing (no data to generate title from found)
                 }
-            } elseif ( is_array($this->_config->property->$part->toArray()) ) {
-                foreach ( $this->_config->property->$part as $subpart) {
-                    $property = $subpart;
-                    if ( array_key_exists($property,$newInstance) && $value = current($newInstance[$property]) ) {
-                        if ($value['type'] === 'uri') {
-                            $uriParts[$part] = $this->convertChars($titleHelper->getTitle($value['value']));
-                        } else {
-                            $uriParts[$part] = $this->convertChars($value['value']);
-                        }
-                        // on first value exit foreach
-                        break;
-                    } else {
-                        // do nothing (no data to generate title from found)
-                    }
-                }
-            } else {
-                // do nothing
             }
-        
         }
 
         $baseUri = $this->_model->getBaseUri();
         $baseUriLastCharacter = $baseUri[ strlen($baseUri) - 1];
-        if ( ($baseUriLastCharacter == '/') || ($baseUriLastCharacter == '#') ) {
-            $createdUri = $baseUri . implode('/',$uriParts);
+        if (($baseUriLastCharacter == '/') || ($baseUriLastCharacter == '#')) {
+            $createdUri = $baseUri . implode('/', $uriParts);
         } else {
             // avoid ugly glued uris without separator
-            $createdUri = $baseUri . '/' . implode('/',$uriParts);
+            $createdUri = $baseUri . '/' . implode('/', $uriParts);
         }
-        
+
         return $createdUri;
     }
-    
+
+    /**
+     * Returns a human readable Title for a resource
+     * @param $resource Array in the object style ('value' and 'type')
+     * @param $titleHelper TitleHelper instance to get a title
+     */
+    private function _getTitle($resource, $titleHelper = null)
+    {
+        if ($resource['type'] === 'uri') {
+            // check if a resourcecreation specific title property is set
+            if (isset($this->_config->property->title)) {
+                $property = $this->_config->property->title;
+
+                $query = 'SELECT ?title' . PHP_EOL;
+                $query.= 'WHERE {' . PHP_EOL;
+                $query.= '  <' . $resource['value'] . '> <' . $property . '> ?title .' . PHP_EOL;
+                $query.= '}' . PHP_EOL;
+
+                $result = $this->_model->sparqlQuery($query);
+
+                if (count($result) > 0) {
+                    return $result[0]['title'];
+                }
+            }
+            // return TitleHelper value
+            return $this->convertChars($titleHelper->getTitle($resource['value']));
+        } else {
+            // return literal value
+            return $this->convertChars($resource['value']);
+        }
+    }
+
     /**
      * Load Naming Scheme from Model or Ini
      * @return Array
