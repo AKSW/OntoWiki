@@ -26,6 +26,11 @@ class ResourceUriGenerator
         'ü'     => 'ue' ,
         'Ö'     => 'Oe' ,
         'ö'     => 'oe' ,
+        'ß'     => 'ss' ,
+        'ẞ'     => 'Ss' ,
+    );
+
+    private $_whiteSpaceTable = array (
         ' '     => '_'  ,
         PHP_EOL => '_'  ,
         ':'     => '_'  ,
@@ -426,9 +431,38 @@ class ResourceUriGenerator
      */
     private function convertChars($str)
     {
+        // replace defined special chars
         foreach ($this->_charTable as $key => $value) {
             $str = str_replace($key, $value, $str);
         }
+
+        // replace defined whitespaces
+        if (isset($this->_config->whiteSpaceMode)) {
+            $mode = $this->_config->whiteSpaceMode;
+        } else {
+            $mode = false;
+        }
+
+        if ($mode == 'underscore') {
+            foreach ($this->_whiteSpaceTable as $key => $value) {
+                $str = str_replace($key, '_', $str);
+            }
+        } else if ($mode == 'CamelCaps' || $mode == 'CamelCase') {
+            foreach ($this->_whiteSpaceTable as $key => $value) {
+                // replace all whitespace with a simple space
+                $str = str_replace($key, ' ', $str);
+                // make all word uppercase
+                $str = ucwords($str);
+                // remove all spaces
+                $str = str_replace(' ', '', $str);
+            }
+        } else {
+            foreach ($this->_whiteSpaceTable as $key => $value) {
+                $str = str_replace($key, $value, $str);
+            }
+        }
+
+        // replace other special chars
         $str = preg_replace('/[^a-z0-9_]+/i', '', $str);
         //$str = substr($str,0,32);
         return $str;

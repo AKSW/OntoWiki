@@ -19,6 +19,7 @@
   :fromModel "true"^^xsd:boolean ;
   :namingSchemeProperty <http://ns.ontowiki.net/SysOnt/instanceNamingScheme> ;
   :newResourceUri "NewResource" ;
+  :whiteSpaceMode "underscore" ;
   :defaultNamingScheme "type/label" ;
   owconfig:config [
     a owconfig:Config;
