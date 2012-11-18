@@ -24,10 +24,10 @@
   owconfig:config [
     a owconfig:Config;
     owconfig:id "property";
-    :title <http://aksw.org/schema/creationLabel> ;
+    :title <http://ns.ontowiki.net/SysOnt/creationLabel> ;
     :type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ;
     :label (
-        <http://aksw.org/schema/creationLabel>
+        <http://ns.ontowiki.net/SysOnt/creationLabel>
         <http://www.w3.org/2004/02/skos/core#prefLabel>
         <http://purl.org/dc/elements/1.1/title>
         <http://purl.org/dc/terms/title>
