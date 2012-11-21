@@ -159,17 +159,16 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         // URI may not contain a whitespace character!
         $pathInfo = str_replace(' ', '+', $pathInfo);
 
+        if (class_exists($className, false)) {
+            // give a chance to let class handle (e.g. index controller news action default)
+            return true;
+        }
+
         $event = new Erfurt_Event('onIsDispatchable');
         $event->uri     = $this->urlBase . $pathInfo;
         $event->request = $request;
 
         $eventResult = (bool)$event->trigger();
-        if (!$eventResult) {
-            if (class_exists($className, false)) {
-                // give a chance to let class handle (e.g. index controller news action default)
-                return true;
-            }
-        }
         return $eventResult;
     }
 }

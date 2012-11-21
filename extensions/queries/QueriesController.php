@@ -183,6 +183,9 @@ class QueriesController extends OntoWiki_Controller_Component
             //handle a posted query
             $store = $this->_erfurt->getStore();
 
+            foreach ($prefixes as $prefix => $namespace) {
+                $query = 'PREFIX ' . $prefix . ': <' . $namespace . '>' . PHP_EOL . $query;
+            }
             if ($format == 'list') {
                 $url = new OntoWiki_Url(array('controller' => 'list'), array());
                 $query = str_replace("\r\n", ' ', $query);
@@ -202,7 +205,7 @@ class QueriesController extends OntoWiki_Controller_Component
                     );
 
                 //redirect
-                header('Location: ' . $url);
+                $this->_redirect($url);
                 return;
             }
 
@@ -211,10 +214,6 @@ class QueriesController extends OntoWiki_Controller_Component
             }
 
             $this->view->query = $query;
-
-            foreach ($prefixes as $prefix => $namespace) {
-                $query = 'PREFIX ' . $prefix . ': <' . $namespace . '>' . PHP_EOL . $query;
-            }
 
             $result = null;
             try {

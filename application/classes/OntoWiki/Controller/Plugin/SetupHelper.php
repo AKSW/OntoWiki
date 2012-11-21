@@ -78,9 +78,24 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
             
             // instantiate resource if parameter passed
             if (isset($request->r)) {
+                $rParam = $request->getParam('r', null, true);
                 $graph = $ontoWiki->selectedModel;
+                if (null === $graph) {
+                    // try to use first readable graph
+                    $possibleGraphs = $store->getGraphsUsingResource((string)$rParam, true);
+                    if (count($possibleGraphs) > 0) {
+                        try {
+                            $graph = $store->getModel($possibleGraphs[0]);
+                            $ontoWiki->selectedModel = $graph;
+                        } catch (Erfurt_Store_Exception $e) {
+                            $graph = null;
+                            // fail as before (see below)
+                        }
+                    }
+                }
+
                 if ($graph instanceof Erfurt_Rdf_Model) {
-                    $resource = new OntoWiki_Resource($request->getParam('r', null, true), $graph);
+                    $resource = new OntoWiki_Resource($rParam, $graph);
                     $ontoWiki->selectedResource = $resource;
                 } else {
                     // post error message

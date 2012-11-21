@@ -143,7 +143,10 @@ class NavigationModule extends OntoWiki_Module
         );
 
         $data['session'] = $this->_session->navigation;
+
+        // draw
         $content = $this->render('navigation', $data, 'data'); //
+        // return content
         return $content;
     }
 

@@ -54,6 +54,7 @@ class ModelController extends OntoWiki_Controller_Base
                     OntoWiki_Message::WARNING
                 )
             );
+            return;
         }
 
         if (!$this->_request->isPost()) {
@@ -138,9 +139,15 @@ class ModelController extends OntoWiki_Controller_Base
             try {
                 $this->_handleImport($post, false);
             } catch (Exception $e) {
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message('Error importing statements: ' . $e->getMessage(), OntoWiki_Message::ERROR)
-                );
+                if (defined('_OWDEBUG')) {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message('Error importing statements: ' . $e->getMessage(), OntoWiki_Message::ERROR)
+                    );
+                } else {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message('There was a problem while importing the data. Please contact your administrator.', OntoWiki_Message::ERROR)
+                    );
+                }
                 return;
             }
 
@@ -185,6 +192,7 @@ class ModelController extends OntoWiki_Controller_Base
             $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save Model Configuration'))
                 ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
+            return;
         }
 
         // get cache for invalidation later
@@ -815,7 +823,8 @@ class ModelController extends OntoWiki_Controller_Base
             $this->_owApp->appendMessage(
                 new OntoWiki_Message('Error deleting model: Not allowed.', OntoWiki_Message::ERROR)
             );
-
+            $this->_redirect($_SERVER['HTTP_REFERER'], array('code' => 302));
+            return;
         }
         $this->view->clearModuleCache(); //deletes selected model - always needed?
         $this->_redirect($_SERVER['HTTP_REFERER'], array('code' => 302));
@@ -826,6 +835,14 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function exportAction()
     {
+        if (!$this->_owApp->erfurt->getAc()->isActionAllowed(Erfurt_Ac_Default::ACTION_MODEL_EXPORT)) {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message('Model export not allowed.', OntoWiki_Message::ERROR)
+            );
+            $this->_redirect($_SERVER['HTTP_REFERER'], array('code' => 302));
+            return;
+        }
+
         // Check whether the f parameter is given. If not: default to rdf/xml
         if (!isset($this->_request->f)) {
             $format = 'rdfxml';

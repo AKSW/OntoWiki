@@ -125,6 +125,9 @@ class OntoWiki_Message
     public function getText()
     {
         $text = $this->_translate($this->_text);
+        if (strlen($text) > 1000) {
+            $text = substr($text, 0 , 1000) . '...';
+        }
         $text = $this->_options['escape'] ? $this->_view->escape($text) : $text;
         
         return $text;

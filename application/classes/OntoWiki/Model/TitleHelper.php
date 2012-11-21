@@ -296,6 +296,10 @@ class OntoWiki_Model_TitleHelper
      */
     public function getTitle($resourceUri, $language = null)
     {
+        if (!Erfurt_Uri::check($resourceUri)) {
+            return $resourceUri;
+        }
+
         if (!$this->_cache($resourceUri, (string)$this->_model)) {
             // * means any language
             if (trim($language) == '*') {
@@ -428,6 +432,9 @@ class OntoWiki_Model_TitleHelper
         $currentQuery = null;
         $queries = array();
         $select = 'SELECT DISTINCT ?property ?value';
+        if ($this->_resources === null) {
+            return array();
+        }
         foreach ($this->_resources as $resourceUri) {
             $where = 'WHERE {'
                    . $this->_getTitleWhere($resourceUri)

@@ -16,9 +16,13 @@
     <IfModule mod_env.c>
         SetEnv ONTOWIKI_APACHE_MOD_REWRITE_ENABLED 1
     </IfModule>
+    
+    RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+    RewriteCond %{REQUEST_FILENAME} !/maintenance.html
+    RewriteRule ^.*$ /maintenance.html [R=302,L]
 
     RewriteRule ^favicon\.(.*)$ application/favicon.$1
-    RewriteRule !((extensions|libraries).*|\.(js|ico|gif|jpg|png|css|php|swf|json))$ index.php
+    RewriteRule !((robots.txt|maintenance.html)|(extensions|libraries|static).*|\.(js|ico|gif|jpg|png|css|php|swf|json))$ index.php
 
     # Set RewriteBase only if your OntoWiki folder is not located in your web server's root dir.
     #RewriteBase /ontowiki

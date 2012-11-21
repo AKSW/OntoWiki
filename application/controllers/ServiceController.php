@@ -223,23 +223,23 @@ class ServiceController extends Zend_Controller_Action
                     );
                 }
 
+                if ($this->_owApp->erfurt->getAc()->isActionAllowed(Erfurt_Ac_Default::ACTION_MODEL_EXPORT)) {
+                    // add entries for supported export formats
+                    foreach (array_reverse(Erfurt_Syntax_RdfSerializer::getSupportedFormats()) as $key => $format) {
 
-                // add entries for supported export formats
-                foreach (array_reverse(Erfurt_Syntax_RdfSerializer::getSupportedFormats()) as $key => $format) {
+                        $url = new OntoWiki_Url(
+                            array('controller' => 'model', 'action' => 'export'),
+                            array()
+                        );
+                        $url->setParam('m',$resource,false);
+                        $url->setParam('f',$key);
 
-                    $url = new OntoWiki_Url(
-                        array('controller' => 'model', 'action' => 'export'),
-                        array()
-                    );
-                    $url->setParam('m',$resource,false);
-                    $url->setParam('f',$key);
-
-                    $menu->prependEntry(
-                        'Export Knowledge Base as ' . $format,
-                        (string)$url
-                    );
+                        $menu->prependEntry(
+                            'Export Knowledge Base as ' . $format,
+                            (string)$url
+                        );
+                    }
                 }
-
 
                 // check if model could be edited (prefixes and data)
                 if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $resource)) {
