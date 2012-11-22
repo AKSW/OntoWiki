@@ -187,12 +187,12 @@ class ModelController extends OntoWiki_Controller_Base
             $this->_owApp->appendMessage(
                 new OntoWiki_Message("No write permissions on model '{$graphUri}'", OntoWiki_Message::WARNING)
             );
+            return;
         } else {
             $toolbar = $this->_owApp->toolbar;
             $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save Model Configuration'))
                 ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
-            return;
         }
 
         // get cache for invalidation later
