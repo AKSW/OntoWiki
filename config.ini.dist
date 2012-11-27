@@ -90,6 +90,10 @@ mail.localname.recovery = "ontowiki-account-recovery"
 ;proxy.username = ""
 ;proxy.password = ""
 
+;; Virtual host configurations (optional, e.g. when OntoWiki is reachable via multiple domains)
+;vhosts[] = "http://graph1.ontowiki.de"
+;vhosts[] = "http://graph2.ontowiki.de"
+
 ;;;;
 ;; Uncomment this line to turn off the query and object cache (NOT recommended)
 ;;

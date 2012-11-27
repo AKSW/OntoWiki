@@ -93,9 +93,28 @@ class ModellistModule extends OntoWiki_Module
         $titleHelper = new OntoWiki_Model_TitleHelper();
         $titleHelper->addResources(array_keys($this->graphUris));
 
+        $useGraphUriAsLink = false;
+        if (isset($this->_privateConfig->useGraphUriAsLink) && (bool)$this->_privateConfig->useGraphUriAsLink) {
+            $useGraphUriAsLink = true;
+        }
+
         foreach ($this->graphUris as $graphUri => $true) {
+            $linkUrl = $this->_config->urlBase . 'model/select/?m=' . urlencode($graphUri);
+            if ($useGraphUriAsLink) {
+                if (isset($this->_config->vhosts)) {
+                    $vHostsArray = $this->_config->vhosts->toArray();
+                    foreach ($vHostsArray as $vHostUri) {
+                        if (strpos($graphUri, $vHostUri) !== false) {
+                            // match
+                            $linkUrl = $graphUri;
+                            break;
+                        }
+                    }
+                }
+            }
+
             $temp = array();
-            $temp['url']      = $this->_config->urlBase . 'model/select/?m=' . urlencode($graphUri);
+            $temp['url']      = $linkUrl;
             $temp['graphUri'] = $graphUri;
             $temp['selected'] = ($selectedModel == $graphUri ? 'selected' : '');
 
