@@ -1,10 +1,21 @@
 <?php
+
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
 /**
  * ListSetupHelper handles list.
  * reacts on parameters prior ComponentHelper instantiation
  *
- *
- * @author jonas
+ * @category OntoWiki
+ * @package OntoWiki_Classes_Controller_Plugin
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author Jonas Brekle <jonas.brekle@gmail.com>
  */
 class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_Abstract {
     protected $_isSetup = false;
@@ -27,10 +38,23 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
      */
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
-        $ontoWiki        = OntoWiki::getInstance();
+        if (isset($request->noListRedirect)) {
+            return;
+        }
+
+        $ontoWiki   = OntoWiki::getInstance();
+        
+        // TODO: Refactor! The list helper is from an extension! Do not access extensions
+        // from core code!
+        if (!Zend_Controller_Action_HelperBroker::hasHelper('List')) {
+            return;
+        }
+        
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         // only once and only when possible
-        if (!$this->_isSetup &&
+        if (
+                !$this->_isSetup && 
+                $ontoWiki->selectedModel != null && 
             (
                 /*
                  *these are paramters that change the list
@@ -72,14 +96,15 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
 
             $list = $listHelper->getLastList();
 
-            if ((!isset($request->list) && $list == null) || // nothing build yet
+            if (
+                (!isset($request->list) && $list == null) || // nothing build yet
                 isset($request->init) // force a rebuild
             ) {
                 // instantiate model, that selects all resources
                 $list = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
             } else {
                 // use the object from the session
-                if(isset($request->list) && $request->list != $listHelper->getLastListName()) {
+                if (isset($request->list) && $request->list != $listHelper->getLastListName()) {
                     if($listHelper->listExists($request->list)){
                         $list = $listHelper->getList($request->list);
                         $ontoWiki->appendMessage(new OntoWiki_Message("reuse list"));
@@ -87,6 +112,8 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                         throw new OntoWiki_Exception('your trying to configure a list, but there is no list name specified');
                     }
                 }
+
+                $list->setStore($store); // store is not serialized in session! reset it
             }
 
             //local function :)
@@ -151,13 +178,21 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 if ($config == false) {
                     throw new OntoWiki_Exception('Invalid parameter instancesconfig (json_decode failed)');
                 }
+                
+                if (isset($config->sort)) {
+                    if($config->sort == null){
+                        $list->orderByUri($config->sort->asc);
+                    } else {
+                        $list->setOrderProperty($config->sort->uri, $config->sort->asc);
+                    }
+                }
 
                 if (isset($config->shownProperties)) {
                     foreach ($config->shownProperties as $prop) {
                         if ($prop->action == 'add') {
                             $list->addShownProperty($prop->uri, $prop->label, $prop->inverse);
                         } else {
-                            $list->removeShownProperty($prop->uri.'-'.$prop->inverse);
+                            $list->removeShownProperty($prop->uri, $prop->inverse);
                         }
                     }
                 }
@@ -259,13 +294,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
                 $redirector->gotoUrl($url);
             }
-        }
-        
-        // even if the was no change made to the resource query -> update the value-query
-        // because the dataset may have changed since the last request
-        // and controllers using this list then get the newest data
-        foreach($listHelper->getAllLists() as $aList){
-            $aList->invalidate();
         }
     }
 }

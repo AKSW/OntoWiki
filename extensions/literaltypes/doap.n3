@@ -1,0 +1,21 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/literaltypes/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :literaltypes .
+:literaltypes a doap:Project ;
+  doap:name "literaltypes" ;
+  owconfig:privateNamespace <https://github.com/AKSW/literaltypes/raw/master/doap.n3#> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  rdfs:label "LiteralTypes" ;
+  doap:description "Visualizes the language or the datatype of a LiteralValue" ;
+  owconfig:authorLabel "Michael Martin" ;
+  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

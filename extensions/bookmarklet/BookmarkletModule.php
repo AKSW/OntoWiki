@@ -1,14 +1,21 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * OntoWiki module – bookmarklet
  *
  * Shows a bookmarklet link on model info
  *
  * @category OntoWiki
- * @package OntoWiki_Extensions_Modules_Bookmarklet
+ * @package Extensions_Bookmarklet
  * @author Norman Heino <norman.heino@gmail.com>
  * @author Sebastian Tramp <tramp@informatik.uni-leipzig.de>
- * @copyright Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class BookmarkletModule extends OntoWiki_Module

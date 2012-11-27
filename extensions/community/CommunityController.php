@@ -1,12 +1,16 @@
-<?php 
+<?php
 /**
- * @category   OntoWiki
- * @package    OntoWiki_extensions_components_community
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_community
+ * @package    Extensions_Community
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class CommunityController extends OntoWiki_Controller_Component {
 
@@ -28,9 +32,10 @@ class CommunityController extends OntoWiki_Controller_Component {
         //Loading data for list of saved queries
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = "community-".$this->_request->getParam('mode');
-        
+
         if($listHelper->listExists($listName)){
             $list = $listHelper->getList($listName);
+            $list->setStore($store);
             $listHelper->addList($listName, $list, $this->view, 'list_community_main', $this->_privateConfig);
         } else {
             $list = new OntoWiki_Model_Instances($store, $graph, array());

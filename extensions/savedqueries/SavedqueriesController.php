@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 require_once 'OntoWiki/Controller/Component.php';
 
@@ -7,12 +13,11 @@ require_once 'OntoWiki/Controller/Component.php';
  *
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_geocoder
+ * @package    Extensions_Savedqueries
  * @author     Michael Martin <martin@informatik.uni-leipzig.de>
  * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id$
  */
 class SavedqueriesController extends OntoWiki_Controller_Component
 {
@@ -29,14 +34,14 @@ class SavedqueriesController extends OntoWiki_Controller_Component
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
             require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('No model pre-selected and missing parameter m (model)!');
-            exit;
+            return;
         } else {
             $this->model = $this->_owApp->selectedModel;
         }
 
         // disable tabs
         require_once 'OntoWiki/Navigation.php';
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         // get translation object
         $this->translate = $this->_owApp->translate;

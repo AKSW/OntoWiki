@@ -1,8 +1,9 @@
 <?php
+
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -13,7 +14,7 @@
  * provide a faster interface to important helpers.
  *
  * @category OntoWiki
- * @package  View
+ * @package  OntoWiki_Classes
  * @author Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_View extends Zend_View
@@ -143,7 +144,7 @@ class OntoWiki_View extends Zend_View
      * @param string $context The module context whose modules should be rendered
      * @return string
      */
-    public function modules($context, Zend_Config $renderOptions = null)
+    public function modules($context, $renderOptions = null)
     {
         $modules = '';
         foreach (OntoWiki_Module_Registry::getInstance()->getModulesForContext($context) as $moduleSpec) {

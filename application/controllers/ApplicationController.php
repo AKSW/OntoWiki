@@ -2,17 +2,16 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki application controller.
  *
- * @package    application
- * @subpackage mvc
- * @author     Norman Heino <norman.heino@gmail.com>
- * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @package OntoWiki_Controller
+ * @author Norman Heino <norman.heino@gmail.com>
+ * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class ApplicationController extends OntoWiki_Controller_Base
 {
@@ -21,7 +20,7 @@ class ApplicationController extends OntoWiki_Controller_Base
      */
     public function aboutAction()
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         $this->view->placeholder('main.window.title')->set('About OntoWiki');
 
         $version = $this->_config->version->number;
@@ -38,7 +37,7 @@ class ApplicationController extends OntoWiki_Controller_Base
 
         $data = array(
             'System' => array(
-                'OntoWiki Version' => $version,
+                'OntoWiki Release' => $version,
                 'PHP Version'      => phpversion(),
                 'Backend'          => $this->_owApp->erfurt->getStore()->getBackendName(),
                 'Debug Mode'       => defined('_OWDEBUG') ? 'enabled' : 'disabled'
@@ -63,20 +62,17 @@ class ApplicationController extends OntoWiki_Controller_Base
             )
         );
 
-        // check if the mercurial comand exists and ontowiki is a working directory
-        @exec("hg", $hg);
+        // check if the git comand exists and ontowiki is a working directory
         if (
-            file_exists(".hg") &&
-            isset($hg[0]) &&$hg[0] == "Mercurial Distributed SCM"
+            file_exists(".git") &&
+            substr(@exec("git --version"), 0, 11) == "git version"
         ) {
-            $csId = rtrim(exec("hg id -i"), "+");
-            exec("hg version", $version);
-            exec("hg log -r " . $csId, $log);
-
-            $data['Mercurial Versioning'] = array(
-              'Branch' => exec("hg branch"),
-              'Revision' => $log[0].", ".$log[3],
-              'Mercurial Version'  => $version[0]
+            @exec('git status', $arr);
+            $data['Git Versioning'] = array(
+              'Version' => @exec("git describe"),
+              'Branch' => substr($arr[0],12),
+              'last commit' => @exec("git log --pretty=format:'%ar' -n 1")
+              //'Git Version'  => substr(@exec("git --version"),12),
             );
         }
 
@@ -175,7 +171,7 @@ class ApplicationController extends OntoWiki_Controller_Base
      */
     public function registerAction()
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         $this->_helper->viewRenderer->setScriptAction('register');
 
         $this->view->placeholder('main.window.title')->set('Register User');
@@ -298,7 +294,7 @@ class ApplicationController extends OntoWiki_Controller_Base
      */
     public function openidregAction()
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         // We render a template, that is also used for preferences.
         $this->_helper->viewRenderer->setScriptAction('openid');
@@ -485,7 +481,7 @@ class ApplicationController extends OntoWiki_Controller_Base
 
     public function webidregAction()
     {
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         // We render a template, that is also used for preferences.
         $this->_helper->viewRenderer->setScriptAction('webid');
@@ -700,7 +696,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                 ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
 
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         $this->_helper->viewRenderer->setScriptAction('userdetails');
     }
@@ -783,7 +779,7 @@ class ApplicationController extends OntoWiki_Controller_Base
 
         $title = $this->_owApp->translate->_('Resource Search');
         $this->view->placeholder('main.window.title')->set($title);
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         $store = $this->_erfurt->getStore();
 

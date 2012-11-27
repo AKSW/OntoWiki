@@ -3,7 +3,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -14,8 +14,8 @@
  * adding, removing and replacing parameters.
  *
  * @category OntoWiki
- * @package Url
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package OntoWiki_Classes
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
@@ -58,9 +58,14 @@ class OntoWiki_Url
     protected $_useSefUrls = true;
     
     /**
+     * 
+     */
+    protected $_base = null;
+
+    /**
      * Constructor
      */
-    public function __construct(array $options = array(), $paramsToKeep = null, $paramsToExclude = null)
+    public function __construct(array $options = array(), $paramsToKeep = null, $paramsToExclude = null, $base = null)
     {
         $this->_request    = Zend_Controller_Front::getInstance()->getRequest();
         $defaultAction     = Zend_Controller_Front::getInstance()->getDefaultAction();
@@ -71,6 +76,14 @@ class OntoWiki_Url
         if (!isset($options['route']) && !isset($options['controller']) && !isset($options['action'])){
             $options['controller'] = $this->_request->getControllerName();
             $options['action'] = $this->_request->getActionName();
+        }
+        
+        if($base != null && is_string($base)){
+            $this->_base = $base;
+        } else if(isset(OntoWiki::getInstance()->config->urlBase)){
+            $this->_base = OntoWiki::getInstance()->config->urlBase;
+        } else {
+            $this->_base = "http://ns.aksw.org/undefined/";
         }
         
         // keep parameters
@@ -120,7 +133,9 @@ class OntoWiki_Url
                 $routeName = 'default';
             }
             
-            $this->_route = $router->getRoute($routeName);
+            if ($router->hasRoute($routeName)) {
+                $this->_route = $router->getRoute($routeName);
+            }
         }
         
         // check default controller/action and leave those empty
@@ -136,6 +151,15 @@ class OntoWiki_Url
         unset($this->_params['module']);
         unset($this->_params['controller']);
         unset($this->_params['action']);
+    }
+    
+    /**
+     * set base url (for unittests)
+     * @param string $base
+     */
+    public function setBase($base) 
+    { 
+        $this->_base = $base;
     }
     
     /**
@@ -260,10 +284,9 @@ class OntoWiki_Url
      */
     protected function _buildQuery()
     {
-        $base = OntoWiki::getInstance()->config->urlBase;
         
         $event = new Erfurt_Event('onBuildUrl');
-        $event->base = $base;
+        $event->base = $this->_base;
         $event->route = $this->_route;
         $event->controller = $this->_controller;
         $event->action     = $this->_action;
@@ -274,7 +297,6 @@ class OntoWiki_Url
             if ($urlCreated && isset($event->url)) {
                 return $event->url;
             } else {
-                $base = $event->base;
                 $this->_params = $event->params;
                 $this->_controller = $event->controller;
                 $this->_action     = $event->action;
@@ -331,7 +353,7 @@ class OntoWiki_Url
         // HACK:
         $this->_useSefUrls = true;
         
-        return $base . ltrim($url, '/');
+        return $this->_base . ltrim($url, '/');
     }
 }
 

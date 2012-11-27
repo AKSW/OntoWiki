@@ -1,0 +1,49 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/resourcecreationuri/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :resourcecreationuri .
+:resourcecreationuri a doap:Project ;
+  doap:name "resourcecreationuri" ;
+  owconfig:privateNamespace <https://github.com/AKSW/resourcecreationuri/raw/master/doap.n3#> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  rdfs:label "Custom Resource URI Creation" ;
+  doap:description "plugin to create nice URIs on instance creation via RDFauthor/updateService" ;
+  owconfig:authorLabel "Christoph Rieß" ;
+  owconfig:pluginEvent event:onUpdateServiceAction ;
+  :fromModel "true"^^xsd:boolean ;
+  :namingSchemeProperty <http://ns.ontowiki.net/SysOnt/instanceNamingScheme> ;
+  :newResourceUri "NewResource" ;
+  :whiteSpaceMode "underscore" ;
+  :defaultNamingScheme "type/label" ;
+  owconfig:config [
+    a owconfig:Config;
+    owconfig:id "property";
+    :title <http://ns.ontowiki.net/SysOnt/creationLabel> ;
+    :type <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ;
+    :label (
+        <http://ns.ontowiki.net/SysOnt/creationLabel>
+        <http://www.w3.org/2004/02/skos/core#prefLabel>
+        <http://purl.org/dc/elements/1.1/title>
+        <http://purl.org/dc/terms/title>
+        <http://swrc.ontoware.org/ontology#title>
+        <http://xmlns.com/foaf/0.1/name>
+        <http://rdfs.org/sioc/ns#name>
+        <http://www.holygoat.co.uk/owl/redwood/0.1/tags/name>
+        <http://linkedgeodata.org/vocabulary#name>
+        <http://www.geonames.org/ontology#name>
+        <http://www.w3.org/2000/01/rdf-schema#label>
+        <http://xmlns.com/foaf/0.1/accountName>
+        <http://xmlns.com/foaf/0.1/nick>
+        <http://xmlns.com/foaf/0.1/surname>
+        <http://www.w3.org/2004/02/skos/core#altLabel>
+    )
+] .
+:resourcecreationuri doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

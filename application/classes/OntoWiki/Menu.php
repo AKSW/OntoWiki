@@ -3,7 +3,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -11,8 +11,8 @@
  * OntoWiki menu class.
  *
  * @category OntoWiki
- * @package Menu
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package OntoWiki_Classes
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
@@ -106,7 +106,7 @@ class OntoWiki_Menu
         }
         
         if (!$replace and array_key_exists($entryKey, $this->_entries)) {
-            throw new OntoWiki_Exception("An entry with key '$key' already exists.");
+            throw new OntoWiki_Exception("An entry with key '$entryKey' already exists.");
         }
         
         if ($entryKey == self::SEPARATOR) {

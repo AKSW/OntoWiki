@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki module – linkinhere
@@ -6,14 +12,15 @@
  * Add instance properties to the list view
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_linkinghere
+ * @package    Extensions_Resourcemodule
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: linkinghere.php 4092 2009-08-19 22:20:53Z christian.wuerker $
  */
 class LinkinghereModule extends OntoWiki_Module
 {    
+    private $predicates = null;
+    
     /**
      * Constructor
      */
@@ -21,14 +28,26 @@ class LinkinghereModule extends OntoWiki_Module
     {
         $query = new Erfurt_Sparql_SimpleQuery();
 
-        $query->setProloguePart('SELECT DISTINCT ?uri')
+        $query->setProloguePart('SELECT DISTINCT ?subject ?uri')
               ->setWherePart('WHERE {
-                    ?subject ?uri <' . (string) $this->_owApp->selectedResource . '> .
-                    FILTER (isURI(?subject))
-                }')
-              ->setLimit(OW_SHOW_MAX);
+                   ?subject ?uri <' . (string) $this->_owApp->selectedResource . '> .
+                }');
+        
+        $result = $this->_owApp->selectedModel->sparqlQuery($query, array('result_format' => 'extended'));       
+        $predicatesResult = array();
+        if (isset($result['results']['bindings'])) {
+            foreach ($result['results']['bindings'] as $row) {
+                if ($row['subject']['type'] === 'uri') {
+                    $predicatesResult[] = array(
+                        'uri' => $row['uri']['value']
+                    );
+                }
+            }
+        }       
+        $this->predicates = $predicatesResult;
 
-        $this->predicates = $this->_owApp->selectedModel->sparqlQuery($query);
+        // I removed the isURI(?subject) here as well as the limit, since the query is way faster
+        // without filter! We kick out bnodes manually!
     }
 
     public function getTitle()

@@ -1,7 +1,7 @@
 /**
   * default.css
   * Ontowiki main style sheet, advanced theme
-  * @author: Michael Haschke
+  * @author: http://michael.haschke.biz/
 
     CONTENT
     
@@ -46,7 +46,10 @@
         4.5. Processing state
         4.6. Edit
         4.7. Tables
-    5. Etcetera
+    5. jQuery UI enhancements
+    6. Etcetera
+    7. Specials
+    8. GUI-Facelift
 
   */
   
@@ -2153,3 +2156,413 @@ a.open:hover {
     display: none;
 }
 
+.small {
+    font-size: 0.8em;
+}
+
+/* 8. GUI-Facelift ---------------------------------------------------------- */
+
+/**
+ *
+ * GUI-Facelift
+ *
+ * - TODO: merge that style directly into definitions above
+ *
+ *************************************************************************/
+
+body
+{
+    background-color: #f9f9f9;
+    background-position: left bottom;
+}
+
+/* -- 1. Windows ----------------------------------------------------------
+
+   - little bit more margin, shadow and adjusted titles, some border-radius
+
+*/
+
+div.window
+{
+    margin: 1em;
+    box-shadow: 0px 0px 0.25em rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+}
+
+div.section-mainwindows div.window
+{
+    margin-left: 0.5em;
+}
+
+div.section-sidewindows div.window
+{
+    margin-right: 0.5em;
+}
+
+div.window .title
+{
+    border-radius: 3px 3px 0 0;
+    padding: 0.5em 0.5em 0.4em 0.5em !important;
+
+    background-color: #888;
+    background-image: none;
+    
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+    background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+    background-image: linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+}
+
+div.window .content,
+div.window .statusbar
+{
+    border-radius: 0 0 3px 3px;
+}
+
+body.javascript-on .has-menu > div > div.cmDiv
+{
+    top: 1.94em;
+}
+
+/* -- 2. Upper Control Panel ----------------------------------------------
+   
+   - use application window here and tweak its layout
+   
+*/
+
+div.section-mainwindows
+{
+    padding-top: 4em;
+}
+
+div.section-sidewindows
+{
+    top: 4em;
+}
+
+#application
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4em;
+    margin: 0;
+    z-index: 99999;
+    
+    border: none;
+    border-radius: 0;
+    
+    box-shadow: 0px 0px 0.5em rgba(0, 0, 0, 0.5);
+    
+    font-size: 1em;
+
+    background-color: #888;
+    background-image: none;
+    
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+    background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+    background-image: linear-gradient(top, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
+}
+
+#application div.window-buttons
+{
+    display: none;
+    float: none;
+    clear: both;
+    height: 1px;
+    width: 100%;
+}
+
+#application div.window-buttons *
+{
+    display: none;
+}
+
+#application.window h1.title
+{
+    border: none;
+    width: 1.625em;
+    height: 2em;
+    line-height: 2;
+    padding: 1em !important;
+    margin: 0 !important;
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-indent: 200%;
+    background: url(./../images/logo-ontowiki.png) no-repeat center transparent;
+}
+
+#application .slidehelper
+{
+    margin-left: 3.625em;
+    overflow: visible;
+}
+
+#application .content
+{
+    border: none;
+    background: transparent;
+    padding: 1.15em 1% 0 1%;
+    clear: none;
+    float: right;
+    width: 37%;
+}
+
+#application .content img
+{
+    display: none;
+}
+
+#application div.cmDiv
+{
+    position: static;
+    top: auto;
+    margin-right: 40%;
+    width: auto;
+    border: none;
+    padding: 0;
+    background: transparent;
+}
+
+#application div.cmDiv > ul.clickMenu
+{
+    margin: 0;
+    padding: 0;
+    
+    position: static;
+}
+
+#application ul.clickMenu > li.main
+{
+    padding: 0 0.5em;
+    line-height: 4em;
+    height: 4em;
+    background: none;
+    color: #fff;
+    text-shadow: -1px -1px 1px #000;
+    border: none !important
+}
+
+#application ul.clickMenu > li.main.hover
+{
+    text-shadow: none;
+    
+    color: #333;
+    background-color: #EFF9FF;
+
+    background-image: -webkit-linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    background-image: -moz-linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    background-image: -ms-linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    background-image: -o-linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    background-image: linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+}
+
+#application ul.clickMenu > li.main li,
+#application ul.clickMenu > li.main a
+{
+    line-height: 1;
+    text-shadow: none;
+}
+
+#application ul.clickMenu li.hover > a
+{
+}
+
+#application ul.clickMenu div.outerbox
+{
+    top: 100%;
+}
+
+#application p
+{
+    padding: 0;
+    margin: 0;
+    width: auto !important;
+}
+
+#application #searchtext-input
+{
+    font-size: 1em;
+    padding: 0.25em 0;
+    margin: 0;
+    width: 100%;
+    background: #eee;
+    color: #999;
+    border-color: #666;
+    border-radius: 4px;
+    margin-top: -1px;
+}
+
+#application #searchtext-input:hover
+{
+    background: #fff;
+    color: #333;
+}
+
+#application #searchtext-input:focus
+{
+    color: #000;
+    background: #fff;
+}
+
+/* -- 3. Dropdown Menus ---------------------------------------------------
+   
+   - restyling boxes and hovers
+   
+*/
+
+ul.clickMenu li
+{
+    border: none;
+}
+
+ul.clickMenu li.hover
+{
+    background-image: none;
+    /*
+    background-image: -webkit-linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    background-image: -moz-linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    background-image: -ms-linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    background-image: -o-linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    background-image: linear-gradient(top , rgba(0, 0, 0, 0.125), rgba(255, 255, 255, 0.125));
+    */
+}
+
+ul.clickMenu ul.innerBox
+{
+    border-top: none;
+    border-color: #ddd;
+    background-color: #eee;
+    opacity: 0.95;
+}
+
+ul.clickMenu ul.innerBox ul.innerBox
+{
+    opacity: 1;
+}
+
+/* -- 4. Input fields -----------------------------------------------------
+*/
+
+input.text, input.password, textarea
+{
+    box-shadow: 0px 0px 0.35em rgba(0, 0, 0, 0.35) inset;
+    background-image: none;
+}
+
+input.text:hover, input.password:hover, textarea:hover
+{
+}
+
+input.text:focus, input.password:focus, textarea:focus
+{
+    background-color: #fff;
+    box-shadow: 0px 0px 0.35em lightblue inset;
+}
+
+/* -- 5. Tabs -------------------------------------------------------------
+*/
+
+div.window .tabs li a
+{
+    background-image: none;
+    border-radius: 4px 4px 0 0;
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 75%, rgba(0, 0, 0, 0.2));
+    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 75%, rgba(0, 0, 0, 0.2));
+    background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 75%, rgba(0, 0, 0, 0.2));
+    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0) 75%, rgba(0, 0, 0, 0.2));
+    background-image: linear-gradient(top, rgba(255, 255, 255, 0) 75%, rgba(0, 0, 0, 0.2));
+}
+
+div.window .tabs li.active a
+{
+    background-image: none;
+    background-color: #f2f2f2 !important;
+    background-image: -webkit-linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -moz-linear-gradient(top, #0077CC 0%, #0077CC 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -ms-linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: linear-gradient(top, #ff8f00 0%, #ff8f00 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.25);
+}
+
+/* -- 6. Buttons ----------------------------------------------------------
+*/
+
+a.formbutton,
+button, input.formbutton,
+div.window .content a.button,
+div.window .content input.button,
+input.button, input.submit, input.reset,
+ul.minibutton li a, li.minibutton a, a.minibutton,
+.ui-state-default.ui-button
+{
+    border-radius: 4px;
+    
+    border-style: solid;
+    border-width: 1px;
+    margin: 2px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+    
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+    background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+    background-image: linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+}
+
+a.formbutton:focus,
+button:focus, input.formbutton:focus,
+div.window .content a.button:focus,
+input.button:focus, input.submit:focus, input.reset:focus,
+ul.minibutton li a:focus, li.minibutton a:focus, a.minibutton:focus,
+.ui-state-default.ui-button:focus,
+a.formbutton:hover,
+button:hover, input.formbutton:hover,
+div.window .content a.button:hover,
+input.button:hover, input.submit:hover, input.reset:hover,
+ul.minibutton li a:hover, li.minibutton a:hover, a.minibutton:hover,
+.ui-state-default.ui-button:hover
+{
+    box-shadow: 0 0 2px lightblue;
+}
+
+a.active,
+a.formbutton:active,
+button:active, input.formbutton:active,
+div.window .content a.button:active,
+input.button:active, input.submit:active, input.reset:active,
+ul.minibutton li a:active, li.minibutton a:active, a.minibutton:active,
+.ui-state-default.ui-button:active
+{
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.25) inset;
+
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+}
+
+/* -- 7. Contextmenu ------------------------------------------------------
+*/
+
+div.contextmenu-enhanced .contextmenu
+{
+    opacity: 0.95;
+    box-shadow: 0px 0px 0.25em rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+}
+
+.contextmenu ul a:hover,
+.contextmenu ol a:hover,
+.contextmenu ul span:hover,
+.contextmenu ol span:hover
+{
+    background-image: none;
+}

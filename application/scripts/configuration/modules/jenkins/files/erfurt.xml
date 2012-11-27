@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>&lt;embed height=&quot;300&quot; src=&quot;ws/build/pdepend/overview-pyramid.svg&quot; type=&quot;image/svg+xml&quot; width=&quot;500&quot;&gt;&lt;/embed&gt;&#xd;
+&lt;embed height=&quot;300&quot; src=&quot;ws/build/pdepend/dependencies.svg&quot; type=&quot;image/svg+xml&quot; width=&quot;500&quot;&gt;&lt;/embed&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.plugins.filesystem_scm.FSSCM">
+    <path>/vagrant/libraries/Erfurt</path>
+    <clearWorkspace>false</clearWorkspace>
+    <copyHidden>false</copyHidden>
+    <filterEnabled>false</filterEnabled>
+    <includeFilter>false</includeFilter>
+    <filters/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Ant>
+      <targets></targets>
+    </hudson.tasks.Ant>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

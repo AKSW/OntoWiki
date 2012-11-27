@@ -1,0 +1,177 @@
+/**
+ *
+ * OntoWiki Extra Styles
+ * DARK ORANGE
+ *
+ * @depends OntoWiki Silverblue Theme
+ * @author http://michael.haschke.biz/
+ *
+ *************************************************************************/
+
+/* -- 1. Windows ------------------------------------------------------- */
+
+div.window .title
+{
+    background-color: #444;
+}
+
+/* -- 2. Upper Control Panel ------------------------------------------- */
+
+#application
+{
+    background-color: #444;
+}
+
+#application ul.clickMenu > li.main
+{
+    color: #eee;
+}
+
+#application ul.clickMenu > li.main.hover
+{
+    background-color: orange;
+    color: #fff;
+}
+
+#application ul.clickMenu > li.main li,
+#application ul.clickMenu > li.main a
+{
+    color: #333;
+}
+
+#application ul.clickMenu li.hover > a
+{
+    color: #fff;
+}
+
+#application #searchtext-input
+{
+    border-color: #222;
+}
+
+/* -- 3. Dropdown Menus ------------------------------------------------ */
+
+ul.clickMenu li.hover
+{
+    background-color: orange;
+    /* color: #fff; */
+}
+
+ul.clickMenu li.hover > a:hover
+{
+    /* color: #fff; */
+}
+
+ul.clickMenu li > a
+{
+    color: #333;
+}
+
+ul.clickMenu li.hover > a:focus,
+ul.clickMenu li.hover > a:hover
+{
+    color: #000;
+}
+
+/* -- 4. Links ------------------------------------------------------------
+
+   - #DC3B00 is adjusted #ff4500 (orangered) on white for some more contrast
+
+*/
+
+a {
+    color: #DC3B00;
+}
+
+a:focus, a:hover {
+    color: #DC3B00;
+}
+
+a img.boxed { border-color: #DC3B00; }
+
+a:focus img.boxed, a:hover img.boxed { border-color: #DC3B00; }
+
+/* -- 5. Blocklinks ---------------------------------------------------- */
+
+.has-contextmenus-block a.Resource:focus,
+.has-contextmenus-block a.Resource:hover
+{
+    background-color: #FFFBE6;
+}
+
+.marked, tr.list-selected td, .selected, tr.marked td
+{
+    background-color: #FFF4C9 !important;
+    border-color: #eee3b8 !important;
+}
+
+/* -- 6. Input fields -------------------------------------------------- */
+
+input.text:hover, input.password:hover, textarea:hover
+{
+    background: #FFFBE6;
+}
+
+input.text:focus, input.password:focus, textarea:focus
+{
+    box-shadow: 0px 0px 0.35em orange inset;
+}
+
+/* -- 7. Tabs ---------------------------------------------------------- */
+
+div.window .tabs li a:focus,
+div.window .tabs li a:hover
+{
+    background-color: #FFFBE6;
+}
+
+div.window .tabs li.active a
+{
+    background-image: -webkit-linear-gradient(top, orange 0%, orange 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -moz-linear-gradient(top, orange 0%, orange 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -ms-linear-gradient(top, orange 0%, orange 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(top, orange 0%, orange 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+    background-image: linear-gradient(top, orange 0%, orange 2px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0) 100%);
+}
+
+/* -- 8. Buttons ------------------------------------------------------- */
+
+a.formbutton:focus,
+button:focus, input.formbutton:focus,
+div.window .content a.button:focus,
+input.button:focus, input.submit:focus, input.reset:focus,
+ul.minibutton li a:focus, li.minibutton a:focus, a.minibutton:focus,
+.ui-state-default.ui-button:focus,
+a.formbutton:hover,
+button:hover, input.formbutton:hover,
+div.window .content a.button:hover,
+input.button:hover, input.submit:hover, input.reset:hover,
+ul.minibutton li a:hover, li.minibutton a:hover, a.minibutton:hover,
+.ui-state-default.ui-button:hover
+{
+    background-color: #FFFBE6;
+    box-shadow: 0 0 2px orange;
+}
+
+a.active,
+a.formbutton:active,
+button:active, input.formbutton:active,
+div.window .content a.button:active,
+input.button:active, input.submit:active, input.reset:active,
+ul.minibutton li a:active, li.minibutton a:active, a.minibutton:active,
+.ui-state-default.ui-button:active
+{
+    background-color: #FFFBE6;
+}
+
+/* -- 8. Contextmenu ------------------------------------------------------
+*/
+
+.contextmenu ul a:hover,
+.contextmenu ol a:hover,
+.contextmenu ul span:hover,
+.contextmenu ol span:hover
+{
+    background-color: orange;
+    border-color: orange;
+}

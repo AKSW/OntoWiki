@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki module – comment
@@ -6,9 +12,9 @@
  * Allows to post a comment about a resource.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_comment
+ * @package    Extensions_Community
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class CommentModule extends OntoWiki_Module

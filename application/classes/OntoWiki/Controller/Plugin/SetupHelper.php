@@ -3,7 +3,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -14,8 +14,8 @@
  * but after the request object exists.
  *
  * @category OntoWiki
- * @package Controller_Plugin
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package OntoWiki_Classes_Controller_Plugin
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
@@ -72,15 +72,30 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                         OntoWiki_Message::ERROR, array('escape' => false)));
                     // hard redirect since finishing the dispatch cycle will lead to errors
                     header('Location:' . $ontoWiki->config->urlBase . 'error/error');
-                    exit;
+                    return;
                 }
             }
             
             // instantiate resource if parameter passed
             if (isset($request->r)) {
+                $rParam = $request->getParam('r', null, true);
                 $graph = $ontoWiki->selectedModel;
+                if (null === $graph) {
+                    // try to use first readable graph
+                    $possibleGraphs = $store->getGraphsUsingResource((string)$rParam, true);
+                    if (count($possibleGraphs) > 0) {
+                        try {
+                            $graph = $store->getModel($possibleGraphs[0]);
+                            $ontoWiki->selectedModel = $graph;
+                        } catch (Erfurt_Store_Exception $e) {
+                            $graph = null;
+                            // fail as before (see below)
+                        }
+                    }
+                }
+
                 if ($graph instanceof Erfurt_Rdf_Model) {
-                    $resource = new OntoWiki_Resource($request->getParam('r', null, true), $graph);
+                    $resource = new OntoWiki_Resource($rParam, $graph);
                     $ontoWiki->selectedResource = $resource;
                 } else {
                     // post error message
@@ -90,7 +105,7 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                         OntoWiki_Message::ERROR, array('escape' => false)));
                     // hard redirect since finishing the dispatch cycle will lead to errors
                     header('Location:' . $ontoWiki->config->urlBase . 'error/error');
-                    exit;
+                    return;
                 }
             }
             

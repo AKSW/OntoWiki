@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * JSON RPC Server (http://json-rpc.org/) Controller for OntoWiki
@@ -13,8 +19,8 @@
  *   HISTORY_ACTIONTYPE_802xx for all store actions
  *
  * @category   OntoWiki
- * @package    extensions_jsonrpc
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @package    Extensions_Jsonrpc
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class JsonrpcController extends OntoWiki_Controller_Component
@@ -61,8 +67,8 @@ class JsonrpcController extends OntoWiki_Controller_Component
             return;
         } else {
             $this->_response->setRawHeader('HTTP/1.0 404 Not Found');
-            echo '400 Not Found - The given JSONRPC Server has no corresponding wrapper class.';
-            exit;
+            echo '400 Not Found - The given JSONRPC Server has no corresponding wrapper class.';    
+            return;
         }
     }
 }

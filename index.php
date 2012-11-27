@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -31,12 +31,14 @@ function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
 set_error_handler('errorHandler');
 
 /**
- * Boostrap constants
+ * Bootstrap constants
  * @since 0.9.5
  */
+if (!defined('__DIR__')) define('__DIR__', dirname(__FILE__)); // fix for PHP < 5.3.0
 define('BOOTSTRAP_FILE', basename(__FILE__));
-define('ONTOWIKI_ROOT', rtrim(dirname(__FILE__), '/\\') . '/');
-define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application/');
+define('ONTOWIKI_ROOT', rtrim(__DIR__, '/\\') . DIRECTORY_SEPARATOR);
+define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application'.DIRECTORY_SEPARATOR);
+define('CACHE_PATH', ONTOWIKI_ROOT . 'cache'.DIRECTORY_SEPARATOR);
 
 /**
  * Old constants for < 0.9.5 backward compatibility
@@ -57,7 +59,12 @@ if ((int) substr(ini_get('memory_limit'), 0, -1) < 256) {
 // add libraries to include path
 $includePath = get_include_path() . PATH_SEPARATOR;
 $includePath .= ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
-$includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
+
+if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/Erfurt/App.php')) {
+    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
+} else if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/library/Erfurt/App.php')) {
+    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/library' . PATH_SEPARATOR;
+}
 set_include_path($includePath);
 
 // use default timezone from php.ini or let PHP guess it
@@ -131,13 +138,13 @@ try {
     return;
 }
 
-/** check/include Erfurt_App */
+/* check/include Erfurt_App */
 try {
     // use include, so we can catch it with the error handler
     include 'Erfurt/App.php';
 } catch (Exception $e) {
     echo 'Fatal Error: Could not load the Erfurt Framework classes.<br />' . PHP_EOL
-    . 'Maybe you should install it with apt-get or with "make erfurt"?';
+    . 'Maybe you should install it with apt-get or with "make deploy"?';
     return;
 }
 
@@ -148,7 +155,13 @@ restore_error_handler();
 class_alias('OntoWiki', 'OntoWiki_Application');
 
 // bootstrap
-$application->bootstrap();
+try {
+    $application->bootstrap();
+} catch (Exception $e) {
+    echo 'Error on bootstrapping application: ';
+    echo $e->getMessage();
+    return;
+}
 
 $event = new Erfurt_Event('onPostBootstrap');
 $event->bootstrap = $application->getBootstrap();

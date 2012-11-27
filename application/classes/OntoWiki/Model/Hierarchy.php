@@ -3,7 +3,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -13,8 +13,8 @@
  * Represents a hierarchy of resources, e.g. a class tree.
  *
  * @category OntoWiki
- * @package Model
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package OntoWiki_Classes_Model
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */

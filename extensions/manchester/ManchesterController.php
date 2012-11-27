@@ -3,8 +3,8 @@
  * Manchester Syntax Controller
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_manchester
- * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @package    Extensions_Manchester
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ManchesterController extends OntoWiki_Controller_Component {
@@ -57,8 +57,7 @@ class ManchesterController extends OntoWiki_Controller_Component {
         // send the response
         $response->setHeader('Content-Type', 'application/json');
         $response->setBody(json_encode($output));
-        $response->sendResponse();
-        exit;
+        return;
     }
 
     private function initParser($inputQuery) {

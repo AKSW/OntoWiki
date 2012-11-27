@@ -6,8 +6,8 @@ require_once 'OntoWiki/Module.php';
  * OntoWiki module – Manchester Editor Module
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_manchester
- * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @package    Extensions_Manchester
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ManchesterModule extends OntoWiki_Module

@@ -1,0 +1,17 @@
+[private]
+
+;;----------------------------------------------------------------------------;;
+;; Database Connection Settings                                               ;;
+;;----------------------------------------------------------------------------;;
+
+store.backend = zenddb ; zenddb, virtuoso, multi
+
+store.zenddb.dbname   = erfurt_TEST ; needs to end with _TEST
+store.zenddb.username = php
+store.zenddb.password = php
+store.zenddb.dbtype   = mysql     ; mysql
+;store.zenddb.host     = localhost ; default is localhost
+
+store.virtuoso.dsn      = VOS_TEST ; needs to end with _TEST
+store.virtuoso.username = dba
+store.virtuoso.password = dba

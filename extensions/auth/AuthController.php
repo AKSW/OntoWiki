@@ -2,23 +2,19 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_components_auth
- * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version    $Id: AuthController.php 4327 2009-10-21 08:21:36Z christian.wuerker $
  */
 
 require_once 'OntoWiki/Controller/Component.php';
- 
+
 /**
  * Controller class for auth component. 
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_auth
- * @copyright  Copyright (c) 2009 {@link http://aksw.org aksw}
+ * @package    Extensions_Auth
+ * @copyright  Copyright (c) 2012 {@link http://aksw.org aksw}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @subpackage component
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class AuthController extends OntoWiki_Controller_Component
@@ -26,7 +22,7 @@ class AuthController extends OntoWiki_Controller_Component
     public function certAction()
     {
         $translate = $this->_owApp->translate;
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         
         $this->_helper->viewRenderer->setScriptAction('cert1');
         $this->view->placeholder('main.window.title')->set($translate->_('Create Certificate - Step 1'));
@@ -230,7 +226,7 @@ class AuthController extends OntoWiki_Controller_Component
                 
                 header("Content-Type: application/x-x509-user-cert");
                 echo $cert['certData'];
-                exit;
+                return;
             }
         }
         
@@ -260,7 +256,7 @@ class AuthController extends OntoWiki_Controller_Component
         
         if (null === $this->_request->id) {
             echo '"id" parameter is missing.';
-            exit;
+            return;
         }
         
         $id = $this->_config->urlBase . 'auth/users/id/' . $this->_request->id;
@@ -273,8 +269,7 @@ class AuthController extends OntoWiki_Controller_Component
         
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'application/rdf+xml', true);
-        $response->sendResponse();
-        exit;
+        return;
     }
     
     public function agentAction()
@@ -295,8 +290,7 @@ class AuthController extends OntoWiki_Controller_Component
         
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'application/rdf+xml', true);
-        $response->sendResponse();
-        exit;
+        return;
     }
     
     

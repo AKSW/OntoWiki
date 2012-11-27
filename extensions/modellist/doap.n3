@@ -1,0 +1,28 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/modellist/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :modellist .
+:modellist a doap:Project ;
+  doap:name "modellist" ;
+  owconfig:privateNamespace <https://github.com/AKSW/modellist/raw/master/doap.n3#> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  rdfs:label "Knowledge Bases Module" ;
+  doap:description "provides a model list with create and view menu." ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:class "has-contextmenus-block" ;
+  owconfig:hasModule :Default .
+:Default a owconfig:Module ;
+  rdfs:label "Default" ;
+  owconfig:caching "true"^^xsd:boolean ;
+  owconfig:priority "20" ;
+  owconfig:context "main.sidewindows" .
+:modellist doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

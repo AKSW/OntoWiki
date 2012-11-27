@@ -1,0 +1,259 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <https://github.com/AKSW/navigation/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :navigation .
+:navigation a doap:Project ;
+  doap:name "navigation" ;
+  owconfig:privateNamespace <https://github.com/AKSW/navigation/raw/master/doap.n3#> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  rdfs:label "Navigation Module" ;
+  doap:description "an extensible and highly customizable module to navigate in knowledge bases via tree-based information (e.g. classes)" ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:templates "templates" ;
+  owconfig:languages "languages" ;
+  owconfig:hasModule :Default .
+
+:Default a owconfig:Module ;
+  rdfs:label "Default" ;
+  owconfig:context "main.sidewindows" ;
+  owconfig:priority "30" .
+  
+:navigation owconfig:config [
+      a owconfig:Config;
+      owconfig:id "defaults";
+      :config "classes" ;
+      :limit "10" ;
+      :checkTypes "true"^^xsd:boolean ;
+      :showMenu "true"^^xsd:boolean
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "sorting";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "label";
+          rdfs:label "By Label" ;
+          :type <http://www.w3.org/2000/01/rdf-schema#label>
+    ]
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "config";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "classes";
+          rdfs:label "Classes" ;
+          :cache "false"^^xsd:boolean ;
+          :titleMode "titleHelper" ;
+          :checkVisibility "false"^^xsd:boolean ;
+          :hierarchyTypes (
+                <http://www.w3.org/2002/07/owl#Class> 
+                <http://www.w3.org/2000/01/rdf-schema#Class>
+          ) ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "hierarchyRelations";
+              :in (<http://www.w3.org/2000/01/rdf-schema#subClassOf>) ;
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "instanceRelation";
+              :out (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
+        ];
+          :hiddenNS (
+                <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                <http://www.w3.org/2000/01/rdf-schema#>
+                <http://www.w3.org/2002/07/owl#>
+          ) ;
+          :hiddenRelation (<http://ns.ontowiki.net/SysOnt/hidden>) ;
+          :showImplicitElements "true"^^xsd:boolean ;
+          :showEmptyElements "true"^^xsd:boolean ;
+          :showCounts "false"^^xsd:boolean ;
+          :checkSub "true"^^xsd:boolean ;
+          :hideDefaultHierarchy "false"^^xsd:boolean ;
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "list";
+              :config "{|filter|:[{|rdfsclass|:|%resource%|,|mode|:|rdfsclass|}]}"
+        ]
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "properties";
+          rdfs:label "Properties" ;
+          :titleMode "titleHelper" ;
+          :hierarchyTypes (
+                <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>
+                <http://www.w3.org/2002/07/owl#DatatypeProperty>
+                <http://www.w3.org/2002/07/owl#ObjectProperty>
+                <http://www.w3.org/2002/07/owl#AnnotationProperty>
+          ) ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "hierarchyRelations";
+              :in (<http://www.w3.org/2000/01/rdf-schema#subPropertyOf>)
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "instanceRelation";
+              :out (<http://www.w3.org/2000/01/rdf-schema#subPropertyOf>)
+        ];
+          :showImplicitElements "false"^^xsd:boolean ;
+          :showEmptyElements "true"^^xsd:boolean ;
+          :showCounts "false"^^xsd:boolean ;
+          :hideDefaultHierarchy "false"^^xsd:boolean ;
+          :checkSub "true"^^xsd:boolean ;
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "list";
+              :config "{|shownProperties|:[{|uri|:|%resource%|,|label|:|Label 1|,|action|:|add|,|inverse|:false}],|filter|:[{|property|:|%resource%|,|filter|:|bound|}]}"
+        ]
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "spatial";
+          rdfs:label "Spatial" ;
+          :hierarchyTypes (
+                <http://ns.aksw.org/spatialHierarchy/SpatialArea>
+                <http://ns.aksw.org/spatialHierarchy/Planet> 
+                <http://ns.aksw.org/spatialHierarchy/Continent> 
+                <http://ns.aksw.org/spatialHierarchy/Country> 
+                <http://ns.aksw.org/spatialHierarchy/Province> 
+                <http://ns.aksw.org/spatialHierarchy/District> 
+                <http://ns.aksw.org/spatialHierarchy/City>
+          ) ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "hierarchyRelations";
+              :in (<http://ns.aksw.org/spatialHierarchy/isLocatedIn>)
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "instanceRelation";
+              :out (
+                    <http://ns.aksw.org/addressFeatures/physical/country>
+                    <http://ns.aksw.org/addressFeatures/physical/city>
+              )
+        ];
+ :titleMode "titleHelper"
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "faun";
+          rdfs:label "Faunistics" ;
+          :hierarchyTypes (
+                <http://purl.org/net/faunistics#Family> 
+                <http://purl.org/net/faunistics#Genus> 
+                <http://purl.org/net/faunistics#Species> 
+                <http://purl.org/net/faunistics#Order> 
+                <http://purl.org/net/faunistics#SubOrder> 
+          ) ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "hierarchyRelations";
+              :in (<http://purl.org/net/faunistics#subTaxonOf>)
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "instanceRelation";
+              :out (<http://purl.org/net/faunistics#identifiesAs>)
+        ];
+ :titleMode "titleHelper" ;
+          :checkSub "true"^^xsd:boolean
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "skos";
+          rdfs:label "SKOS" ;
+          :hierarchyTypes (
+            <http://www.w3.org/2004/02/skos/core#Concept>
+            <http://www.w3.org/2004/02/skos/core#ConceptScheme>
+          ) ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "hierarchyRelations";
+              :in (
+                <http://www.w3.org/2004/02/skos/core#broader>
+                <http://www.w3.org/2004/02/skos/core#inScheme>
+              ) ;
+              :out (<http://www.w3.org/2004/02/skos/core#narrower>)
+        ];
+        :checkSub "true"^^xsd:boolean ;
+        :titleMode "titleHelper" ;
+        :showCounts "false"^^xsd:boolean
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "org";
+          rdfs:label "Groups" ;
+          :hierarchyTypes (
+                <http://xmlns.com/foaf/0.1/Group>
+                <http://xmlns.com/foaf/0.1/Organization>
+          ) ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "hierarchyRelations";
+              :out (<http://ns.ontowiki.net/SysOnt/subGroup>)
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "instanceRelation";
+              :in (<http://xmlns.com/foaf/0.1/member>) ;
+              :out (<http://xmlns.com/foaf/0.1/member_of>)
+        ];
+ :titleMode "titleHelper" ;
+          :showCounts "true"^^xsd:boolean
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "go";
+          rdfs:label "Gene Ontology" ;
+          :hierarchyTypes (<http://www.geneontology.org/dtds/go.dtd#term>) ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "hierarchyRelations";
+              :in (<http://www.geneontology.org/dtds/go.dtd#is_a>)
+        ] ;
+          :titleMode "titleHelper" ;
+          :showCounts "false"^^xsd:boolean ;
+          :checkSub "true"^^xsd:boolean ;
+          :hideDefaultHierarchy "false"^^xsd:boolean ;
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "list";
+              :query "SELECT DISTINCT ?resourceUri WHERE { ?resourceUri <http://www.geneontology.org/GO.format.gaf-2_0.shtml#go_id> <%resource%> }"
+        ]
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "checklist";
+          rdfs:label "Checklist" ;
+          :titleMode "titleHelper" ;
+          :hierarchyTypes (<http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#Country>) ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "hierarchyRelations";
+              :in (<http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within>)
+        ] ;
+          :checkSub "true"^^xsd:boolean ;
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "list";
+              :shownProperties "{|uri|:|http://purl.org/net/faunistics#citationSuffix|,|label|:|citation suffix|,|action|:|add|,|inverse|:false}" ;
+              :query "SELECT DISTINCT ?resourceUri ?famUri WHERE {     ?recUri <http://purl.org/net/faunistics#recordedAtLocation> ?resourceLocation     OPTIONAL{         ?resourceLocation <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l1.         OPTIONAL{             ?l1 <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l2.             OPTIONAL{                 ?l2 <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l3.             }         }     }     ?recUri <http://purl.org/net/faunistics#identifiesAs> ?resourceUri .     ?resourceUri <http://purl.org/net/faunistics#subTaxonOf> ?genUri .     ?genUri <http://purl.org/net/faunistics#subTaxonOf> ?famUri .     FILTER ( sameTerm(?resourceLocation, <%resource%>) ||     sameTerm(?l1, <%resource%>) ||     sameTerm(?l2, <%resource%>) ||     sameTerm(?l3, <%resource%>)) }"
+        ];
+ :rootName "Caucasus Spiders" ;
+          :rootURI <http://db.caucasus-spiders.info/Area/152>
+    ]
+] .
+:navigation doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

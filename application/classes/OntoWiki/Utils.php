@@ -3,7 +3,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -11,8 +11,8 @@
  * OntoWiki utility class.
  *
  * @category OntoWiki
- * @package Utils
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package OntoWiki_Classes
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
@@ -120,100 +120,104 @@ class OntoWiki_Utils
     /**
 	 * Calculates the Difference between two timestamps
 	 *
-	 * @param string/int $start_timestamp
-	 * @param integer $end_timestamp
+	 * @param string/int $startTimestamp
+	 * @param integer $endTimestamp
 	 * @param integer $unit (default 0)
 	 * @return string
 	 */
-	public static function dateDifference($start_timestamp, $end_timestamp = false, $unit = 0)
+	public static function dateDifference($startTimestamp, $endTimestamp = false, $unit = 0)
 	{
 	    $translate  = OntoWiki::getInstance()->translate;
 	    	    
-            $days_seconds_star 	= (23 * 56 * 60) + 4.091; // Star Day
-            $days_seconds_sun 	= 24 * 60 * 60; // Sun Day
-            if($unit == 0){
-                $dayInSeconds = $days_seconds_sun;
+            $starDaySeconds 	= (23 * 56 * 60) + 4.091; // Star Day
+            $sunDaySeconds 	= 24 * 60 * 60; // Sun Day
+            if ($unit == 0) {
+                $dayInSeconds = $sunDaySeconds;
             } else {
-                $dayInSeconds = $days_seconds_star;
+                $dayInSeconds = $starDaySeconds;
             }
 
-            if (is_int($start_timestamp)) {
-                    if ($end_timestamp) {
-                            $difference_seconds = $end_timestamp - $start_timestamp;
+            if (is_int($startTimestamp)) {
+                if ($endTimestamp) {
+                        $differenceInSeconds = $endTimestamp - $startTimestamp;
+                } else {
+                        $endTimestamp = time();
+                        $differenceInSeconds = $endTimestamp - $startTimestamp;
+                }
+            } else if (is_string($startTimestamp)) {
+                if ($endTimestamp) {
+                    if ($t = strtotime($startTimestamp)) {
+                        $differenceInSeconds = $endTimestamp - $t ;
                     } else {
-                            $end_timestamp = time();
-                            $difference_seconds = $end_timestamp - $start_timestamp;
+                        throw new Exception('unexpected format of timestamp.');
                     }
-            } else if (is_string($start_timestamp)) {
-                    if ($end_timestamp) {
-                            if ($t = strtotime($start_timestamp)) {
-                                            $difference_seconds = $end_timestamp - $t ;
-                            } else {
-                                    throw new Exception('unexpected format of timestamp.');
-                            }
+                } else {
+                    $endTimestamp = time();
+                    if ($t = strtotime($startTimestamp)) {
+                        $differenceInSeconds = $endTimestamp - $t;
                     } else {
-                            $end_timestamp = time();
-                            if ($t = strtotime($start_timestamp)) {
-                                            $difference_seconds = $end_timestamp - $t;
-                            } else {
-                                    throw new Exception('unexpected format of timestamp.');
-                            }
+                        throw new Exception('unexpected format of timestamp.');
                     }
+                }
             } else {
-                    throw new Exception('unexpected type of timestamp. expected string (date) or int (timestamp), got '. gettype($start_timestamp) .' instead');
+                throw new Exception(
+                    'unexpected type of timestamp. '.
+                    'expected string (date) or int (timestamp), got '. 
+                    gettype($startTimestamp) .' instead'
+                );
             }
             
             //if start is in the past, we use negative differences
-            $difference_seconds *= -1;
+            $differenceInSeconds *= -1;
 
             // show e.g. 'moments ago' if time is less than one minute
-            if (abs($difference_seconds) < 60) {
-                if($difference_seconds < 0){
+            if (abs($differenceInSeconds) < 60) {
+                if ($differenceInSeconds < 0) {
                     return $translate->_('moments ago');
                 } else {
                     return $translate->_('in moments');
                 }
                 
             } else {
-                $difference_minutes = round(($difference_seconds / 60));
+                $differenceInMinutes = round(($differenceInSeconds / 60));
 
                 // show e.g. 'approx. x minutes ago' if time is less than one hour
-                if (abs($difference_minutes) == 1) {
-                    if($difference_seconds < 0){
+                if (abs($differenceInMinutes) == 1) {
+                    if ($differenceInSeconds < 0) {
                         return $translate->_('approx. 1 minute ago');
                     } else {
                         return $translate->_('in approx. 1 minute');
                     }
-                } else if (abs($difference_minutes) < 60) {
-                    if($difference_minutes < 0){
-                        return sprintf($translate->_('approx. %d minutes ago'), abs($difference_minutes));
+                } else if (abs($differenceInMinutes) < 60) {
+                    if ($differenceInMinutes < 0) {
+                        return sprintf($translate->_('approx. %d minutes ago'), abs($differenceInMinutes));
                     } else {
-                        return sprintf($translate->_('in approx. %d minutes'), abs($difference_minutes));
+                        return sprintf($translate->_('in approx. %d minutes'), abs($differenceInMinutes));
                     }
                 } else {
-                    $difference_hours = round(($difference_seconds / 3600));
+                    $differenceInHours = round(($differenceInSeconds / 3600));
 
                     // show e.g. 'approx. x hours
-                    if (abs($difference_hours) == 1) {
-                        if($difference_hours < 0){
+                    if (abs($differenceInHours) == 1) {
+                        if ($differenceInHours < 0) {
                             return $translate->_('approx. 1 hour ago');
                         } else {
                             return $translate->_('in approx. 1 hour');
                         }
-                    } else if (abs($difference_hours) <= 48) {
-                        if($difference_hours < 0){
-                            return sprintf($translate->_('approx. %d hours ago'), abs($difference_hours));
+                    } else if (abs($differenceInHours) <= 48) {
+                        if ($differenceInHours < 0) {
+                            return sprintf($translate->_('approx. %d hours ago'), abs($differenceInHours));
                         } else {
-                            return sprintf($translate->_('in approx. %d hours'), abs($difference_hours));
+                            return sprintf($translate->_('in approx. %d hours'), abs($differenceInHours));
                         }
                     } else {
-                        $difference_days = round(($difference_seconds / $dayInSeconds));
+                        $differenceInDays = round(($differenceInSeconds / $dayInSeconds));
 
                         // else return e.g. 'approx. x days ago'
-                        if($difference_days < 0){
-                            return sprintf($translate->_('approx. %d days ago'), abs($difference_days));
+                        if ($differenceInDays < 0) {
+                            return sprintf($translate->_('approx. %d days ago'), abs($differenceInDays));
                         } else {
-                            return sprintf($translate->_('in approx. %d days'), abs($difference_days));
+                            return sprintf($translate->_('in approx. %d days'), abs($differenceInDays));
                         }
                     }
                 }
@@ -291,7 +295,10 @@ class OntoWiki_Utils
      * @param array $supportedMimetypes The mime types to match against
      * @return string
      */
-    public static function matchMimetypeFromRequest(Zend_Controller_Request_Abstract $request, array $supportedMimetypes)
+    public static function matchMimetypeFromRequest(
+            Zend_Controller_Request_Abstract $request, 
+            array $supportedMimetypes
+    )
     {
         // get accept header
         $acceptHeader = strtolower($request->getHeader('Accept'));
@@ -353,6 +360,61 @@ class OntoWiki_Utils
         }
         
         return self::$_namespaces;
+    }
+    
+    static public function array_to_object(array $array) 
+    {
+        # Iterate through our array looking for array values.
+        # If found recurvisely call itself.
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $array[$key] = self::array_to_object($value);
+            }
+        }
+
+        # Typecast to (object) will automatically convert array -> stdClass
+        return (object)$array;
+    }
+    
+    static public function object_to_array(object $array) 
+    {
+        # Iterate through our array looking for array values.
+        # If found recurvisely call itself.
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $array[$key] = self::object_to_array($value);
+            }
+        }
+
+        # Typecast to (object) will automatically convert array -> stdClass
+        return (array)$array;
+    }
+    
+    static public function object_merge_recursive($a, $b)
+    {
+        return self::array_to_object(
+            array_merge_recursive(
+                self::object_to_array($a), 
+                self::object_to_array($b)
+            )
+        );
+    }
+    
+    /**
+     * cast an object to the most general class.
+     * also makes implicit (__get-magic) properties explicit
+     * @param type $o 
+     */
+    static public function to_stdclass_recursive($o)
+    {
+        $ret = new stdClass();
+        foreach ($o as $k => $v) {
+            if (is_object($v) && get_class($v) != 'stdClass') {
+                $v = self::to_stdclass_recursive($v);
+            }
+            $ret->{$k} = $v;
+        }
+        return $ret;
     }
 }
 

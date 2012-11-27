@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 require_once 'OntoWiki/Module.php';
 
@@ -6,9 +12,9 @@ require_once 'OntoWiki/Module.php';
  * OntoWiki module – save query button
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_savequery
+ * @package    Extensions_Queries
  * @author     Jonas Brekle <jonas.brekle@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class SavequeryModule extends OntoWiki_Module

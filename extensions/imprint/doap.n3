@@ -1,0 +1,33 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/imprint/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :imprint .
+:imprint a doap:Project ;
+  doap:name "imprint" ;
+  owconfig:privateNamespace <https://github.com/AKSW/imprint/raw/master/doap.n3#> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  rdfs:label "Imprint" ;
+  doap:description "show a little box on the left that can contain legal notices and a contact information on the legally responsible person." ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:hasModule :Default .
+:Default a owconfig:Module ;
+  rdfs:label "Default" ;
+  owconfig:caching "false"^^xsd:boolean ;
+  owconfig:priority "40" ;
+  owconfig:context "main.sidewindows" .
+:imprint :notice "Angaben gemäß § 5 TMG:" ;
+  :mail "info@domain.de" ;
+  :name "Herr Max Mustermann" ;
+  :street "Lange Str. 123" ;
+  :city "Leipzig" ;
+  :zip "04123" ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

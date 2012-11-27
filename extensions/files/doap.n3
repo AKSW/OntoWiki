@@ -1,0 +1,34 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <http://ns.ontowiki.net/Extensions/files/> .
+
+<> foaf:primaryTopic :this .
+:this a doap:Project ;
+  doap:name "files" ;
+  owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/files/> ;
+  owconfig:templates "templates" ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  owconfig:languages "languages/" ;
+  owconfig:defaultAction "display" ;
+  rdfs:label "File Resource Manager" ;
+  doap:description "manage file uploads." ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  :path "uploads" ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "mime";
+      :property <http://localhost/OntoWiki/Config/hasMimeType>
+];
+ :class <http://localhost/OntoWiki/Config/File> ;
+  :model <http://localhost/OntoWiki/Config/toModel> ;
+  :DMS_NS <http://ns.aksw.org/DMS/> ;
+  :import_DMS "1" .
+:this doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

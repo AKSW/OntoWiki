@@ -1,11 +1,19 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * Semantic Sitemap plug-in controller
  *
+ * @category   OntoWiki
+ * @package    Extensions_Semanticsitemap
  * @author Sebastian Dietzold <sebastian@dietzold.de>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version $Id: $
  */
 class SemanticsitemapController extends OntoWiki_Controller_Component
 {
@@ -65,10 +73,8 @@ class SemanticsitemapController extends OntoWiki_Controller_Component
 
         // assign view var(s)
         $this->view->datasets = $datasets;
-        $this->view->appname = $version = $owApp->config->version->label;
-        $this->view->version = $version = $owApp->config->version->number;
-        $this->view->versionsuffix = $version = $owApp->config->version->suffix;
-
+        $this->view->appname = OntoWiki::APPLICATION_NAME;
+        $this->view->version = OntoWiki_Version::VERSION;
 
         // render view
         //$this->_response->setBody($this->view->render('default.php'));

@@ -1,0 +1,157 @@
+ontowiki (0.9.7-1) lod2; urgency=low
+
+  * GUI niceups
+  * lots of fixes
+  * https://github.com/AKSW/OntoWiki/issues?milestone=1&page=1&state=closed
+  * RDFauthor is now a separate package
+  * Add support for additonal vhosts
+  * increment RDFauthor dependency
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Fri, 16 Nov 2012 08:30:17 -0800
+
+ontowiki (0.9.6-21) lod2; urgency=low
+
+  * fix RDFauthor integration
+  * forward RDFauthor to b780680
+  * forward OntoWiki to 04b33fd
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Mon, 27 Feb 2012 10:42:49 +0100
+
+ontowiki (0.9.6-20) lod2; urgency=low
+
+  * forward ontowiki to 4bcd852
+  * forward RDFauthor to 3072d23
+  * fix non-writable extension directory
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Fri, 24 Feb 2012 01:50:21 +0100
+
+ontowiki (0.9.6-19) lod2; urgency=low
+
+  * merged new develop branches into debian package
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 25 Jan 2012 10:03:59 +0100
+
+ontowiki (0.9.6-18) lod2; urgency=low
+
+  * Adds support for case-insensitive URI matching and trailing slashes tolerance.
+  * Add text/turtle to type mappings.
+  * remove patternmanager, tagging, csvimport, site and map extensions
+  * improve error messages on bootstrap
+  * build from moved github sources
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Tue, 04 Oct 2011 14:42:39 +0200
+
+ontowiki (0.9.6-17) lod2; urgency=low
+
+  * removed detailed dependency information for more compatibility
+  * fixed CKAN link
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Fri, 02 Sep 2011 20:47:47 +0200
+
+ontowiki (0.9.6-16) lod2; urgency=low
+
+  * fix: RDFauthor integration
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Thu, 01 Sep 2011 10:01:16 +0200
+
+ontowiki (0.9.6-15) lod2; urgency=low
+
+  * feature: ckan registration for non localhost models
+  * fix: depends-on-essential-package-without-using-version (sed)
+  * fix: AllowDirs now for new erfurt position
+  * hack: virtuoso's dba acount used (this should be changed soon!)
+  * new dependency: libphp-pclzip for extension configuration
+  * new dependency: tinymce in RDFauthor
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 22 Jun 2011 05:45:00 +0200
+
+ontowiki (0.9.6-14) lod2; urgency=low
+
+  * correct pwgen dependency 
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Mon, 20 Jun 2011 10:58:27 +0200
+
+ontowiki (0.9.6-13) lod2; urgency=low
+
+  * now with liberfurt-php dependency
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Thu, 09 Jun 2011 12:35:20 +0200
+
+ontowiki (0.9.6-12) lod2; urgency=low
+
+  * virtuoso autoexec.isql now on correct place?
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Thu, 09 Jun 2011 12:35:20 +0200
+
+ontowiki (0.9.6-11) lod2; urgency=low
+
+  * configuration directory split
+  * virtuoso autoexec.isql test
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Thu, 09 Jun 2011 08:35:20 +0200
+
+ontowiki (0.9.6-10) lod2; urgency=low
+
+  * correct Depends, Replaces, Provides and Breaks tags
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Thu, 09 Jun 2011 08:00:31 +0200
+
+ontowiki (0.9.6-9) lod2; urgency=low
+
+  * split package structure into virtuoso, mysql and common (sub-)packages
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 08 Jun 2011 17:01:51 +0200
+
+ontowiki (0.9.6-8) lod2; urgency=low
+
+  * hopefully fixes install problems
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 08 Jun 2011 17:01:21 +0200
+
+ontowiki (0.9.6-7) lod2; urgency=low
+
+  * docu addons
+  * depends on libmarkdown-php now
+  * security fix: file permissions
+  * license fix for codemirror
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Thu, 24 Mar 2011 15:48:57 +0100
+
+ontowiki (0.9.6-6) lod2; urgency=low
+
+  * jquery-ui dependency deleted
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Thu, 24 Mar 2011 15:18:59 +0100
+
+ontowiki (0.9.6-5) lod2; urgency=low
+
+  * (manual) database creation 
+  * depends on jquery-ui now
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Thu, 24 Mar 2011 08:48:17 +0100
+
+ontowiki (0.9.6-4) lod2; urgency=low
+
+  * a2enmod env
+  * depends on zend framework
+  * logs under /var/log/ontowiki
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 23 Mar 2011 16:00:43 +0100
+
+ontowiki (0.9.6-3) lod2; urgency=low
+
+  * fix: a2enmod rewrite in postinst
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Tue, 22 Mar 2011 16:33:32 +0100
+
+ontowiki (0.9.6-2) lod2; urgency=low
+
+  * better postinst handling
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Tue, 22 Mar 2011 13:28:42 +0100
+
+ontowiki (0.9.6-1) lod2; urgency=low
+
+  * Initial debian release
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 02 Feb 2011 00:10:38 +0100

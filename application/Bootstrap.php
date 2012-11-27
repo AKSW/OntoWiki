@@ -1,22 +1,20 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
- /**
-  * OntoWiki bootstrap class.
-  *
-  * Provides on-demand loading of application resources.
-  *
-  * @category OntoWiki
-  * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
-  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
-  * @author Norman Heino <norman.heino@gmail.com>
-  */
+/**
+ * OntoWiki bootstrap class.
+ *
+ * Provides on-demand loading of application resources.
+ *
+ * @category OntoWiki
+ * @package OntoWiki_Bootstrap
+ * @author Norman Heino <norman.heino@gmail.com>
+ */
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
     /**
@@ -39,9 +37,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //because serialized erfurt objects in the session need constants defined in erfurt
         //is this ok?
 
+        Erfurt_Wrapper_Registry::reset();
+
         // require Erfurt
         $this->bootstrap('Erfurt');
-        // $erfurt = $this->getResource('Erfurt');
 
         // require Session
         $this->bootstrap('Session');
@@ -68,14 +67,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // set view
         $ontoWiki->view = $view;
 
-        // initialize components
         $extensionPath = ONTOWIKI_ROOT
                         . $config->extensions->base;
 
         $extensionPathBase = $config->staticUrlBase
                         . $config->extensions->base;
-
-        OntoWiki_Navigation::reset();
 
         $extensionManager = new OntoWiki_Extension_Manager($extensionPath);
         $extensionManager->setTranslate($translate)
@@ -86,16 +82,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             $frontController->addControllerDirectory($extensionConfig->path, '_component_' . $extensionName);
         }
 
-        // make component manager available to dispatcher
+        // make extension manager available to dispatcher
         $dispatcher = $frontController->getDispatcher();
         $dispatcher->setExtensionManager($extensionManager);
 
-        // keep component manager in OntoWiki
+        // keep extension manager in OntoWiki
         $ontoWiki->extensionManager = $extensionManager;
 
         // actionhelper
         Zend_Controller_Action_HelperBroker::addPrefix('OntoWiki_Controller_ActionHelper_');
         Zend_Controller_Action_HelperBroker::addHelper(new OntoWiki_Controller_ActionHelper_List());
+
+        return $extensionManager;
     }
 
     /**
@@ -109,18 +107,31 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         try {
             $config = new Zend_Config_Ini(APPLICATION_PATH . 'config/default.ini', 'default', true);
         } catch (Zend_Config_Exception $e) {
-            exit($e->getMessage());
+            throw $e;
         }
 
         // load user application configuration files
+        $tryDistConfig = false;
         try {
             $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini', 'private', true);
             $config->merge($privateConfig);
         } catch (Zend_Config_Exception $e) {
-            $message = '<p>OntoWiki can not find a proper configuration.</p>' . PHP_EOL .
-                '<p>Maybe you have to copy and modify the distributed <code>config.ini-dist</code> file?</p>' . PHP_EOL .
-                '<details><summary>Error Details</summary>' . $e->getMessage() . '</details>';
-            exit($message);
+            $tryDistConfig = true;
+        }
+
+        if ($tryDistConfig === true) {
+            try {
+                $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'config.ini.dist', 'private', true);
+                $config->merge($privateConfig);
+            } catch (Zend_Config_Exception $e) {
+                $message = '<p>OntoWiki can not find a proper configuration.</p>' . PHP_EOL
+                         . '<p>Maybe you have to copy and modify the distributed '
+                         . '<code>config.ini.dist</code> file?</p>'. PHP_EOL
+                         . '<details><summary>Error Details</summary>'
+                         . $e->getMessage() . '</details>';
+
+                throw new OntoWiki_Exception($message);
+            }
         }
 
         // normalize path names
@@ -128,9 +139,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->themes->default  = rtrim($config->themes->default, '/\\') . '/';
         $config->extensions->base = rtrim($config->extensions->base, '/\\') . '/';
 
-        if (!defined('EXTENSION_PATH')) {
+        if ( false === defined('EXTENSION_PATH'))
             define('EXTENSION_PATH', $config->extensions->base);
-        }
+
         $config->extensions->legacy     = EXTENSION_PATH . rtrim($config->extensions->legacy, '/\\') . '/';
         $config->languages->path        = EXTENSION_PATH . rtrim($config->languages->path, '/\\') . '/';
 
@@ -144,18 +155,44 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             $config->cache->path = ONTOWIKI_ROOT . $config->cache->path;
         }
 
+        //force caching
+        if (!is_writable($config->cache->path)) {
+            throw new OntoWiki_Exception(
+                '<p>OntoWiki can not write to the "cache" folder.</p>' . PHP_EOL .
+                '<p>Maybe you have to create the folder or allow write access for the webserver user?</p>'
+            );
+        }
+
         // set path variables
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
-        $port        = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80') 
-                     ? (':' . $_SERVER['SERVER_PORT']) 
-                     : '';
-        $urlBase     = sprintf('%s://%s%s%s', 
-                               $protocol, 
-                               isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost', 
-                               $port, 
-                               $rewriteBase);
-        
+
+        if (isset($_SERVER['SERVER_PORT'])
+            && $_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') {
+            $port = ':' . $_SERVER['SERVER_PORT'];
+        } else {
+            $port = '';
+        }
+
+        if (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], ':') !== false) {
+            // IPv6
+            $serverName = '[' . $_SERVER['SERVER_NAME'] . ']';
+        } else if (isset($_SERVER['SERVER_NAME'])) {
+            // IPv4 or host name
+            $serverName = $_SERVER['SERVER_NAME'];
+        } else {
+            // localhost
+            $serverName = 'localhost';
+        }
+
+        $urlBase = sprintf(
+            '%s://%s%s%s',
+            $protocol,
+            $serverName,
+            $port,
+            $rewriteBase
+        );
+
         // construct URL variables
         $config->host           = parse_url($urlBase, PHP_URL_HOST);
         $config->urlBase        = rtrim($urlBase . (ONTOWIKI_REWRITE ? '' : BOOTSTRAP_FILE), '/\\') . '/';
@@ -172,7 +209,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             error_reporting(E_ALL | E_STRICT);
             ini_set('display_errors', 'On');
             // enable debugging options
-            define('_OWDEBUG', 1);
+            if ( false === defined('_OWDEBUG')) {
+                define('_OWDEBUG', 1);
+            }
             // log everything
             $config->log->level = 7;
         }
@@ -220,12 +259,23 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('OntoWiki');
         $ontoWiki = $this->getResource('OntoWiki');
 
+        // require Logger, since Erfurt logger should write into OW logs dir
+        $this->bootstrap('Logger');
+
+        // Reset the Erfurt app for testability... needs to be refactored.
+        Erfurt_App::reset();
+
         try {
             $erfurt = Erfurt_App::getInstance(false)->start($config);
         } catch (Erfurt_Exception $ee) {
-            exit('Error loading Erfurt framework: ' . $ee->getMessage());
+            throw new OntoWiki_Exception('Error loading Erfurt framework: ' . $ee->getMessage());
         } catch (Exception $e) {
-            exit('Unexpected error: ' . $e->getMessage());
+            throw new OntoWiki_Exception('Unexpected error: ' . $e->getMessage());
+        }
+
+        // Access the store in order to check whether connection works
+        if (!$erfurt->getStore()) {
+            return false;
         }
 
         // make available
@@ -268,11 +318,34 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         if (is_writable($config->log->path) && ((boolean)$config->log->level !== false)) {
             $levelFilter = new Zend_Log_Filter_Priority((int)$config->log->level, '<=');
 
-            $writer = new Zend_Log_Writer_Stream($config->log->path . 'ontowiki.log');
-            $logger = new Zend_Log($writer);
-            $logger->addFilter($levelFilter);
+            $logName = $config->log->path . 'ontowiki';
 
-            return $logger;
+            // Check whether log can be created with $logName... otherwise append a number.
+            // This needs to be done, since logs may be created by other processes (e.g. with
+            // testing) and thus can't be opened anymore.
+            for ($i = 0; $i<10; ++$i) {
+                try {
+                    $fullLogName = $logName;
+                    if ($i > 0) {
+                        $fullLogName .= '_' . $i;
+                    }
+                    $fullLogName .= '.log';
+
+                    $writer = new Zend_Log_Writer_Stream($fullLogName);
+                    if (null !== $writer) {
+                        break;
+                    }
+                } catch (Zend_Log_Exception $e) {
+                    // Nothing to do... just continue
+                }
+            }
+
+            if (null !== $writer) {
+                $logger = new Zend_Log($writer);
+                $logger->addFilter($levelFilter);
+
+                return $logger;
+            }
         }
 
         // fallback to NULL logger
@@ -313,21 +386,21 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                ? $session->lastRoute
                : $config->route->default->name;
 
-        // Reset navigation for multiple boostraping (tests)
-        OntoWiki_Navigation::reset();
-
         // register with navigation
         if (isset($config->routes->{$route})) {
             extract($config->routes->{$route}->defaults->toArray());
 
             // and add last routed component
-            OntoWiki_Navigation::register('index', array(
-                'route'      => $route,
-                'controller' => $controller,
-                'action'     => $action,
-                'name'       => ucfirst($route),
-                'priority'   => 0
-            ));
+            OntoWiki::getInstance()->getNavigation()->register(
+                'index',
+                array(
+                    'route'      => $route,
+                    'controller' => $controller,
+                    'action'     => $action,
+                    'name'       => ucfirst($route),
+                    'priority'   => 0
+                )
+            );
         }
     }
 
@@ -344,6 +417,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         OntoWiki::reset();
         $ontoWiki = OntoWiki::getInstance();
+        $ontoWiki->setBootstrap($this);
         $ontoWiki->language = isset($config->languages->locale) ? $config->languages->locale : null;
         $ontoWiki->config   = $config;
 
@@ -356,9 +430,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('frontController');
         $frontController = $this->getResource('frontController');
 
-        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_HttpAuth(), 1); // Needs to be done first!
+        // Needs to be done first!
+        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_HttpAuth(), 1);
         $frontController->registerPlugin(new OntoWiki_Controller_Plugin_SetupHelper(), 2);
-        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_ListSetupHelper(), 3); //needs to be done after SetupHelper
+        //needs to be done after SetupHelper
+        $frontController->registerPlugin(new OntoWiki_Controller_Plugin_ListSetupHelper(), 3);
     }
 
     /**
@@ -423,9 +499,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $session    = new Zend_Session_Namespace($sessionKey);
 
         // define the session key as a constant for global reference
-        if (!defined('_OWSESSION')) {
+
+        if ( false === defined('_OWSESSION'))
             define('_OWSESSION', $sessionKey);
-        }
 
         // inject session vars into OntoWiki
         if (array_key_exists('sessionVars', $this->_options['bootstrap'])) {
@@ -562,7 +638,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                              . 'templates';
 
         $viewOptions = array(
-            'use_module_cachce' => (bool)$config->cache->modules,
+            'use_module_cache' => (bool)$config->cache->modules,
             'cache_path'        => $config->cache->path,
             'lang'              => $config->languages->locale
 
@@ -575,8 +651,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
              ->addScriptPath($config->extensions->base)    // extension templates
              ->setEncoding($config->encoding)
              ->setHelperPath(ONTOWIKI_ROOT . 'application/classes/OntoWiki/View/Helper', 'OntoWiki_View_Helper');
-
-
 
         // set Zend_View to emit notices in debug mode
         $view->strictVars(defined('_OWDEBUG'));
@@ -593,39 +667,17 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $layoutPath = $defaultTemplatePath . DIRECTORY_SEPARATOR . 'layouts';
         if (is_readable($themeLayoutTemplate)) {
-            $layoutPath = $themeTemplatePath
-                        . DIRECTORY_SEPARATOR
-                        . 'layouts';
+            $layoutPath = $themeTemplatePath . DIRECTORY_SEPARATOR . 'layouts';
         }
 
         // initialize layout
-        Zend_Layout::startMvc(array(
-            // for layouts we use the default path
-            'layoutPath' => $layoutPath
-        ));
+        Zend_Layout::startMvc(
+            array(
+                // for layouts we use the default path
+                'layoutPath' => $layoutPath
+            )
+        );
 
         return $view;
-    }
-
-    /**
-     * Initializes the wrapper manager
-     *
-     * @since 0.9.5
-     */
-    public function _initWrapperManager()
-    {
-        // require Erfurt
-        $this->bootstrap('Erfurt');
-        $erfurt = $this->getResource('Erfurt');
-
-        // require Config
-        $this->bootstrap('Config');
-        $config = $this->getResource('Config');
-
-        // initialize wrapper manager and load wrapper
-        $wrapperManager = $erfurt->getWrapperManager(false);
-        $wrapperManager->addWrapperPath(ONTOWIKI_ROOT . $config->extensions->wrapper);
-
-        return $wrapperManager;
     }
 }

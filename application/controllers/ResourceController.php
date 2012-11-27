@@ -1,15 +1,20 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki resource controller.
  *
- * @package    application
- * @subpackage mvc
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
- * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @package OntoWiki_Controller
  */
-class ResourceController extends OntoWiki_Controller_Base {
-    private function _addLastModifiedHeader() {
+class ResourceController extends OntoWiki_Controller_Base
+{
+    private function _addLastModifiedHeader()
+    {
         $r = $this->_owApp->selectedResource;
         $m = $this->_owApp->selectedModel;
 
@@ -31,7 +36,8 @@ class ResourceController extends OntoWiki_Controller_Base {
     /**
      * Displays all preoperties and values for a resource, denoted by parameter
      */
-    public function propertiesAction() {
+    public function propertiesAction()
+    {
         $this->_addLastModifiedHeader();
 
         $store      = $this->_owApp->erfurt->getStore();
@@ -44,8 +50,8 @@ class ResourceController extends OntoWiki_Controller_Base {
         $resourceMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('resource');
         foreach (array_reverse(Erfurt_Syntax_RdfSerializer::getSupportedFormats()) as $key => $format) {
             $resourceMenu->prependEntry(
-                    'Export Resource as ' . $format,
-                    $this->_config->urlBase . 'resource/export/f/' . $key . '?r=' . urlencode($resource)
+                'Export Resource as ' . $format,
+                $this->_config->urlBase . 'resource/export/f/' . $key . '?r=' . urlencode($resource)
             );
         }
 
@@ -66,8 +72,8 @@ class ResourceController extends OntoWiki_Controller_Base {
         // Give plugins a chance to add entries to the menu
         $this->view->placeholder('main.window.menu')->set($menu->toArray(false, true));
 
-        $title = $resource->getTitle($this->_config->languages->locale) 
-               ? $resource->getTitle($this->_config->languages->locale) 
+        $title = $resource->getTitle($this->_config->languages->locale)
+               ? $resource->getTitle($this->_config->languages->locale)
                : OntoWiki_Utils::contractNamespace((string)$resource);
         $windowTitle = sprintf($translate->_('Properties of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
@@ -118,16 +124,18 @@ class ResourceController extends OntoWiki_Controller_Base {
 
                 if ($this->_erfurt->getAc()->isModelAllowed('edit', $g)) {
                     $editableFlags[$g] = true;
-                    $this->view->placeholder('update')->append(array(
-                        'sourceGraph'    => $g,
-                        'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
-                        'updateEndpoint' => $this->_config->urlBase . 'update/'
-                    ));
+                    $this->view->placeholder('update')->append(
+                        array(
+                            'sourceGraph'    => $g,
+                            'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
+                            'updateEndpoint' => $this->_config->urlBase . 'update/'
+                        )
+                    );
                 } else {
                     $editableFlags[$g] = false;
                 }
             }
-            
+
             $this->view->graphs        = $graphInfo;
             $this->view->editableFlags = $editableFlags;
             $this->view->values        = $values;
@@ -153,11 +161,14 @@ class ResourceController extends OntoWiki_Controller_Base {
                 $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)
         ) {
             // TODO: check acl
-            $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties'));
-            $toolbar->appendButton(OntoWiki_Toolbar::EDITADD, array(
-                'name'  => 'Clone',
-                'class' => 'clone-resource'
-            ));
+            $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties', 'title' => 'SHIFT + ALT + e'));
+            $toolbar->appendButton(
+                OntoWiki_Toolbar::EDITADD, array(
+                    'name'  => 'Clone',
+                    'class' => 'clone-resource',
+                    'title' => 'SHIFT + ALT + l'
+                )
+            );
             // ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Property', 'class' => 'property-add'));
             $params = array(
                     'name' => 'Delete',
@@ -167,11 +178,26 @@ class ResourceController extends OntoWiki_Controller_Base {
                     ->appendButton(OntoWiki_Toolbar::DELETE, $params);
 
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::ADD, array('name' => 'Add Property', '+class' => 'property-add'));
+                    ->prependButton(OntoWiki_Toolbar::ADD, array(
+                        'name' => 'Add Property', 
+                        '+class' => 'property-add', 
+                        'title' => 'SHIFT + ALT + a'
+                    )
+            );
 
             $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::CANCEL, array('+class' => 'hidden'))
-                    ->prependButton(OntoWiki_Toolbar::SAVE, array('+class' => 'hidden'));
+                    ->prependButton(OntoWiki_Toolbar::CANCEL, array(
+                        '+class' => 'hidden', 
+                        'title' => 'SHIFT + ALT + c'
+                    )
+            );
+
+            $toolbar->prependButton(
+                OntoWiki_Toolbar::SAVE, array(
+                    '+class' => 'hidden', 
+                    'title' => 'SHIFT + ALT + s'
+                )
+            );
         }
 
         // let plug-ins add buttons
@@ -180,11 +206,11 @@ class ResourceController extends OntoWiki_Controller_Base {
         $toolbarEvent->graph    = (string)$graph;
         $toolbarEvent->toolbar  = $toolbar;
         $eventResult = $toolbarEvent->trigger();
-        
+
         if ($eventResult instanceof OntoWiki_Toolbar) {
             $toolbar = $eventResult;
         }
-        
+
         // add toolbar
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
 
@@ -196,32 +222,36 @@ class ResourceController extends OntoWiki_Controller_Base {
      * Displays resources of a certain type and property values that have
      * been selected by the user.
      */
-    public function instancesAction() {
+    public function instancesAction()
+    {
         $store       = $this->_owApp->erfurt->getStore();
         $graph       = $this->_owApp->selectedModel;
 
         // the list is managed by a controller plugin that catches special http-parameters
-        // in Ontowiki/Controller/Plugin/ListSetupHelper.php
-        
+        // @see Ontowiki/Controller/Plugin/ListSetupHelper.php
+
         //here this list is added to the view
         $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
         $listName = 'instances';
-        if($listHelper->listExists($listName)){
+        if ($listHelper->listExists($listName)) {
             $list = $listHelper->getList($listName);
+            $list->setStore($store);
             $listHelper->addList($listName, $list, $this->view);
         } else {
-            if($this->_owApp->selectedModel == null){
-                $this->_owApp->appendMessage(new OntoWiki_Message('your session timed out. select a model',  OntoWiki_Message::ERROR));
+            if ($this->_owApp->selectedModel == null) {
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('your session timed out. select a model',  OntoWiki_Message::ERROR)
+                );
                 $this->_redirect($this->_config->baseUrl);
             }
             $list = new OntoWiki_Model_Instances($store, $this->_owApp->selectedModel, array());
             $listHelper->addListPermanently($listName, $list, $this->view);
         }
-        
+
         //two usefull order
         //$list->orderByUri();
         //$list->setOrderProperty('http://ns.ontowiki.net/SysOnt/order');
-        
+
         //begin view building
         $this->view->placeholder('main.window.title')->set('Resource List');
 
@@ -233,17 +263,19 @@ class ResourceController extends OntoWiki_Controller_Base {
 
             if ($graph->isEditable()) {
                 $toolbar = $this->_owApp->toolbar;
-                $toolbar->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource'));
-                        // ->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
-                        // ->appendButton(OntoWiki_Toolbar::SEPARATOR)
-                        // ->appendButton(OntoWiki_Toolbar::DELETE, array('name' => 'Delete Selected', 'class' => 'submit'))
-                        // ->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                        // ->prependButton(OntoWiki_Toolbar::CANCEL)
-                        // ->prependButton(OntoWiki_Toolbar::SAVE);
+                $toolbar->appendButton(
+                    OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource')
+                );
+                // ->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
+                // ->appendButton(OntoWiki_Toolbar::SEPARATOR)
+                // ->appendButton(OntoWiki_Toolbar::DELETE, array('name' => 'Delete Selected', 'class' => 'submit'))
+                // ->prependButton(OntoWiki_Toolbar::SEPARATOR)
+                // ->prependButton(OntoWiki_Toolbar::CANCEL)
+                // ->prependButton(OntoWiki_Toolbar::SAVE);
                 $this->view->placeholder('main.window.toolbar')->set($toolbar);
             }
         /*
-            
+
             $url = new OntoWiki_Url(
                 array(
                     'controller' => 'resource',
@@ -251,7 +283,7 @@ class ResourceController extends OntoWiki_Controller_Base {
                 ),
                 array()
             );
-            
+
             $this->view->formActionUrl = (string)$url;
             $this->view->formMethod    = 'post';
             $this->view->formName      = 'instancelist';
@@ -270,7 +302,8 @@ class ResourceController extends OntoWiki_Controller_Base {
      * Deletes one or more resources denoted by param 'r'
      * TODO: This should be done by a evolution pattern in the future
      */
-    public function deleteAction() {
+    public function deleteAction()
+    {
         $this->view->clearModuleCache();
 
         $this->_helper->viewRenderer->setNoRender();
@@ -285,7 +318,6 @@ class ResourceController extends OntoWiki_Controller_Base {
             $resources = $this->_request->getParam('r', array());
         } else {
             throw new OntoWiki_Exception('Missing parameter r!');
-            exit;
         }
 
         if (!is_array($resources)) {
@@ -299,9 +331,14 @@ class ResourceController extends OntoWiki_Controller_Base {
         if ($this->_erfurt->getAc()->isModelAllowed('edit', $modelIri)) {
             foreach ($resources as $resource) {
 
-                # if we have only a nice uri, fill to full uri
+                // if we have only a nice uri, fill to full uri
                 if (Zend_Uri::check($resource) == false) {
-                    $resource = $model->getBaseIri() . $resource;
+                    // check for namespace
+                    if (strstr($resource, ':')) {
+                        $resource = OntoWiki_Utils::expandNamespace($resource);
+                    } else {
+                        $resource = $model->getBaseIri() . $resource;
+                    }
                 }
 
                 // action spec for versioning
@@ -321,7 +358,7 @@ class ResourceController extends OntoWiki_Controller_Base {
                 $sparqlQuery->addFrom($modelIri);
                 $sparqlQuery->setWherePart('{ <' . $resource . '> ?p ?o . }');
 
-                $result = $store->sparqlQuery($sparqlQuery,array('result_format'=>'extended'));
+                $result = $store->sparqlQuery($sparqlQuery, array('result_format'=>'extended'));
                 // transform them to statement array to be compatible with store methods
                 foreach ($result['results']['bindings'] as $stmt) {
                     $stmtArray[$resource][$stmt['p']['value']][] = $stmt['o'];
@@ -341,7 +378,7 @@ class ResourceController extends OntoWiki_Controller_Base {
                     . ' deleted.';
 
             $this->_owApp->appendMessage(
-                    new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
+                new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
             );
 
         } else {
@@ -349,7 +386,7 @@ class ResourceController extends OntoWiki_Controller_Base {
             $message = 'not allowed.';
 
             $this->_owApp->appendMessage(
-                    new OntoWiki_Message($message, OntoWiki_Message::WARNING)
+                new OntoWiki_Message($message, OntoWiki_Message::WARNING)
             );
         }
 
@@ -358,11 +395,11 @@ class ResourceController extends OntoWiki_Controller_Base {
         $event->modelUri = $modelIri;
         $event->trigger();
 
-
         $this->_redirect($redirect, array('code' => 302));
     }
 
-    public function exportAction() {
+    public function exportAction()
+    {
         $this->_addLastModifiedHeader();
 
         $this->_helper->viewRenderer->setNoRender();
@@ -375,9 +412,7 @@ class ResourceController extends OntoWiki_Controller_Base {
         } else {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
-            $response->sendResponse();
-            throw new OntoWiki_Controller_Exception("No nodel given.");
-            exit;
+            throw new OntoWiki_Controller_Exception("No model given.");
         }
 
         $resource = $this->getParam('r', true);
@@ -397,27 +432,21 @@ class ResourceController extends OntoWiki_Controller_Base {
         if (!in_array($format, array_keys(Erfurt_Syntax_RdfSerializer::getSupportedFormats()))) {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 400 Bad Request');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("Format '$format' not supported.");
-            exit;
         }
 
         // Check whether model exists. If not: 404 Not Found.
         if (!$store->isModelAvailable($modelUri, false)) {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 404 Not Found');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("Model '$modelUri' not found.");
-            exit;
         }
 
         // Check whether model is available (with acl). If not: 403 Forbidden.
         if (!$store->isModelAvailable($modelUri)) {
             $response = $this->getResponse();
             $response->setRawHeader('HTTP/1.0 403 Forbidden');
-            $response->sendResponse();
             throw new OntoWiki_Controller_Exception("Model '$modelUri' not available.");
-            exit;
         }
 
         $filename = 'export' . date('Y-m-d_Hi');
@@ -441,111 +470,21 @@ class ResourceController extends OntoWiki_Controller_Base {
                 break;
         }
 
-        $additional = array();
-        if ((isset($this->_request->provenance) && (boolean)$this->_request->provenance)) {
-            $bNodeCounter = 1;
-
-            $model = $store->getModel($modelUri);
-
-            $fileUri = 'http://' . $_SERVER['HTTP_HOST'] . $this->_request->getRequestUri();
-            $curBNode = '_:node' . $bNodeCounter++;
-            $additional[$fileUri] = array(
-                    EF_RDF_TYPE => array(array(
-                                    'value' => 'http://purl.org/net/provenance/ns#DataItem',
-                                    'type' => 'uri'
-                            )),
-                    'http://purl.org/net/provenance/ns#createdBy' => array(array(
-                                    'value' => $curBNode,
-                                    'type' => 'bnode'
-                            ))
-            );
-            $additional[$curBNode] = array(
-                    EF_RDF_TYPE => array(array(
-                                    'value' => 'http://purl.org/net/provenance/ns#DataCreation',
-                                    'type' => 'uri'
-                            )),
-                    'http://purl.org/net/provenance/ns#performedAt' => array(array(
-                                    'type' => 'literal',
-                                    'value' => date('c'),
-                                    'datatype' => EF_XSD_DATETIME
-                            )),
-                    'http://purl.org/net/provenance/ns#performedBy' => array(array(
-                                    'value' => '_:node'.(++$bNodeCounter),
-                                    'type' => 'bnode'
-                            ))
-            );
-            $curBNode = '_:node'.$bNodeCounter++;
-
-            $additional[$curBNode] = array(
-                    EF_RDF_TYPE => array(array(
-                                    'value' => 'http://purl.org/net/provenance/types#DataCreatingService',
-                                    'type' => 'uri'
-                            )),
-                    'http://www.w3.org/2000/01/rdf-schema#comment' => array(array(
-                                    'type' => 'literal',
-                                    'value' => 'OntoWiki v0.95 (http://ontowiki.net)'
-                            ))
-            );
-
-            $s = $resource;
-            $operatorUri = $model->getOption('http://purl.org/net/provenance/ns#operatedBy');
-            if ($operatorUri !== null) {
-                $additional[$s] = array(
-                        'http://purl.org/net/provenance/ns#operatedBy' => array(array(
-                                        'type' => 'uri',
-                                        'value' => $operatorUri[0]['value']
-                                ))
-                );
-            } else {
-                $additional[$s] = array();
-            }
-
-            $versioning = Erfurt_App::getInstance()->getVersioning();
-            $history = $versioning->getHistoryForResource($resource, $modelUri);
-
-            foreach ($history as $i=>$hItem) {
-                $curBNode = '_:node' . $bNodeCounter++;
-
-                $additional[$s]['http://purl.org/net/provenance/ns#CreatedBy'] = array(array(
-                                'type' => 'bnode',
-                                'value' => $curBNode
-                ));
-
-                $additional[$curBNode] = array(
-                        EF_RDF_TYPE => array(array(
-                                        'type' => 'uri',
-                                        'value' => 'http://purl.org/net/provenance/ns#DataCreation'
-                                )),
-                        'http://purl.org/net/provenance/ns#performedAt' => array(array(
-                                        'type' => 'literal',
-                                        'value' => date('c', $hItem['tstamp']),
-                                        'datatype' => EF_XSD_DATETIME
-                                )),
-                        'http://purl.org/net/provenance/ns#performedBy' => array(array(
-                                        'type' => 'uri',
-                                        'value' => $hItem['useruri']
-                                ))
-                );
-
-                if ($i<(count($history)-1)) {
-                    $additional[$curBNode]['http://purl.org/net/provenance/ns#precededBy'] = array(array(
-                                    'type' => 'bnode',
-                                    'value' => '_:node' . ($bNodeCounter+1)
-                    ));
-                }
-
-                $s = '_:node'.$bNodeCounter++;
-            }
-        }
-
-        // Event
-        $event = new Erfurt_Event('beforeExportResource');
-        $event->resource = $resource;
-        $event->modelUri = $modelUri;
-        $additional2 = $event->trigger();
-
-        if (is_array($additional2)) {
-            $additional = array_merge($additional, $additional2);
+        /*
+         * Event: allow for adding / deleting statements to the export
+         *   event uses a memory model and gets an empty memory model as
+         *   default value, all plugins should add statements to the existing
+         *   value and should not create a new model as return value
+         */
+        $event             = new Erfurt_Event('beforeExportResource');
+        $event->resource   = $resource;
+        $event->modelUri   = $modelUri;
+        $event->setDefault = new Erfurt_Rdf_MemoryModel();
+        $addedModel        = $event->trigger();
+        if (is_object($addedModel) && get_class($addedModel) == 'Erfurt_Rdf_MemoryModel') {
+            $addedStatements = $addedModel->getStatements();
+        } else {
+            $addedStatements = array();
         }
 
         $response = $this->getResponse();
@@ -553,8 +492,7 @@ class ResourceController extends OntoWiki_Controller_Base {
         $response->setHeader('Content-Disposition', ('filename="'.$filename.'"'));
 
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
-        echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $additional);
-        $response->sendResponse();
-        exit;
+        echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $addedStatements);
+        return;
     }
 }

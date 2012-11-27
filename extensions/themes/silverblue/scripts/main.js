@@ -24,6 +24,67 @@ tempHrefs = new Array();
  * core css assignments
  */
 $(document).ready(function() {
+    // keyboard shortcuts
+    $(document).keydown(function(e) {
+        if (/view\/?|resource\/properties\/?/gi.test(window.document.baseURI)) {
+            if (e.shiftKey && e.altKey) {
+                e.preventDefault();
+                switch(e.which) {
+                    //e - 101 - edit E - 69
+                    case 69 : $('.edit-enable').trigger('click'); break;
+                    //a - 97 - add property - A - 65
+                    case 65 : $('.property-add').trigger('click'); break;
+                    //s - 115 - save S - 83
+                    case 83 : if ($('.edit-enable').hasClass('active')) { 
+                                   $('.edit.save').trigger('click'); 
+                               }; 
+                               break;
+                    //c  - 99 - cancel C - 67
+                    case 67 : if ($('.edit-enable').hasClass('active')) { 
+                                  $('.edit.cancel').trigger('click'); 
+                              }; 
+                              break;
+                    //l - 108 - clone L - 76
+                    case 76 : $('.clone-resource').trigger('click'); break;
+                }
+            }
+        }
+    });
+    // Object.keys support in older environments that do not natively support it
+    if (!Object.keys) {
+        Object.keys = (function () {
+            var hasOwnProperty = Object.prototype.hasOwnProperty,
+                hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+                dontEnums = [
+                  'toString',
+                  'toLocaleString',
+                  'valueOf',
+                  'hasOwnProperty',
+                  'isPrototypeOf',
+                  'propertyIsEnumerable',
+                  'constructor'
+                ],
+                dontEnumsLength = dontEnums.length
+
+            return function (obj) {
+                if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) throw new TypeError('Object.keys called on non-object')
+
+                var result = []
+
+                for (var prop in obj) {
+                    if (hasOwnProperty.call(obj, prop)) result.push(prop)
+                }
+
+                if (hasDontEnumBug) {
+                    for (var i=0; i < dontEnumsLength; i++) {
+                        if (hasOwnProperty.call(obj, dontEnums[i])) result.push(dontEnums[i])
+                    }
+                }
+              return result
+            }
+        })()
+    };
+
     // the body gets a new class to indicate that javascript is turned on
     $('body').removeClass('javascript-off').addClass('javascript-on');
 
@@ -224,26 +285,27 @@ $(document).ready(function() {
      *  simulate Safari behaviour for other browsers
      *  on return/enter, submit the form
      */
-    if (!$.browser.safari) {
-        $('.submitOnEnter').keypress(function(event) {
-            // return pressed
-            if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
-                $(this).parents('form').submit();
-            }
-        });
-    }
+    $('.submitOnEnter').keypress(function(event) {
+        // return pressed
+        if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
+            $(this).parents('form').submit();
+        }
+    });
+    
     /*
-     *  on press enter, this type of textbox looses focus and gives it to the next textfield
+     *  on press enter, this type of textbox looses focus and gives it to the next element of the same type
      */
     $('.focusNextOnEnter').keypress(function(event) {
         // return pressed
         if (event.target.tagName.toLowerCase() != 'textarea' && event.which == 13) {
             var me = $(this)
-            var next = me.next();
-            if(next.get(0).tagName.toLowerCase() == me.get(0).tagName.toLowerCase()){
+            var meType = me.get(0).tagName.toLowerCase()
+            var next = me.next(); //next element
+            if(next.get(0).tagName.toLowerCase() == meType){
                 next.focus();
             } else {
-                var next2 = me.parent().next().find('>'+me.get(0).tagName.toLowerCase()+':first')
+                // if thats not of the same type, go to "parent and "cousin""
+                var next2 = me.parent().next().find('>'+meType+':first')
                 if (next2.length != 0){
                     next2.focus();
                 } 
@@ -262,16 +324,24 @@ $(document).ready(function() {
     // init new resource based on type
     $('.init-resource').click(function(event) {
         // parse .resource-list and query for all types
-        var types = $('.resource-list').rdf()
-                                       .where('?type a rdfs:Class')
-                                       .where('?type rdfs:label ?value')
-                                       .dump();
+        if ($('.resource-list').length != 0) {
+            var types = $('.resource-list').rdf()
+                                           .where('?type a rdfs:Class')
+                                           .where('?type rdfs:label ?value')
+                                           .dump();
 
-        if (Object.keys(types).length == 1) {
-            createInstanceFromClassURI(Object.keys(types)[0]);
+            if (Object.keys(types).length == 1) {
+                createInstanceFromClassURI(Object.keys(types)[0]);
+            } else {
+                showAddInstanceMenu(event, types);
+            }
         } else {
-            showAddInstanceMenu(event, types);
-        } 
+            // workaround to create instance when number of instances of a class is null
+            // The selected class should be hardcoded by ontowiki in the header as 
+            // javascript variable.
+            createInstanceFromClassURI($('#filterbox a').attr('about'));
+        }
+        
     });
 
     $('.edit.save').click(function() {
@@ -279,6 +349,7 @@ $(document).ready(function() {
     });
     
     $('.edit.cancel').click(function() {
+        $(body).data('editingMode', false);
         // reload page
         window.location.href = window.location.href;
         RDFauthor.cancel();
@@ -296,6 +367,7 @@ $(document).ready(function() {
     
     // edit mode
     $('.edit-enable').click(function() {
+        $(body).data('editingMode', true);
         var button = this;
         if ($(button).hasClass('active')) {
             RDFauthor.cancel();
@@ -335,7 +407,8 @@ $(document).ready(function() {
                     }, 
                     saveButtonTitle: 'Save Changes', 
                     cancelButtonTitle: 'Cancel', 
-                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(),
+                    loadOwStylesheet: false,
                     viewOptions: {
                         // no statements needs popover
                         type: $('.section-mainwindows table.Resource').length ? RDFAUTHOR_VIEW_MODE : 'popover', 
@@ -387,7 +460,8 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel',
                     title: 'Create New Resource by Cloning ' + selectedResource.title,  
                     autoParse: false, 
-                    showPropertyButton: true, 
+                    showPropertyButton: true,
+                    loadOwStylesheet: false,
                     onSubmitSuccess: function (responseData) {
                         var newLocation;
                         if (responseData && responseData.changed) {
@@ -409,6 +483,7 @@ $(document).ready(function() {
     
     // add property
     $('.property-add').click(function() {
+        $(body).data('editingMode', true);
         if(typeof(RDFauthor) === 'undefined') {
             loadRDFauthor(function () {
                 RDFauthor.setOptions({
@@ -436,7 +511,8 @@ $(document).ready(function() {
                         $('.edit-enable').removeClass('active');
                     }, 
                     saveButtonTitle: 'Save Changes', 
-                    cancelButtonTitle: 'Cancel', 
+                    cancelButtonTitle: 'Cancel',
+                    loadOwStylesheet: false,
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
                     viewOptions: {
                         // no statements needs popover

@@ -2,19 +2,16 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-
-require_once 'Erfurt/Wrapper/Registry.php';
-require_once 'OntoWiki/Controller/Component.php';
 
 /**
  * The main controller class for the datagathering component. This class
  * provides services for URI search, statement import and statement sync.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_datagathering
+ * @package    Extensions_Datagathering
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class DatagatheringController extends OntoWiki_Controller_Component
@@ -50,13 +47,16 @@ class DatagatheringController extends OntoWiki_Controller_Component
     /**
      * IMPORT STATUS CODES
      */
-    CONST IMPORT_OK = 10;
-    CONST IMPORT_NO_DATA = 20;
-    CONST IMPORT_WRAPPER_ERR = 30;
-    CONST IMPORT_WRAPPER_INSTANCIATION_ERR = 40;
-    CONST IMPORT_NOT_EDITABLE = 50;
-    CONST IMPORT_WRAPPER_EXCEPTION = 60;
-    CONST IMPORT_WRAPPER_NOT_AVAILABLE = 70;
+    const IMPORT_OK = 10;
+    const IMPORT_NO_DATA = 20;
+    const IMPORT_NO_NEW_DATA = 21;
+    const IMPORT_WRAPPER_ERR = 30;
+    const IMPORT_WRAPPER_INSTANCIATION_ERR = 40;
+    const IMPORT_NOT_EDITABLE = 50;
+    const IMPORT_WRAPPER_NOT_AVAILABLE = 70;
+    const IMPORT_WRAPPER_RESULT_NOT_AVAILABLE = 71;
+    const IMPORT_CUSTOMFILTER_EXCEPTION = 80;
+    const IMPORT_GENERAL_EXCEPTION = 90;
 
     // ------------------------------------------------------------------------
     // --- Import and Sync related private properties -------------------------
@@ -108,7 +108,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      *
      * @var Erfurt_Wrapper_Registry
      */
-    private $_wrapperRegisty = null;
+    private $_wrapperRegistry = null;
 
 
     // ------------------------------------------------------------------------
@@ -124,17 +124,16 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         //$this->_properties = $this->_privateConfig->properties->toArray();
 
+        // For testability we reset the wrapper registry first, since
+        // multiple calls of this method would fail otherwise.
+        Erfurt_Wrapper_Registry::reset();
         $this->_wrapperRegisty = Erfurt_Wrapper_Registry::getInstance();
 
         $owApp = OntoWiki::getInstance();
         if (null !== $owApp->selectedModel) {
             $this->_graphUri = $owApp->selectedModel->getModelIri();
-        } else {
-            if (isset($this->_request->m)) {
-                $this->_graphUri = $this->_request->m;
-            } else {
-                throw new Ontowiki_Exception("model must be selected or sprecified with the m parameter");
-            }
+        } else if (isset($this->_request->m)) {
+            $this->_graphUri = $this->_request->m;
         }
     }
 
@@ -173,6 +172,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
     public function searchAction()
     {
         // Use the selected graph if present. If not, search all available graphs.
+        if (null === $this->_graphUri) {
+            throw new OntoWiki_Exception("model must be selected or specified with the m parameter");
+        }
         $modelUri = $this->_graphUri;
 
         // Check for the mandatory q parameter.
@@ -180,7 +182,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (null === $q) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The q parameter is missing.';
-            exit;
+            return;
         }
         $termsArray = explode(' ', $q);
 
@@ -218,7 +220,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $limit = self::SEARCH_DEFAULT_LIMIT;
         }
 
-
         // Check whether given term is a URI! If a URI is given we return an empty result, for some users
         // may want to enter URIs themself.
         if (count($termsArray) === 1) {
@@ -227,11 +228,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                 if (preg_match($regExp, $t)) {
                     echo json_encode('');
-                    exit;
+                    return;
                 }
                 if (strlen($t) > 20) {
                     echo json_encode('');
-                    exit;
+                    return;
                 }
             }
         }
@@ -349,9 +350,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // comment from seebi: why this issnt set to application/json? with
         //$response->setHeader('Content-Type', 'application/json');
         $response->setBody($body);
-        $response->sendResponse();
-
-        exit;
     }
 
     /**
@@ -670,7 +668,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
 
@@ -682,14 +680,14 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         $result = false;
         try {
-            $result = $this->_wrapperRegisty->getWrapperInstance($wrapperName)->isAvailable($uri, $this->_graphUri);
+            $result = $this->_wrapperRegistry->getWrapperInstance($wrapperName)->isAvailable($uri, $this->_graphUri);
         } catch (Exception $e) {
             $result = false;
         }
 
         $this->_response->setHeader('Content-Type', 'application/json', true);
         echo json_encode($result);
-        exit;
+        return;
     }
     */
 
@@ -725,24 +723,33 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $wrapperName = $this->_request->wrapper;
         }
 
-        $res = self::import(
-            $this->_graphUri,
-            $uri,
-            $this->_getProxyUri($uri),
-            isset(
-                $this->_privateConfig->fetch->allData
-            ) && (
-                (boolean) $this->_privateConfig->fetch->allData === true
-            ),
-            !isset(
-                $this->_privateConfig->fetch->preset
-            ) ? array() : $this->_privateConfig->fetch->preset->toArray(),
-            !isset(
-                $this->_privateConfig->fetch->default->exception
-            ) ? array() : $this->_privateConfig->fetch->default->exception->toArray(),
-            $wrapperName,
-            $this->_privateConfig->fetch->default->mode
-        );
+        if (null === $this->_graphUri) {
+            throw new OntoWiki_Exception("model must be selected or specified with the m parameter");
+        }
+
+        try {
+            $res = self::import(
+                $this->_graphUri,
+                $uri,
+                $this->_getProxyUri($uri),
+                isset($this->_privateConfig->fetch->allData ) && ((boolean) $this->_privateConfig->fetch->allData === true),
+                !isset($this->_privateConfig->fetch->preset) ?
+                    array() :
+                    $this->_privateConfig->fetch->preset->toArray(),
+                !isset($this->_privateConfig->fetch->default->exception) ?
+                    array() :
+                    $this->_privateConfig->fetch->default->exception->toArray(),
+                $wrapperName,
+                $this->_privateConfig->fetch->default->mode
+            );
+        } catch (Exception $e) {
+            if (defined('_EFDEBUG')) {
+                return $this->_sendResponse(false, 'An error occured: ' . $e->getMessage(), OntoWiki_Message::ERROR);
+            } else {
+                $res = null;
+            }
+        }
+
         if ($res == self::IMPORT_OK) {
             return $this->_sendResponse(
                 true,
@@ -750,19 +757,21 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 OntoWiki_Message::INFO
             );
         } else if ($res == self::IMPORT_WRAPPER_ERR) {
-            return $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
+            return $this->_sendResponse(false, 'The requested wrapper failed with an error.', OntoWiki_Message::ERROR);
         } else if ($res == self::IMPORT_NO_DATA) {
             return $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
+        } else if ($res == self::IMPORT_NO_NEW_DATA) {
+            return $this->_sendResponse(false, 'No new statements were found.', OntoWiki_Message::ERROR);
         } else if ($res == self::IMPORT_WRAPPER_INSTANCIATION_ERR) {
+            $this->_response->setException(new OntoWiki_Http_Exception(400));
             return $this->_sendResponse(false, 'could not get wrapper instance.', OntoWiki_Message::ERROR);
-            //$this->_response->setException(new OntoWiki_Http_Exception(400));
         } else if ($res == self::IMPORT_NOT_EDITABLE) {
+            $this->_response->setException(new OntoWiki_Http_Exception(403));
             return $this->_sendResponse(false, 'you cannot write to this model.', OntoWiki_Message::ERROR);
-            //$this->_response->setException(new OntoWiki_Http_Exception(403));
-        } else if ($res == self::IMPORT_WRAPPER_EXCEPTION) {
-            return $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
         } else if ($res == DatagatheringController::IMPORT_WRAPPER_NOT_AVAILABLE) {
-            return $this->_sendResponse($res, 'the data is not available.', OntoWiki_Message::ERROR);
+            return $this->_sendResponse(false, 'The requested wrapper is not available.', OntoWiki_Message::ERROR);
+        } else if ($res == DatagatheringController::IMPORT_WRAPPER_RESULT_NOT_AVAILABLE) {
+            return $this->_sendResponse(false, 'The requested wrapper returned no result.', OntoWiki_Message::ERROR);
         } else {
             return $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
         }
@@ -773,6 +782,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $exceptedProperties = array(), $fetchMode = 'none'
     )
     {
+
         // TODO handle configuration for import...
         if ($all) {
             // Keep all data...
@@ -810,7 +820,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $presetMatch = false;
         foreach ($presets as $i => $preset) {
             if (self::_matchUriStatic($preset['match'], $uri)) {
-                $presetMatch = true;
+                $presetMatch = $i;
                 break;
             }
         }
@@ -942,20 +952,37 @@ class DatagatheringController extends OntoWiki_Controller_Component
         } catch (Erfurt_Wrapper_Exception $e) {
             return self::IMPORT_WRAPPER_INSTANCIATION_ERR;
         }
+        if (null == $wrapper) {
+            return self::IMPORT_WRAPPER_NOT_AVAILABLE;
+        }
 
         $wrapperResult = null;
         try {
             $wrapperResult = $wrapper->run($r, $graphUri, $all);
         } catch (Erfurt_Wrapper_Exception $e) {
-            return self::IMPORT_WRAPPER_EXCEPTION;
+            return self::IMPORT_WRAPPER_ERR;
         }
 
         if ($wrapperResult === false) {
-            return self::IMPORT_WRAPPER_NOT_AVAILABLE;
+            return self::IMPORT_WRAPPER_RESULT_NOT_AVAILABLE;
         } else if (is_array($wrapperResult)) {
             if (isset($wrapperResult['status_codes'])) {
                 if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
                     $newStatements = $wrapperResult['add'];
+
+                    //default filter
+                    $newStatements = self::filterStatements(
+                        $newStatements, $uri, $all, $presets, $exceptedProperties, $fetchMode
+                    );
+
+                    //custom filter
+                    if ($filterCallback != null && is_array($filterCallback)) {
+                        try {
+                            $newStatements = call_user_func($filterCallback, $newStatements);
+                        } catch (Exception $e) {
+                            return self::IMPORT_CUSTOMFILTER_EXCEPTION;
+                        }
+                    }
 
                     $stmtBeforeCount = $store->countWhereMatches(
                         $graphUri,
@@ -972,23 +999,25 @@ class DatagatheringController extends OntoWiki_Controller_Component
                             'resourceuri' => $uri
                         );
 
-                        // Start action, add statements, finish action.
+                        // Start action
                         $versioning->startAction($actionSpec);
                     }
 
-                    $newStatements = self::filterStatements(
-                        $newStatements, $uri, $all, $presets, $exceptedProperties, $fetchMode
-                    );
-                    if ($filterCallback != null && is_array($filterCallback)) {
-                        $newStatements = call_user_func($filterCallback, $newStatements);
-                    }
-
                     if ($action == 'add') {
-                        $store->addMultipleStatements($graphUri, $newStatements);
+                        try {
+                            $store->addMultipleStatements($graphUri, $newStatements);
+                        } catch (Exception $e) {
+                            $versioning->abortAction();
+
+                            if (defined('_EFDEBUG')) {
+                                throw $e;
+                            }
+                            return self::IMPORT_GENERAL_EXCEPTION;
+                        }
                     } else if ($action == 'update') {
                         $queryoptions = array(
                             'use_ac'                 => false,
-                            'result_format'          => STORE_RESULTFORMAT_EXTENDED,
+                            'result_format'          => Erfurt_Store::RESULTFORMAT_EXTENDED,
                             'use_additional_imports' => false
                         );
                         $oldStatements = $store->sparqlQuery(
@@ -1041,7 +1070,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         return self::IMPORT_OK;
 
                     } else {
-                        return self::IMPORT_NO_DATA;
+                        if (count($newStatements) > 0) {
+                            return self::IMPORT_NO_NEW_DATA;
+                        } else {
+                            return self::IMPORT_NO_DATA;
+                        }
                     }
                 } else {
                     return self::IMPORT_NO_DATA;
@@ -1065,10 +1098,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
             );
         }
 
+        $returnValue = array(
+            'code'    => $returnValue,
+            'message' => $message
+        );
+
         $this->_response->setHeader('Content-Type', 'application/json', true);
         $this->_response->setBody(json_encode($returnValue));
-        $this->_response->sendResponse();
-        exit;
     }
 
     // ------------------------------------------------------------------------
@@ -1086,7 +1122,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $syncModel = $this->_getSyncModel();
             if (!$syncModel) {
                 echo 'Something went wrong.';
-                exit;
+                return;
             }
 
             $filename = $this->_componentRoot . $this->_privateConfig->syncModelFilename;
@@ -1099,10 +1135,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             );
 
             echo 'Init done...';
-            exit;
+            return;
         } catch (Exception $e) {
             echo 'Something went wrong.';
-            exit;
+            return;
         }
     }
     */
@@ -1119,7 +1155,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         OntoWiki_Navigation::disableNavigation();
@@ -1309,13 +1345,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
 
@@ -1333,11 +1369,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(false);
-                    exit;
+                    return;
                 } else {
                     $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
                     echo '400 Bad Request - No sync config found.';
-                    exit;
+                    return;
                 }
 
             }
@@ -1360,29 +1396,29 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(array('redirect' => $redirect));
-                    exit;
+                    return;
                 } else {
                     $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
                     echo '400 Bad Request - No sync config found.';
-                    exit;
+                    return;
                 }
             } else if ($syncResult === self::SYNC_SUCCESS) {
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(true);
-                    exit;
+                    return;
                 } else {
                     echo 'Successfully synced.';
-                    exit;
+                    return;
                 }
             } else {
                  if ($this->_request->isXmlHttpRequest()) {
                      $this->_response->setHeader('Content-Type', 'application/json', true);
                      echo json_encode(false);
-                     exit;
+                     return;
                  } else {
                      echo '400 Bad Request - No sync config found.';
-                     exit;
+                     return;
                  }
             }
         }
@@ -1408,13 +1444,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
         $modelUri = $this->_graphUri;
@@ -1429,10 +1465,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'No sync config found.';
-                exit;
+                return;
             }
         }
 
@@ -1441,10 +1477,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'Not configured for update check.';
-                exit;
+                return;
             }
         }
 
@@ -1482,15 +1518,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode($result);
-                    exit;
+                    return;
                 } else {
                     if ($this->_request->isXmlHttpRequest()) {
                         $this->_response->setHeader('Content-Type', 'application/json', true);
                         echo json_encode(false);
-                        exit;
+                        return;
                     } else {
                         echo 'No changes since last sync.';
-                        exit;
+                        return;
                     }
                 }
 
@@ -1499,20 +1535,20 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(false);
-                    exit;
+                    return;
                 } else {
                     echo 'No valid date/time found.';
-                    exit;
+                    return;
                 }
             }
         } else {
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'No Last-Modified information found.';
-                exit;
+                return;
             }
         }
     }*/
@@ -1588,7 +1624,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
     private function _getData($uri, $wrapperName, $modelUri)
     {
         try {
-            $wrapper = $this->_wrapperRegisty->getWrapperInstance($wrapperName);
+            $wrapper = $this->_wrapperRegistry->getWrapperInstance($wrapperName);
 
             $wrapperResult = $wrapper->run($uri, $modelUri);
             if (is_array($wrapperResult) && isset($wrapperResult['add'])) {

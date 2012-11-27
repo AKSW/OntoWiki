@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 define('DEFAULT_TYPE', '*/*');
 
@@ -9,9 +15,9 @@ define('DEFAULT_TYPE', '*/*');
  * action if a resource exists, thus providing dereferencable resource URIs.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
+ * @package    Extensions_Linkeddata
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class LinkeddataPlugin extends OntoWiki_Plugin
@@ -55,6 +61,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $response = Zend_Controller_Front::getInstance()->getResponse();
 
         $uri = $event->uri;
+
         try {
             // Check for a supported type by investigating the suffix of the URI or by
             // checking the Accept header (content negotiation). The $matchingSuffixFlag
@@ -77,10 +84,8 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                     $matchedUri .= '.' . $type;
                 }
                 // Redirect to new (correct URI)
-                $response->setRedirect((string)$matchedUri, 301)
-                         ->sendResponse();
-                // FIXME: exit here prevents unit testing
-                exit;
+                $response->setRedirect((string)$matchedUri, 301);
+                return;
             }
 
             // Prepare for redirect according to the given type.
@@ -88,6 +93,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             switch ($type) {
                 case 'rdf':
                 case 'n3':
+                case 'ttl':
                     // Check the config, whether provenance information should be included.
                     $prov = false;
                     if (isset($this->_privateConfig->provenance) &&
@@ -156,9 +162,8 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $shouldRedirect = $event->trigger();
             if ($shouldRedirect) {
                 // set redirect and send immediately
-                $response->setRedirect((string)$url, 303)
-                         ->sendResponse();
-                exit;
+                $response->setRedirect((string)$url, 303);
+                return;
             }
 
             return !$shouldRedirect; // will default to false

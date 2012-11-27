@@ -1,26 +1,39 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki error template
  *
  * @author Norman Heino <norman.heino@gmail.com>
- * @version $Id: error.phtml 3331 2009-06-16 19:25:43Z norman.heino $
  */
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Oops!</title>
+<title>404: Resource not found</title>
 <style type="text/css">
 body {
     font-family: sans-serif;
     line-height: 1.5;
     background-color: #eff9ff;
 }
+
+h1 {
+    font-size: 100%
+}
 </style>
 </head>
 <body>
-<p>The resource you are trying to reach does not exist. Do you want to <a href="<?php echo $this->createUrl; ?>">create it</a>?</p>
+<h1>Resource not found</h1>
+<p>
+The resource <code><?php echo $this->requestedUrl; ?></code> you are trying to reach does not exist.<br />
+Do you want to <a href="<?php echo $this->createUrl; ?>">create it</a>?<br />
+Otherwise, try to <a href"<?php echo $this->urlBase; ?>">go back</a>.
+</p>
 </body>
 </html>

@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -10,8 +10,7 @@
  * The main ckan controller provides the register and (later) the browser action
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_ckan
- * @subpackage component
+ * @package    Extensions_Ckan
  */
 class CkanController extends OntoWiki_Controller_Component
 {
@@ -41,7 +40,7 @@ class CkanController extends OntoWiki_Controller_Component
         $t = $this->_owApp->translate;
         $this->view->placeholder('main.window.title')->set($t->_('CKAN Package Browser'));
         $this->addModuleContext('main.window.ckan.browser');
-        OntoWiki_Navigation::disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         echo "not finished yet"; return;
 
         //$scriptBaseUrl = $this->_owApp->extensionManager->getComponentUrl('ckan').'ckanjs/lib/';
@@ -79,7 +78,7 @@ class CkanController extends OntoWiki_Controller_Component
         // m (model) is automatically used and selected
         if ((!isset($this->request->m)) && (!$this->_owApp->selectedModel)) {
             throw new OntoWiki_Exception('No model pre-selected model and missing parameter m (model)!');
-            exit;
+            return;
         } else {
             $model = $this->_owApp->selectedModel;
         }

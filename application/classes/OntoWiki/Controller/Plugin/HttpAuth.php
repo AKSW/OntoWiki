@@ -3,7 +3,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -13,8 +13,8 @@
  * Provides authentication via HTTP simple method.
  *
  * @category OntoWiki
- * @package Controller_Plugin
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package OntoWiki_Classes_Controller_Plugin
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
@@ -43,9 +43,8 @@ class OntoWiki_Controller_Plugin_HttpAuth extends Zend_Controller_Plugin_Abstrac
                         $front    = Zend_Controller_Front::getInstance();
                         $response = $front->getResponse();
                         $response->setRawHeader('HTTP/1.1 401 Unauthorized');
-                        $response->sendResponse();
                         echo 'HTTP/1.1 401 Unauthorized';
-                        exit;
+                        return;
                     }
                     break;
                 case 'foaf+ssl':

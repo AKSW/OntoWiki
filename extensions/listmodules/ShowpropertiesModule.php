@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki module – showproperties
@@ -6,9 +12,9 @@
  * Add instance properties to the list view
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_showproperties
+ * @package    Extensions_Listmodules
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ShowpropertiesModule extends OntoWiki_Module
@@ -39,7 +45,7 @@ class ShowpropertiesModule extends OntoWiki_Module
         $shownProperties = array();
         $shownInverseProperties = array();
         foreach ($allShownProperties as $prop) {
-            if($prop['inverse']){
+            if ($prop['inverse']) {
                 $shownInverseProperties[] = $prop['uri'];
             } else {
                 $shownProperties[] = $prop['uri'];
@@ -57,13 +63,10 @@ class ShowpropertiesModule extends OntoWiki_Module
         $url->setParam('instancesconfig', json_encode(array('filter'=>array(array('id'=>'propertyUsage','action'=>'add','mode'=>'query','query'=> (string) $this->_instances->getAllPropertiesQuery(true))))));
         $this->view->inversePropertiesListLink = (string) $url;
 
-        if($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist)
-        {
+        if ($this->_privateConfig->filterhidden || $this->_privateConfig->filterlist) {
             $this->view->properties = $this->filterProperties($this->_instances->getAllProperties(false));
             $this->view->reverseProperties = $this->filterProperties($this->_instances->getAllProperties(true));
-        }
-        else
-        {
+        } else {
             $this->view->properties = $this->_instances->getAllProperties(false);
             $this->view->reverseProperties = $this->_instances->getAllProperties(true);
         }
@@ -78,49 +81,42 @@ class ShowpropertiesModule extends OntoWiki_Module
         
         return $id;
     }
-
     
-    private function filterProperties($properties) {
-
-    $uriToFilter = array();
-    $filteredProperties = array();
-
-    if($this->_privateConfig->filterhidden)
+    private function filterProperties($properties)
     {
-        $store = $this->_owApp->erfurt->getStore();
-        //query for hidden properties
-        $query = new Erfurt_Sparql_SimpleQuery();
-        $query->setProloguePart('PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
-                                 SELECT ?uri')
-              ->setWherePart('WHERE {?uri sysont:hidden \'true\'.}');
-        $uriToFilter = $store->sparqlQuery($query);
-    }
+        $uriToFilter = array();
+        $filteredProperties = array();
 
-    if($this->_privateConfig->filterlist)
-    {
-        //get properties to hide from privateconfig
-        $toFilter = $this->_privateConfig->property->toArray();
-        foreach($toFilter as $element)
-        {
-        array_push ($uriToFilter,array('uri' => $element));
+        if ($this->_privateConfig->filterhidden) {
+            $store = $this->_owApp->erfurt->getStore();
+            //query for hidden properties
+            $query = new Erfurt_Sparql_SimpleQuery();
+            $query->setProloguePart('PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
+                                     SELECT ?uri')
+                  ->setWherePart('WHERE {?uri sysont:hidden \'true\'.}');
+            $uriToFilter = $store->sparqlQuery($query);
         }
-    }
 
-    foreach($properties as $property) {
-        $toFilter=false;
-        foreach($uriToFilter as $element) {
-            if($element['uri']==$property['uri']) {
-                $toFilter=true;
-                break;
+        if ($this->_privateConfig->filterlist) {
+            //get properties to hide from privateconfig
+            $toFilter = $this->_privateConfig->property->toArray();
+            foreach($toFilter as $element) {
+                array_push ($uriToFilter,array('uri' => $element));
             }
         }
-        if(!$toFilter) {
-            array_push ($filteredProperties, $property);
+
+        foreach($properties as $property) {
+            $toFilter=false;
+            foreach($uriToFilter as $element) {
+                if ($element['uri']==$property['uri']) {
+                    $toFilter=true;
+                    break;
+                }
+            }
+            if (!$toFilter) {
+                array_push ($filteredProperties, $property);
+            }
         }
+        return $filteredProperties;
     }
-    return $filteredProperties;
-    }
-
 }
-
-

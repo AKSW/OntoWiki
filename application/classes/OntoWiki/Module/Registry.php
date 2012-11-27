@@ -1,9 +1,8 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -13,8 +12,8 @@
  * Serves as a central registry for modules.
  *
  * @category OntoWiki
- * @package Module
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package OntoWiki_Classes_Module
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
@@ -74,6 +73,18 @@ class OntoWiki_Module_Registry
     private static $_instance = null;
 
     /**
+     * private Constructor
+     */
+    private function __construct()
+    {
+        $this->_moduleStates = new Zend_Session_Namespace('Module_Registry');
+
+        // TODO: module order per namespace?
+        if (isset($this->_moduleStates->moduleOrder)) {
+            $this->_moduleOrder = $this->_moduleStates->moduleOrder;
+        }
+    }
+    /**
      * Singleton instance
      *
      * @return OntoWiki_Module_Registry
@@ -129,43 +140,53 @@ class OntoWiki_Module_Registry
      * @param string $extensionName the name of the extension that brings this module
      * @param string $moduleName the name of the module
      * @param string $context in which context the module should be shown
-     * @param array $options config array of the module
+     * @param array $options config object of the module
      * @return OntoWiki_Module_Registry
      */
     public function register($extensionName, $moduleFileName, $context = self::DEFAULT_CONTEXT, $options = null)
     {
         $moduleName = strtolower(substr($moduleFileName, 0, strlen($moduleFileName)-strlen(self::MODULE_FILE_POSTFIX)));
 
-        // create module context if necessary
         if (!array_key_exists($context, $this->_moduleOrder)) {
             $this->_moduleOrder[$context] = array();
         }
 
-        if($options == null){
-            $options = new Zend_Config(array());
+        if ($options == null) {
+            $options = new Zend_Config(array(), true);
+        } else if (is_array($options)) {
+            $options = new Zend_Config($options, true);
         }
 
+        //if not already registered
         if (!array_key_exists($moduleName, $this->_modules)) {
             // merge defaults
-            $options->merge(new Zend_Config(array(
-                'id'      => $moduleName,
-                'classes' => '',
-                'name'    => isset($options->name) ? $options->name : $moduleName,
-                'enabled' => true ,
-                'extensionName' => $extensionName,
-                '_privateConfig' => $options->private
-            )));
-            ;
+            $default = new Zend_Config(
+                array(
+                    'id'      => strtolower($moduleName),
+                    'classes' => '',
+                    'name'    => ucwords($moduleName),
+                    'enabled' => true ,
+                    'extensionName' => $extensionName,
+                    'private' => array()
+                ), 
+                true
+            );
+            $options = $default->merge($options);
+            
             // set css classes according to module state
-            switch ($this->_moduleStates->{$options->id}) {
-                case self::MODULE_STATE_OPEN:
-                    break;
-                case self::MODULE_STATE_MINIMIZED:
-                    $options->classes .= ' is-minimized';
-                    break;
-                case self::MODULE_STATE_HIDDEN:
-                    $options->classes .= ' is-disabled';
-                    break;
+            if ( true == property_exists ( $options, 'id' ) ) {
+                switch ($this->_moduleStates->{$options->id}) {
+                    case self::MODULE_STATE_OPEN:
+                        break;
+                    case self::MODULE_STATE_MINIMIZED:
+                        $options->classes .= ' is-minimized';
+                        break;
+                    case self::MODULE_STATE_HIDDEN:
+                        $options->classes .= ' is-disabled';
+                        break;
+                }
+            } else {
+                // throw new Exception ('$options->id is not set for Module '. $moduleName .' and context '. $context);
             }
 
             // register module
@@ -226,7 +247,7 @@ class OntoWiki_Module_Registry
      */
     public function getModule($moduleName, $context = null)
     {
-        if(!$this->isModuleEnabled($moduleName)){
+        if (!$this->isModuleEnabled($moduleName)) {
             return null;
         }
         $moduleFile = $this->_extensionDir
@@ -251,7 +272,8 @@ class OntoWiki_Module_Registry
         return $module;
     }
 
-    public function getModules(){
+    public function getModules()
+    {
         return $this->_modules;
     }
 
@@ -309,18 +331,5 @@ class OntoWiki_Module_Registry
         }
 
         return $priority;
-    }
-
-    /**
-     * Constructor
-     */
-    private function __construct()
-    {
-        $this->_moduleStates = new Zend_Session_Namespace('Module_Registry');
-
-        // TODO: module order per namespace?
-        if (isset($this->_moduleStates->moduleOrder)) {
-            $this->_moduleOrder = $this->_moduleStates->moduleOrder;
-        }
     }
 }

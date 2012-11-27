@@ -1,11 +1,17 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki module – Extension Navigation
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_outline
- * @copyright  Copyright (c) 2010, {@link http://aksw.org AKSW}
+ * @package    Extensions_Exconf
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class OutlineModule extends OntoWiki_Module

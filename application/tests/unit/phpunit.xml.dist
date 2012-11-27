@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="../Bootstrap.php" colors="false" backupGlobals="false" backupStaticAttributes="false" strict="true" verbose="true">
+        <testsuite name="OntoWiki Unit Tests">
+            <directory suffix="Test.php">.</directory>
+        </testsuite> 
+        
+        <logging>
+            <log type="coverage-clover" target="../../../build/logs/clover.xml"/>
+            <log type="coverage-html" target="../../../build/coverage" title="OntoWiki"/>
+            <log type="junit" target="../../../build/logs/junit.xml"/>
+        </logging>
+
+        <filter>
+            <whitelist addUncoveredFilesFromWhitelist="true"> 
+                <directory suffix=".php">../../../application</directory>
+                
+                <exclude>
+                    <directory>../../../application/scripts</directory>
+                    <directory>../../../application/tests</directory>
+                </exclude>
+            </whitelist>
+        </filter>
+</phpunit>

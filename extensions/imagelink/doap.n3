@@ -1,0 +1,27 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/imagelink/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :imagelink .
+:imagelink a doap:Project ;
+  doap:name "imagelink" ;
+  owconfig:privateNamespace <https://github.com/AKSW/imagelink/raw/master/doap.n3#> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  rdfs:label "Imagelink" ;
+  doap:description "A plug-in that renders values of certain properties as HTML images." ;
+  owconfig:authorLabel "Norman Heino" ;
+  owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
+  owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
+  :properties <http://xmlns.com/foaf/0.1/depiction> ;
+  :properties <http://xmlns.com/foaf/0.1/logo> ;
+  :properties <http://xmlns.com/foaf/0.1/img> ;
+  :properties <http://purl.org/ontology/mo/image> ;
+  :properties <http://open.vocab.org/terms/screenshot> ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

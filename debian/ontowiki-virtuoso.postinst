@@ -1,0 +1,44 @@
+#!/bin/sh -e
+# postinst script for ontowiki-virtuoso
+#
+# see: dh_installdeb(1)
+
+echo "---- starting postinst $@"
+
+
+### VIRTUOSO CONFIG
+virtetc="/etc/virtuoso-opensource-6.1/"
+virtvar="/var/lib/virtuoso-opensource-6.1/"
+virtuosoini="$virtetc/virtuoso.ini"
+virtautosqlsrc="/usr/share/dbconfig-common/data/ontowiki/install/virtuoso"
+virtautosql="$virtvar/db/autoexec.isql"
+
+# stop the server
+sudo service virtuoso-opensource-6.1 stop
+
+# add ontowiki directory to DirsAllowed
+# try to remove the addition first in order to avoid double entries
+sed 's/^\(DirsAllowed.*\)\(, \/usr\/share\/ontowiki\)\(.*\)/\1\3/' -i $virtuosoini
+sed 's/^\(DirsAllowed.*\)/\1, \/usr\/share\/ontowiki/' -i $virtuosoini
+sed 's/^\(DirsAllowed.*\)\(, \/usr\/share\/php\/liberfurt-php\)\(.*\)/\1\3/' -i $virtuosoini
+sed 's/^\(DirsAllowed.*\)/\1, \/usr\/share\/php\/liberfurt-php/' -i $virtuosoini
+
+# place autosql
+# TODO: check for existing autosql and backup as well as restore it afterwards
+cp $virtautosqlsrc $virtautosql
+
+# restart the server
+sudo service virtuoso-opensource-6.1 start
+#rm $virtautosql
+
+### APACHE CONFIG
+chown www-data:www-data /etc/ontowiki/config.ini
+chmod 600 /etc/ontowiki/config.ini
+
+a2enmod rewrite
+a2enmod env
+service apache2 restart
+
+#DEBHELPER#
+
+echo "---- ending postinst $@"

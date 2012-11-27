@@ -3,9 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @version   $Id: Message.php 4095 2009-08-19 23:00:19Z christian.wuerker $
  */
 
 /**
@@ -14,8 +13,8 @@
  * Encapsulates a message that needs to be saved for the user.
  *
  * @category OntoWiki
- * @package Message
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @package OntoWiki_Classes
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author Norman Heino <norman.heino@gmail.com>
  */
@@ -94,9 +93,6 @@ class OntoWiki_Message
         $this->_type = $type;
         $this->_text = $text;
         
-        // get translation for current language
-        $this->_translate = OntoWiki::getInstance()->translate;
-        
         // Clone view
         if (null === $this->_view) {
             $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
@@ -106,6 +102,9 @@ class OntoWiki_Message
             $this->_view = clone $viewRenderer->view;
             $this->_view->clearVars();
         }
+        
+        // get translation for current language
+        $this->_translate = OntoWiki::getInstance()->translate;
     }
     
     /**
@@ -125,8 +124,20 @@ class OntoWiki_Message
      */
     public function getText()
     {
-        $text = $this->_options['translate'] ? $this->_translate->translate($this->_text) : $this->_text;
+        $text = $this->_translate($this->_text);
+        if (strlen($text) > 1000) {
+            $text = substr($text, 0 , 1000) . '...';
+        }
         $text = $this->_options['escape'] ? $this->_view->escape($text) : $text;
+        
+        return $text;
+    }
+    
+    private function _translate($text)
+    {
+        if (($this->_options['translate'] === true) && (null !== $this->_translate)) {
+            return $this->_translate->translate($text);
+        }
         
         return $text;
     }
