@@ -407,7 +407,8 @@ $(document).ready(function() {
                     }, 
                     saveButtonTitle: 'Save Changes', 
                     cancelButtonTitle: 'Cancel', 
-                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(),
+                    loadOwStylesheet: false,
                     viewOptions: {
                         // no statements needs popover
                         type: $('.section-mainwindows table.Resource').length ? RDFAUTHOR_VIEW_MODE : 'popover', 
@@ -459,7 +460,8 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel',
                     title: 'Create New Resource by Cloning ' + selectedResource.title,  
                     autoParse: false, 
-                    showPropertyButton: true, 
+                    showPropertyButton: true,
+                    loadOwStylesheet: false,
                     onSubmitSuccess: function (responseData) {
                         var newLocation;
                         if (responseData && responseData.changed) {
@@ -509,7 +511,8 @@ $(document).ready(function() {
                         $('.edit-enable').removeClass('active');
                     }, 
                     saveButtonTitle: 'Save Changes', 
-                    cancelButtonTitle: 'Cancel', 
+                    cancelButtonTitle: 'Cancel',
+                    loadOwStylesheet: false,
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
                     viewOptions: {
                         // no statements needs popover

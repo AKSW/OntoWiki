@@ -501,7 +501,8 @@ function createInstanceFromClassURI(type, dataCallback) {
                 cancelButtonTitle: 'Cancel',
                 title: 'Create New Instance of ' + type,  
                 autoParse: false, 
-                showPropertyButton: true, 
+                showPropertyButton: true,
+                loadOwStylesheet: false,
                 onSubmitSuccess: function (responseData) {
                     var newLocation;
                     if (responseData && responseData.changed) {
@@ -548,7 +549,8 @@ function editResourceFromURI(resource) {
                 cancelButtonTitle: 'Cancel',
                 title: 'Edit Resource ' + resource,  
                 autoParse: false, 
-                showPropertyButton: true, 
+                showPropertyButton: true,
+                loadOwStylesheet: false,
                 onSubmitSuccess: function () {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
@@ -600,7 +602,8 @@ function editProperty(event) {
                 $('.edit-enable').removeClass('active');
             }, 
             saveButtonTitle: 'Save Changes', 
-            cancelButtonTitle: 'Cancel', 
+            cancelButtonTitle: 'Cancel',
+            loadOwStylesheet: false,
             title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
             viewOptions: {
                 type: RDFAUTHOR_VIEW_MODE,
@@ -652,7 +655,8 @@ function editPropertyListmode(event) {
             cancelButtonTitle: 'Cancel',
             title: 'Edit Resource ' + resourceUri,
             autoParse: false, 
-            showPropertyButton: false, 
+            showPropertyButton: false,
+            loadOwStylesheet: false,
             onSubmitSuccess: function () {
                 // HACK: reload whole page after 500 ms
                 window.setTimeout(function () {
