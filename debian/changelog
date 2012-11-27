@@ -1,9 +1,11 @@
-ontowiki (0.9.7) lod; urgency=low
+ontowiki (0.9.7-1) lod2; urgency=low
 
   * GUI niceups
   * lots of fixes
   * https://github.com/AKSW/OntoWiki/issues?milestone=1&page=1&state=closed
   * RDFauthor is now a separate package
+  * Add support for additonal vhosts
+  * increment RDFauthor dependency
 
  -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Fri, 16 Nov 2012 08:30:17 -0800
 
