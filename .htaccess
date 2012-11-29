@@ -16,13 +16,37 @@
     <IfModule mod_env.c>
         SetEnv ONTOWIKI_APACHE_MOD_REWRITE_ENABLED 1
     </IfModule>
-    
+
+    # for deployment purposes, we want to redirect to a maintenance page iff it exists
     RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
     RewriteCond %{REQUEST_FILENAME} !/maintenance.html
-    RewriteRule ^.*$ /maintenance.html [R=302,L]
+    RewriteRule ^.*$ /maintenance.html [R=503,L]
 
+    # favicon files are located under /application
     RewriteRule ^favicon\.(.*)$ application/favicon.$1
-    RewriteRule !((robots.txt|maintenance.html)|(extensions|libraries|static).*|\.(js|ico|gif|jpg|png|css|php|swf|json))$ index.php
+
+    # do not rewrite requests on /robots.txt or /maintenance.html
+    RewriteCond %{REQUEST_URI} !^/(robots.txt|maintenance.html)$
+    # do not rewrite requests on resource under public in extensions
+    RewriteCond %{REQUEST_URI} !^/extensions/.*/public/.*$
+
+    # do not rewrite requests on /favicon.ico and /favicon.png (if file exists)
+    RewriteCond %{REQUEST_FILENAME} !-f [OR]
+    RewriteCond %{REQUEST_URI} !^/favicon\.(ico|png)$
+
+    # do not rewrite requests on /application/favicon.ico and /application/favicon.png (if file exists)
+    RewriteCond %{REQUEST_FILENAME} !-f [OR]
+    RewriteCond %{REQUEST_URI} !^/application/favicon\.(ico|png)$
+
+    # do not rewrite requests on files with the whitelisted extensions under extensions (if file exists)
+    RewriteCond %{REQUEST_FILENAME} !-f [OR]
+    RewriteCond %{REQUEST_URI} !^/extensions/.*/.*\.(js|css|gif|ico|png|jpg|svg)$
+
+    # do not rewrite requests on files with the whitelisted extensions under libraries/RDFauthor (if file exists)
+    RewriteCond %{REQUEST_FILENAME} !-f [OR]
+    RewriteCond %{REQUEST_URI} !^/libraries/RDFauthor/.*/.*\.(js|css|gif|ico|png|jpg|svg)$
+
+    RewriteRule ^.*$ index.php
 
     # Set RewriteBase only if your OntoWiki folder is not located in your web server's root dir.
     #RewriteBase /ontowiki
