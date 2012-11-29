@@ -66,6 +66,20 @@ class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestC
         $this->_storeAdapter = Erfurt_App::getInstance(false)->getStore()->getBackendAdapter();
     }
 
+    public function setUpExtensionIntegrationTest()
+    {
+        $this->setUpIntegrationTest();
+
+        if (null !== $this->_extensionName) {
+            $extensionManager = OntoWiki::getInstance()->extensionManager;
+
+            if (!$extensionManager->isExtensionActive($this->_extensionName)) {
+                Erfurt_Event_Dispatcher::reset();
+                $this->markTestSkipped('extension is not active');
+            }
+        }
+    }
+
     private function _markTestNeedsDatabase()
     {
         $config =  Erfurt_App::getInstance(false)->getConfig();
