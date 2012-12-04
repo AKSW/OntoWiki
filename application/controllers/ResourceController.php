@@ -55,6 +55,12 @@ class ResourceController extends OntoWiki_Controller_Base
             );
         }
 
+        $resourceMenu->prependEntry(OntoWiki_Menu::SEPARATOR);
+        $resourceMenu->prependEntry(
+            'Go to Resource (external)',
+            (string)$resource
+        );
+
         $menu = new OntoWiki_Menu();
         $menu->setEntry('Resource', $resourceMenu);
 
