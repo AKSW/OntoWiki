@@ -161,9 +161,13 @@ class ResourceController extends OntoWiki_Controller_Base
                 $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)
         ) {
             // TODO: check acl
-            $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties', 'title' => 'SHIFT + ALT + e'));
             $toolbar->appendButton(
-                OntoWiki_Toolbar::EDITADD, array(
+                OntoWiki_Toolbar::EDIT,
+                array('name' => 'Edit Properties', 'title' => 'SHIFT + ALT + e')
+            );
+            $toolbar->appendButton(
+                OntoWiki_Toolbar::EDITADD,
+                array(
                     'name'  => 'Clone',
                     'class' => 'clone-resource',
                     'title' => 'SHIFT + ALT + l'
@@ -174,27 +178,32 @@ class ResourceController extends OntoWiki_Controller_Base
                     'name' => 'Delete',
                     'url'  => $this->_config->urlBase . 'resource/delete/?r=' . urlencode((string)$resource)
             );
-            $toolbar->appendButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->appendButton(OntoWiki_Toolbar::DELETE, $params);
+            $toolbar->appendButton(OntoWiki_Toolbar::SEPARATOR);
+            $toolbar->appendButton(OntoWiki_Toolbar::DELETE, $params);
 
-            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::ADD, array(
-                        'name' => 'Add Property', 
-                        '+class' => 'property-add', 
-                        'title' => 'SHIFT + ALT + a'
-                    )
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR);
+            $toolbar->prependButton(
+                OntoWiki_Toolbar::ADD,
+                array(
+                    'name' => 'Add Property',
+                    '+class' => 'property-add',
+                    'title' => 'SHIFT + ALT + a'
+                )
             );
 
-            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::CANCEL, array(
-                        '+class' => 'hidden', 
-                        'title' => 'SHIFT + ALT + c'
-                    )
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR);
+            $toolbar->prependButton(
+                OntoWiki_Toolbar::CANCEL,
+                array(
+                    '+class' => 'hidden',
+                    'title' => 'SHIFT + ALT + c'
+                )
             );
 
             $toolbar->prependButton(
-                OntoWiki_Toolbar::SAVE, array(
-                    '+class' => 'hidden', 
+                OntoWiki_Toolbar::SAVE,
+                array(
+                    '+class' => 'hidden',
                     'title' => 'SHIFT + ALT + s'
                 )
             );
@@ -493,6 +502,5 @@ class ResourceController extends OntoWiki_Controller_Base
 
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
         echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $addedStatements);
-        return;
     }
 }
