@@ -56,7 +56,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      */
     public function onIsDispatchable($event)
     {
-        $store    = OntoWiki::getInstance()->erfurt->getStore();
+        $store = null;
+        try {
+            $store = OntoWiki::getInstance()->erfurt->getStore();
+        } catch (Exception $e) {
+            // if we can't get the store, we do nothing
+            return;
+        }
+
         $request  = Zend_Controller_Front::getInstance()->getRequest();
         $response = Zend_Controller_Front::getInstance()->getResponse();
 
@@ -178,7 +185,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
     {
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $owApp   = OntoWiki::getInstance();
-        $store   = $owApp->erfurt->getStore();
+
+        $store = null;
+        try {
+            $store = $owApp->erfurt->getStore();
+        } catch (Exception $e) {
+            // if we can't get the store, we do nothing
+            return;
+        }
 
         if (null == $owApp->selectedModel) {
             $uri = $request->getScheme() . '://' . $request->getHttpHost() . $request->getRequestUri();
@@ -246,7 +260,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $graph = null;
         $actualUri = null;
         if ((bool)$this->_privateConfig->fuzzyMatch === true) {
-            $store = OntoWiki::getInstance()->erfurt->getStore();
+            $store = null;
+            try {
+                $store = OntoWiki::getInstance()->erfurt->getStore();
+            } catch (Exception $e) {
+                // if we can't get the store, we do nothing
+                return array();
+            }
+
             // Remove trailing slashes
             $uri = rtrim($uri, '/');
             // Match case-insensitive and optionally with trailing slashes
@@ -271,7 +292,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
 
     private function _getFirstReadableGraphForUri($uri)
     {
-        $store = OntoWiki::getInstance()->erfurt->getStore();
+        $store = null;
+        try {
+            $store = OntoWiki::getInstance()->erfurt->getStore();
+        } catch (Exception $e) {
+            // if we can't get the store, we do nothing
+            return null;
+        }
+
         try {
             $result = $store->getGraphsUsingResource($uri, false);
 
