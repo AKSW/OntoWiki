@@ -273,11 +273,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             throw new OntoWiki_Exception('Unexpected error: ' . $e->getMessage());
         }
 
-        // Access the store in order to check whether connection works
-        if (!$erfurt->getStore()) {
-            return false;
-        }
-
         // make available
         $ontoWiki->erfurt = $erfurt;
 

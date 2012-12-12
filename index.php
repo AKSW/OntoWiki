@@ -115,8 +115,9 @@ if (!function_exists('class_alias')) {
 /** check/include Zend_Application */
 try {
     // use include, so we can catch it with the error handler
-    include 'Zend/Application.php';
+    require_once 'Zend/Application.php';
 } catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
     echo 'Fatal Error: Could not load Zend library.<br />' . PHP_EOL
          . 'Maybe you need to install it with apt-get or with "make zend"?';
     return;
@@ -131,8 +132,9 @@ $application = new Zend_Application(
 /** check/include OntoWiki */
 try {
     // use include, so we can catch it with the error handler
-    include 'OntoWiki.php';
+    require_once 'OntoWiki.php';
 } catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
     echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.<br />' . PHP_EOL
          . 'Your installation directory seems to be screwed.';
     return;
@@ -141,8 +143,9 @@ try {
 /* check/include Erfurt_App */
 try {
     // use include, so we can catch it with the error handler
-    include 'Erfurt/App.php';
+    require_once 'Erfurt/App.php';
 } catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
     echo 'Fatal Error: Could not load the Erfurt Framework classes.<br />' . PHP_EOL
     . 'Maybe you should install it with apt-get or with "make deploy"?';
     return;
@@ -158,6 +161,7 @@ class_alias('OntoWiki', 'OntoWiki_Application');
 try {
     $application->bootstrap();
 } catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
     echo 'Error on bootstrapping application: ';
     echo $e->getMessage();
     return;
