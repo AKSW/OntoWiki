@@ -69,5 +69,8 @@ class OntoWiki_Controller_Service extends Zend_Controller_Action
                                  . $this->_config->extensions->base
                                  . $name 
                                  . '/';
+
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout()->disableLayout();
     }
 }
