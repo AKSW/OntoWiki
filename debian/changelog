@@ -1,4 +1,4 @@
-ontowiki (0.9.7-1) lod2; urgency=low
+ontowiki (0.9.7-2) lod2; urgency=low
 
   * GUI niceups
   * lots of fixes
@@ -6,8 +6,10 @@ ontowiki (0.9.7-1) lod2; urgency=low
   * RDFauthor is now a separate package
   * Add support for additonal vhosts
   * increment RDFauthor dependency
+  * allow usage of virtuosos bd.ini if present
+  * add gnome desktop file
 
- -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Fri, 16 Nov 2012 08:30:17 -0800
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Fri, 16 Nov 2012 08:30:27 -0800
 
 ontowiki (0.9.6-21) lod2; urgency=low
 
