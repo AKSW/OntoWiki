@@ -21,6 +21,7 @@
     RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
     RewriteCond %{REQUEST_FILENAME} !/maintenance.html
     RewriteRule ^.*$ /maintenance.html [R=503,L]
+    ErrorDocument 503 /maintenance.html
 
     # favicon files are located under /application
     RewriteRule ^favicon\.(.*)$ application/favicon.$1
