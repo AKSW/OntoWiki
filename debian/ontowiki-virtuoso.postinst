@@ -5,36 +5,60 @@
 
 echo "---- starting postinst $@"
 
+virtetc="/etc/virtuoso-opensource-6.1/"
+virtuosoini="$virtetc/virtuoso.ini"
+virtbdini="$virtetc/bd.ini"
+odbcini="/etc/odbc.ini"
+owini="/etc/ontowiki/config.ini"
+dsn="OWVIRT"
+
+# check if bd ini exists (a file with login credentials)
+if [ -e $virtbdini ]; then
+    username=`cat $virtbdini | grep "^Username=" | cut -d "=" -f 2-`
+    password=`cat $virtbdini | grep "^Password=" | cut -d "=" -f 2-`
+    driver=`cat $virtbdini   | grep "^Driver="   | cut -d "=" -f 2-`
+    address=`cat $virtbdini  | grep "^Address="  | cut -d "=" -f 2-`
+fi
+
+# if we do not have the values we assume dba/dba and other well know values
+if [ "$username" = "" ]; then
+    username="dba"
+fi
+if [ "$password" = "" ]; then
+    password="dba"
+fi
+if [ "$driver" = "" ]; then
+    driver="/usr/lib/odbc/virtodbc.so"
+fi
+if [ "$address" = "" ]; then
+    address="localhost:1111"
+fi
+
+### ODBC CONFIG
+touch $odbcini
+echo "# OntoWiki dsn start" >>$odbcini
+echo "[$dsn]" >>$odbcini
+echo Description=OntoWiki Virtuoso DSN >>$odbcini
+echo Driver=$driver >>$odbcini
+echo Address=$address >>$odbcini
+echo "# OntoWiki dsn end" >>$odbcini
+
+### ONTOWIKI CONFIG
+chown www-data:www-data $owini
+chmod 600 $owini
+sed "s/%%DSN%%/$dsn/" -i $owini
+sed "s/%%USERNAME%%/$username/" -i $owini
+sed "s/%%PASSWORD%%/$password/" -i $owini
 
 ### VIRTUOSO CONFIG
-virtetc="/etc/virtuoso-opensource-6.1/"
-virtvar="/var/lib/virtuoso-opensource-6.1/"
-virtuosoini="$virtetc/virtuoso.ini"
-virtautosqlsrc="/usr/share/dbconfig-common/data/ontowiki/install/virtuoso"
-virtautosql="$virtvar/db/autoexec.isql"
-
-# stop the server
-sudo service virtuoso-opensource-6.1 stop
-
-# add ontowiki directory to DirsAllowed
+# add ontowiki and erfurt directory to virtuoso.ini DirsAllowed
 # try to remove the addition first in order to avoid double entries
 sed 's/^\(DirsAllowed.*\)\(, \/usr\/share\/ontowiki\)\(.*\)/\1\3/' -i $virtuosoini
 sed 's/^\(DirsAllowed.*\)/\1, \/usr\/share\/ontowiki/' -i $virtuosoini
 sed 's/^\(DirsAllowed.*\)\(, \/usr\/share\/php\/liberfurt-php\)\(.*\)/\1\3/' -i $virtuosoini
 sed 's/^\(DirsAllowed.*\)/\1, \/usr\/share\/php\/liberfurt-php/' -i $virtuosoini
 
-# place autosql
-# TODO: check for existing autosql and backup as well as restore it afterwards
-cp $virtautosqlsrc $virtautosql
-
-# restart the server
-sudo service virtuoso-opensource-6.1 start
-#rm $virtautosql
-
 ### APACHE CONFIG
-chown www-data:www-data /etc/ontowiki/config.ini
-chmod 600 /etc/ontowiki/config.ini
-
 a2enmod rewrite
 a2enmod env
 service apache2 restart
@@ -42,3 +66,4 @@ service apache2 restart
 #DEBHELPER#
 
 echo "---- ending postinst $@"
+
