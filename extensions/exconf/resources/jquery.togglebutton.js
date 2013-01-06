@@ -51,7 +51,7 @@ if(window.jQuery) (function($){
                     if(!container.is("div")){
                         var newNode = $("<div/>");
                         container.replaceWith(newNode); //returns the old node
-						// initialize property based on attribute
+                        // initialize property based on attribute
                         if(container.is(":checked") || container.attr("selected") == "selected"){
                             newNode.prop("selected", "true");
                         }
@@ -75,7 +75,7 @@ if(window.jQuery) (function($){
                     var ref = slider.position().left;
                     
                     // initialize property based on attribute
-					if(options.enabled || container.is(":checked") || container.attr("selected") == "selected"){
+                    if(options.enabled || container.is(":checked") || container.attr("selected") == "selected"){
                     	container.prop("selected","true");
                         enable(container, false);
                     } else {
