@@ -310,6 +310,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         // initialize logger
+        $writer = null;
         if (is_writable($config->log->path) && ((boolean)$config->log->level !== false)) {
             $levelFilter = new Zend_Log_Filter_Priority((int)$config->log->level, '<=');
 
