@@ -78,9 +78,12 @@ if ($instances->hasData()) {
     if(!isset($count) || $count > 10 ){
         $thisActionUrl = new OntoWiki_Url().'/';
         $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/20'.'">20</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/30'.'">30</a></li>';
+        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/40'.'">40</a></li>';
         $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
-        $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
+//        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
+//        $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
         $statusBar->append($limit);
     }
 
