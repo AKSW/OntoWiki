@@ -19,10 +19,10 @@ if(window.jQuery) (function($){
 
                 function enable(button, withCallback){
                     var realChange = false;
-                    if(button.attr("selected") != "true"){
+                    if(button.prop("selected") != "true"){
                         realChange = true;
                     }
-                    button.attr("selected", "true");
+                    button.prop("selected", "true");
                     button.css("background-color", "#a0e876");
                     var slider = button.find("> .slider").eq(0);
                     slider.animate({left:0}, parseInt(100,10));
@@ -33,10 +33,10 @@ if(window.jQuery) (function($){
 
                 function disable(button, withCallback){
                     var realChange = false;
-                    if(button.attr("selected") != "false"){
+                    if(button.prop("selected") != "false"){
                         realChange = true;
                     }
-                    button.attr("selected", "false");
+                    button.prop("selected", "false");
                     button.css("background-color", "#e95d46");
                     var slider = button.find("> .slider").eq(0);
                     slider.animate({left:button.width() - slider.width()}, parseInt(100,10));
@@ -51,8 +51,9 @@ if(window.jQuery) (function($){
                     if(!container.is("div")){
                         var newNode = $("<div/>");
                         container.replaceWith(newNode); //returns the old node
-                        if(container.is(":checked") || container.attr("selected") == "true"){
-                            newNode.attr("selected", "true");
+                        // initialize property based on attribute
+                        if(container.is(":checked") || container.attr("selected") == "selected"){
+                            newNode.prop("selected", "true");
                         }
                         container = newNode;
                     }
@@ -73,9 +74,12 @@ if(window.jQuery) (function($){
                     
                     var ref = slider.position().left;
                     
-                    if(options.enabled || container.is(":checked") || container.attr("selected") == "true"){
+                    // initialize property based on attribute
+                    if(options.enabled || container.is(":checked") || container.attr("selected") == "selected"){
+                    	container.prop("selected","true");
                         enable(container, false);
                     } else {
+                    	container.prop("selected","false");
                         disable(container, false);
                     }
                     
@@ -100,7 +104,7 @@ if(window.jQuery) (function($){
                         if(container.hasClass("frozen")){
                             return;
                         }
-                        if(container.attr('selected')=='true'){
+                        if(container.prop('selected')=='true'){
                             disable(container, true);
                         } else  {
                             enable(container, true);
@@ -120,7 +124,7 @@ if(window.jQuery) (function($){
 	*/
 	$.extend($.fn.togglebutton, {
                 selected: function(){
-                    return $(this).attr("selected") == "true";
+                    return $(this).prop("selected") == "true";
                 }
  });
 
