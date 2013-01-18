@@ -509,4 +509,32 @@ class ResourceController extends OntoWiki_Controller_Base
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
         echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $addedStatements);
     }
+    
+    public function headAction()
+    {
+        // disable layout for Ajax requests
+        $this->_helper->layout()->disableLayout();
+        // disable rendering
+        $this->_helper->viewRenderer->setNoRender();
+        
+        $redirect = $this->getParam('noredirect', false);
+        $resourceUri = $this->getParam('r', '');
+        
+        if ("" == $resourceUri)
+            echo json_encode(array());
+        else
+        {
+            $options = array(
+                'timeout'       => 30
+            );
+            
+            if ('true' == $redirect)
+                $options['maxredirects'] = 0;
+                
+            $httpClient = Erfurt_App::getInstance()->getHttpClient($resourceUri, $options);
+            $httpClient->setHeaders('Accept', 'text/turtle; q=1.0, application/x-turtle; q=0.9, text/n3; q=0.8, application/rdf+xml; q=0.5, text/plain; q=0.1');
+            
+            echo json_encode($httpClient->request()->getHeaders());
+        }
+    }
 }
