@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -194,7 +194,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $mUriEncoded = urlencode((string)$model);
         $feedUrl = $this->_config->urlBase . "history/feed?r=$rUriEncoded&mUriEncoded";
 
-        $this->view->headLink()->setAlternate($feedUrl, 'application/atom+xml', 'History Feed');
+        $this->view->headLink()->appendAlternate($feedUrl, 'application/atom+xml', 'History Feed');
 
         // redirecting to home if no model/resource is selected
         if (
