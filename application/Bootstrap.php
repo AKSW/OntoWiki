@@ -75,7 +75,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $extensionManager = new OntoWiki_Extension_Manager($extensionPath);
         $extensionManager->setTranslate($translate)
-                         ->setComponentUrlBase($extensionPathBase);
+            ->setComponentUrlBase($extensionPathBase);
 
         // register component controller directories
         foreach ($extensionManager->getComponents() as $extensionName => $extensionConfig) {
@@ -139,8 +139,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->themes->default  = rtrim($config->themes->default, '/\\') . '/';
         $config->extensions->base = rtrim($config->extensions->base, '/\\') . '/';
 
-        if ( false === defined('EXTENSION_PATH'))
+        if (false === defined('EXTENSION_PATH')) {
             define('EXTENSION_PATH', $config->extensions->base);
+        }
 
         $config->extensions->legacy     = EXTENSION_PATH . rtrim($config->extensions->legacy, '/\\') . '/';
         $config->languages->path        = EXTENSION_PATH . rtrim($config->languages->path, '/\\') . '/';
@@ -168,7 +169,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
         if (isset($_SERVER['SERVER_PORT'])
-            && $_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') {
+            && $_SERVER['SERVER_PORT'] != '80'
+            && $_SERVER['SERVER_PORT'] != '443'
+        ) {
             $port = ':' . $_SERVER['SERVER_PORT'];
         } else {
             $port = '';
@@ -204,14 +207,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                                 . $config->libraries->path;
 
         // define constants for development/debugging
-        if (isset($config->debug) and (boolean)$config->debug) {
+        if (isset($config->debug) && (boolean)$config->debug) {
             // display errors
             error_reporting(E_ALL | E_STRICT);
             ini_set('display_errors', 'On');
             // enable debugging options
-            if ( false === defined('_OWDEBUG')) {
+            if (false === defined('_OWDEBUG')) {
                 define('_OWDEBUG', 1);
             }
+
             // log everything
             $config->log->level = 7;
         }
@@ -319,7 +323,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             // Check whether log can be created with $logName... otherwise append a number.
             // This needs to be done, since logs may be created by other processes (e.g. with
             // testing) and thus can't be opened anymore.
-            for ($i = 0; $i<10; ++$i) {
+            for ($i = 0; $i < 10; ++$i) {
                 try {
                     $fullLogName = $logName;
                     if ($i > 0) {
@@ -372,7 +376,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $currentAction = $request->getActionName();
 
         // is current action a default action?
-        if ($currentAction == 'properties' or $currentAction == 'instances') {
+        if ($currentAction == 'properties' || $currentAction == 'instances') {
             // save it to session
             $session->lastRoute = $currentAction;
         }
@@ -496,8 +500,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // define the session key as a constant for global reference
 
-        if ( false === defined('_OWSESSION'))
+        if (false === defined('_OWSESSION')) {
             define('_OWSESSION', $sessionKey);
+        }
 
         // inject session vars into OntoWiki
         if (array_key_exists('sessionVars', $this->_options['bootstrap'])) {
@@ -526,7 +531,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // configure toolbar
         $toolbar = OntoWiki_Toolbar::getInstance();
         $toolbar->setThemeUrlBase($config->themeUrlBase)
-                ->setTranslate($translate);
+            ->setTranslate($translate);
 
         return $toolbar;
     }
@@ -542,7 +547,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config = $this->getResource('Config');
 
         // setup translation cache
-        if ((boolean)$config->cache->translation and is_writable($config->cache->path)) {
+        if ((boolean)$config->cache->translation && is_writable($config->cache->path)) {
             $translationFile = ONTOWIKI_ROOT
                              . $config->languages->path
                              . $config->languages->locale
@@ -643,10 +648,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // init view
         $view = new OntoWiki_View($viewOptions, $translate);
         $view->addScriptPath($defaultTemplatePath)  // default templates
-             ->addScriptPath($themeTemplatePath)    // theme templates override default ones
-             ->addScriptPath($config->extensions->base)    // extension templates
-             ->setEncoding($config->encoding)
-             ->setHelperPath(ONTOWIKI_ROOT . 'application/classes/OntoWiki/View/Helper', 'OntoWiki_View_Helper');
+            ->addScriptPath($themeTemplatePath)    // theme templates override default ones
+            ->addScriptPath($config->extensions->base)    // extension templates
+            ->setEncoding($config->encoding)
+            ->setHelperPath(ONTOWIKI_ROOT . 'application/classes/OntoWiki/View/Helper', 'OntoWiki_View_Helper');
 
         // set Zend_View to emit notices in debug mode
         $view->strictVars(defined('_OWDEBUG'));

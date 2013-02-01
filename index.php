@@ -34,7 +34,9 @@ set_error_handler('errorHandler');
  * Bootstrap constants
  * @since 0.9.5
  */
-if (!defined('__DIR__')) define('__DIR__', dirname(__FILE__)); // fix for PHP < 5.3.0
+if (!defined('__DIR__')) {
+    define('__DIR__', dirname(__FILE__));
+} // fix for PHP < 5.3.0
 define('BOOTSTRAP_FILE', basename(__FILE__));
 define('ONTOWIKI_ROOT', rtrim(__DIR__, '/\\') . DIRECTORY_SEPARATOR);
 define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application'.DIRECTORY_SEPARATOR);
@@ -52,7 +54,7 @@ define('OW_SHOW_MAX', 5);
 // PHP environment settings
 ini_set('max_execution_time', 240);
 
-if ((int) substr(ini_get('memory_limit'), 0, -1) < 256) {
+if ((int)substr(ini_get('memory_limit'), 0, -1) < 256) {
     ini_set('memory_limit', '256M');
 }
 
@@ -92,7 +94,7 @@ if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
         $rewriteEngineOn = preg_match('/.*[^#][\t ]+RewriteEngine[\t ]+On/i', $htaccess);
 
         // explicitly request /index.php for non-rewritten requests
-        if (!$rewriteEngineOn and ! strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
+        if (!$rewriteEngineOn && ! strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
             header('Location: ' . rtrim($_SERVER['REQUEST_URI'], '/\\') . '/' . BOOTSTRAP_FILE, true, 302);
             return;
         }
@@ -100,17 +102,6 @@ if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
 }
 
 define('ONTOWIKI_REWRITE', $rewriteEngineOn);
-
-
-/**
- * Ensure compatibility for PHP <= 5.3
- */
-if (!function_exists('class_alias')) {
-    function class_alias($original, $alias)
-    {
-        eval('abstract class ' . $alias . ' extends ' . $original . ' {}');
-    }
-}
 
 /** check/include Zend_Application */
 try {
@@ -153,9 +144,6 @@ try {
 
 // restore old error handler
 restore_error_handler();
-
-// define alias for backward compatiblity
-class_alias('OntoWiki', 'OntoWiki_Application');
 
 // bootstrap
 try {

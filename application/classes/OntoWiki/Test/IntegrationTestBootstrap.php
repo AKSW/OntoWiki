@@ -1,23 +1,23 @@
 <?php
-require_once realpath(dirname(dirname(dirname(dirname(__FILE__))))). DIRECTORY_SEPARATOR . 'Bootstrap.php';
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
+
+require_once realpath(dirname(dirname(dirname(dirname(__FILE__))))) . DIRECTORY_SEPARATOR . 'Bootstrap.php';
 
 /**
  * OntoWiki bootstrap class.
  *
  * Provides on-demand loading of application resources.
  *
- * @category OntoWiki
- * @package OntoWiki_Bootstrap
+ * @category  OntoWiki
+ * @package   OntoWiki_Bootstrap
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class OntoWiki_Test_IntegrationTestBootstrap extends Bootstrap
 {
@@ -42,7 +42,9 @@ class OntoWiki_Test_IntegrationTestBootstrap extends Bootstrap
 
         if ($tryDistConfig === true) {
             try {
-                $privateConfig = new Zend_Config_Ini(ONTOWIKI_ROOT . 'application/tests/config.ini.dist', 'private', true);
+                $privateConfig = new Zend_Config_Ini(
+                    ONTOWIKI_ROOT . 'application/tests/config.ini.dist', 'private', true
+                );
                 $config->merge($privateConfig);
             } catch (Zend_Config_Exception $e) {
                 $message = 'Failed to find test config';
@@ -57,8 +59,10 @@ class OntoWiki_Test_IntegrationTestBootstrap extends Bootstrap
             $storeAdapter = getenv('EF_STORE_ADAPTER');
             if (($storeAdapter === 'virtuoso') || ($storeAdapter === 'zenddb')) {
                 $config->store->backend = $storeAdapter;
-            } else if ($storeAdapter !== false) {
-                throw new Exception('Invalid value of $EF_STORE_ADAPTER: ' . $storeAdapter);
+            } else {
+                if ($storeAdapter !== false) {
+                    throw new Exception('Invalid value of $EF_STORE_ADAPTER: ' . $storeAdapter);
+                }
             }
         }
 

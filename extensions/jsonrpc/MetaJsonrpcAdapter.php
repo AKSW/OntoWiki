@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -14,22 +14,22 @@
  * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class metaJsonrpcAdapter
+class MetaJsonrpcAdapter
 {
-    private $store = null;
-    private $erfurt = null;
+    private $_store = null;
+    private $_erfurt = null;
 
-    private $server = array (
-        'meta' => 'methods to query the json service itself',
-        'store' => 'methods to manipulate and query the store',
-        'model' => 'methods to manipulate and query a specific model',
+    private $_server = array(
+        'meta'      => 'methods to query the json service itself',
+        'store'     => 'methods to manipulate and query the store',
+        'model'     => 'methods to manipulate and query a specific model',
         'evolution' => 'methods to manage and use the evolution engine',
     );
 
     public function __construct()
     {
-        $this->store = Erfurt_App::getInstance()->getStore();
-        $this->erfurt = Erfurt_App::getInstance();
+        $this->_store  = Erfurt_App::getInstance()->getStore();
+        $this->_erfurt = Erfurt_App::getInstance();
     }
 
     /**
@@ -39,12 +39,13 @@ class metaJsonrpcAdapter
     public function listServer()
     {
         $returnArray = array();
-        foreach ($this->server as $server => $description) {
-            $returnArray[] = array (
-                'name' => $server,
+        foreach ($this->_server as $_server => $description) {
+            $returnArray[] = array(
+                'name'        => $_server,
                 'description' => $description,
-                );
+            );
         }
+
         return $returnArray;
     }
 
@@ -59,7 +60,7 @@ class metaJsonrpcAdapter
         }
 
         $matches = array();
-        preg_match("/".$tag."(.*)(\\r\\n|\\r|\\n)/U", $string, $matches);
+        preg_match("/" . $tag . "(.*)(\\r\\n|\\r|\\n)/U", $string, $matches);
 
         if (isset($matches[1])) {
             return trim($matches[1]);
@@ -68,36 +69,38 @@ class metaJsonrpcAdapter
         }
     }
 
-
     /**
      * @desc lists all remote procedures from a specific jsonrpc server
+     *
      * @param string server
+     *
      * @return array
      */
-    public function listProcedures ($server)
+    public function listProcedures($_server)
     {
-        $classname = $server . 'JsonrpcAdapter';
-        @include_once $classname.'.php';
+        $classname = $_server . 'JsonrpcAdapter';
+        @include_once $classname . '.php';
         if (class_exists($classname)) {
             $reflectionClass = new ReflectionClass($classname);
             // get only public functions
             $reflectionMethods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
-            $returnArray = array();
+            $returnArray       = array();
             foreach ($reflectionMethods as $method) {
-                $methodName = $method->name;
+                $methodName        = $method->name;
                 $methodDescription = $this->getDocComment($method, $tag = '@desc');
                 // we return only methods with a descriptions
                 if ($methodDescription) {
-                    $returnArray[] = array (
-                        'name' => $server .':'. $methodName,
+                    $returnArray[] = array(
+                        'name'        => $_server . ':' . $methodName,
                         'description' => $methodDescription,
-                        );
+                    );
                 }
             }
             ksort($returnArray);
+
             return $returnArray;
         } else {
-            return 'Error: Server '.$server.' does not exist.';
+            return 'Error: Server ' . $_server . ' does not exist.';
         }
     }
 
@@ -105,13 +108,14 @@ class metaJsonrpcAdapter
      * @desc lists all remote procedures from ALL jsonrpc server
      * @return array
      */
-    public function listAllProcedures ()
+    public function listAllProcedures()
     {
         $procedures = array();
-        foreach ($this->server as $server => $desc) {
-            $proceduresOfServer = self::listProcedures ($server);
-            $procedures = array_merge($procedures, $proceduresOfServer);
+        foreach ($this->_server as $_server => $desc) {
+            $proceduresOfServer = self::listProcedures($_server);
+            $procedures         = array_merge($procedures, $proceduresOfServer);
         }
+
         return $procedures;
     }
 }

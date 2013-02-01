@@ -1,11 +1,18 @@
 <?php
-    /**
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * It tests the behavior of Ontowiki_Model_Instances
  *
  * @author Jonas Brekle <jonas.brekle@gmail.com>
  */
-class ManagerIntegrationTest extends Erfurt_TestCase {
-
+class ManagerIntegrationTest extends Erfurt_TestCase
+{
     protected $_resourcesDirectory = null;
     protected $_bootstrap = null;
 
@@ -26,6 +33,7 @@ class ManagerIntegrationTest extends Erfurt_TestCase {
         } catch (Exception $e) {
             echo 'Error on bootstrapping application: ';
             echo $e->getMessage();
+
             return;
         }
 

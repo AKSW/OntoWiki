@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -14,15 +14,15 @@
  * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class storeJsonrpcAdapter
+class StoreJsonrpcAdapter
 {
-    private $store = null;
-    private $erfurt = null;
+    private $_store = null;
+    private $_erfurt = null;
 
     public function __construct()
     {
-        $this->store = Erfurt_App::getInstance()->getStore();
-        $this->erfurt = Erfurt_App::getInstance();
+        $this->_store  = Erfurt_App::getInstance()->getStore();
+        $this->_erfurt = Erfurt_App::getInstance();
     }
 
     /**
@@ -31,12 +31,13 @@ class storeJsonrpcAdapter
      */
     public function listModels()
     {
-        $models = $this->store->getAvailableModels( true );
+        $models = $this->_store->getAvailableModels(true);
         // transform result to one-dim array
         $array = array();
         foreach ($models as $model => $bool) {
             $array[] = $model;
         }
+
         return $array;
     }
 
@@ -46,19 +47,22 @@ class storeJsonrpcAdapter
      */
     public function getBackendName()
     {
-        return $this->store->getBackendName();
+        return $this->_store->getBackendName();
     }
 
     /**
      * @desc performs a sparql query on the store
+     *
      * @param string query
+     *
      * @return string
      */
     public function sparql($query = 'SELECT ?resource ?label WHERE {?resource ?prop ?label} LIMIT 5')
     {
         require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = Erfurt_Sparql_SimpleQuery::initWithString($query);
-        return $this->store->sparqlQuery($query);
+
+        return $this->_store->sparqlQuery($query);
     }
 
     /**
@@ -67,7 +71,7 @@ class storeJsonrpcAdapter
      */
     public function getIdentity()
     {
-        return $this->erfurt->getAuth()->getIdentity()->getUsername();
+        return $this->_erfurt->getAuth()->getIdentity()->getUsername();
     }
 
 

@@ -1,20 +1,19 @@
-<?php 
-
+<?php
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki model exception
  *
- * @category OntoWiki
- * @package OntoWiki_Classes_Model
+ * @category  OntoWiki
+ * @package   OntoWiki_Classes_Model
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Norman Heino <norman.heino@gmail.com>
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Model_Exception extends OntoWiki_Exception
 {

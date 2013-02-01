@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -36,7 +36,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->_translate = $this->_owApp->translate;
         $this->_ac        = $this->_erfurt->getAc();
 
-        $sessionKey = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');
+        $sessionKey         = 'Navigation' . (isset($config->session->identifier) ? $config->session->identifier : '');
         $this->stateSession = new Zend_Session_Namespace($sessionKey);
 
         $this->_model = $this->_owApp->selectedModel;
@@ -100,9 +100,9 @@ class NavigationController extends OntoWiki_Controller_Component
         $this->startOutput($this->_setup);
 
         // set view variable for the show more button
-        if ( (count($this->view->entries) > $this->_limit) && $this->_setup->state->lastEvent != "search") {
+        if ((count($this->view->entries) > $this->_limit) && $this->_setup->state->lastEvent != "search") {
             // return only $_limit entries
-            $this->view->entries = array_slice($this->view->entries, 0, $this->_limit);
+            $this->view->entries    = array_slice($this->view->entries, 0, $this->_limit);
             $this->view->showMeMore = true;
         } else {
             $this->view->showMeMore = false;
@@ -111,17 +111,17 @@ class NavigationController extends OntoWiki_Controller_Component
         // if there's no entries, show text
         if (empty($this->view->entries)) {
             if (isset($this->_setup->state->searchString)) {
-                $this->_messages[] = array( 'type' => 'info', 'text' => 'No result for this search.');
+                $this->_messages[] = array('type' => 'info', 'text' => 'No result for this search.');
             } else {
-                $this->_messages[] = array( 'type' => 'info', 'text' => 'Nothing to navigate here.');
+                $this->_messages[] = array('type' => 'info', 'text' => 'Nothing to navigate here.');
             }
         }
 
         // the root entry (parent of the shown elements)
         if (isset($this->_setup->state->parent)) {
-            $this->view->rootEntry = array();
-            $this->view->rootEntry['uri'] = $this->_setup->state->parent;
-            $this->view->rootEntry['url'] = $this->_getListLink($this->_setup->state->parent, $this->_setup);
+            $this->view->rootEntry          = array();
+            $this->view->rootEntry['uri']   = $this->_setup->state->parent;
+            $this->view->rootEntry['url']   = $this->_getListLink($this->_setup->state->parent, $this->_setup);
             $this->view->rootEntry['title'] = $this->_getTitle(
                 $this->_setup->state->parent,
                 isset($this->_setup->config->titleMode) ? $this->_setup->config->titleMode : null,
@@ -160,14 +160,14 @@ class NavigationController extends OntoWiki_Controller_Component
 
     private function startOutput($config)
     {
-        $event = new Erfurt_Event('onNavigationStartOutput');
+        $event         = new Erfurt_Event('onNavigationStartOutput');
         $event->config = $config;
         $event->trigger();
     }
 
     private function endOutput($config)
     {
-        $event = new Erfurt_Event('onNavigationEndOutput');
+        $event         = new Erfurt_Event('onNavigationEndOutput');
         $event->config = $config;
         $event->trigger();
     }
@@ -187,7 +187,7 @@ class NavigationController extends OntoWiki_Controller_Component
         // save view, setup and current model to state
         $this->stateSession->view  = $view->render("navigation/explore.phtml");
         $this->stateSession->setup = $setup;
-        $this->stateSession->model = (string) $this->_model;
+        $this->stateSession->model = (string)$this->_model;
     }
 
     /*
@@ -195,27 +195,26 @@ class NavigationController extends OntoWiki_Controller_Component
      */
     protected function _queryNavigationEntries($setup)
     {
-        if (
-            isset($setup->config->cache) &&
-            $setup->config->cache == true
+        if (isset($setup->config->cache)
+            && $setup->config->cache == true
         ) {
             $cache      = $this->_owApp->erfurt->getCache(); // Object cache
             $queryCache = $this->_owApp->erfurt->getQueryCache(); // query cache
         }
 
         // set cache id
-        $cid = 'nav_'.md5(serialize($setup).$this->_model);
+        $cid = 'nav_' . md5(serialize($setup) . $this->_model);
 
         $this->_owApp->logger->info(
-            'NavigationController _queryNavigationEntries Input: ' .PHP_EOL . print_r($setup,true)
-        );//*/
+            'NavigationController _queryNavigationEntries Input: ' . PHP_EOL . print_r($setup, true)
+        );
+        //*/
 
         // try to load results from cache
-        if (
-            isset($setup->config->cache) &&
-            $setup->config->cache == true
+        if (isset($setup->config->cache)
+            && $setup->config->cache == true
         ) {
-            if ( $entriesCached = $cache->load($cid)) {
+            if ($entriesCached = $cache->load($cid)) {
                 return $entriesCached;
             }
 
@@ -234,7 +233,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
             $pattern = $this->_store->getSearchPattern(
                 $setup->state->searchString,
-                (string) $this->_model
+                (string)$this->_model
             );
             $query->addElements($pattern);
 
@@ -257,11 +256,9 @@ class NavigationController extends OntoWiki_Controller_Component
         } else {
             // if there's no top query assigned and hideDefaultHierarchy is false
             // generate query based on setup
-            if (
-                (
-                    !isset($setup->config->hideDefaultHierarchy) ||
-                    $setup->config->hideDefaultHierarchy == false
-                ) && !isset($setup->config->query->top)
+            if ((!isset($setup->config->hideDefaultHierarchy)
+                || ($setup->config->hideDefaultHierarchy == false))
+                && !isset($setup->config->query->top)
             ) {
                 $query = $this->_buildQuery($setup, false);
             } elseif (isset($setup->config->query->top)) {
@@ -279,8 +276,9 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // error logging
         $this->_owApp->logger->info(
-            'NavigationController _queryNavigationEntries Query: ' .$query->__toString()
-        );//*/
+            'NavigationController _queryNavigationEntries Query: ' . $query->__toString()
+        );
+        //*/
 
         // get extended results
         $allResults = $this->_model->sparqlQuery(
@@ -307,9 +305,8 @@ class NavigationController extends OntoWiki_Controller_Component
         $showImplicit = false;
         if (!isset($setup->config->rootElement)) {
             if (!isset($setup->state->showImplicit)) {
-                if (
-                    isset($setup->config->showImplicitElements) &&
-                    $setup->config->showImplicitElements == true
+                if (isset($setup->config->showImplicitElements)
+                    && $setup->config->showImplicitElements == true
                 ) {
                     $showImplicit = true;
                 }
@@ -326,7 +323,7 @@ class NavigationController extends OntoWiki_Controller_Component
         if ($showImplicit) {
             // new query for regular event
             if ($setup->state->lastEvent != "search") {
-                $query = $this->_buildQuery($setup, true);
+                $query           = $this->_buildQuery($setup, true);
                 $resultsImplicit = $this->_model->sparqlQuery(
                     $query,
                     array('result_format' => 'extended')
@@ -361,8 +358,9 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // log results
         $this->_owApp->logger->info(
-            'NavigationController _queryNavigationEntries Result: '  . PHP_EOL . print_r($allResults,true)
-        );//*/
+            'NavigationController _queryNavigationEntries Result: ' . PHP_EOL . print_r($allResults, true)
+        );
+        //*/
 
         // set titleMode from config or set it to null if config is not assigned
         if (isset($setup->config->titleMode)) {
@@ -402,17 +400,16 @@ class NavigationController extends OntoWiki_Controller_Component
             $entry = array();
 
             // assing resource URI
-            $uri = $result['resourceUri'];
-            $entry = array();
+            $uri            = $result['resourceUri'];
+            $entry          = array();
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             // get resource ling
             $entry['link'] = $this->_getListLink($uri, $setup);
 
             // chech if there's need to look for subresources
             $checkSubs = false;
-            if (
-                isset($setup->config->checkSub) &&
-                $setup->config->checkSub == true
+            if (isset($setup->config->checkSub)
+                && $setup->config->checkSub == true
             ) {
                 $checkSubs = true;
             }
@@ -435,9 +432,8 @@ class NavigationController extends OntoWiki_Controller_Component
             // check if filtering empty is enabled
             $filterEmpty = false;
             if (!isset($setup->state->showEmpty)) {
-                if (
-                    isset($setup->config->showEmptyElements) &&
-                    $setup->config->showEmptyElements == false
+                if (isset($setup->config->showEmptyElements)
+                    && $setup->config->showEmptyElements == false
                 ) {
                     $filterEmpty = true;
                 }
@@ -466,9 +462,8 @@ class NavigationController extends OntoWiki_Controller_Component
                 }
             }
 
-            if (
-                isset($setup->config->checkUsage) &&
-                $setup->config->checkUsage == true
+            if (isset($setup->config->checkUsage)
+                && $setup->config->checkUsage == true
             ) {
                 // gen query
                 $query = $this->_buildUsageQuery($uri, $setup);
@@ -486,10 +481,12 @@ class NavigationController extends OntoWiki_Controller_Component
                 }
             }
             // apply $show flag
-            if($show) $entries[$uri] = $entry;
+            if ($show) {
+                $entries[$uri] = $entry;
+            }
         }
 
-        $this->_owApp->logger->info('ENTRIES: '.print_r($entries,true));
+        $this->_owApp->logger->info('ENTRIES: ' . print_r($entries, true));
 
         if (isset($setup->config->cache) && $setup->config->cache == true) {
             // save results to cache
@@ -588,9 +585,9 @@ class NavigationController extends OntoWiki_Controller_Component
             $name = $this->titleHelper->getTitle($uri, OntoWiki::getInstance()->language);
         } elseif ($mode == "baseName") {
             if (strrpos($uri, '#') > 0) {
-                $name = substr($uri, strrpos($uri, '#')+1);
+                $name = substr($uri, strrpos($uri, '#') + 1);
             } elseif (strrpos($uri, '/') > 0) {
-                $name = substr($uri, strrpos($uri, '/')+1);
+                $name = substr($uri, strrpos($uri, '/') + 1);
             } else {
                 $name = $uri;
             }
@@ -599,9 +596,8 @@ class NavigationController extends OntoWiki_Controller_Component
         }
 
         // count entries
-        if (
-            isset($setup->config->showCounts) &&
-            $setup->config->showCounts == true
+        if (isset($setup->config->showCounts)
+            && $setup->config->showCounts == true
         ) {
             $query   = $this->_buildCountQuery($uri, $setup);
             $results = $this->_model->sparqlQuery($query);
@@ -611,7 +607,9 @@ class NavigationController extends OntoWiki_Controller_Component
                 $count = count($results);
             }
 
-            if( $count > 0 ) $name .= ' ('.$count.')';
+            if ($count > 0) {
+                $name .= ' (' . $count . ')';
+            }
         }
 
         return $name;
@@ -622,9 +620,8 @@ class NavigationController extends OntoWiki_Controller_Component
      */
     protected function _buildQuery($setup, $forImplicit = false)
     {
-        if (
-            isset($setup->config->query->deeper) &&
-            isset($setup->state->parent)
+        if (isset($setup->config->query->deeper)
+            && isset($setup->state->parent)
         ) {
             //$replace = ;
             $queryString = str_replace(
@@ -632,7 +629,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 $setup->state->parent,
                 $setup->config->query->deeper
             );
-            $query = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
+            $query       = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
         } else {
             $query = new Erfurt_Sparql_Query2();
             $query->addElements(
@@ -657,11 +654,11 @@ class NavigationController extends OntoWiki_Controller_Component
             $query->getWhere()->addElement(
                 new Erfurt_Sparql_Query2_OptionalGraphPattern(
                     array(
-                        new Erfurt_Sparql_Query2_Triple(
-                            new Erfurt_Sparql_Query2_Var('resourceUri'),
-                            new Erfurt_Sparql_Query2_IriRef($setup->config->ordering->relation),
-                            $orderVar
-                        )
+                         new Erfurt_Sparql_Query2_Triple(
+                             new Erfurt_Sparql_Query2_Var('resourceUri'),
+                             new Erfurt_Sparql_Query2_IriRef($setup->config->ordering->relation),
+                             $orderVar
+                         )
                     )
                 )
             );
@@ -688,7 +685,7 @@ class NavigationController extends OntoWiki_Controller_Component
     {
         // define vars
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        $subVar = new Erfurt_Sparql_Query2_Var('sub');
+        $subVar    = new Erfurt_Sparql_Query2_Var('sub');
 
         // define query
         $query = new Erfurt_Sparql_Query2();
@@ -784,8 +781,10 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // error logging
         $this->_owApp->logger->info(
-            'NavigationController: COUNTQUERY: ' .$query->__toString()
-        );//*/
+            'NavigationController: COUNTQUERY: ' . $query->__toString()
+        );
+
+        //*/
 
         return $query;
     }
@@ -799,6 +798,7 @@ class NavigationController extends OntoWiki_Controller_Component
         $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
         $query->setCountStar(true);
         $query->setDistinct();
+
         return $query;
     }
 
@@ -807,17 +807,17 @@ class NavigationController extends OntoWiki_Controller_Component
      */
     protected function _buildSubCheckQuery($uri, $setup)
     {
-        $subVar     = new Erfurt_Sparql_Query2_Var('subResourceUri');
-        $searchVar  = new Erfurt_Sparql_Query2_Var('resourceUri');
+        $subVar    = new Erfurt_Sparql_Query2_Var('subResourceUri');
+        $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
         //$classVar = new Erfurt_Sparql_Query2_Var('classUri');
-        $query      = new Erfurt_Sparql_Query2();
+        $query = new Erfurt_Sparql_Query2();
         $query->addProjectionVar($subVar);
         $query->setDistinct();
 
-        $this->_owApp->logger->info("data: ".print_r($query,true));
+        $this->_owApp->logger->info("data: " . print_r($query, true));
         $elements = array();
-        $in = array();
-        $out = array();
+        $in       = array();
+        $out      = array();
 
         if (isset($setup->config->hierarchyRelations->in)) {
             if (count($setup->config->hierarchyRelations->in) > 1) {
@@ -899,7 +899,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // log results
         $this->_owApp->logger->info(
-            'NavigationController CHECK SUB: '  . PHP_EOL . $query->__toString()
+            'NavigationController CHECK SUB: ' . PHP_EOL . $query->__toString()
         );
 
         return $query;
@@ -910,13 +910,13 @@ class NavigationController extends OntoWiki_Controller_Component
      * according to a given URI in the navigation module and a
      * given navigation setup
      */
-    protected function _getListLink ($uri, $setup)
+    protected function _getListLink($uri, $setup)
     {
-        $owUrl = new OntoWiki_Url(
+        $owUrl  = new OntoWiki_Url(
             array('route' => 'instances'),
             array()
         );
-        $return = (string) $owUrl;
+        $return = (string)$owUrl;
 
         // at the moment, we use r= here, not class=
         $return .= "?init";
@@ -926,45 +926,47 @@ class NavigationController extends OntoWiki_Controller_Component
             $configString = str_replace("|", '"', $setup->config->list->config);
             $configString = str_replace("%resource%", $uri, $configString);
             $conf         = json_decode($configString);
-        } else if (isset($setup->config->list->query)) {
-            // show properties
-            if (isset($setup->config->list->shownProperties)) {
-                $configString = str_replace("|", '"', $setup->config->list->shownProperties);
-                $configString = str_replace("%resource%", $uri, $configString);
-                $conf['shownProperties'][] = json_decode($configString);
-            }
-
-            // query
-            $configQuery = str_replace("%resource%", $uri, $setup->config->list->query);
-            $configQuery = str_replace("\n", " ", $configQuery);
-
-            $conf['filter'][] = array(
-                'mode' => 'query',
-                'query' => $configQuery
-            );
         } else {
-            if (
-                isset($setup->config->instanceRelation->out) &&
-                isset($setup->config->instanceRelation->in) &&
-                ($setup->config->instanceRelation->out[0] == EF_RDF_TYPE) &&
-                ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF )
-            ) {
+            if (isset($setup->config->list->query)) {
+                // show properties
+                if (isset($setup->config->list->shownProperties)) {
+                    $configString              = str_replace("|", '"', $setup->config->list->shownProperties);
+                    $configString              = str_replace("%resource%", $uri, $configString);
+                    $conf['shownProperties'][] = json_decode($configString);
+                }
+
+                // query
+                $configQuery = str_replace("%resource%", $uri, $setup->config->list->query);
+                $configQuery = str_replace("\n", " ", $configQuery);
+
                 $conf['filter'][] = array(
-                    'mode' => 'rdfsclass',
-                    'rdfsclass' => $uri,
-                    'action' => 'add'
+                    'mode'  => 'query',
+                    'query' => $configQuery
                 );
             } else {
-                $conf['filter'][] = array(
-                    'mode' => 'cnav',
-                    'cnav' => $setup,
-                    'uri'  => $uri,
-                    'action' => 'add'
-                );
+                if (isset($setup->config->instanceRelation->out)
+                    && isset($setup->config->instanceRelation->in)
+                    && ($setup->config->instanceRelation->out[0] == EF_RDF_TYPE)
+                    && ($setup->config->hierarchyRelations->in[0] == EF_RDFS_SUBCLASSOF)
+                ) {
+                    $conf['filter'][] = array(
+                        'mode'      => 'rdfsclass',
+                        'rdfsclass' => $uri,
+                        'action'    => 'add'
+                    );
+                } else {
+                    $conf['filter'][] = array(
+                        'mode'   => 'cnav',
+                        'cnav'   => $setup,
+                        'uri'    => $uri,
+                        'action' => 'add'
+                    );
+                }
             }
         }
+
         //$this->_owApp->logger->info("conf: ".print_r($conf,true));
 
-        return $return . "&instancesconfig=".urlencode(json_encode($conf));
+        return $return . "&instancesconfig=" . urlencode(json_encode($conf));
     }
 }

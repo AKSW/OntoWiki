@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 require_once 'OntoWiki/Plugin.php';
@@ -18,13 +18,15 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
     protected $_supportedLanguages = null;
     public $owApp;
 
-    public function init() {
-        $this->_config = $this->_privateConfig;
+    public function init()
+    {
+        $this->_config             = $this->_privateConfig;
         $this->_supportedLanguages = $this->_config->languages->toArray();
-        $this->owApp = OntoWiki::getInstance();
+        $this->owApp               = OntoWiki::getInstance();
     }
 
-    public function onBeforeInitController() {
+    public function onBeforeInitController()
+    {
         // Translation hack in order to enable the plugin to translate...
         $translate = $this->owApp->translate;
         $translate->addTranslation(
@@ -34,38 +36,41 @@ class SelectlanguagePlugin extends OntoWiki_Plugin
         );
         $locale = $this->owApp->getConfig()->languages->locale;
         $translate->setLocale($locale);
- 
-        $appMenu    = OntoWiki_Menu_Registry::getInstance()->getMenu('application');
-        $extrasMenu = $appMenu->getSubMenu('Extras');
-        $lanMenuEntry      = $translate->_('Select Language', $this->owApp->config->languages->locale);
-        $lanMenue = new OntoWiki_Menu();
 
-        $request = new OntoWiki_Request();
-        $getRequest =  $request->getRequestUri();
+        $appMenu      = OntoWiki_Menu_Registry::getInstance()->getMenu('application');
+        $extrasMenu   = $appMenu->getSubMenu('Extras');
+        $lanMenuEntry = $translate->_('Select Language', $this->owApp->config->languages->locale);
+        $lanMenue     = new OntoWiki_Menu();
+
+        $request    = new OntoWiki_Request();
+        $getRequest = $request->getRequestUri();
         foreach ($this->_supportedLanguages as $key => $value) {
-            $getRequest = str_replace("&lang=".$key, "", $getRequest);
-            $getRequest = str_replace("?lang=".$key, "", $getRequest);
+            $getRequest = str_replace("&lang=" . $key, "", $getRequest);
+            $getRequest = str_replace("?lang=" . $key, "", $getRequest);
         }
         foreach ($this->_supportedLanguages as $key => $value) {
-            $url = $getRequest . ((strpos($getRequest, "?")) ? "&" : "?" ) . "lang=".$key;
+            $url = $getRequest . ((strpos($getRequest, "?")) ? "&" : "?") . "lang=" . $key;
             $lanMenue->appendEntry(
-                            $translate->_($value, $this->owApp->config->languages->locale),
-                            $url);
+                $translate->_($value, $this->owApp->config->languages->locale),
+                $url
+            );
         }
         $extrasMenu->setEntry($lanMenuEntry, $lanMenue);
     }
 
-    public function onPostBootstrap($event) {
-
-        $request = new OntoWiki_Request();
+    public function onPostBootstrap($event)
+    {
+        $request           = new OntoWiki_Request();
         $requestedLanguage = $request->getParam("lang");
-        $selectedLanguage = "";
+        $selectedLanguage  = "";
 
         if (!empty($requestedLanguage)) {
-            $selectedLanguage = $requestedLanguage;
+            $selectedLanguage             = $requestedLanguage;
             $_SESSION['selectedLanguage'] = $requestedLanguage;
-        } else if (!empty($_SESSION['selectedLanguage'])) {
-            $selectedLanguage = $_SESSION['selectedLanguage'];
+        } else {
+            if (!empty($_SESSION['selectedLanguage'])) {
+                $selectedLanguage = $_SESSION['selectedLanguage'];
+            }
         }
 
         //writing the selected Language back into configuration

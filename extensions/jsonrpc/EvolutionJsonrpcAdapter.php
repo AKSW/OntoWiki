@@ -3,14 +3,14 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 $ep = OntoWiki::getInstance()->extensionManager->getExtensionPath();
-require_once $ep.'patternmanager/classes/PatternEngine.php';
-require_once $ep.'patternmanager/classes/ComplexPattern.php';
-require_once $ep.'patternmanager/classes/BasicPattern.php';
-require_once $ep.'patternmanager/classes/PatternFunction.php';
+require_once $ep . 'patternmanager/classes/PatternEngine.php';
+require_once $ep . 'patternmanager/classes/ComplexPattern.php';
+require_once $ep . 'patternmanager/classes/BasicPattern.php';
+require_once $ep . 'patternmanager/classes/PatternFunction.php';
 unset($ep);
 
 /**
@@ -22,30 +22,34 @@ unset($ep);
  * @license     http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author      Marvin Frommhold
  */
-class evolutionJsonrpcAdapter {
+class EvolutionJsonrpcAdapter
+{
 
-    private $owApp = null;
-    private $engine = null;
+    private $_owApp = null;
+    private $_engine = null;
 
-    public function __construct() {
+    public function __construct()
+    {
+        $this->_owApp = OntoWiki::getInstance();
 
-        $this->owApp = OntoWiki::getInstance();
+        $patternManagerConfig = $this->_owApp->componentManager->getComponentPrivateConfig("patternmanager");
 
-        $patternManagerConfig = $this->owApp->componentManager->getComponentPrivateConfig("patternmanager");
-
-        $this->engine = new PatternEngine();
-        $this->engine->setConfig($patternManagerConfig);
-        $this->engine->setBackend($this->owApp->erfurt);
+        $this->_engine = new PatternEngine();
+        $this->_engine->setConfig($patternManagerConfig);
+        $this->_engine->setBackend($this->_owApp->erfurt);
     }
 
     /**
      * @desc Executes the given Evolution pattern (in JSON format).
-     * @param params		the POST data parameters (structure: [{"pattern":"foo","graph":"foo","variables":{"var1":"foo","var2":"foo"}}], variables is not mandatory)
+     *
+     * @param params the POST data parameters (structure: [{"pattern":"foo","graph":"foo",
+     *        "variables":{"var1":"foo","var2":"foo"}}], variables is not mandatory)
+     *
      * @return string
      * @throws Exception
      */
-    public function execPattern($params) {
-
+    public function execPattern($params)
+    {
         // get pattern
         if (!array_key_exists("pattern", $params)) {
 
@@ -68,7 +72,7 @@ class evolutionJsonrpcAdapter {
         }
 
         // set graph
-        $this->engine->setDefaultGraph($graph);
+        $this->_engine->setDefaultGraph($graph);
 
         // create pattern
         $complexPattern = new ComplexPattern();
@@ -80,13 +84,10 @@ class evolutionJsonrpcAdapter {
 
             case JSON_ERROR_DEPTH:
                 throw new Erfurt_Exception("JSON error - maximum stack depth exceeded.");
-                break;
             case JSON_ERROR_CTRL_CHAR:
                 throw new Erfurt_Exception("JSON error - unexpected control character found.");
-                break;
             case JSON_ERROR_SYNTAX:
                 throw new Erfurt_Exception("JSON error - syntax error, malformed JSON.");
-                break;
             case JSON_ERROR_NONE:
                 break;
         }
@@ -100,11 +101,8 @@ class evolutionJsonrpcAdapter {
         }
 
         // process the pattern
-        $this->engine->processPattern($complexPattern);
+        $this->_engine->processPattern($complexPattern);
 
         return true;
     }
-
 }
-?>
-

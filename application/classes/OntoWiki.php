@@ -3,23 +3,22 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki main class.
  *
  * Serves as a central registry for storing objects needed througout the application.
- * Prior to 0.9.5, this class was called OntoWiki and was also partly
+ * Prior to 0.9.5, this class was called OntoWiki_Application and was also partly
  * responsible for application bootstrapping. As of 0.9.5, bootstrapping is handled
- * by the Bootstrap class. OntoWiki_Application is aliased to OntoWiki, whereby it is 
- * still usable, but deprecated and will certainly disappea in the next release.
+ * by the Bootstrap class.
  *
- * @category OntoWiki
- * @package OntoWiki_Classes
+ * @category  OntoWiki
+ * @package   OntoWiki_Classes
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Norman Heino <norman.heino@gmail.com>
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki
 {
@@ -31,6 +30,7 @@ class OntoWiki
 
     /**
      * The bootstrap object used during bootstrap.
+     *
      * @var Zend_Application_Bootstrap_Bootstrap
      */
     protected $_bootstrap = null;
@@ -41,24 +41,27 @@ class OntoWiki
      */
     protected $_customLogs = array();
 
-    /** 
+    /**
      * Array of properties
-     * @var array 
+     *
+     * @var array
      */
     protected $_properties = array();
 
     /**
      * Variables to be autoloaded from the session
+     *
      * @var array
      */
     protected $_sessionVars = array();
 
-    /** 
+    /**
      * Singleton instance
-     * @var OntoWiki 
+     *
+     * @var OntoWiki
      */
     protected static $_instance = null;
-    
+
     /**
      * OntoWiki_Navigation instance
      */
@@ -86,6 +89,7 @@ class OntoWiki
      * Returns a property value
      *
      * @param string $propertyName
+     *
      * @return mixed
      * @since 0.9.5
      */
@@ -100,7 +104,7 @@ class OntoWiki
 
         // retrieve bootstrap resource
         $bootstrap = $this->getBootstrap();
-        if ($bootstrap and $bootstrap->hasResource($propertyName)) {
+        if ($bootstrap && $bootstrap->hasResource($propertyName)) {
             return $bootstrap->getResource($propertyName);
         }
 
@@ -114,7 +118,8 @@ class OntoWiki
      * Sets a property
      *
      * @param string $propertyName
-     * @param mixed $propertyValue
+     * @param mixed  $propertyValue
+     *
      * @since 0.9.5
      */
     public function __set($propertyName, $propertyValue)
@@ -132,6 +137,7 @@ class OntoWiki
      * Returns whether a property is set
      *
      * @param string $propertyName
+     *
      * @return boolean
      * @since 0.9.5
      */
@@ -144,6 +150,7 @@ class OntoWiki
      * Unsets a property
      *
      * @param string $propertyName
+     *
      * @since 0.9.5
      */
     public function __unset($propertyName)
@@ -165,6 +172,7 @@ class OntoWiki
      * Appends a message to the message stack
      *
      * @param OntoWiki_Message $message The message to be added.
+     *
      * @return OntoWiki
      */
     public function appendMessage(OntoWiki_Message $message)
@@ -204,9 +212,9 @@ class OntoWiki
 
         return $this->_bootstrap;
     }
-    
+
     /**
-     * 
+     *
      */
     public function setBootstrap($bootstrap)
     {
@@ -222,7 +230,7 @@ class OntoWiki
     public function getConfig()
     {
         $bootstrap = $this->getBootstrap();
-        if ($bootstrap and $bootstrap->hasResource('Config')) {
+        if ($bootstrap && $bootstrap->hasResource('Config')) {
             return $this->getBootstrap()->getResource('Config');
         }
     }
@@ -243,10 +251,11 @@ class OntoWiki
 
     /**
      * Returns a custom logger object.
-     * If the $identifier parameter is missing or is equal to the default log 
+     * If the $identifier parameter is missing or is equal to the default log
      * identifier, the default logger object is returned.
      *
      * @param string $identifier (optional)
+     *
      * @return Zend_Log
      */
     public function getCustomLogger($identifier = self::DEFAULT_LOG_IDENTIFIER)
@@ -276,6 +285,7 @@ class OntoWiki
             $logger->addFilter($levelFilter);
 
             $this->_customLogs[$identifier] = $logger;
+
             return $logger;
         }
 
@@ -290,6 +300,7 @@ class OntoWiki
      * Returns the current message stack and empties it.
      *
      * @param boolean $clearMessages Clears the message stack after retrieval
+     *
      * @return array
      */
     public function getMessages($clearMessages = false)
@@ -365,6 +376,7 @@ class OntoWiki
      * with the session.
      *
      * @since 0.9.5
+     *
      * @param array $sessionVars
      */
     public function setSessionVars(array $sessionVars)
@@ -377,6 +389,7 @@ class OntoWiki
      * Prepends a message to the message stack
      *
      * @param OntoWiki_Message $message The message to be added.
+     *
      * @return OntoWiki
      */
     public function prependMessage(OntoWiki_Message $message)
@@ -392,22 +405,22 @@ class OntoWiki
     }
 
     /**
-     * 
+     *
      */
     public static function reset()
     {
         self::$_instance = null;
     }
-    
+
     /**
      *
      */
-    public function getNavigation () 
+    public function getNavigation()
     {
         if (null == $this->_navigation) {
-            $this->_navigation = new OntoWiki_Navigation ();
+            $this->_navigation = new OntoWiki_Navigation();
         }
-        
+
         return $this->_navigation;
     }
 }

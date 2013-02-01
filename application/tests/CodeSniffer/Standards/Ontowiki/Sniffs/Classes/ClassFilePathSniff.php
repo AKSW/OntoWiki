@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -41,7 +41,9 @@ class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Snif
     {
         return array(T_CLASS);
 
-    }//end register()
+    }
+
+    //end register()
 
 
     /**
@@ -55,58 +57,61 @@ class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Snif
      */
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
-        $tokens   = $phpcsFile->getTokens();
-        $decName  = $phpcsFile->findNext(T_STRING, $stackPtr);
-        $fullPath = $phpcsFile->getFilename();
+        $tokens       = $phpcsFile->getTokens();
+        $decName      = $phpcsFile->findNext(T_STRING, $stackPtr);
+        $fullPath     = $phpcsFile->getFilename();
         $longFileName = basename($fullPath);
-        $fileName = substr($longFileName, 0, strrpos($longFileName, '.'));
+        $fileName     = substr($longFileName, 0, strrpos($longFileName, '.'));
 
         // if the file is under the application/classes folder the class has the path in the name
         // application/classes/Ontowiki/Utils/TestClass.php -> Classname=Ontowiki_Utils_TestClass
-        if (stristr($fullPath, 'application/classes') !== FALSE) {
+        if (stristr($fullPath, 'application/classes') !== false) {
             $partedPath = substr($fullPath, strrpos($fullPath, 'classes'), strlen($fullPath));
             $partedPath = substr($partedPath, 0, strrpos($partedPath, '.'));
 
             $classNameArray = explode("_", $tokens[$decName]['content']);
-            $filepathArray = explode("/", $partedPath);
+            $filepathArray  = explode("/", $partedPath);
             if (1 == count($filepathArray)) {
                 $filepathArray = explode("\\", $partedPath);
             }
 
-            $notFound = TRUE;
+            $notFound = true;
             foreach ($classNameArray as $index => $classNamePart) {
                 if ($classNamePart != $filepathArray[$index + 1]) {
-                    $notFound = FALSE;
+                    $notFound = false;
                     break;
                 }
             }
             array_shift($filepathArray);
-            if (FALSE === $notFound) {
+            if (false === $notFound) {
                 $error = '%s name doesn\'t match filepath; expected "%s %s"';
                 $data  = array(
-                          ucfirst($tokens[$stackPtr]['content']),
-                          $tokens[$stackPtr]['content'],
-                          implode('_', $filepathArray),
-                         );
+                    ucfirst($tokens[$stackPtr]['content']),
+                    $tokens[$stackPtr]['content'],
+                    implode('_', $filepathArray),
+                );
                 $phpcsFile->addError($error, $stackPtr, 'NoMatch', $data);
             }
         }
-    //    else
-    //    {
-    //        if ($tokens[$decName]['content'] !== $fileName)
-    //        {
-    //            $error = '%s name doesn\'t match filename; expected "%s %s"';
-    //            $data  = array(
-    //                ucfirst($tokens[$stackPtr]['content']),
-    //                $tokens[$stackPtr]['content'],
-    //                $fileName,
-    //                );
-    //            $phpcsFile->addError($error, $stackPtr, 'NoMatch', $data);
-    //        }
-    //    }
-    }//end process()
+        //    else
+        //    {
+        //        if ($tokens[$decName]['content'] !== $fileName)
+        //        {
+        //            $error = '%s name doesn\'t match filename; expected "%s %s"';
+        //            $data  = array(
+        //                ucfirst($tokens[$stackPtr]['content']),
+        //                $tokens[$stackPtr]['content'],
+        //                $fileName,
+        //                );
+        //            $phpcsFile->addError($error, $stackPtr, 'NoMatch', $data);
+        //        }
+        //    }
+    }
+    //end process()
 
 
-}//end class
+}
+
+//end class
 
 ?>

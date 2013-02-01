@@ -3,75 +3,82 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * will be used by OntoWiki to scan the extension folder and load the needed extension
  *
- * @category OntoWiki
- * @package OntoWiki_Classes_Extension
+ * @category  OntoWiki
+ * @package   OntoWiki_Classes_Extension
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Jonas Brekle <jonas.brekle@gmail.com>
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Jonas Brekle <jonas.brekle@gmail.com>
  */
 class OntoWiki_Extension_Manager
 {
     const EXTENSION_DEFAULT_DOAP_FILE = 'doap.n3';
 
-    const COMPONENT_HELPER_SUFFIX = 'Helper';
+    const COMPONENT_HELPER_SUFFIX      = 'Helper';
     const COMPONENT_HELPER_FILE_SUFFIX = 'Helper.php';
 
     const COMPONENT_CLASS_POSTFIX = 'Controller';
-    const COMPONENT_FILE_POSTFIX = 'Controller.php';
+    const COMPONENT_FILE_POSTFIX  = 'Controller.php';
 
     const PLUGIN_CLASS_POSTFIX = 'Plugin';
-    const PLUGIN_FILE_POSTFIX = 'Plugin.php';
+    const PLUGIN_FILE_POSTFIX  = 'Plugin.php';
 
     const WRAPPER_CLASS_POSTFIX = 'Wrapper';
-    const WRAPPER_FILE_POSTFIX = 'Wrapper.php';
+    const WRAPPER_FILE_POSTFIX  = 'Wrapper.php';
 
     const EVENT_NS = 'http://ns.ontowiki.net/SysOnt/Events/';
 
     /**
      * location of the cache for extension configs
+     *
      * @var string
      */
     protected $_cachePath;
 
     /**
      * Array (extension name -> config)
+     *
      * @var array
      */
     protected $_extensionRegistry = array();
 
     /**
      * The path scanned for components
+     *
      * @var string
      */
     protected $_extensionPath = null;
 
     /**
      * The translation object.
+     *
      * @var Zend_Translate
      */
     protected $_translate = null;
 
     /**
      * Base URL for hyperlinks.
+     *
      * @var string
      */
     protected $_componentUrlBase = '';
 
     /**
      * Component helpers to be initialized
+     *
      * @var array
      */
     protected $_helpers = array();
 
     /**
      * stores extensions configs
-     * @var array 
+     *
+     * @var array
      */
     protected $_componentRegistry = array();
 
@@ -85,43 +92,50 @@ class OntoWiki_Extension_Manager
 
     /**
      * Denotes whether component helpers have been called.
+     *
      * @var boolean
      */
     protected $_helpersCalled = false;
 
     /**
-    * Prefix to distinguish component controller directories
-    * from other controller directories.
-    * @var string
-    */
+     * Prefix to distinguish component controller directories
+     * from other controller directories.
+     *
+     * @var string
+     */
     private $_componentPrefix = '_component_';
 
     /**
      * Keys in the component configuration file storing path names that
      * should be normalized.
+     *
      * @var array
      */
-    private $_pathKeys = array(
-        'templates',
-        'languages',
-        'helpers'
-    );
+    private $_pathKeys
+        = array(
+            'templates',
+            'languages',
+            'helpers'
+        );
 
     /**
      * Name of the private section in the component config file
+     *
      * @var string
      */
     private $_privateSection = 'private';
 
     /**
      * a reference to the erfurt event dispatcher
-     * @var Erfurt_Event_Dispatcher 
+     *
+     * @var Erfurt_Event_Dispatcher
      */
     protected $_eventDispatcher = null;
 
     /**
      * folders in the extensions directory that are not extensions
-     * @var array 
+     *
+     * @var array
      */
     public $reservedNames = array('themes', 'translations');
 
@@ -179,6 +193,7 @@ class OntoWiki_Extension_Manager
             return $this->_extensionRegistry[$name];
         }
     }
+
     /**
      * Returns registered extensions.
      *
@@ -189,7 +204,7 @@ class OntoWiki_Extension_Manager
         return $this->_extensionRegistry;
     }
 
-     /**
+    /**
      * Returns registered components.
      *
      * @return array
@@ -210,11 +225,11 @@ class OntoWiki_Extension_Manager
     public function getComponentHelper($componentName)
     {
         if (!$this->isExtensionRegistered($componentName)) {
-            throw new OntoWiki_Component_Exception('Component with key "'.$componentName.'" not registered');
+            throw new OntoWiki_Component_Exception('Component with key "' . $componentName . '" not registered');
         }
 
         if (!isset($this->_helpers[$componentName]['instance'])) {
-            throw new OntoWiki_Component_Exception('no helper loaded for component "'.$componentName.'"');
+            throw new OntoWiki_Component_Exception('no helper loaded for component "' . $componentName . '"');
         }
 
         return $this->_helpers[$componentName]['instance'];
@@ -266,6 +281,7 @@ class OntoWiki_Extension_Manager
      *
      *
      * @param  string $componentName
+     *
      * @return boolean
      */
     public function isExtensionRegistered($exName)
@@ -275,10 +291,11 @@ class OntoWiki_Extension_Manager
 
     /**
      * Checks whether a specific component is registered.
-     * 
+     *
      * @deprecated
      *
      * @param  string $componentName
+     *
      * @return boolean
      */
     public function isComponentRegistered($componentName)
@@ -291,22 +308,23 @@ class OntoWiki_Extension_Manager
      * in its configuration file.
      *
      * @param  string $componentName
+     *
      * @return boolean
      */
     public function isExtensionActive($componentName)
     {
-        return array_key_exists($componentName, $this->_extensionRegistry) &&
-            $this->_extensionRegistry[$componentName]->enabled;
+        return array_key_exists($componentName, $this->_extensionRegistry)
+            && $this->_extensionRegistry[$componentName]->enabled;
     }
 
     /**
-    * Returns a prefix that can be used to distinguish components from
-    * other extensions, i.e. modules or plugins.
-    *
-    * @deprecated
-    *
-    * @return string
-    */
+     * Returns a prefix that can be used to distinguish components from
+     * other extensions, i.e. modules or plugins.
+     *
+     * @deprecated
+     *
+     * @return string
+     */
     public function getComponentPrefix()
     {
         return $this->_componentPrefix;
@@ -316,6 +334,7 @@ class OntoWiki_Extension_Manager
      * Returns the helper path for a given component.
      *
      * @param  string $componentName
+     *
      * @return string
      */
     public function getComponentHelperPath($componentName)
@@ -326,9 +345,9 @@ class OntoWiki_Extension_Manager
 
         if (isset($this->_extensionRegistry[$componentName]->helpers)) {
             $path = $this->_extensionPath
-                  . $componentName
-                  . DIRECTORY_SEPARATOR
-                  . $this->_extensionRegistry[$componentName]->helpers;
+                . $componentName
+                . DIRECTORY_SEPARATOR
+                . $this->_extensionRegistry[$componentName]->helpers;
 
             return $path;
         }
@@ -338,6 +357,7 @@ class OntoWiki_Extension_Manager
      * Returns the template path for a given component.
      *
      * @param  string $componentName
+     *
      * @return string
      */
     public function getComponentTemplatePath($componentName)
@@ -348,22 +368,23 @@ class OntoWiki_Extension_Manager
 
         if (isset($this->_extensionRegistry[$componentName]->templates)) {
             $path = $this->_extensionPath
-                  . $componentName
-                  . DIRECTORY_SEPARATOR
-                  . $this->_extensionRegistry[$componentName]->templates;
+                . $componentName
+                . DIRECTORY_SEPARATOR
+                . $this->_extensionRegistry[$componentName]->templates;
 
             return $path;
         }
 
         return $this->_extensionPath
-                  . $componentName
-                  . DIRECTORY_SEPARATOR;
+            . $componentName
+            . DIRECTORY_SEPARATOR;
     }
 
     /**
      * Returns the component's private configuration section
      *
      * @param  string $extensionName
+     *
      * @return array|null
      */
     public function getPrivateConfig($extensionName)
@@ -407,6 +428,7 @@ class OntoWiki_Extension_Manager
     /**
      * Event Handler, called by event dispatcher after controller and action is determined
      * initializes the component helpers, so they can react
+     *
      * @param Erfurt_Event $event
      */
     public function onRouteShutdown(Erfurt_Event $event)
@@ -430,8 +452,10 @@ class OntoWiki_Extension_Manager
 
     /**
      * load helpers for a component
+     *
      * @param $componentName
      * @param $config
+     *
      * @return mixed
      * @throws OntoWiki_Component_Exception
      */
@@ -450,7 +474,8 @@ class OntoWiki_Extension_Manager
             $helperInstance = new $helperSpec['class']($config);
         } else {
             throw new OntoWiki_Component_Exception(
-                "required helper class '".$helperSpec['class']."' could not be found for component '$componentName'."
+                "required helper class '" . $helperSpec['class'] .
+                "' could not be found for component '$componentName'."
             );
         }
 
@@ -478,7 +503,9 @@ class OntoWiki_Extension_Manager
      * 0 - local ini modified after $time
      * 1 - default doap file modified after $time
      * 2 - both modified after $time
+     *
      * @param $time int unix timestamp
+     *
      * @return array
      */
     private function _getModifiedConfigsSince($time)
@@ -488,8 +515,8 @@ class OntoWiki_Extension_Manager
         foreach ($dir as $file) {
             if (!$file->isDot() && $file->isDir() && !in_array($file->getFileName(), $this->reservedNames)) {
                 //for all folders in <ow>/extensions/
-                $extensionName = $file->getFileName();
-                $modifiedLocalConfig = @filemtime($this->_extensionPath . $extensionName.'.ini');
+                $extensionName       = $file->getFileName();
+                $modifiedLocalConfig = @filemtime($this->_extensionPath . $extensionName . '.ini');
                 if ($modifiedLocalConfig && $modifiedLocalConfig > $time) { //check for modification on the local config
                     $mod[$extensionName] = 0;
                 }
@@ -505,11 +532,13 @@ class OntoWiki_Extension_Manager
                 }
             }
         }
+
         return $mod;
     }
 
     /**
      * get the location of the cache
+     *
      * @return string
      */
     public function getCachePath()
@@ -519,6 +548,7 @@ class OntoWiki_Extension_Manager
 
     /**
      * set the cache location
+     *
      * @param $path string
      */
     protected function setCachePath($path)
@@ -531,9 +561,11 @@ class OntoWiki_Extension_Manager
      */
     public function clearCache()
     {
-        if(file_exists($this->getCachePath()))
+        if (file_exists($this->getCachePath())) {
             unlink($this->getCachePath());
+        }
     }
+
     /**
      * Scans the component path for conforming components and
      * announces their paths to appropriate components.
@@ -550,9 +582,9 @@ class OntoWiki_Extension_Manager
         }
         if (null === $config) {
             clearstatcache();
-            $cachePath = $this->getCachePath();
+            $cachePath     = $this->getCachePath();
             $cacheCreation = @filemtime($cachePath);
-            $cacheExists = file_exists($cachePath);
+            $cacheExists   = file_exists($cachePath);
             if ($cacheExists) {
                 //load from cache
                 $config = json_decode(file_get_contents($cachePath), true);
@@ -561,7 +593,7 @@ class OntoWiki_Extension_Manager
                 }
             } else {
                 $config = array();
-                $dir = new DirectoryIterator($this->_extensionPath);
+                $dir    = new DirectoryIterator($this->_extensionPath);
                 foreach ($dir as $file) {
                     if (!$file->isDot() && $file->isDir() && !in_array($file->getFileName(), $this->reservedNames)) {
                         $extensionName = $file->getFileName();
@@ -604,7 +636,7 @@ class OntoWiki_Extension_Manager
         $view = OntoWiki::getInstance()->view;
         //register the discovered extensions within ontowiki
         foreach ($config as $extensionName => $extensionConfig) {
-            $currentExtensionPath = $this->_extensionPath .$extensionName. DIRECTORY_SEPARATOR;
+            $currentExtensionPath = $this->_extensionPath . $extensionName . DIRECTORY_SEPARATOR;
 
             if (!$extensionConfig->enabled) {
                 continue;
@@ -614,19 +646,19 @@ class OntoWiki_Extension_Manager
             $view->addScriptPath($currentExtensionPath);
             if (isset($extensionConfig->templates)) {
                 //or in a folder specified in  config
-                $view->addScriptPath($currentExtensionPath.$extensionConfig->templates);
+                $view->addScriptPath($currentExtensionPath . $extensionConfig->templates);
             }
 
             //check for other helpers
             if (isset($extensionConfig->helpers)) {
                 $view->addHelperPath(
-                    $currentExtensionPath.$extensionConfig->helpers,
-                    ucfirst($extensionName) .'_View_Helper_'
+                    $currentExtensionPath . $extensionConfig->helpers,
+                    ucfirst($extensionName) . '_View_Helper_'
                 );
             }
 
             //check for component class (only one per extension for now)
-            if (file_exists($currentExtensionPath.ucfirst($extensionName).self::COMPONENT_FILE_POSTFIX)) {
+            if (file_exists($currentExtensionPath . ucfirst($extensionName) . self::COMPONENT_FILE_POSTFIX)) {
                 $this->_addComponent($extensionName, $currentExtensionPath, $extensionConfig);
             }
 
@@ -637,27 +669,19 @@ class OntoWiki_Extension_Manager
                 foreach ($extensionDir as $extensionDirFile) {
                     $filename = $extensionDirFile->getFilename();
 
-                    if ( //ends with Module postfix
-                        substr(
-                            $filename,
-                            -strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)
-                        ) === OntoWiki_Module_Registry::MODULE_FILE_POSTFIX
-                    ) {
+                    $subStr = substr($filename, -strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX));
+                    if ($subStr === OntoWiki_Module_Registry::MODULE_FILE_POSTFIX) {
                         $this->_addModule($extensionName, $filename, $currentExtensionPath, $extensionConfig);
-                    } else if (
-                        substr(
-                            $filename,
-                            -strlen(self::PLUGIN_FILE_POSTFIX)
-                        ) === self::PLUGIN_FILE_POSTFIX
-                    ) {
-                        $this->_addPlugin($filename, $currentExtensionPath, $extensionConfig);
-                    } elseif (
-                        substr(
-                            $filename,
-                            -strlen(self::WRAPPER_FILE_POSTFIX)
-                        ) === self::WRAPPER_FILE_POSTFIX
-                    ) {
-                        $this->_addWrapper($filename, $currentExtensionPath, $extensionConfig);
+                    } else {
+                        $subStrB = substr($filename, -strlen(self::PLUGIN_FILE_POSTFIX));
+                        if ($subStrB === self::PLUGIN_FILE_POSTFIX) {
+                            $this->_addPlugin($filename, $currentExtensionPath, $extensionConfig);
+                        } else {
+                            $subStrC = substr($filename, -strlen(self::WRAPPER_FILE_POSTFIX));
+                            if ($subStrC === self::WRAPPER_FILE_POSTFIX) {
+                                $this->_addWrapper($filename, $currentExtensionPath, $extensionConfig);
+                            }
+                        }
                     }
                 }
             }
@@ -672,7 +696,7 @@ class OntoWiki_Extension_Manager
      *
      * @param string $componentName the component's (folder) name
      * @param string $componentPath the path to the component folder
-     * @param array $config the config of the components extension
+     * @param array  $config        the config of the components extension
      */
     private function _addComponent($componentName, $componentPath, $config)
     {
@@ -681,21 +705,25 @@ class OntoWiki_Extension_Manager
         $helperPathName  = $componentPath . ucfirst($componentName) . self::COMPONENT_HELPER_FILE_SUFFIX;
         if (is_readable($helperPathName)) {
             $helperSpec = array(
-                'path'   => $helperPathName,
-                'class'  => $helperClassName
+                'path'  => $helperPathName,
+                'class' => $helperClassName
             );
 
             // store events
             $events = array();
             if (isset($config->helperEvents)) {
-                 $events = $config->helperEvents;
-            } else if (isset($config->helperEvent)) {
-                 $events = $config->helperEvent;
+                $events = $config->helperEvents;
+            } else {
+                if (isset($config->helperEvent)) {
+                    $events = $config->helperEvent;
+                }
             }
             if ($events instanceof Zend_Config) {
                 $events = $events->toArray();
-            } else if (!is_array($events)) {
-                $events =  array($events);
+            } else {
+                if (!is_array($events)) {
+                    $events = array($events);
+                }
             }
             $helperSpec['events'] = $events;
 
@@ -720,11 +748,11 @@ class OntoWiki_Extension_Manager
             OntoWiki::getInstance()->getNavigation()->register(
                 $componentName,
                 array(
-                    'controller' => $componentName,
-                    'action'     => $action,
-                    'name'       => $config->name,
-                    'priority'   => $position,
-                    'active'     => false
+                     'controller' => $componentName,
+                     'action'     => $action,
+                     'name'       => $config->name,
+                     'priority'   => $position,
+                     'active'     => false
                 )
             );
         }
@@ -734,9 +762,9 @@ class OntoWiki_Extension_Manager
 
     /**
      *
-     * @param $extensionName
-     * @param $moduleFilename
-     * @param $modulePath
+     * @param      $extensionName
+     * @param      $moduleFilename
+     * @param      $modulePath
      * @param null $config
      */
     protected function _addModule($extensionName, $moduleFilename, $modulePath, $config = null)
@@ -750,7 +778,7 @@ class OntoWiki_Extension_Manager
                 substr(
                     $moduleFilename,
                     0,
-                    strlen($moduleFilename)-strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)
+                    strlen($moduleFilename) - strlen(OntoWiki_Module_Registry::MODULE_FILE_POSTFIX)
                 )
             );
             if (isset($config->modules->{$moduleName})) {
@@ -763,12 +791,16 @@ class OntoWiki_Extension_Manager
         //read context(s)
         if (isset($config->context) && is_string($config->context)) {
             $contexts = array($config->context);
-        } else if (isset($config->context) && is_object($config->context)) {
-            $contexts = $config->context->toArray();
-        } else if (isset($config->contexts) && is_object($config->contexts)) {
-            $contexts = $config->contexts->toArray();
         } else {
-            $contexts = array(OntoWiki_Module_Registry::DEFAULT_CONTEXT);
+            if (isset($config->context) && is_object($config->context)) {
+                $contexts = $config->context->toArray();
+            } else {
+                if (isset($config->contexts) && is_object($config->contexts)) {
+                    $contexts = $config->contexts->toArray();
+                } else {
+                    $contexts = array(OntoWiki_Module_Registry::DEFAULT_CONTEXT);
+                }
+            }
         }
 
         // register for context(s)
@@ -805,7 +837,7 @@ class OntoWiki_Extension_Manager
      */
     private function _addPlugin($filename, $pluginPath, $config)
     {
-        $owApp = OntoWiki::getInstance();
+        $owApp         = OntoWiki::getInstance();
         $pluginManager = $owApp->erfurt->getPluginManager(false);
         $pluginManager->addPluginExternally(
             strtolower(
@@ -825,11 +857,14 @@ class OntoWiki_Extension_Manager
 
     /**
      * interpret a doap triple-set to a config array
+     *
      * @static
+     *
      * @param $triples
      * @param $name string name of the extension
      * @param $base string base URI from parsing
      * @param $path string path of the original file (just for error reporting)
+     *
      * @return array
      * @throws Exception
      */
@@ -838,39 +873,39 @@ class OntoWiki_Extension_Manager
         $memModel = new Erfurt_Rdf_MemoryModel($triples);
 
         $owconfigNS = self::$_owconfigNS;
-        $doapNS = 'http://usefulinc.com/ns/doap#';
-        $mapping = array(
-            $owconfigNS.'enabled' => 'enabled',
-            $owconfigNS.'helperEvent' => 'helperEvents',
-            $owconfigNS.'templates' => 'templates',
-            $owconfigNS.'helpers' => 'helpers',
-            $owconfigNS.'languages' => 'languages',
-            $owconfigNS.'defaultAction' => 'action',
-            $owconfigNS.'class' => 'classes',
-            $doapNS.'name' => 'name',
-            $doapNS.'description' => 'description',
-            $doapNS.'maintainer' => 'authorUrl',
-            $owconfigNS.'authorLabel' => 'author',
-            EF_RDFS_LABEL => 'title'
+        $doapNS     = 'http://usefulinc.com/ns/doap#';
+        $mapping    = array(
+            $owconfigNS . 'enabled'       => 'enabled',
+            $owconfigNS . 'helperEvent'   => 'helperEvents',
+            $owconfigNS . 'templates'     => 'templates',
+            $owconfigNS . 'helpers'       => 'helpers',
+            $owconfigNS . 'languages'     => 'languages',
+            $owconfigNS . 'defaultAction' => 'action',
+            $owconfigNS . 'class'         => 'classes',
+            $doapNS . 'name'              => 'name',
+            $doapNS . 'description'       => 'description',
+            $doapNS . 'maintainer'        => 'authorUrl',
+            $owconfigNS . 'authorLabel'   => 'author',
+            EF_RDFS_LABEL                 => 'title'
         );
 
         $scp = $owconfigNS . 'config'; //sub config property
-        $mp = $owconfigNS . 'hasModule'; //module property
+        $mp  = $owconfigNS . 'hasModule'; //module property
 
         $extensionUri = $memModel->getValue($base, 'http://xmlns.com/foaf/0.1/primaryTopic');
 
         if ($extensionUri == null) {
             throw new Exception(
-                'DOAP config for extension '.$name.
-                ': missing triple (@base, foaf:primaryTopic, <extensionUri>). '.
+                'DOAP config for extension ' . $name .
+                ': missing triple (@base, foaf:primaryTopic, <extensionUri>). ' .
                 'Base was: "' . $base . '". In doap file: "' . $path . '".'
             );
         }
 
-        $privateNS = $memModel->getValue($extensionUri, $owconfigNS.'privateNamespace');
+        $privateNS = $memModel->getValue($extensionUri, $owconfigNS . 'privateNamespace');
 
-        $modules = array();
-        $config = array('default'=>array(), 'private'=>array(), 'events'=>array(), 'modules'=>array());
+        $modules    = array();
+        $config     = array('default' => array(), 'private' => array(), 'events' => array(), 'modules' => array());
         $subconfigs = array();
         foreach ($memModel->getPO($extensionUri) as $key => $values) {
             //handle subconfigs
@@ -879,27 +914,33 @@ class OntoWiki_Extension_Manager
                     $subconfigs[] = $val['value'];
                 }
                 continue;
-            } else if ($key == $mp) {
-                //handle modules
-                foreach ($values as $val) {
-                    $modules[] = $val['value'];
-                }
-                continue;
-            } else if ($key == $owconfigNS.'pluginEvent') {
-                //handle events that belong to plugins
-                foreach ($values as $value) {
-                    $config['events'][] = $value['value'];
-                }
-                continue;
-            } else if (isset($mapping[$key])) {
-                $mappedKey = $mapping[$key];
-                $section = 'default';
             } else {
-                $mappedKey = self::getPrivateKey($key, $privateNS);
-                if ($mappedKey == null) {
-                    continue; //skip irregular keys
+                if ($key == $mp) {
+                    //handle modules
+                    foreach ($values as $val) {
+                        $modules[] = $val['value'];
+                    }
+                    continue;
+                } else {
+                    if ($key == $owconfigNS . 'pluginEvent') {
+                        //handle events that belong to plugins
+                        foreach ($values as $value) {
+                            $config['events'][] = $value['value'];
+                        }
+                        continue;
+                    } else {
+                        if (isset($mapping[$key])) {
+                            $mappedKey = $mapping[$key];
+                            $section   = 'default';
+                        } else {
+                            $mappedKey = self::getPrivateKey($key, $privateNS);
+                            if ($mappedKey == null) {
+                                continue; //skip irregular keys
+                            }
+                            $section = 'private';
+                        }
+                    }
                 }
-                $section = 'private';
             }
 
             foreach ($values as $value) {
@@ -916,7 +957,7 @@ class OntoWiki_Extension_Manager
         }
 
         foreach ($modules as $moduleUri) {
-            $name = strtolower(self::getPrivateKey($moduleUri, $privateNS));
+            $name                     = strtolower(self::getPrivateKey($moduleUri, $privateNS));
             $config['modules'][$name] = array();
             foreach ($memModel->getPO($moduleUri) as $key => $values) {
                 $mappedKey = self::getPrivateKey($key, $owconfigNS);
@@ -950,101 +991,119 @@ class OntoWiki_Extension_Manager
 
     /**
      * load the doap.n3 file of a extension and transform it into a config array
+     *
      * @param string $path
      * @param string $name
-     * @return array config array 
+     *
+     * @return array config array
      */
     public static function loadDoapN3($path, $name)
     {
-        $parser =  Erfurt_Syntax_RdfParser::rdfParserWithFormat('n3');
+        $parser  = Erfurt_Syntax_RdfParser::rdfParserWithFormat('n3');
         $triples = $parser->parse($path, Erfurt_Syntax_RdfParser::LOCATOR_FILE);
-        $base = $parser->getBaseUri();
-        $a = self::triples2configArray($triples, $name, $base, $path);
+        $base    = $parser->getBaseUri();
+        $a       = self::triples2configArray($triples, $name, $base, $path);
+
         return $a;
     }
 
     /**
      * convert a php-rdf value to a php value
      * respects booleans especially (literals and URIs are trivial)
+     *
      * @static
+     *
      * @param $value
+     *
      * @return bool
      */
     private static function getValue($value, Erfurt_Rdf_MemoryModel $memModel = null)
     {
-        if ($value['type'] == 'literal' &&
-            isset($value['datatype']) &&
-            $value['datatype'] == 'http://www.w3.org/2001/XMLSchema#boolean'
+        if ($value['type'] == 'literal'
+            && isset($value['datatype'])
+            && $value['datatype'] == 'http://www.w3.org/2001/XMLSchema#boolean'
         ) {
             $value = $value['value'] == 'true';
-        } else if ($memModel !== null && ($value['type'] == 'uri' || $value['type'] == 'bnode')) {
-            // Handle collections and containers (rdf:Bag, rdf:Seq) not rdf:Alt because of a bug
-            $type = $memModel->getValue($value['value'], EF_RDF_NS.'type');
-            if ($type == EF_RDF_NS.'Bag' || $type == EF_RDF_NS.'Seq') {
-                // This is a container, convert it to an array
-                $properties = $memModel->getPO($value['value']);
-                $value = array();
-                foreach ($properties as $property => $entry) {
-                    if (strstr($property, EF_RDF_NS.'_')) {
-                        $value[] = $entry[0]['value'];
-                    }
-                }
-            } else if ($type == EF_RDF_NS.'nil') {
-                $value = array();
-            } else {
-                $first = $memModel->getValue($value['value'], EF_RDF_NS.'first');
-                $rest = $memModel->getValue($value['value'], EF_RDF_NS.'rest');
-                if (count($first) > 0 && count($rest) > 0) {
-                    // This is a collection, convert it to an array
-                    $value = array($first);
-                    while ($rest != EF_RDF_NS.'nil') {
-                        $value[] = $memModel->getValue($rest, EF_RDF_NS.'first');
-                        $rest = $memModel->getValue($rest, EF_RDF_NS.'rest');
+        } else {
+            if ($memModel !== null && ($value['type'] == 'uri' || $value['type'] == 'bnode')) {
+                // Handle collections and containers (rdf:Bag, rdf:Seq) not rdf:Alt because of a bug
+                $type = $memModel->getValue($value['value'], EF_RDF_NS . 'type');
+                if ($type == EF_RDF_NS . 'Bag' || $type == EF_RDF_NS . 'Seq') {
+                    // This is a container, convert it to an array
+                    $properties = $memModel->getPO($value['value']);
+                    $value      = array();
+                    foreach ($properties as $property => $entry) {
+                        if (strstr($property, EF_RDF_NS . '_')) {
+                            $value[] = $entry[0]['value'];
+                        }
                     }
                 } else {
-                    // unknown Resource
-                    $value = $value['value'];
+                    if ($type == EF_RDF_NS . 'nil') {
+                        $value = array();
+                    } else {
+                        $first = $memModel->getValue($value['value'], EF_RDF_NS . 'first');
+                        $rest  = $memModel->getValue($value['value'], EF_RDF_NS . 'rest');
+                        if (count($first) > 0 && count($rest) > 0) {
+                            // This is a collection, convert it to an array
+                            $value = array($first);
+                            while ($rest != EF_RDF_NS . 'nil') {
+                                $value[] = $memModel->getValue($rest, EF_RDF_NS . 'first');
+                                $rest    = $memModel->getValue($rest, EF_RDF_NS . 'rest');
+                            }
+                        } else {
+                            // unknown Resource
+                            $value = $value['value'];
+                        }
+                    }
                 }
+            } else {
+                $value = $value['value'];
             }
-        } else {
-            $value = $value['value'];
         }
+
         return $value;
     }
 
     /**
      * add an value to an array using a key
      * if the key is already used, cast it to array and add to that array
+     *
      * @static
-     * @param $key string
+     *
+     * @param $key   string
      * @param $value mixed
-     * @param $to array
+     * @param $to    array
      */
     private static function addValue($key, $value, &$to)
     {
         if (!isset($to[$key])) { //first entry for that key
             $to[$key] = $value;
-        } else if (is_array($to[$key])) { //there are already multiple values for that key
-            if (is_array($value)) {
-                $to[$key] = array_merge($value, $to[$key]);
-            } else {
-                $to[$key][] = $value;
-            }
-        } else {        //it the second entry for that key, turn to array
-            if (is_array($value)) {
-                $to[$key] = array_merge(array($to[$key]), $value);
-            } else {
-                $to[$key] = array($to[$key], $value);
+        } else {
+            if (is_array($to[$key])) { //there are already multiple values for that key
+                if (is_array($value)) {
+                    $to[$key] = array_merge($value, $to[$key]);
+                } else {
+                    $to[$key][] = $value;
+                }
+            } else { //it the second entry for that key, turn to array
+                if (is_array($value)) {
+                    $to[$key] = array_merge(array($to[$key]), $value);
+                } else {
+                    $to[$key] = array($to[$key], $value);
+                }
             }
         }
     }
 
     /**
      * clean a config property URI to obtain a config array key
+     *
      * @static
-     * @param $key string
-     * @param $privateNS string
+     *
+     * @param       $key       string
+     * @param       $privateNS string
      * @param array $mapping
+     *
      * @return mixed
      */
     private static function getPrivateKey($key, $privateNS, $mapping = array())
@@ -1059,7 +1118,7 @@ class OntoWiki_Extension_Manager
             //return only local part
             //take the right most / or #
             $slashPos = strrpos($key, '/');
-            $hashPos = strrpos($key, '#');
+            $hashPos  = strrpos($key, '#');
             if ($slashPos < $hashPos) {
                 $l = $hashPos;
             } else {
@@ -1069,7 +1128,7 @@ class OntoWiki_Extension_Manager
             if ($l == false) {
                 $newKey = $key; //no / or #
             } else {
-                $newKey =  substr($key, $l+1);
+                $newKey = substr($key, $l + 1);
             }
         }
 
@@ -1078,26 +1137,29 @@ class OntoWiki_Extension_Manager
 
     /**
      * read a private config part from a doap Erfurt_Rdf_MemoryModel (recursive)
+     *
      * @static
+     *
      * @param $memModel
      * @param $bnUri
      * @param $privateNS
      * @param $mapping
+     *
      * @return array
      */
     private static function getSubConfig(Erfurt_Rdf_MemoryModel $memModel, $bnUri, $privateNS, $mapping)
     {
-        $kv = array();
-        $name = $memModel->getValue($bnUri, self::$_owconfigNS.'id');
+        $kv   = array();
+        $name = $memModel->getValue($bnUri, self::$_owconfigNS . 'id');
         if ($name == null) {
             return array();
         }
 
         foreach ($memModel->getPO($bnUri) as $key => $values) {
-            if ($key == EF_RDF_TYPE || $key == self::$_owconfigNS.'id') {
+            if ($key == EF_RDF_TYPE || $key == self::$_owconfigNS . 'id') {
                 continue;
             }
-            if ($key == self::$_owconfigNS.'config') {
+            if ($key == self::$_owconfigNS . 'config') {
                 foreach ($values as $value) {
                     $kv = array_merge($kv, self::getSubConfig($memModel, $value['value'], $privateNS, $mapping));
                 }
@@ -1109,7 +1171,8 @@ class OntoWiki_Extension_Manager
                 }
             }
         }
-        $r = array($name=>$kv);
+        $r = array($name => $kv);
+
         return $r;
     }
 
@@ -1117,12 +1180,14 @@ class OntoWiki_Extension_Manager
      * load configs for an extension
      * - respect local ini's
      * - fix missing or dirty values
+     *
      * @param $name string containing the name of an extension
+     *
      * @return Zend_Config
      */
     private function _loadConfigs($name)
     {
-        $path = $this->_extensionPath . $name . DIRECTORY_SEPARATOR;
+        $path   = $this->_extensionPath . $name . DIRECTORY_SEPARATOR;
         $config = new Zend_Config(self::loadDoapN3($path . self::EXTENSION_DEFAULT_DOAP_FILE, $name), true);
 
         // overwrites default config with local config
@@ -1135,12 +1200,12 @@ class OntoWiki_Extension_Manager
 
         //fix missing names
         if (!isset ($config->name)) {
-           $config->name = $name;
+            $config->name = $name;
         }
 
         //fix deprecated/invalid values for "enabled"
         if (is_string($config->enabled)) {
-            switch($config->enabled) {
+            switch ($config->enabled) {
                 case '1':
                 case 'enabled':
                 case 'true':
@@ -1167,18 +1232,16 @@ class OntoWiki_Extension_Manager
     }
 
     /**
-      * Reads all available component translations and adds them to the translation object
-      */
+     * Reads all available component translations and adds them to the translation object
+     */
     private function _scanTranslations()
     {
-
         // check for valid translation object
         if (is_object($this->_translate)) {
             foreach ($this->_extensionRegistry as $component => $settings) {
                 // check if component owns translation
-                if (
-                    isset($settings->languages) &&
-                    is_readable($settings->path . $settings->languages)
+                if (isset($settings->languages)
+                    && is_readable($settings->path . $settings->languages)
                 ) {
                     // keep current locale
                     $locale = $this->_translate->getAdapter()->getLocale();
@@ -1193,26 +1256,6 @@ class OntoWiki_Extension_Manager
                     $this->_translate->setLocale($locale);
                 }
             }
-        }
-    }
-
-    /**
-     * cast $prop to an array
-     * @static
-     * @param $val mixed a value from a Zend_Config object
-     * @return array
-     * @throws Exception
-     */
-    static function doapArrayFixer($val)
-    {
-        if (is_scalar($val)) {
-            return array($val);
-        } if (is_object($val) && $val instanceof Zend_Config) {
-            return $val->toArray();
-        } else if (is_array($val)) {
-            return $val;
-        } else {
-            throw new Exception('unexpected content of config '.$val);
         }
     }
 }

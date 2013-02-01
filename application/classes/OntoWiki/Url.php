@@ -1,9 +1,8 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -13,52 +12,58 @@
  * Represents an internal OntoWiki URL and provides methods for
  * adding, removing and replacing parameters.
  *
- * @category OntoWiki
- * @package OntoWiki_Classes
+ * @category  OntoWiki
+ * @package   OntoWiki_Classes
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Norman Heino <norman.heino@gmail.com>
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Url
 {
-    /** 
+    /**
      * The current request object
-     * @var Zend_Controller_Request_Abstract 
+     *
+     * @var Zend_Controller_Request_Abstract
      */
     protected $_request = null;
-    
+
     /**
      * Array of URL parameters
+     *
      * @var array
      */
     protected $_params = null;
-    
+
     /**
      * Controller name for the URL
-     * @var string 
+     *
+     * @var string
      */
     protected $_controller = null;
-    
-    /** 
+
+    /**
      * Action name for the URL
-     * @var string 
+     *
+     * @var string
      */
     protected $_action = null;
-    
-    /** 
+
+    /**
      * Router used for the current request
-     * @var Zend_Controller_Router_Route 
+     *
+     * @var Zend_Controller_Router_Route
      */
     protected $_route = null;
-    
+
     /**
      * Whether to use nice search-engine friendly URLs
-     * @var boolean 
+     *
+     * @var boolean
      */
     protected $_useSefUrls = true;
-    
+
     /**
-     * 
+     *
      */
     protected $_base = null;
 
@@ -71,28 +76,32 @@ class OntoWiki_Url
         $defaultAction     = Zend_Controller_Front::getInstance()->getDefaultAction();
         $defaultController = Zend_Controller_Front::getInstance()->getDefaultControllerName();
         $router            = Zend_Controller_Front::getInstance()->getRouter();
-        
+
         // use defaults - current page
-        if (!isset($options['route']) && !isset($options['controller']) && !isset($options['action'])){
+        if (!isset($options['route']) && !isset($options['controller']) && !isset($options['action'])) {
             $options['controller'] = $this->_request->getControllerName();
-            $options['action'] = $this->_request->getActionName();
+            $options['action']     = $this->_request->getActionName();
         }
-        
-        if($base != null && is_string($base)){
+
+        if ($base != null && is_string($base)) {
             $this->_base = $base;
-        } else if(isset(OntoWiki::getInstance()->config->urlBase)){
-            $this->_base = OntoWiki::getInstance()->config->urlBase;
         } else {
-            $this->_base = "http://ns.aksw.org/undefined/";
+            if (isset(OntoWiki::getInstance()->config->urlBase)) {
+                $this->_base = OntoWiki::getInstance()->config->urlBase;
+            } else {
+                $this->_base = "http://ns.aksw.org/undefined/";
+            }
         }
-        
+
         // keep parameters
         if (!$this->_request) {
             $this->_params = array();
-        } else if (is_array($paramsToKeep)) {
-            $this->_params = array_intersect_key($this->_request->getParams(), array_flip($paramsToKeep));
         } else {
-            $this->_params  = $this->_request->getParams();
+            if (is_array($paramsToKeep)) {
+                $this->_params = array_intersect_key($this->_request->getParams(), array_flip($paramsToKeep));
+            } else {
+                $this->_params = $this->_request->getParams();
+            }
         }
 
         if (is_array($paramsToExclude)) {
@@ -102,81 +111,87 @@ class OntoWiki_Url
                 }
             }
         }
-        
+
         // set route
         $flag = false;
         if (array_key_exists('route', $options) && $router->hasRoute($options['route'])) {
-            $flag = true;
+            $flag         = true;
             $this->_route = $router->getRoute($options['route']);
         } else {
             // set controller
             if (array_key_exists('controller', $options) && $options['controller']) {
-                $flag = true;
+                $flag              = true;
                 $this->_controller = rtrim($options['controller'], '/');
-            } else if (array_key_exists('controller', $this->_params) && $this->_params['controller']) {
-                $this->_controller = $this->_params['controller'];
+            } else {
+                if (array_key_exists('controller', $this->_params) && $this->_params['controller']) {
+                    $this->_controller = $this->_params['controller'];
+                }
             }
 
             // set action
             if (array_key_exists('action', $options) && $options['action']) {
-                $flag = true;
+                $flag          = true;
                 $this->_action = rtrim($options['action'], '/');
-            } else if (array_key_exists('action', $this->_params) && $this->_params['action']) {
-                $this->_action = $this->_params['action'];
+            } else {
+                if (array_key_exists('action', $this->_params) && $this->_params['action']) {
+                    $this->_action = $this->_params['action'];
+                }
             }
         }
-        
+
         if (!$flag) {
             try {
                 $routeName = $router->getCurrentRouteName();
             } catch (Exception $e) {
                 $routeName = 'default';
             }
-            
+
             if ($router->hasRoute($routeName)) {
                 $this->_route = $router->getRoute($routeName);
             }
         }
-        
+
         // check default controller/action and leave those empty
         if (rtrim($this->_action, '/') == $defaultAction) {
             $this->_action = '';
-            
+
             if (rtrim($this->_controller, '/') == $defaultController) {
                 $this->_controller = '';
             }
-        }        
-        
+        }
+
         // don't need these anymore
         unset($this->_params['module']);
         unset($this->_params['controller']);
         unset($this->_params['action']);
     }
-    
+
     /**
      * set base url (for unittests)
+     *
      * @param string $base
      */
-    public function setBase($base) 
-    { 
+    public function setBase($base)
+    {
         $this->_base = $base;
     }
-    
+
     /**
      * Returns a URL string representing the object
      *
      * @return string
      */
     public function __toString()
-    {        
+    {
         try {
             return $this->_buildQuery();
         } catch (Exception $e) {
             echo $e;
+
             return '';
         }
     }
-    
+
     /**
      * Returns the URL parameters
      *
@@ -186,13 +201,13 @@ class OntoWiki_Url
     {
         return $this->_params;
     }
-    
+
     /**
      * Sets a URL parameter. Paramters with the same name already
      * set will be overwritten.
      *
-     * @param string $name parameter name
-     * @param string $value parameter value 
+     * @param string  $name              parameter name
+     * @param string  $value             parameter value
      * @param boolean $contractNamespace denotes whether to contract namespaces in URIs
      *
      * @return OntoWiki_Url
@@ -217,17 +232,17 @@ class OntoWiki_Url
                     unset($this->_params[$name]);
                 }
         }
-        
+
         // allow chaining
         return $this;
     }
-    
+
     /**
      * Sets a URL parameter. Paramters with the same name already
      * set will be overwritten.
      *
-     * @param string $name parameter name
-     * @param string $value parameter value 
+     * @param string $name  parameter name
+     * @param string $value parameter value
      *
      * @return OntoWiki_Url
      */
@@ -235,7 +250,7 @@ class OntoWiki_Url
     {
         return $this->setParam($name, $value);
     }
-    
+
     /**
      * Returns the value of parameter $name
      *
@@ -249,7 +264,7 @@ class OntoWiki_Url
             return $this->_params[$name];
         }
     }
-    
+
     /**
      * Returns whether parameter $name is set
      *
@@ -261,7 +276,7 @@ class OntoWiki_Url
     {
         return isset($this->_params[$name]);
     }
-    
+
     /**
      * Unsets the parameter $name
      *
@@ -274,43 +289,42 @@ class OntoWiki_Url
         if (isset($this->$this->_params[$name])) {
             unset($this->$this->_params[$name]);
         }
-        
+
         // allow chaining
         return $this;
     }
-    
+
     /**
      * Builds the query part of the URL
      */
     protected function _buildQuery()
     {
-        
-        $event = new Erfurt_Event('onBuildUrl');
-        $event->base = $this->_base;
-        $event->route = $this->_route;
+        $event             = new Erfurt_Event('onBuildUrl');
+        $event->base       = $this->_base;
+        $event->route      = $this->_route;
         $event->controller = $this->_controller;
         $event->action     = $this->_action;
         $event->params     = $this->_params;
         $urlCreated        = $event->trigger();
-        
+
         if ($event->handled()) {
             if ($urlCreated && isset($event->url)) {
                 return $event->url;
             } else {
-                $this->_params = $event->params;
+                $this->_params     = $event->params;
                 $this->_controller = $event->controller;
                 $this->_action     = $event->action;
                 $this->_route      = $event->route;
             }
         }
-        
+
         // check params
         foreach ($this->_params as $name => $value) {
             if (is_string($value) && preg_match('/\//', $value)) {
                 $this->_useSefUrls = false;
             }
         }
-        
+
         $url = '';
         if ($this->_route) {
             // checking if reset of route-defaults necessary
@@ -335,11 +349,9 @@ class OntoWiki_Url
                 $lastKey = '';
                 foreach ($this->_params as $key => $value) {
                     if (is_scalar($value)) {
-                        $value   = urlencode($value);
-                        $query  .= "$key/$value/";
+                        $value = urlencode($value);
+                        $query .= "$key/$value/";
                         $lastKey = $key;
-                    } else {
-                        // drop these parameters (arrays etc...)
                     }
                 }
                 // remove trailing slash
@@ -348,11 +360,11 @@ class OntoWiki_Url
                 $query = '?' . http_build_query($this->_params, '&amp;');
             }
             $parts = array_filter(array($this->_controller, $this->_action, $query));
-            $url = implode('/', $parts);
+            $url   = implode('/', $parts);
         }
         // HACK:
         $this->_useSefUrls = true;
-        
+
         return $this->_base . ltrim($url, '/');
     }
 }

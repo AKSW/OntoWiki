@@ -1,5 +1,12 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * OntoWiki module – lastchanges
  *
  * show last activities in a knowledge base and link to the resources
@@ -10,26 +17,30 @@
  * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class LastchangesModule extends OntoWiki_Module {
+class LastchangesModule extends OntoWiki_Module
+{
 
-    public function init() {
-    // enabling versioning
+    public function init()
+    {
+        // enabling versioning
         $this->versioning = $this->_erfurt->getVersioning();
         if (!$this->versioning instanceof Erfurt_Versioning) {
             return;
         }
-        
-        if (!$this->versioning->isVersioningEnabled()) {
-            $this->view->warningmessage = 'Versioning/history is currently disabled. This means, you can not see the latest changes.';
-        } else {
-        // The system config is used to get the user title
-        // TODO: How can switch from ACL to Non-ACL use?
-            $this->systemModel = new Erfurt_Rdf_Model('http://localhost/OntoWiki/Config/', 'http://localhost/OntoWiki/Config/');
 
-            if($this->getContext() == "main.window.dashmodelinfo") {
-                $this->user = $this->_erfurt->getAuth()->getIdentity()->getUri();
+        if (!$this->versioning->isVersioningEnabled()) {
+            $this->view->warningmessage
+                = 'Versioning/history is currently disabled. This means, you can not see the latest changes.';
+        } else {
+            // The system config is used to get the user title
+            // TODO: How can switch from ACL to Non-ACL use?
+            $this->systemModel
+                = new Erfurt_Rdf_Model('http://localhost/OntoWiki/Config/', 'http://localhost/OntoWiki/Config/');
+
+            if ($this->getContext() == "main.window.dashmodelinfo") {
+                $this->user    = $this->_erfurt->getAuth()->getIdentity()->getUri();
                 $this->results = $this->versioning->getHistoryForUserDash($this->user);
-            }else {
+            } else {
                 $this->model = $this->_owApp->selectedModel;
 
                 $this->results = $this->versioning->getConciseHistoryForGraph($this->model->getModelIri());
@@ -37,42 +48,46 @@ class LastchangesModule extends OntoWiki_Module {
         }
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
         return 'Latest Changes';
     }
-    
+
     public function shouldShow()
     {
         if (!$this->versioning instanceof Erfurt_Versioning) {
             return false;
         }
-        
+
         return true;
     }
 
-    public function getContents() {
+    public function getContents()
+    {
         $url     = new OntoWiki_Url(array('route' => 'properties'), array('r'));
         $changes = array();
         if ($this->results) {
             foreach ($this->results as $change) {
 
-                if($this->getContext() == "main.window.dashmodelinfo") {
-                //id, resource, tstamp, action_type
+                if ($this->getContext() == "main.window.dashmodelinfo") {
+                    //id, resource, tstamp, action_type
                     $change['useruri'] = $this->user;
-                    $this->model = null;
+                    $this->model       = null;
                 }
 
-                if ( Erfurt_Uri::check($change['resource']) ) {
-                    $change['aresource'] = new OntoWiki_Resource((string) $change['useruri'], $this->systemModel);
-                    $change['author'] = $change['aresource']->getTitle() ? $change['aresource']->getTitle() : OntoWiki_Utils::getUriLocalPart($change['aresource']);
-                    $url->setParam('r', (string) $change['aresource'], true);
-                    $change['ahref'] = (string) $url;
+                if (Erfurt_Uri::check($change['resource'])) {
+                    $change['aresource'] = new OntoWiki_Resource((string)$change['useruri'], $this->systemModel);
+                    $change['author']    = $change['aresource']->getTitle() ? $change['aresource']->getTitle()
+                        : OntoWiki_Utils::getUriLocalPart($change['aresource']);
+                    $url->setParam('r', (string)$change['aresource'], true);
+                    $change['ahref'] = (string)$url;
 
                     //$change['date'] = OntoWiki_Utils::dateDifference($change['tstamp'], null, 3);
-                    $url->setParam('r', (string) $change['resource'], true);
-                    $change['rhref'] = (string) $url;
-                    $change['resource'] = new OntoWiki_Resource((string) $change['resource'], $this->model);
-                    $change['rname'] = $change['resource']->getTitle() ? $change['resource']->getTitle() : OntoWiki_Utils::contractNamespace($change['resource']->getIri());
+                    $url->setParam('r', (string)$change['resource'], true);
+                    $change['rhref']    = (string)$url;
+                    $change['resource'] = new OntoWiki_Resource((string)$change['resource'], $this->model);
+                    $change['rname']    = $change['resource']->getTitle() ? $change['resource']->getTitle()
+                        : OntoWiki_Utils::contractNamespace($change['resource']->getIri());
 
                     $changes[] = $change;
                 }

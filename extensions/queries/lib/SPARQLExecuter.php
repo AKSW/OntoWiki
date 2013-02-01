@@ -3,26 +3,28 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * @category   OntoWiki
  * @package    Extensions_Queries_Lib
  */
-class SPARQLExecuter{
+class SPARQLExecuter
+{
 
     var $options;
 
-    public function __construct($options){
-        $this->options=$options;
+    public function __construct($options)
+    {
+        $this->options = $options;
     }
 
-    function executeSparqlQuery( $graphUri = 'NULL',  $sparqlQuery, $timeoutms=15000)
+    function executeSparqlQuery($graphUri = 'NULL', $sparqlQuery, $timeoutms = 15000)
     {
-        $dsn = $this->options->get('odbc_dsn');
-        $user=$this->options->get('odbc_user');
-        $pw=$this->options->get('odbc_pw');
+        $dsn  = $this->options->get('odbc_dsn');
+        $user = $this->options->get('odbc_user');
+        $pw   = $this->options->get('odbc_pw');
 
         // echo $dsn;die;
 
@@ -35,15 +37,15 @@ class SPARQLExecuter{
         $con = @odbc_connect($dsn, $user, $pw);
 
         if (null == $con) {
-            echo 'Unable to connect to Virtuoso Universal Server via ODBC: '."\n";
+            echo 'Unable to connect to Virtuoso Universal Server via ODBC: ' . "\n";
             exit;
         }
 
 
-        $timeout = "set RESULT_TIMEOUT= ".$timeoutms;
-        $result = @odbc_exec($con,$timeout);
+        $timeout = "set RESULT_TIMEOUT= " . $timeoutms;
+        $result  = @odbc_exec($con, $timeout);
 
-        $sparqlQuery = ' define output:format "RDF/XML" '.  $sparqlQuery;
+        $sparqlQuery = ' define output:format "RDF/XML" ' . $sparqlQuery;
         // $virtuosoPl = 'CALL DB.DBA.SPARQL_EVAL(\'' . $sparqlQuery . '\', ' . $graphUri . ', 0)';
         $virtuosoPl = 'SPARQL define input:default-graph-uri <' . $graphUri . '>' . $sparqlQuery;
         //$http =  "sparql?default-graph-uri=".$graphUri."&query=".urlencode($sparqlQuery)."&timeout=2000";
@@ -53,27 +55,25 @@ class SPARQLExecuter{
 
         if (false === $result) {
             $msg = odbc_errormsg() . ' (' . odbc_error() . ')';
-                    //require_once 'Erfurt/Exception.php';
-                    //throw new Erfurt_Exception(
-            $error = ( 'ERROR: ' . $msg . "\n" . "Query:\n" . trim($sparqlQuery)."\n");
+            //require_once 'Erfurt/Exception.php';
+            //throw new Erfurt_Exception(
+            $error = ('ERROR: ' . $msg . "\n" . "Query:\n" . trim($sparqlQuery) . "\n");
 
-            echo $error."\n";              
+            echo $error . "\n";
 
         }
 
         odbc_longreadlen($result, 10000000);
 
         $result = $this->odbcResultToArray($result);
-        $row = current($result);
-        $xml = current($row);
+        $row    = current($result);
+        $xml    = current($row);
         require_once 'XmlConverter.php';
         $conv   = new XmlConverter();
         $result = $conv->toArray($xml);
 
         return $result;
     }
-
-
 
 
     private function odbcResultToArray($odbcResult, $columnsAsKeys = true, $rowsAsArrays = true)
@@ -88,7 +88,7 @@ class SPARQLExecuter{
 
         if ($numFields === 0) {
             return $resultArray;
-        }        
+        }
 
         while (odbc_fetch_into($result, $resultRow)) {
             if ($numFields == 1 && !$rowsAsArrays) {
@@ -98,7 +98,7 @@ class SPARQLExecuter{
                 // copy column names to array indices
                 for ($i = 0; $i < $numFields; ++$i) {
                     if ($columnsAsKeys) {
-                        $colName = odbc_field_name($result, $i + 1);
+                        $colName                  = odbc_field_name($result, $i + 1);
                         $resultRowNamed[$colName] = $resultRow[$i];
                     } else {
                         $resultRowNamed[] = $resultRow[$i];
@@ -114,14 +114,13 @@ class SPARQLExecuter{
     }
 
 
+    function executeSparqlQuery1($endpointURI, $graphUri = 'NULL', $sparqlQuery, $timeoutms = 15000)
+    {
 
-
-    function executeSparqlQuery1($endpointURI, $graphUri = 'NULL',  $sparqlQuery, $timeoutms=15000){
-
-        $url = $endpointURI."/sparql?query=";
-        $defaultgraphURI = (strlen($graphUri)==0)?"":"&default-graph-uri=".$graphUri;
-        $format="&format=JSON";
-        $url .= urlencode($sparqlQuery).$defaultgraphURI.$format;
+        $url             = $endpointURI . "/sparql?query=";
+        $defaultgraphURI = (strlen($graphUri) == 0) ? "" : "&default-graph-uri=" . $graphUri;
+        $format          = "&format=JSON";
+        $url .= urlencode($sparqlQuery) . $defaultgraphURI . $format;
 
         //return $url;
         //echo $url."\n";
@@ -142,8 +141,10 @@ class SPARQLExecuter{
         curl_setopt($c, CURLOPT_URL, $url);
         curl_setopt($c, CURLOPT_HTTPHEADER, $headers);
         $contents = curl_exec($c);
-        print_r($contents);die;
+        print_r($contents);
+        die;
         curl_close($c);
+
         return $contents;
     }
 }

@@ -2,7 +2,7 @@
 
 <project name="OntoWiki" default="build"> 
     <target name="build-unit" depends="prepare,lint,phpunit,phpdoc,phpcb" />
-    <target name="build-integration" depends="prepare,lint,phpunit-integration,phpdoc,phpcb" />
+    <target name="build-integration" depends="prepare,lint,phpunit-integration,phpdoc,phpcb,phpcs-ci" />
     <target name="build-full" depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,phpunit-integration,phpcb"/>
 
      <target name="build" depends="build-integration"/>
@@ -80,17 +80,26 @@
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="phpcs">
-            <arg value="--standard=${basedir}/build/phpcs.xml" />
+            <arg value="--standard=${basedir}/application/tests/CodeSniffer/Standards/Ontowiki/ruleset.xml" />
+            <arg value="--report=summary" />
+            <arg value="--severity=6" />
+            <arg value="-s" />
+            <arg value="--ignore=libraries,extensions/exconf/pclzip.lib.php,extensions/exconf/Archive.php,application/scripts,extensions/markdown/parser/markdown.php,extensions/queries/lib,extensions/queries/old" />
+            <arg value="--extensions=php" />
             <arg path="${basedir}/application" />
         </exec>
     </target>
 
     <target name="phpcs-ci" 
             description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
-        <exec executable="phpcs" output="/dev/null">
+        <exec executable="phpcs">
+            <arg value="--standard=${basedir}/application/tests/CodeSniffer/Standards/Ontowiki/ruleset.xml" />
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
-            <arg value="--standard=${basedir}/build/phpcs.xml" />
+            <arg value="--severity=6" />
+            <arg value="-s" />
+            <arg value="--ignore=libraries,extensions/exconf/pclzip.lib.php,extensions/exconf/Archive.php,application/scripts,extensions/markdown/parser/markdown.php,extensions/queries/lib,extensions/queries/old" />
+            <arg value="--extensions=php" />
             <arg path="${basedir}/application" />
         </exec>
     </target>

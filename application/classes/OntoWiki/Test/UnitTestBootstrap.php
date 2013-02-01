@@ -1,23 +1,23 @@
 <?php
-require_once realpath(dirname(dirname(dirname(dirname(__FILE__))))). DIRECTORY_SEPARATOR . 'Bootstrap.php';
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
+
+require_once realpath(dirname(dirname(dirname(dirname(__FILE__))))) . DIRECTORY_SEPARATOR . 'Bootstrap.php';
 
 /**
  * OntoWiki bootstrap class.
  *
  * Provides on-demand loading of application resources.
  *
- * @category OntoWiki
- * @package OntoWiki_Bootstrap
+ * @category  OntoWiki
+ * @package   OntoWiki_Bootstrap
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class OntoWiki_Test_UnitTestBootstrap extends Bootstrap
 {
@@ -26,7 +26,7 @@ class OntoWiki_Test_UnitTestBootstrap extends Bootstrap
         // We do not want extensions loaded while unit testing!
         return null;
     }
-    
+
     public function _initErfurt()
     {
         $erfurt = null;
@@ -55,8 +55,8 @@ class OntoWiki_Test_UnitTestBootstrap extends Bootstrap
 
         $store = new Erfurt_Store(
             array(
-                'adapterInstance' => new Erfurt_Store_Adapter_Test()
-            ), 
+                 'adapterInstance' => new Erfurt_Store_Adapter_Test()
+            ),
             'Test'
         );
         $erfurt->setStore($store);

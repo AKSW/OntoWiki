@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -29,7 +29,7 @@ class PingbackPlugin extends OntoWiki_Plugin
         if (isset($this->_privateConfig->external_pingback_server)) {
             $serverUrl = $this->_privateConfig->external_pingback_server;
         } else {
-            $owApp = OntoWiki::getInstance();
+            $owApp     = OntoWiki::getInstance();
             $serverUrl = $owApp->config->urlBase . 'pingback/ping/';
         }
 
@@ -48,7 +48,7 @@ class PingbackPlugin extends OntoWiki_Plugin
         if (isset($this->_privateConfig->external_pingback_server)) {
             $serverUrl = $this->_privateConfig->external_pingback_server;
         } else {
-            $owApp = OntoWiki::getInstance();
+            $owApp     = OntoWiki::getInstance();
             $serverUrl = $owApp->config->urlBase . 'pingback/ping/';
         }
 
@@ -58,7 +58,6 @@ class PingbackPlugin extends OntoWiki_Plugin
 
     public function onAddStatement($event)
     {
-
         // Check the environement... e.g. Linked Data plugin needs to be enabled.
         if (!$this->_check()) {
             return;
@@ -90,8 +89,9 @@ class PingbackPlugin extends OntoWiki_Plugin
     public function onDeleteMultipleStatements($event)
     {
         // If pingOnDelete is configured, we also ping on statement delete, otherwise we skip.
-        if (!isset($this->_privateConfig->pingOnDelete) ||
-            ((boolean)$this->_privateConfig->pingOnDelete === false)) {
+        if (!isset($this->_privateConfig->pingOnDelete)
+            || ((boolean)$this->_privateConfig->pingOnDelete === false)
+        ) {
 
             return;
         }
@@ -128,7 +128,7 @@ class PingbackPlugin extends OntoWiki_Plugin
         }
 
         // prepare the statement URIs
-        $subjectUri  = (string) $event->resource;
+        $subjectUri  = (string)$event->resource;
         $propertyUri = 'http://purl.org/net/pingback/to';
         $objectUri   = $owApp->config->urlBase . 'pingback/ping/';
 
@@ -142,10 +142,11 @@ class PingbackPlugin extends OntoWiki_Plugin
     protected function _check()
     {
         // Check, whether linked data plugin is enabled.
-        $owApp = OntoWiki::getInstance();
+        $owApp         = OntoWiki::getInstance();
         $pluginManager = $owApp->erfurt->getPluginManager(false);
         if (!$pluginManager->isPluginEnabled('linkeddata')) {
             $this->_logInfo('Linked Data plugin disabled, Pingbacks are not allowed.');
+
             return false;
         }
 
@@ -156,41 +157,37 @@ class PingbackPlugin extends OntoWiki_Plugin
     {
         // If at least one ping_properties value is set in config, we only ping for matching predicates.
         if (isset($this->_privateConfig->ping_properties)) {
-            $props = (array) $this->_privateConfig->ping_properties;
+            $props = (array)$this->_privateConfig->ping_properties;
             if (!in_array($predicate, $props)) {
                 return;
             }
         }
 
-        $owApp = OntoWiki::getInstance();
-        $base = $owApp->config->urlBase;
+        $owApp   = OntoWiki::getInstance();
+        $base    = $owApp->config->urlBase;
         $baseLen = strlen($base);
 
         // Object (target) needs to be an external URI
         if ($object['type'] !== 'uri') {
-            #$this->_logInfo('Object is not an URI.');
             return;
         } else {
             $targetUri = $object['value'];
-            $owApp = OntoWiki::getInstance();
-            $owBase = $owApp->config->urlBase;
+            $owApp     = OntoWiki::getInstance();
+            $owBase    = $owApp->config->urlBase;
 
             // Check, whether URI is external.
             if (substr($targetUri, 0, strlen($owBase)) === $owBase) {
-                #$this->_logInfo('Object is not an external URI.');
                 return;
             }
 
             // Check, whether URI is derefderencable via HTTP.
             if ((substr($object['value'], 0, 7) !== 'http://') && (substr($object['value'], 0, 8) !== 'https://')) {
-                #$this->_logInfo('Object is not a dereferencable URI.');
                 return;
             }
         }
 
         // Source URI (subject) needs to be a (internal) Linked Data resource
         if (!$this->_isLinkedDataUri($subject)) {
-            #$this->_logInfo('Subject is not a Linked Data resource.');
             return;
         }
 
@@ -208,10 +205,12 @@ class PingbackPlugin extends OntoWiki_Plugin
         if (isset($headers['X-Pingback'])) {
             if (is_array($headers['X-Pingback'])) {
                 $this->_logInfo($headers['X-Pingback'][0]);
+
                 return $headers['X-Pingback'][0];
             }
 
             $this->_logInfo($headers['X-Pingback']);
+
             return $headers['X-Pingback'];
         }
 
@@ -219,15 +218,15 @@ class PingbackPlugin extends OntoWiki_Plugin
         // TODO Fetch only the first X bytes...???
         $client = Erfurt_App::getInstance()->getHttpClient(
             $targetUri, array(
-                'maxredirects' => 0,
-                'timeout' => 3
-            )
+                             'maxredirects' => 0,
+                             'timeout'      => 3
+                        )
         );
 
         $response = $client->request();
         if ($response->getStatus() === 200) {
-            $htmlDoc = new DOMDocument();
-            $result = @$htmlDoc->loadHtml($response->getBody());
+            $htmlDoc     = new DOMDocument();
+            $result      = @$htmlDoc->loadHtml($response->getBody());
             $relElements = $htmlDoc->getElementsByTagName('link');
 
             foreach ($relElements as $relElem) {
@@ -242,9 +241,9 @@ class PingbackPlugin extends OntoWiki_Plugin
         require_once 'Zend/Http/Client.php';
         $client = Erfurt_App::getInstance()->getHttpClient(
             $targetUri, array(
-                'maxredirects' => 10,
-                'timeout' => 3
-            )
+                             'maxredirects' => 10,
+                             'timeout'      => 3
+                        )
         );
         $client->setHeaders('Accept', 'application/rdf+xml');
 
@@ -257,6 +256,7 @@ class PingbackPlugin extends OntoWiki_Plugin
                 $result = $parser->parse($rdfString, Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
             } catch (Exception $e) {
                 $this->_logError($e->getMessage());
+
                 return null;
             }
 
@@ -297,13 +297,14 @@ class PingbackPlugin extends OntoWiki_Plugin
         $pingbackServiceUrl = $this->_discoverPingbackServer($targetUri);
         if ($pingbackServiceUrl === null) {
             $this->_logInfo('No Pingback server discovered');
+
             return;
         }
 
         $xml = '<?xml version="1.0"?><methodCall><methodName>pingback.ping</methodName><params>' .
-                '<param><value><string>' . $sourceUri . '</string></value></param>' .
-                '<param><value><string>' . $targetUri . '</string></value></param>' .
-                '</params></methodCall>';
+            '<param><value><string>' . $sourceUri . '</string></value></param>' .
+            '<param><value><string>' . $targetUri . '</string></value></param>' .
+            '</params></methodCall>';
 
         // TODO without curl? with zend?
         $rq = curl_init();
@@ -324,15 +325,17 @@ class PingbackPlugin extends OntoWiki_Plugin
             $this->_logInfo('Pingback Result for (' . $pingbackServiceUrl . ', ' . $xml . ') - ' . $res);
         }
         curl_close($rq);
+
         return true;
     }
 
     private function _isLinkedDataUri($uri)
     {
-        $event = new Erfurt_Event('onNeedsLinkedDataUri');
+        $event      = new Erfurt_Event('onNeedsLinkedDataUri');
         $event->uri = $uri;
 
-        $result = (bool) $event->trigger();
+        $result = (bool)$event->trigger();
+
         return $result;
     }
 

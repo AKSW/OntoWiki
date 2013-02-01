@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -29,7 +29,6 @@ class NavigationModule extends OntoWiki_Module
         return "Navigation";
     }
 
-
     /**
      * Returns the menu of the module
      *
@@ -46,7 +45,7 @@ class NavigationModule extends OntoWiki_Module
         $mainMenu = new OntoWiki_Menu();
 
         // edit sub menu
-        if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel) ) {
+        if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)) {
             $editMenu = new OntoWiki_Menu();
             $editMenu->setEntry('Add Resource here', "javascript:navigationAddElement()");
             $mainMenu->setEntry('Edit', $editMenu);
@@ -77,7 +76,9 @@ class NavigationModule extends OntoWiki_Module
         // navigation type submenu
         $sortMenu = new OntoWiki_Menu();
         foreach ($this->_privateConfig->sorting->toArray() as $sortKey => $sortItem) {
-            $sortMenu->setEntry($sortItem['title'], "javascript:navigationEvent('setSort', '".$sortItem['type']."')");
+            $sortMenu->setEntry(
+                $sortItem['title'], "javascript:navigationEvent('setSort', '" . $sortItem['type'] . "')"
+            );
         }
         $mainMenu->setEntry('Sort', $sortMenu);
 
@@ -87,8 +88,10 @@ class NavigationModule extends OntoWiki_Module
             if ($this->_privateConfig->defaults->checkTypes) {
                 if (isset($config->checkVisibility) && $config->checkVisibility == false) {
                     $typeMenu->setEntry($config->title, "javascript:navigationEvent('setType', '$key')");
-                } else if ($this->checkConfig($config) > 0 ) {
-                    $typeMenu->setEntry($config->title, "javascript:navigationEvent('setType', '$key')");
+                } else {
+                    if ($this->checkConfig($config) > 0) {
+                        $typeMenu->setEntry($config->title, "javascript:navigationEvent('setType', '$key')");
+                    }
                 }
             } else {
                 $typeMenu->setEntry($config->title, "javascript:navigationEvent('setType', '$key')");
@@ -110,36 +113,36 @@ class NavigationModule extends OntoWiki_Module
 
         // this gives the complete config array as json to the javascript parts
         $this->view->inlineScript()->prependScript(
-            '/* from modules/navigation/ */'.PHP_EOL.
-            'var navigationConfig = '.json_encode($this->_privateConfig->toArray()).';'.PHP_EOL
+            '/* from modules/navigation/ */' . PHP_EOL .
+            'var navigationConfig = ' . json_encode($this->_privateConfig->toArray()) . ';' . PHP_EOL
         );
         // this gives the navigation session config to the javascript parts
         if ($this->_session->navigation) {
             $this->view->inlineScript()->prependScript(
-                '/* from modules/navigation/ */'.PHP_EOL.
-                'var navigationConfig = '.json_encode($this->_privateConfig->toArray()) . ';' .PHP_EOL
+                '/* from modules/navigation/ */' . PHP_EOL .
+                'var navigationConfig = ' . json_encode($this->_privateConfig->toArray()) . ';' . PHP_EOL
             );
         }
 
-        $sessionKey = 'Navigation'.(isset($config->_session->identifier) ? $config->_session->identifier : '');
+        $sessionKey   = 'Navigation' . (isset($config->_session->identifier) ? $config->_session->identifier : '');
         $stateSession = new Zend_Session_Namespace($sessionKey);
-        if (isset($stateSession) && ( $stateSession->model == (string)$this->_owApp->selectedModel)) {
+        if (isset($stateSession) && ($stateSession->model == (string)$this->_owApp->selectedModel)) {
             // load setup
             $this->view->inlineScript()->prependScript(
-                '/* from modules/navigation/ */'.PHP_EOL.
-                'var navigationStateSetup = '.$stateSession->setup .';'.PHP_EOL
+                '/* from modules/navigation/ */' . PHP_EOL .
+                'var navigationStateSetup = ' . $stateSession->setup . ';' . PHP_EOL
             );
             // load view
             $this->view->stateView = $stateSession->view;
             // set js actions
             $this->view->inlineScript()->prependScript(
-                '$(document).ready(function() { navigationPrepareList(); } );'.PHP_EOL
+                '$(document).ready(function() { navigationPrepareList(); } );' . PHP_EOL
             );
         }
 
         // init view from scratch
         $this->view->inlineScript()->prependScript(
-            '$(document).ready(function() { navigationEvent(\'init\'); } );'.PHP_EOL
+            '$(document).ready(function() { navigationEvent(\'init\'); } );' . PHP_EOL
         );
 
         $data['session'] = $this->_session->navigation;
@@ -179,6 +182,7 @@ class NavigationModule extends OntoWiki_Module
         $query->setLimit(1);
 
         $allResults = $this->_owApp->selectedModel->sparqlQuery($query);
+
         /*$this->_owApp->logger->info(
             'Navigation Query: ' .PHP_EOL . $query->__toString()
         );
