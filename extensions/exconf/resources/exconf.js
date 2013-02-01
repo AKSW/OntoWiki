@@ -4,7 +4,7 @@ $(function()
     function postToggle(button)
     {
         var name = $(button).parent().attr("id");
-        var enabled = $(button).attr("selected");
+        var enabled = $(button).prop("selected");
         $.post(urlBase + "exconf/conf/?name="+name+"&enabled="+enabled,function(data){if(data==""){$("#numEnabled").html(parseInt($("#numEnabled").html())+( enabled == "true" ? 1 : -1));$("#numDisabled").html(parseInt($("#numDisabled").html())+( enabled == "true" ? -1 : 1));}});
     }
 
@@ -58,7 +58,7 @@ $(function()
              break;
              case "enabled" :
                 $("#show_extension label[for=showEnabled]").addClass("active");
-                $("#extensions li").each(function(){if($(this).find(".togglebutton").attr("selected") == "true"){
+                $("#extensions li").each(function(){if($(this).find(".togglebutton").prop("selected") == "true"){
                     $(this).show();
                 } else {
                     $(this).hide();
@@ -66,7 +66,7 @@ $(function()
              break;
              case "disabled" :
                 $("#show_extension label[for=showDisabled]").addClass("active");
-                $("#extensions li").each(function(){if($(this).find(".togglebutton").attr("selected") == "true"){
+                $("#extensions li").each(function(){if($(this).find(".togglebutton").prop("selected") == "true"){
                     $(this).hide();
                 } else {
                     $(this).show();

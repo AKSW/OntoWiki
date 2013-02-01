@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -17,7 +17,8 @@ define('DEFAULT_TYPE', '*/*');
  * @category   OntoWiki
  * @package    Extensions_Linkeddata
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @author     Natanael Arndt <arndtn@gmail.com>
+ * @copyright  Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class LinkeddataPlugin extends OntoWiki_Plugin
@@ -56,7 +57,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      */
     public function onIsDispatchable($event)
     {
-        $store    = OntoWiki::getInstance()->erfurt->getStore();
+        $store = null;
+        try {
+            $store = OntoWiki::getInstance()->erfurt->getStore();
+        } catch (Exception $e) {
+            // if we can't get the store, we do nothing
+            return;
+        }
+
         $request  = Zend_Controller_Front::getInstance()->getRequest();
         $response = Zend_Controller_Front::getInstance()->getResponse();
 
@@ -178,7 +186,14 @@ class LinkeddataPlugin extends OntoWiki_Plugin
     {
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $owApp   = OntoWiki::getInstance();
-        $store   = $owApp->erfurt->getStore();
+
+        $store = null;
+        try {
+            $store = $owApp->erfurt->getStore();
+        } catch (Exception $e) {
+            // if we can't get the store, we do nothing
+            return;
+        }
 
         if (null == $owApp->selectedModel) {
             $uri = $request->getScheme() . '://' . $request->getHttpHost() . $request->getRequestUri();
@@ -193,14 +208,31 @@ class LinkeddataPlugin extends OntoWiki_Plugin
 
     public function onNeedsGraphForLinkedDataUri($event)
     {
-        return $this->_getFirstReadableGraphForUri($event->uri);
+        $store = null;
+        try {
+            $store = OntoWiki::getInstance()->erfurt->getStore();
+        } catch (Exception $e) {
+            // if we can't get the store, we do nothing
+            return;
+        }
+
+        $graphs = $store->getReadableGraphsUsingResource($event->uri);
+        return $graphs[0];
     }
 
     public function onNeedsLinkedDataUri($event)
     {
         if ($this->_isLinkedDataUri($event->uri)) {
-            $g = $this->_getFirstReadableGraphForUri($event->uri);
-            if ($g !== false) {
+            $store = null;
+            try {
+                $store = OntoWiki::getInstance()->erfurt->getStore();
+            } catch (Exception $e) {
+                // if we can't get the store, we do nothing
+                return;
+            }
+
+            $graphs = $store->getReadableGraphsUsingResource($event->uri);
+            if ($graphs !== null) {
                 return true;
             }
         }
@@ -245,8 +277,16 @@ class LinkeddataPlugin extends OntoWiki_Plugin
     {
         $graph = null;
         $actualUri = null;
-        if ((bool)$this->_privateConfig->fuzzyMatch === true) {
+
+        $store = null;
+        try {
             $store = OntoWiki::getInstance()->erfurt->getStore();
+        } catch (Exception $e) {
+            // if we can't get the store, we do nothing
+            return;
+        }
+
+        if ((bool)$this->_privateConfig->fuzzyMatch === true) {
             // Remove trailing slashes
             $uri = rtrim($uri, '/');
             // Match case-insensitive and optionally with trailing slashes
@@ -264,42 +304,9 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $actualUri = $uri;
         }
 
-        $graph = $this->_getFirstReadableGraphForUri($actualUri);
+        $graphs = $store->getReadableGraphsUsingResource($actualUri);
 
-        return array($graph, $actualUri);
-    }
-
-    private function _getFirstReadableGraphForUri($uri)
-    {
-        $store = OntoWiki::getInstance()->erfurt->getStore();
-        try {
-            $result = $store->getGraphsUsingResource($uri, false);
-
-            if ($result) {
-                // get source graph
-                $allowedGraph = null;
-                $ac = Erfurt_App::getInstance()->getAc();
-                foreach ($result as $g) {
-                    if ($ac->isModelAllowed('view', $g)) {
-                        $allowedGraph = $g;
-                        break;
-                    }
-                }
-
-                if (null === $allowedGraph) {
-                    // We use the first matching graph. The user is redirected and the next request
-                    // has to decide, whether user is allowed to view or not. (Workaround since there are problems
-                    // with linkeddata and https).
-                    return $result[0];
-                } else {
-                    return $allowedGraph;
-                }
-            } else {
-                return null;
-            }
-        } catch (Excpetion $e) {
-            return null;
-        }
+        return array($graphs[0], $actualUri);
     }
 
     private function _isLinkedDataUri($uri)

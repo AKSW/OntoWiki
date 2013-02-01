@@ -1,4 +1,5 @@
 index.php       usr/share/ontowiki
+.htaccess       usr/share/ontowiki
 
 application/Bootstrap.php usr/share/ontowiki/application
 application/classes usr/share/ontowiki/application

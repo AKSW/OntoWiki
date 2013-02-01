@@ -111,6 +111,9 @@ class ErrorController extends Zend_Controller_Action
                 if ($exception->getCode() !== 0) {
                     $this->view->code      = $exception->getCode();
                 }
+                
+                $response = $this->getResponse();
+                $response->setHttpResponseCode(500);
             }
 
             $errorString = $exception->getMessage();

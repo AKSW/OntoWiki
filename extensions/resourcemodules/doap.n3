@@ -20,30 +20,39 @@
 :Default a owconfig:Module ;
   rdfs:label "Default" ;
   owconfig:caching "true"^^xsd:boolean .
+
 :resourcemodules owconfig:hasModule :Linkinghere .
 :Linkinghere a owconfig:Module ;
   rdfs:label "Linkinghere" ;
   owconfig:priority "20" ;
   rdfs:label "Linking Here" ;
+  owconfig:context "extension.resourcemodules.linkinghere" ;
   owconfig:context "main.window.properties" ;
   owconfig:context "main.window.modelinfo" .
+
 :resourcemodules owconfig:hasModule :Similarinstances .
 :Similarinstances a owconfig:Module ;
   rdfs:label "Similarinstances" ;
   owconfig:priority "10" ;
   rdfs:label "Similar Instances" ;
+  owconfig:context "extension.resourcemodules.similarinstances" ;
   owconfig:context "main.window.properties" .
+
 :resourcemodules owconfig:hasModule :Usage .
 :Usage a owconfig:Module ;
   owconfig:priority "30" ;
   rdfs:label "Usage as Property" ;
+  owconfig:context "extension.resourcemodules.usage" ;
   owconfig:context "main.window.properties" .
+
 :resourcemodules owconfig:config [
       a owconfig:Config;
       owconfig:id "show";
       :similarinstances "false"^^xsd:boolean ;
       :usage "true"^^xsd:boolean
-] ;
-  doap:release :v1-0 .
+] .
+
+:resourcemodules doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .
+

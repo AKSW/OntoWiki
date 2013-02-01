@@ -55,6 +55,12 @@ class ResourceController extends OntoWiki_Controller_Base
             );
         }
 
+        $resourceMenu->prependEntry(OntoWiki_Menu::SEPARATOR);
+        $resourceMenu->prependEntry(
+            'Go to Resource (external)',
+            (string)$resource
+        );
+
         $menu = new OntoWiki_Menu();
         $menu->setEntry('Resource', $resourceMenu);
 
@@ -161,9 +167,13 @@ class ResourceController extends OntoWiki_Controller_Base
                 $this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)
         ) {
             // TODO: check acl
-            $toolbar->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Properties', 'title' => 'SHIFT + ALT + e'));
             $toolbar->appendButton(
-                OntoWiki_Toolbar::EDITADD, array(
+                OntoWiki_Toolbar::EDIT,
+                array('name' => 'Edit Properties', 'title' => 'SHIFT + ALT + e')
+            );
+            $toolbar->appendButton(
+                OntoWiki_Toolbar::EDITADD,
+                array(
                     'name'  => 'Clone',
                     'class' => 'clone-resource',
                     'title' => 'SHIFT + ALT + l'
@@ -174,27 +184,32 @@ class ResourceController extends OntoWiki_Controller_Base
                     'name' => 'Delete',
                     'url'  => $this->_config->urlBase . 'resource/delete/?r=' . urlencode((string)$resource)
             );
-            $toolbar->appendButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->appendButton(OntoWiki_Toolbar::DELETE, $params);
+            $toolbar->appendButton(OntoWiki_Toolbar::SEPARATOR);
+            $toolbar->appendButton(OntoWiki_Toolbar::DELETE, $params);
 
-            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::ADD, array(
-                        'name' => 'Add Property', 
-                        '+class' => 'property-add', 
-                        'title' => 'SHIFT + ALT + a'
-                    )
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR);
+            $toolbar->prependButton(
+                OntoWiki_Toolbar::ADD,
+                array(
+                    'name' => 'Add Property',
+                    '+class' => 'property-add',
+                    'title' => 'SHIFT + ALT + a'
+                )
             );
 
-            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR)
-                    ->prependButton(OntoWiki_Toolbar::CANCEL, array(
-                        '+class' => 'hidden', 
-                        'title' => 'SHIFT + ALT + c'
-                    )
+            $toolbar->prependButton(OntoWiki_Toolbar::SEPARATOR);
+            $toolbar->prependButton(
+                OntoWiki_Toolbar::CANCEL,
+                array(
+                    '+class' => 'hidden',
+                    'title' => 'SHIFT + ALT + c'
+                )
             );
 
             $toolbar->prependButton(
-                OntoWiki_Toolbar::SAVE, array(
-                    '+class' => 'hidden', 
+                OntoWiki_Toolbar::SAVE,
+                array(
+                    '+class' => 'hidden',
                     'title' => 'SHIFT + ALT + s'
                 )
             );
@@ -493,6 +508,33 @@ class ResourceController extends OntoWiki_Controller_Base
 
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
         echo $serializer->serializeResourceToString($resource, $modelUri, false, true, $addedStatements);
-        return;
+    }
+    
+    public function headAction()
+    {
+        // disable layout for Ajax requests
+        $this->_helper->layout()->disableLayout();
+        // disable rendering
+        $this->_helper->viewRenderer->setNoRender();
+        
+        $redirect = $this->getParam('noredirect', false);
+        $resourceUri = $this->getParam('r', '');
+        
+        if ("" == $resourceUri)
+            echo json_encode(array());
+        else
+        {
+            $options = array(
+                'timeout'       => 30
+            );
+            
+            if ('true' == $redirect)
+                $options['maxredirects'] = 0;
+                
+            $httpClient = Erfurt_App::getInstance()->getHttpClient($resourceUri, $options);
+            $httpClient->setHeaders('Accept', 'text/turtle; q=1.0, application/x-turtle; q=0.9, text/n3; q=0.8, application/rdf+xml; q=0.5, text/plain; q=0.1');
+            
+            echo json_encode($httpClient->request()->getHeaders());
+        }
     }
 }

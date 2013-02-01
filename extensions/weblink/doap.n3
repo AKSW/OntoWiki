@@ -31,6 +31,7 @@
   :weblink <http://purl.org/ontology/mo/discogs> ;
   :weblink <http://purl.org/ontology/mo/musicbrainz> ;
   :weblink <http://3ba.se/conferences/URL> ;
+  :weblink <http://usefulinc.com/ns/doap#wiki> ;
   :weblink <http://usefulinc.com/ns/doap#homepage> ;
   :weblink <http://usefulinc.com/ns/doap#download-page> ;
   :weblink <http://usefulinc.com/ns/doap#bug-database> ;

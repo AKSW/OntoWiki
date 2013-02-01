@@ -1,3 +1,5 @@
-debian/conf/apache2/*   etc/ontowiki
+debian/conf/apache2/* etc/ontowiki
 debian/conf/mysql/*   etc/ontowiki
-debian/sql/*    usr/share/dbconfig-common/data/ontowiki/
+debian/sql/*          usr/share/dbconfig-common/data/ontowiki/
+debian/conf/gnome/*   usr/share/applications
+

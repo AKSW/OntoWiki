@@ -1,5 +1,7 @@
 # OntoWiki
 
+![](https://raw.github.com/wiki/AKSW/OntoWiki/images/owHeader.png)
+
 ## Introduction
 
 is a tool providing support for agile, distributed knowledge engineering scenarios.

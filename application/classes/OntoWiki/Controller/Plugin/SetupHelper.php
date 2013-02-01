@@ -49,10 +49,10 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
         if (!$this->_isSetup) {
             $frontController = Zend_Controller_Front::getInstance();
             $ontoWiki        = OntoWiki::getInstance();
-            $store           = $ontoWiki->erfurt->getStore();
 
             // instantiate model if parameter passed
             if (isset($request->m)) {
+                $store  = $ontoWiki->erfurt->getStore();
                 try {
                     $model = $store->getModel($request->getParam('m', null, false));
                     $ontoWiki->selectedModel = $model;
@@ -78,6 +78,7 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
             
             // instantiate resource if parameter passed
             if (isset($request->r)) {
+                $store = $ontoWiki->erfurt->getStore();
                 $rParam = $request->getParam('r', null, true);
                 $graph = $ontoWiki->selectedModel;
                 if (null === $graph) {
