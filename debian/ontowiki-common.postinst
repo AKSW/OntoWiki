@@ -12,6 +12,9 @@ chmod 770 /usr/share/ontowiki/extensions
 chmod 770 /var/log/ontowiki
 chmod 770 /var/cache/ontowiki
 
+# enable the rewrite base
+sed 's/#RewriteBase/RewriteBase/' -i /usr/share/ontowiki/.htaccess
+
 #DEBHELPER#
 
 echo "---- ending postinst $@"
