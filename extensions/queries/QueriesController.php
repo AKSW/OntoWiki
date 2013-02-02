@@ -317,13 +317,6 @@ class QueriesController extends OntoWiki_Controller_Component
                             matchBrackets: true,
                         }
                     );
-                    $("a.submit").unbind("click");
-                    $("a.submit").click(
-                        function(){ 
-                            $("#inputfield").text(editor.getCode()); 
-                            $(this).parents("form:first").submit(); 
-                        }
-                    );
                 }
             );'
         );
