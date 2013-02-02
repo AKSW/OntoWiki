@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   OntoWiki
  * @package    Extensions_Queries
- * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class QueriesController extends OntoWiki_Controller_Component
@@ -292,16 +292,29 @@ class QueriesController extends OntoWiki_Controller_Component
         }
 
         //load js for sparql syntax highlighting
-        $this->view->headScript()->prependFile($this->_componentUrlBase . 'resources/codemirror/js/codemirror.js');
-        $this->view->headScript()->prependScript(
-            'var editor; $(document).ready(
+        $this->view->headLink()->appendStylesheet(
+            $this->_componentUrlBase . 'resources/codemirror/lib/codemirror.css'
+        );
+        $this->view->headScript()->appendFile(
+            $this->_componentUrlBase . 'resources/codemirror/lib/codemirror.js'
+        );
+        $this->view->headScript()->appendFile(
+            $this->_componentUrlBase . 'resources/codemirror/addon/edit/matchbrackets.js'
+        );
+        $this->view->headScript()->appendFile(
+            $this->_componentUrlBase . 'resources/codemirror/mode/sparql/sparql.js'
+        );
+
+        $this->view->headScript()->appendScript(
+            'var editor;
+            $(document).ready(
                 function(){
-                    editor = CodeMirror.fromTextArea(
-                        "inputfield", 
+                    var editor = CodeMirror.fromTextArea(
+                        document.getElementById("inputfield"),
                         {
-                          parserfile: "parsesparql.js",
-                          path: "' . $this->_componentUrlBase . 'resources/codemirror/js/",
-                          stylesheet: "' . $this->_componentUrlBase . 'resources/codemirror/css/sparqlcolors.css",
+                            mode: "application/x-sparql-query",
+                            tabMode: "indent",
+                            matchBrackets: true,
                         }
                     );
                     $("a.submit").unbind("click");
