@@ -113,8 +113,16 @@ class OntoWiki_View extends Zend_View
         if ($this->_placeholderRegistry->containerExists($name)) {
             $value = $this->_placeholderRegistry->getContainer($name)->getValue();
 
-            if (!empty($value) && $value != '') {
-                return true;
+            if (is_array($value)) {
+                foreach ($value as $v) {
+                    if (!empty($v) && ($v != '')) {
+                        return true;
+                    }
+                }
+            } else {
+                if (!empty($value) && ($value != '')) {
+                    return true;
+                }
             }
         }
 
