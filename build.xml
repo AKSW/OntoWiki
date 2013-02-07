@@ -2,10 +2,9 @@
 
 <project name="OntoWiki" default="build"> 
     <target name="build-unit" depends="prepare,lint,phpunit,phpdoc,phpcb" />
-    <target name="build-integration" depends="prepare,lint,phpunit-integration,phpdoc,phpcb,phpcs-ci" />
-    <target name="build-full" depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdoc,phpunit-integration,phpcb"/>
+    <target name="build-ci" depends="prepare,lint,phpcs-ci,phpunit-integration-virtuoso,phpunit-integration-mysql,phpdoc,pdepend,phpmd-ci,phpcpd,phploc,phpcb" />
 
-     <target name="build" depends="build-integration"/>
+    <target name="build" depends="build-ci"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="${basedir}/build/api"/>
@@ -126,8 +125,16 @@
         <exec dir="${basedir}/application/tests/unit/" executable="phpunit" failonerror="true" />
     </target>
     
-    <target name="phpunit-integration" depends="phpunit" description="Run unit tests with PHPUnit">
-        <exec dir="${basedir}/application/tests/integration/" executable="phpunit" failonerror="true" />
+    <target name="phpunit-integration-mysql" depends="phpunit" description="Run unit tests with PHPUnit">
+        <exec dir="${basedir}/application/tests/integration/" executable="phpunit" failonerror="true">
+            <env key="EF_STORE_ADAPTER" value="zenddb" />
+        </exec>
+    </target>
+
+    <target name="phpunit-integration-virtuoso" depends="phpunit" description="Run unit tests with PHPUnit">
+        <exec dir="${basedir}/application/tests/integration/" executable="phpunit" failonerror="true">
+            <env key="EF_STORE_ADAPTER" value="virtuoso" />
+        </exec>
     </target>
 
     <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
