@@ -1,5 +1,7 @@
 # OntoWiki
 
+[![Build Status](http://owdev.ontowiki.net/job/OntoWiki/badge/icon)](http://owdev.ontowiki.net/job/OntoWiki/)
+
 ![](https://raw.github.com/wiki/AKSW/OntoWiki/images/owHeader.png)
 
 ## Introduction
