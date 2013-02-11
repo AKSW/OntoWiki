@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -1532,7 +1532,14 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             );
             $this->_resources = array();
             foreach ($result['results']['bindings'] as $row) {
-                $this->_resources[] = $row[$this->_resourceVar->getName()];
+                if (isset($row[$this->_resourceVar->getName()])) {
+                    $this->_resources[] = $row[$this->_resourceVar->getName()];
+                } else {
+                    throw new Erfurt_Exception(
+                        'The given query is not a valid resource query because no variable with' .
+                        'name: "' . $this->_resourceVar->getName() . '" is specified.'
+                    );
+                }
             }
             $this->_resourcesUptodate = true;
         }
