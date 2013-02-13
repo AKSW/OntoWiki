@@ -24,7 +24,8 @@
   rdfs:label "Comment" ;
   owconfig:priority "19" ;
   rdfs:label "Comment" ;
-  owconfig:context "main.window.community" .
+  owconfig:context "main.window.community" ;
+  owconfig:context "main.window.properties" .
 :community owconfig:hasModule :Lastchanges .
 :Lastchanges a owconfig:Module ;
   rdfs:label "Lastchanges" ;
