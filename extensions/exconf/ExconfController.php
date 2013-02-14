@@ -584,6 +584,10 @@ class ExconfController extends OntoWiki_Controller_Component
                 );
                 break;
         }
+
+        // invalidate ExtensionManager cache because a new extension was installed
+        $ontoWiki->extensionManager->clearCache();
+
         $url = new OntoWiki_Url(array('controller' => 'exconf', 'action' => 'explorerepo'));
         $this->_redirect($url);
     }
