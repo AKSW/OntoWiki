@@ -1694,7 +1694,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      * set all "uptodate" flags to false
      * @return OntoWiki_Model_Instances
      */
-    protected function invalidate()
+    public function invalidate()
     {
         $this->_resourcesConvertedUptodate       = false;
         $this->_resourcesUptodate                = false;
