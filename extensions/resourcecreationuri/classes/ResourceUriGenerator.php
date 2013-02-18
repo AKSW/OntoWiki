@@ -10,6 +10,7 @@
  *
  * Enter description here ...
  *
+ * @category   OntoWiki
  * @package    Extensions_Resourcecreationuri
  * @author     criess
  *

@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -10,6 +10,7 @@
  * OntoWiki error controller.
  * Fetched by default through the Zend_Controller_Plugin_ErrorHandler
  *
+ * @category   OntoWiki
  * @package    OntoWiki_Controller
  * @author     Norman Heino <norman.heino@gmail.com>
  */
