@@ -93,7 +93,7 @@ class RatingModule extends OntoWiki_Module
         $this->view->count  = count($ratingArray);
         $this->view->rating = $ratingvalue;
 
-        $content = $this->render('rating');
+        $content = $this->render('templates/rating');
 
         return $content;
     }
@@ -113,7 +113,6 @@ class RatingModule extends OntoWiki_Module
             return true;
         }
     }
-
 
     private function typeAllowed()
     {
@@ -140,7 +139,5 @@ class RatingModule extends OntoWiki_Module
         } else {
             return true;
         }
-
     }
-
 }

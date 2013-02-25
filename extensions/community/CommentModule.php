@@ -29,7 +29,7 @@ class CommentModule extends OntoWiki_Module
         $url                   = new OntoWiki_Url(array('controller' => 'community', 'action' => 'comment'), array());
         $this->view->actionUrl = (string)$url;
 
-        $content = $this->render('comment');
+        $content = $this->render('templates/comment');
 
         return $content;
     }

@@ -100,9 +100,6 @@ class LastchangesModule extends OntoWiki_Module
             $this->view->changes = $changes;
         }
 
-        return $this->render('lastchanges');
+        return $this->render('templates/lastchanges');
     }
-
 }
-
-

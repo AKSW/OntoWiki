@@ -105,9 +105,6 @@ class LastcommentsModule extends OntoWiki_Module
                 = 'There are no discussions yet, but you can use the Community tab on any resource to create one.';
         }
 
-        return $this->render('lastcomments');
+        return $this->render('templates/lastcomments');
     }
-
 }
-
-
