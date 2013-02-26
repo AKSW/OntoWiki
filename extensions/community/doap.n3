@@ -24,6 +24,8 @@
   rdfs:label "Comment" ;
   owconfig:priority "19" ;
   rdfs:label "Comment" ;
+  owconfig:context "main.window.modelinfo" ;
+  owconfig:context "main.window.dashmodelinfo" ;
   owconfig:context "main.window.community" ;
   owconfig:context "main.window.properties" .
 :community owconfig:hasModule :Lastchanges .
@@ -33,13 +35,6 @@
   rdfs:label "Last Changes" ;
   owconfig:context "main.window.modelinfo" ;
   owconfig:context "main.window.dashmodelinfo" .
-:community owconfig:hasModule :Lastcomments .
-:Lastcomments a owconfig:Module ;
-  rdfs:label "Lastcomments" ;
-  owconfig:priority "15" ;
-  rdfs:label "Last Comments" ;
-  owconfig:context "main.window.modelinfo" ;
-  owconfig:context "main.window.dashmodelinfo" .
 :community owconfig:hasModule :Rating .
 :Rating a owconfig:Module ;
   rdfs:label "Rating" ;
@@ -47,7 +42,8 @@
   owconfig:priority "20" ;
   owconfig:context "main.window.properties" .
 :community :enableRating "false"^^xsd:boolean ;
-  owconfig:config [
+           :limit "3"^^xsd:int ;
+ owconfig:config [
       a owconfig:Config;
       owconfig:id "about";
       :property <http://rdfs.org/sioc/ns#about>

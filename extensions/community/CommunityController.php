@@ -48,6 +48,7 @@ class CommunityController extends OntoWiki_Controller_Component
             $list->addShownProperty($contentProperty, "content", false, null, false);
             $list->addShownProperty($dateProperty, "date", false, null, false);
             $list->setLimit(10);
+            $list->setOrderProperty($dateProperty, false);
 
             if ($this->_request->getParam('mode') === 'multi') {
                 $list->addShownProperty($aboutProperty, "about", false, null, false);
