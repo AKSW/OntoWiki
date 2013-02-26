@@ -1,14 +1,17 @@
-<li class="<?php if($this->odd){echo "odd";} else {echo "even";} ?>">
-    <?php if($this->instance['type'] == 'uri'){
-        $entry = $this->instanceData[$this->instanceUri];
-
-        ?>
-        <div class="community-item">
-            <h3  class="name"><a href="<?php echo $this->instance['url'] ?>"><?php echo $this->instance['title'] ?></a></h3>
-            <p class="creator"><a href="<?php echo $this->instanceData[$this->instanceUri]['creator'][0]['url'] ?>"><?php echo $this->instanceData[$this->instanceUri]['creator'][0]['value']; ?></a> said</p>
-            <p class="val"><?php echo $this->instanceData[$this->instanceUri]['content'][0]['value']; ?></p>
-            <?php if(isset($this->instanceData[$this->instanceUri]['about'])){ ?><p class="about">about <a href="<?php echo $this->instanceData[$this->instanceUri]['about'][0]['url']; ?>"><?php echo $this->instanceData[$this->instanceUri]['about'][0]['value']; ?></a></p><?php } ?>
-            <p class="date"><?php echo OntoWiki_Utils::dateDifference(strtotime($this->instanceData[$this->instanceUri]['date'][0]['value']), time()); ?></p>
-        </div>
-    <?php } ?>
-</li>
+    <tr
+        about="<?php echo $this->comment ?>"
+        resource="<?php echo $this->comment ?>"
+        class="Resource community-item comment <?php echo $this->odd ? 'odd' : 'even'; ?>"
+    >
+        <td>
+            <strong><?php echo $this->author ?></strong> on 
+            <a
+                about="<?php echo $this->resource ?>"
+                resource="<?php echo $this->resource ?>"
+                class="Resource hasMenu"
+                href="<?php echo $this->resourceUrl ?>"
+            ><?php echo $this->resourceName ?></a>
+            <span class="date" style="color:#aaa;font-size:0.9em">(<?php echo $this->date ?>)</span>:
+            <?php echo $this->content ?>
+        </td>
+    </tr>

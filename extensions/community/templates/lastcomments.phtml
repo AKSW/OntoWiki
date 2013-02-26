@@ -14,21 +14,25 @@
 
 <?php if ($this->has('comments')): ?>
 <table class="separated-vertical">
-<?php $odd = false; ?>
-<?php foreach($this->comments as $comment): ?>
-    <tr class="comment <?php echo $odd ? 'odd' : 'even'; $odd = !$odd; ?>">
-        <td>
-            <?php echo $comment['author'] ?> on 
-            <a resource="<?php echo $comment['resource'] ?>" class="Resource hasMenu"
-               about="<?php echo $comment['resource'] ?>"
-               href="<?php echo $this->urlBase ?>community/list/?r=<?php echo urlencode($comment['resource']) ?>">
-                <?php echo $comment['rname'] ?>
-            </a>
-            <span style="color:#aaa;font-size:0.9em">(<?php echo $comment['date'] ?>)</span>:
-            <?php echo $comment['content'] ?>
-        </td>
-    </tr>
-<?php endforeach; ?>
+<?php
+    $odd = false;
+    foreach($this->comments as $comment){
+        echo $this->partial('partials/list_community_item.phtml',
+            array(
+                'author'        => $comment['author'],
+                'comment'       => $comment['comment'],
+                'commentUrl'    => $comment['comment'],
+                'resource'      => $comment['resource'],
+                'resourceUrl'   => $this->urlBase . 'community/list/?r=' . urlencode($comment['resource']),
+                'resourceName'  => $comment['rname'],
+                'content'       => $comment['content'],
+                'date'          => $comment['date'],
+                'odd'           => $odd,
+            )
+        );
+        $odd = !$odd;
+    }
+?>
 </table>
 
 <?php if ($this->has('more')): ?>

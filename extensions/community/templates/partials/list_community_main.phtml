@@ -1,20 +1,21 @@
-<ul>
+<table class="separated-vertical">
 <?php
-$i=1; $odd = true;
+$odd = true;
 foreach ($this->instanceInfo as $instance){
-            echo $this->partial('partials/list_community_item.phtml',
-                array(
-                    'instanceUri'  => $instance['uri'],
-                    'instance'     => $instance,
-                    'instanceData' => $this->instanceData,
-                    'instanceInfo' => $this->instanceInfo,
-                    'propertyInfo' => $this->propertyInfo,
-                    'other'        => $this->other,
-                    'odd'          => $odd,
-                    'i'            => $i
-                )
-             );
-            $odd = !$odd;
-            $i++;
-        } ?>
-</ul>
+    echo $this->partial('partials/list_community_item.phtml',
+        array(
+            'author'        => $this->instanceData[$instance['uri']]['creator'][0]['value'],
+            'comment'       => $instance['uri'],
+            'commentUrl'    => $this->instanceData[$instance['uri']]['resourceUri'][0]['url'],
+            'resource'      => $this->instanceData[$instance['uri']]['about'][0]['uri'],
+            'resourceUrl'   => $this->instanceData[$instance['uri']]['about'][0]['url'],
+            'resourceName'  => $this->instanceData[$instance['uri']]['about'][0]['value'],
+            'content'       => $this->instanceData[$instance['uri']]['content'][0]['value'],
+            'date'          => OntoWiki_Utils::dateDifference(strtotime($this->instanceData[$instance['uri']]['date'][0]['value']), time()),
+            'odd'           => $odd,
+        )
+     );
+    $odd = !$odd;
+}
+?>
+</table>

@@ -43,6 +43,7 @@ class CommunityController extends OntoWiki_Controller_Component
 
             $list->addTypeFilter($commentType, 'searchcomments');
 
+            $list->addShownProperty($aboutProperty, "about", false, null, false);
             $list->addShownProperty($creatorProperty, "creator", false, null, false);
             $list->addShownProperty($contentProperty, "content", false, null, false);
             $list->addShownProperty($dateProperty, "date", false, null, false);
