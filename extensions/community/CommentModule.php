@@ -68,38 +68,51 @@ class CommentModule extends OntoWiki_Module
 
     public function getContents()
     {
-        // output last comments
-        if ($this->results) {
-            $comments = array();
-            foreach ($this->results as $comment) {
-                require_once 'OntoWiki/Resource.php';
-                $comment['aresource'] = new OntoWiki_Resource((string)$comment['author'], $this->systemModel);
-                $comment['author']    = $comment['aresource']->getTitle() ? $comment['aresource']->getTitle()
-                    : OntoWiki_Utils::getUriLocalPart($comment['author']);
+        if ($this->getContext() != 'main.window.community') {
+            // output last comments
+            if ($this->results) {
+                $comments = array();
+                foreach ($this->results as $comment) {
+                    $comment['aresource'] = new OntoWiki_Resource(
+                        (string)$comment['author'], $this->systemModel
+                    );
+                    if ($comment['aresource']->getTitle()) {
+                        $comment['author'] = $comment['aresource']->getTitle();
+                    } else {
+                        OntoWiki_Utils::getUriLocalPart($comment['author']);
+                    }
 
-                $comment['date']    = OntoWiki_Utils::dateDifference($comment['date'], null, 3);
-                $comment['content'] = OntoWiki_Utils::shorten($comment['content'], 50);
+                    $comment['date']    = OntoWiki_Utils::dateDifference($comment['date'], null, 3);
+                    $comment['content'] = OntoWiki_Utils::shorten($comment['content'], 50);
 
-                $comment['resource'] = new OntoWiki_Resource((string)$comment['resource'], $this->model);
-                $comment['rname']    = $comment['resource']->getTitle() ? $comment['resource']->getTitle()
-                    : OntoWiki_Utils::contractNamespace($comment['resource']->getIri());
+                    $comment['resource'] = new OntoWiki_Resource(
+                        (string)$comment['resource'], $this->model
+                    );
+                    if ($comment['resource']->getTitle()) {
+                        $comment['rname'] = $comment['resource']->getTitle();
+                    } else {
+                        OntoWiki_Utils::contractNamespace($comment['resource']->getIri());
+                    }
 
-                $comments[] = $comment;
+                    $comments[] = $comment;
+                }
+
+                /* use only config limit comments */
+                if (count($comments) > $this->_privateConfig->limit) {
+                    $comments = array_slice($comments, 0, $this->_privateConfig->limit);
+                    // TODO: add a link to the modul "see all comments"
+                }
+
+                $this->view->comments = $comments;
+            } else {
+                $this->view->infomessage
+                    = 'There are no discussions yet, but you can use the Community tab on any resource to create one.';
             }
 
-            /* use only config limit comments */
-            if (count($comments) > $this->_privateConfig->limit) {
-                $comments = array_slice($comments, 0, $this->_privateConfig->limit);
-                // TODO: add a link to the modul "see all comments"
-            }
-
-            $this->view->comments = $comments;
+            $content = $this->render('templates/lastcomments');
         } else {
-            $this->view->infomessage
-                = 'There are no discussions yet, but you can use the Community tab on any resource to create one.';
+            $content = '';
         }
-
-        $content = $this->render('templates/lastcomments');
 
         // comment form part
         if ((isset($this->_owApp->selectedModel))
