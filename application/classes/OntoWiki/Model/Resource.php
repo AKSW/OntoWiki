@@ -406,15 +406,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
         $predVar = new Erfurt_Sparql_Query2_Var('predicate');
         $objVar  = new Erfurt_Sparql_Query2_Var('object');
 
-        $query
-            ->addTriple($uri, $predVar, $objVar);
-        $query->addFilter(
-            new Erfurt_Sparql_Query2_UnaryExpressionNot(
-                new Erfurt_Sparql_Query2_isBlank(
-                    $objVar
-                )
-            )
-        );
+        $query->addTriple($uri, $predVar, $objVar);
 
         if (!empty($this->_ignoredPredicates)) {
             $or     = new Erfurt_Sparql_Query2_ConditionalAndExpression();

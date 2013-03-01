@@ -173,17 +173,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         //    ->add($this->_resourceVar);
 
         // when resourceVar is the object - prevent literals
-        $this->_resourceQuery->addFilter(
-            new Erfurt_Sparql_Query2_ConditionalAndExpression(
-                array(
-                     //new Erfurt_Sparql_Query2_isUri($this->_resourceVar),
-
-                     new Erfurt_Sparql_Query2_UnaryExpressionNot(
-                         new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
-                     )
-                )
-            )
-        );
 
         //build value query
         $this->_valueQuery = new Erfurt_Sparql_Query2();
@@ -1266,10 +1255,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 }
 
                 if ($data['type'] == 'uri') {
-                    if (substr($data['value'], 0, 2) == '_:') {
-                        continue; // skip blanknode values here due to backend problems with filters
-                    }
-
                     // object type is uri --> handle object property
                     $objectUri = $data['value'];
                     $url->setParam('r', $objectUri, true);
