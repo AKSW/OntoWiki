@@ -1279,6 +1279,33 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                     if (!$event->handled()) {
                         $value = $this->_titleHelper->getTitle($objectUri);
                     }
+                } else if ($data['type'] == 'bnode') {
+                    $nodeID = $data['value'];
+
+                    // HACK: modify array for bnode support
+                    $data['value'] = $nodeID;
+
+
+                    $url->setParam('r', $nodeID, true);
+                    $link = (string)$url;
+
+                    // set up event
+                    $event = new Erfurt_Event('onDisplayObjectPropertyValue');
+                    // find URI
+                    foreach ($this->_shownProperties as $property) {
+                        if ($varName == $property['varName']) {
+                            $event->property = $property['uri'];
+                        }
+                    }
+                    $event->value = $nodeID;
+                    $value = $event->trigger();
+
+                    if (!$event->handled()) {
+                        $value = $this->_titleHelper->getTitle($nodeID);
+                    }
+
+                    // Enclose in bNode brackets
+                    $value = '[' . $value . ']';
                 } else {
                     // object is a literal
                     $object = $data['value'];
@@ -1569,17 +1596,37 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $resourceResults = array();
         foreach ($resources as $resource) {
-            $thisResource        = $resource;
-            $thisResource['uri'] = $resource['value'];
-            // the URL to view this resource in detail
-            $url    = new OntoWiki_Url(array('controller' => 'resource', 'action' => 'properties'), array());
-            $url->r = $resource['value'];
+            if ($resource['type'] == 'uri') {
+                $uri = $resource['value'];
+                if (!array_key_exists($uri, $resourceResults)) {
+                    $resourceResults[$uri] = $resource;
+                }
 
-            $thisResource['url'] = (string)$url;
-            // title
-            $thisResource['title'] = $this->_titleHelper->getTitle($resource['value']);
+                // URL
+                $url = $this->_defaultUrl['resource'];
+                $url->setParam($this->_defaultUrlParam['resource'],$uri,true);
 
-            $resourceResults[] = $thisResource;
+                $resourceResults[$uri]['url'] = (string) $url;
+                $resourceResults[$uri]['uri'] = $uri;
+
+                // title
+                $resourceResults[$uri]['title'] = $this->_titleHelper->getTitle($uri);
+            } else if ($resource['type'] == 'bnode') {
+                $uri = $resource['value'];
+                if (!array_key_exists($uri, $resourceResults)) {
+                    $resourceResults[$uri] = $resource;
+                }
+
+                // URL
+                $url = $this->_defaultUrl['resource'];
+                $url->setParam($this->_defaultUrlParam['resource'], $uri, true);
+
+                $resourceResults[$uri]['url'] = (string) $url;
+                $resourceResults[$uri]['uri'] = $uri;
+
+                // title
+                $resourceResults[$uri]['title'] = '[' . $this->_titleHelper->getTitle($resource['value']) . ']';
+            }
         }
 
         return $resourceResults;
@@ -1588,7 +1635,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected function getShownResources()
     {
         if (!$this->_resourcesUptodate) {
-            $result           = $this->_store->sparqlQuery(
+            $result = $this->_store->sparqlQuery(
                 $this->_resourceQuery,
                 array(
                      Erfurt_Store::RESULTFORMAT => Erfurt_Store::RESULTFORMAT_EXTENDED,

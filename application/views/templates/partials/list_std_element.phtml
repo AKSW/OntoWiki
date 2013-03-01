@@ -12,7 +12,7 @@ $viewUrl = new OntoWiki_Url(array('controller' => 'resource','action' => 'proper
         </td-->
         <td class="enumeration"><label for="selector-<?php echo $this->i ?>"><?php echo $this->i ?>.</label></td>
         <td>
-            <?php if($this->instance['type'] == 'uri'){
+            <?php if($this->instance['type'] == 'uri' || $this->instance['type'] == 'bnode') {
             //first table cell in row - instance title/label
             ?>
             <a class="hasMenu expandable"
