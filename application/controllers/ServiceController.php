@@ -673,15 +673,21 @@ class ServiceController extends Zend_Controller_Action
             }
         } else {
             // no query, inserts and delete triples by JSON via param
-            $insert = json_decode($this->_request->getParam('insert', '{}'), true);
-            $delete = json_decode($this->_request->getParam('delete', '{}'), true);
+            $insert = $this->_request->getParam('insert', '{}');
+            $insert = str_replace('nodeid', 'nodeID', $insert);
+            $insert = json_decode($insert, true);
+
+
+            $delete = $this->_request->getParam('delete', '{}');
+            $delete = str_replace('nodeid', 'nodeID', $delete);
+            $delete = json_decode($delete, true);
 
             if ($this->_request->has('delete_hashed')) {
-                $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes(
-                    $namedGraph,
-                    json_decode($this->_request->getParam('delete_hashed'), true)
-                );
-                $delete                 = array_merge_recursive($delete, $hashedObjectStatements);
+                $hashed = $this->_request->getParam('delete_hashed', '{}');
+                $hashed = str_replace('nodeid', 'nodeID', $hashed);
+                $hashed = json_decode($hashed, true);
+                $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes($namedGraph, $hashed);
+                $delete = array_merge_recursive($delete, $hashedObjectStatements);
             }
 
             try {
