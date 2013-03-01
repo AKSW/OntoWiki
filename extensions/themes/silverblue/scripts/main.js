@@ -168,7 +168,7 @@ $(document).ready(function() {
     /* trigger selection events */
     $('table.resource-list > tbody > tr').live('click', function(e) {
         var selectee     = $(this);
-        var selectionURI = $(this).children('td').children('a').attr('about');
+        var selectionURI = $(this).attr('about') | $(this).children('td').children('a').attr('about');
 
         // return if we have no URI (e.g. a Literal list)
         if (typeof selectionURI == 'undefined') {
