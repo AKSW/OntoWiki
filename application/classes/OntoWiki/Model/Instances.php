@@ -642,8 +642,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                     if ($negate) {
                         $optionalGP = new Erfurt_Sparql_Query2_OptionalGraphPattern();
                         $optionalGP->addElement($triple);
-                        $this->_resourceQuery->addElement($optionalGP);
-                        $triple = $optionalGP;
 
                         if ($optional) {
                             $orExpression = new Erfurt_Sparql_Query2_ConditionalOrExpression();
@@ -654,12 +652,15 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                             );
                             $orExpression->addElement(new Erfurt_Sparql_Query2_NotEquals($valueVar, $valueObj));
 
-                            $filterObj = $this->_resourceQuery->addFilter($orExpression);
+                            $filterObj = $optionalGP->addFilter($orExpression);
                         } else {
-                            $filterObj = $this->_resourceQuery->addFilter(
+                            $filterObj = $optionalGP->addFilter(
                                 new Erfurt_Sparql_Query2_NotEquals($valueVar, $valueObj)
                             );
                         }
+
+                        $this->_resourceQuery->addElement($optionalGP);
+                        $triple = $optionalGP;
                     } else {
                         $this->_resourceQuery->addElement($triple);
                         $filterObj = $this->_resourceQuery->addFilter(
