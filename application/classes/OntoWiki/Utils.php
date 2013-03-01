@@ -267,6 +267,10 @@ class OntoWiki_Utils
                 $erfurtConfig = Erfurt_App::getInstance()->getConfig();
                 $uriSchemas   = array_flip($erfurtConfig->uri->schemata->toArray());
 
+                // TODO: load from config
+                $uriSchemas['nodeID'] = true;
+                $uriSchemas['node']   = true;
+
                 if (array_key_exists($prefix, (array)$uriSchemas)) {
                     // prefix is an allowed URI schema
                     return $qName;
