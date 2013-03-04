@@ -33,7 +33,7 @@ class LinkinghereModule extends OntoWiki_Module
                 'WHERE {
                     ?subject ?uri <' . (string)$this->_owApp->selectedResource . '> .
                 }'
-            );
+            )->setLimit(6);
 
         $result           = $this->_owApp->selectedModel->sparqlQuery($query, array('result_format' => 'extended'));
         $_predicatesResult = array();
