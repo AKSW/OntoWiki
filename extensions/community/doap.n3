@@ -21,7 +21,6 @@
   doap:maintainer <http://aksw.org> ;
   owconfig:hasModule :Comment .
 :Comment a owconfig:Module ;
-  rdfs:label "Comment" ;
   owconfig:priority "19" ;
   rdfs:label "Comment" ;
   owconfig:context "main.window.modelinfo" ;
@@ -30,7 +29,6 @@
   owconfig:context "main.window.properties" .
 :community owconfig:hasModule :Lastchanges .
 :Lastchanges a owconfig:Module ;
-  rdfs:label "Lastchanges" ;
   owconfig:priority "18" ;
   rdfs:label "Last Changes" ;
   owconfig:context "main.window.modelinfo" ;
