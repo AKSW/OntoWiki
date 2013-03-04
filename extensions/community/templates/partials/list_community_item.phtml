@@ -4,14 +4,24 @@
         class="Resource community-item comment <?php echo $this->odd ? 'odd' : 'even'; ?>"
     >
         <td>
-            <strong><?php echo $this->author ?></strong> on 
-            <a
-                about="<?php echo $this->resource ?>"
-                resource="<?php echo $this->resource ?>"
-                class="Resource hasMenu"
-                href="<?php echo $this->resourceUrl ?>"
-            ><?php echo $this->resourceName ?></a>
-            <span class="date" style="color:#aaa;font-size:0.9em">(<?php echo $this->date ?>)</span>:
-            <?php echo $this->content ?>
+            <div class="has-contextmenu-area">
+                <div class="contextmenu">
+                    <a href="<?php echo $this->commentUrl ?>"
+                        class="item">
+                        <span class="icon icon-arrow-next" title="Jump to resource">
+                            <span>Jump to resource</span>
+                        </span>
+                    </a>
+                </div>
+                <strong><?php echo $this->author ?></strong> on 
+                <a
+                    about="<?php echo $this->resource ?>"
+                    resource="<?php echo $this->resource ?>"
+                    class="Resource hasMenu"
+                    href="<?php echo $this->resourceUrl ?>"
+                ><?php echo $this->resourceName ?></a>
+                <span class="date" style="color:#aaa;font-size:0.9em">(<?php echo $this->date ?>)</span>:
+                <?php echo $this->content ?>
+            </div>
         </td>
     </tr>
