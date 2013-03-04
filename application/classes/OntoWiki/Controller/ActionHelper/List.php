@@ -79,37 +79,71 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         throw new InvalidArgumentException('list was not found. check with listExists() first');
     }
 
-    public function addListPermanently($name, OntoWiki_Model_Instances $list, Zend_View_Interface $view,
-        $mainTemplate = 'list_std_main', $other = null
+    /**
+     * Render a list, add it to the cache and add it to the current view
+     *
+     * @param $listName string with a listname
+     * @param $list OntoWiki_Model_Instances a list of resources
+     * @param $view the current view to which the list should be added
+     * @param $mainTemplate the template to use for rendering the list
+     * @param $other array of other values available to the template
+     * @param $returnOutput true|false if false, the list is rendered directly to the view else the
+     *        rendered list is returned
+     * @return the rendered list if $returnOutput is true
+     */
+    public function addListPermanently(
+        $listName,
+        OntoWiki_Model_Instances $list,
+        Zend_View_Interface $view,
+        $mainTemplate = 'list_std_main',
+        $other = null,
+        $returnOutput = false
     ) {
-        $this->updateList($name, $list, true);
-        $this->addList($name, $list, $view, $mainTemplate, $other);
+        $this->updateList($listName, $list, true);
+        return $this->addList($listName, $list, $view, $mainTemplate, $other, $returnOutput);
     }
 
+    /**
+     * Render a list and add it to the current view
+     *
+     * @param $listName string with a listname
+     * @param $list OntoWiki_Model_Instances a list of resources
+     * @param $view the current view to which the list should be added
+     * @param $mainTemplate the template to use for rendering the list
+     * @param $other array of other values available to the template
+     * @param $returnOutput true|false if false, the list is rendered directly to the view else the
+     *        rendered list is returned
+     * @return the rendered list if $returnOutput is true
+     */
     public function addList(
         $listName,
         OntoWiki_Model_Instances $list,
         Zend_View_Interface $view,
         $mainTemplate = 'list_std_main',
-        $other = null
+        $other = null,
+        $returnOutput = false
     ) {
         if ($other === null) {
             $other = new stdClass();
         }
-        $this->getResponse()->append(
-            'default',
-            $view->partial(
-                'partials/list.phtml',
-                array(
-                     'listName'     => $listName,
-                     'instances'    => $list,
-                     'mainTemplate' => $mainTemplate,
-                     'other'        => $other
-                )
+
+        $renderedList = $view->partial(
+            'partials/list.phtml',
+            array(
+                 'listName'     => $listName,
+                 'instances'    => $list,
+                 'mainTemplate' => $mainTemplate,
+                 'other'        => $other
             )
         );
+
         $this->_owApp->session->lastList = $listName;
-        //$this->getActionController()->addModuleContext('main.window.list');
+
+        if ($returnOutput) {
+            return $renderedList;
+        } else {
+            $this->getResponse()->append('default', $renderedList);
+        }
     }
 
     public function updateList($name, OntoWiki_Model_Instances $list, $setLast = false)
