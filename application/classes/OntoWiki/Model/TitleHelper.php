@@ -335,12 +335,10 @@ class OntoWiki_Model_TitleHelper
                 }
                 $this->addResource($resourceUri);
             }
-
             // if this is the first getTitle request, fetch titles
-            if (!isset($this->_resourceTitles[$resourceUri])) {
+            if (!array_key_exists($resourceUri, $this->_resourceTitles)) {
                 $this->_fetchResourceTitlesFromQueryResult();
             }
-
             // prepend the language that is asked for to the array
             // of languages we will look for
             $languages = $this->_languages;
@@ -377,7 +375,6 @@ class OntoWiki_Model_TitleHelper
                     }
                 }
             }
-
             // still not found?
             if (null === $title) {
                 $title = OntoWiki_Utils::contractNamespace($resourceUri);
@@ -385,6 +382,9 @@ class OntoWiki_Model_TitleHelper
                 // not even namespace found?
                 if ($title == $resourceUri && $this->_alwaysUseLocalNames) {
                     $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
+
+                    //now we have to add this localName to the ResourceTitles array to prevent queriing of resources without titles all the time
+                    $this->_resourceTitles[$resourceUri]["localname"]["localname"] = $title;
                 }
             }
 
@@ -393,7 +393,6 @@ class OntoWiki_Model_TitleHelper
             // cached title
             $title = $cacheValue;
         }
-
         return $title;
     }
 
@@ -411,21 +410,14 @@ class OntoWiki_Model_TitleHelper
 
         // get results for all queries
         $queries = $this->getTitleQueries();
+
         foreach ($queries as $resourceUri => $currentQuery) {
             if (isset($this->_titleQueryResults[$resourceUri])) {
                 continue;
             }
-
             $queryResults = $execObject->sparqlQuery($currentQuery, array('result_format' => 'extended'));
-
-            if (is_array($queryResults)
-                && isset($queryResults['head']['vars'])
-                && !empty($queryResults['head']['vars'])
-            ) {
-                $this->_titleQueryResults[$resourceUri] = $queryResults;
-            }
+            $this->_titleQueryResults[$resourceUri] = $queryResults;
         }
-
         if (defined('_OWDEBUG')) {
             $numQueries = count($queries);
 
@@ -510,8 +502,17 @@ class OntoWiki_Model_TitleHelper
      */
     protected function _fetchResourceTitlesFromQueryResult()
     {
-        foreach ($this->getTitleQueryResult() as $resourceUri => $titleQueryResult) {
+		$titleResults = $this->getTitleQueryResult();
+		if (count($titleResults) === 0) {
+			return;
+		}
+
+        foreach ($titleResults as $resourceUri => $titleQueryResult) {
             // fetch result
+
+            if (!(isset($titleQueryResult['head']) && isset($titleQueryResult['results']['bindings']))) {
+                continue;
+            }
             $queryResult = $titleQueryResult;
             $head        = $queryResult['head'];
             $bindings    = $queryResult['results']['bindings'];
@@ -521,7 +522,6 @@ class OntoWiki_Model_TitleHelper
 
                 $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
             }
-
             foreach ($bindings as $row) {
                 // get the resource URI
                 $currentResource = $resourceUri;
