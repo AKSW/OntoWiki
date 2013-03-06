@@ -18,6 +18,12 @@ class DefaultmodelPlugin extends OntoWiki_Plugin
 {
     public function onAfterInitController($event)
     {
+        //this extension should only run if no explicit model is given via request parameter "m"
+        $request = new Zend_Controller_Request_Http();
+        if ($request->get("m")) {
+            return;
+        }
+
         $config = $this->_privateConfig->toArray();
         $efApp  = Erfurt_App::getInstance();
 
