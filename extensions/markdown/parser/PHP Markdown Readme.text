@@ -1,10 +1,10 @@
 PHP Markdown
 ============
 
-Version 1.0.1m - Sat 21 Jun 2008
+Version 1.0.1p - Sun 13 Jan 2013
 
-by Michel Fortin
-<http://michelf.com/>
+by Michel Fortin  
+<http://michelf.ca/>
 
 based on work by John Gruber  
 <http://daringfireball.net/>
@@ -22,9 +22,9 @@ tool, written in Perl, that converts the plain text markup to HTML.
 PHP Markdown is a port to PHP of the original Markdown program by 
 John Gruber.
 
-PHP Markdown can work as a plug-in for WordPress and bBlog, as a 
-modifier for the Smarty templating engine, or as a remplacement for
-textile formatting in any software that support textile.
+PHP Markdown can work as a plug-in for WordPress, as a modifier for
+the Smarty templating engine, or as a replacement for Textile
+formatting in any software that supports Textile.
 
 Full documentation of Markdown's syntax is available on John's 
 Markdown page: <http://daringfireball.net/projects/markdown/>
@@ -35,6 +35,10 @@ Installation and Requirement
 
 PHP Markdown requires PHP version 4.0.5 or later.
 
+Before PHP 5.3.7, pcre.backtrack_limit defaults to 100 000, which is too small
+in many situations. You might need to set it to higher values. Later PHP 
+releases defaults to 1 000 000, which is usually fine.
+
 
 ### WordPress ###
 
@@ -42,7 +46,7 @@ PHP Markdown works with [WordPress][wp], version 1.2 or later.
 
  [wp]: http://wordpress.org/
 
-1.  To use PHP Markdown with WordPress, place the "makrdown.php" file 
+1.  To use PHP Markdown with WordPress, place the "markdown.php" file 
     in the "plugins" folder. This folder is located inside 
     "wp-content" at the root of your site:
 
@@ -51,56 +55,39 @@ PHP Markdown works with [WordPress][wp], version 1.2 or later.
 2.  Activate the plugin with the administrative interface of 
     WordPress. In the "Plugins" section you will now find Markdown. 
     To activate the plugin, click on the "Activate" button on the 
-    same line than Markdown. Your entries will now be formatted by 
+    same line as Markdown. Your entries will now be formatted by 
     PHP Markdown.
 
 3.  To post Markdown content, you'll first have to disable the 
-	"visual" editor in the User section of WordPress.
+    "visual" editor in the User section of WordPress.
 
 You can configure PHP Markdown to not apply to the comments on your 
 WordPress weblog. See the "Configuration" section below.
 
 It is not possible at this time to apply a different set of 
-filters to different entries. All your entries will be formated by 
+filters to different entries. All your entries will be formatted by 
 PHP Markdown. This is a limitation of WordPress. If your old entries 
 are written in HTML (as opposed to another formatting syntax, like 
 Textile), they'll probably stay fine after installing Markdown.
-
-
-### bBlog ###
-
-PHP Markdown also works with [bBlog][bb].
-
- [bb]: http://www.bblog.com/
-
-To use PHP Markdown with bBlog, rename "markdown.php" to 
-"modifier.markdown.php" and place the file in the "bBlog_plugins" 
-folder. This folder is located inside the "bblog" directory of 
-your site, like this:
-
-        (site home)/bblog/bBlog_plugins/modifier.markdown.php
-
-Select "Markdown" as the "Entry Modifier" when you post a new 
-entry. This setting will only apply to the entry you are editing.
 
 
 ### Replacing Textile in TextPattern ###
 
 [TextPattern][tp] use [Textile][tx] to format your text. You can 
 replace Textile by Markdown in TextPattern without having to change
-any code by using the *Texitle Compatibility Mode*. This may work 
+any code by using the *Textile Compatibility Mode*. This may work 
 with other software that expect Textile too.
 
  [tx]: http://www.textism.com/tools/textile/
  [tp]: http://www.textpattern.com/
 
 1.  Rename the "markdown.php" file to "classTextile.php". This will
-	make PHP Markdown behave as if it was the actual Textile parser.
+    make PHP Markdown behave as if it was the actual Textile parser.
 
 2.  Replace the "classTextile.php" file TextPattern installed in your
-	web directory. It can be found in the "lib" directory:
+    web directory. It can be found in the "lib" directory:
 
-		(site home)/textpattern/lib/
+        (site home)/textpattern/lib/
 
 Contrary to Textile, Markdown does not convert quotes to curly ones 
 and does not convert multiple hyphens (`--` and `---`) into en- and 
@@ -110,7 +97,7 @@ can solve this problem by installing the "smartypants.php" file from
 Compatibility Mode function will use SmartyPants automatically without 
 further modification.
 
- [psp]: http://michelf.com/projects/php-smartypants/
+ [psp]: http://michelf.ca/projects/php-smartypants/
 
 
 ### Updating Markdown in Other Programs ###
@@ -191,24 +178,45 @@ Bugs
 ----
 
 To file bug reports please send email to:
-<michel.fortin@michelf.com>
+<michel.fortin@michelf.ca>
 
 Please include with your report: (1) the example input; (2) the output you
 expected; (3) the output PHP Markdown actually produced.
+
+If you have a problem where Markdown gives you an empty result, first check 
+that the backtrack limit is not too low by running `php --info | grep pcre`.
+See Installation and Requirement above for details.
 
 
 Version History
 ---------------
 
+1.0.1p (13 Jan 2013):
+
+*	Fixed an issue where some XML-style empty tags (such as `<br/>`) were not 
+	recognized correctly as such when inserted into Markdown-formatted text.
+
+*	The following HTML 5 elements are treated as block elements when at the 
+	root of an HTML block: `article`, `section`, `nav`, `aside`, `hgroup`, 
+	`header`, `footer`, and `figure`. `svg` too.
+
+
+1.0.1o (8 Jan 2012):
+
+*	Silenced a new warning introduced around PHP 5.3 complaining about
+	POSIX characters classes not being implemented. PHP Markdown does not
+	use POSIX character classes, but it nevertheless trigged that warning.
+
+
 1.0.1n (10 Oct 2009):
 
 *	Enabled reference-style shortcut links. Now you can write reference-style 
 	links with less brakets:
-	
+
 		This is [my website].
-		
+
 		[my website]: http://example.com/
-	
+
 	This was added in the 1.0.2 betas, but commented out in the 1.0.1 branch, 
 	waiting for the feature to be officialized. [But half of the other Markdown
 	implementations are supporting this syntax][half], so it makes sense for 
@@ -218,7 +226,7 @@ Version History
 
 *	Now accepting many valid email addresses in autolinks that were 
 	previously rejected, such as:
-	
+
 		<abc+mailbox/department=shipping@example.com>
 		<!#$%&'*+-/=?^_`.{|}~@example.com>
 		<"abc@def"@example.com>
@@ -227,7 +235,7 @@ Version History
 
 *	Now accepting spaces in URLs for inline and reference-style links. Such 
 	URLs need to be surrounded by angle brakets. For instance:
-	
+
 		[link text](<http://url/with space> "optional title")
 
 		[link text][ref]
@@ -271,27 +279,27 @@ Version History
 
 *	Fix for code blocks as first element of a list item. Previously,
 	this didn't create any code block for item 2:
-	
+
 		*   Item 1 (regular paragraph)
-		
+
 		*       Item 2 (code block)
 
 *	A code block starting on the second line of a document wasn't seen
 	as a code block. This has been fixed.
-	
+
 *	Added programatically-settable parser properties `predef_urls` and 
 	`predef_titles` for predefined URLs and titles for reference-style 
 	links. To use this, your PHP code must call the parser this way:
-	
+
 		$parser = new Markdwon_Parser;
 		$parser->predef_urls = array('linkref' => 'http://example.com');
 		$html = $parser->transform($text);
-	
+
 	You can then use the URL as a normal link reference:
 	
 		[my link][linkref]	
 		[my link][linkRef]
-		
+
 	Reference names in the parser properties *must* be lowercase.
 	Reference names in the Markdown source may have any case.
 
@@ -569,7 +577,7 @@ Version History
 *	Major rewrite of the WordPress integration code that should 
 	correct many problems by preventing default WordPress filters from 
 	tampering with Markdown-formatted text. More details here:
-	<http://michelf.com/weblog/2005/wordpress-text-flow-vs-markdown/>
+	<http://michelf.ca/weblog/2005/wordpress-text-flow-vs-markdown/>
 
 
 1.0.1a (15 Apr 2005)
@@ -733,8 +741,8 @@ Copyright and License
 ---------------------
 
 PHP Markdown
-Copyright (c) 2004-2009 Michel Fortin  
-<http://michelf.com/>  
+Copyright (c) 2004-2013 Michel Fortin  
+<http://michelf.ca/>  
 All rights reserved.
 
 Based on Markdown  
