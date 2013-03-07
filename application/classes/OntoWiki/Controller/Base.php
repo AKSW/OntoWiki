@@ -96,6 +96,13 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             }
         }
 
+        // use of pre-compiled and minimized versions?
+        if (isset($this->_config->themes->useCompiled) && ((bool)$this->_config->themes->useCompiled)) {
+            $this->view->useCompiled = true;
+        } else {
+            $this->view->useCompiled = false;
+        }
+
         // check config for additional styles
         if ($stylesExtra = $this->_config->themes->styles) {
             $this->view->themeExtraStyles = $stylesExtra->toArray();

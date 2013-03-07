@@ -34,10 +34,14 @@
     <?php }  ?>
     
     <!-- ontowiki stylesheets -->
+    <?php if ($this->useCompiled): ?>
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/styles.min.css" type="text/css" media="screen" />
+    <?php else: ?>
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/default.css" type="text/css" media="screen" />
     <!-- link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/legacy.css" type="text/css" media="screen" / -->
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
+    <?php endif; ?>
 
     <!-- additional ontowiki stylesheets -->
     <?php foreach($this->themeExtraStyles as $stylesheet_extra): ?>
@@ -56,46 +60,9 @@
     
     <!-- dynamic styles -->
     <?php echo $this->headStyle() ?>
-
-    <!-- jQuery -->
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
-    
-    <!-- included js libraries -->
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.clickmenu.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.simplemodal.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.tablesorter.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.rdfquery.rdfa-1.0.js"></script>
-
-    <!-- RDFa widgets -->
-    <!--script type="text/javascript" id="RDFauthorScript" src="<?php echo $this->libraryUrlBase ?>RDFauthor/src/rdfauthor.js"></script-->
-    
-    <!-- ontowiki js -->
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/main.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/support.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/jquery.ontowiki.js"></script>
-    
-    <!-- dynamic js -->
-    <?php echo $this->headScript() ?>
-    
 </head>
 
 <body class="javascript-off" xmlns:update="http://ns.aksw.org/update/">
-    
-    <script type="text/javascript">
-        // get body element
-        var body = document.body;
-        var bodyClass = body.className;
-        // set javascript = on
-        bodyClass = bodyClass.replace(/javascript-off/g, "javascript-on");
-        // set application in processing state
-        bodyClass = bodyClass + " is-processing";
-        // process changes
-        body.setAttribute("class", bodyClass, 0);
-    </script>
-    
     <?php echo $this->inlineScript() ?>
     
     <div class="section-mainwindows <?php echo $this->placeholder('main.window.additionalclasses') ?>">
@@ -195,5 +162,45 @@
         $queryCount = OntoWiki::getInstance()->erfurt->getStore()->getQueryCount();
         $time       = (microtime(true) - REQUEST_START) * 1000;
     ?><!-- <?php echo sprintf($this->_('Rendered in %1$d ms using %2$d SPARQL queries.'), $time, $queryCount) ?> --><?php } ?>
+
+    <!-- scripts -->
+    <?php if ($this->useCompiled): ?>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/scripts.min.js"></script>
+        <?php else: ?>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
+
+    <!-- included js libraries -->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.livequery.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.clickmenu.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.simplemodal.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.tablesorter.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.rdfquery.rdfa-1.0.js"></script>
+
+    <!-- RDFa widgets -->
+    <!--script type="text/javascript" id="RDFauthorScript" src="<?php echo $this->libraryUrlBase ?>RDFauthor/src/rdfauthor.js"></script-->
+
+    <!-- ontowiki js -->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/main.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/support.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/jquery.ontowiki.js"></script>
+        <?php endif; ?>
+
+    <!-- dynamic js -->
+    <?php echo $this->headScript() ?>
+
+    <script type="text/javascript">
+        // get body element
+        var body = document.body;
+        var bodyClass = body.className;
+        // set javascript = on
+        bodyClass = bodyClass.replace(/javascript-off/g, "javascript-on");
+        // set application in processing state
+        bodyClass = bodyClass + " is-processing";
+        // process changes
+        body.setAttribute("class", bodyClass, 0);
+    </script>
+
 </body>
 </html>

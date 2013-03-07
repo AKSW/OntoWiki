@@ -448,7 +448,7 @@ function populateRDFauthor(data, protect, resource, graph, workingmode) {
                 }, {
                     graph: graph, 
                     title: objSpec.title, 
-                    protected: protect ? true : false, 
+                    "protected": protect ? true : false, 
                     hidden: objSpec.hidden ? objSpec.hidden : false
                 });
 
