@@ -183,9 +183,12 @@ class QueriesController extends OntoWiki_Controller_Component
             //handle a posted query
             $store = $this->_erfurt->getStore();
 
-            foreach ($prefixes as $prefix => $namespace) {
-                $query = 'PREFIX ' . $prefix . ': <' . $namespace . '>' . PHP_EOL . $query;
+            if (!stristr($query, 'prefix')) {
+                foreach ($prefixes as $prefix => $namespace) {
+                    $query = 'PREFIX ' . $prefix . ': <' . $namespace . '>' . PHP_EOL . $query;
+                }
             }
+
             if ($format == 'list') {
                 $url = new OntoWiki_Url(array('controller' => 'list'), array());
                 $query = str_replace("\r\n", ' ', $query);
