@@ -13,9 +13,7 @@
  *
  * @category   OntoWiki
  * @package    Extensions_Community
- * @author     Sebastian Dietzold <dietzold@informatik.uni-leipzig.de>
- * @copyright  Copyright (c) 2009, {@link http://aksw.org AKSW}
- * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author     Sebastian Tramp <mail@sebastian.tramp.name>
  */
 class LastchangesModule extends OntoWiki_Module
 {

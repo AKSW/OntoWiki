@@ -1,10 +1,30 @@
-<form action="<?php echo $this->actionUrl ?>" method="post" accept-charset="utf-8" name="comment" class="ajaxForm reloadOnSuccess">
-    <fieldset>
+<p>
+    <form id="comment-submit-form" accept-charset="utf-8" action="<?php echo $this->actionUrl ?>" method="post" name="comment" class="width98 ajaxForm reloadOnSuccess">
+        <?php if ($this->context == 'main.window.community') : ?>
         <textarea style="min-width:50%;min-height:4.5em" class="width99" name="c"></textarea>
-    </fieldset>
-    <a class="button submit">
-        <img src="<?php echo $this->themeUrlBase ?>/images/icon-comment-add.png" alt="add comment icon" />
-        <span><?php echo $this->_('Post Comment') ?></span>
-    </a>
-</form>
-
+        <a class="button submit">
+            <img src="<?php echo $this->themeUrlBase ?>/images/icon-comment-add.png" alt="add comment icon" />
+            <span><?php echo $this->_('Post Comment') ?></span>
+        </a>
+        <?php else : ?>
+        <label class="display-block onlyAural" for="comment-text"><?php echo $this->_('Enter your Comment'); ?></label>
+        <input id="comment-text" class="text width99 inner-label" name="c" />
+        <?php endif; ?>
+    </form>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // the following is not triggered in the main.window.community context
+            $('#comment-submit-form').on('submit', function(event) {
+                event.preventDefault();
+                var data = $(this).serialize();
+                $.post('<?php echo $this->actionUrl ?>', data, function() {
+                    $('#comment-list').load('<?php echo $this->listUrl ?>');
+                    <?php if ($this->context == 'main.window.community') : ?>
+                    $('#comment-submit-form').parents('.content.has-innerwindows').eq(0).children('.innercontent').load(document.URL);
+                    <?php endif; ?>
+                    $('#comment-submit-form').each(function(){this.reset();});
+                });
+            });
+        });
+    </script>
+</p>

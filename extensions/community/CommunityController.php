@@ -15,95 +15,46 @@
  */
 class CommunityController extends OntoWiki_Controller_Component
 {
+    /**
+     * list comments
+     */
     public function listAction()
     {
-        $resource  = $this->_owApp->selectedResource;
         $translate = $this->_owApp->translate;
-
-        $store = $this->_owApp->erfurt->getStore();
-        $graph = $this->_owApp->selectedModel;
-
-        $aboutProperty   = $this->_privateConfig->about->property;
-        $creatorProperty = $this->_privateConfig->creator->property;
-        $commentType     = $this->_privateConfig->comment->type;
-        $contentProperty = $this->_privateConfig->content->property;
-        $dateProperty    = $this->_privateConfig->date->property;
-
-        // get all resource comments
-        // Loading data for list of saved queries
-        $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
-        $listName   = "community-" . $this->_request->getParam('mode');
-
-        if ($listHelper->listExists($listName)) {
-            $list = $listHelper->getList($listName);
-            $list->setStore($store);
-            $listHelper->addList($listName, $list, $this->view, 'list_community_main', $this->_privateConfig);
-        } else {
-            $list = new OntoWiki_Model_Instances($store, $graph, array());
-
-            $list->addTypeFilter($commentType, 'searchcomments');
-
-            $list->addShownProperty($aboutProperty, "about", false, null, false);
-            $list->addShownProperty($creatorProperty, "creator", false, null, false);
-            $list->addShownProperty($contentProperty, "content", false, null, false);
-            $list->addShownProperty($dateProperty, "date", false, null, false);
-            $list->setLimit(10);
-            $list->setOrderProperty($dateProperty, false);
-
-            if ($this->_request->getParam('mode') === 'multi') {
-                $list->addShownProperty($aboutProperty, "about", false, null, false);
-
-                $instances = $listHelper->getList('instances');
-                $query       = clone $instances->getResourceQuery();
-                $resourceVar = $instances->getResourceVar();
-
-                $vars = $query->getWhere()->getVars();
-                foreach ($vars as $var) {
-                    if ($var->getName() == $resourceVar->getName()) {
-                        $var->setName('listresource');
-                    }
-                }
-                $elements = $query->getWhere()->getElements();
-                //link old list to elements of the community-list
-                $elements[] = new Erfurt_Sparql_Query2_Triple(
-                    $list->getResourceVar(),
-                    new Erfurt_Sparql_Query2_IriRef($aboutProperty),
-                    $var
-                );
-                $list->addTripleFilter($elements, "listfilter");
-            } else {
-                $list->addTripleFilter(
-                    array(
-                         new Erfurt_Sparql_Query2_Triple(
-                             $list->getResourceVar(),
-                             new Erfurt_Sparql_Query2_IriRef($aboutProperty),
-                             new Erfurt_Sparql_Query2_IriRef((string)$resource)
-                         )
-                    )
-                );
-            }
-
-            $listHelper->addListPermanently(
-                $listName, $list, $this->view, 'list_community_main', $this->_privateConfig
-            );
-        }
         $singleResource = true;
         if ($this->_request->getParam('mode') === 'multi') {
             $windowTitle    = $translate->_('Discussion about elements of the list');
             $singleResource = false;
         } else {
+            $resource   = $this->_owApp->selectedResource;
             if ($resource->getTitle()) {
                 $title = $resource->getTitle();
             } else {
                 $title = OntoWiki_Utils::contractNamespace($resource->getIri());
             }
             $windowTitle = sprintf($translate->_('Discussion about %1$s'), $title);
-            $this->addModuleContext('main.window.community');
         }
+
+        $this->addModuleContext('main.window.community');
         $this->view->placeholder('main.window.title')->set($windowTitle);
-        $this->view->singleResource = $singleResource;
+
+        $limit = $this->_request->getParam('climit');
+        if ($limit === null) {
+            $limit = 10;
+        }
+
+        $helper = $this->_owApp->extensionManager->getComponentHelper('community');
+        $comments = $helper->getList($this->view, $singleResource, $limit);
+        if ($comments === null) {
+            $this->view->infomessage = 'There are no discussions yet.';
+        } else {
+            $this->view->comments = $comments;
+        }
     }
 
+    /**
+     * save a comment
+     */
     public function commentAction()
     {
         if (!$this->_owApp->selectedModel->isEditable()) {
@@ -176,6 +127,9 @@ class CommunityController extends OntoWiki_Controller_Component
         }
     }
 
+    /**
+     * rate a resource
+     */
     public function rateAction()
     {
         if (!$this->_owApp->selectedModel->isEditable()) {

@@ -13,14 +13,17 @@
                         </span>
                     </a>
                 </div>
-                <strong><?php echo $this->author ?></strong> on 
+                <strong><?php echo $this->author ?></strong>
+                <?php if (isset($this->resource)) : ?>
+                on 
                 <a
                     about="<?php echo $this->resource ?>"
                     resource="<?php echo $this->resource ?>"
                     class="Resource hasMenu"
                     href="<?php echo $this->resourceUrl ?>"
                 ><?php echo $this->resourceName ?></a>
-                <span class="date" style="color:#aaa;font-size:0.9em">(<?php echo $this->date ?>)</span>:
+                <?php endif; ?>
+                <span class="date">(<?php echo $this->date ?>)</span>:
                 <?php echo $this->content ?>
             </div>
         </td>

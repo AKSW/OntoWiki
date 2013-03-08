@@ -40,7 +40,7 @@
   owconfig:priority "20" ;
   owconfig:context "main.window.properties" .
 :community :enableRating "false"^^xsd:boolean ;
-           :limit "3"^^xsd:int ;
+           :limit "5"^^xsd:int ;
  owconfig:config [
       a owconfig:Config;
       owconfig:id "about";
