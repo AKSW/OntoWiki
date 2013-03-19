@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
 {
@@ -30,9 +36,11 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
 
     public function testImportActionInvalidWrapperParamBadRequest()
     {
-        $this->request->setQuery(array(
-            'wrapper' => 'anInvalidWrapperName123456789ThisShouldNeverExist'
-        ));
+        $this->request->setQuery(
+            array(
+                 'wrapper' => 'anInvalidWrapperName123456789ThisShouldNeverExist'
+            )
+        );
 
         $this->dispatch('/datagathering/import');
 
@@ -47,10 +55,12 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
         $this->_ac->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
         $this->_ac->setUserModelRight('http://example.org/testModel1', 'edit', 'deny');
 
-        $this->request->setQuery(array(
-            'uri' => 'http://example.org/testResource1',
-            'm'   => 'http://example.org/testModel1'
-        ));
+        $this->request->setQuery(
+            array(
+                 'uri' => 'http://example.org/testResource1',
+                 'm'   => 'http://example.org/testModel1'
+            )
+        );
 
         $this->dispatch('/datagathering/import');
 
@@ -65,11 +75,13 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
         $this->_ac->setUserModelRight('http://example.org/testModel1', 'view', 'grant');
         $this->_ac->setUserModelRight('http://example.org/testModel1', 'edit', 'grant');
 
-        $this->request->setQuery(array(
-            'uri'     => 'http://example.org/testResource1',
-            'm'       => 'http://example.org/testModel1',
-            'wrapper' => 'Erfurt_Wrapper_Test'
-        ));
+        $this->request->setQuery(
+            array(
+                 'uri'     => 'http://example.org/testResource1',
+                 'm'       => 'http://example.org/testModel1',
+                 'wrapper' => 'Erfurt_Wrapper_Test'
+            )
+        );
 
         $this->dispatch('/datagathering/import');
 
@@ -93,11 +105,13 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
 
         Erfurt_Wrapper_Test::$runResult = array();
 
-        $this->request->setQuery(array(
-            'uri'     => 'http://example.org/testResource1',
-            'm'       => 'http://example.org/testModel1',
-            'wrapper' => 'Erfurt_Wrapper_Test'
-        ));
+        $this->request->setQuery(
+            array(
+                 'uri'     => 'http://example.org/testResource1',
+                 'm'       => 'http://example.org/testModel1',
+                 'wrapper' => 'Erfurt_Wrapper_Test'
+            )
+        );
 
         $this->dispatch('/datagathering/import');
 
@@ -121,11 +135,13 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
 
         Erfurt_Wrapper_Test::$runResult = array('status_codes' => array());
 
-        $this->request->setQuery(array(
-            'uri'     => 'http://example.org/testResource1',
-            'm'       => 'http://example.org/testModel1',
-            'wrapper' => 'Erfurt_Wrapper_Test'
-        ));
+        $this->request->setQuery(
+            array(
+                 'uri'     => 'http://example.org/testResource1',
+                 'm'       => 'http://example.org/testModel1',
+                 'wrapper' => 'Erfurt_Wrapper_Test'
+            )
+        );
 
         $this->dispatch('/datagathering/import');
 
@@ -151,14 +167,16 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
 
         Erfurt_Wrapper_Test::$runResult = array(
             'status_codes' => array(Erfurt_Wrapper::RESULT_HAS_ADD),
-            'add' => array()
+            'add'          => array()
         );
 
-        $this->request->setQuery(array(
-            'uri'     => 'http://example.org/testResource1',
-            'm'       => 'http://example.org/testModel1',
-            'wrapper' => 'Erfurt_Wrapper_Test'
-        ));
+        $this->request->setQuery(
+            array(
+                 'uri'     => 'http://example.org/testResource1',
+                 'm'       => 'http://example.org/testModel1',
+                 'wrapper' => 'Erfurt_Wrapper_Test'
+            )
+        );
 
         $this->dispatch('/datagathering/import');
 
@@ -188,11 +206,11 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
         $add = array(
             'http://example.org/testResource1' => array(
                 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' => array(array(
-                    'type' => 'uri',
+                    'type'  => 'uri',
                     'value' => 'http://xmlns.com/foaf/0.1/Person'
                 )),
                 'http://xmlns.com/foaf/0.1/nick' => array(array(
-                    'type' => 'literal',
+                    'type'  => 'literal',
                     'value' => 'testResource1'
                 ))
             )
@@ -200,15 +218,16 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
 
         Erfurt_Wrapper_Test::$runResult = array(
             'status_codes' => array(Erfurt_Wrapper::RESULT_HAS_ADD),
-            'add' => $add
+            'add'          => $add
         );
 
-        $this->request->setQuery(array(
-            'uri'     => 'http://example.org/testResource1',
-            'm'       => 'http://example.org/testModel1',
-            'wrapper' => 'Erfurt_Wrapper_Test'
-        ));
-
+        $this->request->setQuery(
+            array(
+                 'uri'     => 'http://example.org/testResource1',
+                 'm'       => 'http://example.org/testModel1',
+                 'wrapper' => 'Erfurt_Wrapper_Test'
+            )
+        );
 
         $this->dispatch('/datagathering/import');
 
@@ -240,11 +259,11 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
         $add = array(
             'http://dbpedia.org/resource/Leipzig' => array(
                 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' => array(array(
-                    'type' => 'uri',
+                    'type'  => 'uri',
                     'value' => 'http://xmlns.com/foaf/0.1/Person'
                 )),
                 'http://xmlns.com/foaf/0.1/nick' => array(array(
-                    'type' => 'literal',
+                    'type'  => 'literal',
                     'value' => 'testResource1'
                 ))
             )
@@ -252,15 +271,16 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
 
         Erfurt_Wrapper_Test::$runResult = array(
             'status_codes' => array(Erfurt_Wrapper::RESULT_HAS_ADD),
-            'add' => $add
+            'add'          => $add
         );
 
-        $this->request->setQuery(array(
-            'uri'     => 'http://dbpedia.org/resource/Leipzig',
-            'm'       => 'http://example.org/testModel1',
-            'wrapper' => 'Erfurt_Wrapper_Test'
-        ));
-
+        $this->request->setQuery(
+            array(
+                 'uri'     => 'http://dbpedia.org/resource/Leipzig',
+                 'm'       => 'http://example.org/testModel1',
+                 'wrapper' => 'Erfurt_Wrapper_Test'
+            )
+        );
 
         $this->dispatch('/datagathering/import');
 

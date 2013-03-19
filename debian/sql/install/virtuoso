@@ -1,0 +1,6 @@
+USER_CREATE('ontowiki_deb', 'usepwgenhere', vector ('SQL_ENABLE',1));
+GRANT SELECT ON sys_rdf_schema TO ontowiki_deb;
+GRANT execute ON rdfs_rule_set TO ontowiki_deb;
+USER_GRANT_ROLE('ontowiki_deb', 'SPARQL_SELECT', 0);
+USER_GRANT_ROLE('ontowiki_deb', 'SPARQL_UPDATE', 0);
+USER_GRANT_ROLE('ontowiki_deb', 'administrators', 0);

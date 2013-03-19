@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -16,8 +16,9 @@ class MailtolinkPlugin extends OntoWiki_Plugin
 
     public function init()
     {
-        $configValues = $this->_privateConfig->properties->toArray();
+        $configValues      = $this->_privateConfig->properties->toArray();
         $this->_properties = array_combine($configValues, $configValues);
+
         return $this->_properties;
     }
 
@@ -32,7 +33,7 @@ class MailtolinkPlugin extends OntoWiki_Plugin
             return '<a href="' . $mailUri . '">' . $event->value . '</a>';
         }
     }
-    
+
     public function onDisplayLiteralPropertyValue($event)
     {
         if (!substr($event->value, 0, 7) === 'mailto:') {

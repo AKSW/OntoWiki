@@ -2,16 +2,17 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki application controller.
  *
- * @package OntoWiki_Controller
- * @author Norman Heino <norman.heino@gmail.com>
- * @author Philipp Frischmuth <pfrischmuth@googlemail.com>
+ * @category OntoWiki
+ * @package  OntoWiki_Controller
+ * @author   Norman Heino <norman.heino@gmail.com>
+ * @author   Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class ApplicationController extends OntoWiki_Controller_Base
 {
@@ -29,14 +30,14 @@ class ApplicationController extends OntoWiki_Controller_Base
         }
 
         $cacheWritable = is_writable($this->_config->cache->path)
-                       ? ' <span style="color:#aea">(writable)</span>'
-                       : ' <span style="color:#eaa">(not writable!)</span>';
-        $logWritable = is_writable($this->_config->log->path)
-                     ? ' <span style="color:#aea">(writable)</span>'
-                     : ' <span style="color:#eaa">(not writable!)</span>';
+            ? ' <span style="color:#aea">(writable)</span>'
+            : ' <span style="color:#eaa">(not writable!)</span>';
+        $logWritable   = is_writable($this->_config->log->path)
+            ? ' <span style="color:#aea">(writable)</span>'
+            : ' <span style="color:#eaa">(not writable!)</span>';
 
         $data = array(
-            'System' => array(
+            'System'         => array(
                 'OntoWiki Release' => $version,
                 'PHP Version'      => phpversion(),
                 'Backend'          => $this->_owApp->erfurt->getStore()->getBackendName(),
@@ -46,33 +47,32 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Theme'    => rtrim($this->_config->themes->default, '/'),
                 'Language' => $this->_config->languages->locale,
             ),
-            'Paths' => array(
-                'Extensions Path'     => _OWROOT . rtrim($this->_config->extensions->base, '/'),
+            'Paths'          => array(
+                'Extensions Path'   => _OWROOT . rtrim($this->_config->extensions->base, '/'),
                 'Translations Path' => _OWROOT . rtrim($this->_config->languages->path, '/'),
                 'Themes Path'       => _OWROOT . rtrim($this->_config->themes->path, '/')
             ),
-            'Cache' => array(
+            'Cache'          => array(
                 'Path'                => rtrim($this->_config->cache->path, '/') . $cacheWritable,
                 'Module Caching'      => ((bool)$this->_config->cache->modules == true) ? 'enabled' : 'disabled',
                 'Translation Caching' => ((bool)$this->_config->cache->translation == true) ? 'enabled' : 'disabled'
             ),
-            'Logging' => array(
-                'Path' => rtrim($this->_config->log->path, '/') . $logWritable,
-                'Level'  => (bool)$this->_config->loglevel ? $this->_config->loglevel : 'disabled'
+            'Logging'        => array(
+                'Path'  => rtrim($this->_config->log->path, '/') . $logWritable,
+                'Level' => (bool)$this->_config->loglevel ? $this->_config->loglevel : 'disabled'
             )
         );
 
         // check if the git comand exists and ontowiki is a working directory
-        if (
-            file_exists(".git") &&
-            substr(@exec("git --version"), 0, 11) == "git version"
+        if (file_exists(".git")
+            && substr(@exec("git --version"), 0, 11) == "git version"
         ) {
             @exec('git status', $arr);
             $data['Git Versioning'] = array(
-              'Version' => @exec("git describe"),
-              'Branch' => substr($arr[0],12),
-              'last commit' => @exec("git log --pretty=format:'%ar' -n 1")
-              //'Git Version'  => substr(@exec("git --version"),12),
+                'Version'     => @exec("git describe"),
+                'Branch'      => substr($arr[0], 12),
+                'last commit' => @exec("git log --pretty=format:'%ar' -n 1")
+                //'Git Version'  => substr(@exec("git --version"),12),
             );
         }
 
@@ -84,8 +84,8 @@ class ApplicationController extends OntoWiki_Controller_Base
      */
     public function loginAction()
     {
-        $erfurt  = $this->_owApp->erfurt;
-        $post    = $this->_request->getPost();
+        $erfurt = $this->_owApp->erfurt;
+        $post   = $this->_request->getPost();
 
         $this->_helper->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
@@ -99,27 +99,31 @@ class ApplicationController extends OntoWiki_Controller_Base
         $loginType = $post['logintype'];
         // lokaler Login
         if ($loginType === 'locallogin') {
-            $username = $post['username'];
-            $password = $post['password'];
+            $username   = $post['username'];
+            $password   = $post['password'];
             $authResult = $erfurt->authenticate($username, $password);
-        } else if ($loginType === 'openidlogin') {
-            // OpenID
-            $username = $post['openid_url'];
-            $redirectUrl = $post['redirect-uri'];
-            $verifyUrl = $this->_config->urlBase . 'application/verifyopenid';
-            $authResult = $erfurt->authenticateWithOpenId($username, $verifyUrl, $redirectUrl);
-        } else if ($loginType === 'webidlogin') {
-            // FOAF+SSL
-            $redirectUrl = $this->_config->urlBase . 'application/loginfoafssl';
-            $authResult = $erfurt->authenticateWithFoafSsl(null, $redirectUrl);
         } else {
-            // Not supported...
-            return;
+            if ($loginType === 'openidlogin') {
+                // OpenID
+                $username    = $post['openid_url'];
+                $redirectUrl = $post['redirect-uri'];
+                $verifyUrl   = $this->_config->urlBase . 'application/verifyopenid';
+                $authResult  = $erfurt->authenticateWithOpenId($username, $verifyUrl, $redirectUrl);
+            } else {
+                if ($loginType === 'webidlogin') {
+                    // FOAF+SSL
+                    $redirectUrl = $this->_config->urlBase . 'application/loginfoafssl';
+                    $authResult  = $erfurt->authenticateWithFoafSsl(null, $redirectUrl);
+                } else {
+                    // Not supported...
+                    return;
+                }
+            }
         }
 
         // reload selected model w/ new privileges
         if ($this->_owApp->selectedModel instanceof Erfurt_Rdf_Model) {
-            $this->_owApp->selectedModel = $erfurt->getStore()->getModel((string) $this->_owApp->selectedModel);
+            $this->_owApp->selectedModel = $erfurt->getStore()->getModel((string)$this->_owApp->selectedModel);
         }
 
         $this->_owApp->authResult = $authResult->getMessages();
@@ -128,7 +132,7 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function verifyopenidAction()
     {
         $erfurt = $this->_owApp->erfurt;
-        $get = $this->_request->getQuery();
+        $get    = $this->_request->getQuery();
 
         $authResult = $erfurt->verifyOpenIdResult($get);
 
@@ -144,10 +148,10 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function loginfoafsslAction()
     {
         $erfurt = $this->_owApp->erfurt;
-        $get = $this->_request->getQuery();
+        $get    = $this->_request->getQuery();
         //$get['url'] = $this->_request->getHttpHost() . $this->_request->getRequestUri();
 
-        $authResult = $erfurt->authenticateWithFoafSsl($get);
+        $authResult               = $erfurt->authenticateWithFoafSsl($get);
         $this->_owApp->authResult = $authResult->getMessages();
 
         $this->_redirect($this->_config->urlBase, array('prependBase' => false));
@@ -186,16 +190,15 @@ class ApplicationController extends OntoWiki_Controller_Base
 
         $toolbar = $this->_owApp->toolbar;
         $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Register User'))
-                ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
+            ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
 
         $post = $this->_request->getPost();
 
         $this->_owApp->appendMessage(
             new OntoWiki_Message(
-                'Already own an <span class="openid">OpenID?</span> <a href="'
-                . $this->_config->urlBase
-                . 'application/openidreg">Register here</a>',
+                'Already own an <span class="openid">OpenID?</span> <a href="' . $this->_config->urlBase .
+                'application/openidreg">Register here</a>',
                 OntoWiki_Message::INFO,
                 array('escape' => false, 'translate' => false)
             )
@@ -215,75 +218,89 @@ class ApplicationController extends OntoWiki_Controller_Base
                 }
             }
 
-            $email       = $post['email'];
-            $this->view->email = $email;
-            $username    = $post['username'];
+            $email                = $post['email'];
+            $this->view->email    = $email;
+            $username             = $post['username'];
             $this->view->username = $username;
-            $password    = $post['password'];
-            $passwordTwo = $post['password2'];
+            $password             = $post['password'];
+            $passwordTwo          = $post['password2'];
 
             $emailValidator = new Zend_Validate_EmailAddress();
 
-            if (!$this->_erfurt->isActionAllowed('RegisterNewUser') or
-                !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))) {
-                $message    = 'Action not permitted for the current user.';
+            if (!$this->_erfurt->isActionAllowed('RegisterNewUser')
+                || !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))
+            ) {
+                $message = 'Action not permitted for the current user.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
 
             } else if (trim($email) == '') {
-                $message    = 'Email address must not be empty.';
+                $message = 'Email address must not be empty.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
 
             } else if (in_array($email, $registeredEmailAddresses)) {
-                $message    = 'Email address is already registered.';
-                $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if (
-                isset($actionConfig['mailvalidation']) &&
-                $actionConfig['mailvalidation'] == 'yes' &&
-                !$emailValidator->isValid($email)
-            ) {
-                $message = 'Email address validation failed.';
-                $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if (
-                in_array($username, $registeredUsernames) ||
-                ($username == $this->_owApp->erfurt->getStore()->getDbUser())
-            ) {
-                $message    = 'Username already registered.';
-                $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if (
-                isset($actionConfig['uidregexp']) &&
-                !preg_match($actionConfig['uidregexp'], $username)
-            ) {
-                $message    = 'Username contains illegal characters.';
-                $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if ($password !== $passwordTwo) {
-                $message    = 'Passwords do not match.';
-                $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if (strlen($password) < 5) {
-                $message    = 'Password needs at least 5 characters.';
-                $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if (
-                isset($actionConfig['passregexp']) &&
-                $actionConfig['passregexp'] != '' &&
-                !@preg_match($actionConfig['passregexp'], $password)
-            ) {
-                $message    = 'Password does not match regular expression set in system configuration';
+                $message = 'Email address is already registered.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
             } else {
-                // give default group?
-                if (isset($actionConfig['defaultGroup'])) {
-                    $group = $actionConfig['defaultGroup'];
-                }
-                // add new user
-                if ($this->_erfurt->addUser($username, $password, $email, $group)) {
-                    $message = 'The user "' . $username . '" has been successfully registered.';
-                    $this->_owApp->appendMessage(
-                        new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
-                    );
+                if (isset($actionConfig['mailvalidation'])
+                    && $actionConfig['mailvalidation'] == 'yes'
+                    && !$emailValidator->isValid($email)
+                ) {
+                    $message = 'Email address validation failed.';
+                    $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
                 } else {
-                    $message = 'A registration error occured. Please refer to the log entries.';
-                    $this->_owApp->appendMessage(
-                        new OntoWiki_Message($message, OntoWiki_Message::ERROR)
-                    );
+                    if (in_array($username, $registeredUsernames)
+                        || ($username == $this->_owApp->erfurt->getStore()->getDbUser())
+                    ) {
+                        $message = 'Username already registered.';
+                        $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
+                    } else {
+                        if (isset($actionConfig['uidregexp'])
+                            && !preg_match($actionConfig['uidregexp'], $username)
+                        ) {
+                            $message = 'Username contains illegal characters.';
+                            $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
+                        } else {
+                            if ($password !== $passwordTwo) {
+                                $message = 'Passwords do not match.';
+                                $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
+                            } else {
+                                if (strlen($password) < 5) {
+                                    $message = 'Password needs at least 5 characters.';
+                                    $this->_owApp->appendMessage(
+                                        new OntoWiki_Message($message, OntoWiki_Message::ERROR)
+                                    );
+                                } else {
+                                    if (isset($actionConfig['passregexp'])
+                                        && $actionConfig['passregexp'] != ''
+                                        && !@preg_match($actionConfig['passregexp'], $password)
+                                    ) {
+                                        $message
+                                            = 'Password does not match regular expression set in system configuration';
+                                        $this->_owApp->appendMessage(
+                                            new OntoWiki_Message($message, OntoWiki_Message::ERROR)
+                                        );
+                                    } else {
+                                        // give default group?
+                                        if (isset($actionConfig['defaultGroup'])) {
+                                            $group = $actionConfig['defaultGroup'];
+                                        }
+                                        // add new user
+                                        if ($this->_erfurt->addUser($username, $password, $email, $group)) {
+                                            $message = 'The user "' . $username . '" has been successfully registered.';
+                                            $this->_owApp->appendMessage(
+                                                new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
+                                            );
+                                        } else {
+                                            $message = 'A registration error occured. Please refer to the log entries.';
+                                            $this->_owApp->appendMessage(
+                                                new OntoWiki_Message($message, OntoWiki_Message::ERROR)
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -319,8 +336,9 @@ class ApplicationController extends OntoWiki_Controller_Base
                 $emailValidator = new Zend_Validate_EmailAddress();
 
                 // Is register action allowed for current user?
-                if (!$this->_erfurt->isActionAllowed('RegisterNewUser') ||
-                    !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))) {
+                if (!$this->_erfurt->isActionAllowed('RegisterNewUser')
+                    || !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))
+                ) {
 
                     $message = 'Action not permitted for the current user.';
                     $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
@@ -332,11 +350,13 @@ class ApplicationController extends OntoWiki_Controller_Base
                     // Does user already exist?
                     $message = 'A user with the given OpenID is already registered.';
                     $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-                } else if (!empty($email) && isset($actionConfig['mailvalidation']) &&
-                           $actionConfig['mailvalidation'] === 'yes' && !$emailValidator->isValid($email)) {
+                } else if (!empty($email) && isset($actionConfig['mailvalidation'])
+                    && $actionConfig['mailvalidation'] === 'yes'
+                    && !$emailValidator->isValid($email)
+                ) {
                     // If an (optional) email address is given, check whether it is valid.
 
-                    $message    = 'Email address validation failed.';
+                    $message = 'Email address validation failed.';
                     $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
                 } else {
                     // Everything seems to be OK... Check the OpenID (redirect to the provider).
@@ -355,8 +375,8 @@ class ApplicationController extends OntoWiki_Controller_Base
 
                     $sReg = new Zend_OpenId_Extension_Sreg(
                         array(
-                            'nickname' => false,
-                            'email'    => false),
+                             'nickname' => false,
+                             'email'    => false),
                         null,
                         1.1
                     );
@@ -379,7 +399,7 @@ class ApplicationController extends OntoWiki_Controller_Base
 
                 $toolbar = $this->_owApp->toolbar;
                 $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Check OpenID'))
-                        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
+                    ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
                 $this->view->placeholder('main.window.toolbar')->set($toolbar);
             } else if ((int)$post['step'] === 2) {
                 // Step 2: OpenID was verified and user clicked on register button.
@@ -389,7 +409,7 @@ class ApplicationController extends OntoWiki_Controller_Base
 
                 // Give user default group?
                 $actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser');
-                $group = null;
+                $group        = null;
                 if (isset($actionConfig['defaultGroup'])) {
                     $group = $actionConfig['defaultGroup'];
                 }
@@ -418,8 +438,8 @@ class ApplicationController extends OntoWiki_Controller_Base
             // This is the verify request
             $sReg = new Zend_OpenId_Extension_Sreg(
                 array(
-                    'nickname' => false,
-                    'email'    => false),
+                     'nickname' => false,
+                     'email'    => false),
                 null,
                 1.1
             );
@@ -462,19 +482,19 @@ class ApplicationController extends OntoWiki_Controller_Base
 
             $toolbar = $this->_owApp->toolbar;
             $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Register User'))
-                    ->appendButton(OntoWiki_Toolbar::CANCEL, array('name' => 'Cancel', 'class' => 'openidreg-cancel'));
+                ->appendButton(OntoWiki_Toolbar::CANCEL, array('name' => 'Cancel', 'class' => 'openidreg-cancel'));
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
         } else {
             // No post and get data... This is the initial form...
-            $this->view->openid        = '';
-            $this->view->readonly      = '';
-            $this->view->email         = '';
-            $this->view->label         = '';
-            $this->view->step          = 1;
+            $this->view->openid   = '';
+            $this->view->readonly = '';
+            $this->view->email    = '';
+            $this->view->label    = '';
+            $this->view->step     = 1;
 
             $toolbar = $this->_owApp->toolbar;
             $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Check OpenID'))
-                    ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
+                ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
         }
     }
@@ -515,7 +535,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                 $valid = $adapter->verifyIdpResult($get);
 
                 if ($valid) {
-                    $webId = $get['webid'];
+                    $webId    = $get['webid'];
                     $foafData = Erfurt_Auth_Adapter_FoafSsl::getFoafData($webId);
 
                     if ($foafData !== false) {
@@ -577,18 +597,20 @@ class ApplicationController extends OntoWiki_Controller_Base
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Something went wrong: ' . $e->getMessage(), OntoWiki_Message::ERROR)
                 );
+
                 return;
             }
         } else if (!empty($post)) {
             $webId = $post['webid_url'];
-            $label  = $post['label'];
-            $email  = $post['email'];
+            $label = $post['label'];
+            $email = $post['email'];
 
             $emailValidator = new Zend_Validate_EmailAddress();
 
             // Is register action allowed for current user?
-            if (!$this->_erfurt->isActionAllowed('RegisterNewUser') ||
-                !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))) {
+            if (!$this->_erfurt->isActionAllowed('RegisterNewUser')
+                || !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))
+            ) {
 
                 $message = 'Action not permitted for the current user.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
@@ -600,15 +622,17 @@ class ApplicationController extends OntoWiki_Controller_Base
                 // Does user already exist?
                 $message = 'A user with the given WebID is already registered.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if (!empty($email) && isset($actionConfig['mailvalidation']) &&
-                       $actionConfig['mailvalidation'] === 'yes' && !$emailValidator->isValid($email)) {
+            } else if (!empty($email) && isset($actionConfig['mailvalidation'])
+                && $actionConfig['mailvalidation'] === 'yes'
+                && !$emailValidator->isValid($email)
+            ) {
                 // If an (optional) email address is given, check whether it is valid.
-                $message    = 'Email address validation failed.';
+                $message = 'Email address validation failed.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
             } else {
                 // Everything seems to be OK...
                 $actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser');
-                $group = null;
+                $group        = null;
                 if (isset($actionConfig['defaultGroup'])) {
                     $group = $actionConfig['defaultGroup'];
                 }
@@ -623,9 +647,9 @@ class ApplicationController extends OntoWiki_Controller_Base
             }
 
             // If we reach this section, something went wrong, so we reset the form and show the message.
-            $this->view->webid   = '';
-            $this->view->email   = '';
-            $this->view->label   = '';
+            $this->view->webid = '';
+            $this->view->email = '';
+            $this->view->label = '';
         }
     }
 
@@ -693,7 +717,7 @@ class ApplicationController extends OntoWiki_Controller_Base
 
         $toolbar = $this->_owApp->toolbar;
         $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save Changes', 'id' => 'registeruser'))
-                ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
+            ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Reset Form'));
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
 
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
@@ -707,6 +731,7 @@ class ApplicationController extends OntoWiki_Controller_Base
             $this->_erfurt->getAuth()->setEmail($newEmail);
         } catch (Erfurt_Auth_Identity_Exception $e) {
             $this->_owApp->appendMessage(new OntoWiki_Message($e->getMessage(), OntoWiki_Message::ERROR));
+
             return false;
         }
 
@@ -719,6 +744,7 @@ class ApplicationController extends OntoWiki_Controller_Base
             $this->_erfurt->getAuth()->setUsername($newUsername);
         } catch (Erfurt_Auth_Identity_Exception $e) {
             $this->_owApp->appendMessage(new OntoWiki_Message($e->getMessage(), OntoWiki_Message::ERROR));
+
             return false;
         }
 
@@ -730,6 +756,7 @@ class ApplicationController extends OntoWiki_Controller_Base
         if ($passwordOne !== $passwordTwo) {
             $message = 'Passwords do not match.';
             $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
+
             return false;
         }
 
@@ -737,6 +764,7 @@ class ApplicationController extends OntoWiki_Controller_Base
             $this->_erfurt->getAuth()->getIdentity()->setPassword($passwordOne);
         } catch (Erfurt_Auth_Identity_Exception $e) {
             $this->_owApp->appendMessage(new OntoWiki_Message($e->getMessage(), OntoWiki_Message::ERROR));
+
             return false;
         }
 
@@ -776,14 +804,13 @@ class ApplicationController extends OntoWiki_Controller_Base
      */
     public function searchAction()
     {
-
         $title = $this->_owApp->translate->_('Resource Search');
         $this->view->placeholder('main.window.title')->set($title);
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         $store = $this->_erfurt->getStore();
 
-        if (isset($this->_owApp->selectedModel) and null !== $this->_owApp->selectedModel) {
+        if (isset($this->_owApp->selectedModel) && null !== $this->_owApp->selectedModel) {
             $modelUri = $this->_owApp->selectedModel->getModelIri();
         } else {
             $modelUri = null;
@@ -793,7 +820,7 @@ class ApplicationController extends OntoWiki_Controller_Base
             $searchText = trim($this->getParam('searchtext-input'));
         }
 
-        $error = false;
+        $error    = false;
         $errorMsg = '';
 
         // check if search is already errorenous
@@ -801,6 +828,7 @@ class ApplicationController extends OntoWiki_Controller_Base
 
             // try sparql query pre search check (with limit to 1)
             $elements = $store->getSearchPattern($searchText, $modelUri);
+
             $query = new Erfurt_Sparql_Query2();
             $query->addElements($elements);
             $query->setLimit(1);
@@ -820,7 +848,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                     )
                 );
 
-                $error     = true;
+                $error = true;
                 $errorMsg .= 'Message details: ';
                 $errorMsg .= str_replace('LIMIT 1', '', $e->getMessage());
 

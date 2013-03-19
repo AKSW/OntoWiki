@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -13,19 +13,21 @@
  * and retrieving menu instances.
  *
  * @category OntoWiki
- * @package OntoWiki_Classes_Menu
- * @author Norman Heino <norman.heino@gmail.com>
+ * @package  OntoWiki_Classes_Menu
+ * @author   Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Menu_Registry
 {
     /**
      * Menu registry; an array of menu instances
+     *
      * @var array
      */
     private $_menus = array();
 
     /**
      * Singleton instance
+     *
      * @var OntoWiki_Menu_Registry
      */
     private static $_instance = null;
@@ -48,6 +50,7 @@ class OntoWiki_Menu_Registry
      * Returns the menu denoted by $menuKey.
      *
      * @param string $menuKey
+     *
      * @return OntoWiki_Menu
      */
     public function getMenu($menuKey)
@@ -66,9 +69,10 @@ class OntoWiki_Menu_Registry
     /**
      * Stores the menu $menu with key $menuKey in the registry.
      *
-     * @param string $menuKey
+     * @param string        $menuKey
      * @param OntoWiki_Menu $menu
-     * @param boolean $replace
+     * @param boolean       $replace
+     *
      * @return OntoWiki_Menu_Registry
      */
     public function setMenu($menuKey, OntoWiki_Menu $menu, $replace = true)
@@ -77,7 +81,7 @@ class OntoWiki_Menu_Registry
             throw new OntoWiki_Exception('Menu key must be string.');
         }
 
-        if (!$replace and array_key_exists($menuKey, $this->menus)) {
+        if (!$replace && array_key_exists($menuKey, $this->menus)) {
             throw new OntoWiki_Exception("Menu with key '$menuKey' already registered.");
         }
 
@@ -96,8 +100,9 @@ class OntoWiki_Menu_Registry
         $owApp = OntoWiki::getInstance();
 
         // user sub menu
-        if ($owApp->erfurt->isActionAllowed('RegisterNewUser') &&
-            !(isset($owApp->config->ac) && ((boolean)$owApp->config->ac->deactivateRegistration === true))) {
+        if ($owApp->erfurt->isActionAllowed('RegisterNewUser')
+            && !(isset($owApp->config->ac) && ((boolean)$owApp->config->ac->deactivateRegistration === true))
+        ) {
 
             if (!($owApp->erfurt->getAc() instanceof Erfurt_Ac_None)) {
                 $userMenu = new OntoWiki_Menu();
@@ -127,29 +132,30 @@ class OntoWiki_Menu_Registry
         // help sub menue
         $helpMenu = new OntoWiki_Menu();
         $helpMenu->setEntry('Documentation', 'http://ontowiki.net/Projects/OntoWiki/Help')
-                 ->setEntry('Bug Report', 'http://code.google.com/p/ontowiki/issues/entry')
-                 ->setEntry(
-                     'Version Info', 'http://ontowiki.net/Projects/OntoWiki/ChangeLog#'.
-                     $owApp->config->version->number
-                 )
-                 ->setEntry('About', $owApp->config->urlBase . 'application/about');
+            ->setEntry('Bug Report', 'http://code.google.com/p/ontowiki/issues/entry')
+            ->setEntry(
+                'Version Info', 'http://ontowiki.net/Projects/OntoWiki/ChangeLog#' .
+                $owApp->config->version->number
+            )
+            ->setEntry('About', $owApp->config->urlBase . 'application/about');
 
         // build menu out of sub menus
         $applicationMenu = new OntoWiki_Menu();
         if (isset($userMenu)) {
             $applicationMenu->setEntry('User', $userMenu);
         }
-        $applicationMenu->/*setEntry('View', $viewMenu)
-                        ->*/setEntry('Extras', $extrasMenu)
-                        ->setEntry('Help', $helpMenu);
+        $applicationMenu-> /*setEntry('View', $viewMenu)
+                        ->*/
+            setEntry('Extras', $extrasMenu)
+            ->setEntry('Help', $helpMenu);
 
         // add cache entry only if use is allowed to use debug action
         if ($owApp->erfurt->isActionAllowed('Debug')) {
             $debugMenu = new OntoWiki_Menu();
             $debugMenu->setEntry('Clear Module Cache', $owApp->config->urlBase . 'debug/clearmodulecache')
-                      ->setEntry('Clear Translation Cache', $owApp->config->urlBase . 'debug/cleartranslationcache')
-                      ->setEntry('Clear Object & Query Cache', $owApp->config->urlBase . 'debug/clearquerycache')
-                      ->setEntry('Reset Session', $owApp->config->urlBase . 'debug/destroysession');
+                ->setEntry('Clear Translation Cache', $owApp->config->urlBase . 'debug/cleartranslationcache')
+                ->setEntry('Clear Object & Query Cache', $owApp->config->urlBase . 'debug/clearquerycache')
+                ->setEntry('Reset Session', $owApp->config->urlBase . 'debug/destroysession');
 
             // for testing sub menus
             // $test1 = new OntoWiki_Menu();

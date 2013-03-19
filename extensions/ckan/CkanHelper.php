@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -20,7 +20,7 @@ class CkanHelper extends OntoWiki_Component_Helper
      */
     public function onCreateMenu($event)
     {
-        $modelUri         = (string) $event->resource;
+        $modelUri         = (string)$event->resource;
         $baseUrl          = OntoWiki::getInstance()->config->urlBase;
         $extensionManager = OntoWiki::getInstance()->extensionManager;
 
@@ -28,11 +28,11 @@ class CkanHelper extends OntoWiki_Component_Helper
         switch (true) {
             // ... for resources
             case (!$event->isModel):
-            // ... for localhost models (can't be registered at CKAN)
+                // ... for localhost models (can't be registered at CKAN)
             case (substr_count($modelUri, 'http://localhost') > 0):
-            // ... if the model is not part of the base url (no Linked Data)
+                // ... if the model is not part of the base url (no Linked Data)
             case (substr_count($modelUri, $baseUrl) !== 1) :
-            // ... if we do not have a linked data server online
+                // ... if we do not have a linked data server online
             case (!$extensionManager->isExtensionRegistered('linkeddataserver')):
                 return;
         }
@@ -43,7 +43,7 @@ class CkanHelper extends OntoWiki_Component_Helper
             array('m')
         );
         $url->setParam('m', $modelUri);
-        $event->menu->prependEntry('Register Knowledge Base @ CKAN', (string) $url);
+        $event->menu->prependEntry('Register Knowledge Base @ CKAN', (string)$url);
     }
 }
 

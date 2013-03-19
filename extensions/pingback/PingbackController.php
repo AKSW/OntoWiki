@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -30,7 +30,7 @@ class PingbackController extends OntoWiki_Controller_Component
      */
     public function pingAction()
     {
-        $owApp = OntoWiki::getInstance();
+        $owApp  = OntoWiki::getInstance();
         $logger = $owApp->logger;
         $logger->debug('Pingback Server Init.');
 
@@ -41,24 +41,25 @@ class PingbackController extends OntoWiki_Controller_Component
             new OntoWiki_Message('Ping received.', OntoWiki_Message::INFO)
         );
 
-        if (isset($_POST['source']) && isset($_POST['target'])) {
+        $post = $this->_request->getPost();
+        if (isset($post['source']) && isset($post['target'])) {
             // Simplified Semantic Pingback
 
             // read config and put it into options
             $options = array();
-            $config = $this->_privateConfig;
+            $config  = $this->_privateConfig;
             if (isset($config->rdfa->enabled)) {
                 $options['rdfa'] = $config->rdfa->enabled;
             }
-            if (isset($config->title_properties)) {
-                $options['title_properties'] = $config->title_properties->toArray();
+            if (isset($config->titleProperties)) {
+                $options['title_properties'] = $config->titleProperties->toArray();
             }
-            if (isset($config->generic_relation)) {
-                $options['generic_relation'] = $config->generic_relation;
+            if (isset($config->genericRelation)) {
+                $options['generic_relation'] = $config->genericRelation;
             }
 
             $ping = new Erfurt_Ping($options);
-            echo $ping->receive($_POST['source'], $_POST['target']);
+            echo $ping->receive($post['source'], $post['target']);
 
             return;
         } else {
@@ -69,6 +70,7 @@ class PingbackController extends OntoWiki_Controller_Component
             // Let the server handle the RPC calls.
             $response = $this->getResponse();
             $response->setBody($server->handle());
+
             return;
         }
     }

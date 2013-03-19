@@ -6,40 +6,50 @@
 
 ?>
 <div>
-	<input type="radio" class="radio" name="result_format" id="result_format_plain" value="plain"
-        <?php if ($this->placeholder('sparql.result.format') == 'plain'): ?>
-            <?php echo ' checked="checked"' ?>
-        <?php endif; ?>
-	/>
-	<label for="result_format_plain" class="checkboxradio"><?php echo $this->_('Inline List') ?></label>
-	<br class="clearall" />
-	<input type="radio" class="radio" name="result_format" id="result_list" value="list"
-	<?php if ($this->placeholder('sparql.result.format') == 'list'): ?>
-            <?php echo ' checked="checked"' ?>
-        <?php endif; ?>
-	/>
-	<label for="result_list" class="checkboxradio"><?php echo $this->_('Default List') ?></label>
-	<br class="clearall">
-	<hr>
-        <input type="radio" class="radio" name="result_format" id="result_format_xml" value="xml"
-	<?php if ($this->placeholder('sparql.result.format') == 'xml'): ?>
-            <?php echo ' checked="checked"' ?>
-        <?php endif; ?>
-	/>
-	<label for="result_format_xml" class="checkboxradio"><a href="http://www.w3.org/TR/rdf-sparql-XMLres/">XML</a></label>
-	<br class="clearall">
-	<input type="radio" class="radio" name="result_format" id="result_format_json" value="json"
-	<?php if ($this->placeholder('sparql.result.format') == 'json'): ?>
-            <?php echo ' checked="checked"' ?>
-        <?php endif; ?>
-	/>
-	<label for="result_format_json" class="checkboxradio"><a href="http://www.w3.org/TR/rdf-sparql-json-res/">JSON</a></label>
-	<br class="clearall">
-        <input type="checkbox" class="checkbox" name="result_outputfile" id="result_outputfile" value="true"
-	<?php if ($this->placeholder('sparql.result.file') == 'true'): ?>
-            <?php echo ' checked="checked"' ?>
-        <?php endif; ?>
-	/>
-	<label for="result_outputfile" class="checkboxradio">Get as file</label>
-        
+    <input type="radio" class="radio" name="result_format" id="result_format_plain" value="plain"
+    <?php if ($this->placeholder('sparql.result.format') == 'plain'): ?>
+        <?php echo ' checked="checked"' ?>
+    <?php endif; ?>
+    />
+    <label for="result_format_plain" class="checkboxradio"><?php echo $this->_('Inline List') ?></label>
+    <br class="clearall" />
+    <input type="radio" class="radio" name="result_format" id="result_list" value="list"
+    <?php if ($this->placeholder('sparql.result.format') == 'list'): ?>
+        <?php echo ' checked="checked"' ?>
+    <?php endif; ?>
+    />
+    <label for="result_list" class="checkboxradio"><?php echo $this->_('Default List') ?></label>
+    <br class="clearall">
+    <hr>
+    <input type="radio" class="radio" name="result_format" id="result_format_xml" value="xml"
+    <?php if ($this->placeholder('sparql.result.format') == 'xml'): ?>
+        <?php echo ' checked="checked"' ?>
+    <?php endif; ?>
+    />
+    <label for="result_format_xml" class="checkboxradio"><a href="http://www.w3.org/TR/rdf-sparql-XMLres/">XML</a></label>
+    <br class="clearall">
+    <input type="radio" class="radio" name="result_format" id="result_format_json" value="json"
+    <?php if ($this->placeholder('sparql.result.format') == 'json'): ?>
+        <?php echo ' checked="checked"' ?>
+    <?php endif; ?>
+    />
+    <label for="result_format_json" class="checkboxradio"><a href="http://www.w3.org/TR/rdf-sparql-json-res/">JSON</a></label>
+    <br class="clearall">
+    <input type="checkbox" class="checkbox" name="result_outputfile" id="result_outputfile" value="true"
+    <?php if ($this->placeholder('sparql.result.file') == 'true'): ?>
+        <?php echo ' checked="checked"' ?>
+    <?php endif; ?>
+    />
+    <label for="result_outputfile" class="checkboxradio"><?php echo $this->_("Get as file") ?></label>
 </div>
+<script type="text/javascript">
+    var result_format_hint = function(){
+        if ($('input[name=result_format]:checked').val() == 'list') {
+            $('#resourceuri-hint').show();
+        } else {
+            $('#resourceuri-hint').hide();
+        }
+    }
+    $(document).ready(result_format_hint);
+    $('input[name=result_format]').change(result_format_hint);
+</script>

@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki query editor template
@@ -6,11 +12,14 @@
 ?>
 <input id="editortype" type="hidden" value="queryeditor" />
 <p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
-    <?php $i = 0; ?>
-    <?php foreach ($this->prefixes as $prefix => $namespace): ?>
-        <a href="<?php echo $namespace ?>" 
-           title="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
-    <?php endforeach ?>
+<?php $i = 0; ?>
+<?php foreach ($this->prefixes as $prefix => $namespace): ?>
+    <a href="<?php echo $namespace ?>" 
+       title="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
+<?php endforeach ?>
+</p>
+<p class="messagebox info" id="resourceuri-hint">
+    <?php echo $this->_('You have to specify a projection variable called “?resourceUri” if you want to use the default list') ?>
 </p>
 <fieldset>
     <div style="border: 1px solid black">

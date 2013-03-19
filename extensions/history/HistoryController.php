@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -56,7 +56,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $titleHelper = new OntoWiki_Model_TitleHelper();
         // Load IDs for rollback and Username Labels for view
         foreach ($historyArray as $key => $entry) {
-            $idArray[] = (int) $entry['id'];
+            $idArray[] = (int)$entry['id'];
             // if(!$singleResource){
             //    $historyArray[$key]['url'] = $this->_config->urlBase . "view?r=" . urlencode($entry['resource']);
             //    $titleHelper->addResource($entry['resource']);
@@ -194,23 +194,20 @@ class HistoryController extends OntoWiki_Controller_Component
         $mUriEncoded = urlencode((string)$model);
         $feedUrl = $this->_config->urlBase . "history/feed?r=$rUriEncoded&mUriEncoded";
 
-        $this->view->headLink()->setAlternate($feedUrl, 'application/atom+xml', 'History Feed');
+        $this->view->headLink()->appendAlternate($feedUrl, 'application/atom+xml', 'History Feed');
 
         // redirecting to home if no model/resource is selected
-        if (
-            empty($model) ||
-            (
-                empty($this->_owApp->selectedResource) &&
-                empty($params['r']) &&
-                $this->_owApp->lastRoute !== 'instances'
-            )
+        if (empty($model)
+            || (empty($this->_owApp->selectedResource)
+            && empty($params['r'])
+            && ($this->_owApp->lastRoute !== 'instances'))
         ) {
             $this->_abort('No model/resource selected.', OntoWiki_Message::ERROR);
         }
 
         // getting page (from and for paging)
-        if (!empty($params['page']) && (int) $params['page'] > 0) {
-            $page = (int) $params['page'];
+        if (!empty($params['page']) && (int)$params['page'] > 0) {
+            $page = (int)$params['page'];
         } else {
             $page = 1;
         }
@@ -259,7 +256,7 @@ class HistoryController extends OntoWiki_Controller_Component
 
             $historyArray = $versioning->getHistoryForResourceList(
                 $resources,
-                (string) $this->_owApp->selectedModel,
+                (string)$this->_owApp->selectedModel,
                 $page
             );
             //var_dump($historyArray);
@@ -279,11 +276,12 @@ class HistoryController extends OntoWiki_Controller_Component
             );
         }
 
-        if (sizeof($historyArray) == ( $limit + 1 )) {
+        $historyArrayCount = count($historyArray);
+        if ($historyArrayCount === ($limit + 1)) {
             $count = $page * $limit + 1;
             unset($historyArray[$limit]);
         } else {
-            $count = ($page - 1) * $limit + sizeof($historyArray);
+            $count = ($page - 1) * $limit + $historyArrayCount;
         }
 
         $idArray = array();
@@ -291,7 +289,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $titleHelper = new OntoWiki_Model_TitleHelper();
         // Load IDs for rollback and Username Labels for view
         foreach ($historyArray as $key => $entry) {
-            $idArray[] = (int) $entry['id'];
+            $idArray[] = (int)$entry['id'];
             if (!$singleResource) {
                 $historyArray[$key]['url'] = $this->_config->urlBase . "view?r=" . urlencode($entry['resource']);
                 $titleHelper->addResource($entry['resource']);
@@ -341,7 +339,7 @@ class HistoryController extends OntoWiki_Controller_Component
         // paging
         $statusBar = $this->view->placeholder('main.window.statusbar');
         // the normal page_param p collides with the generic-list param p
-        OntoWiki_Pager::setOptions(array('page_param'=>'page'));
+        OntoWiki_Pager::setOptions(array('page_param' => 'page'));
         $statusBar->append(OntoWiki_Pager::get($count, $limit));
 
         // setting view variables
@@ -349,7 +347,7 @@ class HistoryController extends OntoWiki_Controller_Component
 
         $this->view->placeholder('main.window.title')->set($windowTitle);
 
-        $this->view->formActionUrl = (string) $url;
+        $this->view->formActionUrl = (string)$url;
         $this->view->formMethod    = 'post';
         // $this->view->formName      = 'instancelist';
         $this->view->formName      = 'history-rollback';
@@ -362,7 +360,7 @@ class HistoryController extends OntoWiki_Controller_Component
     public function rollbackAction()
     {
         $resource    = $this->_owApp->selectedResource;
-        $graphuri    = (string) $this->_owApp->selectedModel;
+        $graphuri    = (string)$this->_owApp->selectedModel;
         $translate   = $this->_owApp->translate;
         $params      = $this->_request->getParams();
 
@@ -381,7 +379,7 @@ class HistoryController extends OntoWiki_Controller_Component
 
         // setting more view variables
         $url = new OntoWiki_Url(array('controller' => 'view', 'action' => 'index' ), null);
-        $this->view->backUrl = (string) $url;
+        $this->view->backUrl = (string)$url;
 
         // set translate on view
         $this->view->translate = $this->_owApp->translate;
@@ -406,7 +404,7 @@ class HistoryController extends OntoWiki_Controller_Component
         $actionSpec = array(
             'modeluri'      => $graphuri ,
             'type'          => Erfurt_Versioning::STATEMENTS_ROLLBACK,
-            'resourceuri'   => (string) $resource
+            'resourceuri'   => (string)$resource
         );
 
         $versioning->startAction($actionSpec);
@@ -453,7 +451,7 @@ class HistoryController extends OntoWiki_Controller_Component
         if (empty($params['id'])) {
             $this->_abort('missing parameters.');
         } else {
-            $actionID = (int) $params['id'];
+            $actionID = (int)$params['id'];
         }
 
         // disabling layout as it is used as a service
@@ -461,7 +459,9 @@ class HistoryController extends OntoWiki_Controller_Component
         $this->view->isEmpty = true;
 
         $results = $this->getActionTriple($actionID);
-        if( $results != null ) $this->view->isEmpty = false;
+        if ($results != null ) {
+            $this->view->isEmpty = false;
+        }
 
         $this->view->translate      = $this->_owApp->translate;
         $this->view->actionID       = $actionID;
@@ -497,10 +497,10 @@ class HistoryController extends OntoWiki_Controller_Component
         $stOtherArray   = array();
 
         foreach ($detailsArray as $entry) {
-            $type = (int) $entry['action_type'];
-            if ( $type        === Erfurt_Versioning::STATEMENT_ADDED ) {
+            $type = (int)$entry['action_type'];
+            if ($type === Erfurt_Versioning::STATEMENT_ADDED ) {
                 $stAddArray[]   = $this->toFlatArray($entry['statement_hash']);
-            } elseif ( $type  === Erfurt_Versioning::STATEMENT_REMOVED ) {
+            } elseif ($type === Erfurt_Versioning::STATEMENT_REMOVED ) {
                 $stDelArray[]   = $this->toFlatArray($entry['statement_hash']);
             } else {
                 $stOtherArray[] = $this->toFlatArray($entry['statement_hash']);

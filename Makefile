@@ -152,7 +152,7 @@ branch-check:
 
 zend:
 	rm -rf libraries/Zend
-	curl -# -O http://packages.zendframework.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz || wget http://packages.zendframework.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz
+	curl -L -# -O https://packages.zendframework.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz || wget https://packages.zendframework.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz
 	tar xzf ZendFramework-${ZENDVERSION}-minimal.tar.gz
 	mv ZendFramework-${ZENDVERSION}-minimal/library/Zend libraries
 	rm -rf ZendFramework-${ZENDVERSION}-minimal.tar.gz ZendFramework-${ZENDVERSION}-minimal
@@ -237,7 +237,7 @@ debianize:
 # cs-script path
 CSSPATH = application/tests/CodeSniffer/
 # ignore pattern
-IGNOREPATTERN = libraries,pclzip.lib
+IGNOREPATTERN = libraries,extensions/exconf/pclzip.lib.php,extensions/exconf/Archive.php,application/scripts,extensions/markdown/parser/markdown.php,extensions/queries/lib,extensions/queries/old
 
 # Parameter check
 ifndef FPATH
@@ -249,7 +249,7 @@ else
 	SNIFFSTR =
 endif
 
-REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR)  $(FPATH)
+REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR) ./
 
 cs-default:
 	chmod ugo+x "$(CSSPATH)cs-scripts.sh"
@@ -280,17 +280,17 @@ cs-check-commit-intensive:
 	$(CSSPATH)cs-scripts.sh -p "-s"
 
 cs-check:
-	$(CSSPATH)cs-scripts.sh -c "-s --report=summary $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -c "-s --report=summary $(REQUESTSTR)"
 cs-check-intensive:
-	$(CSSPATH)cs-scripts.sh -s -c "-s --report=summary $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -s -c "-s --report=summary $(REQUESTSTR)"
 cs-check-intensive-full:
-	$(CSSPATH)cs-scripts.sh -s -c "-s --report=full $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -s -c "-s --report=full $(REQUESTSTR)"
 cs-check-full:
-	$(CSSPATH)cs-scripts.sh -c "-s --report=full $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -c "-s --report=full $(REQUESTSTR)"
 cs-check-emacs:
-	$(CSSPATH)cs-scripts.sh -c "--report=emacs $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -c "--report=emacs $(REQUESTSTR)"
 cs-check-blame:
-	$(CSSPATH)cs-scripts.sh -s -c "--report=gitblame $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -c "--report=gitblame $(REQUESTSTR)"
 
 cs-submodule-check:
 ifndef MPATH

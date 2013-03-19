@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -13,18 +13,20 @@
  *
  * @category OntoWiki
  * @package  OntoWiki_Classes
- * @author Norman Heino <norman.heino@gmail.com>
+ * @author   Norman Heino <norman.heino@gmail.com>
  */
 abstract class OntoWiki_Module
 {
     /**
      * Default value for caching enabled
+     *
      * @var boolean
      */
     const MODULE_CACHING_DEFAULT = true;
 
     /**
      * OntoWiki Application config
+     *
      * @var Zend_Config
      */
     protected $_config = null;
@@ -36,30 +38,35 @@ abstract class OntoWiki_Module
 
     /**
      * Erfurt framework entry
+     *
      * @var Erfurt_App
      */
     protected $_erfurt = null;
 
     /**
      * Currently selected language
+     *
      * @var string
      */
     protected $_lang = null;
 
     /**
      * The module name
+     *
      * @var string
      */
     protected $_name = null;
 
     /**
      * OntoWiki Application object
+     *
      * @var OntoWiki
      */
     protected $_owApp = null;
 
     /**
      * The module private config ([private] section from module.ini file)
+     *
      * @var Zend_Config
      */
     protected $_privateConfig = null;
@@ -68,30 +75,35 @@ abstract class OntoWiki_Module
      * The module runtime options from the view's module method's second
      * parameter (merged with default module options)
      * injected with setOptions from the view
+     *
      * @var Zend_Config
      */
     protected $_options = null;
 
     /**
      * The current request object
+     *
      * @var Zend_Controller_Request_Abstract
      */
     protected $_request = null;
 
     /**
      * Erfurt store tab
+     *
      * @var Erfurt_Store
      */
     protected $_store = null;
 
     /**
      * File extension for template files
+     *
      * @var string
      */
     protected $_templateSuffix = 'phtml';
 
     /**
      * The module view
+     *
      * @var Zend_View_Interface
      */
     public $view = null;
@@ -126,8 +138,8 @@ abstract class OntoWiki_Module
         $this->view->themeUrlBase = $this->_config->themeUrlBase;
         $this->view->urlBase      = $this->_config->urlBase;
         $this->view->moduleUrl    = $this->_config->staticUrlBase
-                                  . $this->_config->extensions->base
-                                  . $config->extensionName . '/';
+            . $this->_config->extensions->base
+            . $config->extensionName . '/';
 
         // set the config
         $this->_privateConfig = $config->private;
@@ -161,7 +173,7 @@ abstract class OntoWiki_Module
     public function render($template, $vars = array(), $spec = null)
     {
         $template = $template
-                  . $this->_templateSuffix;
+            . $this->_templateSuffix;
 
         if (null === $spec) {
             $this->view->assign($vars);
@@ -181,8 +193,8 @@ abstract class OntoWiki_Module
     public function setContext($context)
     {
         $this->_context = $context
-                        ? (string)$context
-                        : OntoWiki_Module_Registry::DEFAULT_CONTEXT;
+            ? (string)$context
+            : OntoWiki_Module_Registry::DEFAULT_CONTEXT;
     }
 
     /**

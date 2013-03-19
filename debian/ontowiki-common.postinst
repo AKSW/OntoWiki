@@ -1,0 +1,20 @@
+#!/bin/sh -e
+# postinst script for ontowiki
+#
+# see: dh_installdeb(1)
+
+echo "---- starting postinst $@"
+
+chown www-data:www-data /usr/share/ontowiki/extensions
+chown www-data:www-data /var/log/ontowiki
+chown www-data:www-data /var/cache/ontowiki
+chmod 770 /usr/share/ontowiki/extensions
+chmod 770 /var/log/ontowiki
+chmod 770 /var/cache/ontowiki
+
+# enable the rewrite base
+sed 's/#RewriteBase/RewriteBase/' -i /usr/share/ontowiki/.htaccess
+
+#DEBHELPER#
+
+echo "---- ending postinst $@"

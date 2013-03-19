@@ -2,8 +2,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -33,8 +33,8 @@ class CorsPlugin extends OntoWiki_Plugin
         /*
          * TODO: allow more CORS header fields here
          */
-        if (isset ($this->_privateConfig->accessControlAllowOrigin) ) {
-            $value = '"'.$this->_privateConfig->accessControlAllowOrigin.'"';
+        if (isset ($this->_privateConfig->accessControlAllowOrigin)) {
+            $value = $this->_privateConfig->accessControlAllowOrigin;
             $response->setHeader('Access-Control-Allow-Origin', $value, true);
         }
     }

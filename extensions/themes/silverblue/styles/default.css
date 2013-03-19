@@ -2388,9 +2388,9 @@ div.section-sidewindows
 #application #searchtext-input
 {
     font-size: 1em;
-    padding: 0.25em 0;
+    padding: 0.25em 0.5%;
     margin: 0;
-    width: 100%;
+    width: 99%;
     background: #eee;
     color: #999;
     border-color: #666;

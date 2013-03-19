@@ -121,7 +121,7 @@ $(document).ready(function() {
             }, 
             stop: function(event, ui) {
                 var resizerWidth = $('.section-sidewindows .resizer-horizontal').width();
-                var sectionRatioPercent = Math.round((((event.pageX) / $(document).width())) * 1000) * 0.1;
+                var sectionRatioPercent = Math.round((((event.originalEvent.pageX) / $(document).width())) * 1000) * 0.1;
                 setSectionRatio(sectionRatioPercent);
                 sessionStore('sectionRation', sectionRatioPercent, {encode: true});
                 $('.window div.cmDiv').adjustClickMenu();
@@ -168,7 +168,7 @@ $(document).ready(function() {
     /* trigger selection events */
     $('table.resource-list > tbody > tr').live('click', function(e) {
         var selectee     = $(this);
-        var selectionURI = $(this).children('td').children('a').attr('about');
+        var selectionURI = $(this).attr('about') | $(this).children('td').children('a').attr('about');
 
         // return if we have no URI (e.g. a Literal list)
         if (typeof selectionURI == 'undefined') {
@@ -407,7 +407,8 @@ $(document).ready(function() {
                     }, 
                     saveButtonTitle: 'Save Changes', 
                     cancelButtonTitle: 'Cancel', 
-                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+                    title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(),
+                    loadOwStylesheet: false,
                     viewOptions: {
                         // no statements needs popover
                         type: $('.section-mainwindows table.Resource').length ? RDFAUTHOR_VIEW_MODE : 'popover', 
@@ -459,7 +460,8 @@ $(document).ready(function() {
                     cancelButtonTitle: 'Cancel',
                     title: 'Create New Resource by Cloning ' + selectedResource.title,  
                     autoParse: false, 
-                    showPropertyButton: true, 
+                    showPropertyButton: true,
+                    loadOwStylesheet: false,
                     onSubmitSuccess: function (responseData) {
                         var newLocation;
                         if (responseData && responseData.changed) {
@@ -509,7 +511,8 @@ $(document).ready(function() {
                         $('.edit-enable').removeClass('active');
                     }, 
                     saveButtonTitle: 'Save Changes', 
-                    cancelButtonTitle: 'Cancel', 
+                    cancelButtonTitle: 'Cancel',
+                    loadOwStylesheet: false,
                     title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
                     viewOptions: {
                         // no statements needs popover

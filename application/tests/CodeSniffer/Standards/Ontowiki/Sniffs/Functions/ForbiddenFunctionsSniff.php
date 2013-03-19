@@ -3,12 +3,12 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * Ontowiki_Sniffs_Function_ForbiddenFunctionsSniff.
- * 
+ *
  * Test for forbidden functions
  *
  * PHP version 5
@@ -36,26 +36,31 @@ class Ontowiki_Sniffs_Functions_ForbiddenFunctionsSniff
      *
      * @var array(string => string|null)
      */
-    public $forbiddenFunctions = array(
-        'print_r'          => null,
-        'var_dump'         => null,
-        'error_log'        => null,
-        'exit'             => 'return',
-        'die'              => 'return'
-    );
+    public $forbiddenFunctions
+        = array(
+            //'print_r'   => null,
+            'var_dump'  => null,
+            'error_log' => null,
+            'exit'      => 'return',
+            'die'       => 'return'
+        );
 
     /**
      * Returns an array of tokens this test wants to listen for.
      *
-     * @return array 
+     * @return array
      */
     public function register()
     {
-        $tokens = parent::register();
+        $tokens   = parent::register();
         $tokens[] = T_EXIT;
-        return $tokens;
-    }//end register()
 
-}//end class
+        return $tokens;
+    }
+    //end register()
+
+}
+
+//end class
 
 ?>

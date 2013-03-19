@@ -1,0 +1,9 @@
+<?php if ($this->has('infomessage')): ?>
+    <p class="messagebox info"><?php echo $this->_($this->infomessage) ?></p>
+<?php endif?>
+
+<?php if ($this->has('comments')): ?>
+    <div id="comment-list">
+<?php echo $this->comments; ?>
+</div>
+<?php endif?>
