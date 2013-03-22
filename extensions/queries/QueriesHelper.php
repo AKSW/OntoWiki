@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -22,10 +22,8 @@ class QueriesHelper extends OntoWiki_Component_Helper
             $translate  = $owApp->translate;
             $url        = new OntoWiki_Url(array('controller' => 'queries', 'action' => 'editor'));
             $extrasMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('application')->getSubMenu('Extras');
-            $extrasMenu->setEntry($translate->_('Queries'), (string) $url);
+            $extrasMenu->setEntry($translate->_('Queries'), (string)$url);
             //$extrasMenu->setEntry('Query Builder', (string) $url);
         }
     }
 }
-
-?>

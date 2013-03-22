@@ -21,22 +21,16 @@
   doap:maintainer <http://aksw.org> ;
   owconfig:hasModule :Comment .
 :Comment a owconfig:Module ;
-  rdfs:label "Comment" ;
   owconfig:priority "19" ;
   rdfs:label "Comment" ;
-  owconfig:context "main.window.community" .
+  owconfig:context "main.window.modelinfo" ;
+  owconfig:context "main.window.dashmodelinfo" ;
+  owconfig:context "main.window.community" ;
+  owconfig:context "main.window.properties" .
 :community owconfig:hasModule :Lastchanges .
 :Lastchanges a owconfig:Module ;
-  rdfs:label "Lastchanges" ;
   owconfig:priority "18" ;
   rdfs:label "Last Changes" ;
-  owconfig:context "main.window.modelinfo" ;
-  owconfig:context "main.window.dashmodelinfo" .
-:community owconfig:hasModule :Lastcomments .
-:Lastcomments a owconfig:Module ;
-  rdfs:label "Lastcomments" ;
-  owconfig:priority "15" ;
-  rdfs:label "Last Comments" ;
   owconfig:context "main.window.modelinfo" ;
   owconfig:context "main.window.dashmodelinfo" .
 :community owconfig:hasModule :Rating .
@@ -46,7 +40,8 @@
   owconfig:priority "20" ;
   owconfig:context "main.window.properties" .
 :community :enableRating "false"^^xsd:boolean ;
-  owconfig:config [
+           :limit "5"^^xsd:int ;
+ owconfig:config [
       a owconfig:Config;
       owconfig:id "about";
       :property <http://rdfs.org/sioc/ns#about>

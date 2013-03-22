@@ -556,7 +556,7 @@ EOT;
 //script
 $path = realpath(__DIR__.'/../../libraries/');
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
-require_once realpath(__DIR__.'/../../libraries/Erfurt/Erfurt/Uri.php');
+require_once realpath(__DIR__.'/../../libraries/Erfurt/library/Erfurt/Uri.php');
 
 if ($argc > 4) {
     echo 'usage: extensions-ini2n3.sh [<extension-name>]'.PHP_EOL; exit(-1);

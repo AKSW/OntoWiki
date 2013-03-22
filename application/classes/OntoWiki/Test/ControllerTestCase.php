@@ -1,11 +1,11 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: philipp
- * Date: 08.09.12
- * Time: 14:59
- * To change this template use File | Settings | File Templates.
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
+
 class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 {
     /** @var Erfurt_Ac_Test|Erfurt_Ac_Default */
@@ -62,7 +62,7 @@ class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestC
             }
         }
 
-        $this->_ac = Erfurt_App::getInstance(false)->getAc();
+        $this->_ac           = Erfurt_App::getInstance(false)->getAc();
         $this->_storeAdapter = Erfurt_App::getInstance(false)->getStore()->getBackendAdapter();
     }
 
@@ -82,16 +82,18 @@ class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestC
 
     private function _markTestNeedsDatabase()
     {
-        $config =  Erfurt_App::getInstance(false)->getConfig();
+        $config = Erfurt_App::getInstance(false)->getConfig();
 
         $dbName = null;
         if ($config->store->backend === 'virtuoso') {
             if (isset($config->store->virtuoso->dsn)) {
                 $dbName = $config->store->virtuoso->dsn;
             }
-        } else if ($config->store->backend === 'zenddb') {
-            if (isset($config->store->zenddb->dbname)) {
-                $dbName = $config->store->zenddb->dbname;
+        } else {
+            if ($config->store->backend === 'zenddb') {
+                if (isset($config->store->zenddb->dbname)) {
+                    $dbName = $config->store->zenddb->dbname;
+                }
             }
         }
 
@@ -110,7 +112,7 @@ class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestC
             } else {
                 $this->markTestSkipped();
             }
-        } catch (Erfurt_Exception $e2) {
+        } catch (Erfurt_Exception $ee) {
             $this->markTestSkipped();
         }
 

@@ -2,14 +2,15 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki error controller.
  * Fetched by default through the Zend_Controller_Plugin_ErrorHandler
  *
+ * @category   OntoWiki
  * @package    OntoWiki_Controller
  * @author     Norman Heino <norman.heino@gmail.com>
  */
@@ -17,24 +18,28 @@ class ErrorController extends Zend_Controller_Action
 {
     /**
      * OntoWiki Application
+     *
      * @var OntoWiki
      */
     protected $_owApp = null;
 
     /**
      * OntoWiki Application config
+     *
      * @var Zend_Config
      */
     protected $_config = null;
 
     /**
      * The session store
+     *
      * @var Zend_Session
      */
     protected $_session = null;
 
     /**
      * Erfurt App
+     *
      * @var Erfurt_App
      */
     protected $_erfurt = null;
@@ -95,12 +100,13 @@ class ErrorController extends Zend_Controller_Action
                     $response = $this->getResponse();
                     $response->setHttpResponseCode($exception->getResponseCode());
                     $response->setBody($exception->getResponseMessage());
+
                     return;
             }
 
             // exception code determines whether error or info
             // see erfurt developer documentation
-            if (($exception->getCode() > 0) && ($exception->getCode() < 2000) and false) {
+            if (($exception->getCode() > 0) && ($exception->getCode() < 2000)) {
                 $this->view->heading   = 'OntoWiki Info Notice';
                 $this->view->errorType = 'info';
                 $this->view->code      = $exception->getCode();
@@ -109,9 +115,9 @@ class ErrorController extends Zend_Controller_Action
                 $this->view->errorType = 'error';
 
                 if ($exception->getCode() !== 0) {
-                    $this->view->code      = $exception->getCode();
+                    $this->view->code = $exception->getCode();
                 }
-                
+
                 $response = $this->getResponse();
                 $response->setHttpResponseCode(500);
             }
@@ -121,14 +127,16 @@ class ErrorController extends Zend_Controller_Action
             $this->view->exceptionType = get_class($exception);
             $this->view->exceptionFile = $exception->getFile() . '@' . $exception->getLine();
 
-            $stacktrace = $exception->getTrace();
+            $stacktrace       = $exception->getTrace();
             $stacktraceString = '';
-            foreach ($stacktrace as $i=>$spec) {
-                $lineStr = isset($spec['file']) ?
-                    ('@'.$spec['file'] . (isset($spec['line']) ? ':'.$spec['line'] : '') ) :
+            foreach ($stacktrace as $i => $spec) {
+                $lineStr = isset($spec['file'])
+                    ?
+                    ('@' . $spec['file'] . (isset($spec['line']) ? ':' . $spec['line'] : ''))
+                    :
                     '';
-                $stacktraceString .= '#' . $i . ': ' .(isset($spec['class']) ? $spec['class'] : '') .
-                    (isset($spec['type']) ?$spec['type'] : '') . $spec['function'] .
+                $stacktraceString .= '#' . $i . ': ' . (isset($spec['class']) ? $spec['class'] : '') .
+                    (isset($spec['type']) ? $spec['type'] : '') . $spec['function'] .
                     $lineStr . '<br />';
 
                 // foreach ($spec['args'] as $arg) {
@@ -156,7 +164,7 @@ class ErrorController extends Zend_Controller_Action
             }
         }
 
-        $this->view->urlBase = $this->_config->urlBase;
+        $this->view->urlBase   = $this->_config->urlBase;
         $this->view->errorText = $errorString;
     }
 
@@ -172,15 +180,15 @@ class ErrorController extends Zend_Controller_Action
         );
         $requestedUri = OntoWiki::getInstance()->config->urlBase . ltrim($requestExtra, '/');
 
-        $createUrl = new OntoWiki_Url(array(), array());
+        $createUrl             = new OntoWiki_Url(array(), array());
         $createUrl->controller = 'resource';
-        $createUrl->action = 'new';
+        $createUrl->action     = 'new';
         $createUrl->setParam('r', $requestedUri);
-        $this->view->requestedUrl = (string) $requestedUri;
-        $this->view->createUrl    = (string) $createUrl;
+        $this->view->requestedUrl = (string)$requestedUri;
+        $this->view->createUrl    = (string)$createUrl;
         $this->view->urlBase      = OntoWiki::getInstance()->config->urlBase;
 
-        $exception = null;
+        $exception     = null;
         $exceptionType = null;
         if ($this->_request->has('error_handler')) {
             // get errors passed by error handler plug-in
@@ -196,14 +204,12 @@ class ErrorController extends Zend_Controller_Action
 
         // Zend_Controller_Dispatcher_Exception means invalid controller
         // -> resource not found
-        if (
-            ($this->_request->has('error_handler')) &&
-            ($exceptionType != 'Zend_Controller_Dispatcher_Exception')
+        if (($this->_request->has('error_handler'))
+            && ($exceptionType != 'Zend_Controller_Dispatcher_Exception')
         ) {
-            if (
-                (null !== $exception) &&
-                (method_exists($exception, 'getResponseCode')) &&
-                (null !== $exception->getResponseCode())
+            if ((null !== $exception)
+                && (method_exists($exception, 'getResponseCode'))
+                && (null !== $exception->getResponseCode())
             ) {
                 $this->getResponse()->setHttpResponseCode($exception->getResponseCode());
                 $this->_helper->viewRenderer->setScriptAction('error');

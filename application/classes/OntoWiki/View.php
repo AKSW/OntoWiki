@@ -1,10 +1,9 @@
 <?php
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -15,42 +14,48 @@
  *
  * @category OntoWiki
  * @package  OntoWiki_Classes
- * @author Norman Heino <norman.heino@gmail.com>
+ * @author   Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_View extends Zend_View
 {
     /**
      * OntoWiki application config
+     *
      * @var Zend_Config
      */
     protected $_config = null;
 
     /**
      * The user interface language currently set
+     *
      * @var string
      */
     protected $_lang = null;
 
     /**
      * Module cache
+     *
      * @var Zend_Cache
      */
     protected $_moduleCache = null;
 
     /**
      * Translation object
+     *
      * @var Zend_Translate
      */
     protected $_translate = null;
 
     /**
      * Zend View Placeholder registry
+     *
      * @var Zend_View_Helper_Placeholder_Registry
      */
     protected $_placeholderRegistry = null;
 
     /**
      * Subview for rendering modules
+     *
      * @var OntoWiki_View
      */
     protected $_moduleView = null;
@@ -58,7 +63,7 @@ class OntoWiki_View extends Zend_View
     /**
      * Constructor
      */
-    public function __construct($config = array(), $translate)
+    public function __construct($config = array(), $translate = null)
     {
         parent::__construct($config);
 
@@ -67,21 +72,19 @@ class OntoWiki_View extends Zend_View
 
         if (array_key_exists('use_module_cache', $config) && (boolean)$config['use_module_cache']) {
             $cachePath = array_key_exists('cache_path', $config)
-                       ? (string)$config['cache_path']
-                       : ONTOWIKI_ROOT . 'cache';
+                ? (string)$config['cache_path']
+                : ONTOWIKI_ROOT . 'cache';
 
             if (is_writable($cachePath)) {
                 // set up module cache
-                $frontendOptions = array(
+                $frontendOptions    = array(
                     'cache_id_prefix' => '_module_'
                 );
-                $backendOptions = array(
+                $backendOptions     = array(
                     'cache_dir' => $cachePath
                 );
                 $this->_moduleCache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
             }
-        } else {
-            // caching disabled
         }
     }
 
@@ -105,7 +108,7 @@ class OntoWiki_View extends Zend_View
     public function has($name)
     {
         // check view variables
-        if (isset($this->$name) && !empty($this->$name) &&  $this->$name != '') {
+        if (isset($this->$name) && !empty($this->$name) && $this->$name != '') {
             return true;
         }
 
@@ -113,8 +116,16 @@ class OntoWiki_View extends Zend_View
         if ($this->_placeholderRegistry->containerExists($name)) {
             $value = $this->_placeholderRegistry->getContainer($name)->getValue();
 
-            if (!empty($value) && $value != '') {
-                return true;
+            if (is_array($value)) {
+                foreach ($value as $v) {
+                    if (!empty($v) && ($v != '')) {
+                        return true;
+                    }
+                }
+            } else {
+                if (!empty($value) && ($value != '')) {
+                    return true;
+                }
             }
         }
 
@@ -125,6 +136,7 @@ class OntoWiki_View extends Zend_View
      * Clears the cache entry for a specific module or all modules.
      *
      * @param string|null $moduleName If null, all cache for all modules is cleared.
+     *
      * @return bool
      */
     public function clearModuleCache($moduleName = null)
@@ -142,6 +154,7 @@ class OntoWiki_View extends Zend_View
      * Renders all modules registered for a certain module context.
      *
      * @param string $context The module context whose modules should be rendered
+     *
      * @return string
      */
     public function modules($context, $renderOptions = null)
@@ -164,16 +177,17 @@ class OntoWiki_View extends Zend_View
      * is used instead.
      *
      * @param string $moduleName
-     * @param array $moduleOptions An associative array or and instance of
-     *        Zend_config with module options.
-     *        The following keys can be used:
-     *        enabled  – whether the module is enabled or disabled
-     *        title    – the module window's title
-     *        caching  – whether the module should be cached
-     *        priority – priority of the module in the module contexts
-     *                   lower number means higher priority
-     *        classes  – string of css classes for the module window
-     *        id       – a css id for the module window
+     * @param array  $moduleOptions An associative array or and instance of
+     *                              Zend_config with module options.
+     *                              The following keys can be used:
+     *                              enabled  – whether the module is enabled or disabled
+     *                              title    – the module window's title
+     *                              caching  – whether the module should be cached
+     *                              priority – priority of the module in the module contexts
+     *                              lower number means higher priority
+     *                              classes  – string of css classes for the module window
+     *                              id       – a css id for the module window
+     *
      * @return string
      */
     public function module($moduleName, $renderOptions = null, $context = OntoWiki_Module_Registry::DEFAULT_CONTEXT)
@@ -190,14 +204,16 @@ class OntoWiki_View extends Zend_View
 
         if ($defaultModuleOptions == null) {
             $moduleOptions = $renderOptions;
-        } else if ($renderOptions != null) {
-            $moduleOptions = $defaultModuleOptions->merge($renderOptions);
         } else {
-            $moduleOptions = $defaultModuleOptions;
+            if ($renderOptions != null) {
+                $moduleOptions = $defaultModuleOptions->merge($renderOptions);
+            } else {
+                $moduleOptions = $defaultModuleOptions;
+            }
         }
 
-        $cssClasses  = isset($moduleOptions->classes) ? $moduleOptions->classes : '';
-        $cssId       = isset($moduleOptions->id) ? $moduleOptions->id : '';
+        $cssClasses = isset($moduleOptions->classes) ? $moduleOptions->classes : '';
+        $cssId      = isset($moduleOptions->id) ? $moduleOptions->id : '';
 
         $module = $moduleRegistry->getModule($moduleName, $context);
 
@@ -228,7 +244,7 @@ class OntoWiki_View extends Zend_View
 
             // does the module have a menu?
             if (method_exists($module, 'getMenu')) {
-                $menu = $module->getMenu();
+                $menu                    = $module->getMenu();
                 $this->_moduleView->menu = $menu->toArray(false, false);
             }
 
@@ -242,7 +258,7 @@ class OntoWiki_View extends Zend_View
             }
 
             // is caching enabled
-            if ($this->_moduleCache and $module->allowCaching()) {
+            if ($this->_moduleCache && $module->allowCaching()) {
                 // get cache id
                 $cacheId = md5($module->getCacheId() . $cssClasses . $this->_config->languages->locale);
 
@@ -250,21 +266,21 @@ class OntoWiki_View extends Zend_View
                 if (!$moduleContent = $this->_moduleCache->load($cacheId)) {
 
                     // render (expensive) contents
-                    $pre = microtime(true);
+                    $pre           = microtime(true);
                     $moduleContent = $module->getContents();
-                    $post = ((microtime(true) - $pre) * 1000);
+                    $post          = ((microtime(true) - $pre) * 1000);
                     // $this->_owApp->logger->info("Rendering module '$moduleName': $post ms (cache miss)");
 
                     // save to cache
-                    $this->_moduleCache->save($moduleContent, $cacheId, array('module', $moduleName), $module->getCacheLivetime());
-                } else {
-                    // $this->_owApp->logger->info("Loading module '$moduleName' from cache.");
+                    $this->_moduleCache->save(
+                        $moduleContent, $cacheId, array('module', $moduleName), $module->getCacheLivetime()
+                    );
                 }
             } else {
                 // caching disabled
-                $pre = microtime(true);
+                $pre           = microtime(true);
                 $moduleContent = $module->getContents();
-                $post = ((microtime(true) - $pre) * 1000);
+                $post          = ((microtime(true) - $pre) * 1000);
                 // $this->_owApp->logger->info("Rendering module '$moduleName': $post ms (caching disabled)");
             }
 
@@ -285,8 +301,10 @@ class OntoWiki_View extends Zend_View
 
                 $this->_moduleView->navigation = $navigation;
                 $this->_moduleView->content    = $moduleContent;
-            } else if (is_string($moduleContent)) {
-                $this->_moduleView->content = $moduleContent;
+            } else {
+                if (is_string($moduleContent)) {
+                    $this->_moduleView->content = $moduleContent;
+                }
             }
 
             // set variables

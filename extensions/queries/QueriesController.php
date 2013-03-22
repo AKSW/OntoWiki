@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -11,7 +11,7 @@
  *
  * @category   OntoWiki
  * @package    Extensions_Queries
- * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright  Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class QueriesController extends OntoWiki_Controller_Component
@@ -27,7 +27,7 @@ class QueriesController extends OntoWiki_Controller_Component
      */
     public function init()
     {
-        parent :: init();
+        parent::init();
 
         // setup the navigation
         OntoWiki::getInstance()->getNavigation()->reset();
@@ -124,12 +124,12 @@ class QueriesController extends OntoWiki_Controller_Component
         // build toolbar
         $toolbar = $this->_owApp->toolbar;
         $toolbar->appendButton(
-            OntoWiki_Toolbar :: SUBMIT,
+            OntoWiki_Toolbar::SUBMIT,
             array(
                 'name' => 'Submit Query'
             )
         )->appendButton(
-            OntoWiki_Toolbar :: RESET,
+            OntoWiki_Toolbar::RESET,
             array(
                 'name' => 'Reset Form'
             )
@@ -239,9 +239,8 @@ class QueriesController extends OntoWiki_Controller_Component
                 }
 
                 //this is for the "output to file option
-                if (
-                        ($format == 'json' || $format == 'xml') &&
-                        $this->_request->getParam('result_outputfile') == 'true'
+                if (($format == 'json' || $format == 'xml')
+                    && ($this->_request->getParam('result_outputfile') == 'true')
                 ) {
                     $this->_helper->viewRenderer->setNoRender();
                     $this->_helper->layout()->disableLayout();
@@ -273,7 +272,7 @@ class QueriesController extends OntoWiki_Controller_Component
                 } else if (is_bool($result)) {
                     $result = $result ? 'yes' : 'no';
                 } else if (is_int($result)) {
-                    $result = (string) $result;
+                    $result = (string)$result;
                 } else if (is_string($result)) {
                     // json
                     $result = $result;
@@ -292,23 +291,29 @@ class QueriesController extends OntoWiki_Controller_Component
         }
 
         //load js for sparql syntax highlighting
-        $this->view->headScript()->prependFile($this->_componentUrlBase . 'resources/codemirror/js/codemirror.js');
-        $this->view->headScript()->prependScript(
-            'var editor; $(document).ready(
+        $this->view->headLink()->appendStylesheet(
+            $this->_componentUrlBase . 'resources/codemirror/lib/codemirror.css'
+        );
+        $this->view->headScript()->appendFile(
+            $this->_componentUrlBase . 'resources/codemirror/lib/codemirror.js'
+        );
+        $this->view->headScript()->appendFile(
+            $this->_componentUrlBase . 'resources/codemirror/addon/edit/matchbrackets.js'
+        );
+        $this->view->headScript()->appendFile(
+            $this->_componentUrlBase . 'resources/codemirror/mode/sparql/sparql.js'
+        );
+
+        $this->view->headScript()->appendScript(
+            'var editor;
+            $(document).ready(
                 function(){
-                    editor = CodeMirror.fromTextArea(
-                        "inputfield", 
+                    var editor = CodeMirror.fromTextArea(
+                        document.getElementById("inputfield"),
                         {
-                          parserfile: "parsesparql.js",
-                          path: "' . $this->_componentUrlBase . 'resources/codemirror/js/",
-                          stylesheet: "' . $this->_componentUrlBase . 'resources/codemirror/css/sparqlcolors.css",
-                        }
-                    );
-                    $("a.submit").unbind("click");
-                    $("a.submit").click(
-                        function(){ 
-                            $("#inputfield").text(editor.getCode()); 
-                            $(this).parents("form:first").submit(); 
+                            mode: "application/x-sparql-query",
+                            tabMode: "indent",
+                            matchBrackets: true,
                         }
                     );
                 }
@@ -373,7 +378,7 @@ class QueriesController extends OntoWiki_Controller_Component
 
         $store = $this->_erfurt->getStore();
         $storeGraph = $this->_owApp->selectedModel;
-        $graphUri = (string) $this->_owApp->selectedModel;
+        $graphUri = (string)$this->_owApp->selectedModel;
 
         $res = "json or desc missing";
         // checking for post data to save queries
@@ -388,7 +393,7 @@ class QueriesController extends OntoWiki_Controller_Component
             }
 
             // checking whether any queries exist yet in this store
-            $existingQueriesQuery = Erfurt_Sparql_SimpleQuery :: initWithString(
+            $existingQueriesQuery = Erfurt_Sparql_SimpleQuery::initWithString(
                 'SELECT *
                  WHERE {
                     ?query <'.EF_RDF_TYPE.'> <'.
@@ -404,10 +409,10 @@ class QueriesController extends OntoWiki_Controller_Component
                 $this->insertInitials($storeGraph);
             }
             $hash = md5($this->_request->getParam('json') . $this->_request->getParam('query'));
-            $name = (string) $storeGraph . '#Query-' . $hash;
+            $name = (string)$storeGraph . '#Query-' . $hash;
 
             // checking whether a query with same content (Where-Part) already exists (check by md5 sum)
-            $existingDataQuery = Erfurt_Sparql_SimpleQuery :: initWithString(
+            $existingDataQuery = Erfurt_Sparql_SimpleQuery::initWithString(
                 'SELECT *
                  WHERE {
                      <'.$name.'> a <'.OntoWiki_Utils::expandNamespace($this->_privateConfig->saving->ClassUri) . '>
@@ -432,7 +437,7 @@ class QueriesController extends OntoWiki_Controller_Component
                     $name,
                     $this->_privateConfig->saving->ModelUri,
                     array(
-                        'value' => (string) $this->_owApp->selectedModel,
+                        'value' => (string)$this->_owApp->selectedModel,
                         'type' => 'uri'
                     ),
                     false
@@ -450,9 +455,9 @@ class QueriesController extends OntoWiki_Controller_Component
                     $name,
                     $this->_privateConfig->saving->DateUri,
                     array(
-                        'value' => (string) date('c'),
+                        'value' => (string)date('c'),
                         'type' => 'literal',
-                        'datatype' => OntoWiki_Utils :: expandNamespace('xsd:dateTime')
+                        'datatype' => OntoWiki_Utils::expandNamespace('xsd:dateTime')
                     ),
                     false
                 );
@@ -462,7 +467,7 @@ class QueriesController extends OntoWiki_Controller_Component
                     array(
                         'value' => '1',
                         'type' => 'literal',
-                        'datatype' => OntoWiki_Utils :: expandNamespace('xsd:integer')
+                        'datatype' => OntoWiki_Utils::expandNamespace('xsd:integer')
                     ),
                     false
                 );
@@ -580,8 +585,9 @@ class QueriesController extends OntoWiki_Controller_Component
 
                 //TODO pass the "where it is" as param
                 //delete from private
-                if ($userdb != null)
+                if ($userdb != null) {
                     $userdb->deleteMatchingStatements($uriString, null, null);
+                }
                 //delete from shared
                 $this->_owApp->selectedModel->deleteMatchingStatements($uriString, null, null);
             } catch (Exception $e) {
@@ -667,7 +673,7 @@ class QueriesController extends OntoWiki_Controller_Component
         $object = array();
 
         // add english label for this db
-        $object['object_type'] = Erfurt_Store :: TYPE_LITERAL;
+        $object['object_type'] = Erfurt_Store::TYPE_LITERAL;
         $object['value'] = 'GQB Query DB of ' . $this->_userName;
         $newModel->addStatement($proposedDBname, EF_RDFS_LABEL, $object);
 
@@ -683,7 +689,7 @@ class QueriesController extends OntoWiki_Controller_Component
 
         //domain of this db (needed?)
         $object['value'] = $this->_privateConfig->saving->baseQueryDbUri;
-        $object['object_type'] = Erfurt_Store :: TYPE_IRI;
+        $object['object_type'] = Erfurt_Store::TYPE_IRI;
         $newModel->addStatement($proposedDBname, EF_RDFS_DOMAIN, $object);
 
         //add owner/maker of this db
@@ -715,7 +721,7 @@ class QueriesController extends OntoWiki_Controller_Component
             $countRes = $this->_erfurt->getStore()->sparqlQuery($countQuery);
             if (isset($countRes[0])) {
                 $i = $countRes[0]['count'];
-                $graphUri =  (string) $this->_owApp->selectedModel;
+                $graphUri = (string)$this->_owApp->selectedModel;
                 $this->_erfurt->getStore()->deleteMatchingStatements(
                     $graphUri,
                     $uri,
@@ -726,7 +732,10 @@ class QueriesController extends OntoWiki_Controller_Component
                     $graphUri,
                     $uri,
                     $this->_privateConfig->saving->NumViewsUri,
-                    array('value'=>$i+1, 'type'=>'literal')
+                    array(
+                         'value' => $i + 1,
+                         'type' => 'literal'
+                    )
                 );
             }
             return $queryData[0]['query'];
@@ -844,7 +853,7 @@ class QueriesController extends OntoWiki_Controller_Component
         $limit = ($params['limit']);
 
         $config = self::_object2array($this->_privateConfig);
-        require_once('lib/AjaxAutocompletion.php');
+        require_once 'lib/AjaxAutocompletion.php';
         $u = new AjaxAutocompletion($q, $json, $limit, $config, $debug);
 
         //$u = new AjaxAutocompletion("",$json, $limit,$config, $debug);
@@ -870,10 +879,10 @@ class QueriesController extends OntoWiki_Controller_Component
         }
 
         $now = microtime(true);
-        require_once('lib/AjaxUpdateTable.php');
+        require_once 'lib/AjaxUpdateTable.php';
         $ajaxUpdate = new AjaxUpdateTable($params['json'], $params['limit'], $config, true);
         $data = $ajaxUpdate->getResultAsArray();
-        $queryString = (string) $ajaxUpdate->getSPARQLQuery();
+        $queryString = (string)$ajaxUpdate->getSPARQLQuery();
         $time = round((microtime(true) - $now) * 1000) . ' msec needed';
 
         // disabling layout and template as we make no use of these
@@ -902,7 +911,7 @@ class QueriesController extends OntoWiki_Controller_Component
         $params = $this->_request->getParams();
         $json = ($params['json']);
         $limit = ($params['limit']);
-        require_once('lib/AjaxUpdateTable.php');
+        require_once 'lib/AjaxUpdateTable.php';
         $u = new AjaxUpdateTable($json, $limit, $config, true);
         echo $u->getSPARQLQuery();
     }
@@ -920,7 +929,7 @@ class QueriesController extends OntoWiki_Controller_Component
         $max = $arr[count($arr) - 1] + 1;
 
         //TODO maybe not needed
-        $jscript .='resetLink = \'';
+        $jscript .= 'resetLink = \'';
         $first = true;
         $vars = '';
         foreach ($this->_request->getParams() as $key => $value) {
@@ -1101,19 +1110,19 @@ class QueriesController extends OntoWiki_Controller_Component
 
         if (!empty($queryString)) {
             require_once 'Erfurt/Sparql/SimpleQuery.php';
-            $query = Erfurt_Sparql_SimpleQuery :: initWithString($queryString);
+            $query = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
 
             // overwrite query-specidfied dataset with protocoll-specified dataset
             if (null !== $defaultGraph) {
-                $query->setFrom((array) $defaultGraph);
+                $query->setFrom((array)$defaultGraph);
             }
             if (null !== $namedGraph) {
-                $query->setFromNamed((array) $namedGraph);
+                $query->setFromNamed((array)$namedGraph);
             }
 
             // check graph availability
             require_once 'Erfurt/App.php';
-            $ac = Erfurt_App :: getInstance()->getAc();
+            $ac = Erfurt_App::getInstance()->getAc();
             foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
                 if (!$ac->isModelAllowed('view', $graphUri)) {
                     $count = -3;
@@ -1158,7 +1167,7 @@ class QueriesController extends OntoWiki_Controller_Component
         $now = microtime(true);
 
         $query = $this->_request->getParam('query', '');
-        $queryObj = Erfurt_Sparql_SimpleQuery :: initWithString($query);
+        $queryObj = Erfurt_Sparql_SimpleQuery::initWithString($query);
         $store = OntoWiki::getInstance()->erfurt->getStore();
         $data = $store->sparqlQuery($queryObj);
 

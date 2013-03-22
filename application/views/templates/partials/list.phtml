@@ -33,7 +33,12 @@ if ($instances->hasData()) {
     } else {
          $instanceData = array();
     }
-    //echo '<pre>'; print_r($instanceData); echo '</pre>';
+
+    if (!isset($this->other->statusBar) || $this->other->statusBar) {
+        $statusBar = $this->placeholder('main.window.statusbar');
+    } else {
+        $statusBar = null;
+    }
     
     $itemsOnPage = count($instanceData);
     
@@ -43,8 +48,6 @@ if ($instances->hasData()) {
     
     $start     = $instances->getOffset() + 1;
     $translate = OntoWiki::getInstance()->translate;
-    
-    $statusBar = $this->placeholder('main.window.statusbar');
     
     $limit = $instances->getLimit();
     $offset = $instances->getOffset();
@@ -56,7 +59,9 @@ if ($instances->hasData()) {
     $config = Erfurt_App::getInstance()->getConfig();
 
     if($graph->getOption($config->sysont->properties->isLarge)) {
-        $statusBar->append(OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName));
+        if ($statusBar !== null) {
+            $statusBar->append(OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName));
+        }
     } else {
         $query = clone $instances->getResourceQuery();
         
@@ -67,29 +72,32 @@ if ($instances->hasData()) {
         } catch (Erfurt_Store_Exception $e) {
             $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
         }
-        $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName));
-        
-        if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
-            $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
-            $numResultsMsg = sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results);
-            $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
+        if ($statusBar !== null) {
+            $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName));
+            if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
+                $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
+                $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
+            }
         }
     }
     if(!isset($count) || $count > 10 ){
-        $thisActionUrl = new OntoWiki_Url().'/';
-        $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/20'.'">20</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/30'.'">30</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/40'.'">40</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
-//        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
-//        $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
-        $statusBar->append($limit);
+        if ($statusBar !== null) {
+            $thisActionUrl = new OntoWiki_Url().'/';
+            $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
+            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/20'.'">20</a></li>';
+            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/30'.'">30</a></li>';
+            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/40'.'">40</a></li>';
+            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
+//            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
+//            $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
+            $statusBar->append($limit);
+        }
     }
 
     if (defined('_OWDEBUG')) {
-        $timeMsg = sprintf($translate->translate('Query execution took %1$d ms.'), $time);
-        $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
+        if ($statusBar !== null) {
+            $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
+        }
     }
 } else {
     $instanceData = array();
@@ -112,12 +120,12 @@ $other->graphbase = $graphBase;
 //call the requested template
 echo $this->partial('partials/'.$this->mainTemplate.'.phtml',
     array(
-        'instances'    => $instances,
-        'instanceData' => $instanceData,
-        'instanceInfo' => $instanceInfo,
-        'propertyInfo' => $propertyInfo,
-        'other'        => $other,
-        'listName'    => $this->listName,
-        'start'        => $start
+        'instances'     => $instances,
+        'instanceData'  => $instanceData,
+        'instanceInfo'  => $instanceInfo,
+        'propertyInfo'  => $propertyInfo,
+        'other'         => $other,
+        'listName'      => $this->listName,
+        'start'         => $start
     )
 );

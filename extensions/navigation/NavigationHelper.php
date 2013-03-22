@@ -3,11 +3,12 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * Nav helper. builds a query for the nav controller and for the resource controller
+ *
  * @category   OntoWiki
  * @package    Extensions_Navigation
  */
@@ -109,24 +110,25 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
         // create filter for types
         $filterType = array();
-        $filterUris  = array();
-        $counted     = array();
+        $filterUris = array();
+        $counted    = array();
         foreach ($classes as $class) {
             // get uri
-            $uri = ($class['parent'] != '')?$class['parent']:$class['node'];
+            $uri = ($class['parent'] != '') ? $class['parent'] : $class['node'];
 
             // if this class is already counted - continue
             if (in_array($uri, $counted)) {
-                if ( $class['node'] != '' ) {
+                if ($class['node'] != '') {
                     $uri = $class['node'];
-                    if(in_array($uri, $counted))
+                    if (in_array($uri, $counted)) {
                         continue;
+                    }
                 } else {
                     continue;
                 }
             }
 
-            $uriElem = new Erfurt_Sparql_Query2_IriRef($uri);
+            $uriElem      = new Erfurt_Sparql_Query2_IriRef($uri);
             $filterUris[] = $uriElem;
             $filterType[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
 
@@ -151,9 +153,9 @@ class NavigationHelper extends OntoWiki_Component_Helper
     public static function getSearchTriples($setup, $forImplicit = false, $backend = 'zenddb')
     {
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        $classVar = new Erfurt_Sparql_Query2_Var('classUri');
-        $subVar = new Erfurt_Sparql_Query2_Var('subResourceUri');
-        $elements = array();
+        $classVar  = new Erfurt_Sparql_Query2_Var('classUri');
+        $subVar    = new Erfurt_Sparql_Query2_Var('subResourceUri');
+        $elements  = array();
 
         // if deeper query
         if (isset($setup->state->parent)) {
@@ -177,7 +179,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $mainUnion->addElement($ggp);
                     }
                 } else {
-                    $rel = $setup->config->hierarchyRelations->in;
+                    $rel           = $setup->config->hierarchyRelations->in;
                     $queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
                     $queryOptional->addTriple(
                         $searchVar,
@@ -207,7 +209,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     }
                 } else {
                     // get one relation
-                    $rel = $setup->config->hierarchyRelations->out;
+                    $rel           = $setup->config->hierarchyRelations->out;
                     $queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
                     $queryOptional->addTriple(
                         new Erfurt_Sparql_Query2_IriRef($setup->state->parent),
@@ -304,14 +306,16 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     }
                 }
                 //$mainUnion->addElement($unionSub);
-                if ($unionSub->size() > 0) $optional->addElement($unionSub);
+                if ($unionSub->size() > 0) {
+                    $optional->addElement($unionSub);
+                }
                 $elements[] = $optional;
 
                 // create filter for types
                 $filterType = array();
                 $filterUris = array();
                 foreach ($setup->config->hierarchyTypes as $type) {
-                    $uriElem = new Erfurt_Sparql_Query2_IriRef($type);
+                    $uriElem      = new Erfurt_Sparql_Query2_IriRef($type);
                     $filterUris[] = $uriElem;
                     $filterType[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
                 }
@@ -442,7 +446,9 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 }
                 $superUsed = true;
             }
-            if($superUsed) $elements[] = $union;
+            if ($superUsed) {
+                $elements[] = $union;
+            }
         }
 
         $elements[] = new Erfurt_Sparql_Query2_Filter(
@@ -500,7 +506,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
         // dont't show rdfs/owl entities and subtypes in the first level
         if (!isset($setup->state->parent) && !isset($setup->config->rootElement)) {
 
-            OntoWiki::getInstance()->logger->info("BACKEND: ".$backend);
+            OntoWiki::getInstance()->logger->info("BACKEND: " . $backend);
 
             // optional var
             if ($backend == "zenddb") {
@@ -585,7 +591,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
                 $filter[] = new Erfurt_Sparql_Query2_Regex(
                     new Erfurt_Sparql_Query2_Str(new Erfurt_Sparql_Query2_Var('super')),
-                    new Erfurt_Sparql_Query2_RDFLiteral('^'.EF_OWL_NS)
+                    new Erfurt_Sparql_Query2_RDFLiteral('^' . EF_OWL_NS)
                 );
                 $filter[] = new Erfurt_Sparql_Query2_UnaryExpressionNot(
                     new Erfurt_Sparql_Query2_bound(

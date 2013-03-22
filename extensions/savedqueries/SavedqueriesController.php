@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 require_once 'OntoWiki/Controller/Component.php';
@@ -21,8 +21,8 @@ require_once 'OntoWiki/Controller/Component.php';
  */
 class SavedqueriesController extends OntoWiki_Controller_Component
 {
-    private $model = null;
-    private $translate = null;
+    private $_model = null;
+    private $_translate = null;
 
     // ------------------------------------------------------------------------
     // --- Component initialization -------------------------------------------
@@ -34,9 +34,8 @@ class SavedqueriesController extends OntoWiki_Controller_Component
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
             require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('No model pre-selected and missing parameter m (model)!');
-            return;
         } else {
-            $this->model = $this->_owApp->selectedModel;
+            $this->_model = $this->_owApp->selectedModel;
         }
 
         // disable tabs
@@ -44,10 +43,10 @@ class SavedqueriesController extends OntoWiki_Controller_Component
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         // get translation object
-        $this->translate = $this->_owApp->translate;
+        $this->_translate = $this->_owApp->translate;
 
         $this->queryString = $this->_request->getParam('query', '');
-        $this->queryLabel = $this->_request->getParam('label', '');
+        $this->queryLabel  = $this->_request->getParam('label', '');
 
         //set title of main window ...
         $this->view->placeholder('main.window.title')->set($this->queryLabel);
@@ -55,39 +54,48 @@ class SavedqueriesController extends OntoWiki_Controller_Component
 
     /**
      * initialization of the geocoder Action
+     *
      * @access private
      *
      */
-    public function initAction() {
+    public function initAction()
+    {
         // create a new button on the toolbar
         $queryResult = $this->_getQueryResult($this->queryString);
 
-		$header = array ();
+        $header = array();
         try {
-		    if (is_array($queryResult) && isset ($queryResult[0]) && is_array($queryResult[0])) {
-			    $header = array_keys($queryResult[0]);
-		    } else if (is_bool($queryResult)) {
-			    $queryResult = $queryResult ? 'yes' : 'no';
-		    } else if (is_int($queryResult)) {
-			    $queryResult = (string) $queryResult;
-		    } else if (is_string($queryResult)) {
-			    $queryResult = $queryResult;
-		    } else {
-			    $queryResult = 'no result';
-		    }
+            if (is_array($queryResult) && isset ($queryResult[0]) && is_array($queryResult[0])) {
+                $header = array_keys($queryResult[0]);
+            } else {
+                if (is_bool($queryResult)) {
+                    $queryResult = $queryResult ? 'yes' : 'no';
+                } else {
+                    if (is_int($queryResult)) {
+                        $queryResult = (string)$queryResult;
+                    } else {
+                        if (is_string($queryResult)) {
+                            $queryResult = $queryResult;
+                        } else {
+                            $queryResult = 'no result';
+                        }
+                    }
+                }
+            }
         } catch (Exception $e) {
-	        $this->view->error = $e->getMessage();
-	        $header = '';
-	        $queryResult = '';
+            $this->view->error = $e->getMessage();
+            $header            = '';
+            $queryResult       = '';
         }
 
-	    $this->view->queryResult = $queryResult;
-	    $this->view->header = $header;
+        $this->view->queryResult = $queryResult;
+        $this->view->header      = $header;
     }
 
-    private function _getQueryResult( $queryString) {
-        $elements = $this->model->sparqlQuery($queryString);
+    private function _getQueryResult($queryString)
+    {
+        $elements = $this->_model->sparqlQuery($queryString);
+
         return $elements;
     }
 }
-

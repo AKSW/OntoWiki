@@ -23,22 +23,22 @@
   owconfig:pluginEvent event:onAddMultipleStatements ;
   owconfig:pluginEvent event:onDeleteMultipleStatements ;
   owconfig:pluginEvent event:beforeExportResource ;
-  :generic_relation <http://rdfs.org/sioc/ns#links_to> ;
+  :genericRelation <http://rdfs.org/sioc/ns#links_to> ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "rdfa";
       owconfig:enabled "true"^^xsd:boolean ;
       :service <http://www.w3.org/2007/08/pyRdfa/extract?format=pretty-xml&warnings=false&parser=lax&space-preserve=true&uri=>
 ];
- :title_properties <http://purl.org/dc/elements/1.1/title> ;
-  :title_properties <http://purl.org/dc/terms/title> ;
-  :title_properties <http://xmlns.com/foaf/0.1/name> ;
-  :title_properties <http://usefulinc.com/ns/doap#name> ;
-  :title_properties <http://rdfs.org/sioc/ns#name> ;
-  :title_properties <http://www.w3.org/2000/01/rdf-schema#label> ;
-  :title_properties <http://xmlns.com/foaf/0.1/nick> ;
-  :title_properties <http://xmlns.com/foaf/0.1/surname> ;
-  :ping_properties <http://xmlns.com/foaf/0.1/knows> ;
+ :titleroperties <http://purl.org/dc/elements/1.1/title> ;
+  :titleProperties <http://purl.org/dc/terms/title> ;
+  :titleProperties <http://xmlns.com/foaf/0.1/name> ;
+  :titleProperties <http://usefulinc.com/ns/doap#name> ;
+  :titleProperties <http://rdfs.org/sioc/ns#name> ;
+  :titleProperties <http://www.w3.org/2000/01/rdf-schema#label> ;
+  :titleProperties <http://xmlns.com/foaf/0.1/nick> ;
+  :titleProperties <http://xmlns.com/foaf/0.1/surname> ;
+  :pingProperties <http://xmlns.com/foaf/0.1/knows> ;
   :pingOnDelete "false"^^xsd:boolean .
 :pingback doap:release :v1-0 .
 :v1-0 a doap:Version ;

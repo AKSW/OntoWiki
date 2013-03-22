@@ -1,14 +1,22 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * It tests the behavior of Ontowiki_Model_Instances
  * while using the database backend
  *
  * @author Jonas Brekle <jonas.brekle@gmail.com>
  */
-class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
+class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
+{
     /**
      *
-     * @var OntoWiki_Model_Instances 
+     * @var OntoWiki_Model_Instances
      */
     protected $_instances = null;
 
@@ -16,7 +24,7 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
 
     /**
      *
-     * @var Erfurt_Store 
+     * @var Erfurt_Store
      */
     protected $_store = null;
 
@@ -44,16 +52,22 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
     public function addTestData()
     {
         $this->authenticateDbUser();
-        $turtleString = '<http://model.org/model#i1> a
-                            <'.$this->_class.'> ;
+        $turtleString
+            = '<http://model.org/model#i1> a
+                            <' . $this->_class . '> ;
                             <http://www.w3.org/2000/01/rdf-schema#label> "instance1";
                             <http://model.org/prop> "val1", "val2" .
                         <http://model.org/model#i2> a
-                            <'.$this->_class.'> ;
+                            <' . $this->_class . '> ;
                             <http://www.w3.org/2000/01/rdf-schema#label> "instance2" ;
                             <http://model.org/prop> "val3" .';
 
-        $this->_store->importRdf($this->_modelUri, $turtleString, 'turtle', Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING, false);
+        $this->_store->importRdf(
+            $this->_modelUri,
+            $turtleString,
+            'turtle',
+            Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING, false
+        );
     }
 
     public function getStore()
@@ -97,7 +111,10 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
         $this->assertArrayHasKey('__TYPE', $v['http://model.org/model#i1']);
         $this->assertArrayHasKey('resourceUri', $v['http://model.org/model#i1']);
         $this->assertContains($this->_class, self::_onlyValues($v['http://model.org/model#i1']['__TYPE']));
-        $this->assertContains('http://model.org/model#i1', self::_onlyValues($v['http://model.org/model#i1']['resourceUri']));
+        $this->assertContains(
+            'http://model.org/model#i1',
+            self::_onlyValues($v['http://model.org/model#i1']['resourceUri'])
+        );
     }
 
     /**
@@ -211,16 +228,18 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase {
     protected static function _onlyValues($arr)
     {
         $r = array();
-        foreach($arr as $a){
-            if(isset($a['origvalue'])){
+        foreach ($arr as $a) {
+            if (isset($a['origvalue'])) {
                 $r[] = $a['origvalue'];
-            } else if(isset($a['uri'])){
-                $r[] = $a['uri'];
             } else {
-                $r[] = $a['value'];
+                if (isset($a['uri'])) {
+                    $r[] = $a['uri'];
+                } else {
+                    $r[] = $a['value'];
+                }
             }
         }
+
         return $r;
     }
 }
-?>

@@ -2,17 +2,16 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki index controller.
  *
+ * @category   OntoWiki
  * @package    OntoWiki_Controller
  * @author     Norman Heino <norman.heino@gmail.com>
- * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class IndexController extends OntoWiki_Controller_Base
 {
@@ -25,7 +24,7 @@ class IndexController extends OntoWiki_Controller_Base
         // number of news
         $feedCount = 3;
         // create empty var for feed
-        $owFeed  = null;
+        $owFeed = null;
         // get current version
         $version = $this->_config->version;
         // try reading
@@ -39,24 +38,29 @@ class IndexController extends OntoWiki_Controller_Base
 
             $owFeed = Zend_Feed::import($url);
         } catch (Exception $e) {
-            $this->_owApp->appendMessage(new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::WARNING));
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::WARNING)
+            );
             $owFeed = array();
         }
         // create new array for data
         $data = array();
         // parse feed items into array
         foreach ($owFeed as $feedItem) {
-        // form temporary array with needed data
+            // form temporary array with needed data
             $tempdata = array(
-                'link' => $feedItem->link(),
-                'title' => $feedItem->title(),
-                'description' => substr($feedItem->description(), 0, strpos($feedItem->description(), ' ', 40)).' [...]'
+                'link'        => $feedItem->link(),
+                'title'       => $feedItem->title(),
+                'description' =>
+                substr($feedItem->description(), 0, strpos($feedItem->description(), ' ', 40)) . ' [...]'
             );
             // append temporary array to data array
             $data[] = $tempdata;
 
             // take only needed items
-            if (count($data) == $feedCount) break;
+            if (count($data) == $feedCount) {
+                break;
+            }
         }
         // assign data array to view rss data variable
         $this->view->rssData = $data;
@@ -84,11 +88,11 @@ class IndexController extends OntoWiki_Controller_Base
 
         try {
             $url = 'http://blog.aksw.org/feed/?cat=5&client='
-                 . $version->label
-                 . '&version='
-                 . $version->number
-                 . '&suffix='
-                 . $version->suffix;
+                . $version->label
+                . '&version='
+                . $version->number
+                . '&suffix='
+                . $version->suffix;
 
             $owFeed = Zend_Feed::import($url);
 
@@ -97,11 +101,13 @@ class IndexController extends OntoWiki_Controller_Base
             $this->view->link        = $owFeed->link();
             $this->view->description = $owFeed->description();
         } catch (Exception $e) {
-            $this->_owApp->appendMessage(new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::WARNING));
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::WARNING)
+            );
             $this->view->feed = array();
         }
 
-        OntoWiki::getInstance ()->getNavigation()->disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
     }
 
     /**
@@ -109,15 +115,14 @@ class IndexController extends OntoWiki_Controller_Base
      */
     public function __call($action, $params)
     {
-        OntoWiki::getInstance ()->getNavigation()->disableNavigation();
+        OntoWiki::getInstance()->getNavigation()->disableNavigation();
         $this->view->placeholder('main.window.title')->set('Welcome to OntoWiki');
 
         if ($this->_owApp->hasMessages()) {
             $this->_forward('messages', 'index');
         } else {
-            if (
-                (!isset($this->_config->index->default->controller)) ||
-                (!isset($this->_config->index->default->action))
+            if (!isset($this->_config->index->default->controller)
+                || !isset($this->_config->index->default->action)
             ) {
                 $this->_forward('news', 'index');
             } else {

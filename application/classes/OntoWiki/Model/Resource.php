@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -11,46 +11,52 @@
  *
  * Represents a resources and its properties.
  *
- * @category OntoWiki
- * @package OntoWiki_Classes_Model
+ * @category  OntoWiki
+ * @package   OntoWiki_Classes_Model
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Norman Heino <norman.heino@gmail.com>
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Model_Resource extends OntoWiki_Model
 {
     /**
      * The resource URI
+     *
      * @var string
      */
     protected $_uri = null;
 
     /**
      * Array with predicate data
+     *
      * @var array
      */
     protected $_predicateResults = null;
 
     /**
      * Array with value data
+     *
      * @var array
      */
     protected $_valueResults = null;
 
     /**
      * Whether data has been fetched
+     *
      * @var boolean
      */
     protected $_queryResults = null;
 
     /**
      * Array of predicates to be ignored
+     *
      * @var array
      */
     protected $_ignoredPredicates = array();
 
     /**
      * Array of predicates to be ignored
+     *
      * @var array
      */
     protected $_limit = OW_SHOW_MAX;
@@ -70,14 +76,16 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
 
         //TODO fix query
         $queryHidden = 'PREFIX sysont: <http://ns.ontowiki.net/SysOnt/> SELECT ?p WHERE {?p sysont:hidden ?o }';
-        $res = $store->sparqlQuery($queryHidden, array("result_format" => Erfurt_Store::RESULTFORMAT_EXTENDED));
+        $res         = $store->sparqlQuery($queryHidden, array("result_format" => Erfurt_Store::RESULTFORMAT_EXTENDED));
         if (isset($res['bindings'])) {
-            $bindings    = $res['bindings'];
-        } else if (isset($res['results']['bindings'])) {
-            $bindings    = $res['results']['bindings'];
+            $bindings = $res['bindings'];
         } else {
-            require_once 'OntoWiki/Model/Exception.php';
-            throw new OntoWiki_Model_Exception('invalid query result.');
+            if (isset($res['results']['bindings'])) {
+                $bindings = $res['results']['bindings'];
+            } else {
+                require_once 'OntoWiki/Model/Exception.php';
+                throw new OntoWiki_Model_Exception('invalid query result.');
+            }
         }
         foreach ($bindings as $b) {
             $this->_ignoredPredicates[] = $b['p']['value'];
@@ -202,14 +210,14 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
 
                     // default values
                     $value = array(
-                        'content'  => null,
-                        'object'   => null,
+                        'content'     => null,
+                        'object'      => null,
                         'object_hash' => null,
-                        'datatype' => null,
-                        'lang'     => null,
-                        'url'      => null,
-                        'uri'      => null,
-                        'curi'     => null
+                        'datatype'    => null,
+                        'lang'        => null,
+                        'url'         => null,
+                        'uri'         => null,
+                        'curi'        => null
                     );
 
                     switch ($row['object']['type']) {
@@ -230,13 +238,13 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             $title = $this->_titleHelper->getTitle($row['object']['value']);
 
                             /**
-                             * @trigger onDisplayObjectPropertyValue Triggered if an object value of some 
-                             * property is returned. Plugins can attach to this trigger in order to modify 
+                             * @trigger onDisplayObjectPropertyValue Triggered if an object value of some
+                             * property is returned. Plugins can attach to this trigger in order to modify
                              * the value that gets displayed.
                              * Event payload: value, property, title and link
                              */
                             // set up event
-                            $event = new Erfurt_Event('onDisplayObjectPropertyValue');
+                            $event           = new Erfurt_Event('onDisplayObjectPropertyValue');
                             $event->value    = $row['object']['value'];
                             $event->property = $predicateUri;
                             $event->title    = $title;
@@ -255,9 +263,9 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             break;
 
                         case 'typed-literal':
-                            $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
-                            $value['datatype'] = OntoWiki_Utils::compactUri($row['object']['datatype']);
-                            $literalString = Erfurt_Utils::buildLiteralString(
+                            $event                = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                            $value['datatype']    = OntoWiki_Utils::compactUri($row['object']['datatype']);
+                            $literalString        = Erfurt_Utils::buildLiteralString(
                                 $row['object']['value'],
                                 $row['object']['datatype']
                             );
@@ -278,8 +286,8 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             break;
                         case 'literal':
                             // original (unmodified) for RDFa
-                            $value['content'] = $row['object']['value'];
-                            $literalString = Erfurt_Utils::buildLiteralString(
+                            $value['content']     = $row['object']['value'];
+                            $literalString        = Erfurt_Utils::buildLiteralString(
                                 $row['object']['value'],
                                 null,
                                 isset($row['object']['xml:lang']) ? $row['object']['xml:lang'] : null
@@ -287,21 +295,21 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                             $value['object_hash'] = md5($literalString);
 
                             /**
-                             * @trigger onDisplayLiteralPropertyValue Triggered if a literal value of some 
-                             * property is returned. Plugins can attach to this trigger in order to modify 
+                             * @trigger onDisplayLiteralPropertyValue Triggered if a literal value of some
+                             * property is returned. Plugins can attach to this trigger in order to modify
                              * the value that gets displayed.
                              */
-                            $event = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                            $event           = new Erfurt_Event('onDisplayLiteralPropertyValue');
                             $event->value    = $row['object']['value'];
                             $event->property = $predicateUri;
 
                             // set literal language
                             if (isset($row['object']['xml:lang'])) {
-                                $value['lang'] = $row['object']['xml:lang'];
+                                $value['lang']   = $row['object']['xml:lang'];
                                 $event->language = $row['object']['xml:lang'];
                             }
                             // trigger
-                            $value['object']  = $event->trigger();
+                            $value['object'] = $event->trigger();
                             // keep unmodified value in content
                             $value['content'] = $row['object']['value'];
 
@@ -335,24 +343,24 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                                     array('route' => 'instances', 'action' => 'list'),
                                     array()
                                 );
-                                $filterExp = json_encode(
+                                $filterExp  = json_encode(
                                     array(
-                                        'filter' => array(
-                                            array (
-                                                'action' => 'add',
-                                                'mode' => 'box',
-                                                'id' => 'allvalues',
-                                                'property' => $predicateUri,
-                                                'isInverse' => true,
-                                                'propertyLabel' => "value",
-                                                'filter' => 'equals',
-                                                'value1' => $this->_uri,
-                                                'value2' => null,
-                                                'valuetype' => 'uri',
-                                                'literaltype' => null,
-                                                'hidden' => false
-                                            )
-                                        )
+                                         'filter' => array(
+                                             array(
+                                                 'action'        => 'add',
+                                                 'mode'          => 'box',
+                                                 'id'            => 'allvalues',
+                                                 'property'      => $predicateUri,
+                                                 'isInverse'     => true,
+                                                 'propertyLabel' => "value",
+                                                 'filter'        => 'equals',
+                                                 'value1'        => $this->_uri,
+                                                 'value2'        => null,
+                                                 'valuetype'     => 'uri',
+                                                 'literaltype'   => null,
+                                                 'hidden'        => false
+                                             )
+                                         )
                                     )
                                 );
 
@@ -370,7 +378,7 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
                                 );
                                 $hasMoreUrl->setParam(
                                     'query',
-                                    'SELECT ?value WHERE {<'.$this->_uri.'> <'.$predicateUri.'> ?value}'
+                                    'SELECT ?value WHERE {<' . $this->_uri . '> <' . $predicateUri . '> ?value}'
                                 )->setParam(
                                     'immediate',
                                     true
@@ -392,11 +400,11 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
      */
     private function _buildQueries()
     {
-        $query  = new Erfurt_Sparql_Query2();
+        $query = new Erfurt_Sparql_Query2();
 
-        $uri = new Erfurt_Sparql_Query2_IriRef($this->_uri);
+        $uri     = new Erfurt_Sparql_Query2_IriRef($this->_uri);
         $predVar = new Erfurt_Sparql_Query2_Var('predicate');
-        $objVar = new Erfurt_Sparql_Query2_Var('object');
+        $objVar  = new Erfurt_Sparql_Query2_Var('object');
 
         $query
             ->addTriple($uri, $predVar, $objVar);
@@ -409,17 +417,17 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
         );
 
         if (!empty($this->_ignoredPredicates)) {
-            $or = new Erfurt_Sparql_Query2_ConditionalAndExpression();
+            $or     = new Erfurt_Sparql_Query2_ConditionalAndExpression();
             $filter = new Erfurt_Sparql_Query2_Filter($or);
             foreach ($this->_ignoredPredicates as $ignored) {
-                    $or->addElement(
-                        new Erfurt_Sparql_Query2_UnaryExpressionNot(
-                            new Erfurt_Sparql_Query2_sameTerm(
-                                $predVar,
-                                new Erfurt_Sparql_Query2_IriRef($ignored)
-                            )
+                $or->addElement(
+                    new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                        new Erfurt_Sparql_Query2_sameTerm(
+                            $predVar,
+                            new Erfurt_Sparql_Query2_IriRef($ignored)
                         )
-                    );
+                    )
+                );
             }
             $query->getWhere()->addElement($filter);
         }
@@ -429,10 +437,10 @@ class OntoWiki_Model_Resource extends OntoWiki_Model
             ->addProjectionVar($predVar)
             ->addProjectionVar($objVar)
             ->getOrder()
-                ->add($predVar);
+            ->add($predVar);
 
-        $queries = array();
-        $closure = Erfurt_App::getInstance()->getStore()->getImportsClosure(
+        $queries     = array();
+        $closure     = Erfurt_App::getInstance()->getStore()->getImportsClosure(
             $this->_model->getModelUri(),
             true
         );

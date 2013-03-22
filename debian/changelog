@@ -1,3 +1,20 @@
+ontowiki (0.9.8-3) lod2; urgency=low
+
+  * fix cors header
+  * add doap:wiki to the weblink list (2 weeks ago by Sebastian Tramp)
+  * add head action to return the request header for given uri
+  * fix extensions setting page (toggleswitch) #179
+  * Fixing Sort functionality of the Navigation Box extension re-enabling the Sort Menue
+  * prevent open paranthesis bug while using the limit buttons (100 / all)
+  * Fix #172 - rewrite rules in .htaccess
+  * use getReadableGraphsUsingResource method on Store
+  * cleanup togglebutton changes
+  * fix toggle button for new jquery version (#167)
+  * depends on Erfurt 1.5
+  * depends on RDFauthor 0.9.5
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 30 Jan 2013 13:55:56 +0100
+
 ontowiki (0.9.7-2) lod2; urgency=low
 
   * GUI niceups
