@@ -112,16 +112,6 @@
         </exec>
     </target>
 
-<!--
-    <target name="phpdoc" description="Generate API documentation using phpDocumentor">
-        <exec executable="phpdoc">
-            <arg value="--directory" />
-            <arg path="${basedir}/application" />
-            <arg value="--target" />
-            <arg path="${basedir}/build/api" />
-        </exec>
-    </target>
--->
 	<target name="doc" description="Create API doc using DocCreator">
         <exec executable="/opt/DocCreator/create.php5">
 			<arg value="--config-file=/opt/DocCreator/config/doc.ontowiki.xml" />
