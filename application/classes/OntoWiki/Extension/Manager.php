@@ -572,7 +572,27 @@ class OntoWiki_Extension_Manager
      */
     private function _scanExtensionPath()
     {
-        $config = null;
+		$cache	= OntoWiki::getInstance()->getCache();
+		if( !( $config = $cache->load( 'ow_extensionConfig' ) ) ){
+			$config	= array();
+			$dir	= new DirectoryIterator( $this->_extensionPath );
+			foreach( $dir as $file ){
+				if( !$file->isDot() && $file->isDir() ){
+					if( !in_array( $file->getFileName(), $this->reservedNames ) ){
+						$extensionName			= $file->getFileName();
+						$currentExtensionPath	= $file->getPathname() . DIRECTORY_SEPARATOR;
+						// parse all extensions on the filesystem
+						if( is_readable( $currentExtensionPath . self::EXTENSION_DEFAULT_DOAP_FILE ) ){
+							$config[$extensionName]	= $this->_loadConfigs( $extensionName );
+						}
+					}
+				}
+			}
+			$cache->save( array_reverse( $config ) );
+		}
+		
+//		$config	= $this->
+/*        $config = null;
         if (function_exists('apc_fetch')) {
             $config = apc_fetch('ow_extensionConfig');
 
@@ -609,7 +629,7 @@ class OntoWiki_Extension_Manager
                 $config = array_reverse($config);
             }
 
-            $reloadConfigs = array();
+/*            $reloadConfigs = array();
             //parse all extensions whose configs have been modified
             if ($cacheExists) {
                 $reloadConfigs = $this->_getModifiedConfigsSince($cacheCreation);
@@ -632,7 +652,7 @@ class OntoWiki_Extension_Manager
                 apc_store('ow_extensionConfig', $config);
             }
         }
-
+*/
         $view = OntoWiki::getInstance()->view;
         //register the discovered extensions within ontowiki
         foreach ($config as $extensionName => $extensionConfig) {
