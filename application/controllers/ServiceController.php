@@ -473,6 +473,45 @@ class ServiceController extends Zend_Controller_Action
     }
 
     /**
+     * This action returns status values of the current session, like the selectedModel and the
+     * logged in User as JSON object.
+     */
+    public function statusAction()
+    {
+        // service controller needs no view renderer
+        $this->_helper->viewRenderer->setNoRender();
+        // disable layout for Ajax requests
+        $this->_helper->layout()->disableLayout();
+
+        $status = new stdClass();
+
+        if (isset($this->_owApp->selectedModel)) {
+            $status->selectedModel = $this->_owApp->selectedModel->getModelIri();
+        } else {
+            $status->selectedModel = null;
+        }
+
+        $user = $this->_owApp->getUser();
+        if (get_class($user) == 'Erfurt_Auth_Identity') {
+            // TODO add serialization method to Erfurt_Auth_Identity
+            $status->user = new stdClass();
+            $status->user->isAnonymous = $user->isAnonymousUser();
+            $status->user->uri = $user->getUri();
+            $status->user->username = $user->getUsername();
+        } else {
+            $status->user = null;
+        }
+
+        $status->hasMessages = $this->_owApp->hasMessages();
+
+        // TODO add method to get sessionVars to OntoWiki class and dump them all into this status
+
+        $response = $this->getResponse();
+        $response->setHeader('Content-Type', 'application/json');
+        $response->setBody(json_encode($status));
+    }
+
+    /**
      * OntoWiki Sparql Endpoint
      *
      * Implements the SPARQL protocol according to {@link http://www.w3.org/TR/rdf-sparql-protocol/}.
