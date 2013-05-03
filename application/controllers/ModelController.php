@@ -524,7 +524,7 @@ class ModelController extends OntoWiki_Controller_Base
         $this->view->activeForm    = ini_get('allow_url_fopen') ? 'import' : 'empty';
         $this->view->referer       = '';
 
-        $this->view->modelUri         = '';
+        $this->view->modelUri         = $this->_config->urlBase .'NEWMODEL/';
         $this->view->baseUri          = '';
         $this->view->title            = $this->view->_('Create Knowledge Base');
         $this->view->supportedFormats = $this->_erfurt->getStore()->getSupportedImportFormats();
