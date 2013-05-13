@@ -235,6 +235,13 @@ class OntoWiki
         }
     }
 
+	public function getCache(){
+		$bootstrap = $this->getBootstrap();
+		if ($bootstrap && $bootstrap->hasResource('Erfurt')) {
+			return $this->getBootstrap()->getResource('Erfurt')->getCache();
+		}
+	}
+
     /**
      * Singleton instance
      *
