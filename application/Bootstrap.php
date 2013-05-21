@@ -547,24 +547,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config = $this->getResource('Config');
 
         // setup translation cache
-        if ((boolean)$config->cache->translation && is_writable($config->cache->path)) {
-            $translationFile = ONTOWIKI_ROOT
-                             . $config->languages->path
-                             . $config->languages->locale
-                             . DIRECTORY_SEPARATOR
-                             . 'core.csv';
-            $frontendOptions = array(
-                'lifetime'                => 3600,
-                'automatic_serialization' => true,
-                'master_file'             => $translationFile
-            );
-            $backendOptions = array(
-                'cache_dir' => $config->cache->path
-            );
-            $translationCache = Zend_Cache::factory('File', 'File', $frontendOptions, $backendOptions);
-
+        if ((boolean)$config->cache->translation) {
             // set translation cache
-            Zend_Translate::setCache($translationCache);
+            Zend_Translate::setCache($this->getResource('Erfurt')->getCache());
         }
 
         // set up translations
