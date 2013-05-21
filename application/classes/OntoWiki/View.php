@@ -32,6 +32,7 @@ class OntoWiki_View extends Zend_View
      */
     protected $_lang = null;
 
+
     /**
      * Module cache
      *
@@ -39,7 +40,7 @@ class OntoWiki_View extends Zend_View
      */
     protected $_moduleCache = null;
 
-    /**
+	/**
      * Translation object
      *
      * @var Zend_Translate
@@ -71,20 +72,7 @@ class OntoWiki_View extends Zend_View
         $this->_placeholderRegistry = Zend_View_Helper_Placeholder_Registry::getRegistry();
 
         if (array_key_exists('use_module_cache', $config) && (boolean)$config['use_module_cache']) {
-            $cachePath = array_key_exists('cache_path', $config)
-                ? (string)$config['cache_path']
-                : ONTOWIKI_ROOT . 'cache';
-
-            if (is_writable($cachePath)) {
-                // set up module cache
-                $frontendOptions    = array(
-                    'cache_id_prefix' => '_module_'
-                );
-                $backendOptions     = array(
-                    'cache_dir' => $cachePath
-                );
-                $this->_moduleCache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
-            }
+            $this->_moduleCache = OntoWiki::getInstance()->getCache();
         }
     }
 
