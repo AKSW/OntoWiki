@@ -39,9 +39,9 @@ class ApplicationController extends OntoWiki_Controller_Base
         $cacheBackend         = $this->_config->cache->backend->type;
         $cacheBackendOptions  = array();
         $cacheFrontendOptions = array();
-		foreach($this->_config->cache->frontend->toArray() as $key => $value){
-			$cacheFrontendOptions[] = $key.": ".(string) $value;
-		}
+        foreach($this->_config->cache->frontend->toArray() as $key => $value){
+            $cacheFrontendOptions[] = $key.": ".(string) $value;
+        }
         if (isset($this->_config->cache->backend->$cacheBackend)){
             foreach($this->_config->cache->backend->$cacheBackend->toArray() as $key => $value){
                 $cacheBackendOptions[] = $key.": ".(string) $value;
@@ -62,9 +62,10 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Language' => $this->_config->languages->locale,
             ),
             'Paths'          => array(
-                'Extensions Path'   => _OWROOT . rtrim($this->_config->extensions->base, '/'),
-                'Translations Path' => _OWROOT . rtrim($this->_config->languages->path, '/'),
-                'Themes Path'       => _OWROOT . rtrim($this->_config->themes->path, '/')
+                'Extensions Path'     => _OWROOT . rtrim($this->_config->extensions->base, '/'),
+                'Translations Path'   => _OWROOT . rtrim($this->_config->languages->path, '/'),
+                'Themes Path'         => _OWROOT . rtrim($this->_config->themes->path, '/'),
+                'Temporary Directory' => Erfurt_App::getInstance()->getTempDir()
             ),
             'Cache'          => array(
                 'State'               => $this->_config->cache->frontend->enable ? 'enabled' : 'disabled',
