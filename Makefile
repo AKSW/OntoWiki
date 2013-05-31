@@ -63,7 +63,7 @@ help-cs:
 	@echo "     cs-check-intensive-full ............... Run complete code checking with"
 	@echo "                                             stricter coding standard and detailed output"
 	@echo "     possible Parameter:"
-	@echo "     > FPATH=<path> ................. Run code checking on specific relative path"
+	@echo "     > CHECKPATH=<path> ................. Run code checking on specific relative path"
 	@echo "     > SNIFFS=<sniff 1>,<sniff 2> ... Run code checking on specific sniffs"
 	@echo "     > OPTIONS=<option> ............. Run code checking with specific CodeSniffer options"
 
@@ -240,8 +240,8 @@ CSSPATH = application/tests/CodeSniffer/
 IGNOREPATTERN = libraries,extensions/exconf/pclzip.lib.php,extensions/exconf/Archive.php,application/scripts,extensions/markdown/parser/markdown.php,extensions/queries/lib,extensions/queries/old
 
 # Parameter check
-ifndef FPATH
-	FPATH = "./"
+ifndef CHECKPATH
+	CHECKPATH = "./"
 endif
 ifdef SNIFFS
 	SNIFFSTR = "--sniffs="$(SNIFFS)
