@@ -23,13 +23,14 @@ class ResourceController extends OntoWiki_Controller_Base
             return;
         }
 
-        $versioning   = Erfurt_App::getInstance()->getVersioning();
-        $lastModArray = $versioning->getLastModifiedForResource($r, $m->getModelUri());
-
+        $lastModArray = null;
+        if ($this->_config->versioningEnabled) {
+            $versioning   = Erfurt_App::getInstance()->getVersioning();
+            $lastModArray = $versioning->getLastModifiedForResource($r, $m->getModelUri());
+        }
         if (null === $lastModArray || !is_numeric($lastModArray['tstamp'])) {
             return;
         }
-
         $response = $this->getResponse();
         $response->setHeader('Last-Modified', date('r', $lastModArray['tstamp']), true);
     }
