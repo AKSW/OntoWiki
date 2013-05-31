@@ -65,7 +65,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Extensions Path'     => _OWROOT . rtrim($this->_config->extensions->base, '/'),
                 'Translations Path'   => _OWROOT . rtrim($this->_config->languages->path, '/'),
                 'Themes Path'         => _OWROOT . rtrim($this->_config->themes->path, '/'),
-                'Temporary Directory' => Erfurt_App::getInstance()->getTempDir()
+                'Temporary Directory' => Erfurt_App::getInstance()->getTmpDir()
             ),
             'Cache'          => array(
                 'State'               => $this->_config->cache->frontend->enable ? 'enabled' : 'disabled',
