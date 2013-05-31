@@ -100,6 +100,42 @@ mail.localname.recovery = "ontowiki-account-recovery"
 ;cache.enable       = false
 ;cache.query.enable = false
 
+
+;; Options for cache frontend
+cache.frontend.enable								= true
+cache.frontend.lifetime								= 0
+;cache.frontend.logging								= false
+;cache.frontend.write_control						= true
+;cache.frontend.automatic_cleaning_factor			= 10
+;cache.frontend.ignore_user_abort					= false
+cache.frontend.cache_id_prefix						= 'OW_'
+
+;; Cache backend options
+;; Available: file | memcached | database | sqlite | apc
+;; Recommended: memcached | file
+cache.backend.type									= "file"
+ 
+;; Options for file cache backend
+cache.backend.file.cache_dir						= "./cache/"
+cache.backend.file.file_locking						= NULL
+
+;; Options for memcached cache backend
+;cache.backend.memcached.compression					= false
+;cache.backend.memcached.compatibility				= false
+;; You can define several servers: copy block, below and increase number and configure properly
+cache.backend.memcached.servers.0.host				= "localhost"
+;cache.backend.memcached.servers.0.port				= 11211
+;cache.backend.memcached.servers.0.persistent		= true
+;cache.backend.memcached.servers.0.weight			= 1
+;cache.backend.memcached.servers.0.timeout			= 5
+;cache.backend.memcached.servers.0.retry_interval	= 15
+;cache.backend.memcached.servers.0.status			= 15
+
+;; Options for sqlite cache backend
+cache.backend.sqlite.cache_db_complete_path			= "/tmp/ow_cache.sqlite"
+;cache.backend.sqlite.automatic_vacuum_factor		= 10
+
+
 ;;;;
 ;; uncomment this line if you need more information
 ;;
