@@ -807,7 +807,10 @@ class ModelController extends OntoWiki_Controller_Base
                     $this->view->clearModuleCache();
 
                     $url = new OntoWiki_Url(
-                        array('controller' => 'index', 'action' => 'news'),
+                        array(
+                            'controller' => $this->_config->index->default->controller,
+                            'action' => $this->_config->index->default->action,
+                        ),
                         array()
                     );
                     $this->_redirect($url, array('code' => 302));
