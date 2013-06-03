@@ -805,7 +805,12 @@ class ModelController extends OntoWiki_Controller_Base
                     $this->_owApp->selectedModel = null;
                     //deletes selected model - always needed?
                     $this->view->clearModuleCache();
-                    $this->_redirect($this->_owApp->getUrlBase(), array('code' => 302));
+
+                    $url = new OntoWiki_Url(
+                        array('controller' => 'index', 'action' => 'news'),
+                        array()
+                    );
+                    $this->_redirect($url, array('code' => 302));
                 }
             } catch (Exception $e) {
                 $this->_owApp->appendMessage(
