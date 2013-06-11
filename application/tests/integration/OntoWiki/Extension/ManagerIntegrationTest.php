@@ -45,8 +45,14 @@ class ManagerIntegrationTest extends Erfurt_TestCase
      */
     public function testScan()
     {
+        // clear cache, since otherwise the extension manager may have the real extensions loaded
+        if (function_exists('apc_clear_cache')) {
+            apc_clear_cache('user');
+        }
+
         $em = new OntoWiki_Extension_Manager($this->_resourcesDirectory, CACHE_PATH . 'extensions_test.json');
         $ex = $em->getExtensions();
+
         $this->assertCount(2, $ex);
         $this->assertArrayHasKey('test1', $ex);
         $this->assertArrayHasKey('test2', $ex);
