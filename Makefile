@@ -164,22 +164,27 @@ rdfauthor:
 
 # test stuff
 
-test-unit: directories
+test-directories:
+	# todo: add links to different cache dirs here (unit subdir for test-unit-cc)
+	rm -rf application/tests/cache
+	mkdir application/tests/cache
+
+test-unit: test-directories
 	@cd application/tests && phpunit --bootstrap Bootstrap.php unit/
 
-test-unit-cc: directories
+test-unit-cc: test-directories
 	@cd application/tests/unit && phpunit
 
-test-integration-virtuoso: directories
+test-integration-virtuoso: test-directories
 	@cd application/tests && EF_STORE_ADAPTER=virtuoso phpunit --bootstrap Bootstrap.php integration/
 
-test-integration-virtuoso-cc: directories
+test-integration-virtuoso-cc: test-directories
 	@cd application/tests/integration && EF_STORE_ADAPTER=virtuoso phpunit
 
-test-integration-mysql: directories
+test-integration-mysql: test-directories
 	@cd application/tests && EF_STORE_ADAPTER=zenddb phpunit --bootstrap Bootstrap.php integration/
 
-test-integration-mysql-cc: directories
+test-integration-mysql-cc: test-directories
 	@cd application/tests/integration && EF_STORE_ADAPTER=zenddb phpunit
 
 test-extensions: directories
