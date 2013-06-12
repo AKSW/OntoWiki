@@ -156,14 +156,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             $config->cache->path = ONTOWIKI_ROOT . $config->cache->path;
         }
 
-        //force caching
-        if (!is_writable($config->cache->path)) {
-            throw new OntoWiki_Exception(
-                '<p>OntoWiki can not write to the "cache" folder.</p>' . PHP_EOL .
-                '<p>Maybe you have to create the folder or allow write access for the webserver user?</p>'
-            );
-        }
-
         // set path variables
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
@@ -547,24 +539,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config = $this->getResource('Config');
 
         // setup translation cache
-        if ((boolean)$config->cache->translation && is_writable($config->cache->path)) {
-            $translationFile = ONTOWIKI_ROOT
-                             . $config->languages->path
-                             . $config->languages->locale
-                             . DIRECTORY_SEPARATOR
-                             . 'core.csv';
-            $frontendOptions = array(
-                'lifetime'                => 3600,
-                'automatic_serialization' => true,
-                'master_file'             => $translationFile
-            );
-            $backendOptions = array(
-                'cache_dir' => $config->cache->path
-            );
-            $translationCache = Zend_Cache::factory('File', 'File', $frontendOptions, $backendOptions);
-
+        if ((boolean)$config->cache->translation) {
             // set translation cache
-            Zend_Translate::setCache($translationCache);
+            Zend_Translate::setCache($this->getResource('Erfurt')->getCache());
         }
 
         // set up translations
