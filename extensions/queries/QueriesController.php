@@ -104,6 +104,14 @@ class QueriesController extends OntoWiki_Controller_Component
 
     public function editorAction()
     {
+        if ($this->_owApp->selectedModel === null) {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message($this->view->_('No model selected.'), OntoWiki_Message::ERROR)
+            );
+            $this->view->errorFlag = true;
+            return;
+        }
+
         $this->view->placeholder('main.window.title')->set('SPARQL Query Editor');
         $this->view->formActionUrl = $this->_config->urlBase . 'queries/editor';
         $this->view->formMethod = 'post';
@@ -337,6 +345,14 @@ class QueriesController extends OntoWiki_Controller_Component
      */
     public function listqueryAction()
     {
+        if ($this->_owApp->selectedModel === null) {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message($this->view->_('No model selected.'), OntoWiki_Message::ERROR)
+            );
+            $this->view->errorFlag = true;
+            return;
+        }
+
         // set the active tab navigation
         OntoWiki::getInstance()->getNavigation()->setActive('listquery');
 
