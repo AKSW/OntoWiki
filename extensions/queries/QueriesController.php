@@ -304,6 +304,10 @@ class QueriesController extends OntoWiki_Controller_Component
             $this->_componentUrlBase . 'resources/codemirror/mode/sparql/sparql.js'
         );
 
+        $this->view->headStyle()->appendStyle(
+            '.CodeMirror { border: 1px solid black; }'
+        );
+
         $this->view->headScript()->appendScript(
             'var editor;
             $(document).ready(
@@ -316,6 +320,11 @@ class QueriesController extends OntoWiki_Controller_Component
                             matchBrackets: true,
                         }
                     );
+                    $(".CodeMirror").resizable({
+                        resize: function() {
+                            editor.setSize($(this).width(), $(this).height());
+                        }
+                    });
                 }
             );'
         );
