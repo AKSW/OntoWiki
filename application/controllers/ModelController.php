@@ -534,38 +534,76 @@ class ModelController extends OntoWiki_Controller_Base
 
     public function deleteAction()
     {
-        $model = $this->_request->model;
         if ($this->_erfurt->isActionAllowed('ModelManagement')) {
-            $event           = new Erfurt_Event('onPreDeleteModel');
-            $event->modelUri = $model;
-            $event->trigger();
-
-            try {
-                $this->_erfurt->getStore()->deleteModel($model);
-
-                if ((null !== $this->_owApp->selectedModel)
-                    && ($this->_owApp->selectedModel->getModelIri() === $model)
-                ) {
-                    $this->_owApp->selectedModel = null;
-                    //deletes selected model - always needed?
-                    $this->view->clearModuleCache();
-
-                    $url = new OntoWiki_Url(
-                        array(
-                            'controller' => $this->_config->index->default->controller,
-                            'action' => $this->_config->index->default->action,
-                        ),
-                        array()
-                    );
-                    $this->_redirect($url, array('code' => 302));
+            if ($this->_request->isPost()) {
+                $post  = $this->_request->getPost();
+                if (!isset($post['model'])) {
+                    throw new OntoWiki_Controller_Exception("Missing parameter 'model'.");
                 }
-            } catch (Exception $e) {
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message(
-                        'Error deleting model: ' . $e->getMessage() . '<br/>' . $e->getTraceAsString(),
-                        OntoWiki_Message::ERROR
-                    )
-                );
+                $model = $post['model'];
+
+                $event           = new Erfurt_Event('onPreDeleteModel');
+                $event->modelUri = $model;
+                $event->trigger();
+
+                $defaultUrl = new OntoWiki_Url(array(
+                    'controller' => $this->_config->index->default->controller,
+                    'action' => $this->_config->index->default->action,
+                ), array());
+
+                try {
+                    $this->_erfurt->getStore()->deleteModel($model);
+
+                    if ((null !== $this->_owApp->selectedModel)
+                        && ($this->_owApp->selectedModel->getModelIri() === $model)
+                    ) {
+                        $this->_owApp->selectedModel = null;
+                        //deletes selected model - always needed?
+                        $this->view->clearModuleCache();
+
+                        $this->_redirect($defaultUrl, array('code' => 302));
+                        return;
+                    }
+                } catch (Exception $e) {
+                    $this->view->errorFlag = true;
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message(
+                            'Error deleting model: ' . $e->getMessage() . '<br/>' . $e->getTraceAsString(),
+                            OntoWiki_Message::ERROR
+                        )
+                    );
+                }
+                $this->view->clearModuleCache(); //deletes selected model - always needed?
+                if (isset($_SERVER['HTTP_REFERER'])) {
+                    $redirectUrl = $_SERVER['HTTP_REFERER'];
+                } else {
+                    $redirectUrl = $defaultUrl;
+                }
+                $this->_redirect($redirectUrl, array('code' => 302));
+
+            } else {
+                $modelUri = $this->_request->model;
+                $model = $this->_erfurt->getStore()->getModel($modelUri);
+                $title = $model->getTitle();
+                if (!$title) {
+                    $title = $modelUri;
+                }
+
+                OntoWiki::getInstance()->getNavigation()->disableNavigation();
+                $this->view->formActionUrl = new OntoWiki_Url(array(
+                    'controller' => $this->_request->getControllerName(),
+                    'action'     => $this->_request->getActionName(),
+                ), array());
+                $this->view->formClass     = 'simple-input input-justify-left';
+                $this->view->formMethod    = 'post';
+                $this->view->formName      = 'deletemodel';
+
+                $this->view->modelUri      = $modelUri;
+                $this->view->modelTitle    = $title;
+
+                $toolbar = $this->_owApp->toolbar;
+                $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Delete', 'id' => 'deletemodel'));
+                $this->view->placeholder('main.window.toolbar')->set($toolbar);
             }
         } else {
             $this->_owApp->appendMessage(
@@ -575,8 +613,6 @@ class ModelController extends OntoWiki_Controller_Base
 
             return;
         }
-        $this->view->clearModuleCache(); //deletes selected model - always needed?
-        $this->_redirect($_SERVER['HTTP_REFERER'], array('code' => 302));
     }
 
     /**

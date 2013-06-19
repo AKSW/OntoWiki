@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * OntoWiki model delete template
+ */
+
+?>
+
+<?php if (!isset($this->errorFlag) || $this->errorFlag === false): ?>
+
+<fieldset>
+    <legend><?php echo $this->_('Delete Knowledge Base') ?></legend>
+    <div>
+        <label><?php echo $this->_('Knowledge Base') ?></label>
+        <input type="text" class="text" value="<?php echo $this->modelTitle ?>" readonly="readonly" />
+        <input type="hidden" name="model" value="<?php echo $this->modelUri ?>" />
+    </div>
+</fieldset>
+
+<?php endif; ?>
