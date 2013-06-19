@@ -10,6 +10,13 @@
  * OntoWiki query editor template
  */
 ?>
+
+<?php
+if (isset($this->errorFlag) && $this->errorFlag !== false) {
+    return;
+}
+?>
+
 <input id="editortype" type="hidden" value="queryeditor" />
 <p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
 <?php $i = 0; ?>
