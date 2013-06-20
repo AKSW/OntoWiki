@@ -62,11 +62,11 @@ if (isset($this->errorFlag) && $this->errorFlag !== false) {
 // make sure jQuery is included
 if (typeof jQuery != 'undefined') {
     function insertModelUri() {
-        editor.setCode(editor.getCode() + '<<?php echo $this->modelUri ?>>');
+        editor.setCode(editor.getValue() + '<<?php echo $this->modelUri ?>>');
     }
 
     function insertResourceUri() {
-        editor.setCode(editor.getCode()  + '<<?php echo (isset($this->resourceUri) ? $this->resourceUri : "") ?>>');
+        editor.setCode(editor.getValue()  + '<<?php echo (isset($this->resourceUri) ? $this->resourceUri : "") ?>>');
     }
 }
 </script>

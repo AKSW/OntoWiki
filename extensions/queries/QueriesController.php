@@ -320,7 +320,7 @@ class QueriesController extends OntoWiki_Controller_Component
             'var editor;
             $(document).ready(
                 function(){
-                    var editor = CodeMirror.fromTextArea(
+                    editor = CodeMirror.fromTextArea(
                         document.getElementById("inputfield"),
                         {
                             mode: "application/x-sparql-query",
@@ -398,6 +398,8 @@ class QueriesController extends OntoWiki_Controller_Component
      */
     public function savequeryAction()
     {
+        $this->_helper->layout()->disableLayout();
+
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'text/plain');
 
