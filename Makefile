@@ -165,9 +165,8 @@ rdfauthor:
 # test stuff
 
 test-directories:
-	# todo: add links to different cache dirs here (unit subdir for test-unit-cc)
-	rm -rf application/tests/cache
-	mkdir application/tests/cache
+	rm -rf application/tests/cache application/tests/unit/cache application/tests/integration/cache
+	mkdir -p application/tests/cache application/tests/unit/cache application/tests/integration/cache
 
 test-unit: test-directories
 	@cd application/tests && phpunit --bootstrap Bootstrap.php unit/
