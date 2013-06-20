@@ -34,13 +34,6 @@ class OntoWiki_Extension_Manager
     const EVENT_NS = 'http://ns.ontowiki.net/SysOnt/Events/';
 
     /**
-     * location of the cache for extension configs
-     *
-     * @var string
-     */
-    protected $_cachePath;
-
-    /**
      * Array (extension name -> config)
      *
      * @var array
@@ -142,19 +135,11 @@ class OntoWiki_Extension_Manager
     /**
      * Constructor
      */
-    public function __construct($extensionPath, $cachePath = null)
+    public function __construct($extensionPath)
     {
         if (!(substr($extensionPath, -1) == DIRECTORY_SEPARATOR)) {
             $extensionPath .= DIRECTORY_SEPARATOR;
         }
-
-        if ($cachePath != null) {
-            $this->setCachePath($cachePath);
-        } else {
-            //default cache
-            $this->setCachePath(CACHE_PATH . 'extensions.json');
-        }
-
         $this->_extensionPath = $extensionPath;
 
         OntoWiki_Module_Registry::reset();
@@ -532,7 +517,6 @@ class OntoWiki_Extension_Manager
                 }
             }
         }
-
         return $mod;
     }
 
@@ -540,20 +524,14 @@ class OntoWiki_Extension_Manager
      * get the location of the cache
      *
      * @return string
+	 * @deprecated	use Ontowiki::getCache to access cache
+	 * @todo		to be deleted in next version
      */
     public function getCachePath()
     {
-        return $this->_cachePath;
-    }
-
-    /**
-     * set the cache location
-     *
-     * @param $path string
-     */
-    protected function setCachePath($path)
-    {
-        $this->_cachePath = $path;
+		throw new BadMethodCallException(
+			'Method OntoWiki_Extension_Manager::getCachePath is deprecated. Please use Ontowiki cache'
+		);
     }
 
     /**
@@ -561,9 +539,8 @@ class OntoWiki_Extension_Manager
      */
     public function clearCache()
     {
-        if (file_exists($this->getCachePath())) {
-            unlink($this->getCachePath());
-        }
+		$cache	= OntoWiki::getInstance()->getCache();
+		$cache->clean(Zend_Cache::CLEANING_MODE_ALL);
     }
 
     /**
@@ -572,67 +549,25 @@ class OntoWiki_Extension_Manager
      */
     private function _scanExtensionPath()
     {
-        $config = null;
-        if (function_exists('apc_fetch')) {
-            $config = apc_fetch('ow_extensionConfig');
-
-            if ($config === false) {
-                $config = null;
-            }
-        }
-        if (null === $config) {
-            clearstatcache();
-            $cachePath     = $this->getCachePath();
-            $cacheCreation = @filemtime($cachePath);
-            $cacheExists   = file_exists($cachePath);
-            if ($cacheExists) {
-                //load from cache
-                $config = json_decode(file_get_contents($cachePath), true);
-                foreach ($config as $extensionName => $extensionConfig) {
-                    $config[$extensionName] = new Zend_Config($extensionConfig, true); //cast
-                }
-            } else {
-                $config = array();
-                $dir    = new DirectoryIterator($this->_extensionPath);
-                foreach ($dir as $file) {
-                    if (!$file->isDot() && $file->isDir() && !in_array($file->getFileName(), $this->reservedNames)) {
-                        $extensionName = $file->getFileName();
-
-                        $currentExtensionPath = $file->getPathname() . DIRECTORY_SEPARATOR;
-
-                        // parse all extensions on the filesystem
-                        if (is_readable($currentExtensionPath . self::EXTENSION_DEFAULT_DOAP_FILE)) {
-                            $config[$extensionName] = $this->_loadConfigs($extensionName);
-                        }
-                    }
-                }
-                $config = array_reverse($config);
-            }
-
-            $reloadConfigs = array();
-            //parse all extensions whose configs have been modified
-            if ($cacheExists) {
-                $reloadConfigs = $this->_getModifiedConfigsSince($cacheCreation);
-                foreach ($reloadConfigs as $extensionName => $code) {
-                    //code: 0=>local-config, 1=>default-config, 2=>both (has been modified)
-                    $config[$extensionName] = $this->_loadConfigs($extensionName); //reload always both
-                }
-            }
-
-            //save to cache
-            if (!empty($reloadConfigs) || !$cacheExists) {
-                $configArrays = array();
-                foreach ($config as $extensionName => $extensionConfig) {
-                    $configArrays[$extensionName] = $extensionConfig->toArray();
-                }
-                file_put_contents($cachePath, json_encode($configArrays));
-            }
-
-            if (function_exists('apc_store')) {
-                apc_store('ow_extensionConfig', $config);
-            }
-        }
-
+		$cache	= OntoWiki::getInstance()->getCache();
+		if( !( $config = $cache->load( 'ow_extensionConfig' ) ) ){
+			$config	= array();
+			$dir	= new DirectoryIterator( $this->_extensionPath );
+			foreach( $dir as $file ){
+				if( !$file->isDot() && $file->isDir() ){
+					if( !in_array( $file->getFileName(), $this->reservedNames ) ){
+						$extensionName			= $file->getFileName();
+						$currentExtensionPath	= $file->getPathname() . DIRECTORY_SEPARATOR;
+						// parse all extensions on the filesystem
+						if( is_readable( $currentExtensionPath . self::EXTENSION_DEFAULT_DOAP_FILE ) ){
+							$config[$extensionName]	= $this->_loadConfigs( $extensionName );
+						}
+					}
+				}
+			}
+			$cache->save( array_reverse( $config ) );
+		}
+		
         $view = OntoWiki::getInstance()->view;
         //register the discovered extensions within ontowiki
         foreach ($config as $extensionName => $extensionConfig) {

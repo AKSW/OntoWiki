@@ -36,6 +36,20 @@ class ApplicationController extends OntoWiki_Controller_Base
             ? ' <span style="color:#aea">(writable)</span>'
             : ' <span style="color:#eaa">(not writable!)</span>';
 
+        $cacheBackend         = $this->_config->cache->backend->type;
+        $cacheBackendOptions  = array();
+        $cacheFrontendOptions = array();
+        foreach($this->_config->cache->frontend->toArray() as $key => $value){
+            $cacheFrontendOptions[] = $key.": ".(string) $value;
+        }
+        if (isset($this->_config->cache->backend->$cacheBackend)){
+            foreach($this->_config->cache->backend->$cacheBackend->toArray() as $key => $value){
+                $cacheBackendOptions[] = $key.": ".(string) $value;
+            }
+        }
+        $cacheFrontendOptions = join( ", ", $cacheFrontendOptions );
+        $cacheBackendOptions  = join( ", ", $cacheBackendOptions );
+
         $data = array(
             'System'         => array(
                 'OntoWiki Release' => $version,
@@ -48,12 +62,17 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Language' => $this->_config->languages->locale,
             ),
             'Paths'          => array(
-                'Extensions Path'   => _OWROOT . rtrim($this->_config->extensions->base, '/'),
-                'Translations Path' => _OWROOT . rtrim($this->_config->languages->path, '/'),
-                'Themes Path'       => _OWROOT . rtrim($this->_config->themes->path, '/')
+                'Extensions Path'     => _OWROOT . rtrim($this->_config->extensions->base, '/'),
+                'Translations Path'   => _OWROOT . rtrim($this->_config->languages->path, '/'),
+                'Themes Path'         => _OWROOT . rtrim($this->_config->themes->path, '/'),
+                'Temporary Directory' => Erfurt_App::getInstance()->getTmpDir()
             ),
             'Cache'          => array(
-                'Path'                => rtrim($this->_config->cache->path, '/') . $cacheWritable,
+                'State'               => $this->_config->cache->frontend->enable ? 'enabled' : 'disabled',
+                'Frontend Options'    => $cacheFrontendOptions,
+                'Backend'             => $cacheBackend,
+                'Backend Options'     => $cacheBackendOptions,
+#                'Path'                => rtrim($this->_config->cache->path, '/') . $cacheWritable,
                 'Module Caching'      => ((bool)$this->_config->cache->modules == true) ? 'enabled' : 'disabled',
                 'Translation Caching' => ((bool)$this->_config->cache->translation == true) ? 'enabled' : 'disabled'
             ),

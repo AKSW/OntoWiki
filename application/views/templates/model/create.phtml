@@ -4,7 +4,6 @@
  * OntoWiki model import template
  *
  * @author Norman Heino <norman.heino@gmail.com>
- * @version $Id: create.phtml 3891 2009-08-02 05:35:02Z pfrischmuth $
  */
 
 ?>
@@ -20,8 +19,7 @@
         <?php else: ?>
             <label for="model-input"><?php echo $this->_('Knowledge Base URI') ?></label>
             <?php if (!empty($this->modelUri)): ?>
-                <?php // if model URI is set, don't allow it to be changed ?>
-                <input type="text" class="text" id="model-input" name="modelUri" value="<?php echo $this->modelUri ?>" readonly="readonly" />
+                <input type="text" class="text" id="model-input" name="modelUri" value="<?php echo $this->modelUri ?>" />
             <?php else: ?>
                 <input type="text" class="text" id="model-input" name="modelUri" />
             <?php endif; ?>
@@ -36,7 +34,7 @@
             <?php echo $this->_('Create an Empty Knowledge Base') ?>
         </label>
         <br class="clearall" />
-        
+
         <?php if (ini_get('allow_url_fopen')): ?>
             <label class="checkboxradio" for="r02">
                 <input type="radio" class="radio" name="activeForm" id="r02" value="import" />
@@ -44,20 +42,20 @@
             </label>
             <br class="clearall" />
         <?php endif; ?>
-        
+
         <label class="checkboxradio" for="r03">
             <input type="radio" class="radio" name="activeForm" id="r03" value="upload" />
             <?php echo $this->_('Upload a File') ?>
         </label>
         <br class="clearall" />
-        
+
         <label class="checkboxradio" for="r04">
             <input type="radio" class="radio" name="activeForm" id="r04" value="paste" />
             <?php echo $this->_('Paste Source') ?>
         </label>
         <br class="clearall" />
     </div>
-    
+
     <?php if (empty($this->modelUri)): ?>
         <?php // if model URI is set, don't allow empty model creation ?>
         <!-- empty model -->
@@ -136,24 +134,24 @@
 
 <script type="text/javascript">
     toggleSubForm = function() {
-    	var selValue = $(this).val();
-    	var selName  = $(this).attr('name');
-    	
-    	// hide all others
+        var selValue = $(this).val();
+        var selName  = $(this).attr('name');
+
+        // hide all others
         $('fieldset.' + selName + ':not(#' + selValue + ')').hide();
         $('fieldset.' + selName).css('display', 'none');
-    	
-    	// show the one selected
-    	$('fieldset#' + selValue).fadeIn(effectTime);
+
+        // show the one selected
+        $('fieldset#' + selValue).fadeIn(effectTime);
     }
-    
+
     $(document).ready(function() {
         $('input[name=activeForm]').click(toggleSubForm);
-        
+
         // init form
         $('fieldset.activeForm:not(#<?php echo $this->activeForm ?>)').hide();
         $('input.radio[value=<?php echo $this->activeForm ?>]').attr('checked','checked');
-        
+
         // propagate model URI on change to base URI input
         $('input#model-input').change(function() {
             if ($.trim($('input#location-input').val()) == '') {
