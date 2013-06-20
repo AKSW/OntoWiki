@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="OntoWiki" default="build"> 
+<project name="OntoWiki" default="build">
     <target name="build-unit" depends="prepare,lint,phpunit,phpdoc,phpcb" />
     <target name="build-ci" depends="prepare,lint,phpcs-ci,phpunit-integration-virtuoso,phpunit-integration-mysql,phpdoc,pdepend,phpmd-ci,phpcpd,phploc,phpcb" />
 
@@ -13,15 +13,15 @@
         <delete dir="${basedir}/build/logs"/>
         <delete dir="${basedir}/build/pdepend"/>
     </target>
-    
-    <target name="prepare" depends="clean" description="Prepare for build"> 
+
+    <target name="prepare" depends="clean" description="Prepare for build">
         <mkdir dir="${basedir}/build/api"/>
         <mkdir dir="${basedir}/build/code-browser"/>
         <mkdir dir="${basedir}/build/coverage"/>
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/pdepend"/>
     </target>
-    
+
     <target name="lint" description="Perform syntax check of sourcecode files">
         <apply executable="php" failonerror="true">
             <arg value="-l" />
@@ -30,14 +30,14 @@
                 <include name="**/*.php" />
                 <modified />
             </fileset>
-            
+
             <fileset dir="${basedir}/extensions">
                 <include name="**/*.php" />
                 <modified />
             </fileset>
         </apply>
     </target>
-    
+
     <target name="phploc" description="Measure project size using PHPLOC">
         <exec executable="phploc">
             <arg value="--log-csv" />
@@ -46,7 +46,7 @@
             <arg path="${basedir}/extensions" />
         </exec>
     </target>
-    
+
     <target name="pdepend" description="Calculate software metrics using PHP_Depend">
         <exec executable="pdepend">
             <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
@@ -55,7 +55,7 @@
             <arg path="${basedir}/application,${basedir}/extensions" />
         </exec>
     </target>
-    
+
     <target name="phpmd"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
          <exec executable="phpmd">
@@ -64,7 +64,7 @@
              <arg value="${basedir}/build/phpmd.xml" />
          </exec>
      </target>
-     
+
      <target name="phpmd-ci"
              description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
         <exec executable="phpmd">
@@ -75,7 +75,7 @@
             <arg value="${basedir}/build/logs/pmd.xml" />
         </exec>
     </target>
-    
+
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="phpcs">
@@ -89,7 +89,7 @@
         </exec>
     </target>
 
-    <target name="phpcs-ci" 
+    <target name="phpcs-ci"
             description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
         <exec executable="phpcs">
             <arg value="--standard=${basedir}/application/tests/CodeSniffer/Standards/Ontowiki/ruleset.xml" />
@@ -114,17 +114,23 @@
 
     <target name="phpdoc" description="Create API doc using DocCreator">
         <exec dir="/opt/DocCreator/" executable="php">
-			<arg value="/opt/DocCreator/create.php5" />
+            <arg value="/opt/DocCreator/create.php5" />
             <arg value="--config-file=/opt/DocCreator/config/doc.ontowiki.xml" />
             <arg value="--source-folder=${basedir}/application/" />
             <arg value="--target-folder=${basedir}/build/api/" />
         </exec>
-    </target>    
+    </target>
 
-    <target name="phpunit" description="Run unit tests with PHPUnit">
+    <target name="directories">
+        <exec executable="make">
+            <arg value="test-directories" />
+        </exec>
+    </target>
+
+    <target name="phpunit" depends="directories" description="Run unit tests with PHPUnit">
         <exec dir="${basedir}/application/tests/unit/" executable="phpunit" failonerror="true" />
     </target>
-    
+
     <target name="phpunit-integration-mysql" depends="phpunit" description="Run unit tests with PHPUnit">
         <exec dir="${basedir}/application/tests/integration/" executable="phpunit" failonerror="true">
             <env key="EF_STORE_ADAPTER" value="zenddb" />
