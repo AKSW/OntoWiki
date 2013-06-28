@@ -314,9 +314,6 @@ class OntoWiki_Navigation
         $current  = $this->_navigation[$elementKey];
         $hasRoute = false;
 
-        $currentController = $request->getControllerName();
-        $currentAction     = $request->getActionName();
-
         if (isset($current['route'])) {
             if ($router->hasRoute($current['route'])) {
                 $route    = $router->getRoute($current['route']);
@@ -337,7 +334,7 @@ class OntoWiki_Navigation
             $url = new OntoWiki_Url(array('controller' => $controller, 'action' => $action), $this->_keepParams);
         }
         foreach ($current as $key => $value) {
-            if ($key != 'route' && $key != 'controller' && $key != 'action' && $key != 'priority' && $key != 'name') {
+            if ($key != 'route' && $key != 'controller' && $key != 'action' && $key != 'priority' && $key != 'name' && $key != 'active') {
                 $url->setParam($key, $value);
             }
         }
