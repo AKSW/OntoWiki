@@ -17,11 +17,12 @@
   owconfig:authorLabel "Norman Heino" ;
   owconfig:pluginEvent event:onDisplayObjectPropertyValue ;
   owconfig:pluginEvent event:onDisplayLiteralPropertyValue ;
-  :properties <http://xmlns.com/foaf/0.1/depiction> ;
-  :properties <http://xmlns.com/foaf/0.1/logo> ;
-  :properties <http://xmlns.com/foaf/0.1/img> ;
-  :properties <http://purl.org/ontology/mo/image> ;
-  :properties <http://open.vocab.org/terms/screenshot> ;
+  :properties <http://schema.org/image> ,
+    <http://xmlns.com/foaf/0.1/depiction> ,
+    <http://xmlns.com/foaf/0.1/logo> ,
+    <http://xmlns.com/foaf/0.1/img> ,
+    <http://purl.org/ontology/mo/image> ,
+    <http://open.vocab.org/terms/screenshot> ;
   doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .
