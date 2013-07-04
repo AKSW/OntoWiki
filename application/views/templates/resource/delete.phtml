@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * OntoWiki resource delete template
+ */
+
+?>
+
+<fieldset>
+    <legend><?php echo $this->_('Delete Resource') ?></legend>
+    <?php foreach ($this->resources as $r): ?>
+        <div>
+            <?php echo $this->formHidden('r[]', $r) ?>
+            <a class="hasMenu" about="<?php echo $r ?>" href="<?php
+                $url = new OntoWiki_Url(array('controller' => 'resource', 'action' => 'properties'), array());
+                $url->setParam('r', $r);
+                echo $url;
+            ?>"><?php echo $r ?></a>
+        </div>
+    <?php endforeach; ?>
+</fieldset>

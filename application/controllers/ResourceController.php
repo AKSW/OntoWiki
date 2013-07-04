@@ -310,9 +310,6 @@ class ResourceController extends OntoWiki_Controller_Base
     {
         $this->view->clearModuleCache();
 
-        $this->_helper->viewRenderer->setNoRender();
-        $this->_helper->layout->disableLayout();
-
         $store    = $this->_erfurt->getStore();
         $model    = $this->_owApp->selectedModel;
         $modelIri = (string)$model;
@@ -333,57 +330,77 @@ class ResourceController extends OntoWiki_Controller_Base
 
         $count = 0;
         if ($this->_erfurt->getAc()->isModelAllowed('edit', $modelIri)) {
-            foreach ($resources as $resource) {
+            if ($this->_request->isPost()) {
+                foreach ($resources as $resource) {
 
-                // if we have only a nice uri, fill to full uri
-                if (Zend_Uri::check($resource) == false) {
-                    // check for namespace
-                    if (strstr($resource, ':')) {
-                        $resource = OntoWiki_Utils::expandNamespace($resource);
-                    } else {
-                        $resource = $model->getBaseIri() . $resource;
+                    // if we have only a nice uri, fill to full uri
+                    if (Zend_Uri::check($resource) == false) {
+                        // check for namespace
+                        if (strstr($resource, ':')) {
+                            $resource = OntoWiki_Utils::expandNamespace($resource);
+                        } else {
+                            $resource = $model->getBaseIri() . $resource;
+                        }
                     }
+
+                    // action spec for versioning
+                    $actionSpec                = array();
+                    $actionSpec['type']        = 130;
+                    $actionSpec['modeluri']    = $modelIri;
+                    $actionSpec['resourceuri'] = $resource;
+
+                    // starting action
+                    $versioning->startAction($actionSpec);
+
+                    $stmtArray = array();
+
+                    // query for all triples to delete them
+                    $sparqlQuery = new Erfurt_Sparql_SimpleQuery();
+                    $sparqlQuery->setProloguePart('SELECT ?p, ?o');
+                    $sparqlQuery->addFrom($modelIri);
+                    $sparqlQuery->setWherePart('{ <' . $resource . '> ?p ?o . }');
+
+                    $result = $store->sparqlQuery($sparqlQuery, array('result_format' => 'extended'));
+                    // transform them to statement array to be compatible with store methods
+                    foreach ($result['results']['bindings'] as $stmt) {
+                        $stmtArray[$resource][$stmt['p']['value']][] = $stmt['o'];
+                    }
+
+                    $store->deleteMultipleStatements($modelIri, $stmtArray);
+
+                    // stopping action
+                    $versioning->endAction();
+
+                    $count++;
                 }
 
-                // action spec for versioning
-                $actionSpec                = array();
-                $actionSpec['type']        = 130;
-                $actionSpec['modeluri']    = $modelIri;
-                $actionSpec['resourceuri'] = $resource;
+                $message = $count
+                    . ' resource' . ($count != 1 ? 's' : '')
+                    . ($count ? ' successfully' : '')
+                    . ' deleted.';
 
-                // starting action
-                $versioning->startAction($actionSpec);
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
+                );
 
-                $stmtArray = array();
+            } else {
+                OntoWiki::getInstance()->getNavigation()->disableNavigation();
+                $this->view->formActionUrl = new OntoWiki_Url(array(
+                    'controller' => $this->_request->getControllerName(),
+                    'action'     => $this->_request->getActionName(),
+                ), array());
+                $this->view->formClass     = 'simple-input input-justify-left';
+                $this->view->formMethod    = 'post';
+                $this->view->formName      = 'deleteresource';
 
-                // query for all triples to delete them
-                $sparqlQuery = new Erfurt_Sparql_SimpleQuery();
-                $sparqlQuery->setProloguePart('SELECT ?p, ?o');
-                $sparqlQuery->addFrom($modelIri);
-                $sparqlQuery->setWherePart('{ <' . $resource . '> ?p ?o . }');
+                $this->view->resources     = $resources;
 
-                $result = $store->sparqlQuery($sparqlQuery, array('result_format' => 'extended'));
-                // transform them to statement array to be compatible with store methods
-                foreach ($result['results']['bindings'] as $stmt) {
-                    $stmtArray[$resource][$stmt['p']['value']][] = $stmt['o'];
-                }
+                $toolbar = $this->_owApp->toolbar;
+                $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Delete', 'id' => 'deleteresource'));
+                $this->view->placeholder('main.window.toolbar')->set($toolbar);
 
-                $store->deleteMultipleStatements($modelIri, $stmtArray);
-
-                // stopping action
-                $versioning->endAction();
-
-                $count++;
+                return;
             }
-
-            $message = $count
-                . ' resource' . ($count != 1 ? 's' : '')
-                . ($count ? ' successfully' : '')
-                . ' deleted.';
-
-            $this->_owApp->appendMessage(
-                new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
-            );
 
         } else {
 
