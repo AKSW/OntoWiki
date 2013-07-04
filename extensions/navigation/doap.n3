@@ -187,6 +187,7 @@
               :out (<http://www.w3.org/2004/02/skos/core#narrower>)
         ];
         :checkSub "true"^^xsd:boolean ;
+        :directLink "true"^^xsd:boolean
         :titleMode "titleHelper" ;
         :showCounts "false"^^xsd:boolean
     ];
