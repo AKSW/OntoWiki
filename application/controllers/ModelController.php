@@ -521,13 +521,6 @@ class ModelController extends OntoWiki_Controller_Base
         $this->view->formClass     = 'simple-input input-justify-left';
         $this->view->formMethod    = 'post';
         $this->view->formName      = 'createmodel';
-        $this->view->activeForm    = ini_get('allow_url_fopen') ? 'import' : 'empty';
-        $this->view->referer       = '';
-
-        $this->view->modelUri         = $this->_config->urlBase .'NEWMODEL/';
-        $this->view->baseUri          = '';
-        $this->view->title            = $this->view->_('Create Knowledge Base');
-        $this->view->supportedFormats = $this->_erfurt->getStore()->getSupportedImportFormats();
 
         if (!$this->_erfurt->isActionAllowed('ModelManagement')) {
             $this->_owApp->appendMessage(
@@ -538,7 +531,40 @@ class ModelController extends OntoWiki_Controller_Base
             return;
         }
 
-        // $this->view->messages = array(new OntoWiki_Message('Model already exists.', OntoWiki_Message::ERROR));
+        /**
+         * @trigger onProvideImportActions event to provide additional import actions
+         *
+         * Parameter: importActions
+         *
+         * Example:
+         * <code>
+         * <?php
+         * $importActions = array('empty' => array(
+         *   'controller' => 'model',
+         *   'action' => 'info',
+         *   'label' => 'Create an (nearly) empty knowledge base',
+         *   'description' => 'Just add the label to the new model.'
+         *   ));
+         * ?>
+         * </code>
+         */
+        $event                     = new Erfurt_Event('onProvideImportActions');
+        // this is the default action
+        $event->importActions      = array(
+            'basicimporter-empty' => array(
+                'parameter' => 'checked',
+                'controller' => 'model',
+                'action' => 'info',
+                'label' => 'Create an (nearly) empty knowledge base',
+                'description' => 'Just add the label to the new model.'
+            )
+        );
+        $result                    = $event->trigger();
+        $importActions             = $event->importActions;
+        $this->view->importActions = $importActions;
+
+        // TODO: add this to the template in order to allow users to tune it
+        $this->view->modelUri         = $this->_config->urlBase .'NEWMODEL/';
 
         $toolbar = $this->_owApp->toolbar;
         $toolbar->appendButton(
@@ -549,6 +575,7 @@ class ModelController extends OntoWiki_Controller_Base
             array('name' => 'Cancel', 'id' => 'createmodel')
         );
         $this->view->placeholder('main.window.toolbar')->set($toolbar);
+        $this->view->title = $this->view->_('Create Knowledge Base');
 
         if (!$this->_request->isPost()) {
             // FIX: http://www.webmasterworld.com/macintosh_webmaster/3300569.htm
@@ -556,15 +583,61 @@ class ModelController extends OntoWiki_Controller_Base
             $response = $this->getResponse();
             $response->setHeader('Connection', 'close', true);
             $response->sendHeaders();
-
             return;
+        } else {
+            // process the user input
+            $post = $this->_request->getPost();
+
+            $newModelUri = '';
+            $newModelUri = isset($post['modeluri']) ? trim($post['modeluri']) : "";
+            // TODO: create URI based on the title (if no URI is present)
+            // TODO: create URI based on nothing, if no infos are given
+            if ($newModelUri == '') {
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message(
+                        'Please provide at least a valid URI for the new Knowledge Base.',
+                        OntoWiki_Message::ERROR
+                    )
+                );
+                $this->view->errorFlag = true;
+                return;
+            }
+
+            // create model
+            if ($this->_erfurt->getStore()->isModelAvailable($newModelUri, false)) {
+                // model exists
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('Given Knowledge Base already exists.', OntoWiki_Message::ERROR)
+                );
+                $this->view->errorFlag = true;
+                return;
+            } else {
+                // model does not exist, will be created
+                $model = $this->_erfurt->getStore()->getNewModel(
+                    $newModelUri,
+                    $newModelUri,
+                    Erfurt_Store::MODEL_TYPE_OWL
+                );
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('Knowledge Base successfully created.', OntoWiki_Message::SUCCESS)
+                );
+                // TODO: add ACL infos based on the post data
+                // TODO: add title if present
+            }
+
+            // prepare and do the redirect
+            $importActionId = $post['importAction'];
+            $postProcessUrl = new OntoWiki_Url(
+                array(
+                    'controller' => $importActions[$importActionId]['controller'],
+                    'action' => $importActions[$importActionId]['action']
+                ),
+                array('m')
+            );
+            $postProcessUrl->setParam('m', $newModelUri);
+            $this->_redirect($postProcessUrl, array('code' => 302));
         }
 
-        $post = $this->_request->getPost();
-
-        // TODO: redirect to the post-create / add controller
-        // create URI based on the name or form
-        return;
     }
 
     private function _handleImport($postData, $createGraph = false)

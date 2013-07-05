@@ -5,49 +5,53 @@
  */
 
 ?>
-<input type="hidden" name="referer" value="<?php echo $this->referer ?>">
 <fieldset>
-<legend><?php echo $this->_('Basic Model Information'); ?></legend>
+<legend><?php echo $this->_('Basic information'); ?></legend>
     <div>
-        <label><?php echo $this->_('Title') ?></label>
+        <label><?php echo $this->_('Title') .' '. $this->_('(leave blank if your import provides the name)') ?></label>
         <input type="text" class="text" />
     </div>
     <div>
-        <label><?php echo $this->_('URI') ?></label>
-        <input type="text" class="text" />
+        <label><?php echo $this->_('URI (leave blank for auto creation)') ?></label>
+        <input type="text" class="text" name="modeluri" />
         <br class="clearall" />
     </div>
 </fieldset>
 
-<fieldset>
-<legend><?php echo $this->_('Data Creation Options'); ?></legend>
+<!-- fieldset>
+    <legend><?php echo $this->_('Access Control and Visibility'); ?></legend>
     <div>
-        <?php // if model URI is set, don't allow empty model creation ?>
-        <label class="checkboxradio" for="r01">
-            <input type="radio" class="radio" name="activeForm" id="r01" value="empty" />
-            <?php echo $this->_('Create an Empty Knowledge Base') ?>
+        <label class="checkboxradio" for="aclpublic">
+            <input type="radio" class="radio" name="acl" id="aclpublic" value="public" checked />
+            <?php echo $this->_('public (readable for everyone / writeable for admins)') ?>
+        </label>
+        <label class="checkboxradio" for="aclopen">
+            <input type="radio" class="radio" name="acl" id="aclopen" value="open" />
+            <?php echo $this->_('open (readable and writeable for everyone)') ?>
+        </label>
+        <label class="checkboxradio" for="aclclosed">
+            <input type="radio" class="radio" name="acl" id="aclclosed" value="closed" />
+            <?php echo $this->_('closed (readable and writeable for admins)') ?>
+        </label>
+    </div>
+</fieldset-->
+
+<?php if (count($this->importActions) > 0) : ?>
+<fieldset>
+    <legend><?php echo $this->_('Data import actions'); ?></legend>
+    <div>
+<?php foreach ($this->importActions as $key => $action) : ?>
+        <label class="checkboxradio" for="import-<?php echo $key ?>">
+            <input
+                type="radio" class="radio" name="importAction"
+                id="import-<?php echo $key ?>" value="<?php echo $key ?>"
+                <?php echo (isset($action['parameter']) ? $action['parameter'] : '' ) ?>
+            />
+            <?php echo $this->_($action['label']) ?>
         </label>
         <br class="clearall" />
-
-        <?php if (ini_get('allow_url_fopen')): ?>
-            <label class="checkboxradio" for="r02">
-                <input type="radio" class="radio" name="activeForm" id="r02" value="import" />
-                <?php echo $this->_('Import From the Web') ?>
-            </label>
-            <br class="clearall" />
-        <?php endif; ?>
-
-        <label class="checkboxradio" for="r03">
-            <input type="radio" class="radio" name="activeForm" id="r03" value="upload" />
-            <?php echo $this->_('Upload a File') ?>
-        </label>
-        <br class="clearall" />
-
-        <label class="checkboxradio" for="r04">
-            <input type="radio" class="radio" name="activeForm" id="r04" value="paste" />
-            <?php echo $this->_('Paste Source') ?>
-        </label>
-        <br class="clearall" />
+<?php endforeach; ?>
     </div>
 </fieldset>
+<?php endif; ?>
 
