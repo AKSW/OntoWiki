@@ -1,15 +1,16 @@
 <?php
 
 /**
- * OntoWiki create model template
+ * OntoWiki create and add model template
  */
 
 ?>
+<?php if ($this->formName == 'createmodel') : ?>
 <fieldset>
 <legend><?php echo $this->_('Basic information'); ?></legend>
     <div>
         <label><?php echo $this->_('Title') .' '. $this->_('(leave blank if your import provides the name)') ?></label>
-        <input type="text" class="text" />
+        <input type="text" class="text" name="title" />
     </div>
     <div>
         <label><?php echo $this->_('URI (leave blank for auto creation)') ?></label>
@@ -35,6 +36,7 @@
         </label>
     </div>
 </fieldset-->
+<?php endif; ?>
 
 <?php if (count($this->importActions) > 0) : ?>
 <fieldset>

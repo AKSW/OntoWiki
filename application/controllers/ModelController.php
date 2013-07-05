@@ -21,7 +21,7 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function addAction()
     {
-        $this->view->placeholder('main.window.title')->set('Add Statements to Model');
+        $this->view->placeholder('main.window.title')->set('Import Statements to the Knowledge Base');
         $this->_helper->viewRenderer->setScriptAction('create');
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
@@ -30,16 +30,12 @@ class ModelController extends OntoWiki_Controller_Base
         $this->view->formClass        = 'simple-input input-justify-left';
         $this->view->formMethod       = 'post';
         $this->view->formName         = 'addmodel';
-        $this->view->activeForm       = 'upload';
-        $this->view->referer          = isset($_SERVER['HTTP_REFERER']) ? urlencode($_SERVER['HTTP_REFERER']) : '';
-        $this->view->supportedFormats = $this->_erfurt->getStore()->getSupportedImportFormats();
 
-        $this->view->modelUri = (string)$this->_owApp->selectedModel;
-        $this->view->baseUri  = '';
         $this->view->title    = $this->view->_('Add Statements to Knowledge Base');
 
-        $model                  = $this->_owApp->selectedModel;
-        $this->view->modelTitle = $model->getTitle();
+        $model                     = $this->_owApp->selectedModel;
+        $this->view->modelTitle    = $model->getTitle();
+        $this->view->importActions = $this->_getImportActions();
 
         if ($model->isEditable()) {
             $toolbar = $this->_owApp->toolbar;
@@ -53,7 +49,6 @@ class ModelController extends OntoWiki_Controller_Base
                     OntoWiki_Message::WARNING
                 )
             );
-
             return;
         }
 
@@ -65,104 +60,8 @@ class ModelController extends OntoWiki_Controller_Base
             $response->sendHeaders();
 
             return;
-        }
-
-        // evaluate post data
-        $messages = array();
-        $post     = $this->_request->getPost();
-
-        $errorFlag = false;
-
-        $upload = new Zend_File_Transfer();
-        $filesArray = $upload->getFileInfo();
-        switch (true) {
-            case empty($filesArray):
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message(
-                        'upload went wrong. check post_max_size in your php.ini.',
-                        OntoWiki_Message::ERROR
-                    )
-                );
-                $errorFlag = true;
-                break;
-            case (empty($post) || !isset($post['modelUri'])):
-                $message = 'missing post parameters.';
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message($message, OntoWiki_Message::ERROR)
-                );
-                $errorFlag = true;
-                break;
-            case ($post['activeForm'] == 'upload' && $filesArray['source']['error'] == UPLOAD_ERR_INI_SIZE):
-                $message = 'The uploaded files\'s size exceeds the upload_max_filesize directive in php.ini.';
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message($message, OntoWiki_Message::ERROR)
-                );
-                $errorFlag = true;
-                break;
-            case ($post['activeForm'] == 'upload' && $filesArray['source']['error'] == UPLOAD_ERR_PARTIAL):
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message('The uploaded file was only partially uploaded.', OntoWiki_Message::ERROR)
-                );
-                $errorFlag = true;
-                break;
-            case ($post['activeForm'] == 'upload' && $filesArray['source']['error'] >= UPLOAD_ERR_NO_FILE):
-                $message = 'There was an unknown error during file upload. Please check your PHP configuration.';
-                $this->_owApp->appendMessage(
-                    new OntoWiki_Message($message, OntoWiki_Message::ERROR)
-                );
-                $errorFlag = true;
-                break;
-        }
-
-        // set submitted vars
-        foreach ($post as $name => $value) {
-            $this->view->$name = $value;
-        }
-
-        if (!$errorFlag) {
-
-            // preparing versioning
-            $versioning                = $this->_erfurt->getVersioning();
-            $actionSpec                = array();
-            $actionSpec['type']        = 120;
-            $actionSpec['modeluri']    = $post['modelUri'];
-            $actionSpec['resourceuri'] = $post['modelUri'];
-
-            $versioning->startAction($actionSpec);
-
-            // trying to import given data
-            try {
-                $this->_handleImport($post, false);
-            } catch (Exception $e) {
-                if (defined('_OWDEBUG')) {
-                    $this->_owApp->appendMessage(
-                        new OntoWiki_Message('Error importing statements: ' . $e->getMessage(), OntoWiki_Message::ERROR)
-                    );
-                } else {
-                    $this->_owApp->appendMessage(
-                        new OntoWiki_Message(
-                            'There was a problem while importing the data. Please contact your administrator.',
-                            OntoWiki_Message::ERROR
-                        )
-                    );
-                }
-
-                return;
-            }
-
-            // stop Action
-            $versioning->endAction();
-
-            if (!empty($post['referer'])) {
-                $redirect = urldecode($post['referer']);
-            } else {
-                $redirect = $this->_config->urlBase . 'model/add/?m=' . urlencode($this->view->modelUri);
-            }
-
-            $this->view->clearModuleCache('hierarchy');
-            $this->view->clearModuleCache('modellist');
-
-            $this->_redirect($redirect, array('code' => 302));
+        } else {
+            $this->_doImportActionRedirect((string) $model);
         }
     }
 
@@ -512,6 +411,7 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function createAction()
     {
+        $store = $this->_erfurt->getStore();
         $this->view->clearModuleCache('modellist');
 
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
@@ -522,6 +422,19 @@ class ModelController extends OntoWiki_Controller_Base
         $this->view->formMethod    = 'post';
         $this->view->formName      = 'createmodel';
 
+        // this is the default action
+        $defaultActions = array(
+            'empty' => array(
+                'parameter' => 'checked',
+                'controller' => 'model',
+                'action' => 'info',
+                'label' => 'Create a (nearly) empty knowledge base',
+                'description' => 'Just add the label and type to the new model.'
+            )
+        );
+        $importActions = array_merge($defaultActions, $this->_getImportActions());
+        $this->view->importActions = $importActions;
+
         if (!$this->_erfurt->isActionAllowed('ModelManagement')) {
             $this->_owApp->appendMessage(
                 new OntoWiki_Message('Model management is not allowed.', OntoWiki_Message::ERROR)
@@ -531,40 +444,8 @@ class ModelController extends OntoWiki_Controller_Base
             return;
         }
 
-        /**
-         * @trigger onProvideImportActions event to provide additional import actions
-         *
-         * Parameter: importActions
-         *
-         * Example:
-         * <code>
-         * <?php
-         * $importActions = array('empty' => array(
-         *   'controller' => 'model',
-         *   'action' => 'info',
-         *   'label' => 'Create an (nearly) empty knowledge base',
-         *   'description' => 'Just add the label to the new model.'
-         *   ));
-         * ?>
-         * </code>
-         */
-        $event                     = new Erfurt_Event('onProvideImportActions');
-        // this is the default action
-        $event->importActions      = array(
-            'basicimporter-empty' => array(
-                'parameter' => 'checked',
-                'controller' => 'model',
-                'action' => 'info',
-                'label' => 'Create an (nearly) empty knowledge base',
-                'description' => 'Just add the label to the new model.'
-            )
-        );
-        $result                    = $event->trigger();
-        $importActions             = $event->importActions;
-        $this->view->importActions = $importActions;
-
         // TODO: add this to the template in order to allow users to tune it
-        $this->view->modelUri         = $this->_config->urlBase .'NEWMODEL/';
+        $this->view->modelUri = $this->_config->urlBase .'NEWMODEL/';
 
         $toolbar = $this->_owApp->toolbar;
         $toolbar->appendButton(
@@ -588,10 +469,27 @@ class ModelController extends OntoWiki_Controller_Base
             // process the user input
             $post = $this->_request->getPost();
 
+            // determine or create the model URI
             $newModelUri = '';
-            $newModelUri = isset($post['modeluri']) ? trim($post['modeluri']) : "";
-            // TODO: create URI based on the title (if no URI is present)
-            // TODO: create URI based on nothing, if no infos are given
+            if (trim($post['modeluri']) != '') {
+                // URI given via form input
+                $newModelUri = trim($post['modeluri']);
+            } else if (trim($post['title']) != '') {
+                // create a nice URI from the title (poor mans way)
+                $urlBase = $this->_config->urlBase;
+                $title = trim($post['title']);
+                $title = str_replace(' ' , '' , $title);
+                $title = urlencode($title);
+                $newModelUri = $urlBase . $title . '/';
+            } else {
+                // create a default model with counter
+                $urlBase = $this->_config->urlBase . 'kb';
+                $counter = 0;
+                do {
+                    $newModelUri = $urlBase . $counter++ . '/';
+                } while ($store->isModelAvailable($newModelUri, false));
+            }
+
             if ($newModelUri == '') {
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message(
@@ -604,7 +502,7 @@ class ModelController extends OntoWiki_Controller_Base
             }
 
             // create model
-            if ($this->_erfurt->getStore()->isModelAvailable($newModelUri, false)) {
+            if ($store->isModelAvailable($newModelUri, false)) {
                 // model exists
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Given Knowledge Base already exists.', OntoWiki_Message::ERROR)
@@ -613,31 +511,25 @@ class ModelController extends OntoWiki_Controller_Base
                 return;
             } else {
                 // model does not exist, will be created
-                $model = $this->_erfurt->getStore()->getNewModel(
-                    $newModelUri,
-                    $newModelUri,
-                    Erfurt_Store::MODEL_TYPE_OWL
+                $model = $store->getNewModel(
+                    $newModelUri, $newModelUri, Erfurt_Store::MODEL_TYPE_OWL
                 );
                 $this->_owApp->appendMessage(
                     new OntoWiki_Message('Knowledge Base successfully created.', OntoWiki_Message::SUCCESS)
                 );
+
+                // add label
+                $additions = new Erfurt_Rdf_MemoryModel();
+                if (isset($post['title'])) {
+                    $additions->addAttribute($newModelUri, EF_RDFS_LABEL, $post['title']);
+                }
+                $model->addMultipleStatements($additions->getStatements());
+
                 // TODO: add ACL infos based on the post data
-                // TODO: add title if present
+
+                $this->_doImportActionRedirect($newModelUri);
             }
-
-            // prepare and do the redirect
-            $importActionId = $post['importAction'];
-            $postProcessUrl = new OntoWiki_Url(
-                array(
-                    'controller' => $importActions[$importActionId]['controller'],
-                    'action' => $importActions[$importActionId]['action']
-                ),
-                array('m')
-            );
-            $postProcessUrl->setParam('m', $newModelUri);
-            $this->_redirect($postProcessUrl, array('code' => 302));
         }
-
     }
 
     private function _handleImport($postData, $createGraph = false)
@@ -1039,5 +931,48 @@ class ModelController extends OntoWiki_Controller_Base
 
         // update model
         $graph->updateWithMutualDifference($originalStatements, $modifiedStatements);
+    }
+
+    /**
+     * prepare and do the redirect
+     */
+    private function _doImportActionRedirect($modelUri) {
+        $post           = $this->_request->getPost();
+        $importActionId = $post['importAction'];
+        $importActions  = $this->_getImportActions();
+        $postProcessUrl = new OntoWiki_Url(
+            array(
+                'controller' => $importActions[$importActionId]['controller'],
+                'action' => $importActions[$importActionId]['action']
+            ),
+            array('m')
+        );
+        $postProcessUrl->setParam('m', $modelUri);
+        $this->_redirect($postProcessUrl, array('code' => 302));
+    }
+
+    private function _getImportActions()
+    {
+        /**
+         * @trigger onProvideImportActions event to provide additional import actions
+         *
+         * Parameter: importActions
+         *
+         * Example:
+         * <code>
+         * <?php
+         * $importActions = array('empty' => array(
+         *   'controller' => 'model',
+         *   'action' => 'info',
+         *   'label' => 'Create an (nearly) empty knowledge base',
+         *   'description' => 'Just add the label to the new model.'
+         *   ));
+         * ?>
+         * </code>
+         */
+        $event                = new Erfurt_Event('onProvideImportActions');
+        $event->importActions = array();
+        $result               = $event->trigger();
+        return $event->importActions;
     }
 }
