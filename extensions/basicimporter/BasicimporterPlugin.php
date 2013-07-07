@@ -33,7 +33,7 @@ class BasicimporterPlugin extends OntoWiki_Plugin
                 'controller' => 'basicimporter',
                 'action' => 'rdfwebimport',
                 'label' => 'Import an RDF resource from the web',
-                'description' => 'Tries to fetch a graph from a linked data resource.'
+                'description' => 'Tries to fetch a graph from the web.'
             ),
             'basicimporter-rdfupload' => array(
                 'controller' => 'basicimporter',
@@ -45,9 +45,14 @@ class BasicimporterPlugin extends OntoWiki_Plugin
                 'controller' => 'basicimporter',
                 'action' => 'rdfpaster',
                 'label' => 'Paste Source',
-                'description' => 'Parses and turtle, ntriples and rdfxml import from a textfield.'
+                'description' => 'Parses and import turtle, ntriples and rdfxml import from a textfield.'
             ),
         );
+
+        // sad but true, some php installation do not allow this
+        if (!ini_get('allow_url_fopen')) {
+            unset($myImportActions['basicimporter-rdfwebimport']);
+        }
 
         $event->importActions = array_merge($event->importActions, $myImportActions);
         return $event;

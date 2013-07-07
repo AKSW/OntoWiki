@@ -1,0 +1,18 @@
+<?php
+/**
+ * OntoWiki URL web import template
+ */
+?>
+<?php if (ini_get('allow_url_fopen')): ?>
+<fieldset class="activeForm" id="importdata">
+    <legend><?php echo $this->_('Import From the Web') ?></legend>
+    <div>
+        <p class="messagebox info">
+            <?php echo $this->_('Enter the URL where the model should be downloaded from. If you leave the field empty the model URI will be used.') ?>
+        </p>
+        <label for="location-input"><?php echo $this->_('Location') ?></label>
+        <input type="text" class="text" id="location-input" name="location" />
+        <br class="clearall"/>
+    </div>
+</fieldset>
+<?php endif; ?>
