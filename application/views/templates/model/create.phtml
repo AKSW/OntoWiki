@@ -42,18 +42,28 @@
 <fieldset>
     <legend><?php echo $this->_('Data import actions'); ?></legend>
     <div>
+    <p id="importAction-desc" class="messagebox info"><?php echo $this->_('Please use one of these options to import data from various sources or with different tranformations:') ?></p>
 <?php foreach ($this->importActions as $key => $action) : ?>
         <label class="checkboxradio" for="import-<?php echo $key ?>">
             <input
-                type="radio" class="radio" name="importAction"
+                type="radio" class="radio importAction" name="importAction"
                 id="import-<?php echo $key ?>" value="<?php echo $key ?>"
                 <?php echo (isset($action['parameter']) ? $action['parameter'] : '' ) ?>
+                <?php echo (isset($action['description']) ? 'data-desc="' . $action['description'] .'"' : '' ) ?>
             />
             <?php echo $this->_($action['label']) ?>
         </label>
         <br class="clearall" />
 <?php endforeach; ?>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('input.importAction').change(function() {
+                data=$(this).data('desc');
+                $('#importAction-desc').text(data);
+            });
+        });
+    </script>
 </fieldset>
 <?php endif; ?>
 
