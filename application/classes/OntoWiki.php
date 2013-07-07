@@ -188,6 +188,73 @@ class OntoWiki
     }
 
     /**
+     * Appends a success message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendSuccessMessage($message)
+    {
+        if ($this->translate !== null) {
+            $message = $this->translate->translate($message);
+        }
+        $this->appendMessage(
+            new OntoWiki_Message(
+                (string) $message,
+                OntoWiki_Message::SUCCESS
+            )
+        );
+        return $this;
+    }
+
+    /**
+     * Appends a warning message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendWarningMessage($message)
+    {
+        if ($this->translate !== null) {
+            $message = $this->translate->translate($message);
+        }
+        $this->appendMessage(
+            new OntoWiki_Message(
+                (string) $message,
+                OntoWiki_Message::WARNING
+            )
+        );
+        return $this;
+    }
+
+    /**
+     * Appends an error message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendErrorMessage($message)
+    {
+        if ($this->translate !== null) {
+            $message = $this->translate->translate($message);
+        }
+        $this->appendMessage(
+            new OntoWiki_Message(
+                (string) $message,
+                OntoWiki_Message::ERROR
+            )
+        );
+        return $this;
+    }
+
+
+    /**
      * Returns the current message stack and empties it.
      *
      * @since 0.9.5
