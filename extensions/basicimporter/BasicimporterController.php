@@ -27,29 +27,6 @@ class BasicimporterController extends OntoWiki_Controller_Component
 
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
-        if ($this->_owApp->selectedModel === null) {
-            $this->_owApp->appendMessage(
-                new OntoWiki_Message(
-                    $this->view->_('No model selected.'),
-                    OntoWiki_Message::ERROR
-                )
-            );
-            $this->view->errorFlag = true;
-            return;
-        } else {
-            $this->_model = $this->_owApp->selectedModel;
-        }
-
-        if (!$this->_model->isEditable()) {
-            $this->_owApp->appendMessage(
-                new OntoWiki_Message(
-                    $this->view->_('No write permissions on this model.'),
-                    OntoWiki_Message::ERROR
-                )
-            );
-            return;
-        }
-
         // provide basic view data
         $action = $this->_request->getActionName();
         $this->view->placeholder('main.window.title')->set('Import Data');
@@ -59,6 +36,12 @@ class BasicimporterController extends OntoWiki_Controller_Component
         $this->view->formMethod       = 'post';
         $this->view->formName         = 'importdata';
         $this->view->supportedFormats = $this->_erfurt->getStore()->getSupportedImportFormats();
+
+        if (!$this->isSelectedModelEditable()) {
+            return;
+        } else {
+            $this->_model = $this->_owApp->selectedModel;
+        }
 
         // add a standard toolbar
         $toolbar = $this->_owApp->toolbar;
