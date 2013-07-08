@@ -169,7 +169,9 @@ class OntoWiki
     // ------------------------------------------------------------------------
 
     /**
-     * Appends a message to the message stack
+     * Appends a (translated) message to the message stack
+     * TODO: add a boolean $translate=true flag in order to allow disabling
+     * translation
      *
      * @param OntoWiki_Message $message The message to be added.
      *
@@ -188,6 +190,22 @@ class OntoWiki
     }
 
     /**
+     * Appends an info message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendInfoMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::INFO)
+        );
+        return $this;
+    }
+
+    /**
      * Appends a success message to the message stack, a convenient shortcut to
      * appendMessage with included translate
      *
@@ -197,14 +215,8 @@ class OntoWiki
      */
     public function appendSuccessMessage($message)
     {
-        if ($this->translate !== null) {
-            $message = $this->translate->translate($message);
-        }
         $this->appendMessage(
-            new OntoWiki_Message(
-                (string) $message,
-                OntoWiki_Message::SUCCESS
-            )
+            new OntoWiki_Message((string)$message, OntoWiki_Message::SUCCESS)
         );
         return $this;
     }
@@ -219,14 +231,8 @@ class OntoWiki
      */
     public function appendWarningMessage($message)
     {
-        if ($this->translate !== null) {
-            $message = $this->translate->translate($message);
-        }
         $this->appendMessage(
-            new OntoWiki_Message(
-                (string) $message,
-                OntoWiki_Message::WARNING
-            )
+            new OntoWiki_Message((string)$message, OntoWiki_Message::WARNING)
         );
         return $this;
     }
@@ -241,14 +247,8 @@ class OntoWiki
      */
     public function appendErrorMessage($message)
     {
-        if ($this->translate !== null) {
-            $message = $this->translate->translate($message);
-        }
         $this->appendMessage(
-            new OntoWiki_Message(
-                (string) $message,
-                OntoWiki_Message::ERROR
-            )
+            new OntoWiki_Message((string)$message, OntoWiki_Message::ERROR)
         );
         return $this;
     }
@@ -302,12 +302,19 @@ class OntoWiki
         }
     }
 
-	public function getCache(){
-		$bootstrap = $this->getBootstrap();
-		if ($bootstrap && $bootstrap->hasResource('Erfurt')) {
-			return $this->getBootstrap()->getResource('Erfurt')->getCache();
-		}
-	}
+    /**
+     * Returns the system cache object
+     *
+     * @since 0.9.9
+     * @return Zend_Cache_Core
+     */
+    public function getCache()
+    {
+        $bootstrap = $this->getBootstrap();
+        if ($bootstrap && $bootstrap->hasResource('Erfurt')) {
+            return $this->getBootstrap()->getResource('Erfurt')->getCache();
+        }
+    }
 
     /**
      * Singleton instance
