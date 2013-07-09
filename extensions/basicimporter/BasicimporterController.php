@@ -57,7 +57,6 @@ class BasicimporterController extends OntoWiki_Controller_Component
         if ($this->_request->isPost()) {
             $this->_post = $this->_request->getPost();
         }
-
     }
 
     public function rdfpasterAction()
@@ -65,7 +64,16 @@ class BasicimporterController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set('Paste RDF Content');
 
         if ($this->_request->isPost()) {
-            // TODO process post data
+            $post = $this->_request->getPost();
+            $filetype = $post['filetype-paste'];
+            $file = tempnam(sys_get_temp_dir(), 'ow');
+            $temp = fopen($file, 'wb');
+            fwrite($temp, $this->getParam('paste'));
+            fclose($temp);
+            $locator  = Erfurt_Syntax_RdfParser::LOCATOR_FILE;
+            // import statements
+            $this->_import($file, $filetype, $locator);
+
             $this->_owApp->appendSuccessMessage('Data successfully imported.');
             $this->_owApp->appendSuccessMessage($this->_post['filetype-paste']);
             $this->_owApp->appendSuccessMessage($this->_post['paste']);
@@ -77,9 +85,14 @@ class BasicimporterController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set('Import RDF from the Web');
 
         if ($this->_request->isPost()) {
+            $postData = $this->_request->getPost();
+            $url     = $postData['location'] != '' ? $postData['location'] : $newModelUri;
+            $filetype = 'auto';
+            $locator  = Erfurt_Syntax_RdfParser::LOCATOR_URL;
             // TODO process post data
-            $this->_owApp->appendSuccessMessage('Data successfully imported.');
-            $this->_owApp->appendSuccessMessage($this->_post['location']);
+            $this->_import($url, $filetype, $locator);
+
+            $this->_owApp->appendSuccessMessage('Data from ' . $url . ' successfully imported.');
         }
     }
 
@@ -88,6 +101,7 @@ class BasicimporterController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set('Upload RDF Dumps');
 
         if ($this->_request->isPost()) {
+            $postData = $this->_request->getPost();
             $upload = new Zend_File_Transfer();
             $filesArray = $upload->getFileInfo();
 
@@ -106,14 +120,56 @@ class BasicimporterController extends OntoWiki_Controller_Component
                     $message = 'Please select a file to upload';
                     break;
             }
+
             if ($message != '') {
                 $this->_owApp->appendErrorMessage($message);
                 return;
             }
 
+            $file = $filesArray['source']['tmp_name'];
+            // setting permissions to read the tempfile for everybody
+            // (e.g. if db and webserver owned by different users)
+            chmod($file, 0644);
+            $locator  = Erfurt_Syntax_RdfParser::LOCATOR_FILE;
+            $filetype = 'auto';
+            // guess file mime type
+            if ($postData['filetype-upload'] != 'auto') {
+                $filetype = $postData['filetype-upload'];
+            } else {
+                // guess file type extension
+                $extension = strtolower(strrchr($filesArray['source']['name'], '.'));
+                if ($extension == '.rdf' || $extension == '.owl') {
+                    $filetype = 'rdfxml';
+                } else if ($extension == '.n3') {
+                    $filetype = 'ttl';
+                } else if ($extension == '.json') {
+                    $filetype = 'rdfjson';
+                } else if ($extension == '.ttl') {
+                    $filetype = 'ttl';
+                } else if ($extension == '.nt') {$filetype = 'ttl';
+                }
+            }
+
             // TODO process post data
+            $this->_import($file, $filetype, $locator);
             $this->_owApp->appendSuccessMessage('Data successfully imported.');
             $this->_owApp->appendSuccessMessage($this->_post['filetype-upload']);
+        }
+    }
+
+    private function _import($fileOrUrl, $filetype, $locator)
+    {
+        $modelIri = (string)$this->_model;
+
+        try {
+            $this->_erfurt->getStore()->importRdf($modelIri, $fileOrUrl, $filetype, $locator);
+                } catch (Erfurt_Exception $e) {
+            // re-throw
+            throw new OntoWiki_Controller_Exception(
+                'Graph "' . $modelIri . '" could not be imported: ' . $e->getMessage(),
+                0,
+                $e
+            );
         }
     }
 }
