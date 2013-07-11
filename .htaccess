@@ -45,6 +45,9 @@
 
     RewriteRule ^.*$ index.php
 
+    # Set RewriteBase if your OntoWiki virtual host is managed with VirtualDocumentRoot.
+    #RewriteBase /
+
     # Set RewriteBase only if your OntoWiki folder is not located in your web server's root dir.
     #RewriteBase /ontowiki
 </IfModule>

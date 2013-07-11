@@ -1,5 +1,12 @@
 <?php
-class ApplicationModule extends OntoWiki_Module
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+class TestModule extends OntoWiki_Module
 {
     public function init()
     {
@@ -7,13 +14,13 @@ class ApplicationModule extends OntoWiki_Module
     }
 
     /**
-    * Returns the title of the module
-    *
-    * @return string
-    */
+     * Returns the title of the module
+     *
+     * @return string
+     */
     public function getTitle()
     {
-        return  'Test';
+        return 'Test';
     }
 
     public function shouldShow()
@@ -22,10 +29,10 @@ class ApplicationModule extends OntoWiki_Module
     }
 
     /**
-    * Returns the menu of the module
-    *
-    * @return string
-    */
+     * Returns the menu of the module
+     *
+     * @return string
+     */
     public function getMenu()
     {
         return OntoWiki_Menu_Registry::getInstance()->getMenu('application');
@@ -33,7 +40,7 @@ class ApplicationModule extends OntoWiki_Module
 
     public function getContents()
     {
-    return '';
+        return '';
     }
 
     public function allowCaching()

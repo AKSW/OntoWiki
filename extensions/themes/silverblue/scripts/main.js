@@ -121,7 +121,7 @@ $(document).ready(function() {
             }, 
             stop: function(event, ui) {
                 var resizerWidth = $('.section-sidewindows .resizer-horizontal').width();
-                var sectionRatioPercent = Math.round((((event.pageX) / $(document).width())) * 1000) * 0.1;
+                var sectionRatioPercent = Math.round((((event.originalEvent.pageX) / $(document).width())) * 1000) * 0.1;
                 setSectionRatio(sectionRatioPercent);
                 sessionStore('sectionRation', sectionRatioPercent, {encode: true});
                 $('.window div.cmDiv').adjustClickMenu();
@@ -168,7 +168,7 @@ $(document).ready(function() {
     /* trigger selection events */
     $('table.resource-list > tbody > tr').live('click', function(e) {
         var selectee     = $(this);
-        var selectionURI = $(this).children('td').children('a').attr('about');
+        var selectionURI = $(this).attr('about') | $(this).children('td').children('a').attr('about');
 
         // return if we have no URI (e.g. a Literal list)
         if (typeof selectionURI == 'undefined') {

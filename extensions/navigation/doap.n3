@@ -25,7 +25,7 @@
   rdfs:label "Default" ;
   owconfig:context "main.sidewindows" ;
   owconfig:priority "30" .
-  
+
 :navigation owconfig:config [
       a owconfig:Config;
       owconfig:id "defaults";
@@ -44,9 +44,37 @@
           :type <http://www.w3.org/2000/01/rdf-schema#label>
     ]
 ];
+
  owconfig:config [
       a owconfig:Config;
       owconfig:id "config";
+
+      owconfig:config [
+            a owconfig:Config;
+            owconfig:id "sitenav";
+            rdfs:label "Site Navigation" ;
+            :titleMode "titleHelper" ;
+            :cache "false"^^xsd:boolean ;
+            :hierarchyTypes (<http://ns.ontowiki.net/SysOnt/Site/Navigation>) ;
+            :checkVisibility "true"^^xsd:boolean ;
+            :showCounts "false"^^xsd:boolean ;
+            :checkSub "false"^^xsd:boolean ;
+            :hideDefaultHierarchy "false"^^xsd:boolean ;
+            :directLink "true"^^xsd:boolean ;
+            owconfig:config [
+              a owconfig:Config ;
+              owconfig:id "list" ;
+              :query "SELECT DISTINCT ?resourceUri WHERE { <%resource%> ?property ?resourceUri . ?property a <http://www.w3.org/2000/01/rdf-schema#ContainerMembershipProperty> . }" ;
+            ];
+            owconfig:config [
+              a owconfig:Config ;
+              owconfig:id "query" ;
+              :top "SELECT DISTINCT ?resourceUri WHERE { ?resourceUri a <http://ns.ontowiki.net/SysOnt/Site/Navigation> . }" ;
+              :deeper "SELECT DISTINCT ?resourceUri WHERE { <%resource%> ?property ?resourceUri. ?resourceUri a <http://ns.ontowiki.net/SysOnt/Site/Navigation>}" ;
+            ];
+        ] ;
+
+
       owconfig:config [
           a owconfig:Config;
           owconfig:id "classes";
@@ -63,6 +91,7 @@
               owconfig:id "hierarchyRelations";
               :in (<http://www.w3.org/2000/01/rdf-schema#subClassOf>) ;
         ];
+
  owconfig:config [
               a owconfig:Config;
               owconfig:id "instanceRelation";
@@ -251,9 +280,12 @@
               :query "SELECT DISTINCT ?resourceUri ?famUri WHERE {     ?recUri <http://purl.org/net/faunistics#recordedAtLocation> ?resourceLocation     OPTIONAL{         ?resourceLocation <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l1.         OPTIONAL{             ?l1 <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l2.             OPTIONAL{                 ?l2 <http://www.mindswap.org/2003/owl/geo/geoFeatures.owl#within> ?l3.             }         }     }     ?recUri <http://purl.org/net/faunistics#identifiesAs> ?resourceUri .     ?resourceUri <http://purl.org/net/faunistics#subTaxonOf> ?genUri .     ?genUri <http://purl.org/net/faunistics#subTaxonOf> ?famUri .     FILTER ( sameTerm(?resourceLocation, <%resource%>) ||     sameTerm(?l1, <%resource%>) ||     sameTerm(?l2, <%resource%>) ||     sameTerm(?l3, <%resource%>)) }"
         ];
  :rootName "Caucasus Spiders" ;
-          :rootURI <http://db.caucasus-spiders.info/Area/152>
-    ]
+          :rootURI <http://db.caucasus-spiders.info/Area/152> ;
+    ] ;
+
+
 ] .
+
 :navigation doap:release :v1-0 .
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

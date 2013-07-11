@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -66,9 +66,8 @@ class ApplicationModule extends OntoWiki_Module
      */
     public function shouldShow()
     {
-        if (
-            $this->_privateConfig->hideForAnonymousOnNoModels &&
-            $this->_owApp->user->isAnonymousUser()
+        if ($this->_privateConfig->hideForAnonymousOnNoModels
+            && $this->_owApp->user->isAnonymousUser()
         ) {
             // show only if there are models (visible or hidden)
             if ($this->_store->getAvailableModels(true)) {

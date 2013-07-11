@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -32,8 +32,8 @@ class LoginModule extends OntoWiki_Module
             $message = $translate->translate($authResult[0]);
 
             $message .= '<a href="' . $this->view->urlBase . 'account/recover"> '
-                     . $translate->translate('Forgot your password?')
-                     . ' </a>';
+                . $translate->translate('Forgot your password?')
+                . ' </a>';
 
             // create messagebox for loginbox (no escape for html code)
             $message = new OntoWiki_Message(
@@ -57,14 +57,14 @@ class LoginModule extends OntoWiki_Module
 
         $data = array(
             'actionUrl'   => $this->_config->urlBase . 'application/login',
-            'redirectUri' => urlencode((string) $url)
+            'redirectUri' => urlencode((string)$url)
         );
 
         if ($this->_erfurt->getAc()->isActionAllowed('RegisterNewUser')) {
-            $data['showRegisterButton'] = true;
-            $data['registerActionUrl'] = $this->_config->urlBase . 'application/register';
+            $data['showRegisterButton']      = true;
+            $data['registerActionUrl']       = $this->_config->urlBase . 'application/register';
             $data['openIdRegisterActionUrl'] = $this->_config->urlBase . 'application/openidreg';
-            $data['webIdRegisterActionUrl'] = $this->_config->urlBase . 'application/webidreg';
+            $data['webIdRegisterActionUrl']  = $this->_config->urlBase . 'application/webidreg';
         } else {
             $data['showRegisterButton'] = false;
         }
@@ -73,7 +73,7 @@ class LoginModule extends OntoWiki_Module
         $content = array();
         foreach ($this->_privateConfig->allow as $template => $value) {
             if ($value == 1) {
-                $content[$template] = $this->render('templates/'.$template, $data);
+                $content[$template] = $this->render('templates/' . $template, $data);
             }
         }
 
@@ -85,7 +85,7 @@ class LoginModule extends OntoWiki_Module
         if ($this->_owApp->erfurt->getAc() instanceof Erfurt_Ac_None) {
             return false;
         }
-        
+
         if (!$this->_owApp->user || $this->_owApp->user->isAnonymousUser()) {
             return true;
         }

@@ -3,13 +3,14 @@ default:
 
 prepare:
 	rm -rf ../../build*
-	rm -rf ../../Makefile
-	rm -rf ../../web.config
+	rm -f ../../Makefile
+	rm -f ../../web.config
 	rm -rf ../../libraries/Erfurt
 	rm -rf ../../libraries/RDFauthor
-	rm -rf ../../extensions/themes/silverblue/scripts/libraries/jquery.js
-	rm -rf ../../extensions/exconf/pclzip.lib.php
-	rm -rf ../../extensions/markdown/parser/markdown.php
+	rm -f ../../extensions/themes/silverblue/scripts/libraries/jquery.js
+	rm -f ../../extensions/exconf/pclzip.lib.php
+	rm -rf ../../extensions/markdown/parser
+	rm -f ../../extensions/queries/resources/codemirror/LICENSE
 
 clean:
 	rm -rf ../*.log

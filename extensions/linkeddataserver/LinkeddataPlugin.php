@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 define('DEFAULT_TYPE', '*/*');
@@ -25,18 +25,20 @@ class LinkeddataPlugin extends OntoWiki_Plugin
 {
     /**
      * Recognized mime type requests and format (f) parameter values
+     *
      * @var array
      */
-    private $_typeMapping = array(
-        DEFAULT_TYPE            => 'html', // default is xhtml
-        'text/html'             => 'html', // we only deliver XML-compatible html
-        'application/xhtml+xml' => 'html',
-        'application/rdf+xml'   => 'rdf',
-        'text/n3'               => 'n3',
-        'text/turtle'           => 'ttl',
-        'application/json'      => 'json',
-        'application/xml'       => 'html'  // TODO: should this be xhtml or rdf?
-    );
+    private $_typeMapping
+        = array(
+            DEFAULT_TYPE            => 'html', // default is xhtml
+            'text/html'             => 'html', // we only deliver XML-compatible html
+            'application/xhtml+xml' => 'html',
+            'application/rdf+xml'   => 'rdf',
+            'text/n3'               => 'n3',
+            'text/turtle'           => 'ttl',
+            'application/json'      => 'json',
+            'application/xml'       => 'html' // TODO: should this be xhtml or rdf?
+        );
 
     /**
      * This method is called, when the onIsDispatchable event was triggered.
@@ -53,6 +55,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      * $event->uri contains the request URI.
      *
      * @param Erfurt_Event $event The event containing the required parameters.
+     *
      * @return boolean false if the request was not handled, i.e. no resource was found.
      */
     public function onIsDispatchable($event)
@@ -75,7 +78,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             // checking the Accept header (content negotiation). The $matchingSuffixFlag
             // parameter contains true if the suffix was used instead of the Accept header.
             $matchingSuffixFlag = false;
-            $type = $this->_getTypeForRequest($request, $uri, $matchingSuffixFlag);
+            $type               = $this->_getTypeForRequest($request, $uri, $matchingSuffixFlag);
 
             // We need a readable graph to query. We use the first graph that was found.
             // If no readable graph is available for the current user, we cancel here.
@@ -93,6 +96,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 }
                 // Redirect to new (correct URI)
                 $response->setRedirect((string)$matchedUri, 301);
+
                 return;
             }
 
@@ -104,8 +108,9 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 case 'ttl':
                     // Check the config, whether provenance information should be included.
                     $prov = false;
-                    if (isset($this->_privateConfig->provenance) &&
-                            isset($this->_privateConfig->provenance->enabled)) {
+                    if (isset($this->_privateConfig->provenance)
+                        && isset($this->_privateConfig->provenance->enabled)
+                    ) {
 
                         $prov = (boolean)$this->_privateConfig->provenance->enabled;
                     }
@@ -114,10 +119,10 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                     // the whole graph instead of only data regarding the resource.
                     if ($graph === $uri) {
                         $controllerName = 'model';
-                        $actionName = 'export';
+                        $actionName     = 'export';
                     } else {
                         $controllerName = 'resource';
-                        $actionName = 'export';
+                        $actionName     = 'export';
                     }
 
                     // Create a URL with the export action on the resource or model controller.
@@ -146,7 +151,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
 
             // Make $graph the active graph (session required) and make the resource
             // in $uri the active resource.
-            $activeModel = $store->getModel($graph);
+            $activeModel                              = $store->getModel($graph);
             OntoWiki::getInstance()->selectedModel    = $activeModel;
             OntoWiki::getInstance()->selectedResource = new OntoWiki_Resource($uri, $activeModel);
 
@@ -154,12 +159,12 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $request->setDispatched(true);
 
             // Give plugins a chance to do something before redirecting.
-            $event = new Erfurt_Event('onBeforeLinkedDataRedirect');
+            $event           = new Erfurt_Event('onBeforeLinkedDataRedirect');
             $event->response = $response;
             $event->trigger();
 
             // Give plugins a chance to handle the redirection instead of doing it here.
-            $event = new Erfurt_Event('onShouldLinkedDataRedirect');
+            $event           = new Erfurt_Event('onShouldLinkedDataRedirect');
             $event->request  = $request;
             $event->response = $response;
             $event->type     = $type;
@@ -171,6 +176,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             if ($shouldRedirect) {
                 // set redirect and send immediately
                 $response->setRedirect((string)$url, 303);
+
                 return;
             }
 
@@ -198,7 +204,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         if (null == $owApp->selectedModel) {
             $uri = $request->getScheme() . '://' . $request->getHttpHost() . $request->getRequestUri();
             try {
-                $activeModel = $store->getModel($uri);
+                $activeModel          = $store->getModel($uri);
                 $owApp->selectedModel = $activeModel;
             } catch (Exception $e) {
                 // Nothing to do here.
@@ -217,6 +223,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         }
 
         $graphs = $store->getReadableGraphsUsingResource($event->uri);
+
         return $graphs[0];
     }
 
@@ -244,9 +251,9 @@ class LinkeddataPlugin extends OntoWiki_Plugin
     {
         // check for valid type suffix
         $parts  = explode('.', $uri);
-        $suffix = $parts[count($parts)-1];
+        $suffix = $parts[count($parts) - 1];
         if (in_array($suffix, array_values($this->_typeMapping))) {
-            $uri = substr($uri, 0, strlen($uri) - strlen($suffix) - 1);
+            $uri  = substr($uri, 0, strlen($uri) - strlen($suffix) - 1);
             $flag = true; // rewritten flag
             return $suffix;
         }
@@ -275,7 +282,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
 
     private function _matchGraphAndUri($uri)
     {
-        $graph = null;
+        $graph     = null;
         $actualUri = null;
 
         $store = null;
@@ -290,13 +297,13 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             // Remove trailing slashes
             $uri = rtrim($uri, '/');
             // Match case-insensitive and optionally with trailing slashes
-            $query = sprintf(
+            $query    = sprintf(
                 'SELECT DISTINCT ?uri WHERE {?uri ?p ?o . FILTER (regex(str(?uri), "^%s/*$", "i"))}',
                 $uri
             );
             $queryObj = Erfurt_Sparql_SimpleQuery::initWithString($query);
-            $result = $store->sparqlQuery($queryObj);
-            $first = current($result);
+            $result   = $store->sparqlQuery($queryObj);
+            $first    = current($result);
             if (isset($first['uri'])) {
                 $actualUri = $first['uri'];
             }
@@ -311,7 +318,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
 
     private function _isLinkedDataUri($uri)
     {
-        $owApp = OntoWiki::getInstance();
+        $owApp  = OntoWiki::getInstance();
         $owBase = $owApp->config->urlBase;
 
         if (substr($uri, 0, strlen($owBase)) === $owBase) {

@@ -11,21 +11,21 @@ class zend {
         unless => "ls $zend_path/ZendFramework-$version.zip",
         path => ["/bin", "/usr/bin"],
         cwd => $zend_path,
-        command => "/usr/bin/wget http://framework.zend.com/releases/ZendFramework-$version/ZendFramework-$version.zip",
-        creates => "$zend_path/ZendFramework-$version.zip",
+        command => "/usr/bin/wget https://packages.zendframework.com/releases/ZendFramework-$version/ZendFramework-$version-minimal.zip",
+        creates => "$zend_path/ZendFramework-$version-minimal.zip",
         require => [File[$zend_path]]
     }
 
     exec { "unzip-zend":
         cwd => $zend_path,
-        creates => "$zend_path/ZendFramework-$version",
-        command => "/usr/bin/unzip -u ZendFramework-$version.zip",
+        creates => "$zend_path/ZendFramework-$version-minimal",
+        command => "/usr/bin/unzip -u ZendFramework-$version-minimal.zip",
         require => [Exec["download-zend"]]
     }
 
     exec { "symlink-zend":
         cwd => $zend_path,
-        command => "/bin/ln -sfn $zend_path/ZendFramework-$version $current",
+        command => "/bin/ln -sfn $zend_path/ZendFramework-$version-minimal $current",
         require => [Exec["unzip-zend"]]
     }
 }

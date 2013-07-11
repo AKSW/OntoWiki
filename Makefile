@@ -63,7 +63,7 @@ help-cs:
 	@echo "     cs-check-intensive-full ............... Run complete code checking with"
 	@echo "                                             stricter coding standard and detailed output"
 	@echo "     possible Parameter:"
-	@echo "     > FPATH=<path> ................. Run code checking on specific relative path"
+	@echo "     > CHECKPATH=<path> ................. Run code checking on specific relative path"
 	@echo "     > SNIFFS=<sniff 1>,<sniff 2> ... Run code checking on specific sniffs"
 	@echo "     > OPTIONS=<option> ............. Run code checking with specific CodeSniffer options"
 
@@ -107,8 +107,8 @@ libraries: zend submodules-developer
 
 submodules: # read-only
 	git submodule init
-	git config submodule.libraries/Erfurt.url "git://github.com/AKSW/Erfurt.git"
-	git config submodule.libraries/RDFauthor.url "git://github.com/AKSW/RDFauthor.git"
+	git config submodule.libraries/Erfurt.url "https://github.com/AKSW/Erfurt.git"
+	git config submodule.libraries/RDFauthor.url "https://github.com/AKSW/RDFauthor.git"
 	git submodule update
 
 submodules-developer: # read-write
@@ -164,22 +164,26 @@ rdfauthor:
 
 # test stuff
 
-test-unit: directories
+test-directories:
+	rm -rf application/tests/cache application/tests/unit/cache application/tests/integration/cache
+	mkdir -p application/tests/cache application/tests/unit/cache application/tests/integration/cache
+
+test-unit: test-directories
 	@cd application/tests && phpunit --bootstrap Bootstrap.php unit/
 
-test-unit-cc: directories
+test-unit-cc: test-directories
 	@cd application/tests/unit && phpunit
 
-test-integration-virtuoso: directories
+test-integration-virtuoso: test-directories
 	@cd application/tests && EF_STORE_ADAPTER=virtuoso phpunit --bootstrap Bootstrap.php integration/
 
-test-integration-virtuoso-cc: directories
+test-integration-virtuoso-cc: test-directories
 	@cd application/tests/integration && EF_STORE_ADAPTER=virtuoso phpunit
 
-test-integration-mysql: directories
+test-integration-mysql: test-directories
 	@cd application/tests && EF_STORE_ADAPTER=zenddb phpunit --bootstrap Bootstrap.php integration/
 
-test-integration-mysql-cc: directories
+test-integration-mysql-cc: test-directories
 	@cd application/tests/integration && EF_STORE_ADAPTER=zenddb phpunit
 
 test-extensions: directories
@@ -237,11 +241,11 @@ debianize:
 # cs-script path
 CSSPATH = application/tests/CodeSniffer/
 # ignore pattern
-IGNOREPATTERN = libraries,pclzip.lib
+IGNOREPATTERN = libraries,extensions/exconf/pclzip.lib.php,extensions/exconf/Archive.php,application/scripts,extensions/markdown/parser/markdown.php,extensions/queries/lib,extensions/queries/old
 
 # Parameter check
-ifndef FPATH
-	FPATH = "./"
+ifndef CHECKPATH
+	CHECKPATH = "./"
 endif
 ifdef SNIFFS
 	SNIFFSTR = "--sniffs="$(SNIFFS)
@@ -249,7 +253,7 @@ else
 	SNIFFSTR =
 endif
 
-REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR)  $(FPATH)
+REQUESTSTR = --ignore=$(IGNOREPATTERN) $(OPTIONS) $(SNIFFSTR)  $(CHECKPATH)
 
 cs-default:
 	chmod ugo+x "$(CSSPATH)cs-scripts.sh"
@@ -280,17 +284,17 @@ cs-check-commit-intensive:
 	$(CSSPATH)cs-scripts.sh -p "-s"
 
 cs-check:
-	$(CSSPATH)cs-scripts.sh -c "-s --report=summary $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -c "-s --report=summary $(REQUESTSTR)"
 cs-check-intensive:
-	$(CSSPATH)cs-scripts.sh -s -c "-s --report=summary $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -s -c "-s --report=summary $(REQUESTSTR)"
 cs-check-intensive-full:
-	$(CSSPATH)cs-scripts.sh -s -c "-s --report=full $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -s -c "-s --report=full $(REQUESTSTR)"
 cs-check-full:
-	$(CSSPATH)cs-scripts.sh -c "-s --report=full $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -c "-s --report=full $(REQUESTSTR)"
 cs-check-emacs:
-	$(CSSPATH)cs-scripts.sh -c "--report=emacs $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -c "--report=emacs $(REQUESTSTR)"
 cs-check-blame:
-	$(CSSPATH)cs-scripts.sh -s -c "--report=gitblame $(REQUESTSTR)"
+	@$(CSSPATH)cs-scripts.sh -c "--report=gitblame $(REQUESTSTR)"
 
 cs-submodule-check:
 ifndef MPATH

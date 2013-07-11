@@ -20,10 +20,10 @@ require_once 'OntoWiki/Plugin.php';
 class AutologinPlugin extends OntoWiki_Plugin
 {
     public function onRouteShutdown($event)
-    {      
+    {
         if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' && extension_loaded('openssl')) {
             $app = Erfurt_App::getInstance();
-            
+
             if ($app->getAuth()->getIdentity()->isAnonymousUser()) {
                 $result = $app->authenticateWithFoafSsl();
 
@@ -33,7 +33,7 @@ class AutologinPlugin extends OntoWiki_Plugin
                     $front = Zend_Controller_Front::getInstance()->getResponse()->setRedirect($_SERVER['HTTP_REFERER']);
                 }
             }
-        } 
+        }
     }
 }
 

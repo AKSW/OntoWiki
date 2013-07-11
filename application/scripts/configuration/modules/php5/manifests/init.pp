@@ -1,16 +1,10 @@
 class php5 {
 
     # php related packages
-    package { ["php5", "libapache2-mod-php5", "php5-mysql", "php5-cli", "php5-common",  "php5-tidy", "php5-xdebug", "php5-xsl", "php5-xmlrpc", "php5-odbc", "php5-gd", "php-apc"]:
-        ensure => installed,
-        require => Exec["apt-update"]
+    package { ["php5", "libapache2-mod-php5", "php5-mysql", "php5-cli", "php5-common",  "php5-tidy", "php5-xdebug", "php5-xsl", "php5-xmlrpc", "php5-odbc", "php5-gd", "php-apc", "php5-memcache", "php5-memcached", "php5-suhosin"]:
+        ensure => installed
     }
-    # "php5-suhosin", "php5-imap", "php5-mcrypt", "php5-memcache"
-    package { ["phpmyadmin"]:
-        ensure => installed,
-        require => Package["php5"]
-    }
-
+    
     # xdebug
     file { "/etc/php5/conf.d/xdebug.ini":
         ensure => present,
@@ -21,8 +15,7 @@ class php5 {
         source => "puppet:///modules/php5/xdebug.ini",
         require => Package["php5-xdebug"]
     }
-  
-    # zend
+    
     file { "/etc/php5/conf.d/custom_settings.ini":
         ensure => present,
         replace => true,
@@ -45,9 +38,9 @@ class php5 {
     }
     
     # disable php-fpm since not used yet
-    service { "php5-fpm":
-        ensure => stopped,
-        enable => false,
-        require => Package["php5"],
-    }
+    #service { "php5-fpm":
+    #    ensure => stopped,
+    #    enable => false,
+    #    require => Package["php5"],
+    #}
 }

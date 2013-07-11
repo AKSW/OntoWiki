@@ -1,3 +1,15 @@
+ontowiki (0.9.10-1) lod2; urgency=low
+
+  * new model creation / add data procedure
+  * fixes in query editor
+  * performance issues in title helper
+  * unify CommentModule and LastcommentsModule, increase limit and set ordering
+  * +100 other commits
+  * depends on Erfurt 1.6
+  * depends on RDFauthor 0.9.6
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 10 Jul 2013 14:22:14 +0200
+
 ontowiki (0.9.8-3) lod2; urgency=low
 
   * fix cors header

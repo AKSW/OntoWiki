@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -15,7 +15,7 @@
 class CkanController extends OntoWiki_Controller_Component
 {
     /** @var CKAN registration uri base */
-    protected $registerBaseUrl = "http://thedatahub.org/package/new";
+    protected $_registerBaseUrl = "http://thedatahub.org/package/new";
 
     /**
      * Constructor
@@ -41,7 +41,9 @@ class CkanController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set($t->_('CKAN Package Browser'));
         $this->addModuleContext('main.window.ckan.browser');
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
-        echo "not finished yet"; return;
+        echo "not finished yet";
+
+        return;
 
         //$scriptBaseUrl = $this->_owApp->extensionManager->getComponentUrl('ckan').'ckanjs/lib/';
         //$clientScript  = $scriptBaseUrl . 'client.js';
@@ -58,8 +60,8 @@ class CkanController extends OntoWiki_Controller_Component
         //$result      = $ckan->search_package($search_term, array('limit' => 5, 'tags' => 'format-rdf'));
         //$packageIds  = $result->results;
         //foreach ($packageIds as $key => $id) {
-            //$package = $ckan->get_package_entity($id);
-            //$data[$id] = $package;
+        //$package = $ckan->get_package_entity($id);
+        //$data[$id] = $package;
         //}
 
         //$this->view->data = $data;
@@ -78,19 +80,18 @@ class CkanController extends OntoWiki_Controller_Component
         // m (model) is automatically used and selected
         if ((!isset($this->request->m)) && (!$this->_owApp->selectedModel)) {
             throw new OntoWiki_Exception('No model pre-selected model and missing parameter m (model)!');
-            return;
         } else {
             $model = $this->_owApp->selectedModel;
         }
 
         // get model URI / resource and load description
-        $resourceUri    = (string) $model;
-        $resource       = new Erfurt_Rdf_Resource($resourceUri, $model);
-        $description    = $resource->getDescription();
-        $description    = $description[$resourceUri];
+        $resourceUri = (string)$model;
+        $resource    = new Erfurt_Rdf_Resource($resourceUri, $model);
+        $description = $resource->getDescription();
+        $description = $description[$resourceUri];
 
         // fill CKAN parameter
-        $parameter = array();
+        $parameter          = array();
         $parameter['title'] = $model->getTitle();
         $parameter['url']   = $resourceUri;
 
@@ -108,7 +109,7 @@ class CkanController extends OntoWiki_Controller_Component
         // build GET URI from the parameter array to redirect
         $getparams = '?';
         foreach ($parameter as $key => $value) {
-            $getparams .= '&' . $key .'='. urlencode($value);
+            $getparams .= '&' . $key . '=' . urlencode($value);
         }
         $redirectUrl = $this->registerBaseUrl . $getparams;
 

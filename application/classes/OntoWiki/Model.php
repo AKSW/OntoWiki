@@ -9,52 +9,59 @@
 /**
  * OntoWiki model base class.
  *
- * @category OntoWiki
- * @package OntoWiki_Classes
+ * @category  OntoWiki
+ * @package   OntoWiki_Classes
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Norman Heino <norman.heino@gmail.com>
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Model
 {
     /**
      * The Erfurt store
+     *
      * @var Erfurt_Store
      */
     protected $_store = null;
 
     /**
      * The OntoWiki Application config
+     *
      * @var Zend_Config
      */
     protected $_config = null;
 
     /**
      * Whether inference features are turned on
+     *
      * @var boolean
      */
     protected $_inference = true;
 
     /**
      * The Application logger
+     *
      * @var Zend_Log
      */
     protected $_logger = null;
 
     /**
      * Model instance
+     *
      * @var Erfurt_Rdf_Model
      */
     protected $_model = null;
 
     /**
      * The current named graph URI
+     *
      * @var string
      */
     protected $_graph = null;
 
     /**
      * The Erfurt event dispatcher
+     *
      * @var Erfurt_Event_Dispatcher
      */
     protected $_eventDispatcher = null;
@@ -86,6 +93,7 @@ class OntoWiki_Model
 
     /**
      * get the store that hosts this model
+     *
      * @return Erfurt_Store
      */
     public function getStore()
@@ -95,6 +103,7 @@ class OntoWiki_Model
 
     /**
      * get the raw model/graph
+     *
      * @return Erfurt_Rdf_Model
      */
     public function getGraph()
