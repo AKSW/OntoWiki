@@ -11,7 +11,10 @@
  */
 
 ?>
-<form method="post" action="<?php echo $this->actionUrl ?>" class="simple-input input-justify-left" name="locallogin">
+<?php echo $this->form(array('attribs' => array('method' => 'post',
+                                                'action' => $this->actionUrl,
+                                                'class'  => array('simple-input', 'input-justify-left'),
+                                                'name'   => 'locallogin'))) ?>
     <input type="hidden" name="logintype" value="locallogin" />
     <fieldset>
         <input type="hidden" name="redirect-uri" value="<?php echo $this->redirectUri ?>" />

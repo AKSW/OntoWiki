@@ -1,5 +1,11 @@
 <p>
-    <form id="comment-submit-form" accept-charset="utf-8" action="<?php echo $this->actionUrl ?>" method="post" name="comment" class="width98 ajaxForm reloadOnSuccess">
+<?php echo $this->form(array('attribs' => array('id'             => 'comment-submit-form',
+                                                'accept-charset' => 'utf-8',
+                                                'action'         => $this->actionUrl,
+                                                'method'         => 'post',
+                                                'name'           => 'comment',
+                                                'class'          => array('width98', 'ajaxForm', 'reloadOnSuccess'),
+                                                'name'           => 'webidlogin'))) ?>
         <?php if ($this->context == 'main.window.community') : ?>
         <textarea style="min-width:50%;min-height:4.5em" class="width99" name="c"></textarea>
         <a class="button submit">

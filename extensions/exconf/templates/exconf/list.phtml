@@ -29,25 +29,29 @@ foreach($this->extensions as $name => $extension){
     ?>
     <li class="<?php echo $odd ? "odd" : "even"; ?>">
         <a class="toggle icon icon-arrow-down" title="Close"><span>Close</span></a>
-        <div class="extension has-contextmenu-area" id="extension-<?php echo $name; ?>">
-            <?php $confUrl = $this->urlBase.(!isset($extension->confAction) ? 'exconf/conf/?name='. $name : $extension->confAction); ?>
-                <h3><span class="name"><a href="<?php echo $confUrl; ?>"><?php echo $extension->title; ?></a></span>
-                    <?php
-                        if (isset($extension->author)) {
-                            echo '<em class="author">by '.(isset($extension->authorUrl)?'<a href="'.$extension->authorUrl.'">'.$extension->author.'</a>':$extension->author).'</em>';
-                        }
-                    ?>
-                </h3>
-                <div class="togglebutton <?php if($isCoreExtension){echo 'frozen';} ?>" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
-                <p class="description"><?php echo isset($extension->description) ? $extension->description : "Extension does not provide a description."; ?></p>
-                <div class="contextmenu">
-                <?php if(isset($extension->homepage)) : ?>
-                    <a href="<?php echo $extension->homepage ?>" class="item">
-                        <span title="Go to plugin homepage" class="icon icon-homepage">
-                            <span>Go to plugin homepage</span>
-                        </span>
-                    </a>
-                <?php endif; ?>
+        <?php echo $this->form(array('attribs' => array('method' => 'post',
+                                                        'action' => 'exconf/conf'))) ?>
+            <input type="hidden" name="name" value="<?php echo $name; ?>"/>
+            <input type="hidden" name="enabled" value=""/>
+            <div class="extension has-contextmenu-area" id="extension-<?php echo $name; ?>">
+                <?php $confUrl = $this->urlBase.(!isset($extension->confAction) ? 'exconf/conf/?name='. $name : $extension->confAction); ?>
+                    <h3><span class="name"><a href="<?php echo $confUrl; ?>"><?php echo $extension->title; ?></a></span>
+                        <?php
+                            if (isset($extension->author)) {
+                                echo '<em class="author">by '.(isset($extension->authorUrl)?'<a href="'.$extension->authorUrl.'">'.$extension->author.'</a>':$extension->author).'</em>';
+                            }
+                        ?>
+                    </h3>
+                    <div class="togglebutton <?php if($isCoreExtension){echo 'frozen';} ?>" <?php if(isset($extension->enabled) && $extension->enabled){ echo "selected=\"true\""; } ?>></div>
+                    <p class="description"><?php echo isset($extension->description) ? $extension->description : "Extension does not provide a description."; ?></p>
+                    <div class="contextmenu">
+                    <?php if(isset($extension->homepage)) : ?>
+                        <a href="<?php echo $extension->homepage ?>" class="item">
+                            <span title="Go to plugin homepage" class="icon icon-homepage">
+                                <span>Go to plugin homepage</span>
+                            </span>
+                        </a>
+                    <?php endif; ?>
                     <a href="<?php echo $confUrl; ?>" class="item">
                         <span title="Configure" class="icon icon-edit">
                             <span>Configure</span>
@@ -61,7 +65,8 @@ foreach($this->extensions as $name => $extension){
                     </a>
                     <?php } ?>
                 </div>
-        </div>
+            </div>
+        </form>
     </li>
 <?php 
 $odd = !$odd; 

@@ -121,12 +121,15 @@
                 <?php if ($this->has('main.window.innerwindows')): ?>
                     <div class="content has-innerwindows">
                         <?php if ($this->has('formActionUrl') and $this->has('formMethod')): ?>
-                            <form action="<?php echo $this->formActionUrl ?>" 
-                                  method="<?php echo $this->formMethod ?>" 
-                                  <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?> 
-                                  <?php if ($this->has('formId')) echo 'id="' . $this->formId . '"' ?> 
-                                  <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?> 
-                                  <?php if ($this->has('formClass')) echo 'class="' . $this->formClass . '"' ?>>
+                            <?php
+                                $formAttribs = array('action' => $this->formActionUrl,
+                                                     'method' => $this->formMethod);
+                                if ($this->has('formName'))     $formAttribs['name']    = $this->formName;
+                                if ($this->has('formId'))       $formAttribs['id']      = $this->formId;
+                                if ($this->has('formEncoding')) $formAttribs['enctype'] = $this->formEncoding;
+                                if ($this->has('formClass'))    $formAttribs['class']   = $this->formClass;
+                                echo $this->form(array('attribs' => $formAttribs))
+                            ?>
                                   <?php if ($this->has('redirectUrl')): ?>
                                       <input type="hidden" name="redirect" value="<?php echo $this->redirectUrl ?>"/>
                                   <?php endif; ?>
@@ -155,11 +158,14 @@
                 <?php else: ?>
                     <div class="content">
                         <?php if ($this->has('formActionUrl') and $this->has('formMethod')): ?>
-                            <form action="<?php echo $this->formActionUrl ?>" 
-                                  method="<?php echo $this->formMethod ?>" 
-                                  <?php if ($this->has('formName')) echo 'name="' . $this->formName . '"' ?>
-                                  <?php if ($this->has('formEncoding')) echo 'enctype="' . $this->formEncoding . '"' ?> 
-                                  <?php if ($this->has('formClass')) echo 'class="' . $this->formClass . '"' ?>>
+                            <?php
+                                $formAttribs = array('action' => $this->formActionUrl,
+                                                     'method' => $this->formMethod);
+                                if ($this->has('formName'))     $formAttribs['name']    = $this->formName;
+                                if ($this->has('formEncoding')) $formAttribs['enctype'] = $this->formEncoding;
+                                if ($this->has('formClass'))    $formAttribs['class']   = $this->formClass;
+                                echo $this->form(array('attribs' => $formAttribs))
+                            ?>
                         <?php endif;?>
                         
                         <?php if ($this->has('main.window.toolbar')): ?>

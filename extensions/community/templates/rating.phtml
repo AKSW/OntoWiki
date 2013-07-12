@@ -39,7 +39,11 @@
     </tr>
     <tr  id ="change2" >
         <td>
-            <form action="<?php echo $this->actionUrl ?>" method="post" accept-charset="utf-8" name="note" class="ajaxForm reloadOnSuccess">
+            <?php echo $this->form(array('attribs' => array('action'         => $this->actionUrl,
+                                                            'method'         => 'post',
+                                                            'accept-charset' => 'utf-8',
+                                                            'name'           => 'note',
+                                                            'class'          => array('ajaxForm', 'reloadOnSuccess')))) ?>
                 <fieldset style="display:none;">
                     <textarea id ="submit" style="min-width:50%;min-height:4.5em" class="width99" name="rating"></textarea>
                 </fieldset>

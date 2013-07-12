@@ -3,9 +3,11 @@ $(function()
 
     function postToggle(button)
     {
-        var name = $(button).parent().attr("id").replace('extension-', '');
         var enabled = $(button).prop("selected");
-        $.post(urlBase + "exconf/conf/?name="+name+"&enabled="+enabled,function(data){if(data==""){$("#numEnabled").html(parseInt($("#numEnabled").html())+( enabled == "true" ? 1 : -1));$("#numDisabled").html(parseInt($("#numDisabled").html())+( enabled == "true" ? -1 : 1));}});
+        var $form = $(button).closest('form');
+        $form.find('[name="enabled"]').val(enabled);
+        $.post(urlBase + $form.attr('action'), $form.serialize(),
+               function(data){if(data==""){$("#numEnabled").html(parseInt($("#numEnabled").html())+( enabled == "true" ? 1 : -1));$("#numDisabled").html(parseInt($("#numDisabled").html())+( enabled == "true" ? -1 : 1));}});
     }
 
     $(".togglebutton").togglebutton(
