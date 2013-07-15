@@ -39,16 +39,16 @@ class ApplicationController extends OntoWiki_Controller_Base
         $cacheBackend         = $this->_config->cache->backend->type;
         $cacheBackendOptions  = array();
         $cacheFrontendOptions = array();
-        foreach($this->_config->cache->frontend->toArray() as $key => $value){
-            $cacheFrontendOptions[] = $key.": ".(string) $value;
+        foreach ($this->_config->cache->frontend->toArray() as $key => $value) {
+            $cacheFrontendOptions[] = $key.": ".(string)$value;
         }
-        if (isset($this->_config->cache->backend->$cacheBackend)){
-            foreach($this->_config->cache->backend->$cacheBackend->toArray() as $key => $value){
-                $cacheBackendOptions[] = $key.": ".(string) $value;
+        if (isset($this->_config->cache->backend->$cacheBackend)) {
+            foreach ($this->_config->cache->backend->$cacheBackend->toArray() as $key => $value) {
+                $cacheBackendOptions[] = $key.": ".(string)$value;
             }
         }
-        $cacheFrontendOptions = join( ", ", $cacheFrontendOptions );
-        $cacheBackendOptions  = join( ", ", $cacheBackendOptions );
+        $cacheFrontendOptions = join(", ", $cacheFrontendOptions);
+        $cacheBackendOptions  = join(", ", $cacheBackendOptions);
 
         $data = array(
             'System'         => array(
@@ -72,7 +72,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Frontend Options'    => $cacheFrontendOptions,
                 'Backend'             => $cacheBackend,
                 'Backend Options'     => $cacheBackendOptions,
-#                'Path'                => rtrim($this->_config->cache->path, '/') . $cacheWritable,
+//                'Path'                => rtrim($this->_config->cache->path, '/') . $cacheWritable,
                 'Module Caching'      => ((bool)$this->_config->cache->modules == true) ? 'enabled' : 'disabled',
                 'Translation Caching' => ((bool)$this->_config->cache->translation == true) ? 'enabled' : 'disabled'
             ),

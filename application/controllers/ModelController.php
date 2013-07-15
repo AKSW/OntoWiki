@@ -61,7 +61,7 @@ class ModelController extends OntoWiki_Controller_Base
 
             return;
         } else {
-            $this->_doImportActionRedirect((string) $model);
+            $this->_doImportActionRedirect((string)$model);
         }
     }
 
@@ -476,17 +476,17 @@ class ModelController extends OntoWiki_Controller_Base
                 $newModelUri = trim($post['modeluri']);
             } else if (trim($post['title']) != '') {
                 // create a nice URI from the title (poor mans way)
-                $urlBase = $this->_config->urlBase;
-                $title = trim($post['title']);
-                $title = str_replace(' ' , '' , $title);
-                $title = urlencode($title);
-                $newModelUri = $urlBase . $title . '/';
+                $urlBase        = $this->_config->urlBase;
+                $title          = trim($post['title']);
+                $title          = str_replace(' ', '', $title);
+                $title          = urlencode($title);
+                $newModelUri    = $urlBase . $title . '/';
             } else {
                 // create a default model with counter
                 $urlBase = $this->_config->urlBase . 'kb';
                 $counter = 0;
                 do {
-                    $newModelUri = $urlBase . $counter++ . '/';
+                    $newModelUri = $urlBase . ($counter++) . '/';
                 } while ($store->isModelAvailable($newModelUri, false));
             }
 
@@ -854,7 +854,8 @@ class ModelController extends OntoWiki_Controller_Base
     /**
      * prepare and do the redirect
      */
-    private function _doImportActionRedirect($modelUri) {
+    private function _doImportActionRedirect($modelUri)
+    {
         $post    = $this->_request->getPost();
         $id      = $post['importAction'];
         $actions = $this->_getImportActions();
