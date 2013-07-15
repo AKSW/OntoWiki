@@ -529,9 +529,9 @@ class OntoWiki_Extension_Manager
      */
     public function getCachePath()
     {
-		throw new BadMethodCallException(
-			'Method OntoWiki_Extension_Manager::getCachePath is deprecated. Please use Ontowiki cache'
-		);
+        throw new BadMethodCallException(
+            'Method OntoWiki_Extension_Manager::getCachePath is deprecated. Please use Ontowiki cache'
+        );
     }
 
     /**
@@ -539,8 +539,8 @@ class OntoWiki_Extension_Manager
      */
     public function clearCache()
     {
-		$cache	= OntoWiki::getInstance()->getCache();
-		$cache->clean(Zend_Cache::CLEANING_MODE_ALL);
+        $cache	= OntoWiki::getInstance()->getCache();
+        $cache->clean(Zend_Cache::CLEANING_MODE_ALL);
     }
 
     /**
@@ -549,25 +549,25 @@ class OntoWiki_Extension_Manager
      */
     private function _scanExtensionPath()
     {
-		$cache	= OntoWiki::getInstance()->getCache();
-		if( !( $config = $cache->load( 'ow_extensionConfig' ) ) ){
-			$config	= array();
-			$dir	= new DirectoryIterator( $this->_extensionPath );
-			foreach( $dir as $file ){
-				if( !$file->isDot() && $file->isDir() ){
-					if( !in_array( $file->getFileName(), $this->reservedNames ) ){
-						$extensionName			= $file->getFileName();
-						$currentExtensionPath	= $file->getPathname() . DIRECTORY_SEPARATOR;
-						// parse all extensions on the filesystem
-						if( is_readable( $currentExtensionPath . self::EXTENSION_DEFAULT_DOAP_FILE ) ){
-							$config[$extensionName]	= $this->_loadConfigs( $extensionName );
-						}
-					}
-				}
-			}
-			$cache->save( array_reverse( $config ) );
-		}
-		
+        $cache  = OntoWiki::getInstance()->getCache();
+        if (!($config = $cache->load('ow_extensionConfig'))) {
+            $config = array();
+            $dir    = new DirectoryIterator($this->_extensionPath);
+            foreach ($dir as $file) {
+                if (!$file->isDot() && $file->isDir()) {
+                    if (!in_array($file->getFileName(), $this->reservedNames)) {
+                        $extensionName			= $file->getFileName();
+                        $currentExtensionPath	= $file->getPathname() . DIRECTORY_SEPARATOR;
+                        // parse all extensions on the filesystem
+                        if (is_readable($currentExtensionPath . self::EXTENSION_DEFAULT_DOAP_FILE)) {
+                            $config[$extensionName]	= $this->_loadConfigs($extensionName);
+                        }
+                    }
+                }
+            }
+            $cache->save(array_reverse($config));
+        }
+
         $view = OntoWiki::getInstance()->view;
         //register the discovered extensions within ontowiki
         foreach ($config as $extensionName => $extensionConfig) {

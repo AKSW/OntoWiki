@@ -968,7 +968,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
     public function addDisjunctiveTypeFilters(array $types, $id = null, array $options = array())
     {
-        if (!$id){
+        if (!$id) {
             $id = 'type' . count($this->_filter);
         } else {
             if (isset($this->_filter[$id])) {
