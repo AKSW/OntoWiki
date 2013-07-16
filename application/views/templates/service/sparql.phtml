@@ -1,0 +1,42 @@
+<?php if (isset($this->hardErrorMessage)): ?>
+<div style="border: 1px solid #f00; background-color: #fee; margin: 10px; padding: 10px">
+    <?php echo $this->hardErrorMessage; ?>
+</div>
+<?php else: ?>
+<form>
+    <input type="hidden" name="resultformat" id="resultformat" value="HTML">
+    <label for="query">SPARQL Query</label>
+    <br>
+    <?php if (isset($this->sparqlQuery)): ?>
+    <textarea rows="18" cols="80" name="query" id="query"><?php echo $this->sparqlQuery ?></textarea>
+    <?php else: ?>
+    <textarea rows="18" cols="80" name="query" id="query"></textarea>
+    <?php endif; ?>
+
+    <br>
+    <input type="submit" value="Run Query">
+    <input type="reset" value="Reset">
+</form>
+<?php if (isset($this->errorMessage)): ?>
+<div style="border: 1px solid #f00; background-color: #fee; margin: 10px; padding: 10px">
+    <?php echo $this->errorMessage; ?>
+</div>
+<?php elseif (isset($this->sparqlResult)): ?>
+<?php if (count($this->sparqlResult) > 0): ?>
+<table style="border: 1px solid #000">
+    <tr>
+        <?php foreach (array_keys($this->sparqlResult[0]) as $col): ?>
+        <th><?php echo $col; ?></th>
+        <?php endforeach; ?>
+    </tr>
+    <?php foreach ($this->sparqlResult as $row): ?>
+    <tr>
+        <?php foreach (array_values($row) as $value): ?>
+            <td><?php echo $value; ?></td>
+        <?php endforeach; ?>
+    </tr>
+    <?php endforeach; ?>
+</table>
+<?php endif; ?>
+<?php endif; ?>
+<?php endif; ?>

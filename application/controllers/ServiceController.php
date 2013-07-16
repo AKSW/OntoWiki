@@ -518,52 +518,100 @@ class ServiceController extends Zend_Controller_Action
      */
     public function sparqlAction()
     {
-        // service controller needs no view renderer
-        $this->_helper->viewRenderer->setNoRender();
-        // disable layout for Ajax requests
-        $this->_helper->layout()->disableLayout();
+        // if this is a GET request and we have no query parameter or we have a resultformat == HTML parameter
+        // we enabled rendering again (disabled by default)
+        $queryParam = $this->_request->getParam('query');
+        $resultFormatParam = $this->_request->getParam('resultformat');
+        $useHtml = false;
+        if ($this->_request->isGet() && ((null === $queryParam) || ($resultFormatParam === 'HTML'))) {
+            $this->_helper->viewRenderer->setNoRender(false);
+            $useHtml = true;
+        }
 
-        $store    = OntoWiki::getInstance()->erfurt->getStore();
-        $response = $this->getResponse();
+        if ($useHtml) {
+            // if we use the HTML form and the user is nor logged in and the anonymous user is not allowed to view
+            // any model, redirect to start page
+            $store = OntoWiki::getInstance()->erfurt->getStore();
+            $availableGraphs = $store->getAvailableModels(true);
+            if (count($availableGraphs === 0)) {
+                if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
+                    $this->view->hardErrorMessage = 'Please log in first!';
+                    return;
+                } else {
+                    $this->view->hardErrorMessage = 'User is not allowed to query any models!';
+                    return;
+                }
+            }
+        }
 
-        // fetch params
-        // TODO: support maxOccurs:unbound
-        $queryString = $this->_request->getParam('query', '');
+        if ($this->_request->isGet() && (null === $queryParam)) {
+            // nothing to do yet... just show the form
+            if ($useHtml) {
+                $this->view->sparqlQuery = 'SELECT * WHERE { ?s ?p ?o } LIMIT 10';
+            }
+            return;
+        }
+
+        $queryString = $queryParam;
         if (get_magic_quotes_gpc()) {
             $queryString = stripslashes($queryString);
         }
-        $defaultGraph = $this->_request->getParam('default-graph-uri', null);
-        $namedGraph   = $this->_request->getParam('named-graph-uri', null);
-
         if (!empty($queryString)) {
-            $query = Erfurt_Sparql_SimpleQuery::initWithString($queryString);
-
-            // overwrite query-specidfied dataset with protocoll-specified dataset
-            if (null !== $defaultGraph) {
-                $query->setFrom((array)$defaultGraph);
+            if ($useHtml) {
+                $this->view->sparqlQuery = $queryString;
             }
+
+            $response         = $this->getResponse();
+            $sparqlObjectSpec = Erfurt_Sparql_Parser_Sparql10::initFromString($queryString);
+            $sparqlObject     = null;
+            if (isset($sparqlObjectSpec['retval'])) {
+                $sparqlObject = $sparqlObjectSpec['retval'];
+            } else {
+                if ($useHtml) {
+                    $this->view->errorMessage = implode(', ', $sparqlObjectSpec['errors']);
+                    return;
+                } else {
+                    $response->setRawHeader('HTTP/1.1 400 Bad Request')
+                        ->setBody('MalformedQuery: ' . $e->getMessage())
+                        ->setHttpResponseCode(400);
+
+                    return;
+                }
+            }
+
+            $defaultGraph = $this->_request->getParam('default-graph-uri');
+            $namedGraph   = $this->_request->getParam('named-graph-uri');
+            // overwrite query-specified dataset with protocol-specified dataset
+            if (null !== $defaultGraph) {
+                $sparqlObject->setFroms((array)$defaultGraph);
+            }
+            // TODO: Is FROM NAMED supported by Query2?
             if (null !== $namedGraph) {
-                $query->setFromNamed((array)$namedGraph);
+                $sparqlObject->setFroms((array)$namedGraph);
             }
 
             // check graph availability
-            $ac = Erfurt_App::getInstance()->getAc();
-            foreach (array_merge($query->getFrom(), $query->getFromNamed()) as $graphUri) {
+            $store = OntoWiki::getInstance()->erfurt->getStore();
+            $ac    = Erfurt_App::getInstance()->getAc();
+            foreach ($sparqlObject->getFroms() as $from) {
+                $graphUri = $from->getIri();
                 if (!$ac->isModelAllowed('view', $graphUri)) {
-                    if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
-                        // In this case we allow the requesting party to authorize...
-                        $response->setRawHeader('HTTP/1.1 401 Unauthorized')
-                            ->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"')
-                            ->setHttpResponseCode(401);
-
+                    if ($useHtml) {
+                        $this->view->errorMessage = 'Not allowed!';
                         return;
-
                     } else {
-                        $response->setRawHeader('HTTP/1.1 500 Internal Server Error')
-                            ->setBody('QueryRequestRefused')
-                            ->setHttpResponseCode(500);
-
-                        return;
+                        if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
+                            // In this case we allow the requesting party to authorize...
+                            $response->setRawHeader('HTTP/1.1 401 Unauthorized')
+                                ->setHeader('WWW-Authenticate', 'Basic realm="OntoWiki"')
+                                ->setHttpResponseCode(401);
+                            return;
+                        } else {
+                            $response->setRawHeader('HTTP/1.1 500 Internal Server Error')
+                                ->setBody('QueryRequestRefused')
+                                ->setHttpResponseCode(500);
+                            return;
+                        }
                     }
                 }
             }
@@ -571,15 +619,44 @@ class ServiceController extends Zend_Controller_Action
             $typeMapping = array(
                 'application/sparql-results+xml'  => 'xml',
                 'application/json'                => 'json',
-                'application/sparql-results+json' => 'json'
+                'application/sparql-results+json' => 'json',
+                'text/html'                       => 'plain'
             );
 
-            try {
-                $type = OntoWiki_Utils::matchMimetypeFromRequest($this->_request, array_keys($typeMapping));
-            } catch (Exeption $e) {
-                //
-            }
+            $type = null;
+            if (null !== $resultFormatParam) {
+                $resultFormatParam = strtolower($resultFormatParam);
+                if ($resultFormatParam === 'HTML') {
 
+                } else {
+                    $reverseTypeMapping = array(
+                        'html'                            => 'text/html',
+                        'xml'                             => 'application/sparql-results+xml',
+                        'json'                            => 'application/sparql-results+json',
+                        'application/sparql-results+xml'  => 'application/sparql-results+xml',
+                        'application/json'                => 'application/json',
+                        'application/sparql-results+json' => 'application/sparql-results+json'
+                    );
+
+                    if (isset($reverseTypeMapping[$resultFormatParam])) {
+                        $type = $reverseTypeMapping[$resultFormatParam];
+                    }
+                }
+            } else {
+                try {
+                    $type = OntoWiki_Utils::matchMimetypeFromRequest($this->_request, array_keys($typeMapping));
+                } catch (Exeption $e) {
+                    if ($useHtml) {
+                        $this->view->errorMessage = $e->getMessage();
+                        return;
+                    } else {
+                        $response->setRawHeader('HTTP/1.1 500 Internal Server Error')
+                            ->setBody('QueryRequestRefused')
+                            ->setHttpResponseCode(500);
+                        return;
+                    }
+                }
+            }
             if (empty($type) && isset($this->_request->callback)) {
                 // JSONp
                 $type = 'application/sparql-results+json';
@@ -590,31 +667,48 @@ class ServiceController extends Zend_Controller_Action
                 }
             }
 
+            // set max limit on html output
+            if ($useHtml) {
+                $oldLimit = $sparqlObject->getLimit();
+                if (($oldLimit === 0) || ($oldLimit > 1000)) {
+                    $sparqlObject->setLimit(1000);
+                }
+            }
+
+            // try to run the query
             try {
                 // get result for mimetype
-                $result = $store->sparqlQuery($query, array('result_format' => $typeMapping[$type]));
+                $result = $store->sparqlQuery($sparqlObject, array('result_format' => $typeMapping[$type]));
             } catch (Exception $e) {
-                $response->setRawHeader('HTTP/1.1 400 Bad Request')
-                    ->setBody('MalformedQuery: ' . $e->getMessage())
-                    ->setHttpResponseCode(400);
+                if ($useHtml) {
+                    $this->view->errorMessage = $e->getMessage();
+                    return;
+                } else {
+                    $response->setRawHeader('HTTP/1.1 400 Bad Request')
+                        ->setBody('MalformedQuery: ' . $e->getMessage())
+                        ->setHttpResponseCode(400);
 
-                return;
+                    return;
+                }
             }
 
-            if (isset($this->_request->callback)) {
-                // return jsonp
-                $response->setHeader('Content-Type', 'application/javascript');
-                $padding = $this->_request->getParam('callback', '');
-                $response->setBody($padding . '(' . $result . ')');
+            if ($useHtml) {
+                $this->view->sparqlQuery = (string)$sparqlObject;
+                $this->view->sparqlResult = $result;
             } else {
-                // set header
-                $response->setHeader('Content-Type', $type);
-                // return normally
-                $response->setBody($result);
+                if (isset($this->_request->callback)) {
+                    // return jsonp
+                    $response->setHeader('Content-Type', 'application/javascript');
+                    $padding = $this->_request->getParam('callback', '');
+                    $response->setBody($padding . '(' . $result . ')');
+                } else {
+                    // set header
+                    $response->setHeader('Content-Type', $type);
+                    // return normally
+                    $response->setBody($result);
+                }
+                $response->setHttpResponseCode(200);
             }
-            $response->setHttpResponseCode(200);
-
-            return;
         }
     }
 
