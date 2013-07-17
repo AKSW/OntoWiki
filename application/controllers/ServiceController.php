@@ -533,7 +533,7 @@ class ServiceController extends Zend_Controller_Action
             // any model, redirect to start page
             $store = OntoWiki::getInstance()->erfurt->getStore();
             $availableGraphs = $store->getAvailableModels(true);
-            if (count($availableGraphs === 0)) {
+            if (count($availableGraphs) === 0) {
                 if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
                     $this->view->hardErrorMessage = 'Please log in first!';
                     return;
@@ -594,7 +594,7 @@ class ServiceController extends Zend_Controller_Action
             $store = OntoWiki::getInstance()->erfurt->getStore();
             $ac    = Erfurt_App::getInstance()->getAc();
             foreach ($sparqlObject->getFroms() as $from) {
-                $graphUri = $from->getIri();
+                $graphUri = $from->getGraphIri()->getIri();
                 if (!$ac->isModelAllowed('view', $graphUri)) {
                     if ($useHtml) {
                         $this->view->errorMessage = 'Not allowed!';
