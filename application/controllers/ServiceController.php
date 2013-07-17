@@ -427,11 +427,6 @@ class ServiceController extends Zend_Controller_Action
      */
     public function updateAction()
     {
-        // service controller needs no view renderer
-        $this->_helper->viewRenderer->setNoRender();
-        // disable layout for Ajax requests
-        $this->_helper->layout()->disableLayout();
-
         $store        = OntoWiki::getInstance()->erfurt->getStore();
         $response     = $this->getResponse();
         $defaultGraph = $this->_request->getParam('default-graph-uri', null);
