@@ -202,6 +202,24 @@ class ServiceControllerTest extends OntoWiki_Test_ControllerTestCase
     // Update Action
     // ------------------------------------------------------------------------
 
+    public function testUpdateActionGetMethodNotAllowed()
+    {
+        $this->request->setQuery(array('insert' => '{}', 'delete' => '{}'));
+        $this->dispatch('/service/update');
+        $this->assertController('service');
+        $this->assertAction('update');
+        $this->assertResponseCode(405, 'Update action with GET method should not be allowed');
+    }
+
+    public function testUpdateActionPostMethodAllowed()
+    {
+        $this->request->setMethod('POST')
+                      ->setPost(array('insert' => '{}', 'delete' => '{}'));
+
+        $this->dispatch('/service/update');
+        $this->assertResponseCode(200, 'Update action with POST method should be allowed');
+    }
+
     public function testUpdateDoesNothingWithEmptyParameters()
     {
         $this->request->setMethod('POST')

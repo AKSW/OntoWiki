@@ -445,6 +445,11 @@ class ServiceController extends Zend_Controller_Action
         $insertModel  = null;
         $deleteModel  = null;
 
+        if (!$this->_request->isPost()) {
+            $response->setHttpResponseCode(405);
+            return;
+        }
+
         if (isset($this->_request->query)) {
             // we have a query, enter SPARQL/Update mode
             $query = $this->_request->getParam('query', '');
