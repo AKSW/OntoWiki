@@ -115,6 +115,15 @@ class ServiceController extends Zend_Controller_Action
             ->addActionContext('form', 'html')
             ->addActionContext('process', 'json')
             ->initContext();
+
+        /**
+         * @trigger onAfterInitServiceController
+         * Triggered after a controller from class not derived from OntoWiki_Controller_Base
+         * has been initialized.
+         */
+        $event           = new Erfurt_Event('onAfterInitServiceController');
+        $event->response = $this->_response;
+        $eventResult     = $event->trigger();
     }
 
     /**
