@@ -121,6 +121,20 @@ class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestC
     }
 
     /**
+     * Retrieve test case request object
+     *
+     * @return Zend_Controller_Request_Abstract
+     */
+    public function getRequest()
+    {
+        if (null === $this->_request) {
+            $this->_request = new OntoWiki_Test_RequestHttpTestCase;
+        }
+
+        return parent::getRequest();
+    }
+
+    /**
      * Assert response code with detailed report
      *
      * @param  int $code
