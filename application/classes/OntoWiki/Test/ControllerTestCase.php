@@ -119,4 +119,36 @@ class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestC
         $this->assertTrue(Erfurt_App::getInstance()->getStore()->isModelAvailable($config->sysont->modelUri, false));
         $this->assertTrue(Erfurt_App::getInstance()->getStore()->isModelAvailable($config->sysont->schemaUri, false));
     }
+
+    /**
+     * Assert response code with detailed report
+     *
+     * @param  int $code
+     * @param  string $message
+     * @return void
+     */
+    public function assertResponseCode($code, $message = '')
+    {
+        return parent::assertResponseCode($code, sprintf('%s%s(got %s, expected %s)',
+                                                         $message,
+                                                         $message !== '' ? ' ' : '',
+                                                         $this->response->getHttpResponseCode(),
+                                                         $code));
+    }
+
+    /**
+     * Assert response code with detailed report
+     *
+     * @param  int $code
+     * @param  string $message
+     * @return void
+     */
+    public function assertNotResponseCode($code, $message = '')
+    {
+        return parent::assertNotResponseCode($code, sprintf('%s%s(got %s, expected NOT %s)',
+                                                            $message,
+                                                            $message !== '' ? ' ' : '',
+                                                            $this->response->getHttpResponseCode(),
+                                                            $code));
+    }
 }
