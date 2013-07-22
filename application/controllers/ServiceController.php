@@ -80,39 +80,6 @@ class ServiceController extends Zend_Controller_Action
         }
     }
 
-    /**
-     * Entity search
-     */
-    public function entitiesAction()
-    {
-        $type  = (string)$this->_request->getParam('type', 's');
-        $match = (string)$this->_request->getParam('match');
-
-        $type = $type[0]; // use only first letter
-
-        if ($this->_owApp->selectedModel && strlen($match) > 2) {
-            $namespaces = $this->_owApp->selectedModel->getNamespaces();
-
-            $namespacesFlipped = array_flip($namespaces);
-            $nsFilter          = array();
-            foreach ($namespacesFlipped as $prefix => $uri) {
-                if (stripos($prefix, $match) === 0) {
-                    $nsFilter[] = 'FILTER (regex(str(?' . $type . '), "' . $uri . '"))';
-                }
-            }
-
-            $store = $this->_owApp->selectedModel->getStore();
-            $query = Erfurt_Sparql_SimpleQuery::initWithString(
-                'SELECT DISTINCT ?' . $type . '
-                FROM <' . $this->_owApp->selectedModel->getModelIri() . '>
-                WHERE {
-                    ?s ?p ?o.
-                    ' . implode(PHP_EOL, $nsFilter) . '
-                }'
-            );
-        }
-    }
-
     public function hierarchyAction()
     {
         $options = array();
