@@ -4,7 +4,7 @@
   <!--  PROJECTS  -->
   <projects>
     <project label="OntoWiki" version="head" date="" revision="">
-      <path alt="must be absolute">[/var/www/OntoWiki/application/]</path>
+      <path alt="must be absolute">[/var/www/OntoWiki/]application/</path>
       <extensions>
         <extension>php</extension>
       </extensions>
@@ -20,7 +20,7 @@
     </project>
 
     <project label="Erfurt" version="head" date="" revision="">
-      <path alt="must be absolute">[/var/www/OntoWiki/application/]../libraries/Erfurt/library/Erfurt/</path>
+      <path alt="must be absolute">[/var/www/OntoWiki/]libraries/Erfurt/library/Erfurt/</path>
       <extensions>
         <extension>php</extension>
       </extensions>
@@ -28,7 +28,6 @@
         <file alt="regular expression">/^(_|[a-z])/</file>
         <folder alt="regular expression">#^Sparql#</folder>
         <folder alt="regular expression">#tests#</folder>
-        <folder alt="regular expression">#antlr#</folder>
       </ignore>
       <category lowercase="" by="force">OntoWiki</category>
       <package lowercase="" by="default">Erfurt</package>
