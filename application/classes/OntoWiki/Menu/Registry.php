@@ -155,6 +155,7 @@ class OntoWiki_Menu_Registry
             $debugMenu->setEntry('Clear Module Cache', $owApp->config->urlBase . 'debug/clearmodulecache')
                 ->setEntry('Clear Translation Cache', $owApp->config->urlBase . 'debug/cleartranslationcache')
                 ->setEntry('Clear Object & Query Cache', $owApp->config->urlBase . 'debug/clearquerycache')
+                ->setEntry('Start xdebug Session', $owApp->config->urlBase . '?XDEBUG_SESSION_START=xdebug')
                 ->setEntry('Reset Session', $owApp->config->urlBase . 'debug/destroysession');
 
             // for testing sub menus
