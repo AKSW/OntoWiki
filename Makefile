@@ -150,12 +150,14 @@ branch-check:
 
 # libraries
 
+ZENDFILEBASE="ZendFramework-${ZENDVERSION}-minimal"
+ZENDURL="https://packages.zendframework.com/releases/ZendFramework-${ZENDVERSION}/${ZENDFILEBASE}.tar.gz"
 zend:
 	rm -rf libraries/Zend
-	curl -L -# -O https://packages.zendframework.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz || wget https://packages.zendframework.com/releases/ZendFramework-${ZENDVERSION}/ZendFramework-${ZENDVERSION}-minimal.tar.gz
-	tar xzf ZendFramework-${ZENDVERSION}-minimal.tar.gz
-	mv ZendFramework-${ZENDVERSION}-minimal/library/Zend libraries
-	rm -rf ZendFramework-${ZENDVERSION}-minimal.tar.gz ZendFramework-${ZENDVERSION}-minimal
+	curl -L -# -O ${ZENDURL} || wget ${ZENDURL}
+	tar xzf ${ZENDFILEBASE}.tar.gz
+	mv ${ZENDFILEBASE}/library/Zend libraries
+	rm -rf ${ZENDFILEBASE}.tar.gz ${ZENDFILEBASE}
 
 rdfauthor:
 	rm -rf libraries/RDFauthor
