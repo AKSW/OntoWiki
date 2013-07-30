@@ -80,39 +80,6 @@ class ServiceController extends Zend_Controller_Action
         }
     }
 
-    /**
-     * Entity search
-     */
-    public function entitiesAction()
-    {
-        $type  = (string)$this->_request->getParam('type', 's');
-        $match = (string)$this->_request->getParam('match');
-
-        $type = $type[0]; // use only first letter
-
-        if ($this->_owApp->selectedModel && strlen($match) > 2) {
-            $namespaces = $this->_owApp->selectedModel->getNamespaces();
-
-            $namespacesFlipped = array_flip($namespaces);
-            $nsFilter          = array();
-            foreach ($namespacesFlipped as $prefix => $uri) {
-                if (stripos($prefix, $match) === 0) {
-                    $nsFilter[] = 'FILTER (regex(str(?' . $type . '), "' . $uri . '"))';
-                }
-            }
-
-            $store = $this->_owApp->selectedModel->getStore();
-            $query = Erfurt_Sparql_SimpleQuery::initWithString(
-                'SELECT DISTINCT ?' . $type . '
-                FROM <' . $this->_owApp->selectedModel->getModelIri() . '>
-                WHERE {
-                    ?s ?p ?o.
-                    ' . implode(PHP_EOL, $nsFilter) . '
-                }'
-            );
-        }
-    }
-
     public function hierarchyAction()
     {
         $options = array();
@@ -470,6 +437,45 @@ class ServiceController extends Zend_Controller_Action
             . print_r($session->$name, true);
 
         $this->_owApp->logger->debug($msg);
+    }
+
+    /**
+     * This action returns status values of the current session, like the selectedModel and the
+     * logged in User as JSON object.
+     */
+    public function statusAction()
+    {
+        // service controller needs no view renderer
+        $this->_helper->viewRenderer->setNoRender();
+        // disable layout for Ajax requests
+        $this->_helper->layout()->disableLayout();
+
+        $status = new stdClass();
+
+        if (isset($this->_owApp->selectedModel)) {
+            $status->selectedModel = $this->_owApp->selectedModel->getModelIri();
+        } else {
+            $status->selectedModel = null;
+        }
+
+        $user = $this->_owApp->getUser();
+        if (get_class($user) == 'Erfurt_Auth_Identity') {
+            // TODO add serialization method to Erfurt_Auth_Identity
+            $status->user = new stdClass();
+            $status->user->isAnonymous = $user->isAnonymousUser();
+            $status->user->uri = $user->getUri();
+            $status->user->username = $user->getUsername();
+        } else {
+            $status->user = null;
+        }
+
+        $status->hasMessages = $this->_owApp->hasMessages();
+
+        // TODO add method to get sessionVars to OntoWiki class and dump them all into this status
+
+        $response = $this->getResponse();
+        $response->setHeader('Content-Type', 'application/json');
+        $response->setBody(json_encode($status));
     }
 
     /**

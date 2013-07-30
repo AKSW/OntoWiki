@@ -1,0 +1,21 @@
+<?php
+/**
+ * OntoWiki rdf paste import template
+ */
+
+?>
+<fieldset class="activeForm" id="importdata">
+    <legend><?php echo $this->_('Paste Source') ?></legend>
+    <div>
+        <label for="filetype-paste-select"><?php echo $this->_('Format') ?></label>
+        <select name="filetype-paste" id="filetype-paste-select">
+            <?php foreach ($this->supportedFormats as $key => $name): ?>
+                <option value="<?php echo $key ?>"><?php echo $name ?></option>
+            <?php endforeach; ?>
+        </select>
+        <br class="clearall" />
+        <label for="code-input"><?php echo $this->_('Source Code') ?></label>
+        <textarea class="code-input" name="paste"></textarea>
+        <br class="clearall">
+    </div>
+</fieldset>

@@ -1,7 +1,7 @@
 class virtuoso {
 
   # virtuoso
-  package { "virtuoso-opensource": ensure => installed, require => Exec["apt-update"] }
+  package { "virtuoso-opensource": ensure => installed }
 
   # copy ODBC config files
   file { "/etc/odbc.ini":

@@ -1,5 +1,17 @@
-class ubuntu {
+stage { 'preinstall':
+  before => Stage['main']
+}
+ 
+class apt_get_update {
+  exec { '/usr/bin/apt-get -y update': }
+}
+ 
+class { 'apt_get_update':
+  stage => preinstall
+}
 
+class ubuntu 
+{
     $ow_server_name     = 'ontowiki.local'
     $ow_application_env = 'development'
 
@@ -18,11 +30,9 @@ class ubuntu {
     include mysql
     include virtuoso
     include phpunit
-    include phpdoc
     include phpqatools
     include zend
     include ontowiki
-    #include jenkins
 }
 
 include ubuntu

@@ -3,8 +3,8 @@ class mysql {
   $mysql_root_pw = $ubuntu::mysql_root_pw
 
   # mysql
-  package { "mysql-server": ensure => installed, require => Exec["apt-update"] }
-  package { "mysql-client": ensure => installed, require => Exec["apt-update"] }
+  package { "mysql-server": ensure => installed }
+  package { "mysql-client": ensure => installed }
 
   # mysql service
   service { "mysql":

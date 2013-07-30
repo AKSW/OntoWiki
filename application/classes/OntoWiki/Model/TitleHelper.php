@@ -383,7 +383,8 @@ class OntoWiki_Model_TitleHelper
                 if ($title == $resourceUri && $this->_alwaysUseLocalNames) {
                     $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
 
-                    //now we have to add this localName to the ResourceTitles array to prevent queriing of resources without titles all the time
+                    // now we have to add this localName to the ResourceTitles array to prevent
+                    // querying of resources without titles all the time
                     $this->_resourceTitles[$resourceUri]["localname"]["localname"] = $title;
                 }
             }
@@ -502,10 +503,10 @@ class OntoWiki_Model_TitleHelper
      */
     protected function _fetchResourceTitlesFromQueryResult()
     {
-		$titleResults = $this->getTitleQueryResult();
-		if (count($titleResults) === 0) {
-			return;
-		}
+        $titleResults = $this->getTitleQueryResult();
+        if (count($titleResults) === 0) {
+            return;
+        }
 
         foreach ($titleResults as $resourceUri => $titleQueryResult) {
             // fetch result

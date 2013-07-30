@@ -16,7 +16,7 @@ help:
 	@echo "     cs-check-intensive-full ............... Run complete code checking with"
 	@echo "                                             stricter coding standard and detailed output"
 	@echo "     possible Parameter:"
-	@echo "     > FPATH=<path> ................. Run code checking on specific relative path"
+	@echo "     > CHECKPATH=<path> ................. Run code checking on specific relative path"
 	@echo "     > SNIFFS=<sniff 1>,<sniff 2> ... Run code checking on specific sniffs"
 	@echo "     > OPTIONS=<option> ............. Run code checking with specific CodeSniffer options"
 
@@ -29,8 +29,8 @@ MSOURCE2 = $(CURDIR)/$(shell readlink $(MSOURCE))
 CSSPATH = $(shell dirname $(MSOURCE2))/
 
 # Parameter check
-ifndef FPATH
-	FPATH = "*"
+ifndef CHECKPATH
+	CHECKPATH = "*"
 endif
 ifdef SNIFFS
 	SNIFFSTR = "--sniffs="$(SNIFFS)
@@ -38,7 +38,7 @@ else
 	SNIFFSTR =
 endif
 
-REQUESTSTR = $(OPTIONS) $(SNIFFSTR)  $(FPATH)
+REQUESTSTR = $(OPTIONS) $(SNIFFSTR)  $(CHECKPATH)
 
 cs-default:
 	chmod ugo+x "$(CSSPATH)cs-scripts.sh"

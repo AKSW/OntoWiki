@@ -3,7 +3,6 @@ class phpunit {
   # package
   package { "php-pear": 
     ensure => installed,
-    require => Exec["apt-update"]
   }
 
   exec { "upgrade-pear":

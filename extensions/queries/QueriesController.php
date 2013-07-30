@@ -104,6 +104,14 @@ class QueriesController extends OntoWiki_Controller_Component
 
     public function editorAction()
     {
+        if ($this->_owApp->selectedModel === null) {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message($this->view->_('No model selected.'), OntoWiki_Message::ERROR)
+            );
+            $this->view->errorFlag = true;
+            return;
+        }
+
         $this->view->placeholder('main.window.title')->set('SPARQL Query Editor');
         $this->view->formActionUrl = $this->_config->urlBase . 'queries/editor';
         $this->view->formMethod = 'post';
@@ -184,7 +192,11 @@ class QueriesController extends OntoWiki_Controller_Component
             $store = $this->_erfurt->getStore();
 
             foreach ($prefixes as $prefix => $namespace) {
-                $query = 'PREFIX ' . $prefix . ': <' . $namespace . '>' . PHP_EOL . $query;
+                $prefixString = 'PREFIX ' . $prefix . ': <' . $namespace . '>';
+                // only add prefix if it's not there yet
+                if(strpos($query, $prefixString) === false) {
+                    $query = $prefixString . PHP_EOL . $query;
+                }
             }
             if ($format == 'list') {
                 $url = new OntoWiki_Url(array('controller' => 'list'), array());
@@ -304,11 +316,15 @@ class QueriesController extends OntoWiki_Controller_Component
             $this->_componentUrlBase . 'resources/codemirror/mode/sparql/sparql.js'
         );
 
+        $this->view->headStyle()->appendStyle(
+            '.CodeMirror { border: 1px solid black; }'
+        );
+
         $this->view->headScript()->appendScript(
             'var editor;
             $(document).ready(
                 function(){
-                    var editor = CodeMirror.fromTextArea(
+                    editor = CodeMirror.fromTextArea(
                         document.getElementById("inputfield"),
                         {
                             mode: "application/x-sparql-query",
@@ -316,6 +332,11 @@ class QueriesController extends OntoWiki_Controller_Component
                             matchBrackets: true,
                         }
                     );
+                    $(".CodeMirror").resizable({
+                        resize: function() {
+                            editor.setSize($(this).width(), $(this).height());
+                        }
+                    });
                 }
             );'
         );
@@ -337,6 +358,14 @@ class QueriesController extends OntoWiki_Controller_Component
      */
     public function listqueryAction()
     {
+        if ($this->_owApp->selectedModel === null) {
+            $this->_owApp->appendMessage(
+                new OntoWiki_Message($this->view->_('No model selected.'), OntoWiki_Message::ERROR)
+            );
+            $this->view->errorFlag = true;
+            return;
+        }
+
         // set the active tab navigation
         OntoWiki::getInstance()->getNavigation()->setActive('listquery');
 
@@ -373,6 +402,8 @@ class QueriesController extends OntoWiki_Controller_Component
      */
     public function savequeryAction()
     {
+        $this->_helper->layout()->disableLayout();
+
         $response = $this->getResponse();
         $response->setHeader('Content-Type', 'text/plain');
 

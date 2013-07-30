@@ -1,91 +1,86 @@
-This work was packaged for Debian by:
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Erfurt
+Source: https://github.com/AKSW/Erfurt
 
-    Sebastian Tramp <tramp@informatik.uni-leipzig.de> on Tue, 01 Feb 2011 15:37:27 +0100
-
-It was downloaded from:
-
-    <http://code.google.com/p/ontowiki/downloads/list>
-
-Upstream Author(s):
-
-    Christoph Rieß
-    Daniel Gerber
-    Jonas Brekle
-    Konrad Abicht
-    Michael Haschke
-    Michael Martin
-    Natanael Arndt
-    Norman Heino
-    Philipp Frischmuth
-    Rolland Brunec
-    Sebastian Tramp
-    Tim Ermilov
-
+Files: *
 Copyright:
+    2013 Christian Würker
+    2013 Christoph Rieß
+    2013 Daniel Gerber
+    2013 Jonas Brekle
+    2013 Konrad Abicht
+    2013 Michael Haschke
+    2013 Michael Martin
+    2013 Natanael Arndt
+    2013 Norman Heino
+    2013 Philipp Frischmuth
+    2013 Rolland Brunec
+    2013 Sebastian Tramp
+    2013 Tim Ermilov
+License: GPL-2+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU General Public
+ License along with this package; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ Boston, MA  02110-1301 USA
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 2 can be found in the file
+ `/usr/share/common-licenses/GPL-2'.
 
-    <Copyright (C) 2011 Christoph Rieß>
-    <Copyright (C) 2011 Daniel Gerber>
-    <Copyright (C) 2011 Jonas Brekle>
-    <Copyright (C) 2011 Konrad Abicht>
-    <Copyright (C) 2011 Michael Haschke>
-    <Copyright (C) 2011 Michael Martin>
-    <Copyright (C) 2011 Natanael Arndt>
-    <Copyright (C) 2011 Norman Heino>
-    <Copyright (C) 2011 Philipp Frischmuth>
-    <Copyright (C) 2011 Rolland Brunec>
-    <Copyright (C) 2011 Sebastian Tramp>
-    <Copyright (C) 2011 Tim Ermilov>
+Files: extensions/queries/resources/codemirror/*
+Copyright: 2013 Marijn Haverbeke
+License: MIT2
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
 
-License:
+Files: debian/*
+Copyright: 2013 Sebastian Tramp
+License: GPL-2+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU General Public
+ License along with this package; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ Boston, MA  02110-1301 USA
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 2 can be found in the file
+ `/usr/share/common-licenses/GPL-2'.
 
-   This package is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License version 2 as
-   published by the Free Software Foundation.
-
-    This package is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>
-
-On Debian systems, the complete text of the GNU General
-Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
-
-
-Copright and License of the CodeMirror JavaScript Library:
-
-    Copyright (c) 2007-2009 Marijn Haverbeke
-
-    This software is provided 'as-is', without any express or implied
-    warranty. In no event will the authors be held liable for any
-    damages arising from the use of this software.
-
-    Permission is granted to anyone to use this software for any
-    purpose, including commercial applications, and to alter it and
-    redistribute it freely, subject to the following restrictions:
-
-    1. The origin of this software must not be misrepresented; you must
-       not claim that you wrote the original software. If you use this
-       software in a product, an acknowledgment in the product
-       documentation would be appreciated but is not required.
-
-    2. Altered source versions must be plainly marked as such, and must
-       not be misrepresented as being the original software.
-
-    3. This notice may not be removed or altered from any source
-       distribution.
-
-    Marijn Haverbeke
-    marijnh at gmail
-
-
-The Debian packaging is:
-
-    Copyright (C) 2011 Sebastian Tramp <tramp@informatik.uni-leipzig.de>
-
-you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
