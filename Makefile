@@ -1,4 +1,5 @@
 ZENDVERSION=1.11.5
+ZEND2VERSION=2.2.2
 
 default:
 	@echo "Typical targets your could want to reach:"
@@ -158,6 +159,15 @@ zend:
 	tar xzf ${ZENDFILEBASE}.tar.gz
 	mv ${ZENDFILEBASE}/library/Zend libraries
 	rm -rf ${ZENDFILEBASE}.tar.gz ${ZENDFILEBASE}
+
+ZEND2FILEBASE="ZendFramework-minimal-${ZEND2VERSION}"
+ZEND2URL="https://packages.zendframework.com/releases/ZendFramework-${ZEND2VERSION}/${ZEND2FILEBASE}.tgz"
+zend2:
+	rm -rf libraries/Zend
+	curl -L -# -O ${ZEND2URL} || wget ${ZEND2URL}
+	tar xzf ${ZEND2FILEBASE}.tgz
+	mv ${ZEND2FILEBASE}/library/Zend libraries
+	rm -rf ${ZEND2FILEBASE}.tgz ${ZEND2FILEBASE}
 
 rdfauthor:
 	rm -rf libraries/RDFauthor
