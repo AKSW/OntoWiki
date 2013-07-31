@@ -49,18 +49,6 @@ class ResourceController extends OntoWiki_Controller_Base
 
         // add export formats to resource menu
         $resourceMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('resource');
-        foreach (array_reverse(Erfurt_Syntax_RdfSerializer::getSupportedFormats()) as $key => $format) {
-            $resourceMenu->prependEntry(
-                'Export Resource as ' . $format,
-                $this->_config->urlBase . 'resource/export/f/' . $key . '?r=' . urlencode($resource)
-            );
-        }
-
-        $resourceMenu->prependEntry(OntoWiki_Menu::SEPARATOR);
-        $resourceMenu->prependEntry(
-            'Go to Resource (external)',
-            (string)$resource
-        );
 
         $menu = new OntoWiki_Menu();
         $menu->setEntry('Resource', $resourceMenu);
