@@ -344,26 +344,32 @@ function showResourceMenu(event, json) {
             $('#' + menuId).fadeOut();
         }
     }
-    
+
     if(json == undefined){
+        var aboutUri, modelUri, resourceUri;
+
         // URI of the resource clicked (used attribute can be about and resource)
         if ( typeof $(event.target).parent().attr('about') != 'undefined' ) {
-            resourceUri = $(event.target).parent().attr('about');
+            aboutUri = $(event.target).parent().attr('about');
         } else if ( typeof $(event.target).parent().attr('resource') != 'undefined' ) {
-            resourceUri = $(event.target).parent().attr('resource');
-        } else {
-            // no usable resource uri, so we exit here
-            return false;
+            aboutUri = $(event.target).parent().attr('resource');
         }
 
-        encodedResourceUri = encodeURIComponent(resourceUri);
-        resource = $(event.target).parent();
-
-        
+        if (aboutUri == null) {
+            // no usable resource uri, so we exit here
+            return false;
+        } else if ($(event.target).parent().hasClass('Model')) {
+            modelUri = aboutUri;
+        } else {
+            resourceUri = aboutUri;
+        }
 
         var urlParams = {};
-        urlParams.resource = resourceUri;
-
+        if (modelUri != null) {
+            urlParams.model = modelUri;
+        } else {
+            urlParams.resource = resourceUri;
+        }
 
         // load menu with specific options from service
         $.ajax({
