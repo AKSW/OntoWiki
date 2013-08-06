@@ -26,7 +26,7 @@ class RequestkeyPlugin extends OntoWiki_Plugin
 
     public function onAfterInitServiceController($event)
     {
-        $owApp = OntoWiki::GetInstance();
+        $owApp = OntoWiki::getInstance();
 
         $controller = $owApp->frontController;
         $request = $controller->getRequest();
@@ -51,7 +51,7 @@ class RequestkeyPlugin extends OntoWiki_Plugin
 
     public function onDisplayPostForm($event)
     {
-        $owApp = OntoWiki::GetInstance();
+        $owApp = OntoWiki::getInstance();
 
         return array($owApp->view->formHidden(static::$_fieldName, $this->getHash()));
     }
@@ -68,7 +68,7 @@ class RequestkeyPlugin extends OntoWiki_Plugin
 
     protected function getHash()
     {
-        $owApp = OntoWiki::GetInstance();
+        $owApp = OntoWiki::getInstance();
 
         if (static::$_testHash !== null) {
             return static::$_testHash;
@@ -83,7 +83,7 @@ class RequestkeyPlugin extends OntoWiki_Plugin
 
     protected function _generateHash()
     {
-        $owApp = OntoWiki::GetInstance();
+        $owApp = OntoWiki::getInstance();
 
         $owApp->session->requestkey = (new Zend_Form_Element_Hash('hash'))->getHash();
     }
