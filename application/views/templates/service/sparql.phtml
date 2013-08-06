@@ -1,3 +1,11 @@
+<?php echo $this->doctype('XHTML1_STRICT') ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+
 <?php if (isset($this->hardErrorMessage)): ?>
 <div style="border: 1px solid #f00; background-color: #fee; margin: 10px; padding: 10px">
     <?php echo $this->hardErrorMessage; ?>
@@ -40,3 +48,6 @@
 <?php endif; ?>
 <?php endif; ?>
 <?php endif; ?>
+
+</body>
+</html>
