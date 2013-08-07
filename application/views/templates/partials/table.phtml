@@ -8,6 +8,7 @@
  * - header: array of th items
  * - data: array of (tr) items, which are arrays of (td) items
  * - querylink: output resource enabled query links where possible
+ * - noodds: do not output odd even class
  *
  * @author Sebastian Tramp <mail@sebastian.tramp.name>
  */
@@ -31,15 +32,23 @@ if ($this->has('header')) {
 
 // row counter for data cell Ids
 $r = 0;
+$oddClass = 'even';
 foreach ($this->data as $row) {
     // column counter for data cell Ids
     $c = 0;
 
+    // swith odd/even class
+    $oddClass = ($oddClass == 'even') ? 'odd' : 'even';
+
+    // prepare classes of the tr element
+    $rowClassValue = '';
     if ($this->has('rowClass')) {
-        echo '<tr class="' . $this->rowClass . '">' . PHP_EOL;
-    } else {
-        echo '<tr>' . PHP_EOL;
+        $rowClassValue .= $this->rowClass;
     }
+    if (!$this->has('noodds') || $this->noodds === false) {
+        $rowClassValue .= ' ' . $oddClass;
+    }
+    echo "<tr class='$rowClassValue'>" . PHP_EOL;
 
     foreach ($row as $field) {
         // data cell Id (r3-c12)
