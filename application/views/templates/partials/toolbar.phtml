@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OntoWiki toolbar partial template
  *
@@ -7,7 +6,6 @@
  * @author  Michael Haschke
  * @version $$
  */
-
 ?>
 <div class="messagebox">
     <?php if (isset($this->lines)): ?>
@@ -15,7 +13,7 @@
             <div class="statusline"><?php echo $line ?></div>
         <?php endforeach; ?>
     <?php endif; ?>
-    
+
     <?php if (isset($this->tools)): ?>
         <?php foreach ($this->tools as $tool): ?>
             <div class="statustool"><?php echo $tool ?></div>

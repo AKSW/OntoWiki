@@ -3,7 +3,7 @@
 // build menu
 $actionMenu = new OntoWiki_Menu();
 $actionMenu->setEntry('Toggle show Permalink', "javascript:showPermaLink()");
-$actionMenu->setEntry('Toggle show Resource Query',"javascript:showresQuery()");
+$actionMenu->setEntry('Toggle show Resource Query', "javascript:showresQuery()");
 $actionMenu->setEntry('Toggle show Value Query', "javascript:showvalQuery()");
 $actions = new OntoWiki_Menu();
 $actions->setEntry('View', $actionMenu);
@@ -44,8 +44,7 @@ $this->headScript()->prependScript(
 <div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
 <div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
 <?php
-
-    if ($this->instances->hasData()): 
+    if ($this->instances->hasData()):
         ?>
 <table class="resource-list separated-vertical"
         <?php foreach ($this->other->namespaces as $namespace => $prefix): ?>
@@ -60,7 +59,7 @@ $this->headScript()->prependScript(
         <?php /* column for the instance title/label*/?>
         <th></th>
         <?php /* a column for each property */
-        foreach ($this->propertyInfo as $property):  if($property['hidden']){continue;}?>
+        foreach ($this->propertyInfo as $property): if($property['hidden']){continue;}?>
         <th>
             <a class="hasMenu Property"
                about="<?php echo $property['uri'] ?>"
@@ -94,5 +93,3 @@ $this->headScript()->prependScript(
     <?php else: ?>
 <p class="messagebox info"><?php echo $this->_('No matches.') ?></p>
     <?php endif; ?>
-
-
