@@ -48,7 +48,15 @@ if (isset($this->errorFlag) && $this->errorFlag !== false) {
             if(class_exists("QuerybuildingHelper")){
                 echo $this->partial('partials/resultset.phtml', array('data' => $this->data, 'header' => $this->header, 'caption'=>'Results', 'urlBase' => $this->urlBase));
             } else {
-            	echo $this->partial('partials/table.phtml', array('data' => $this->data, 'header' => $this->header));
+                echo $this->partial(
+                    'partials/table.phtml',
+                    array(
+                        'data' => $this->data,
+                        'header' => $this->header,
+                        'tableClass' => 'query-result',
+                        'querylink' => true
+                    )
+                );
             }
             ?>
         <?php else: ?>
