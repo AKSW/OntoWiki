@@ -79,11 +79,12 @@ foreach ($this->data as $row) {
                     'controller' => 'queries',
                     'action' => 'editor'
                 ),
-                array(
-                    'query'
-                )
+                array(),
+                array('query')
             );
-            $url->setParam('query', $query);
+            // append query parameter (setParam not used intentional here)
+            // reason: failes with the query part
+            $url = $url . '?query=' . urlencode($query);
 
             // output the link
             echo '<a class="hasMenu expandable Resource"' .
