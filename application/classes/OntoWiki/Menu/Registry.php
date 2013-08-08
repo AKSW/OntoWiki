@@ -218,6 +218,19 @@ class OntoWiki_Menu_Registry
             (string)$url
         );
 
+        // View resource
+        $url = new OntoWiki_Url(
+            array('action' => 'view'),
+            array()
+        );
+        $url->setParam('m', $model, false);
+        $url->setParam('r', $model, true);
+
+        $modelMenu->appendEntry(
+            'View as Resource',
+            (string)$url
+        );
+
         // check if model could be edited (prefixes and data)
         if ($owApp->erfurt->getAc()->isModelAllowed('edit', $model)) {
             // Configure Knowledge Base
