@@ -75,7 +75,7 @@ class RequestkeyExtensionTest extends OntoWiki_Test_ControllerTestCase
         $this->request->setMethod('POST')
                       ->setPost(array('model' => $this->_modelUri));
 
-        $this->request->setPost(array('requestkey' => 'invalid'));
+        $this->request->setPost(array(OntoWiki_Controller::REQUESTKEY_FIELD_NAME => 'invalid'));
 
         $this->dispatch('/model/delete');
 
@@ -91,7 +91,7 @@ class RequestkeyExtensionTest extends OntoWiki_Test_ControllerTestCase
                                       'insert' => '{}',
                                       'delete' => '{}'));
 
-        $this->request->setPost(array('requestkey' => 'invalid'));
+        $this->request->setPost(array(OntoWiki_Controller::REQUESTKEY_FIELD_NAME => 'invalid'));
 
         $this->dispatch('/service/update');
 
@@ -103,7 +103,7 @@ class RequestkeyExtensionTest extends OntoWiki_Test_ControllerTestCase
         $this->request->setMethod('POST')
                       ->setPost(array('model' => $this->_modelUri));
 
-        unset($_POST['requestkey']);
+        unset($_POST[OntoWiki_Controller::REQUESTKEY_FIELD_NAME]);
 
         $this->dispatch('/model/delete');
 
@@ -119,7 +119,7 @@ class RequestkeyExtensionTest extends OntoWiki_Test_ControllerTestCase
                                       'insert' => '{}',
                                       'delete' => '{}'));
 
-        unset($_POST['requestkey']);
+        unset($_POST[OntoWiki_Controller::REQUESTKEY_FIELD_NAME]);
 
         $this->dispatch('/service/update');
 

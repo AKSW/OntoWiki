@@ -27,9 +27,7 @@ class OntoWiki_View_Helper_Form extends Zend_View_Helper_HtmlElement // Zend_Vie
                . '>';
 
         if (strtoupper($attribs['method']) === 'POST') {
-            $event = new Erfurt_Event('onDisplayPostForm');
-            $event->setDefault(array());
-            $xhtml .= implode($event->trigger());
+            $xhtml .= OntoWiki_Controller::getRequestKeyFormContent();
         }
 
         if (false !== $content) {

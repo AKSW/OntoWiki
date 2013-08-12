@@ -17,9 +17,12 @@ class OntoWiki_Test_RequestHttpTestCase extends Zend_Controller_Request_HttpTest
     public function setMethod($type)
     {
         if (strtoupper($type) === 'POST') {
-            $event          = new Erfurt_Event('onTestRequestHttpPost');
-            $event->request = $this;
-            $event->trigger();
+            if (OntoWiki_Controller::$testRequestKey === null) {
+                // use static property instead of session for testing
+                OntoWiki_Controller::$testRequestKey = OntoWiki_Controller::getRequestKey();
+            }
+
+            call_user_func_array(array($this, 'setPost'), OntoWiki_Controller::getRequestKeyFormData());
         }
 
         return parent::setMethod($type);
