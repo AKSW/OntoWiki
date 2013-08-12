@@ -144,13 +144,14 @@
                             <?php echo $this->layout()->content ?>
                         </div><!-- .innercontent -->
 
+                        <?php if ($this->has('formActionUrl')): ?>
+                            </form>
+                        <?php endif;?>
+
                         <div class="innerwindows">
                             <?php echo $this->placeholder('main.window.innerwindows') ?>
                         </div><!-- .innerwindows -->
 
-                        <?php if ($this->has('formActionUrl')): ?>
-                            </form>
-                        <?php endif;?>
                     </div><!-- .content .has-innerwindows -->
                 <?php else: ?>
                     <div class="content">
