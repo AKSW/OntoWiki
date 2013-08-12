@@ -12,14 +12,8 @@
  * @category OntoWiki
  * @package  OntoWiki_Controller
  */
-class ServiceController extends Zend_Controller_Action
+class ServiceController extends OntoWiki_Controller
 {
-    /** @var OntoWiki */
-    protected $_owApp = null;
-
-    /** @var Zend_Config */
-    protected $_config = null;
-
     /**
      * Attempts an authentication to the underlying Erfurt framework via
      * HTTP GET/POST parameters.
@@ -104,9 +98,9 @@ class ServiceController extends Zend_Controller_Action
      */
     public function init()
     {
+        parent::init();
+
         // init controller variables
-        $this->_owApp   = OntoWiki::getInstance();
-        $this->_config  = $this->_owApp->config;
         $this->_session = $this->_owApp->session;
 
         // prepare Ajax context

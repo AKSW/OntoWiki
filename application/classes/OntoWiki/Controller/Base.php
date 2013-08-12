@@ -13,22 +13,8 @@
  * @package  OntoWiki_Classes_Controller
  * @author   Norman Heino <norman.heino@gmail.com>
  */
-class OntoWiki_Controller_Base extends Zend_Controller_Action
+class OntoWiki_Controller_Base extends OntoWiki_Controller
 {
-    /**
-     * OntoWiki Application
-     *
-     * @var OntoWiki
-     */
-    protected $_owApp = null;
-
-    /**
-     * OntoWiki Application config
-     *
-     * @var Zend_Config
-     */
-    protected $_config = null;
-
     /**
      * The session store
      *
@@ -70,9 +56,9 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         $event       = new Erfurt_Event('onBeforeInitController');
         $eventResult = $event->trigger();
 
+        parent::init();
+
         // init controller variables
-        $this->_owApp           = OntoWiki::getInstance();
-        $this->_config          = $this->_owApp->config;
         $this->_session         = $this->_owApp->session;
         $this->_erfurt          = $this->_owApp->erfurt;
         $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
