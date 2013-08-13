@@ -70,6 +70,7 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function configAction()
     {
+        $this->addModuleContext('main.window.modelconfig');
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         if (!$this->_request->getParam('m')) {
@@ -411,6 +412,7 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function createAction()
     {
+        $this->addModuleContext('main.window.modelcreate');
         $store = $this->_erfurt->getStore();
         $this->view->clearModuleCache('modellist');
 
