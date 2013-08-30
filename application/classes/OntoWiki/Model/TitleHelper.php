@@ -128,6 +128,11 @@ class OntoWiki_Model_TitleHelper
      */
     public function __construct(Erfurt_Rdf_Model $model = null, Erfurt_Store $store = null, $config = null)
     {
+        $logger = OntoWiki::getInstance()->logger;
+        $logger->info(
+            'XXXXXXXXXXXXXXXXXXXXXXXX NEW TitleHelper Instantiated'
+        );
+
         if (null !== $model) {
             $this->_model = $model;
         }
@@ -255,14 +260,18 @@ class OntoWiki_Model_TitleHelper
                     if (!empty($row[$key])) {
                         $object = $row[$key];
 
+                        $toBeAdded = null;
                         if (is_array($object)) {
                             // probably support extended format
                             if (isset($object['type']) && ($object['type'] == 'uri')) {
-                                $this->addResource($object['value']);
+                                $toBeAdded = $object['value'];
                             }
                         } else {
                             // plain object
-                            $this->addResource($object);
+                            $toBeAdded = $object;
+                        }
+                        if (($toBeAdded != null) && empty($_resourceTitles[$toBeAdded])) {
+                            $this->addResource($toBeAdded);
                         }
                     }
                 }
@@ -327,7 +336,7 @@ class OntoWiki_Model_TitleHelper
             }
 
             // add if we don't have this URI (but logg)
-            if (!array_key_exists($resourceUri, (array)$this->_resources)) {
+            if (!array_key_exists($resourceUri, (array)$this->_resources) ) {
 
                 if (defined('_OWDEBUG')) {
                     $logger = OntoWiki::getInstance()->logger;
@@ -388,7 +397,6 @@ class OntoWiki_Model_TitleHelper
                     $this->_resourceTitles[$resourceUri]["localname"]["localname"] = $title;
                 }
             }
-
             $this->_cache($resourceUri, (string)$this->_model, $title);
         } else {
             // cached title
@@ -408,24 +416,19 @@ class OntoWiki_Model_TitleHelper
         if (null !== $this->_store) {
             $execObject = $this->_store;
         }
-
         // get results for all queries
         $queries = $this->getTitleQueries();
 
-        foreach ($queries as $resourceUri => $currentQuery) {
-            if (isset($this->_titleQueryResults[$resourceUri])) {
-                continue;
-            }
+        foreach ($queries as $key => $currentQuery) {
             $queryResults = $execObject->sparqlQuery($currentQuery, array('result_format' => 'extended'));
-            $this->_titleQueryResults[$resourceUri] = $queryResults;
+            $this->_titleQueryResults[] = $queryResults;
         }
         if (defined('_OWDEBUG')) {
             $numQueries = count($queries);
 
             $logger = OntoWiki::getInstance()->logger;
-
             $logger->info(
-                'TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.'
+                'TitleHelper: ' . $numQueries . ' queries executed.'
             );
         }
 
@@ -441,22 +444,21 @@ class OntoWiki_Model_TitleHelper
     {
         $currentQuery = null;
         $queries      = array();
-        $select       = 'SELECT DISTINCT ?property ?value';
-        if ($this->_resources === null) {
+        $select       = 'SELECT DISTINCT ?subject ?property ?value';
+        if (empty($this->_resources)) {
             return array();
         }
-        foreach ($this->_resources as $resourceUri) {
-            $where = 'WHERE {'
-                . $this->_getTitleWhere($resourceUri)
-                . '}';
 
+        $resourcesChunks = array_chunk($this->_resources, 50);
+
+        foreach ($resourcesChunks as $key => $chunk) {
+            $where = 'WHERE {' .
+            $this->_getTitleWhere($chunk) . '}';
             $currentQuery = new Erfurt_Sparql_SimpleQuery();
             $currentQuery->setProloguePart($select)
                 ->setWherePart($where);
-
-            $queries[$resourceUri] = $currentQuery;
+            $queries[] = $currentQuery;
         }
-
         return $queries;
     }
 
@@ -508,7 +510,7 @@ class OntoWiki_Model_TitleHelper
             return;
         }
 
-        foreach ($titleResults as $resourceUri => $titleQueryResult) {
+        foreach ($titleResults as $key => $titleQueryResult) {
             // fetch result
 
             if (!(isset($titleQueryResult['head']) && isset($titleQueryResult['results']['bindings']))) {
@@ -518,14 +520,21 @@ class OntoWiki_Model_TitleHelper
             $head        = $queryResult['head'];
             $bindings    = $queryResult['results']['bindings'];
 
+            if (empty($bindings)) {
+                return;
+            }
+
             if (defined('_OWDEBUG')) {
                 $logger = OntoWiki::getInstance()->logger;
 
                 $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
             }
-            foreach ($bindings as $row) {
-                // get the resource URI
-                $currentResource = $resourceUri;
+
+            foreach ($bindings as $key => $row) {
+                if (empty($row)) {
+                    continue;
+                }
+                $currentResource = $row['subject']['value'];
                 $currentProperty = $row['property']['value'];
                 $titleValue      = $row['value']['value'];
 
@@ -549,30 +558,41 @@ class OntoWiki_Model_TitleHelper
                 if (!array_key_exists($titleLang, $this->_resourceTitles[$currentResource][$currentProperty])) {
                     $this->_resourceTitles[$currentResource][$currentProperty][$titleLang] = $titleValue;
                 }
+                unset($this->_resources[$currentResource]);
             }
         }
     }
 
     /**
-     * Returns graph patterns for all title properties for a resource URI.
+     * Returns graph patterns for all title properties for a list of resource URIs.
      *
-     * @param string $resourceUri the resource URI
+     * @param array $resources the array of resources
      *
      * @return string
      */
-    protected function _getTitleWhere($resourceUri)
+    protected function _getTitleWhere($resources = array())
     {
-        $where = 'OPTIONAL { <' . $resourceUri . '> ?property ?value . }';
+        $where = 'OPTIONAL { ?subject ?property ?value . }';
 
-        // build title property sameTerm filters
+        // build title property filters
         $propertyFilters = array();
         foreach ($this->_titleProperties as $uri) {
-            array_push($propertyFilters, 'sameTerm(?property, <' . $uri . '>)');
+            array_push($propertyFilters, '(?property = <' . $uri . '>)');
         }
         if (!empty($propertyFilters)) {
             $where .= PHP_EOL . 'FILTER(' . implode(' || ', $propertyFilters) . ')';
         }
 
+        // build resource subject filters
+        $resourceFilters = array();
+        foreach ($resources as $uri) {
+            array_push($resourceFilters, '(?subject = <' . $uri . '>)');
+            unset($this->_resources[$uri]);
+            
+        }
+        if (!empty($resourceFilters)) {
+            $where .= PHP_EOL . 'FILTER(' . implode(' || ', $resourceFilters) . ')';
+        }
         return $where;
     }
 
