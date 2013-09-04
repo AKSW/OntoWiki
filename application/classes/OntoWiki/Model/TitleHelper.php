@@ -188,7 +188,7 @@ class OntoWiki_Model_TitleHelper
             // throw exeption in debug mode only
             if (defined('_OWDEBUG')) {
                 $logger = OntoWiki::getInstance()->logger;
-                $logger->error('Supplied resource ' . htmlentities('<' . $resource . '>') . ' is not a valid URI.');
+                $logger->info('Supplied resource ' . htmlentities('<' . $resource . '>') . ' is not a valid URI.');
             }
         }
         return $this;
