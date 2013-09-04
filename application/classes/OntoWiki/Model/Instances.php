@@ -1229,7 +1229,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             foreach ($this->_shownProperties as $key => $property) {
                 $propertyUri = $property['uri'];
                 $variable = $property['var']->getName();
-                $propertyResource = $pool->getResource($resourceUri, (string)$this->_model);
+                $propertyResource = $pool->getResource($propertyUri, (string)$this->_model);
 
                 //now we have to extract the values according the current property from the resource
                 $values = $resource->getMemoryModel()->getValues($resourceUri, $propertyUri);
@@ -1472,7 +1472,43 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         return $query;
     }
 
+    /**
+     * Returns a list of properties used by the current list of resources.
+     * Original Name was getValues()
+     * @return array
+     */
     public function getAllProperties($inverse = false)
+    {
+        if ((empty($this->_resources) && $this->_resourcesUptodate) || ($inverse == true)) {
+            return array();
+        }
+
+        $pool = Erfurt_App::getInstance()->getResourcePool();
+        $propertyUris = array();
+
+        $memoryModel = new Erfurt_Rdf_MemoryModel();
+
+        foreach ($this->_resources as $item) {
+            $resourceUri = $item['value'];
+            $resource = $pool->getResource($resourceUri, (string)$this->_model);
+            $resourceDescription = $resource->getDescription();
+            $memoryModel->addStatements($resourceDescription);
+        }
+        $predicates = $memoryModel->getPredicates();
+
+        foreach ($predicates as $uri) {
+            $propertyUris[] = array('uri' => $uri);
+        }
+        return $this->convertProperties($propertyUris);
+    }
+
+    /**
+     * Returns the list of properties used by all resources at once.
+     * This method generate one SPARQL query .
+     * Original Name was getAllProperties()
+     * @return array
+     */
+    public function getAllPropertiesBySingleQuery($inverse = false)
     {
         if (empty($this->_resources) && $this->_resourcesUptodate) {
             return array();
