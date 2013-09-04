@@ -1,0 +1,14 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?uri ?literal ?domain ?type
+FROM <http://localhost/Testmodels>
+WHERE {                    
+  ?uri ?v1 ?literal .
+  OPTIONAL {?uri rdfs:domain ?domain .}
+  FILTER (                        
+    isURI(?uri)                         
+    && isLITERAL(?literal)                         
+    && REGEX(?literal, "Marti", "i")
+    && REGEX(?literal, "^.{1,50}$"))
+  }
+LIMIT 3

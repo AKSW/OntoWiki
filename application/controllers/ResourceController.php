@@ -270,6 +270,9 @@ class ResourceController extends OntoWiki_Controller_Base
             $toolbar->appendButton(
                 OntoWiki_Toolbar::EDITADD, array('name' => 'Add Instance', 'class' => 'init-resource')
             );
+            $toolbar->appendButton(
+                OntoWiki_Toolbar::EDITADD, array('name' => 'Edit In Choreopgrahy', 'class' => 'edit-in-choreopgrahy')
+            );
             // ->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
             // ->appendButton(OntoWiki_Toolbar::SEPARATOR)
             // ->appendButton(OntoWiki_Toolbar::DELETE, array('name' => 'Delete Selected', 'class' => 'submit'))
