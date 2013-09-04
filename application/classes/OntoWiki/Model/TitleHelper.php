@@ -38,7 +38,7 @@ class OntoWiki_Model_TitleHelper
      * @var OntoWiki_Model_TitleHelper
      */
     private static $_instance = null;
-    
+
     /**
      * The languages to consider for title properties.
      *
@@ -187,9 +187,8 @@ class OntoWiki_Model_TitleHelper
         } else {
             // throw exeption in debug mode only
             if (defined('_OWDEBUG')) {
-                throw new OntoWiki_Model_Exception(
-                    'Supplied resource ' . htmlentities('<' . $resource . '>') . ' is not a valid URI.'
-                );
+                $logger = OntoWiki::getInstance()->logger;
+                $logger->error('Supplied resource ' . htmlentities('<' . $resource . '>') . ' is not a valid URI.');
             }
         }
         return $this;
@@ -272,13 +271,11 @@ class OntoWiki_Model_TitleHelper
         $titles = $this->_resources[$resourceUri];
         $found = false;
         foreach ($this->_titleProperties as $titleProperty) {
-            foreach ($this->_languages as $language)
-            if (!empty($titles[$titleProperty][$language]) && $found == false) {
-                $title = $titles[$titleProperty][$language];
-                $found = true;
-            }
-            if ($found == true) {
-                break;
+            foreach ($this->_languages as $language) {
+                if (!empty($titles[$titleProperty][$language]) && $found == false) {
+                    $title = $titles[$titleProperty][$language];
+                    break;
+                }
             }
         }
         return $title;
@@ -298,7 +295,7 @@ class OntoWiki_Model_TitleHelper
      *
      * @return void
      */
-    private function _receiveTitles() 
+    private function _receiveTitles()
     {
         //first we check if there are resourceUris without a title representation
         $toBeReceived = array();
@@ -313,7 +310,8 @@ class OntoWiki_Model_TitleHelper
         //If we dont find titles then we extract them from LocalName
         foreach ($this->_resources as $resourceUri => $resource) {
             if ($resource == null) {
-                $this->_resources[$resourceUri]["localname"]["localname"] = $this->_extractTitleFromLocalName($resourceUri);
+                $this->_resources[$resourceUri]["localname"]["localname"]
+                    = $this->_extractTitleFromLocalName($resourceUri);
             }
         }
     }
@@ -322,8 +320,8 @@ class OntoWiki_Model_TitleHelper
      * fetches all titles according the given array if Uris
      *
      * @param array resourceUris
-     */    
-    private function _fetchTitlesFromResourcePool($resourceUris) 
+     */
+    private function _fetchTitlesFromResourcePool($resourceUris)
     {
         $resourcePool = Erfurt_App::getInstance()->getResourcePool();
         $resources = array();
@@ -338,7 +336,7 @@ class OntoWiki_Model_TitleHelper
         foreach ($resources as $resourceUri => $resource) {
             $resourceDescription = $resource->getDescription();
             $memoryModel->addStatements($resourceDescription);
-            $found = false ;
+            $found = false;
             foreach ($this->_titleProperties as $titleProperty) {
                 $values = $memoryModel->getValues($resourceUri, $titleProperty);
                 foreach ($values as $value) {
@@ -358,8 +356,8 @@ class OntoWiki_Model_TitleHelper
      *
      * @param string resourceUri
      * @return string title
-     */    
-    private function _extractTitleFromLocalName($resourceUri) 
+     */
+    private function _extractTitleFromLocalName($resourceUri)
     {
         $title = OntoWiki_Utils::contractNamespace($resourceUri);
         // not even namespace found?
@@ -367,7 +365,7 @@ class OntoWiki_Model_TitleHelper
             $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
         }
         return $title;
-    }   
+    }
 
     private function _cache($resourceUri, $graphUri, $newValue = null)
     {
