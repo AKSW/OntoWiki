@@ -340,6 +340,11 @@ class OntoWiki_Menu_Registry
                 'Edit Resource',
                 'javascript:editResourceFromURI(\'' . (string)$resource . '\')'
             );
+            
+            $resourceMenu->appendEntry(
+                'Edit Resource in Choreography',
+                'javascript:editResourceInChoreography(\'' . (string)$resource . '\')'
+            );
 
             // Delete resource option
             $url = new OntoWiki_Url(

@@ -39,6 +39,9 @@
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/clickmenu.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>styles/jquery-ui.css" type="text/css" media="screen" />
 
+    <!-- widgetchoreo -->
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/jquery-ui/css/no-theme/jquery-ui-1.10.0.custom.css" type="text/css" media="screen" />
+
     <!-- additional ontowiki stylesheets -->
     <?php foreach($this->themeExtraStyles as $stylesheet_extra): ?>
         <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>../<?php echo trim($stylesheet_extra); ?>/styles/default.css" type="text/css" media="screen" />
@@ -59,7 +62,12 @@
 
     <!-- jQuery -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.js"></script>
-    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script>
+    <!--script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery-ui.js"></script-->
+    
+    <!-- use widgetchoreography -->
+    <!--script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/jquery-1.9.1.js"></script!-->
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/jquery-ui/js/jquery-ui-1.10.0.custom.js"></script>
+    
 
     <!-- included js libraries -->
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.json.js"></script>
@@ -70,15 +78,15 @@
     <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>scripts/libraries/jquery.rdfquery.rdfa-1.0.js"></script>
 
     <!-- widgetchoreography -->
-<link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>widgetchoreography/core/style.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" />
-<script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/bootstrap/js/bootstrap.js"></script>
-<script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/markitup/jquery.markitup.js"></script>
-<script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/markitup/sets/default/set.js"></script>
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>widgetchoreography/core/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/markitup/skins/simple/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/markitup/sets/default/style.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/markitup/jquery.markitup.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/lib/markitup/sets/default/set.js"></script>
+    <script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/core/main.js"></script>
 
-<script type="text/javascript" src="<?php echo $this->themeUrlBase ?>widgetchoreography/core/main.js"></script>
-
-    
 
     <!-- RDFa widgets -->
     <!--script type="text/javascript" id="RDFauthorScript" src="<?php echo $this->libraryUrlBase ?>RDFauthor/src/rdfauthor.js"></script-->
@@ -209,7 +217,7 @@
     ?><!-- <?php echo sprintf($this->_('Rendered in %1$d ms using %2$d SPARQL queries.'), $time, $queryCount) ?> --><?php } ?>
 
     <!-- WIDGET CHOREOGRAPHY DEMO -->
-    <!--div style="padding: 50px;" class="container"-->
+    <div style="padding: 50px;" class="container">
       <div id="rdfauthor-view" class="modal hide fade consumer-mode">
         <div class="modal-header">
           <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
@@ -962,7 +970,7 @@
        <a href="#" data-dismiss="modal" aria-hidden="true" class="btn">Cancel</a>
        <a id="btn-addProperty" href="#" class="btn btn-primary">Add</a>
      </div>
-   <!--/div--!> 
+   </div> 
 
 </body>
 </html>

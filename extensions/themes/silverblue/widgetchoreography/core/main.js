@@ -285,13 +285,21 @@ function addObject(property) {
 }
 
 $(document).ready(function() {
-
+  // demo hack
+  $('#application').css('z-index', '1000');
+  // disabled because of demo bug with ontowiki
   // restore choreography
-  restoreChoreography();
+  //restoreChoreography();
 
   initTypeahead();
   storeSize();
-  $('#rdfauthor-view').resizable().draggable({
+  
+  $('#rdfauthor-view').resizable({ 
+      alsoResize: ".modal-body",
+      minHeight: 200
+    });
+  
+  $('#rdfauthor-view').draggable({
     handle: '.modal-header',
     cursor: 'move'
   });
@@ -346,7 +354,7 @@ $(document).ready(function() {
     ]
   };
 
-  $("#markItUp").markItUp(markItUpSettings);
+  $("#markItUp").markItUp(markItUpSettings).css('min-width', '0');
   // $( ".portlet" )
     // .addClass( "ui-widget ui-widget-content ui-corner-all" )
     // .find( ".portlet-header" )
@@ -613,12 +621,13 @@ $(document).ready(function() {
     $(this).parens('.btn-group').addClass('open');
   });
 
+
   $('.portlet .image').parents('.input-prepend').popover({
     trigger: 'hover',
     placement: 'top',
     html: true,
     title: 'Preview',
-    content: '<img src="img/leipzig2.gif" />'
+    content: '<img src="' + themeUrlBase + 'widgetchoreography/img/leipzig2.gif" />'
   });
 
 

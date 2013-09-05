@@ -571,6 +571,30 @@ function editResourceFromURI(resource) {
 }
 
 /**
+ * Edit Resource In Choreography Mode (Demo)
+ */
+function editResourceInChoreography(resource) {
+  switch(resource) {
+    case 'http://aksw.org/ClemensHoffmann':
+      console.log('resource', resource);
+      break;
+    default:
+      console.log('default', resource);
+  }
+  $('#rdfauthor-view').modal('show').removeClass('hide');
+  removeResourceMenus();
+  
+  console.log(themeUrlBase);
+  /*$('.portlet .image').parents('.input-prepend').popover({
+    trigger: 'hover',
+    placement: 'top',
+    html: true,
+    title: 'Preview',
+    content: '<img src="' + themeUrlBase + 'widgetchoreography/img/leipzig2.gif" />'
+  });*/
+}
+
+/**
  * Creates a new internal OntoWiki URL for the given resource URI.
  * @return string
  */

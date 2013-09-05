@@ -794,5 +794,6 @@ $(document).ready(function() {
     $(document).on('click', '.edit-in-choreopgrahy', function(event) {
         $('#rdfauthor-view').modal('show').removeClass('hide');
     });
+    
 }) // $(document).ready
 

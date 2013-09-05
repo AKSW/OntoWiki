@@ -89,6 +89,8 @@
   z-index: auto !important;
 }
 
+
+
 #rdfauthor-view .property-minimized {
   /* height:auto !important; */
 }
@@ -205,3 +207,12 @@
 /* .navbar .nav > li { */
 /* z-index: 10000; */
 /* } */
+
+/** fix for demo */
+/*.modal-backdrop  {
+	z-index: 99999 !important;
+}
+
+#rdfauthor-view {
+	z-index: 999999 !important;
+}*/
