@@ -1237,6 +1237,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
                     //initialising the value with the original content
                     $revisedValue = $value['value'];
+                    $link = null;
 
                     //but we have to do something specific if the value is a resource
                     if ($value['type'] == 'uri') {
