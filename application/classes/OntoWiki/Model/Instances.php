@@ -1500,11 +1500,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $resourceDescription = $resource->getDescription(array('fetchInverse' => true));
                 $memoryModel->addStatements($resourceDescription);
                 //remove s from memory model to extract only inverse relations
-                //var_dump($memoryModel);die;
                 $memoryModel->removeS($resourceUri);
-                
             }
-            
         }
         $predicates = $memoryModel->getPredicates();
 
