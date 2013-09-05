@@ -1480,7 +1480,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     public function getAllProperties($inverse = false)
     {
-        if ((empty($this->_resources) && $this->_resourcesUptodate) || ($inverse == true)) {
+        if ((empty($this->_resources) && $this->_resourcesUptodate)) {
             return array();
         }
 
@@ -1492,7 +1492,12 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         foreach ($this->_resources as $item) {
             $resourceUri = $item['value'];
             $resource = $pool->getResource($resourceUri, (string)$this->_model);
-            $resourceDescription = $resource->getDescription();
+
+            if ($inverse == false) {
+                $resourceDescription = $resource->getDescription();
+            } else {
+                $resourceDescription = $resource->getDescription(array('fetchInverse' => true));
+            }
             $memoryModel->addStatements($resourceDescription);
         }
         $predicates = $memoryModel->getPredicates();
