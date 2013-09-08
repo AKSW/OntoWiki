@@ -306,7 +306,7 @@ $(document).ready(function() {
   $('.portlet-container').sortable({
     disabled : true
   }).disableSelection();
-  $('.modal-header button').tooltip();
+  //$('.modal-header button').tooltip();
 
   // disable input and textarea
   // $('#rdfauthor-view input, #rdfauthor-view textarea').prop('disabled', true);
@@ -621,14 +621,14 @@ $(document).ready(function() {
     $(this).parens('.btn-group').addClass('open');
   });
 
-
-  $('.portlet .image').parents('.input-prepend').popover({
-    trigger: 'hover',
-    placement: 'top',
-    html: true,
-    title: 'Preview',
-    content: '<img src="' + themeUrlBase + 'widgetchoreography/img/leipzig2.gif" />'
-  });
+  // disabled for demo
+  // $('.portlet .image').parents('.input-prepend').popover({
+    // trigger: 'hover',
+    // placement: 'top',
+    // html: true,
+    // title: 'Preview',
+    // content: '<img src="' + themeUrlBase + 'widgetchoreography/img/leipzig2.gif" />'
+  // });
 
 
   $(document).on('click', '.modal-header button', function(event) {

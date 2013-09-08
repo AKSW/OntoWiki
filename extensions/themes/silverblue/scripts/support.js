@@ -570,20 +570,78 @@ function editResourceFromURI(resource) {
     });
 }
 
+
+// insert element to index
+jQuery.fn.insertAt = function(index, element) {
+  var lastIndex = this.children().size()
+  if (index < 0) {
+    index = Math.max(0, lastIndex + 1 + index)
+  }
+  this.append(element)
+  if (index < lastIndex) {
+    this.children().eq(index).before(this.children().last())
+  }
+  return this;
+}
+
 /**
  * Edit Resource In Choreography Mode (Demo)
  */
 function editResourceInChoreography(resource) {
-  switch(resource) {
-    case 'http://aksw.org/ClemensHoffmann':
-      console.log('resource', resource);
-      break;
-    default:
-      console.log('default', resource);
-  }
+  console.log('resource', resource);
+  var resource = $('#rdfauthor-view .tab-content div[name="'+ resource +'"]');
+  var index = resource.index();
+  console.log('index', index);
+  //$('#rdfauthor-view .tabbable ul .tabs').eq(index).click();
+  
+  $('#rdfauthor-view .tab-content .tab-pane').each(function(i) {
+    console.log(i);
+    if (index != i) {
+      $(this).hide();
+    }
+  });
+  
+  $('#rdfauthor-view .tabbable ul li.dropdown').each(function(i) {
+    console.log(i);
+    if (index != i) {
+      $(this).find('a').hide();
+    } else {
+      $(this).addClass('active');
+      $(this).parent().prepend(this);
+      resource.parent().prepend(resource);
+    }
+  });
+  
+  
+  // switch(resource) {
+    // case 'http://aksw.org/ClemensHoffmann':
+      // console.log('resource', resource);
+      // $('#rdfauthor-view .tabbable ul li.dropdown').each(function(i) {
+        // console.log(i);
+        // if (index != i) {
+          // $(this).find('a').hide();
+        // } else {
+          // $(this).addClass('active');
+        // }
+      // });
+      // break;
+    // default:
+      // console.log('default', resource);
+  // }
   $('#rdfauthor-view').modal('show').removeClass('hide');
   removeResourceMenus();
-  
+  $('#rdfauthor-view').on('hidden', function() {
+    console.log('hidden');
+    $('#rdfauthor-view .tabbable ul li.dropdown').each(function(i) {
+      $(this).find('a').show();
+    });
+    
+    $('#rdfauthor-view .tab-content .tab-pane').each(function(i) {
+      $(this).show();
+    });
+    // $('#rdfauthor-view .tab-content div[name="'+ resource +'"]').eq(0).remove();
+    //$('#rdfauthor-view .tab-content').insertAt(index,resource);
+  });
   console.log(themeUrlBase);
   /*$('.portlet .image').parents('.input-prepend').popover({
     trigger: 'hover',
