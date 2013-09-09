@@ -693,6 +693,46 @@ $(document).ready(function() {
       $('input[name='+object+']').val(value);
     }
   });
+  
+  $('#rdfauthor-view').on('click', '.add-choreography li a', function(event) {
+    var choreoUri = $(this).attr('name');
+    var resourceUri = $(this).parents('.dropdown').find('a').attr('name');
+    console.log('add choreography', choreoUri);
+    console.log('resource uri', resourceUri);
+    // copy available choreo
+    var choreoIndex = 0;
+    var choreoLength = $('#rdfauthor-view .modal-body .portlet-container div[name="' + choreoUri + '"]').length;
+    var choreoEntryLengthTemp = 0;
+    var choreoDom = $('').html();
+    
+    $('#rdfauthor-view .modal-body .portlet-container div[name="' + choreoUri + '"]').each(function(i) {
+      choreoEntryLength = $(this).find('.property').length;
+      if (choreoEntryLength > choreoEntryLengthTemp) {
+        choreoEntryLengthTemp = choreoEntryLength;
+        choreoDom = $(this);
+      }
+      console.log('entry', i, choreoLength);
+      if (i == choreoLength-1) {
+        console.log('last entry', i+1, choreoLength);
+        choreoDom.find('input').val('').attr('placeholder', 'new object');
+         
+        choreoDom.find('.property').each(function(i) {
+          var singleObject = $(this).find('.object-listing .controls').children(".object").eq(0);
+          console.log(singleObject.html());
+          $(this).find('.object-listing .controls').children(".object").remove();
+          $(this).find('.object-listing .controls').append(singleObject);
+        }); 
+        $('#rdfauthor-view .tab-content div[name="' + resourceUri + '"]').children().append(choreoDom);
+      }
+    });
+    
+    console.log($('#rdfauthor-view .modal-body .portlet-container div[name="' + choreoUri + '"]').length);
+    
+    
+    
+    // close tab dropdown
+    $('#rdfauthor-view .modal-body .tabbable .nav-tabs li').removeClass('open');
+  });
 
   // $( ".portlet-entry" )
     // .addClass( "ui-widget ui-widget-content ui-corner-all" )
