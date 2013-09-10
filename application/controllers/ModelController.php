@@ -860,9 +860,10 @@ class ModelController extends OntoWiki_Controller_Base
      */
     private function _doImportActionRedirect($modelUri)
     {
-        $post    = $this->_request->getPost();
-        $id      = $post['importAction'];
-        $actions = $this->_getImportActions();
+        $post          = $this->_request->getPost();
+        $id            = $post['importAction'];
+        $importOptions = $post['importOptions'];
+        $actions       = $this->_getImportActions();
 
         if (isset($actions[$id])) {
             $controller = $actions[$id]['controller'];
@@ -877,9 +878,10 @@ class ModelController extends OntoWiki_Controller_Base
                 'controller' => $controller,
                 'action' => $action
             ),
-            array('m')
+            array('m', 'importOptions')
         );
         $url->setParam('m', $modelUri);
+        $url->setParam('importOptions', $importOptions);
 
         $this->_redirect($url, array('code' => 302));
     }
