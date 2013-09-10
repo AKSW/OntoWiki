@@ -522,7 +522,7 @@ class ModelController extends OntoWiki_Controller_Base
 
                 // add label
                 $additions = new Erfurt_Rdf_MemoryModel();
-                if (isset($post['title'])) {
+                if (isset($post['title']) && trim($post['title']) != '') {
                     $additions->addAttribute($newModelUri, EF_RDFS_LABEL, $post['title']);
                 }
                 $model->addMultipleStatements($additions->getStatements());
