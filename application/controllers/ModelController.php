@@ -545,7 +545,8 @@ class ModelController extends OntoWiki_Controller_Base
             try {
                 $this->_erfurt->getStore()->deleteModel($model);
 
-                if ((null !== $this->_owApp->selectedModel)
+                if (
+                    (null !== $this->_owApp->selectedModel)
                     && ($this->_owApp->selectedModel->getModelIri() === $model)
                 ) {
                     $this->_owApp->selectedModel = null;
@@ -737,7 +738,8 @@ class ModelController extends OntoWiki_Controller_Base
                     . '     <' . (string)$resource . '> a <http://xmlns.com/foaf/0.1/PersonalProfileDocument>'
                     . ' }';
                 $q     = Erfurt_Sparql_SimpleQuery::initWithString($query);
-                if ($this->_owApp->extensionManager->isExtensionActive('foafprofileviewer')
+                if (
+                    $this->_owApp->extensionManager->isExtensionActive('foafprofileviewer')
                     && $store->sparqlAsk($q) === true
                 ) {
                     $this->view->showFoafLink = true;
