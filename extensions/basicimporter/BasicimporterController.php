@@ -87,22 +87,41 @@ class BasicimporterController extends OntoWiki_Controller_Component
     public function rdfwebimportAction()
     {
         $this->view->placeholder('main.window.title')->set('Import RDF from the Web');
+        $this->addModuleContext('main.window.basicimporter.rdfwebimport');
 
         if ($this->_request->isPost()) {
             $postData = $this->_request->getPost();
-            $url      = $postData['location'] != '' ? $postData['location'] : (string)$this->_model;
-            $filetype = 'rdfxml';
-            $locator  = Erfurt_Syntax_RdfParser::LOCATOR_URL;
+            $location = $postData['location'] != '' ? $postData['location'] : (string)$this->_model;
+        } else {
+            // walkthrough paramater is added by the SelectorModule
+            if ($this->_request->getParam('importOptions') == 'walkthrough') {
+                // use model uri as location
+                $location = $this->_request->getParam('m');
+            }
+        }
 
+        if (isset($location)) {
             try {
-                $this->_import($url, $filetype, $locator);
+                $filetype = 'rdfxml';
+                $locator  = Erfurt_Syntax_RdfParser::LOCATOR_URL;
+                $this->_import($location, $filetype, $locator);
             } catch (Exception $e) {
                 $message = $e->getMessage();
                 $this->_owApp->appendErrorMessage($message);
                 return;
             }
+            $this->_owApp->appendSuccessMessage('Data from ' . $location . ' successfully imported.');
 
-            $this->_owApp->appendSuccessMessage('Data from ' . $url . ' successfully imported.');
+            // redirect to model info
+            if ($this->_request->getParam('importOptions') == 'walkthrough') {
+                $url = new OntoWiki_Url(
+                    array(
+                        'controller' => 'model',
+                        'action' => 'info'
+                    )
+                );
+                $this->_redirect($url, array('code' => 302));
+            }
         }
     }
 

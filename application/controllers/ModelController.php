@@ -522,7 +522,7 @@ class ModelController extends OntoWiki_Controller_Base
 
                 // add label
                 $additions = new Erfurt_Rdf_MemoryModel();
-                if (isset($post['title'])) {
+                if (isset($post['title']) && trim($post['title']) != '') {
                     $additions->addAttribute($newModelUri, EF_RDFS_LABEL, $post['title']);
                 }
                 $model->addMultipleStatements($additions->getStatements());
@@ -545,7 +545,8 @@ class ModelController extends OntoWiki_Controller_Base
             try {
                 $this->_erfurt->getStore()->deleteModel($model);
 
-                if ((null !== $this->_owApp->selectedModel)
+                if (
+                    (null !== $this->_owApp->selectedModel)
                     && ($this->_owApp->selectedModel->getModelIri() === $model)
                 ) {
                     $this->_owApp->selectedModel = null;
@@ -737,7 +738,8 @@ class ModelController extends OntoWiki_Controller_Base
                     . '     <' . (string)$resource . '> a <http://xmlns.com/foaf/0.1/PersonalProfileDocument>'
                     . ' }';
                 $q     = Erfurt_Sparql_SimpleQuery::initWithString($query);
-                if ($this->_owApp->extensionManager->isExtensionActive('foafprofileviewer')
+                if (
+                    $this->_owApp->extensionManager->isExtensionActive('foafprofileviewer')
                     && $store->sparqlAsk($q) === true
                 ) {
                     $this->view->showFoafLink = true;
@@ -858,9 +860,10 @@ class ModelController extends OntoWiki_Controller_Base
      */
     private function _doImportActionRedirect($modelUri)
     {
-        $post    = $this->_request->getPost();
-        $id      = $post['importAction'];
-        $actions = $this->_getImportActions();
+        $post          = $this->_request->getPost();
+        $id            = $post['importAction'];
+        $importOptions = $post['importOptions'];
+        $actions       = $this->_getImportActions();
 
         if (isset($actions[$id])) {
             $controller = $actions[$id]['controller'];
@@ -875,9 +878,10 @@ class ModelController extends OntoWiki_Controller_Base
                 'controller' => $controller,
                 'action' => $action
             ),
-            array('m')
+            array('m', 'importOptions')
         );
         $url->setParam('m', $modelUri);
+        $url->setParam('importOptions', $importOptions);
 
         $this->_redirect($url, array('code' => 302));
     }
