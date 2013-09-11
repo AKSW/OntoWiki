@@ -58,7 +58,7 @@ class OntoWiki_Model_TitleHelper
      *
      * @var array
      */
-    protected $_resources = null;
+    protected $_resources = array();
 
     /**
      * Resource query object
@@ -286,7 +286,7 @@ class OntoWiki_Model_TitleHelper
      */
     public function reset()
     {
-        $this->_resources      = null;
+        $this->_resources = array();
     }
 
     /**

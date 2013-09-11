@@ -68,7 +68,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     /**
      * all resources
      */
-    protected $_resources;
+    protected $_resources = array();
 
     /**
      * @var bool
