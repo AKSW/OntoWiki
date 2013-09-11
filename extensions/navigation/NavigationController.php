@@ -892,7 +892,7 @@ class NavigationController extends OntoWiki_Controller_Component
         );*/
         // add filter
         $elements[] = new Erfurt_Sparql_Query2_Filter(
-            new Erfurt_Sparql_Query2_sameTerm($searchVar, new Erfurt_Sparql_Query2_IriRef($uri))
+            new Erfurt_Sparql_Query2_Equals($searchVar, new Erfurt_Sparql_Query2_IriRef($uri))
         );
         $query->addElements($elements);
         $query->setLimit(1);
