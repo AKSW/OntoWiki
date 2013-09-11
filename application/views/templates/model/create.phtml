@@ -1,163 +1,70 @@
 <?php
 
 /**
- * OntoWiki model import template
- *
- * @author Norman Heino <norman.heino@gmail.com>
+ * OntoWiki create and add model template
  */
 
 ?>
-<?php if (!isset($this->errorFlag) || $this->errorFlag === false): ?>
-<input type="hidden" name="referer" value="<?php echo $this->referer ?>">
+<?php if ($this->formName == 'createmodel') : ?>
 <fieldset>
-    <legend><?php echo $this->title ?></legend>
+<legend><?php echo $this->_('Basic information'); ?></legend>
     <div>
-        <?php if ($this->has('modelTitle')): ?>
-            <label><?php echo $this->_('Knowledge Base') ?></label>
-            <input type="text" class="text" value="<?php echo $this->modelTitle ?>" readonly="readonly" />
-            <input type="hidden" name="modelUri" value="<?php echo $this->modelUri ?>" />
-        <?php else: ?>
-            <label for="model-input"><?php echo $this->_('Knowledge Base URI') ?></label>
-            <?php if (!empty($this->modelUri)): ?>
-                <input type="text" class="text" id="model-input" name="modelUri" value="<?php echo $this->modelUri ?>" />
-            <?php else: ?>
-                <input type="text" class="text" id="model-input" name="modelUri" />
-            <?php endif; ?>
-            <br class="clearall" />
-        <?php endif; ?>
+        <label><?php echo $this->_('Title') .' '. $this->_('(leave blank if your import provides the name)') ?></label>
+        <input type="text" class="text" name="title" />
     </div>
-
     <div>
-        <?php // if model URI is set, don't allow empty model creation ?>
-        <label class="checkboxradio" for="r01">
-            <input type="radio" class="radio" name="activeForm" id="r01" value="empty" />
-            <?php echo $this->_('Create an Empty Knowledge Base') ?>
-        </label>
-        <br class="clearall" />
-
-        <?php if (ini_get('allow_url_fopen')): ?>
-            <label class="checkboxradio" for="r02">
-                <input type="radio" class="radio" name="activeForm" id="r02" value="import" />
-                <?php echo $this->_('Import From the Web') ?>
-            </label>
-            <br class="clearall" />
-        <?php endif; ?>
-
-        <label class="checkboxradio" for="r03">
-            <input type="radio" class="radio" name="activeForm" id="r03" value="upload" />
-            <?php echo $this->_('Upload a File') ?>
-        </label>
-        <br class="clearall" />
-
-        <label class="checkboxradio" for="r04">
-            <input type="radio" class="radio" name="activeForm" id="r04" value="paste" />
-            <?php echo $this->_('Paste Source') ?>
-        </label>
+        <label><?php echo $this->_('URI (leave blank for auto creation)') ?></label>
+        <input type="text" class="text" name="modeluri" />
         <br class="clearall" />
     </div>
-
-    <?php if (empty($this->modelUri)): ?>
-        <?php // if model URI is set, don't allow empty model creation ?>
-        <!-- empty model -->
-        <fieldset class="activeForm" id="empty">
-            <legend><?php echo $this->_('Create an Empty Knowledge Base') ?></legend>
-            <!--div>
-                <label for="base-input"><?php echo $this->_('Base URI') ?></label>
-                <input type="text" class="text" id="base-input" name="baseUri" value="<?php echo $this->baseUri ?>" />
-                <br class="clearall" />
-            </div>
-            <div>
-                <label for="type-select"><?php echo $this->_('Type') ?></label>
-                <select name="type" id="type-select">
-                    <option value="owl" selected="selected">OWL</option>
-                    <option value="rdfs">RDF(S)</option>
-                </select>
-                <br class="clearall" />
-            </div-->
-        </fieldset>
-    <?php endif; ?>
-
-    <!-- web import -->
-    <?php if (ini_get('allow_url_fopen')): ?>
-        <fieldset class="activeForm" id="import">
-            <legend><?php echo $this->_('Import From the Web') ?></legend>
-            <div>
-                <p class="messagebox info">
-                    <?php echo $this->_('Enter the URL where the model should be downloaded from. If you leave the field empty the model URI will be used.') ?>
-                </p>
-                <label for="location-input"><?php echo $this->_('Location') ?></label>
-                <input type="text" class="text" id="location-input" name="location" />
-                <br class="clearall"/>
-            </div>
-        </fieldset>
-    <?php endif; ?>
-
-    <!-- file upload -->
-    <fieldset class="activeForm" id="upload">
-        <legend><?php echo $this->_('Upload a File') ?></legend>
-        <div>
-        <label for="filetype-upload-select"><?php echo $this->_('File Type') ?></label>
-        <select name="filetype-upload" id="filetype-upload-select">
-            <option value="auto"><?php echo $this->_('Autodetect') ?></option>
-            <?php foreach ($this->supportedFormats as $key => $name): ?>
-                <option value="<?php echo $key ?>"><?php echo $name ?></option>
-            <?php endforeach; ?>
-        </select>
-        <br class="clearall" />
-        </div>
-        <div>
-            <label for="file-input">
-                <?php echo sprintf($this->_('File (max. %1$sB)'), preg_replace('/([kMG])/', ' $1', ini_get('upload_max_filesize'))) ?>
-            </label>
-            <input type="file" id="file-input" name="source" />
-            <br class="clearall" />
-        </div>
-    </fieldset>
-
-    <!-- source paste -->
-    <fieldset class="activeForm" id="paste">
-        <legend><?php echo $this->_('Paste Source') ?></legend>
-        <div>
-            <label for="filetype-paste-select"><?php echo $this->_('Format') ?></label>
-            <select name="filetype-paste" id="filetype-paste-select">
-                <?php foreach ($this->supportedFormats as $key => $name): ?>
-                    <option value="<?php echo $key ?>"><?php echo $name ?></option>
-                <?php endforeach; ?>
-            </select>
-            <br class="clearall" />
-            <label for="code-input"><?php echo $this->_('Source Code') ?></label>
-            <textarea class="code-input" name="paste"></textarea>
-            <br class="clearall">
-        </div>
-    </fieldset>
+        <input type="hidden" class="text" name="importOptions" />
 </fieldset>
 
-<script type="text/javascript">
-    toggleSubForm = function() {
-        var selValue = $(this).val();
-        var selName  = $(this).attr('name');
-
-        // hide all others
-        $('fieldset.' + selName + ':not(#' + selValue + ')').hide();
-        $('fieldset.' + selName).css('display', 'none');
-
-        // show the one selected
-        $('fieldset#' + selValue).fadeIn(effectTime);
-    }
-
-    $(document).ready(function() {
-        $('input[name=activeForm]').click(toggleSubForm);
-
-        // init form
-        $('fieldset.activeForm:not(#<?php echo $this->activeForm ?>)').hide();
-        $('input.radio[value=<?php echo $this->activeForm ?>]').attr('checked','checked');
-
-        // propagate model URI on change to base URI input
-        $('input#model-input').change(function() {
-            if ($.trim($('input#location-input').val()) == '') {
-                $('input#location-input').val($(this).val());
-            }
-        })
-    });
-</script>
+<!-- fieldset>
+    <legend><?php echo $this->_('Access Control and Visibility'); ?></legend>
+    <div>
+        <label class="checkboxradio" for="aclpublic">
+            <input type="radio" class="radio" name="acl" id="aclpublic" value="public" checked />
+            <?php echo $this->_('public (readable for everyone / writeable for admins)') ?>
+        </label>
+        <label class="checkboxradio" for="aclopen">
+            <input type="radio" class="radio" name="acl" id="aclopen" value="open" />
+            <?php echo $this->_('open (readable and writeable for everyone)') ?>
+        </label>
+        <label class="checkboxradio" for="aclclosed">
+            <input type="radio" class="radio" name="acl" id="aclclosed" value="closed" />
+            <?php echo $this->_('closed (readable and writeable for admins)') ?>
+        </label>
+    </div>
+</fieldset-->
 <?php endif; ?>
+
+<?php if (count($this->importActions) > 0) : ?>
+<fieldset>
+    <legend><?php echo $this->_('Data import actions'); ?></legend>
+    <div>
+    <p id="importAction-desc" class="messagebox info"><?php echo $this->_('Please use one of these options to import data from various sources or with different tranformations:') ?></p>
+<?php foreach ($this->importActions as $key => $action) : ?>
+        <label class="checkboxradio" for="import-<?php echo $key ?>">
+            <input
+                type="radio" class="radio importAction" name="importAction"
+                id="import-<?php echo $key ?>" value="<?php echo $key ?>"
+                <?php echo (isset($action['parameter']) ? $action['parameter'] : '' ) ?>
+                <?php echo (isset($action['description']) ? 'data-desc="' . $action['description'] .'"' : '' ) ?>
+            />
+            <?php echo $this->_($action['label']) ?>
+        </label>
+        <br class="clearall" />
+<?php endforeach; ?>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('input.importAction').change(function() {
+                data=$(this).data('desc');
+                $('#importAction-desc').text(data);
+            });
+        });
+    </script>
+</fieldset>
+<?php endif; ?>
+

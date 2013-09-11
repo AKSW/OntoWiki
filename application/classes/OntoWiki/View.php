@@ -40,7 +40,7 @@ class OntoWiki_View extends Zend_View
      */
     protected $_moduleCache = null;
 
-	/**
+    /**
      * Translation object
      *
      * @var Zend_Translate

@@ -1,0 +1,24 @@
+<?php
+/**
+ * OntoWiki LOV search template
+ */
+?>
+<p class="messagebox info">Find vocabularies by searching the <a href="http://lov.okfn.org/dataset/lov/">Linked Open Vocabularies (LOV) repository</a>.</p>
+<p>
+    <label
+        class="display-block onlyAural"
+        for="lov-search-input">Search in LOV Repository</label>
+    <input
+        id="lov-search-input"
+        class="text width99 inner-label"
+        type="text"
+        value=""
+        name="navigation-input"/>
+</p>
+<ul class="bullets-none separated has-contextmenus-block" id="lov-search-output">
+<li><a class="even lov-search-result" data-prefix="skos" data-namespace="http://www.w3.org/2004/02/skos/core#">SKOS Vocabulary</a></li>
+<li><a class="odd lov-search-result" data-prefix="foaf" data-namespace="http://xmlns.com/foaf/0.1/">Friend of a Friend (FOAF) vocabulary</a></li>
+<li><a class="even lov-search-result" data-prefix="sioc" data-namespace="http://rdfs.org/sioc/ns#">SIOC Core Ontology Namespace</a></li>
+<li><a class="odd lov-search-result" data-prefix="dc" data-namespace="http://purl.org/dc/elements/1.1/">Dublin Core Metadata Element Set, Version 1.1</a></li>
+<li><a class="even lov-search-result" data-prefix="dct" data-namespace="http://purl.org/dc/terms/">DCMI Metadata Terms - other</a></li>
+</ul>

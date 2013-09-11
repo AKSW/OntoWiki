@@ -39,16 +39,16 @@ if ($instances->hasData()) {
     } else {
         $statusBar = null;
     }
-    
+
     $itemsOnPage = count($instanceData);
-    
+
     $propertyInfo = $instances->getShownProperties();
-    
+
     $time = (microtime(true) - $start) * 1000;
-    
+
     $start     = $instances->getOffset() + 1;
     $translate = OntoWiki::getInstance()->translate;
-    
+
     $limit = $instances->getLimit();
     $offset = $instances->getOffset();
     if($limit != 0) {
@@ -64,9 +64,9 @@ if ($instances->hasData()) {
         }
     } else {
         $query = clone $instances->getResourceQuery();
-        
+
         $where = 'WHERE '.$query->getWhere();
-        
+
         try {
             $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
         } catch (Erfurt_Store_Exception $e) {

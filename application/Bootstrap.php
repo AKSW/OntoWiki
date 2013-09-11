@@ -315,6 +315,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             // Check whether log can be created with $logName... otherwise append a number.
             // This needs to be done, since logs may be created by other processes (e.g. with
             // testing) and thus can't be opened anymore.
+            $writer = null;
             for ($i = 0; $i < 10; ++$i) {
                 try {
                     $fullLogName = $logName;

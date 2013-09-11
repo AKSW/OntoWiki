@@ -912,6 +912,13 @@ class NavigationController extends OntoWiki_Controller_Component
      */
     protected function _getListLink($uri, $setup)
     {
+        if (isset($setup->config->directLink) && $setup->config->directLink) {
+            $return = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+            // set URL
+            $return->setParam('r', $uri, true);
+            return $return;
+        }
+
         $owUrl  = new OntoWiki_Url(
             array('route' => 'instances'),
             array()

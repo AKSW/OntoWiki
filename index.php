@@ -30,6 +30,27 @@ function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
 }
 set_error_handler('errorHandler');
 
+/*
+ * method to get evironment variables which are prefixed with "REDIRECT_"
+ * in some configurations Apache prefixes the environment variables on each rewrite walkthrough
+ * e.g. under centos
+ */
+function getEnvVar ($key)
+{
+    $prefix = "REDIRECT_";
+    if (isset($_SERVER[$key])) {
+        return $_SERVER[$key];
+    }
+    foreach ($_SERVER as $k => $v) {
+        if (substr($k, 0, strlen($prefix)) == $prefix) {
+            if (substr($k, -(strlen($key))) == $key) {
+                return $v;
+            }
+        }
+    }
+    return null;
+}
+
 /**
  * Bootstrap constants
  * @since 0.9.5
@@ -82,8 +103,9 @@ date_default_timezone_set(@date_default_timezone_get());
 // TODO: check for AllowOverride All
 $rewriteEngineOn = false;
 
-if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
+if (getEnvVar('ONTOWIKI_APACHE_MOD_REWRITE_ENABLED')) {
     // used in .htaccess or in debian package config
+    // in some configurations Apache prefixes the env var with 'REDIRECT_'
     $rewriteEngineOn = true;
 } else if (function_exists('__virt_internal_dsn')) {
     // compatible with Virtuoso VAD

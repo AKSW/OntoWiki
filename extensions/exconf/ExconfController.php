@@ -586,7 +586,7 @@ class ExconfController extends OntoWiki_Controller_Component
         }
 
         // invalidate ExtensionManager cache because a new extension was installed
-        $ontoWiki->getCache()->remove( 'ow_extensionConfig' );
+        $ontoWiki->getCache()->remove('ow_extensionConfig');
 
         $url = new OntoWiki_Url(array('controller' => 'exconf', 'action' => 'explorerepo'));
         $this->_redirect($url);

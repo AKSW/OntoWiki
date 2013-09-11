@@ -282,6 +282,60 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
 
         return $view;
     }
-}
 
+    /**
+     * tests if there is a selected model and appends an error message
+     * (optional) to the message queue
+     *
+     * @param boolean $appendMessage append a error message or not (default: true)
+     * @since 0.9.9
+     * @return boolean
+     */
+    public function isModelSelected($appendMessage = true)
+    {
+        if ($this->_owApp->selectedModel === null) {
+            if ($appendMessage) {
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message(
+                        $this->view->_('No model selected.'),
+                        OntoWiki_Message::ERROR
+                    )
+                );
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * tests if there is an editable selected model and appends an error message
+     * (optional) to the message queue
+     *
+     * @param boolean $appendMessage append a error message or not (default: true)
+     * @since 0.9.9
+     * @return boolean
+     */
+    public function isSelectedModelEditable($appendMessage = true)
+    {
+        if (!$this->isModelSelected($appendMessage)) {
+            return false;
+        } else {
+            if (!$this->_owApp->selectedModel->isEditable()) {
+                if ($appendMessage) {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message(
+                            $this->view->_('No write permissions on this model.'),
+                            OntoWiki_Message::ERROR
+                        )
+                    );
+                }
+                return false;
+            } else {
+                return true;
+            };
+        }
+    }
+
+}
 

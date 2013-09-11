@@ -169,7 +169,9 @@ class OntoWiki
     // ------------------------------------------------------------------------
 
     /**
-     * Appends a message to the message stack
+     * Appends a (translated) message to the message stack
+     * TODO: add a boolean $translate=true flag in order to allow disabling
+     * translation
      *
      * @param OntoWiki_Message $message The message to be added.
      *
@@ -186,6 +188,71 @@ class OntoWiki
 
         return $this;
     }
+
+    /**
+     * Appends an info message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendInfoMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::INFO)
+        );
+        return $this;
+    }
+
+    /**
+     * Appends a success message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendSuccessMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::SUCCESS)
+        );
+        return $this;
+    }
+
+    /**
+     * Appends a warning message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendWarningMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::WARNING)
+        );
+        return $this;
+    }
+
+    /**
+     * Appends an error message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendErrorMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::ERROR)
+        );
+        return $this;
+    }
+
 
     /**
      * Returns the current message stack and empties it.
@@ -235,12 +302,19 @@ class OntoWiki
         }
     }
 
-	public function getCache(){
-		$bootstrap = $this->getBootstrap();
-		if ($bootstrap && $bootstrap->hasResource('Erfurt')) {
-			return $this->getBootstrap()->getResource('Erfurt')->getCache();
-		}
-	}
+    /**
+     * Returns the system cache object
+     *
+     * @since 0.9.9
+     * @return Zend_Cache_Core
+     */
+    public function getCache()
+    {
+        $bootstrap = $this->getBootstrap();
+        if ($bootstrap && $bootstrap->hasResource('Erfurt')) {
+            return $this->getBootstrap()->getResource('Erfurt')->getCache();
+        }
+    }
 
     /**
      * Singleton instance
