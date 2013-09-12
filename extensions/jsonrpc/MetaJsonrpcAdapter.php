@@ -23,7 +23,7 @@ class MetaJsonrpcAdapter
         'meta'      => 'methods to query the json service itself',
         'store'     => 'methods to manipulate and query the store',
         'model'     => 'methods to manipulate and query a specific model',
-        'evolution' => 'methods to manage and use the evolution engine',
+        //'evolution' => 'methods to manage and use the evolution engine',
     );
 
     public function __construct()
@@ -78,7 +78,7 @@ class MetaJsonrpcAdapter
      */
     public function listProcedures($_server)
     {
-        $classname = $_server . 'JsonrpcAdapter';
+        $classname = ucfirst($_server) . 'JsonrpcAdapter';
         @include_once $classname . '.php';
         if (class_exists($classname)) {
             $reflectionClass = new ReflectionClass($classname);
