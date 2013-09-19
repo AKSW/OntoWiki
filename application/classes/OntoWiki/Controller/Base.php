@@ -217,9 +217,12 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         if ($this->_request->has('redirect-uri')) {
             $redirectUri = urldecode($this->_request->getParam('redirect-uri'));
             $front       = Zend_Controller_Front::getInstance();
-            $options     = array(
-                'prependBase' => (false === strpos($redirectUri, $front->getBaseUrl()))
-            );
+            if ('' !== $front->getBaseUrl()) {
+                $prependBase = (false === strpos($redirectUri, $front->getBaseUrl()));
+            } else {
+                $prependBase = true;
+            }
+            $options     = array('prependBase' => $prependBase);
 
             $this->_redirect($redirectUri, $options);
         }
