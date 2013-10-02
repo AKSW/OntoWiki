@@ -6,7 +6,7 @@
 <?php if ($this->has('predicates')): ?>
 <?php $odd = true; $current = 0; $graphCount = count($this->graphs) ?>
 <table class="separated-vertical rdfa" about="<?php echo $this->resourceUri ?>"
-    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+    <?php foreach ($this->namespacePrefixes as $prefix => $namespace): ?>
         <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
     <?php endforeach; ?>>
     
@@ -102,7 +102,7 @@
 <?php endif; ?>
 <?php if (!$flag): ?>
     <table class="separated-vertical rdfa hidden" about="<?php echo $this->resourceUri ?>"
-    <?php foreach ($this->namespaces as $namespace => $prefix): ?>
+    <?php foreach ($this->namespacePrefixes as $prefix => $namespace): ?>
         <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
     <?php endforeach; ?>>
     <tbody></tbody></table>

@@ -727,7 +727,9 @@ class ModelController extends OntoWiki_Controller_Base
             if (!is_array($this->view->namespacePrefixes)) {
                 $this->view->namespacePrefixes = array();
             }
-            $this->view->namespacePrefixes['__default'] = $graph->getModelIri();
+            if (!array_key_exists(OntoWiki_Utils::DEFAULT_BASE, $this->view->namespacePrefixes)) {
+                $this->view->namespacePrefixes[OntoWiki_Utils::DEFAULT_BASE] = $graph->getBaseIri();
+            }
 
             $infoUris = $this->_config->descriptionHelper->properties;
             //echo (string)$resource;
@@ -753,13 +755,6 @@ class ModelController extends OntoWiki_Controller_Base
                     $this->view->infoPredicates[$infoUri] = $predicates[(string)$graph][$infoUri];
                 }
             }
-
-            $namespaces = $graph->getNamespaces();
-            $graphBase  = $graph->getBaseUri();
-            if (!array_key_exists($graphBase, $namespaces)) {
-                $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
-            }
-            $this->view->namespaces = $namespaces;
         }
 
         $this->addModuleContext('main.window.modelinfo');

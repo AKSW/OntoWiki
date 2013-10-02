@@ -47,7 +47,7 @@ echo $this->partial('resource/properties.phtml',array(
     'graphUri' => $this->graphIri,
     'graphBaseUri' => $this->graphBaseIri,
     'editable' => false, 
-    'namespaces' => $this->namespaces
+    'namespacePrefixes' => $this->namespacePrefixes
 ));
 //notice: ModelController (and the rest of this template) want Iri, 
 //but ResourceController (and its template) want Uri
