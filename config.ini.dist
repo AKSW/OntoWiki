@@ -72,6 +72,14 @@ languages.locale = "en"             ; en, de, ru, zh (Chinese)
 ;session.identifier = "abc123"
 
 ;;;;
+;; Set some session cookie parameters
+;session.lifetime = "3600"
+;session.path = "/"
+;session.domain = ""
+;session.secure = 0
+;session.httpOnly = 0
+
+;;;;
 ;; Email configuration
 ;; You should set the host and localname for account recovery mails here
 ;; appropriate values are necessary to guarantee correct function
