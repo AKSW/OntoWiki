@@ -66,6 +66,11 @@ store.comparer.ignoredMethods[] = sparqlQuery
 languages.locale = "en"             ; en, de, ru, zh (Chinese)
 
 ;;;;
+;; Configuration for RDFauthor
+;;
+rdfauthor.usetemplate = true        ; this should be set to false when merging to develop
+
+;;;;
 ;; Set this identifier to a unique value if you want to run multiple OntoWiki
 ;; installations on one server
 ;;
