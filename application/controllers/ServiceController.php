@@ -877,12 +877,24 @@ class ServiceController extends Zend_Controller_Action
         }
 
         if ($workingMode == 'class') {
-            $properties = $model->sparqlQuery(
-                'SELECT DISTINCT ?uri ?value {
-                ?s ?uri ?value.
-                ?s a <' . $parameter . '>.
-                } LIMIT 20 ', array('result_format' => 'extended')
-            );
+            if ($this->_config->rdfauthor->usetemplate) {
+                $properties = $model->sparqlQuery(
+                    'SELECT ?a { <http://example.org> ?a <http://hallo.de> } LIMIT 20'
+                );
+            } else {
+                $properties = null;
+            }
+
+            if ($properties === null || count($properties) < 1) {
+                $propertiesQuery = 'SELECT DISTINCT ?uri ?value {' . PHP_EOL;
+                $propertiesQuery.= '    ?s ?uri ?value.' . PHP_EOL;
+                $propertiesQuery.= '    ?s a <' . $parameter . '>.' . PHP_EOL;
+                $propertiesQuery.= '} LIMIT 20 ' . PHP_EOL;
+
+                $properties = $model->sparqlQuery(
+                    $propertiesQuery, array('result_format' => 'extended')
+                );
+            }
         } elseif ($workingMode == 'clone') {
             // FIXME: more than one values of a property are not supported right now
             // FIXME: Literals are not supported right now
