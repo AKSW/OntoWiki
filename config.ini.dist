@@ -144,6 +144,10 @@ cache.backend.sqlite.cache_db_complete_path         = "/tmp/ow_cache.sqlite"
 ;cache.backend.sqlite.automatic_vacuum_factor       = 10
 
 
+;; Options for Gearman/worker
+worker.enable	= false
+
+
 ;;;;
 ;; uncomment this line if you need more information
 ;;
