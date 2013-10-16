@@ -878,9 +878,25 @@ class ServiceController extends Zend_Controller_Action
 
         if ($workingMode == 'class') {
             if ($this->_config->rdfauthor->usetemplate) {
-                $properties = $model->sparqlQuery(
-                    'SELECT ?a { <http://example.org> ?a <http://hallo.de> } LIMIT 20'
-                );
+                $template = 'http://vocab.ub.uni-leipzig.de/bibrm/Template';
+                $properties = $model->sparqlQuery('
+                        PREFIX erm: <http://vocab.ub.uni-leipzig.de/bibrm/>
+                        SELECT DISTINCT ?uri ?propType ?pclass {
+                            ?template a <'.$template.'> ;
+                            erm:providesProperty ?uri ;
+                            erm:bindsClass ?pclass .
+                            OPTIONAL {
+                                ?uri a ?propType .
+                            }
+                        } LIMIT 20', array('result_format' => 'extended'));
+                // not used right now
+                // $providedClass = $properties['results']['bindings'][0]['pclass']['value'];
+                // re-sort results to put rdf:type first
+                $properties['results']['bindings'] =
+                    array_merge(array(array('uri' => array(
+                                    'value' => "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                                    'type' => 'uri'))),
+                $properties['results']['bindings']);
             } else {
                 $properties = null;
             }
@@ -932,8 +948,17 @@ class ServiceController extends Zend_Controller_Action
             foreach ($properties as $property) {
 
                 $currentUri   = $property['uri']['value'];
-                $currentValue = $property['value']['value'];
-                $currentType  = $property['value']['type'];
+                /* FIXME ad-hoc fix since in rdfauthor template mode
+                   the value will not be set right now (but should probably
+                   be provided in future
+                */
+                if (isset($property['value'])) {
+                    $currentValue = $property['value']['value'];
+                    $currentType  = $property['value']['type'];
+                } else {
+                    $currentValue = '';
+                    $currentType = '';
+                }
 
                 $value = new stdClass();
 
