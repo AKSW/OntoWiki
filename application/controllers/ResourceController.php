@@ -140,12 +140,12 @@ class ResourceController extends OntoWiki_Controller_Base
             $this->view->graphBaseUri  = $graph->getBaseIri();
             $this->view->editable      = false; // use $this->editableFlags[$graph] now
             // prepare namespaces
-            $namespaces = $graph->getNamespaces();
+            $namespacePrefixes         = $graph->getNamespacePrefixes();
             $graphBase  = $graph->getBaseUri();
-            if (!array_key_exists($graphBase, $namespaces)) {
-                $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
+            if (!array_key_exists(OntoWiki_Utils::DEFAULT_BASE, $namespacePrefixes)) {
+                $namespacePrefixes[OntoWiki_Utils::DEFAULT_BASE] = $graphBase;
             }
-            $this->view->namespaces = $namespaces;
+            $this->view->namespacePrefixes = $namespacePrefixes;
         }
 
         $toolbar = $this->_owApp->toolbar;
