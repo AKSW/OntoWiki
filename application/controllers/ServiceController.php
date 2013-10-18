@@ -668,7 +668,6 @@ class ServiceController extends Zend_Controller_Action
         $this->_response->setBody($this->view->render($file));
     }
 
-
     /**
      * JSON outputs of the transitive closure of resources to a given start
      * resource and an transitive attribute
@@ -827,7 +826,6 @@ class ServiceController extends Zend_Controller_Action
         $response->setBody(json_encode($output));
     }
 
-
     /**
      * JSON output of the RDFauthor init config, which is a RDF/JSON Model
      * without objects where the user should be able to add data
@@ -876,40 +874,42 @@ class ServiceController extends Zend_Controller_Action
             $resourceUri = $parameter;
         }
 
-        if ($workingMode == 'class') {
-            if ($this->_config->rdfauthor->usetemplate) {
-                $template = 'http://vocab.ub.uni-leipzig.de/bibrm/Template';
-                $properties = $model->sparqlQuery('
-                        PREFIX erm: <http://vocab.ub.uni-leipzig.de/bibrm/>
-                        SELECT DISTINCT ?uri ?propType ?pclass {
-                            ?template a <'.$template.'> ;
-                            erm:providesProperty ?uri ;
-                            erm:bindsClass ?pclass .
-                            OPTIONAL {
-                                ?uri a ?propType .
-                            }
-                        } LIMIT 20', array('result_format' => 'extended'));
-                // not used right now
-                // $providedClass = $properties['results']['bindings'][0]['pclass']['value'];
-                // re-sort results to put rdf:type first
-                $properties['results']['bindings'] =
-                    array_merge(array(array('uri' => array(
-                                    'value' => "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-                                    'type' => 'uri'))),
-                $properties['results']['bindings']);
-            } else {
-                $properties = null;
+        $templateFound = false;
+        // Look if template for selected class exist
+        if ($workingMode == 'class' && $this->_config->rdfauthor->usetemplate) 
+        {
+            $template = 'http://vocab.ub.uni-leipzig.de/bibrm/Template';
+            $properties = $model->sparqlQuery('
+                    PREFIX erm: <http://vocab.ub.uni-leipzig.de/bibrm/>
+                    SELECT DISTINCT ?uri ?value {
+                        ?template a <'.$template.'> ;
+                        erm:providesProperty ?uri ;
+                        erm:bindsClass <' . $parameter . '> .
+                        OPTIONAL {
+                           ?s ?uri ?value .
+                           ?s a <' . $parameter . '> .
+                        }
+                    } LIMIT 20', array('result_format' => 'extended'));
+            // if a template suits the class (reosurceuri) add rdf:type
+            if (!empty($properties['results']['bindings'])) {
+                $templateFound = true ;
             }
+        }
 
-            if ($properties === null || count($properties) < 1) {
-                $propertiesQuery = 'SELECT DISTINCT ?uri ?value {' . PHP_EOL;
-                $propertiesQuery.= '    ?s ?uri ?value.' . PHP_EOL;
-                $propertiesQuery.= '    ?s a <' . $parameter . '>.' . PHP_EOL;
-                $propertiesQuery.= '} LIMIT 20 ' . PHP_EOL;
-
+        if ($workingMode == 'class') {
+            if ($templateFound) {
+                $properties['results']['bindings'] =
+                        array_merge(array(array('uri' => array(
+                                        'value' => "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                                        'type' => 'uri'))),
+                                    $properties['results']['bindings']);
+            } else {
                 $properties = $model->sparqlQuery(
-                    $propertiesQuery, array('result_format' => 'extended')
-                );
+                    'SELECT DISTINCT ?uri ?value {
+                        ?s ?uri ?value.
+                        ?s a <'. $parameter . '>.
+                        } LIMIT 20 ', array('result_format' => 'extended')
+                    );
             }
         } elseif ($workingMode == 'clone') {
             // FIXME: more than one values of a property are not supported right now
@@ -939,7 +939,6 @@ class ServiceController extends Zend_Controller_Action
         $newProperties = new stdClass();
 
         $properties = $properties['results']['bindings'];
-
         // feed title helper w/ URIs
         $titleHelper = new OntoWiki_Model_TitleHelper($model);
         $titleHelper->addResources($properties, 'uri');
@@ -952,7 +951,7 @@ class ServiceController extends Zend_Controller_Action
                    the value will not be set right now (but should probably
                    be provided in future
                 */
-                if (isset($property['value'])) {
+                if (isset($property['value']) &&  $property['value']['value'] !== '') {
                     $currentValue = $property['value']['value'];
                     $currentType  = $property['value']['type'];
                 } else {
