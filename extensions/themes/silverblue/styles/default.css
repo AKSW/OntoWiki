@@ -589,6 +589,14 @@ ul ol, ol ul, ul ul, ol ol {
     /* margin-left: 1em !important; cannot see any sense for this anymore (mh) */
 }
 
+/**
+ * in resource view, prevent table cells with empty values from collapsing
+ * otherwise there is no hover space to activate RDFAuthor
+ */
+.separated-vertical.Resource ul li {
+    min-height: 1.5em;
+}
+
 /* ---- 2.2.1. Bullets and Numbers ------------------------------------------ */
 
 .bullets-none {
