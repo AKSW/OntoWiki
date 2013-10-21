@@ -155,25 +155,26 @@ try {
 
 $bootstrap	= $application->getBootstrap();
 $ontoWiki	= OntoWiki::getInstance();
-$client		= Erfurt_Worker_Frontend::getInstance( $bootstrap->config );
-
 print($ontoWiki->config->version->label . ' ' . $ontoWiki->config->version->number . PHP_EOL);
 $timeStart  = microtime( TRUE );
 
-//  async example
+/*  -- EXAMPLE JOB CALL --------------------------------------------------  */
+
+$client		= Erfurt_Worker_Frontend::getInstance();
+$client->setBackend('gearman');
+$client->setServers($bootstrap->config->worker->servers);
+
 $workload   = array(
-    'receiver'  => "dev@ceusmedia.de",
-    'sender'    => "dev@ceusmedia.de",
+    'receiver'  => "",
+    'sender'    => "me@example.tld",
     'subject'   => "Test @ ".time(),
     'body'      => "This is just a test..."
 );
+if(empty($workload['receiver']))
+    die("Please set receiver to run this example!');
+
 $client->call( "testMail", $workload );
 
-/*
-$jobHandle  = $client->getLastJobHandle();
-while( $client->isStillRunning( $jobHandle ) ){
-    echo "still running...\n";
-    sleep(1);
-}*/
+/*  -- END OF EXAMPLE --------------------------------------------------  */
 
 print( "done in " . round( ( microtime( TRUE ) - $timeStart ) * 1000, 2 ) . "ms\n" );
