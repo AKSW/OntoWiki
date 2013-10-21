@@ -65,6 +65,7 @@ class ErrorController extends Zend_Controller_Action
         if (defined('_OWDEBUG')) {
             $this->_debugError();
         } else {
+            Zend_Session::destroy(true);
             $this->_gracefulError();
         }
 

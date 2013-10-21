@@ -61,9 +61,8 @@ class OntoWiki_Controller_Plugin_SetupHelper extends Zend_Controller_Plugin_Abst
                     if (Erfurt_App::getInstance()->getAuth()->getIdentity()->isAnonymousUser()) {
                         // In this case we allow the requesting party to authorize...
                         $response = $frontController->getResponse();
-                        $response->setException(new OntoWiki_Http_Exception(401));
-
-                        return;
+#                        $response->setException(new OntoWiki_Http_Exception(401));
+#                        return;
                     }
 
                     // post error message
