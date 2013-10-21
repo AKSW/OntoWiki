@@ -170,8 +170,9 @@ $workload   = array(
     'subject'   => "Test @ ".time(),
     'body'      => "This is just a test..."
 );
+
 if(empty($workload['receiver']))
-    die("Please set receiver to run this example!');
+    die("Please set receiver to run this example!");
 
 $client->call( "testMail", $workload );
 

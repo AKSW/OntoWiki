@@ -1,27 +1,25 @@
 <?php
-class Mail_Job_Mail implements Erfurt_Worker_Job_Interface{
+class Mail_Job_Mail extends Erfurt_Worker_Job_Abstract{
 
+    private $_owApp     = null;
+    private $_config    = null;
     private $_transport = null;
-    private $_options   = null;
 
-    public function __construct($options = NULL)
-    {
-        $this->_owApp       = OntoWiki::getInstance();
-        $this->_config      = $this->_owApp->config;
-        $this->_options     = $options;
+    public function __init(){
+        $this->_owApp   = OntoWiki::getInstance();
+        $this->_config  = $this->_owApp->config;
     }
 
-    public function run(GearmanJob $job){
-        $smtpServer = $this->_options['server'];
+    public function run($workload){
+        $smtpServer = $this->options['server'];
         $config = array();
-        if ($this->_options['auth']){
-            $config['auth']      = $this->_options['auth'];
-            $config['username']  = $this->_options['username'];
-            $config['password']  = $this->_options['password'];
+        if ($this->options['auth']){
+            $config['auth']      = $this->options['auth'];
+            $config['username']  = $this->options['username'];
+            $config['password']  = $this->options['password'];
         }
         $this->_transport = new Zend_Mail_Transport_Smtp($smtpServer, $config);
 
-        $workload   = json_decode($job->workload());
         if (is_object($workload)){
             $mail = new Zend_Mail();
             $mail->setDefaultTransport($this->_transport);
@@ -30,7 +28,7 @@ class Mail_Job_Mail implements Erfurt_Worker_Job_Interface{
             $mail->setBodyText($workload->body);
             $mail->setFrom($workload->sender);
             $mail->send($this->_transport);
-            print("Sent mail to ".$workload->subject.".\n");
+            $this->logSuccess('Mail "'.$workload->subject.'" sent to '.$workload->receiver);
         }
     }
 }

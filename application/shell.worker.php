@@ -155,7 +155,6 @@ try {
 
 $bootstrap      = $application->getBootstrap();
 $ontoWiki       = OntoWiki::getInstance();
-#$ontoWiki       = $env->getResource( 'OntoWiki' );
 $extManager     = $ontoWiki->extensionManager;
 $extensions     = $extManager->getExtensions();
 
