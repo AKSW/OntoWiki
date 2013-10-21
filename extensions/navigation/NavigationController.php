@@ -279,6 +279,7 @@ class NavigationController extends OntoWiki_Controller_Component
             'NavigationController _queryNavigationEntries Query: ' . $query->__toString()
         );
         //*/
+        //
 
         // get extended results
         $allResults = $this->_model->sparqlQuery(
@@ -891,9 +892,17 @@ class NavigationController extends OntoWiki_Controller_Component
             $classVar
         );*/
         // add filter
-        $elements[] = new Erfurt_Sparql_Query2_Filter(
-            new Erfurt_Sparql_Query2_Equals($searchVar, new Erfurt_Sparql_Query2_IriRef($uri))
-        );
+        if ($this->_store->isInSyntaxSupported()) { // e.g. Virtuoso
+            $elements[] = new Erfurt_Sparql_Query2_Filter(
+                new Erfurt_Sparql_Query2_InExpression($searchVar, array(new Erfurt_Sparql_Query2_IriRef($uri)))
+            );
+        } else { // sameTerm || sameTerm ... as supported by EfZendDb adapter
+            // add filter
+            $elements[] = new Erfurt_Sparql_Query2_Filter(
+                new Erfurt_Sparql_Query2_Equals($searchVar, new Erfurt_Sparql_Query2_IriRef($uri))
+            );
+        }
+        // build
         $query->addElements($elements);
         $query->setLimit(1);
 
