@@ -30,8 +30,7 @@ class MailPlugin extends OntoWiki_Plugin
             "testMail",                                                         //  job key name
             "extensions/mail/jobs/Mail.php",                                    //  job class file
             "Mail_Job_Mail",                                                    //  job class name
-            $this->_privateConfig,                                              //  extension configuration
-            NULL                                                                //  further options
+            $this->_privateConfig->smtp->toArray()                              //  extension configuration
         );
     }
 }
