@@ -1,4 +1,3 @@
-
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
@@ -484,8 +483,10 @@ function createInstanceFromClassURI(type, dataCallback) {
 
     // check if an resource is in editing mode
     if($(body).data('editingMode')) {
-        RDFauthor.cancel();
-        RDFauthor.reset();
+        alert("Please finish all other editing actions before creating a new instance.");
+        return;
+        //RDFauthor.cancel();
+        //RDFauthor.reset();
     }
 
     // remove resource menus
@@ -593,6 +594,8 @@ function resourceURL(resourceURI) {
  */
 function editProperty(event) {
     var element = $.event.fix(event).target;
+
+    $(body).data('editingMode', true);
 
     loadRDFauthor(function () {
         RDFauthor.setOptions({
