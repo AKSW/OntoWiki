@@ -629,7 +629,7 @@ function editProperty(event) {
             }
         });
 
-        RDFauthor.start($(element).parents('td'));
+        RDFauthor.start($(element).closest('td'));
         $('.edit-enable').addClass('active');
         $('.edit').each(function() {
             var button = this;
