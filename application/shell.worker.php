@@ -160,21 +160,32 @@ $extensions     = $extManager->getExtensions();
 
 print($ontoWiki->config->version->label . ' ' . $ontoWiki->config->version->number . PHP_EOL);
 
-//  create a worker registry
-$workerRegistry		= Erfurt_Worker_Registry::getInstance();
+// create a worker registry
+$workerRegistry = Erfurt_Worker_Registry::getInstance();
 
-//  trigger event to let extensions add their jobs
+// trigger event to let extensions add their jobs
 $event = new Erfurt_Event('onAnnounceWorker');
 $event->bootstrap   = $bootstrap;
 $event->registry    = $workerRegistry;
 $event->trigger();
-if (!count( $workerRegistry->getJobs())) {
-	print('No jobs registered - nothing to do or wait for.' . PHP_EOL );
-	exit;
+if (!count($workerRegistry->getJobs())) {
+    print('No jobs registered - nothing to do or wait for.' . PHP_EOL );
+    exit;
 }
 
+// register some jobs manually
+// key name, class file, class name, config
+$workerRegistry->registerJob(
+    'test',
+    'libraries/Erfurt/library/Erfurt/Worker/TestJob.php',
+    'Erfurt_Worker_TestJob',
+    array()
+);
+
+
+
 //  create a new worker backend with filled worker registry
-$worker = new Erfurt_Worker_Backend( $workerRegistry );
+$worker = new Erfurt_Worker_Backend($workerRegistry);
 //  set worker and Gearman worker to listen mode and wait
 $worker->listen();
 

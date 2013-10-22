@@ -164,17 +164,17 @@ $client		= Erfurt_Worker_Frontend::getInstance();
 $client->setBackend('gearman');
 $client->setServers($bootstrap->config->worker->servers);
 
-$workload   = array(
-    'receiver'  => "",
-    'sender'    => "me@example.tld",
-    'subject'   => "Test @ ".time(),
-    'body'      => "This is just a test..."
-);
+$client->call("test", array());
 
-if(empty($workload['receiver']))
-    die("Please set receiver to run this example!");
-
-$client->call( "testMail", $workload );
+//$workload   = array(
+    //'receiver'  => "",
+    //'sender'    => "me@example.tld",
+    //'subject'   => "Test @ ".time(),
+    //'body'      => "This is just a test..."
+//);
+//if(empty($workload['receiver']))
+    //die("Please set receiver to run this example!");
+//$client->call( "testMail", $workload );
 
 /*  -- END OF EXAMPLE --------------------------------------------------  */
 
