@@ -12,6 +12,7 @@
  *
  * @category OntoWiki
  * @author Norman Heino <norman.heino@gmail.com>
+ * @codeCoverageIgnore
  */
 
 /* Profiling */
