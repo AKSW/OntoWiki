@@ -128,7 +128,9 @@
     </target>
 
     <target name="phpunit" depends="directories" description="Run unit tests with PHPUnit">
-        <exec dir="${basedir}/application/tests/unit/" executable="phpunit" failonerror="true" />
+        <exec dir="${basedir}/application/tests/unit/" executable="phpunit" failonerror="true">
+            <arg value="--configuration ${basedir}/build/phpunit.xml" />
+        </exec>
     </target>
 
     <target name="phpunit-integration-mysql" depends="phpunit" description="Run unit tests with PHPUnit">
