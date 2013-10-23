@@ -129,23 +129,20 @@
 
     <target name="phpunit" depends="directories" description="Run unit tests with PHPUnit">
         <exec dir="${basedir}/application/tests/unit/" executable="phpunit" failonerror="true">
-            <arg value="--configuration" />
-            <arg path="${basedir}/build/phpunit.xml" />
+            <arg value="--configuration=${basedir}/build/phpunit.xml" />
         </exec>
     </target>
 
     <target name="phpunit-integration-mysql" depends="phpunit" description="Run unit tests with PHPUnit">
         <exec dir="${basedir}/application/tests/integration/" executable="phpunit" failonerror="true">
-            <arg value="--configuration" />
-            <arg path="${basedir}/build/phpunit.xml" />
+            <arg value="--configuration=${basedir}/build/phpunit.xml" />
             <env key="EF_STORE_ADAPTER" value="zenddb" />
         </exec>
     </target>
 
     <target name="phpunit-integration-virtuoso" depends="phpunit" description="Run unit tests with PHPUnit">
         <exec dir="${basedir}/application/tests/integration/" executable="phpunit" failonerror="true">
-            <arg value="--configuration" />
-            <arg path="${basedir}/build/phpunit.xml" />
+            <arg value="--configuration=${basedir}/build/phpunit.xml" />
             <env key="EF_STORE_ADAPTER" value="virtuoso" />
         </exec>
     </target>
