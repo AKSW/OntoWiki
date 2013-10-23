@@ -51,9 +51,10 @@ function getEnvVar ($key)
 
 /**
  *  Capsuled main script returning initializes application object
- *  @return     Zend_Application 
+ *  @return     Zend_Application
  */
-function initApp(){
+function initApp()
+{
     /* Profiling */
     define('REQUEST_START', microtime(true));
 
@@ -133,8 +134,8 @@ function initApp(){
         // use include, so we can catch it with the error handler
         require_once 'OntoWiki.php';
     } catch (Exception $e) {
-        print('Fatal Error: Could not load the OntoWiki Application Framework classes.' . PHP_EOL);
-        print('Your installation directory seems to be screwed.' . PHP_EOL);
+        echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.' . PHP_EOL;
+        echo 'Your installation directory seems to be screwed.' . PHP_EOL;
         exit;
     }
 
@@ -143,8 +144,8 @@ function initApp(){
         // use include, so we can catch it with the error handler
         require_once 'Erfurt/App.php';
     } catch (Exception $e) {
-        print('Fatal Error: Could not load the Erfurt Framework classes.' . PHP_EOL);
-        print('Maybe you should install it with apt-get or with "make deploy"?' . PHP_EOL);
+        echo 'Fatal Error: Could not load the Erfurt Framework classes.' . PHP_EOL;
+        echo 'Maybe you should install it with apt-get or with "make deploy"?' . PHP_EOL;
         exit;
     }
 
@@ -155,26 +156,20 @@ function initApp(){
     try {
         $application->bootstrap();
     } catch (Exception $e) {
-        print('Error on bootstrapping application: ' . $e->getMessage() . PHP_EOL);
+        echo 'Error on bootstrapping application: ' . $e->getMessage() . PHP_EOL;
         exit;
     }
     return $application;
 }
 
-$application    = initApp();
+$application = initApp();
+$ontowiki    = OntoWiki::getInstance();
+echo $ontowiki->config->version->label . ' ' . $ontowiki->config->version->number . PHP_EOL;
 
-$bootstrap	= $application->getBootstrap();
-$ontoWiki	= OntoWiki::getInstance();
-print($ontoWiki->config->version->label . ' ' . $ontoWiki->config->version->number . PHP_EOL);
-$timeStart  = microtime( TRUE );
+$timeStart = microtime(true);
 
 /*  -- EXAMPLE JOB CALL --------------------------------------------------  */
-
-$client		= Erfurt_Worker_Frontend::getInstance();
-$client->setBackend('gearman');
-$client->setServers($bootstrap->config->worker->servers);
-
-$client->call("test", array());
+$ontowiki->callJob("test", array('repeat' => 10));
 
 //$workload   = array(
     //'receiver'  => "",
@@ -188,4 +183,5 @@ $client->call("test", array());
 
 /*  -- END OF EXAMPLE --------------------------------------------------  */
 
-print( "done in " . round( ( microtime( TRUE ) - $timeStart ) * 1000, 2 ) . "ms\n" );
+echo "done in " . round((microtime(true) - $timeStart) * 1000, 2) . "ms" . PHP_EOL;
+
