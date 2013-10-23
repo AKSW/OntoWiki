@@ -18,6 +18,7 @@
             <exclude>
                 <directory>../../../application/scripts</directory>
                 <directory>../../../application/tests</directory>
+                <directory>../../../application/shell.*</directory>
             </exclude>
         </whitelist>
     </filter>
