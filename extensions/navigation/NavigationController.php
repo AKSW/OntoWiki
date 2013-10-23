@@ -671,7 +671,8 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // set offset
         if (isset($setup->state->offset) && $setup->state->lastEvent == 'more') {
-            $query->setLimit($this->_limit + $setup->state->offset + 1);
+            $query->setOffset($setup->state->offset);
+            $query->setLimit($this->_limit + 1);
         } else {
             $query->setLimit($this->_limit + 1);
         }
