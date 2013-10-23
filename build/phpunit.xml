@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<filter>
-    <blacklist>
-        <file>application/shell.worker.php</file>
-        <file>application/shell.worker.client.php</file>
-    </blacklist>
-</filter>
+<phpunit>
+    <filter>
+        <blacklist>
+            <file>application/shell.worker.php</file>
+            <file>application/shell.worker.client.php</file>
+        </blacklist>
+    </filter>
+</phpunit>
