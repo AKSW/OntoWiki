@@ -88,6 +88,14 @@ div.section-sidewindows {
     top: 0;
 }
 
+div.simplemodal-overlay{
+    z-index:1000001!important;
+}
+
+div.simplemodal-container{
+    z-index:1000002!important;
+}
+
 /*div.modal-wrapper {
     position: absolute;
     top: 0;
