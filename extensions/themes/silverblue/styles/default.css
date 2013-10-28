@@ -96,6 +96,10 @@ div.simplemodal-container{
     z-index:1000002!important;
 }
 
+div.modal-wrapper{
+    z-index:1000002!important;
+}
+
 /*div.modal-wrapper {
     position: absolute;
     top: 0;
