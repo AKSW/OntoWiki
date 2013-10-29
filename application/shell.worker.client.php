@@ -170,6 +170,9 @@ $timeStart = microtime(true);
 /*  -- EXAMPLE JOB CALL --------------------------------------------------  */
 $ontowiki->callJob("test", array('repeat' => 10));
 
+// initialize the cron job
+$ontowiki->callJob("cron");
+
 //$workload   = array(
     //'receiver'  => "",
     //'sender'    => "me@example.tld",

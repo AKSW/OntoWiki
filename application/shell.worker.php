@@ -177,14 +177,25 @@ if (!count($workerRegistry->getJobs())) {
     exit;
 }
 
-// register some jobs manually
+// register  jobs manually
 // key name, class file, class name, config
+
+// test job
 $workerRegistry->registerJob(
     'test',
     'libraries/Erfurt/library/Erfurt/Worker/TestJob.php',
     'Erfurt_Worker_TestJob',
     array()
 );
+
+// cron job
+$workerRegistry->registerJob(
+    'cron',
+    'application/classes/OntoWiki/Jobs/Cron.php',
+    'OntoWiki_Jobs_Cron',
+    array()
+);
+
 
 //  create a new worker backend with filled worker registry
 $worker = new Erfurt_Worker_Backend($workerRegistry);
