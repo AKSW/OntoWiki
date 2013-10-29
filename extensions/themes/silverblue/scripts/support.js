@@ -410,6 +410,9 @@ function loadRDFauthor(callback) {
 }
 
 function populateRDFauthor(data, protect, resource, graph, workingmode) {
+    /*
+     * Set default values
+     */
     protect  = arguments.length >= 2 ? protect : true;
     resource = arguments.length >= 3 ? resource : null;
     graph    = arguments.length >= 4 ? graph : null;
@@ -583,13 +586,20 @@ function resourceURL(resourceURI) {
     return urlBase + 'view/?r=' + encodeURIComponent(resourceURI);
 }
 
-/*
- * Edit a complete OW property view property section
+/**
+ * Starts RDFauthor in inline mode to edit a single property
+ *
+ * @param event the JavaScript event which startes the method
  */
 function editProperty(event) {
     var element = $.event.fix(event).target;
+
     loadRDFauthor(function () {
         RDFauthor.setOptions({
+            saveButtonTitle: 'Save Changes', 
+            cancelButtonTitle: 'Cancel',
+            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+            loadOwStylesheet: false,
             onSubmitSuccess: function () {
                 $('.edit').each(function() {
                     $(this).fadeOut(effectTime);
@@ -607,10 +617,6 @@ function editProperty(event) {
                 });
                 $('.edit-enable').removeClass('active');
             }, 
-            saveButtonTitle: 'Save Changes', 
-            cancelButtonTitle: 'Cancel',
-            loadOwStylesheet: false,
-            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
             viewOptions: {
                 type: RDFAUTHOR_VIEW_MODE,
                 container: function (statement) {
@@ -629,19 +635,19 @@ function editProperty(event) {
             }
         });
 
-        RDFauthor.start($(element).parents('td'));
+        RDFauthor.start($(element).closest('td'));
         $('.edit-enable').addClass('active');
         $('.edit').each(function() {
             var button = this;
             $(this).fadeIn(effectTime);
         });
     });
-
-    //return false;
 }
 
-/*
- * Edit a complete OW property view property section in table listview
+/**
+ * Starts RDFauthor in overlay mode to edit a single property in the listview table
+ *
+ * @param event the JavaScript event which startes the method
  */
 function editPropertyListmode(event) {
     var element = $.event.fix(event).target;
