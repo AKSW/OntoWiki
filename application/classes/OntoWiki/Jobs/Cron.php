@@ -34,7 +34,6 @@ class OntoWiki_Jobs_Cron extends Erfurt_Worker_Job_Abstract
             $interval->s;
     }
 
-
     /**
      * run the job
      *
@@ -46,11 +45,11 @@ class OntoWiki_Jobs_Cron extends Erfurt_Worker_Job_Abstract
     {
         $nowString = date("Y-m-d H:i:s");
         $now         = new DateTime($nowString);
-        //$this->logSuccess('OntoWiki_Jobs_Cron started');
 
         if (empty($load)) {
+            $this->logSuccess('OntoWiki_Jobs_Cron started without payload (init)');
             // first start is without payload, so we create a fresh one
-            $newLoad = array(
+            $load = array(
                 'lastMinutly' => $nowString,
                 'lastHourly' => $nowString,
                 'lastDaily' => $nowString,
@@ -58,6 +57,7 @@ class OntoWiki_Jobs_Cron extends Erfurt_Worker_Job_Abstract
         } else {
             $lastMinutly     = new DateTime($load->lastMinutly);
             $lastMinutlyDiff = $this->_toSeconds($now->diff($lastMinutly));
+            //$this->logSuccess('OntoWiki_Jobs_Cron: lastMinutlyDiff=' . $lastMinutlyDiff);
             if ($lastMinutlyDiff >= 60) {
                 $this->logSuccess('OntoWiki_Jobs_Cron -> onEveryMinute');
                 $load->lastMinutly = $nowString;
@@ -96,7 +96,7 @@ class OntoWiki_Jobs_Cron extends Erfurt_Worker_Job_Abstract
         // send events
 
         // wait, and start the next cron instance
-        sleep(10);
+        sleep(2);
         OntoWiki::getInstance()->callJob('cron', $load);
 
     }
