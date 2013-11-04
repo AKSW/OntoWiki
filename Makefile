@@ -314,3 +314,8 @@ ifndef MPATH
 	@echo "Example: MPATH=path/to/the/submodule/"
 	@exit 1
 endif
+
+# other stuff
+
+list-events:
+	@grep -R "new Erfurt_Event" * 2> /dev/null | sed "s/.*new Erfurt_Event('//;s/');.*//" | sort -u
