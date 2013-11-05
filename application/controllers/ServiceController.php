@@ -876,33 +876,17 @@ class ServiceController extends Zend_Controller_Action
 
         $templateFound = false;
         // Look if template for selected class exist
-        if ($workingMode == 'class' && $this->_config->rdfauthor->usetemplate) 
+        if ($workingMode == 'class') 
         {
-            $template = 'http://vocab.ub.uni-leipzig.de/bibrm/Template';
-            $properties = $model->sparqlQuery('
-                    PREFIX erm: <http://vocab.ub.uni-leipzig.de/bibrm/>
-                    SELECT DISTINCT ?uri ?value {
-                        ?template a <'.$template.'> ;
-                        erm:providesProperty ?uri ;
-                        erm:bindsClass <' . $parameter . '> .
-                        OPTIONAL {
-                           ?s ?uri ?value .
-                           ?s a <' . $parameter . '> .
-                        }
-                    } LIMIT 20', array('result_format' => 'extended'));
-            // if a template suits the class (reosurceuri) add rdf:type
-            if (!empty($properties['results']['bindings'])) {
-                $templateFound = true ;
-            }
+            $event           = new Erfurt_Event('onRDFAuthorInitActionTemplate');
+            $event->model    = $model;
+            $event->resource = $parameter;
+            $eventResult = $event->trigger();
         }
 
         if ($workingMode == 'class') {
-            if ($templateFound) {
-                $properties['results']['bindings'] =
-                        array_merge(array(array('uri' => array(
-                                        'value' => "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-                                        'type' => 'uri'))),
-                                    $properties['results']['bindings']);
+            if ($eventResult) {
+                $properties = $event->properties;
             } else {
                 $properties = $model->sparqlQuery(
                     'SELECT DISTINCT ?uri ?value {
