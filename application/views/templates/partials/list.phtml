@@ -83,13 +83,20 @@ if ($instances->hasData()) {
     if(!isset($count) || $count > 10 ){
         if ($statusBar !== null) {
             $thisActionUrl = new OntoWiki_Url().'/';
-            $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
-            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/20'.'">20</a></li>';
-            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/30'.'">30</a></li>';
-            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/40'.'">40</a></li>';
-            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
-//            $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
-//            $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
+            $listLimit = $limit;
+            
+            $limit = '<ul>';
+            for($i = 10; $i <= 50; $i+=10){
+            	$additionalClass = ($i == $listLimit)? 'selected ': '';
+            	if($i == 10){
+            		$limit .= '<li> Show me: ';
+            	}else{
+            		$limit .= '<li>';
+            	}
+            	$limit .= '<a class="'.$additionalClass.'minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/'.$i.'">'.$i.'</a></li>';
+            
+            }
+            $limit .= '</ul>';
             $statusBar->append($limit);
         }
     }
