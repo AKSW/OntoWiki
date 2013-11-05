@@ -610,9 +610,11 @@ function editProperty(event) {
                 $('.edit-enable').removeClass('active');
 
                 // HACK: reload whole page after 1000 ms
-                window.setTimeout(function () {
+                /*
+                   window.setTimeout(function () {
                     window.location.href = window.location.href;
                 }, 1000);
+                */
             }, 
             onCancel: function () {
                 $('.edit').each(function() {
