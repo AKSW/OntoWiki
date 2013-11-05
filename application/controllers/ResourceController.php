@@ -91,8 +91,20 @@ class ResourceController extends OntoWiki_Controller_Base
             }
 
             $model      = new OntoWiki_Model_Resource($store, $graph, (string)$resource);
+
+            $event           = new Erfurt_Event('onPropertiesActionTemplate');
+            $event->model    = $model;
+            $event->resource = $resource;
+            $event->graph    = $graph;
+            $result          = $event->trigger();
+
+            if ($result) {
+                $predicates = $event->predicates;
+            } else {
+                $predicates = $model->getPredicates();
+            }
+
             $values     = $model->getValues();
-            $predicates = $model->getPredicates();
 
             // new trigger onPropertiesActionData to work with data (reorder with plugin)
             $event             = new Erfurt_Event('onPropertiesActionData');
