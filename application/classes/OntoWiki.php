@@ -100,8 +100,10 @@ class OntoWiki
             if (isset($this->session->$propertyName)) {
                 if ($propertyName == 'selectedModel') {
                     $modelIri = $this->session->$propertyName;
-                    $store = Erfurt_App::getInstance()->getStore();
-                    $this->_properties[$propertyName] = $store->getModel($modelIri);
+                    if (!empty($modelIri)) {
+                        $store = Erfurt_App::getInstance()->getStore();
+                        $this->_properties[$propertyName] = $store->getModel($modelIri);
+                    }
                 } else {
                     $this->_properties[$propertyName] = $this->session->$propertyName;
                 }
