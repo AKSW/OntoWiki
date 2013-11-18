@@ -881,7 +881,8 @@ class ServiceController extends Zend_Controller_Action
             $event           = new Erfurt_Event('onRDFAuthorInitActionTemplate');
             $event->model    = $model;
             $event->resource = $parameter;
-            $eventResult = $event->trigger();
+            $event->mode     = $workingMode;
+            $eventResult     = $event->trigger();
         }
 
         if ($workingMode == 'class') {
