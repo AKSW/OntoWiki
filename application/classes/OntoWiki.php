@@ -99,10 +99,14 @@ class OntoWiki
         if (in_array($propertyName, $this->_sessionVars)) {
             if (isset($this->session->$propertyName)) {
                 if ($propertyName == 'selectedModel') {
-                    $modelIri = $this->session->$propertyName;
-                    if (!empty($modelIri)) {
-                        $store = Erfurt_App::getInstance()->getStore();
-                        $this->_properties[$propertyName] = $store->getModel($modelIri);
+                    $selectedModel = $this->_getSelectedModel();
+                    if (null !== $selectedModel) {
+                        $this->_properties['selectedModel'] = $selectedModel;
+                    }
+                } else if ($propertyName == 'selectedResource') {
+                    $selectedResource = $this->_getSelectedResource();
+                    if (null !== $selectedResource) {
+                        $this->_properties['selectedResource'] = $selectedResource;
                     }
                 } else {
                     $this->_properties[$propertyName] = $this->session->$propertyName;
@@ -136,7 +140,10 @@ class OntoWiki
         if (in_array($propertyName, $this->_sessionVars)) {
             if ($propertyName == 'selectedModel') {
                 $modelIri = $propertyValue->getModelIri();
-                $this->session->$propertyName = $modelIri;
+                $this->session->selectedModel = $modelIri;
+            } else if ($propertyName == 'selectedResource') {
+                $resourceIri = $propertyValue->getIri();
+                $this->session->selectedResource = $resourceIri;
             } else {
                 $this->session->$propertyName = $propertyValue;
             }
@@ -554,5 +561,48 @@ class OntoWiki
         }
 
         return $this->_navigation;
+    }
+
+    /*
+     * Private methods
+     */
+
+    /**
+     * Returns the currently selected model.
+     * This methdo should only be used by the __get method. If you need the model please ask the
+     * __get method.
+     */
+    private function _getSelectedModel()
+    {
+        $modelIri = $this->session->selectedModel;
+        if (!empty($modelIri) && !isset($this->_properties['selectedModel'])) {
+            $store = Erfurt_App::getInstance()->getStore();
+            $this->_properties['selectedModel'] = $store->getModel($modelIri);
+        }
+        if (isset($this->_properties['selectedModel'])) {
+            return $this->_properties['selectedModel'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the currently selected resource.
+     * This methdo should only be used by the __get method. If you need the resource please ask the
+     * __get method.
+     */
+    private function _getSelectedResource()
+    {
+        $resourceIri = $this->session->selectedResource;
+        if (!empty($resourceIri) && !isset($this->_properties['selectedResource'])) {
+            $selectedModel    = $this->_getSelectedModel();
+            $selectedResource = new OntoWiki_Resource($resourceIri, $selectedModel);
+            $this->_properties['selectedResource'] = $selectedResource;
+        }
+        if (isset($this->_properties['selectedResource'])) {
+            return $this->_properties['selectedResource'];
+        } else {
+            return null;
+        }
     }
 }
