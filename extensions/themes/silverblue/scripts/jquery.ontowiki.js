@@ -179,9 +179,6 @@
                 toggleExpansion(event);
                 return false; // -> event is not given further
             });
-            if (!($(this).closest("table").hasClass("resource-list"))) {
-                $(this).prev().trigger("click");
-            }
         })
     }
 
