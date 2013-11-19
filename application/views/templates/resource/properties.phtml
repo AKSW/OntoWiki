@@ -100,7 +100,8 @@
     <?php endforeach; ?>
 </table>
 <?php endif; ?>
-<?php if (!$flag): ?>
+<?php // if (!$flag): ?>
+<?php if (false): ?>
     <table class="separated-vertical rdfa hidden" about="<?php echo $this->resourceUri ?>"
     <?php foreach ($this->namespacePrefixes as $prefix => $namespace): ?>
         <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
