@@ -18,6 +18,16 @@ if (isset($this->errorFlag) && $this->errorFlag !== false) {
 ?>
 
 <input id="editortype" type="hidden" value="queryeditor" />
+<div class="configMmodules">
+<div class="width49 float margin">
+<strong><?= $this->_('Output Format') ?></strong>
+<?= $this->render('sparqloptions.phtml') ?>
+</div>
+<div class="width49 float margin">
+<strong><?= $this->_('Query Source') ?></strong>
+<?= $this->render('queryeditorfromsetter.phtml') ?>
+</div>
+</div>
 <p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
 <?php $i = 0; ?>
 <?php foreach ($this->prefixes as $prefix => $namespace): ?>
