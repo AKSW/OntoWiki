@@ -99,6 +99,9 @@ div.simplemodal-container{
 div.modal-wrapper{
     z-index:1000002!important;
 }
+div.modal-wrapper-propertyselector{
+	z-index:1000003!important;
+}
 
 /*div.modal-wrapper {
     position: absolute;
