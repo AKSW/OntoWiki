@@ -88,21 +88,6 @@ div.section-sidewindows {
     top: 0;
 }
 
-div.simplemodal-overlay{
-    z-index:1000001!important;
-}
-
-div.simplemodal-container{
-    z-index:1000002!important;
-}
-
-div.modal-wrapper{
-    z-index:1000002!important;
-}
-div.modal-wrapper-propertyselector{
-	z-index:1000003!important;
-}
-
 /*div.modal-wrapper {
     position: absolute;
     top: 0;
@@ -2272,7 +2257,7 @@ div.section-sidewindows
     width: 100%;
     height: 4em;
     margin: 0;
-    z-index: 99999;
+    z-index: 999;
     
     border: none;
     border-radius: 0;
