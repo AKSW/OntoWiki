@@ -35,6 +35,13 @@
     />
     <label for="result_format_json" class="checkboxradio"><a href="http://www.w3.org/TR/rdf-sparql-json-res/">JSON</a></label>
     <br class="clearall">
+    <input type="radio" class="radio" name="result_format" id="result_format_csv" value="csv"
+    <?php if ($this->placeholder('sparql.result.format') == 'csv'): ?>
+        <?php echo ' checked="checked"' ?>
+    <?php endif; ?>
+    />
+    <label for="result_format_csv" class="checkboxradio"><a href="http://www.w3.org/TR/sparql11-results-csv-tsv/">CSV</a></label>
+    <br class="clearall">
     <input type="checkbox" class="checkbox" name="result_outputfile" id="result_outputfile" value="true"
     <?php if ($this->placeholder('sparql.result.file') == 'true'): ?>
         <?php echo ' checked="checked"' ?>
