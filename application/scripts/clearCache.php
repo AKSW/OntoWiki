@@ -157,4 +157,11 @@ function initApp(){
 chdir ("../..");
 
 initApp();
-Erfurt_App::getInstance()->getCache()->clean();
+
+$erfurt = Erfurt_App::getInstance();
+$erfurt->getCache()->clean();
+$erfurt->getQueryCache()->cleanUpCache(array('mode' => 'uninstall'));
+
+#if (Zend_Translate::hasCache()) {
+#    Zend_Translate::clearCache();
+#}
