@@ -187,6 +187,7 @@ class QueriesController extends OntoWiki_Controller_Component
                     $query = $prefixString . PHP_EOL . $query;
                 }
             }
+
             if ($format == 'list') {
                 $url = new OntoWiki_Url(array('controller' => 'list'), array());
                 $query = str_replace("\r\n", ' ', $query);
@@ -240,7 +241,7 @@ class QueriesController extends OntoWiki_Controller_Component
                 }
 
                 //this is for the "output to file option
-                if (($format == 'json' || $format == 'xml')
+                if (($format == 'json' || $format == 'xml' || $format == 'csv')
                     && ($this->_request->getParam('result_outputfile') == 'true')
                 ) {
                     $this->_helper->viewRenderer->setNoRender();
@@ -255,6 +256,10 @@ class QueriesController extends OntoWiki_Controller_Component
                         case 'json':
                             $contentType = 'application/json';
                             $filename = 'query-result.json';
+                            break;
+                        case 'csv':
+                            $contentType = 'text/csv';
+                            $filename = 'query-result.csv';
                             break;
                     }
 
