@@ -608,6 +608,7 @@ function editProperty(event) {
                     $(this).fadeOut(effectTime);
                 });
                 $('.edit-enable').removeClass('active');
+                $(body).data('editingMode', false);
 
                 // HACK: reload whole page after 1000 ms
                 /*

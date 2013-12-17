@@ -88,11 +88,11 @@ class IndexController extends OntoWiki_Controller_Base
 
         try {
             $url = 'http://blog.aksw.org/feed/?cat=5&client='
-                . $version->label
+                . urlencode($version->label)
                 . '&version='
-                . $version->number
+                . urlencode($version->number)
                 . '&suffix='
-                . $version->suffix;
+                . urlencode($version->suffix);
 
             $owFeed = Zend_Feed::import($url);
 
