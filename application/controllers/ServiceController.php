@@ -874,16 +874,12 @@ class ServiceController extends Zend_Controller_Action
             $resourceUri = $parameter;
         }
 
-        $templateFound = false;
-        // Look if template for selected class exist
-        if ($workingMode == 'class') 
-        {
-            $event           = new Erfurt_Event('onRDFAuthorInitActionTemplate');
-            $event->model    = $model;
-            $event->resource = $parameter;
-            $event->mode     = $workingMode;
-            $eventResult     = $event->trigger();
-        }
+        $event            = new Erfurt_Event('onRDFAuthorInitActionTemplate');
+        $event->model     = $model;
+        $event->resource  = $resourceUri;
+        $event->parameter = $parameter;
+        $event->mode      = $workingMode;
+        $eventResult      = $event->trigger();
 
         if ($workingMode == 'class') {
             if ($eventResult) {
@@ -906,11 +902,15 @@ class ServiceController extends Zend_Controller_Action
                 } LIMIT 20 ', array('result_format' => 'extended')
             );
         } elseif ($workingMode == 'edit') {
+            if ($eventResult) {
+                $properties = $event->properties;
+            } else {
             $properties = $model->sparqlQuery(
                 'SELECT ?uri ?value {
                 <' . $parameter . '> ?uri ?value.
                 } LIMIT 20 ', array('result_format' => 'extended')
-            );
+                );
+            }
         } else { // resource
             $properties = $model->sparqlQuery(
                 'SELECT DISTINCT ?uri ?value {
