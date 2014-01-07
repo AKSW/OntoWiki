@@ -938,9 +938,13 @@ class ServiceController extends Zend_Controller_Action
                 */
                 if (isset($property['value']) &&  $property['value']['value'] !== '') {
                     $currentValue = $property['value']['value'];
-                    $currentType  = $property['value']['type'];
                 } else {
                     $currentValue = '';
+                }
+
+                if (isset($property['value']) &&  $property['value']['type'] !== '') {
+                    $currentType  = $property['value']['type'];
+                } else {
                     $currentType = '';
                 }
 
@@ -986,8 +990,11 @@ class ServiceController extends Zend_Controller_Action
                         $value->value = $currentValue;
                         $value->type  = $currentType;
                     }
-                    if ($workingMode == 'class') {
-                        $value->value = '';
+                    if ($workingMode == 'class' && $eventResult) {
+                        $value->value = $currentValue;
+                        $value->type  = $currentType;
+                    } elseif ($workingMode == 'class' && !$eventResult) {
+                        $value->value = '' ;
                         $value->type  = $currentType;
                     }
                 }
