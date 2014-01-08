@@ -20,6 +20,7 @@ class ServiceController extends Zend_Controller_Action
     /** @var Zend_Config */
     protected $_config = null;
 
+
     /**
      * Attempts an authentication to the underlying Erfurt framework via
      * HTTP GET/POST parameters.
@@ -427,6 +428,7 @@ class ServiceController extends Zend_Controller_Action
      */
     public function updateAction()
     {
+
         // service controller needs no view renderer
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
@@ -440,6 +442,10 @@ class ServiceController extends Zend_Controller_Action
         $deleteGraph  = null;
         $insertModel  = null;
         $deleteModel  = null;
+
+        // get versioning
+        $versioning = OntoWiki::getInstance()->erfurt->getVersioning();
+
 
         if (isset($this->_request->query)) {
             // we have a query, enter SPARQL/Update mode
@@ -539,6 +545,18 @@ class ServiceController extends Zend_Controller_Action
 
         $flag = false;
 
+        // action spec for versioning
+        $actionSpec                = array();
+        $actionSpec['type']        = 21;
+        $actionSpec['modeluri']    = $deleteModel->getModelUri();
+        $actionSpec['resourceuri'] = key($delete);
+
+        // ToDo: better way to get uri and resource?
+
+
+        // starting action
+        $versioning->startAction($actionSpec);
+
         /**
          * @trigger onUpdateServiceAction is triggered when Service-Controller Update Action is executed.
          * Event contains following attributes:
@@ -594,6 +612,9 @@ class ServiceController extends Zend_Controller_Action
                 );
             }
         }
+
+        // stopping action
+        $versioning->endAction();   
 
         // nothing done?
         if (!$flag) {
