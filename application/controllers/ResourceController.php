@@ -92,14 +92,16 @@ class ResourceController extends OntoWiki_Controller_Base
 
             $model      = new OntoWiki_Model_Resource($store, $graph, (string)$resource);
 
-            $event           = new Erfurt_Event('onPropertiesActionTemplate');
-            $event->model    = $model;
-            $event->resource = $resource;
-            $event->graph    = $graph;
-            $result          = $event->trigger();
+            $event                  = new Erfurt_Event('onPropertiesActionTemplate');
+            $event->model           = $model;
+            $event->selectedModel   = $this->_owApp->selectedModel;
+            $event->resource        = $resource;
+            $event->graph           = $graph;
+            $result                 = $event->trigger();
 
             if ($result) {
                 $predicates = $event->predicates;
+                $this->view->templateHtml = $event->templateHtml;
             } else {
                 $predicates = $model->getPredicates();
             }

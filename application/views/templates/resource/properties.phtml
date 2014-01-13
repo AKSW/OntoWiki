@@ -1,5 +1,8 @@
 <?php if (isset($this->prePropertiesContent)): ?>
-    <div><?php echo $this->prePropertiesContent; ?></div>    
+    <div><?php echo $this->prePropertiesContent; ?></div>
+<?php endif; ?>
+<?php if (isset($this->templateHtml)): ?>
+    <?php echo $this->templateHtml ?>
 <?php endif; ?>
 <?php $flag = false; ?>
 <span about="<?php echo $this->resourceUri ?>" style="display:none" class="about_span"></span>
@@ -9,7 +12,7 @@
     <?php foreach ($this->namespacePrefixes as $prefix => $namespace): ?>
         <?php echo ' xmlns:' . $prefix . '="' . $namespace . '"' ?>
     <?php endforeach; ?>>
-    
+
     <?php foreach ($this->predicates as $graph => $predicatesForGraph): ?>
         <?php $current++; ?>
         <?php if (count($this->predicates[$graph]) > 0): /* has resource predicates from graph at all? */ ?>
@@ -99,6 +102,9 @@
     <?php endif; ?>
     <?php endforeach; ?>
 </table>
+<?php endif; ?>
+<?php if (isset($this->templateHtml)): ?>
+    <?php $this->templateHtml ?>
 <?php endif; ?>
 <?php if (!$flag): ?>
     <table class="separated-vertical rdfa hidden" about="<?php echo $this->resourceUri ?>"
