@@ -884,6 +884,9 @@ class ServiceController extends Zend_Controller_Action
         if ($workingMode == 'class') {
             if ($eventResult) {
                 $properties = $event->properties;
+                if (isset($event->addPropertyValues)) {
+                    $output->addPropertyValues = $event->addPropertyValues;
+                }
             } else {
                 $properties = $model->sparqlQuery(
                     'SELECT DISTINCT ?uri ?value {
