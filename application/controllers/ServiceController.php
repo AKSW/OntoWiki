@@ -881,10 +881,14 @@ class ServiceController extends Zend_Controller_Action
         $event->mode      = $workingMode;
         $eventResult      = $event->trigger();
 
+        // empty object to hold data
+        $output        = new stdClass();
+        $newProperties = new stdClass();
+
         if ($workingMode == 'class') {
             if ($eventResult) {
                 $properties = $event->properties;
-                if (isset($event->addPropertyValues)) {
+                if ($event->addPropertyValues !== null) {
                     $output->addPropertyValues = $event->addPropertyValues;
                 }
             } else {
@@ -907,6 +911,9 @@ class ServiceController extends Zend_Controller_Action
         } elseif ($workingMode == 'edit') {
             if ($eventResult) {
                 $properties = $event->properties;
+                if ($event->addPropertyValues !== null) {
+                    $output->addPropertyValues = $event->addPropertyValues;
+                }
             } else {
             $properties = $model->sparqlQuery(
                 'SELECT ?uri ?value {
@@ -921,10 +928,6 @@ class ServiceController extends Zend_Controller_Action
                 } LIMIT 20 ', array('result_format' => 'extended')
             );
         }
-
-        // empty object to hold data
-        $output        = new stdClass();
-        $newProperties = new stdClass();
 
         $properties = $properties['results']['bindings'];
         // feed title helper w/ URIs
@@ -1030,6 +1033,9 @@ class ServiceController extends Zend_Controller_Action
             $uri                  = EF_RDFS_LABEL;
             $newProperties->$uri  = array($value);
             $output->$resourceUri = $newProperties;
+            if (!isset($output->addPropertyValues)) {
+                $output->addPropertyValues = '{}';
+            }
         }
 
         // send the response
