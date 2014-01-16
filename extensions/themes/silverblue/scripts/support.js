@@ -511,6 +511,7 @@ function createInstanceFromClassURI(type, dataCallback) {
                 autoParse: false, 
                 showPropertyButton: true,
                 loadOwStylesheet: false,
+                addPropertyValues: data['addPropertyValues'],
                 onSubmitSuccess: function (responseData) {
                     var newLocation;
                     if (responseData && responseData.changed) {
@@ -559,6 +560,7 @@ function editResourceFromURI(resource) {
                 autoParse: false, 
                 showPropertyButton: true,
                 loadOwStylesheet: false,
+                addPropertyValues: data['addPropertyValues'],
                 onSubmitSuccess: function () {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
@@ -703,16 +705,35 @@ function addProperty() {
     $('table.rdfa').parent().find('p.messagebox').hide();
     
     var selectorOptions = {
-        container: $('#' + td1ID), 
-        selectionCallback: function (uri, label) {
-            var statement = new Statement({
-                subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>', 
-                predicate: '<' + uri + '>'
-            }, {
-                title: label, 
-                graph: RDFAUTHOR_DEFAULT_GRAPH
-            });
-            
+        container: $('#' + td1ID),
+        selectionCallback: function (uri, label, datatype) {
+            var statement;
+
+            if (datatype != undefined) {
+                statement = new Statement({
+                    subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>',
+                    predicate: '<' + uri + '>',
+                    object: {
+                        value: '',
+                        options: {
+                           datatype: "http://www.w3.org/2001/XMLSchema#date"
+                        }
+                    }
+                }, {
+                    title: label,
+                    graph: RDFAUTHOR_DEFAULT_GRAPH
+                });
+            }
+            else {
+                statement = new Statement({
+                    subject: '<' + RDFAUTHOR_DEFAULT_SUBJECT + '>',
+                    predicate: '<' + uri + '>'
+                }, {
+                    title: label,
+                    graph: RDFAUTHOR_DEFAULT_GRAPH
+                });
+            }
+
             var owURL = urlBase + 'view?r=' + encodeURIComponent(uri);
             $('#' + td1ID).closest('td')
                 .attr('colspan', '1')
