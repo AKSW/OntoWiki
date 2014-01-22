@@ -225,6 +225,27 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         $this->assertEquals($r[0]['uri'], 'http://model.org/model#i2');
     }
 
+    public function testShownPropertiesAdd()
+    {
+        //add
+        $r = $this->_instances->addShownProperty("http://abc");
+        //test chaining
+        $this->assertSame($this->_instances, $r);
+
+        return $this->_instances;
+    }
+
+    /**
+     *
+     * @depends testShownPropertiesAdd
+     */
+    public function testShownPropertiesAddTitles(OntoWiki_Model_Instances $i)
+    {
+        //verify triple in value query
+        $propertiesWithTitles = $i->getShownProperties();
+        $this->assertCount(2, $propertiesWithTitles);
+    }
+
     protected static function _onlyValues($arr)
     {
         $r = array();
