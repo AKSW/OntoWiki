@@ -18,10 +18,63 @@ require_once 'OntoWiki/Plugin.php';
 class HistoryproxyPlugin extends OntoWiki_Plugin
 {
 
-   
-    public function onQueryHistory($event)
+	private $callback;
+
+	private $function;
+
+    private $parameters;
+
+    private $versioning;
+
+
+	public function onQueryHistory($event)
+	{
+
+		$logger = OntoWiki::getInstance()->logger;
+
+        // set-up and enable the extended versioning
+        require_once 'classes/ExtendedVersioning.php';
+        $this->versioning = new Extended_Erfurt_Versioning();
+        $this->versioning->enableVersioning(true);
+        $this->versioning->setLimit(100);
+
+        $this->function   = $event->function;
+        $this->parameters = $event->parameters;
+
+		// calling the function with the parameters as array
+		$event->callback = call_user_func_array(array($this, $this->function) , $this->parameters);
+	}
+
+    /**
+     * Returns the last changed resource.
+     * @param  string $graphUri the graph uri
+     * @param  string $resource the resource
+     */
+	private function getLastChange($graphUri, $resource)
+	{
+		return  $this->versioning->getHistoryForResource($resource, $graphUri);
+	}
+
+    /**
+     * Returns the changed resources at a given day.
+     * @param  string $graphUri the graph uri
+     * @param  string $date     the date
+     */
+    private function getChangesAtDate($graphUri, $date)
     {
-        $logger = OntoWiki::getInstance()<
-        $logger->info('[doge]');
+        return $this->versioning->getModifiedResourcesAtDate($graphUri, $date);
     }
+
+    /**
+     * Returns the changed resources in a certain range of time.
+     * @param  [type] $graphUri [description]
+     * @param  [type] $from     [description]
+     * @param  [type] $to       [description]
+     * @return [type]           [description]
+     */
+    private function getChangesFromRange($graphUri, $from, $to)
+    {
+        return $this->versioning->getModifiedResourcesAtRange($graphUri, $from, $to);
+    }
+
 }

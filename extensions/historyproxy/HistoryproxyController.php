@@ -7,8 +7,8 @@
  */
 
 /**
- * History component controller.
- * 
+ * Historyproxy component controller.
+ *
  * @category   OntoWiki
  * @package    Extensions_Historyproxy
  * @author     Sebastian Nuck
@@ -19,5 +19,13 @@ class HistoryproxyController extends OntoWiki_Controller_Component
 {
     public function viewAction()
     {
+        $event              = new Erfurt_Event('onQueryHistory');
+        $event->function    = 'getChangesAtDate';
+        $event->parameters  = array("http://localhost/OntoWiki/AKSW/", "22-01-2014");
+        $event->trigger();
+
+        $this->view->function   = $event->function;
+        $this->view->parameters = $event->parameters;
+        $this->view->callback   = $event->callback;
     }
 }

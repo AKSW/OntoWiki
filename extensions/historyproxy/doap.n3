@@ -15,6 +15,7 @@
   owconfig:templates "templates" ;
   owconfig:languages "languages/" ;
   owconfig:defaultAction "view" ;
+  owconfig:pluginEvent event:onQueryHistory ;
   rdfs:label "Historyproxy" ;
   doap:description "description goes here" ;
   owconfig:authorLabel "AKSW" ;
