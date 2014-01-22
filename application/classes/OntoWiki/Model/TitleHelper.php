@@ -75,6 +75,13 @@ class OntoWiki_Model_TitleHelper
     protected $_store = null;
 
     /**
+     * Erfurt store object
+     *
+     * @var Erfurt_App
+     */
+    protected $_erfurtApp = null;
+
+    /**
      * titleProperties from configuration
      *
      * @var array
@@ -98,10 +105,12 @@ class OntoWiki_Model_TitleHelper
             $this->_model = $model;
         }
 
+        $this->_erfurtApp = Erfurt_App::getInstance();
+
         if (null !== $store) {
             $this->_store = $store;
         } else {
-            $this->_store = Erfurt_App::getInstance()->getStore();
+            $this->_store = $this->_erfurtApp->getStore();
         }
 
         if (null == $config) {
@@ -281,6 +290,33 @@ class OntoWiki_Model_TitleHelper
         return $title;
     }
 
+    /**
+     * Add a new title property on top of the list (most important) of title properties
+     *
+     * @param $propertyUri a string with the URI of the property to add
+     */
+    public function prependTitleProperty($propertyUri)
+    {
+        // check if we have a valid URI
+        if (Erfurt_Uri::check($propertyUri)) {
+            // remove the property from the list if it already exist
+            foreach ($this->_titleProperties as $key => $value) {
+                if ($value == $propertyUri) {
+                    unset($this->_titleProperties[$key]);
+                }
+            }
+
+            // rewrite the array
+            $this->_titleProperties = array_values($this->_titleProperties);
+
+            // prepend the new URI
+            array_unshift($this->_titleProperties, $propertyUri);
+
+            // reset the TitleHelper to fetch resources with new title properties
+            $this->reset();
+        }
+    }
+
      /**
      * Resets the title helper, emptying all resources, results and queries stored
      */
@@ -323,7 +359,7 @@ class OntoWiki_Model_TitleHelper
      */
     private function _fetchTitlesFromResourcePool($resourceUris)
     {
-        $resourcePool = Erfurt_App::getInstance()->getResourcePool();
+        $resourcePool = $this->_erfurtApp->getResourcePool();
         $resources = array();
         if (!empty($this->_model)) {
             $modelUri = $this->_model->getModelIri();
@@ -343,7 +379,7 @@ class OntoWiki_Model_TitleHelper
                     if (!empty($value['lang'])) {
                         $language = $value['lang'];
                     } else {
-                        $language = "";
+                        $language = '';
                     }
                     $this->_resources[$resourceUri][$titleProperty][$language] = $value['value'];
                 }
@@ -365,35 +401,5 @@ class OntoWiki_Model_TitleHelper
             $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
         }
         return $title;
-    }
-
-    private function _cache($resourceUri, $graphUri, $newValue = null)
-    {
-        $cacheBucketId = md5(serialize($this->_titleProperties));
-        if (null !== $newValue) {
-            if (!isset(self::$_titleCache[$cacheBucketId])) {
-                self::$_titleCache[$cacheBucketId] = array();
-            }
-            if (!isset(self::$_titleCache[$cacheBucketId][$graphUri])) {
-                self::$_titleCache[$cacheBucketId][$graphUri] = array();
-            }
-            self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri] = $newValue;
-
-            return true;
-        }
-
-        if (isset(self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri])) {
-            return self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri];
-        }
-
-        return false;
-    }
-
-    private function _resetCache()
-    {
-        $cacheBucketId = md5(serialize($this->_titleProperties));
-        if (isset(self::$_titleCache[$cacheBucketId])) {
-            self::$_titleCache[$cacheBucketId] = array();
-        }
     }
 }
