@@ -10,7 +10,7 @@
  *
  * @author Philipp Frischmuth <pfrischmuth@gmail.com>
  */
-class OntoWiki_Model_TitleHelperTest extends Erfurt_TestCase
+class OntoWiki_Model_TitleHelperIntegrationTest extends Erfurt_TestCase
 {
     /** @var Erfurt_Store_Adapter_test */
     private $_storeAdapter = null;
@@ -18,77 +18,42 @@ class OntoWiki_Model_TitleHelperTest extends Erfurt_TestCase
     /** @var Erfurt_Store */
     private $_store = null;
 
+    private $_erfurtApp = null;
+
     public function setUp()
     {
         $this->markTestNeedsTestConfig();
+        $this->markTestNeedsDatabase();
+        $this->_erfurtApp = Erfurt_App::getInstance();
+        $this->_store = $this->_erfurtApp->getStore();
+        $this->authenticateDbUser();
+        $this->_modelUri = 'http://example.org/graph123/';
+        $this->_addTestData();
+        parent::setUp();
+    }
 
-        $this->_storeAdapter = new Erfurt_Store_Adapter_Test();
+    private function _addTestData()
+    {
+        $model = $this->_store->getNewModel($this->_modelUri, '', Erfurt_Store::MODEL_TYPE_OWL, false);
+        $this->authenticateDbUser();
+        $turtleString
+            = '<http://purl.org/dc/terms/title> <http://www.w3.org/2000/01/rdf-schema#label> "testABC_en"@en .'
+            . '<http://example.org/resourceXYZ> <http://www.w3.org/2004/02/skos/core#prefLabel> "testABC_noLang" ;'
+            . '                                 <http://www.w3.org/2000/01/rdf-schema#label> "testABC_de"@de .'
+            . '<http://example.org/graph123/resourceABC> <http://www.w3.org/2000/01/rdf-schema#label> "testABC" ;'
+            . '                                          <http://ns.ontowiki.net/SysOnt/Site/menuLabel> "testMenuLabel" .';
 
-        $this->_store = new Erfurt_Store(
-            array(
-                 'adapterInstance' => $this->_storeAdapter
-            ),
-            'Test'
+        $this->_store->importRdf(
+            $this->_modelUri,
+            $turtleString,
+            'turtle',
+            Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING, false
         );
     }
 
     public function testMultipleAddResourceGetTitleCallsGithubIssue65()
     {
-        $queryResultA = array(
-            'head'    => array(
-                'vars' => array(
-                    'property',
-                    'value'
-                )
-            ),
-            'results' => array(
-                'bindings' => array(
-                    array(
-                        'property' => array(
-                            'value' => 'http://www.w3.org/2000/01/rdf-schema#label',
-                        ),
-                        'value'    => array(
-                            'value'    => 'testABC_en',
-                            'xml:lang' => 'en'
-                        )
-                    )
-                )
-            )
-        );
-        $this->_storeAdapter->addQueryResult($queryResultA);
-
-        $queryResultB = array(
-            'head'    => array(
-                'vars' => array(
-                    'property',
-                    'value'
-                )
-            ),
-            'results' => array(
-                'bindings' => array(
-                    array(
-                        'property' => array(
-                            'value' => 'http://www.w3.org/2004/02/skos/core#prefLabel',
-                        ),
-                        'value'    => array(
-                            'value' => 'testABC_noLang'
-                        )
-                    ),
-                    array(
-                        'property' => array(
-                            'value' => 'http://www.w3.org/2000/01/rdf-schema#label',
-                        ),
-                        'value'    => array(
-                            'value'    => 'testABC_de',
-                            'xml:lang' => 'de'
-                        )
-                    )
-                )
-            )
-        );
-        $this->_storeAdapter->addQueryResult($queryResultB);
-
-        $graph      = new Erfurt_Rdf_Model('http://example.org/graph123/');
+        $graph      = new Erfurt_Rdf_Model($this->_modelUri);
         $properties = array(
             'testABC_en@en'                                   => 'http://purl.org/dc/terms/title',
             'testABC_de@de'                                   => 'http://example.org/resourceXYZ',
@@ -134,59 +99,6 @@ class OntoWiki_Model_TitleHelperTest extends Erfurt_TestCase
 
     public function testPrependTitlePropertyDifferentInstances()
     {
-        $queryResultA = array(
-            'head'    => array(
-                'vars' => array(
-                    'property',
-                    'value'
-                )
-            ),
-            'results' => array(
-                'bindings' => array(
-                    array(
-                        'property' => array(
-                            'value' => 'http://www.w3.org/2000/01/rdf-schema#label'
-                        ),
-                        'value'    => array(
-                            'value' => 'testABC'
-                        )
-                    )
-                )
-            )
-        );
-        $this->_storeAdapter->addQueryResult($queryResultA);
-
-        $queryResultB = array(
-            'head'    => array(
-                'vars' => array(
-                    'property',
-                    'value'
-                )
-            ),
-            'results' => array(
-                'bindings' => array(
-                    array(
-                        'property' => array(
-                            'value' => 'http://www.w3.org/2000/01/rdf-schema#label'
-                        ),
-                        'value'    => array(
-                            'value' => 'test123'
-                        )
-                    ),
-                    array(
-                        'property' => array(
-                            'value' => 'http://ns.ontowiki.net/SysOnt/Site/menuLabel'
-                        ),
-                        'value'    => array(
-                            'value' => 'testMenuLabel'
-                        )
-                    )
-
-                )
-            )
-        );
-        $this->_storeAdapter->addQueryResult($queryResultB);
-
         $config = array(
             'titleHelper' => array(
                 'properties' => array(
@@ -207,7 +119,7 @@ class OntoWiki_Model_TitleHelperTest extends Erfurt_TestCase
             )
         );
 
-        $graph    = new Erfurt_Rdf_Model('http://example.org/graph123/');
+        $graph    = new Erfurt_Rdf_Model($this->_modelUri);
         $resource = 'http://example.org/graph123/resourceABC';
 
         $titleHelper = new OntoWiki_Model_TitleHelper($graph, $this->_store, $config);
@@ -225,59 +137,6 @@ class OntoWiki_Model_TitleHelperTest extends Erfurt_TestCase
 
     public function testPrependTitlePropertySameInstances()
     {
-        $queryResultA = array(
-            'head'    => array(
-                'vars' => array(
-                    'property',
-                    'value'
-                )
-            ),
-            'results' => array(
-                'bindings' => array(
-                    array(
-                        'property' => array(
-                            'value' => 'http://www.w3.org/2000/01/rdf-schema#label'
-                        ),
-                        'value'    => array(
-                            'value' => 'testABC'
-                        )
-                    )
-                )
-            )
-        );
-        $this->_storeAdapter->addQueryResult($queryResultA);
-
-        $queryResultB = array(
-            'head'    => array(
-                'vars' => array(
-                    'property',
-                    'value'
-                )
-            ),
-            'results' => array(
-                'bindings' => array(
-                    array(
-                        'property' => array(
-                            'value' => 'http://www.w3.org/2000/01/rdf-schema#label'
-                        ),
-                        'value'    => array(
-                            'value' => 'test123'
-                        )
-                    ),
-                    array(
-                        'property' => array(
-                            'value' => 'http://ns.ontowiki.net/SysOnt/Site/menuLabel'
-                        ),
-                        'value'    => array(
-                            'value' => 'testMenuLabel'
-                        )
-                    )
-
-                )
-            )
-        );
-        $this->_storeAdapter->addQueryResult($queryResultB);
-
         $config = array(
             'titleHelper' => array(
                 'properties' => array(
