@@ -270,6 +270,14 @@ class OntoWiki_Model_TitleHelper
             $this->addResource($resourceUri);
         }
 
+        // prepend the language that is asked for to the array
+        // of languages we will look for
+        $languages = $this->_languages;
+        if (null !== $language) {
+            array_unshift($languages, (string)$language);
+        }
+        $languages = array_values(array_unique($languages));
+
         //Have a look if we have already a title for the given resourceUri
         if ($this->_resources[$resourceUri] === null ) {
             $this->_receiveTitles();
@@ -278,12 +286,11 @@ class OntoWiki_Model_TitleHelper
         $title = $resourceUri;
 
         $titles = $this->_resources[$resourceUri];
-        $found = false;
-        foreach ($this->_titleProperties as $titleProperty) {
-            foreach ($this->_languages as $language) {
-                if (!empty($titles[$titleProperty][$language]) && $found == false) {
+        foreach ($languages as $language) {
+            foreach ($this->_titleProperties as $titleProperty) {
+                if (isset($titles[$titleProperty][$language]) && !empty($titles[$titleProperty][$language])) {
                     $title = $titles[$titleProperty][$language];
-                    break;
+                    break(2);
                 }
             }
         }
@@ -346,7 +353,7 @@ class OntoWiki_Model_TitleHelper
         //If we dont find titles then we extract them from LocalName
         foreach ($this->_resources as $resourceUri => $resource) {
             if ($resource == null) {
-                $this->_resources[$resourceUri]["localname"]["localname"]
+                $this->_resources[$resourceUri]['localname']['localname']
                     = $this->_extractTitleFromLocalName($resourceUri);
             }
         }
