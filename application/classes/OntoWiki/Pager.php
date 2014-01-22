@@ -100,12 +100,14 @@ class OntoWiki_Pager
             if ($page > 1) {
                 if (self::$_options['show_first_last']) {
                     self::$_url->{self::$_options['page_param']} = 1;
+                    self::$_url->limit = $limit;
                     $pagerLinks[]                                = sprintf(
                         '<a class="minibutton" href="%s">%s</a>', self::$_url, self::$firstHtml . $translate->_('First')
                     );
                 }
 
                 self::$_url->{self::$_options['page_param']} = $page - 1;
+                self::$_url->limit = $limit;
                 $pagerLinks[]                                = sprintf(
                     '<a class="minibutton" href="%s">%s</a>', self::$_url, self::$prevHtml . $translate->_('Previous')
                 );
@@ -129,6 +131,7 @@ class OntoWiki_Pager
                     // first and last links are disabled, so always show first and last individual page
                     $maxLinksAsym                                = floor((self::$_options['max_page_links'] - 2) / 2);
                     self::$_url->{self::$_options['page_param']} = 1;
+                    self::$_url->limit = $limit;
                     if ($page == 1) {
                         $pagerLinks[] = '<a class="selected minibutton">1</a>';
                     } else {
@@ -145,6 +148,7 @@ class OntoWiki_Pager
                 if ($count === Erfurt_Store::COUNT_NOT_SUPPORTED) {
                     for ($i = max(1 + $offset, $page - $maxLinksAsym); $i <= $page; ++$i) {
                         self::$_url->{self::$_options['page_param']} = $i;
+                        self::$_url->limit = $limit;
                         if ($page == $i) {
                             $pagerLinks[] = '<a class="selected minibutton">' . $i . '</a>';
                         } else {
@@ -156,7 +160,8 @@ class OntoWiki_Pager
                     for (
                         $i = max(1 + $offset, $page - $maxLinksAsym); $i <= $forLoopTest; ++$i) {
                         self::$_url->{self::$_options['page_param']} = $i;
-
+                        self::$_url->limit = $limit;
+                        
                         if ($page == $i) {
                             $pagerLinks[] = '<a class="selected minibutton">' . $i . '</a>';
                         } else {
@@ -167,6 +172,7 @@ class OntoWiki_Pager
 
                 if (!self::$_options['show_first_last'] && ($count !== Erfurt_Store::COUNT_NOT_SUPPORTED)) {
                     self::$_url->{self::$_options['page_param']} = (int)ceil($count / $limit);
+                    self::$_url->limit = $limit;
                     if ((self::$_url->{self::$_options['page_param']} - $page) > 2) {
                         $pagerLinks[] = '&hellip;';
                     }
@@ -183,12 +189,14 @@ class OntoWiki_Pager
             // next page exists
             if (($count > $page * $limit) || ($count == Erfurt_Store::COUNT_NOT_SUPPORTED && $itemsOnPage === $limit)) {
                 self::$_url->{self::$_options['page_param']} = $page + 1;
+                self::$_url->limit = $limit;
                 $pagerLinks[]                                = sprintf(
                     '<a class="minibutton" href="%s">%s</a>', self::$_url, $translate->_('Next') . self::$nextHtml
                 );
 
                 if (self::$_options['show_first_last']) {
                     self::$_url->{self::$_options['page_param']} = (int)ceil($count / $limit);
+                    self::$_url->limit = $limit;
                     $pagerLinks[]                                = sprintf(
                         '<a class="minibutton" href="%s">%s</a>', self::$_url, $translate->_('Last') . self::$lastHtml
                     );

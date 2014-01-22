@@ -22,7 +22,8 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function aboutAction()
     {
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
-        $this->view->placeholder('main.window.title')->set('About OntoWiki');
+        $this->view->placeholder('main.window.title')
+            ->set('About ' . $this->_config->version->label);
 
         $version = $this->_config->version->number;
         if (isset($this->_config->version->suffix)) {
@@ -52,10 +53,10 @@ class ApplicationController extends OntoWiki_Controller_Base
 
         $data = array(
             'System'         => array(
-                'OntoWiki Release' => $version,
-                'PHP Version'      => phpversion(),
-                'Backend'          => $this->_owApp->erfurt->getStore()->getBackendName(),
-                'Debug Mode'       => defined('_OWDEBUG') ? 'enabled' : 'disabled'
+                'Release'     => $version,
+                'PHP Version' => phpversion(),
+                'Backend'     => $this->_owApp->erfurt->getStore()->getBackendName(),
+                'Debug Mode'  => defined('_OWDEBUG') ? 'enabled' : 'disabled'
             ),
             'User Interface' => array(
                 'Theme'    => rtrim($this->_config->themes->default, '/'),

@@ -245,29 +245,6 @@ class OntoWiki_Model_InstancesTest extends Erfurt_TestCase
         $this->assertCount(1 + $this->_valueQueryDefaultTriples, $triplesQuery);
     }
 
-    /**
-     *
-     * @depends testShownPropertiesAdd
-     */
-    public function testShownPropertiesAddTitles(OntoWiki_Model_Instances $i)
-    {
-        //verify triple in value query
-        $propertiesWithTitles = $i->getShownProperties();
-        $this->assertCount(2, $propertiesWithTitles);
-//
-//        $this->_shownProperties[$propertyUri.'-'.($inverse?'inverse':'direct')] = array(
-//            'uri' => $propertyUri,
-//            'name' => $propertyName,
-//            'inverse' => $inverse,
-//            'datatype' => $datatype,
-//            'varName' => $ret['var']->getName(),
-//            'var' => $ret['var'],
-//            'optionalpart' => $ret['optional'],
-//            'filter' => $ret['filter'],
-//            'hidden' => $hidden
-//        );
-    }
-
     public function testtShownPropertiesRemove()
     {
         //add

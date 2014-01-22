@@ -98,6 +98,9 @@ class QueriesController extends OntoWiki_Controller_Component
             return;
         }
 
+        $this->view->headLink()->appendStylesheet(
+            $this->_owApp->extensionManager->getComponentUrl('queries').'resources/querieseditor.css'
+        );
         $this->view->placeholder('main.window.title')->set('SPARQL Query Editor');
         $this->view->formActionUrl = $this->_config->urlBase . 'queries/editor';
         $this->view->formMethod = 'post';
