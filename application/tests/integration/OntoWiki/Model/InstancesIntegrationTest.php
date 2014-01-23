@@ -31,8 +31,9 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
     public function setUp()
     {
         $this->markTestNeedsDatabase();
-        $this->_store = $this->getStore();
         $this->authenticateDbUser();
+
+        $this->_store = $this->getStore();
 
         //create model
         $model = $this->_store->getNewModel($this->_modelUri, '', Erfurt_Store::MODEL_TYPE_OWL, false);
@@ -43,6 +44,8 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         );
 
         $this->addTestData();
+
+        $this->_instances->getResources();
 
         parent::setUp();
     }
@@ -225,24 +228,17 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         $this->assertEquals($r[0]['uri'], 'http://model.org/model#i2');
     }
 
-    public function testShownPropertiesAdd()
+    /**
+     *
+     */
+    public function testShownPropertiesAddTitles()
     {
         //add
         $r = $this->_instances->addShownProperty("http://abc");
         //test chaining
         $this->assertSame($this->_instances, $r);
-
-        return $this->_instances;
-    }
-
-    /**
-     *
-     * @depends testShownPropertiesAdd
-     */
-    public function testShownPropertiesAddTitles(OntoWiki_Model_Instances $i)
-    {
         //verify triple in value query
-        $propertiesWithTitles = $i->getShownProperties();
+        $propertiesWithTitles = $this->_instances->getShownProperties();
         $this->assertCount(2, $propertiesWithTitles);
     }
 
