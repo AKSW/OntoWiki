@@ -499,6 +499,9 @@ function createInstanceFromClassURI(type, dataCallback) {
             if (typeof dataCallback == 'function') {
                 data = dataCallback(data);
             }
+            var addPropertyValues = data['addPropertyValues'];
+            delete data.addPropertyValues;
+
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
             for (var subjectUri in data) {break;};
@@ -511,7 +514,7 @@ function createInstanceFromClassURI(type, dataCallback) {
                 autoParse: false, 
                 showPropertyButton: true,
                 loadOwStylesheet: false,
-                addPropertyValues: data['addPropertyValues'],
+                addPropertyValues: addPropertyValues,
                 onSubmitSuccess: function (responseData) {
                     var newLocation;
                     if (responseData && responseData.changed) {
