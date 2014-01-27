@@ -529,7 +529,7 @@ function createInstanceFromClassURI(type, dataCallback) {
                 }
             });
            
-            RDFauthor.start();
+            RDFauthor.start(null, 'class');
         })
     });
 }
