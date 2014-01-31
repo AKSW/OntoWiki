@@ -1,39 +1,104 @@
 <?php
-
 /**
- * OntoWiki table partial template
+ * OntoWiki table template partial
  *
- * @author  Norman Heino <norman.heino@gmail.com>
- * @author  Michael Haschke
- * @version $$
+ * possible view parameter:
+ * - tableClass, rowClass, itemClass: css class strings
+ * - caption: caption string
+ * - header: array of th items
+ * - data: array of (tr) items, which are arrays of (td) items
+ * - querylink: output resource enabled query links where possible
+ * - noodds: do not output odd even class
+ *
+ * @author Sebastian Tramp <mail@sebastian.tramp.name>
  */
 
-?>
-<table class="separated-vertical <?php echo $this->has('tableClass') ? $this->tableClass : '' ?>">
-    <?php if ($this->has('caption')): ?>
-        <caption><?php echo $this->caption ?></caption>
-    <?php endif; ?>
-    
-    <?php if ($this->has('header')): ?>
-        <tr>
-            <?php foreach ($this->header as $headerField): ?>
-                <th><?php echo $headerField ?></th>
-            <?php endforeach; ?>
-        </tr>
-    <?php endif; ?>
-    
-    <?php $r = 0; ?>
-    <?php foreach ($this->data as $row): ?>
-        <tr<?php echo $this->has('rowClass') ? (' class="' . $this->rowClass . '"') : '' ?>>
-            <?php $c = 0; ?>
-            <?php foreach ($row as $field): ?>
-                <td<?php echo $this->has('itemClass') ? (' class="' . $this->itemClass . '"') : '' ?>
-                   id="<?php echo sprintf("r%d-c%d", $r, $c) ?>"><?php 
-                    echo $this->escape($field) 
-                ?></td>
-                <?php $c++; ?>
-            <?php endforeach; ?>
-        </tr>
-        <?php $r++; ?>
-    <?php endforeach; ?>
-</table>
+if ($this->has('tableClass')) {
+    echo '<table class="separated-vertical ' . $this->tableClass . '">' . PHP_EOL;
+} else {
+    echo '<table class="separated-vertical">' . PHP_EOL;
+}
+
+if ($this->has('caption')) {
+    echo "<caption>$this->caption</caption>" . PHP_EOL;
+}
+if ($this->has('header')) {
+    echo '<tr>' . PHP_EOL;
+    foreach ($this->header as $headerField) {
+        echo "<th>$headerField</th>" . PHP_EOL;
+    }
+    echo '</tr>' . PHP_EOL;
+}
+
+// row counter for data cell Ids
+$r = 0;
+$oddClass = 'even';
+foreach ($this->data as $row) {
+    // column counter for data cell Ids
+    $c = 0;
+
+    // swith odd/even class
+    $oddClass = ($oddClass == 'even') ? 'odd' : 'even';
+
+    // prepare classes of the tr element
+    $rowClassValue = '';
+    if ($this->has('rowClass')) {
+        $rowClassValue .= $this->rowClass;
+    }
+    if (!$this->has('noodds') || $this->noodds === false) {
+        $rowClassValue .= ' ' . $oddClass;
+    }
+    echo "<tr class='$rowClassValue'>" . PHP_EOL;
+
+    foreach ($row as $field) {
+        // data cell Id (r3-c12)
+        $id = 'r' . $r . '-c' . $c ;
+
+        if ($this->has('itemClass')) {
+            echo '<td id="' . $id . '" class="' . $this->itemClass . '">';
+        } else {
+            echo '<td id="' . $id . '">';
+        }
+
+        // enhance data cell if value is an URI
+        // (and option is set)
+        if (
+            $this->has('querylink') &&
+            $this->querylink === true &&
+            Erfurt_URI::check($field)
+        ) {
+            // the query which is sent to the query editor
+            $query = "SELECT ?predicate ?object" . PHP_EOL .
+                "WHERE {" . PHP_EOL .
+                "    <$field> ?predicate ?object ." . PHP_EOL .
+                "}";
+
+            // the links href
+            $url = new OntoWiki_Url(
+                array(
+                    'controller' => 'queries',
+                    'action' => 'editor'
+                ),
+                array(),
+                array('query')
+            );
+            // append query parameter (setParam not used intentional here)
+            // reason: failes with the query part
+            $url = $url . '?query=' . urlencode($query);
+
+            // output the link
+            echo '<a class="hasMenu expandable Resource"' .
+                ' about="' . $field . '"' .
+                ' href="'. $url .'"' .
+                '>' . $this->escape($field) . '</a>';
+        } else {
+            // output only the value
+            echo $this->escape($field);
+        }
+        echo '</td>' . PHP_EOL;
+        $c++;
+    }
+    echo '</tr>' . PHP_EOL;
+    $r++;
+}
+echo '</table>';

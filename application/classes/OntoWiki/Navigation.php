@@ -333,12 +333,12 @@ class OntoWiki_Navigation
 
             $url = new OntoWiki_Url(array('controller' => $controller, 'action' => $action), $this->_keepParams);
         }
+        $keyBlacklist   = array('route', 'controller', 'action', 'priority', 'name', 'active');
         foreach ($current as $key => $value) {
-            if ($key != 'route' && $key != 'controller' && $key != 'action' && $key != 'priority' && $key != 'name' && $key != 'active') {
+            if (!in_array($key, $keyBlacklist)) {
                 $url->setParam($key, $value);
             }
         }
-
         return $url;
     }
 

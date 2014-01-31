@@ -344,26 +344,32 @@ function showResourceMenu(event, json) {
             $('#' + menuId).fadeOut();
         }
     }
-    
+
     if(json == undefined){
+        var aboutUri, modelUri, resourceUri;
+
         // URI of the resource clicked (used attribute can be about and resource)
         if ( typeof $(event.target).parent().attr('about') != 'undefined' ) {
-            resourceUri = $(event.target).parent().attr('about');
+            aboutUri = $(event.target).parent().attr('about');
         } else if ( typeof $(event.target).parent().attr('resource') != 'undefined' ) {
-            resourceUri = $(event.target).parent().attr('resource');
-        } else {
-            // no usable resource uri, so we exit here
-            return false;
+            aboutUri = $(event.target).parent().attr('resource');
         }
 
-        encodedResourceUri = encodeURIComponent(resourceUri);
-        resource = $(event.target).parent();
-
-        
+        if (aboutUri == null) {
+            // no usable resource uri, so we exit here
+            return false;
+        } else if ($(event.target).parent().hasClass('Model')) {
+            modelUri = aboutUri;
+        } else {
+            resourceUri = aboutUri;
+        }
 
         var urlParams = {};
-        urlParams.resource = resourceUri;
-
+        if (modelUri != null) {
+            urlParams.model = modelUri;
+        } else {
+            urlParams.resource = resourceUri;
+        }
 
         // load menu with specific options from service
         $.ajax({
@@ -404,6 +410,9 @@ function loadRDFauthor(callback) {
 }
 
 function populateRDFauthor(data, protect, resource, graph, workingmode) {
+    /*
+     * Set default values
+     */
     protect  = arguments.length >= 2 ? protect : true;
     resource = arguments.length >= 3 ? resource : null;
     graph    = arguments.length >= 4 ? graph : null;
@@ -577,13 +586,20 @@ function resourceURL(resourceURI) {
     return urlBase + 'view/?r=' + encodeURIComponent(resourceURI);
 }
 
-/*
- * Edit a complete OW property view property section
+/**
+ * Starts RDFauthor in inline mode to edit a single property
+ *
+ * @param event the JavaScript event which startes the method
  */
 function editProperty(event) {
     var element = $.event.fix(event).target;
+
     loadRDFauthor(function () {
         RDFauthor.setOptions({
+            saveButtonTitle: 'Save Changes', 
+            cancelButtonTitle: 'Cancel',
+            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+            loadOwStylesheet: false,
             onSubmitSuccess: function () {
                 $('.edit').each(function() {
                     $(this).fadeOut(effectTime);
@@ -601,10 +617,6 @@ function editProperty(event) {
                 });
                 $('.edit-enable').removeClass('active');
             }, 
-            saveButtonTitle: 'Save Changes', 
-            cancelButtonTitle: 'Cancel',
-            loadOwStylesheet: false,
-            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
             viewOptions: {
                 type: RDFAUTHOR_VIEW_MODE,
                 container: function (statement) {
@@ -623,19 +635,19 @@ function editProperty(event) {
             }
         });
 
-        RDFauthor.start($(element).parents('td'));
+        RDFauthor.start($(element).closest('td'));
         $('.edit-enable').addClass('active');
         $('.edit').each(function() {
             var button = this;
             $(this).fadeIn(effectTime);
         });
     });
-
-    //return false;
 }
 
-/*
- * Edit a complete OW property view property section in table listview
+/**
+ * Starts RDFauthor in overlay mode to edit a single property in the listview table
+ *
+ * @param event the JavaScript event which startes the method
  */
 function editPropertyListmode(event) {
     var element = $.event.fix(event).target;

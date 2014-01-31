@@ -317,6 +317,44 @@ class OntoWiki
     }
 
     /**
+     * Returns the system worker frontend object
+     *
+     * todo: indicate a missing backend somehow
+     * todo: be robust against missing pecl stuff
+     *
+     * @since 0.9.11
+     * @return Erfurt_Worker_Frontend
+     */
+    public function getWorkerFrontend()
+    {
+        if (null === $this->_workerFrontend) {
+            $bootstrap = $this->getBootstrap();
+            $workerFrontend = Erfurt_Worker_Frontend::getInstance();
+            $workerFrontend->setBackend('gearman');
+            $workerFrontend->setServers($bootstrap->config->worker->servers);
+            $this->_workerFrontend = $workerFrontend;
+        }
+        return $this->_workerFrontend;
+    }
+
+    /**
+     * uses the system worker backend to call an async job
+     *
+     * todo: log a warning message if worker backend is not available
+     *
+     * @param string $jobId    The jobs identifier string
+     * @param mixed  $workload The jobs workload (array, object)
+     *
+     * @since 0.9.11
+     * @return null
+     */
+    public function callJob($jobId, $workload = array())
+    {
+        $client = $this->getWorkerFrontend();
+        $client->call($jobId, $workload);
+    }
+
+    /**
      * Singleton instance
      *
      * @return OntoWiki

@@ -18,6 +18,8 @@
                 <exclude>
                     <directory>../../../application/scripts</directory>
                     <directory>../../../application/tests</directory>
+                    <directory>../../../application/shell.worker.client.php</directory>
+                    <directory>../../../application/shell.worker.php</directory>
                 </exclude>
             </whitelist>
         </filter>

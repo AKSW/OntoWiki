@@ -365,6 +365,12 @@ class ResourceUriGenerator
     {
         if ($resource['type'] === 'uri') {
             // check if a resourcecreation specific title property is set
+            /*
+             * The following if-block is called if a custom property is defined to circumvent the
+             * TitleHelper because of https://github.com/AKSW/OntoWiki/issues/162. This might be
+             * superfluous if the TitleHelper is working correctly, but it works of now and can be
+             * removed if correctnes of TitleHelper is proven.
+             */
             if (isset($this->_config->property->title)) {
                 $property = $this->_config->property->title;
 

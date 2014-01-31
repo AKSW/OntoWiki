@@ -22,7 +22,8 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function aboutAction()
     {
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
-        $this->view->placeholder('main.window.title')->set('About OntoWiki');
+        $this->view->placeholder('main.window.title')
+            ->set('About ' . $this->_config->version->label);
 
         $version = $this->_config->version->number;
         if (isset($this->_config->version->suffix)) {
@@ -39,23 +40,23 @@ class ApplicationController extends OntoWiki_Controller_Base
         $cacheBackend         = $this->_config->cache->backend->type;
         $cacheBackendOptions  = array();
         $cacheFrontendOptions = array();
-        foreach($this->_config->cache->frontend->toArray() as $key => $value){
-            $cacheFrontendOptions[] = $key.": ".(string) $value;
+        foreach ($this->_config->cache->frontend->toArray() as $key => $value) {
+            $cacheFrontendOptions[] = $key.": ".(string)$value;
         }
-        if (isset($this->_config->cache->backend->$cacheBackend)){
-            foreach($this->_config->cache->backend->$cacheBackend->toArray() as $key => $value){
-                $cacheBackendOptions[] = $key.": ".(string) $value;
+        if (isset($this->_config->cache->backend->$cacheBackend)) {
+            foreach ($this->_config->cache->backend->$cacheBackend->toArray() as $key => $value) {
+                $cacheBackendOptions[] = $key.": ".(string)$value;
             }
         }
-        $cacheFrontendOptions = join( ", ", $cacheFrontendOptions );
-        $cacheBackendOptions  = join( ", ", $cacheBackendOptions );
+        $cacheFrontendOptions = join(", ", $cacheFrontendOptions);
+        $cacheBackendOptions  = join(", ", $cacheBackendOptions);
 
         $data = array(
             'System'         => array(
-                'OntoWiki Release' => $version,
-                'PHP Version'      => phpversion(),
-                'Backend'          => $this->_owApp->erfurt->getStore()->getBackendName(),
-                'Debug Mode'       => defined('_OWDEBUG') ? 'enabled' : 'disabled'
+                'Release'     => $version,
+                'PHP Version' => phpversion(),
+                'Backend'     => $this->_owApp->erfurt->getStore()->getBackendName(),
+                'Debug Mode'  => defined('_OWDEBUG') ? 'enabled' : 'disabled'
             ),
             'User Interface' => array(
                 'Theme'    => rtrim($this->_config->themes->default, '/'),
@@ -72,7 +73,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                 'Frontend Options'    => $cacheFrontendOptions,
                 'Backend'             => $cacheBackend,
                 'Backend Options'     => $cacheBackendOptions,
-#                'Path'                => rtrim($this->_config->cache->path, '/') . $cacheWritable,
+//                'Path'                => rtrim($this->_config->cache->path, '/') . $cacheWritable,
                 'Module Caching'      => ((bool)$this->_config->cache->modules == true) ? 'enabled' : 'disabled',
                 'Translation Caching' => ((bool)$this->_config->cache->translation == true) ? 'enabled' : 'disabled'
             ),

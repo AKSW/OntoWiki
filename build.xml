@@ -115,8 +115,8 @@
     <target name="phpdoc" description="Create API doc using DocCreator">
         <exec dir="/opt/DocCreator/" executable="php">
             <arg value="/opt/DocCreator/create.php5" />
-            <arg value="--config-file=/opt/DocCreator/config/doc.ontowiki.xml" />
-            <arg value="--source-folder=${basedir}/application/" />
+            <arg value="--config-file=${basedir}/build/doc.ontowiki-erfurt.xml" />
+            <arg value="--source-folder=${basedir}/" />
             <arg value="--target-folder=${basedir}/build/api/" />
         </exec>
     </target>

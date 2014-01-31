@@ -80,39 +80,6 @@ class ServiceController extends Zend_Controller_Action
         }
     }
 
-    /**
-     * Entity search
-     */
-    public function entitiesAction()
-    {
-        $type  = (string)$this->_request->getParam('type', 's');
-        $match = (string)$this->_request->getParam('match');
-
-        $type = $type[0]; // use only first letter
-
-        if ($this->_owApp->selectedModel && strlen($match) > 2) {
-            $namespaces = $this->_owApp->selectedModel->getNamespaces();
-
-            $namespacesFlipped = array_flip($namespaces);
-            $nsFilter          = array();
-            foreach ($namespacesFlipped as $prefix => $uri) {
-                if (stripos($prefix, $match) === 0) {
-                    $nsFilter[] = 'FILTER (regex(str(?' . $type . '), "' . $uri . '"))';
-                }
-            }
-
-            $store = $this->_owApp->selectedModel->getStore();
-            $query = Erfurt_Sparql_SimpleQuery::initWithString(
-                'SELECT DISTINCT ?' . $type . '
-                FROM <' . $this->_owApp->selectedModel->getModelIri() . '>
-                WHERE {
-                    ?s ?p ?o.
-                    ' . implode(PHP_EOL, $nsFilter) . '
-                }'
-            );
-        }
-    }
-
     public function hierarchyAction()
     {
         $options = array();
@@ -157,200 +124,33 @@ class ServiceController extends Zend_Controller_Action
     {
         $module   = $this->_request->getParam('module');
         $resource = $this->_request->getParam('resource');
+        $model    = $this->_request->getParam('model');
 
         $translate = $this->_owApp->translate;
 
         // create empty menu first
         $menuRegistry = OntoWiki_Menu_Registry::getInstance();
-        $menu         = $menuRegistry->getMenu(EF_RDFS_RESOURCE);
+        if (!empty($resource)) {
+            $menu         = $menuRegistry->getMenu('resource', $resource);
+        } else if (!empty($model)) {
+            $menu         = $menuRegistry->getMenu('model', $model);
+        }
 
         if (!empty($module)) {
             $moduleRegistry = OntoWiki_Module_Registry::getInstance();
             $menu           = $moduleRegistry->getModule($module)->getContextMenu();
         }
 
-        if (!empty($resource)) {
-            $models  = array_keys($this->_owApp->erfurt->getStore()->getAvailableModels(true));
-            $isModel = in_array($resource, $models);
-
-            $menu->prependEntry(
-                'Go to Resource (external)',
-                (string)$resource
-            );
-
-            if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)) {
-                // Delete resource option
-                $url = new OntoWiki_Url(
-                    array('controller' => 'resource', 'action' => 'delete'),
-                    array()
-                );
-                if ($isModel) {
-                    $url->setParam('m', $resource, false);
-                }
-                $url->setParam('r', $resource, true);
-                $menu->prependEntry('Delete Resource', (string)$url);
-
-                // edit resource option
-                $menu->prependEntry('Edit Resource', 'javascript:editResourceFromURI(\'' . (string)$resource . '\')');
-            }
-
-            // add resource menu entries
-            $url = new OntoWiki_Url(
-                array('action' => 'view'),
-                array()
-            );
-            if ($isModel) {
-                $url->setParam('m', $resource, false);
-            }
-            $url->setParam('r', $resource, true);
-
-            $menu->prependEntry(
-                'View Resource',
-                (string)$url
-            );
-
-            if ($isModel) {
-                // add a seperator
-                $menu->prependEntry(OntoWiki_Menu::SEPARATOR);
-
-                // can user delete models?
-                if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $resource)
-                    && $this->_owApp->erfurt->getAc()->isActionAllowed('ModelManagement')
-                ) {
-
-                    $url = new OntoWiki_Url(
-                        array('controller' => 'model', 'action' => 'delete'),
-                        array()
-                    );
-                    $url->setParam('model', $resource, false);
-
-                    $menu->prependEntry(
-                        'Delete Knowledge Base',
-                        (string)$url
-                    );
-                }
-
-                if ($this->_owApp->erfurt->getAc()->isActionAllowed(Erfurt_Ac_Default::ACTION_MODEL_EXPORT)) {
-                    // add entries for supported export formats
-                    foreach (array_reverse(Erfurt_Syntax_RdfSerializer::getSupportedFormats()) as $key => $format) {
-
-                        $url = new OntoWiki_Url(
-                            array('controller' => 'model', 'action' => 'export'),
-                            array()
-                        );
-                        $url->setParam('m', $resource, false);
-                        $url->setParam('f', $key);
-
-                        $menu->prependEntry(
-                            'Export Knowledge Base as ' . $format,
-                            (string)$url
-                        );
-                    }
-                }
-
-                // check if model could be edited (prefixes and data)
-                if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $resource)) {
-
-                    $url = new OntoWiki_Url(
-                        array('controller' => 'model', 'action' => 'add'),
-                        array()
-                    );
-                    $url->setParam('m', $resource, false);
-                    $menu->prependEntry(
-                        'Add Data to Knowledge Base',
-                        (string)$url
-                    );
-
-                    $url = new OntoWiki_Url(
-                        array('controller' => 'model', 'action' => 'config'),
-                        array()
-                    );
-                    $url->setParam('m', $resource, false);
-                    $menu->prependEntry(
-                        'Configure Knowledge Base',
-                        (string)$url
-                    );
-                }
-
-                // Select Knowledge Base
-                $url = new OntoWiki_Url(
-                    array('controller' => 'model', 'action' => 'select'),
-                    array()
-                );
-                $url->setParam('m', $resource, false);
-                $menu->prependEntry(
-                    'Select Knowledge Base',
-                    (string)$url
-                );
-            } else {
-                $query     = Erfurt_Sparql_SimpleQuery::initWithString(
-                    'SELECT *
-                     FROM <' . (string)$this->_owApp->selectedModel . '>
-                     WHERE {
-                        <' . $resource . '> a ?type  .
-                     }'
-                );
-                $results[] = $this->_owApp->erfurt->getStore()->sparqlQuery($query);
-
-                $query = Erfurt_Sparql_SimpleQuery::initWithString(
-                    'SELECT *
-                     FROM <' . (string)$this->_owApp->selectedModel . '>
-                     WHERE {
-                        ?inst a <' . $resource . '> .
-                     } LIMIT 2'
-                );
-
-                if (count($this->_owApp->erfurt->getStore()->sparqlQuery($query)) > 0) {
-                    $hasInstances = true;
-                } else {
-                    $hasInstances = false;
-                }
-
-                $typeArray = array();
-                foreach ($results[0] as $row) {
-                    $typeArray[] = $row['type'];
-                }
-
-                if (in_array(EF_RDFS_CLASS, $typeArray) || in_array(EF_OWL_CLASS, $typeArray) || $hasInstances
-                ) {
-
-                    // add a seperator
-                    $menu->prependEntry(OntoWiki_Menu::SEPARATOR);
-
-                    $url = new OntoWiki_Url(
-                        array('action' => 'list'),
-                        array()
-                    );
-                    $url->setParam('class', $resource, false);
-                    $url->setParam('init', "true", true);
-
-                    // add class menu entries
-                    if ($this->_owApp->erfurt->getAc()->isModelAllowed('edit', $this->_owApp->selectedModel)) {
-                        $menu->prependEntry(
-                            'Create Instance',
-                            "javascript:createInstanceFromClassURI('$resource');"
-                        );
-                    }
-                    $menu->prependEntry(
-                        'List Instances',
-                        (string)$url
-                    );
-                    // ->prependEntry('Create Instance', $this->_config->urlBase . 'index/create/?r=')
-                    // ->prependEntry('Create Subclass', $this->_config->urlBase . 'index/create/?r=');
-                }
-            }
-        }
-
         // Fire a event;
         $event           = new Erfurt_Event('onCreateMenu');
         $event->menu     = $menu;
         $event->resource = $resource;
-
-        if (isset($isModel)) {
-            $event->isModel = $isModel;
+        if (!empty($model)) {
+            $event->isModel = true;
+            $event->model = $model;
+        } else {
+            $event->model = $this->_owApp->selectedModel;
         }
-
-        $event->model = $this->_owApp->selectedModel;
         $event->trigger();
 
         echo $menu->toJson();

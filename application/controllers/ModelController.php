@@ -61,7 +61,7 @@ class ModelController extends OntoWiki_Controller_Base
 
             return;
         } else {
-            $this->_doImportActionRedirect((string) $model);
+            $this->_doImportActionRedirect((string)$model);
         }
     }
 
@@ -70,6 +70,7 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function configAction()
     {
+        $this->addModuleContext('main.window.modelconfig');
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         if (!$this->_request->getParam('m')) {
@@ -411,6 +412,7 @@ class ModelController extends OntoWiki_Controller_Base
      */
     public function createAction()
     {
+        $this->addModuleContext('main.window.modelcreate');
         $store = $this->_erfurt->getStore();
         $this->view->clearModuleCache('modellist');
 
@@ -476,17 +478,17 @@ class ModelController extends OntoWiki_Controller_Base
                 $newModelUri = trim($post['modeluri']);
             } else if (trim($post['title']) != '') {
                 // create a nice URI from the title (poor mans way)
-                $urlBase = $this->_config->urlBase;
-                $title = trim($post['title']);
-                $title = str_replace(' ' , '' , $title);
-                $title = urlencode($title);
-                $newModelUri = $urlBase . $title . '/';
+                $urlBase        = $this->_config->urlBase;
+                $title          = trim($post['title']);
+                $title          = str_replace(' ', '', $title);
+                $title          = urlencode($title);
+                $newModelUri    = $urlBase . $title . '/';
             } else {
                 // create a default model with counter
                 $urlBase = $this->_config->urlBase . 'kb';
                 $counter = 0;
                 do {
-                    $newModelUri = $urlBase . $counter++ . '/';
+                    $newModelUri = $urlBase . ($counter++) . '/';
                 } while ($store->isModelAvailable($newModelUri, false));
             }
 
@@ -520,7 +522,7 @@ class ModelController extends OntoWiki_Controller_Base
 
                 // add label
                 $additions = new Erfurt_Rdf_MemoryModel();
-                if (isset($post['title'])) {
+                if (isset($post['title']) && trim($post['title']) != '') {
                     $additions->addAttribute($newModelUri, EF_RDFS_LABEL, $post['title']);
                 }
                 $model->addMultipleStatements($additions->getStatements());
@@ -543,7 +545,8 @@ class ModelController extends OntoWiki_Controller_Base
             try {
                 $this->_erfurt->getStore()->deleteModel($model);
 
-                if ((null !== $this->_owApp->selectedModel)
+                if (
+                    (null !== $this->_owApp->selectedModel)
                     && ($this->_owApp->selectedModel->getModelIri() === $model)
                 ) {
                     $this->_owApp->selectedModel = null;
@@ -724,7 +727,9 @@ class ModelController extends OntoWiki_Controller_Base
             if (!is_array($this->view->namespacePrefixes)) {
                 $this->view->namespacePrefixes = array();
             }
-            $this->view->namespacePrefixes['__default'] = $graph->getModelIri();
+            if (!array_key_exists(OntoWiki_Utils::DEFAULT_BASE, $this->view->namespacePrefixes)) {
+                $this->view->namespacePrefixes[OntoWiki_Utils::DEFAULT_BASE] = $graph->getBaseIri();
+            }
 
             $infoUris = $this->_config->descriptionHelper->properties;
             //echo (string)$resource;
@@ -735,7 +740,8 @@ class ModelController extends OntoWiki_Controller_Base
                     . '     <' . (string)$resource . '> a <http://xmlns.com/foaf/0.1/PersonalProfileDocument>'
                     . ' }';
                 $q     = Erfurt_Sparql_SimpleQuery::initWithString($query);
-                if ($this->_owApp->extensionManager->isExtensionActive('foafprofileviewer')
+                if (
+                    $this->_owApp->extensionManager->isExtensionActive('foafprofileviewer')
                     && $store->sparqlAsk($q) === true
                 ) {
                     $this->view->showFoafLink = true;
@@ -749,13 +755,6 @@ class ModelController extends OntoWiki_Controller_Base
                     $this->view->infoPredicates[$infoUri] = $predicates[(string)$graph][$infoUri];
                 }
             }
-
-            $namespaces = $graph->getNamespaces();
-            $graphBase  = $graph->getBaseUri();
-            if (!array_key_exists($graphBase, $namespaces)) {
-                $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
-            }
-            $this->view->namespaces = $namespaces;
         }
 
         $this->addModuleContext('main.window.modelinfo');
@@ -854,10 +853,12 @@ class ModelController extends OntoWiki_Controller_Base
     /**
      * prepare and do the redirect
      */
-    private function _doImportActionRedirect($modelUri) {
-        $post    = $this->_request->getPost();
-        $id      = $post['importAction'];
-        $actions = $this->_getImportActions();
+    private function _doImportActionRedirect($modelUri)
+    {
+        $post          = $this->_request->getPost();
+        $id            = $post['importAction'];
+        $importOptions = $post['importOptions'];
+        $actions       = $this->_getImportActions();
 
         if (isset($actions[$id])) {
             $controller = $actions[$id]['controller'];
@@ -872,9 +873,10 @@ class ModelController extends OntoWiki_Controller_Base
                 'controller' => $controller,
                 'action' => $action
             ),
-            array('m')
+            array('m', 'importOptions')
         );
         $url->setParam('m', $modelUri);
+        $url->setParam('importOptions', $importOptions);
 
         $this->_redirect($url, array('code' => 302));
     }

@@ -23,16 +23,6 @@
 :Default a owconfig:Module ;
   rdfs:label "Default" ;
   owconfig:caching "false"^^xsd:boolean .
-:queries owconfig:hasModule :Sparqloptions .
-:Sparqloptions a owconfig:Module ;
-  rdfs:label "Sparqloptions" ;
-  owconfig:context "main.window.queryeditor" ;
-  owconfig:priority "5" .
-:queries owconfig:hasModule :Queryeditorfromsetter .
-:Queryeditorfromsetter a owconfig:Module ;
-  rdfs:label "Queryeditorfromsetter" ;
-  owconfig:context "main.window.queryeditor" ;
-  owconfig:priority "6" .
 :queries owconfig:hasModule :Savequery .
 :Savequery a owconfig:Module ;
   rdfs:label "Savequery" ;

@@ -19,7 +19,13 @@
   doap:maintainer <http://aksw.org> ;
   owconfig:templates "templates" ;
   owconfig:languages "languages" ;
-  doap:release :v1-0 .
+  doap:release :v1-0 ;
+  owconfig:hasModule :Selector .
+
+:Selector a owconfig:Module ;
+  owconfig:priority "19" ;
+  rdfs:label "LOV Selector" ;
+  owconfig:context "main.window.basicimporter.rdfwebimport", "main.window.modelcreate", "main.window.modelconfig".
 
 :v1-0 a doap:Version ;
   doap:revision "1.0" .

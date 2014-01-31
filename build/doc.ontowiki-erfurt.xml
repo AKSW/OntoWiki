@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<config>
+
+  <!--  PROJECTS  -->
+  <projects>
+    <project label="OntoWiki" version="head" date="" revision="">
+      <path alt="must be absolute">[/var/www/OntoWiki/]application/</path>
+      <extensions>
+        <extension>php</extension>
+      </extensions>
+      <ignore>
+        <file alt="regular expression">/^(_|[a-z])/</file>
+        <folder alt="regular expression">#libraries#</folder>
+        <folder alt="regular expression">#cache#</folder>
+        <folder alt="regular expression">#tests#</folder>
+        <folder alt="regular expression">#views#</folder>
+      </ignore>
+      <category lowercase="" by="force">OntoWiki</category>
+      <package lowercase="" by="default">OntoWiki</package>
+    </project>
+
+    <project label="Erfurt" version="head" date="" revision="">
+      <path alt="must be absolute">[/var/www/OntoWiki/]libraries/Erfurt/library/Erfurt/</path>
+      <extensions>
+        <extension>php</extension>
+      </extensions>
+      <ignore>
+        <file alt="regular expression">/^(_|[a-z])/</file>
+        <folder alt="regular expression">#^Sparql#</folder>
+        <folder alt="regular expression">#tests#</folder>
+      </ignore>
+      <category lowercase="" by="force">OntoWiki</category>
+      <package lowercase="" by="default">Erfurt</package>
+    </project>
+  </projects>
+
+  <!--  READER SETTINGS  -->
+  <reader>
+    <plugin>Statistics</plugin>
+    <plugin>Unicode</plugin>
+    <plugin>Defaults</plugin>
+    <plugin>Relations</plugin>
+    <plugin>Primitives</plugin>
+    <plugin>Search</plugin>
+    <plugin>Triggers</plugin>
+  </reader>
+
+  <!--  BUILDERS -->
+  <builders>
+    <builder format="HTML" theme="HTML-OW">
+      <path type="target" alt="must be absolute">[/var/www/doc/]</path>
+      <path type="documents" alt="must be absolute"></path>
+      <language>en</language>
+      <title>OntoWiki</title>
+      <logo>
+        <source>ow-logo_med.png</source>
+        <link>http://ontowiki.net/Projects/OntoWiki</link>
+        <title>OntoWiki @ AKSW</title>
+      </logo>
+      <author></author>
+      <company>AKSW (aksw.org)</company>
+      <timezone>Europe/Berlin</timezone>
+      <options>
+        <option name="showSourceCode">1</option>
+      </options>
+      <plugins>
+        <plugin>Home</plugin>
+        <plugin>ClassList</plugin>
+        <plugin>Search</plugin>
+        <plugin>About</plugin>
+        <plugin>Installation</plugin>
+        <plugin>History</plugin>
+        <plugin>Changes</plugin>
+        <plugin>Deprecations</plugin>
+        <plugin>Todos</plugin>
+        <plugin>Bugs</plugin>
+        <plugin>ParseErrors</plugin>
+        <plugin>Statistics</plugin>
+<!--        <plugin>UnusedVariables</plugin>-->
+        <plugin>MethodOrder</plugin>
+        <plugin>MethodAccess</plugin>
+        <plugin>DocHints</plugin>
+        <plugin>Triggers</plugin>
+      </plugins>
+    </builder>
+  </builders>
+
+  <!--  GENERAL SETTINGS  -->
+  <creator>
+    <timeLimit>360</timeLimit>
+    <mail></mail>
+    <file type="serial" alt="relative to 'doc.path'">doc.serial</file>
+    <file type="archive" alt="relative to 'doc.path'">doc.serial.gz</file>
+    <file type="errors">logs/docCreatorErrors.log</file>
+    <skip parser="FALSE" creator="FALSE" info="FALSE" resources="FALSE"/>
+    <verbose general="TRUE" skip="TRUE" config="FALSE" info="TRUE"/>
+  </creator>
+
+</config>

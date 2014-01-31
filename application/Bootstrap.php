@@ -42,6 +42,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // require Erfurt
         $this->bootstrap('Erfurt');
 
+        // apply session configuration settings
+        if (isset($config->session)) {
+            $this->applySessionConfig($config->session);
+        }
+
         // require Session
         $this->bootstrap('Session');
 
@@ -213,6 +218,23 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         return $config;
+    }
+
+    /**
+     * apply session config
+     *
+     * @param Zend_Config $sessionConfig Session configuration settings
+     */
+    protected function applySessionConfig($sessionConfig)
+    {
+        $cookieParams = array(
+            'lifetime' => isset($sessionConfig->lifetime) ? $sessionConfig->lifetime        : 0,
+            'path'     => isset($sessionConfig->path)     ? $sessionConfig->path            : '/',
+            'domain'   => isset($sessionConfig->domain)   ? $sessionConfig->domain          : '',
+            'secure'   => isset($sessionConfig->secure)   ? (bool) $sessionConfig->secure   : false,
+            'httpOnly' => isset($sessionConfig->httpOnly) ? (bool) $sessionConfig->httpOnly : false
+        );
+        call_user_func_array('session_set_cookie_params', $cookieParams);
     }
 
     /**
