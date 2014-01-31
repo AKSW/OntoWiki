@@ -17,11 +17,14 @@
  */
 class HistoryproxyController extends OntoWiki_Controller_Component
 {
-    public function viewAction()
-    {
-        $event              = new Erfurt_Event('onQueryHistory');
+    public function viewAction() {
+
+        $model = $this->_owApp->selectedModel;
+        $event              = new Erfurt_Event( 'onQueryHistory' );
         $event->function    = 'getChangesAtDate';
-        $event->parameters  = array("http://localhost/OntoWiki/AKSW/", "22-01-2014");
+        $event->parameters  = array( $model->getModelIri(),
+            "29-01-2014",
+            'http://xmlns.com/foaf/0.1/Person' );
         $event->trigger();
 
         $this->view->function   = $event->function;

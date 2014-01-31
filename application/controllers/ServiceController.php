@@ -549,10 +549,7 @@ class ServiceController extends Zend_Controller_Action
         $actionSpec                = array();
         $actionSpec['type']        = 21;
         $actionSpec['modeluri']    = $deleteModel->getModelUri();
-        $actionSpec['resourceuri'] = key($delete);
-
-        // ToDo: better way to get uri and resource?
-
+        $actionSpec['resourceuri'] = !null == key($delete) ? key($delete) : key($insert);
 
         // starting action
         $versioning->startAction($actionSpec);
@@ -614,7 +611,7 @@ class ServiceController extends Zend_Controller_Action
         }
 
         // stopping action
-        $versioning->endAction();   
+        $versioning->endAction();
 
         // nothing done?
         if (!$flag) {
