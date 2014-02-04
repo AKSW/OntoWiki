@@ -9,7 +9,8 @@
 
 class Extended_Erfurt_Versioning extends Erfurt_Versioning
 {
-    public function getRangeOfModifiedResources( $graphUri, $from, $to ) {
+    const import_action_type = 11;
+    public function getRangeOfModifiedResources( $graphUri, $from, $to, $page = 1 ) {
         require_once 'Zend/Uri.php';
 
         // since $to is set to the beginning of the day, we need query
@@ -23,8 +24,35 @@ class Extended_Erfurt_Versioning extends Erfurt_Versioning
         tstamp >= \'' . strtotime( $from ) . '\' AND
         tstamp < \'' . strtotime( $nextDay ) . '\' AND
         parent IS NULL';
-        $result = $this->_sqlQuery( $sql );
 
+        $result = $this->_sqlQuery(
+            $sql,
+            $this->getLimit() + 1,
+            $page * $this->getLimit() - $this->getLimit()
+        );
         return $result;
     }
+
+    public function getImports( $model = null, $useruri = null, $page = 1 ) {
+        $sql = 'SELECT id, model, useruri, resource, tstamp FROM ef_versioning_actions
+                WHERE action_type = ' . self::import_action_type . ' ';
+
+        if ($model != null) {
+            $sql .= 'AND model = \'' . $model . '\' ';
+        }
+
+        if ($useruri != null) {
+            $sql .= 'AND useruri = \'' . $useruri . '\' ';
+        }
+        $sql.= 'ORDER BY id DESC';
+
+        $logger = Erfurt_App::getInstance()->getLog();
+        $result = $this->_sqlQuery(
+            $sql,
+            $this->getLimit() + 1,
+            $page * $this->getLimit() - $this->getLimit()
+        );
+        return $result;
+    }
+
 }

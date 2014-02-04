@@ -21,14 +21,28 @@ class HistoryproxyController extends OntoWiki_Controller_Component
 
         $model = $this->_owApp->selectedModel;
         $event              = new Erfurt_Event( 'onQueryHistory' );
-        $event->function    = 'getChangesAtDate';
-        $event->parameters  = array( $model->getModelIri(),
-            "29-01-2014",
-            'http://xmlns.com/foaf/0.1/Person' );
-        $event->trigger();
+        // $model->getModelIri()
 
-        $this->view->function   = $event->function;
-        $this->view->parameters = $event->parameters;
-        $this->view->callback   = $event->callback;
+
+        /**
+         * Get last imports
+         */
+        $event->function    = 'getLastImports';
+        $event->parameters  = array(  );
+        $event->trigger();
+        $this->view->importsFunction   = $event->function;
+        $this->view->importsParameters = $event->parameters;
+        $this->view->importsCallback   = $event->callback;
+
+        /**
+         * Get last changes
+         */
+        $event->function    = 'getChangesFromRange';
+        $event->parameters  = array( $model->getModelIri(),
+            '01-01-2014' , '30-01-2014');
+        $event->trigger();
+        $this->view->changeFunction   = $event->function;
+        $this->view->changeParameters = $event->parameters;
+        $this->view->changeCallback   = $event->callback;
     }
 }

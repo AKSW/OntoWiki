@@ -38,7 +38,7 @@ class HistoryproxyPlugin extends OntoWiki_Plugin
         $this->versioning = new Extended_Erfurt_Versioning();
         $this->filter = new HistoryProxyFilter();
         $this->versioning->enableVersioning( true );
-        $this->versioning->setLimit( 100 );
+        $this->versioning->setLimit( 2 );
 
         $this->function   = $event->function;
         $this->parameters = $event->parameters;
@@ -63,8 +63,8 @@ class HistoryproxyPlugin extends OntoWiki_Plugin
      * @param string  $graphUri the graph uri
      * @param string  $date     the date
      */
-    private function getChangesAtDate( $graphUri, $date, $type=null ) {
-        return $this->getChangesFromRange( $graphUri, $date, $date, $type );
+    private function getChangesAtDate( $graphUri, $date, $page=1, $type=null ) {
+        return $this->getChangesFromRange( $graphUri, $date, $date, $page=1, $type );
     }
 
 
@@ -76,13 +76,33 @@ class HistoryproxyPlugin extends OntoWiki_Plugin
      * @param [type]  $to       [description]
      * @return [type]           [description]
      */
-    private function getChangesFromRange( $graphUri, $from, $to , $type=null ) {
-        $result = $this->versioning->getRangeOfModifiedResources( $graphUri, $from, $to );
+    private function getChangesFromRange( $graphUri, $from, $to, $page=1 ,$type=null ) {
+        $result = $this->versioning->getRangeOfModifiedResources( $graphUri, $from, $to, $page=1 );
         if ( $type !== null ) {
             return $this->filter->filterByType( $type ,  $result );
         } else {
             return $result;
         }
     }
+
+    /**
+     * Returns a the last changes of a given resource containing users and types of changes.
+     *
+     * @param [type]  $graphUri [description]
+     * @param [type]  $resource [description]
+     * @param integer $page     [description]
+     * @return [type]            [description]
+     */
+    private function getHistoryForResource( $graphUri, $resource, $page = 1 ) {
+        return $this->versioning->getHistoryForResource( $resource, $graphUri, $page = 1 );;
+    }
+
+    /*
+     * Returns the last imports
+     */
+    private function getLastImports( $model = null, $useruri = null ) {
+        return $this->versioning->getImports($model, $useruri);
+    }
+
 
 }
