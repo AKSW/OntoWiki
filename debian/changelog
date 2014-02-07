@@ -1,3 +1,49 @@
+ontowiki (0.9.11) lod2; urgency=low
+
+  * Improve model selection in linkeddataserver extension
+  * Extend cache clear script by support for query and translation cache
+  * Fix #60: Add script to clear cache via shell
+  * fix #201 - removed css classes for modal and set z-index of applicationbar to 999
+  * Fix 271. Fix Output Format of queries editor
+  * fix #201 - fixed z-index for modal-wrapper-propertyselector
+  * Merge pull request #268 from hknochi/feature/fix-extension-enabler
+  * Merge pull request #269 from hknochi/feature/fix-pagination
+  * fix issue #167 - invalidate extensionCache to distribute requested changes
+  * fix issue #261 - added limit-parameter to url
+  * improve cron job
+  * Add list-events target to Makefile
+  * remove log in about screen
+  * avoid broken feed URLs on version / names with spaces
+  * use configure name instead of hardcoded one
+  * fixed issue #201 - added css rules for modal-wrapper
+  * fixed issue #201 - added css rules for simplemodal-container and -overlay
+  * Fix build to ignore worker shell scripts
+  * Reorganize shell scripts to avoid build failure
+  * Cleanup mail extension job class by removing obsolete members
+  * Added console client and an example extension for testing Erfurts worker
+  * Add support for Erfurts background jobs
+  * add min-height to <span> in resource view
+  * Add hidden save and cancle buttons in listmode
+  * Reorganize some code in support.js
+  * Fix editProperty to work in extended mode (+)
+  * Allow configuration of session cookie parameters, such as session lifetime
+  * Fix #259. Write alle defined prefixes to RDFa output.
+  * Fix warning, when site redirect takes place. Fix #260.
+  * fix wrong server class includes (closes #256)
+  * initial version of SelectorModule
+  * Fix model creation if no title is specified
+  * move inner window modules outside of master form
+  * Add “View as Resource” entry to model menu. Fix #152
+  * fix wrong encoded query parameter
+  * add even/odd classes for row and noodds parameter
+  * use new querylink feature of table partial
+  * remake table partial, add query link enhancement
+  * Fix #152. Move menu creation to Menu_Registry. [34m(6 months ago by Natanael Arndt)[m
+  * add xdebug link
+  * Remove unused action service/entities
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Fri, 31 Jan 2014 15:46:49 +0100
+
 ontowiki (0.9.10-1) lod2; urgency=low
 
   * new model creation / add data procedure
@@ -186,3 +232,4 @@ ontowiki (0.9.6-1) lod2; urgency=low
   * Initial debian release
 
  -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 02 Feb 2011 00:10:38 +0100
+
