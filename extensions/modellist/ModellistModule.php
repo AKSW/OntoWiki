@@ -26,23 +26,13 @@ class ModellistModule extends OntoWiki_Module
 
         $menuRegistry = OntoWiki_Menu_Registry::getInstance();
         $menuRegistry->getMenu('application')->getSubMenu('View')->setEntry('Hide Knowledge Bases Box', '#');
-
-        $this->session          = new Zend_Session_Namespace(_OWSESSION);
-        $this->allGraphUris     = $this->_store->getAvailableModels(true);
-        $this->visibleGraphUris = $this->_store->getAvailableModels(false);
-
-        if (isset($this->session->showHiddenGraphs) && $this->session->showHiddenGraphs == true) {
-            $this->graphUris = $this->allGraphUris;
-        } else {
-            $this->graphUris = $this->visibleGraphUris;
-        }
     }
 
 
     public function shouldShow()
     {
         // show only if there are models (visible or hidden)
-        if (($this->allGraphUris) || ($this->_erfurt->getAc()->isActionAllowed('ModelManagement'))) {
+        if ($this->_erfurt->getAc()->isActionAllowed('ModelManagement')) {
             return true;
         }
 
@@ -68,6 +58,7 @@ class ModellistModule extends OntoWiki_Module
         } else {
             $viewMenu->setEntry('Hide Hidden Knowledge Bases', array('class' => 'modellist_hidden_button'));
         }
+        $viewMenu->setEntry('Reset Knowledge Bases', array('class' => 'modellist_reset_button'));
 
         // build menu out of sub menus
         $mainMenu = new OntoWiki_Menu();
@@ -85,51 +76,19 @@ class ModellistModule extends OntoWiki_Module
      */
     public function getContents()
     {
-        $models        = array();
-        $selectedModel = $this->_owApp->selectedModel ? $this->_owApp->selectedModel->getModelIri() : null;
-
-        $lang = $this->_config->languages->locale;
-
-        $titleHelper = new OntoWiki_Model_TitleHelper();
-        $titleHelper->addResources(array_keys($this->graphUris));
-
-        $useGraphUriAsLink = false;
-        if (isset($this->_privateConfig->useGraphUriAsLink) && (bool)$this->_privateConfig->useGraphUriAsLink) {
-            $useGraphUriAsLink = true;
+        $sessionKey   = 'Modellist' . (isset($config->_session->identifier) ? $config->_session->identifier : '');
+        $stateSession = new Zend_Session_Namespace($sessionKey);
+        if (isset($stateSession) && isset($stateSession->setup)) {
+            // load setup
+            $this->view->inlineScript()->prependScript(
+                '/* from modules/modellist/ */' . PHP_EOL .
+                'var modellistStateSetup = ' . $stateSession->setup . ';' . PHP_EOL
+            );
+            // load view
+            $this->view->stateView = $stateSession->view;
         }
 
-        foreach ($this->graphUris as $graphUri => $true) {
-            $linkUrl = $this->_config->urlBase . 'model/select/?m=' . urlencode($graphUri);
-            if ($useGraphUriAsLink) {
-                if (isset($this->_config->vhosts)) {
-                    $vHostsArray = $this->_config->vhosts->toArray();
-                    foreach ($vHostsArray as $vHostUri) {
-                        if (strpos($graphUri, $vHostUri) !== false) {
-                            // match
-                            $linkUrl = $graphUri;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            $temp             = array();
-            $temp['url']      = $linkUrl;
-            $temp['graphUri'] = $graphUri;
-            $temp['selected'] = ($selectedModel == $graphUri ? 'selected' : '');
-
-            // use URI if no title exists
-            $label         = $titleHelper->getTitle($graphUri, $lang);
-            $temp['label'] = !empty($label) ? $label : $graphUri;
-
-            $temp['backendName'] = $true;
-
-            $models[] = $temp;
-        }
-
-        $content = $this->render('modellist', $models, 'models');
-
-        return $content;
+        return $this->render('modellist', null, 'models');
     }
 
     public function getStateId()
