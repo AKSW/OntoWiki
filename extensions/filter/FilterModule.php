@@ -94,8 +94,12 @@ class FilterModule extends OntoWiki_Module
         $edit->setEntry('Add', 'javascript:showAddFilterBox()')
             ->setEntry('Remove all', 'javascript:removeAllFilters()');
 
+        $help = new OntoWiki_Menu();
+        $help->setEntry('Toggle help', 'javascript:toggleHelp()');
+
         $main = new OntoWiki_Menu();
         $main->setEntry('Edit', $edit);
+        $main->setEntry('Help', $help);
 
         return $main;
     }

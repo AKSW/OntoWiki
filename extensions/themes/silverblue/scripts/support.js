@@ -460,7 +460,7 @@ function populateRDFauthor(data, protect, resource, graph, workingmode) {
 
                 if (workingmode == 'class') {
                     // remove all values except for type
-                    if ( !/type/gi.test(stmt._predicateLabel) ) {
+                    if ( stmt.predicateURI() !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' ) {
                         stmt._object.value = "";
                     }
                 }

@@ -4,21 +4,21 @@ function showAddFilterBox(){
     // $("#addFilterWindowOverlay").show();
     $("#addFilterWindowOverlay").modal({
         overlay: 80,
-        overlayCss: {backgroundColor: '#000'}, 
+        overlayCss: {backgroundColor: '#000'},
         overlayClose: true, 
         onOpen: function (dialog) {
-        	dialog.overlay.fadeIn(effectTime, function () {
+            dialog.overlay.fadeIn(effectTime, function () {
                 dialog.data.show();
-        		dialog.container.fadeIn(effectTime);
-        	})
-    	}, 
-    	onClose: function (dialog) {
-    	    dialog.container.fadeOut(effectTime, function() {
-    	        dialog.overlay.fadeOut(effectTime, function() {
-    	            $.modal.close();
-    	        });
-    	    });
-    	}
+                dialog.container.fadeIn(effectTime);
+            })
+        },
+        onClose: function (dialog) {
+            dialog.container.fadeOut(effectTime, function() {
+                dialog.overlay.fadeOut(effectTime, function() {
+                    $.modal.close();
+                });
+            });
+        }
     });
 }
 function updatePossibleValues() {
@@ -38,6 +38,10 @@ function removeAllFilters(){
     filter.removeAll(function() {
 
     });
+}
+
+function toggleHelp(){
+    $("#helptext").slideToggle();
 }
 
 $(document).ready(function(){
@@ -86,7 +90,7 @@ $(document).ready(function(){
 
         var type = "literal";
         var typedata = null;
-        
+
         // if value entering is possible but nothing entered: check if user selected something in the possible values box
         if(value1 == "" && $("#valueboxes").children().length == 1){
             if($("#addwindow #possiblevalues option:selected").length == 0){
@@ -113,7 +117,7 @@ $(document).ready(function(){
 
     //show possible values for select property
     $("#property").change(updatePossibleValues);
-    
+
     //different filter types need different value input fields
     // bound: none
     // contains, larger, smaller: one
@@ -140,7 +144,7 @@ $(document).ready(function(){
           }
       }
     });
-    
+
     //$.dump(filter);
     //register the filter box for (other) filter events
     //filter.addCallback(function(newfilter){ showFilter() });
