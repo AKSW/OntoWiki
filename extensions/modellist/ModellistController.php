@@ -57,11 +57,6 @@ class ModellistController extends OntoWiki_Controller_Component
         $lang = $this->_config->languages->locale;
         $titleMode = $this->_privateConfig->defaults->titleMode;
 
-        if($titleMode == "titleHelper") {
-            $titleHelper = new OntoWiki_Model_TitleHelper();
-            $titleHelper->addResources(array_keys($this->graphUris));
-        }
-
         $useGraphUriAsLink = false;
         if (isset($this->_privateConfig->useGraphUriAsLink) && (bool)$this->_privateConfig->useGraphUriAsLink) {
             $useGraphUriAsLink = true;
@@ -87,15 +82,8 @@ class ModellistController extends OntoWiki_Controller_Component
             $temp['graphUri'] = $graphUri;
             $temp['selected'] = ($selectedModel == $graphUri ? 'selected' : '');
 
-            // use URI if no title exists
-            $label = '';
-            if($titleMode == "titleHelper") {
-                $label = $titleHelper->getTitle($graphUri, $lang);
-                $label = !empty($label) ? $label : $graphUri;
-            } else {
-                $label = $graphUri;
-            }
-            $temp['label'] = $label;
+            // use URI as default title
+            $temp['label'] = $graphUri;
 
             $temp['backendName'] = $true;
 
@@ -115,8 +103,29 @@ class ModellistController extends OntoWiki_Controller_Component
         // set view variable for the show more button
         $entriesCount = count($this->view->entries) - $offset;
         if (($entriesCount > $limit)) {
+            $output = array_slice($this->view->entries, 0, $offset + $limit);
+
+            // process titles if mode is set to title helper
+            if($titleMode == "titleHelper") {
+                // get array of URIs to be drawn
+                $uris = array();
+                foreach ($output as $key => $value) {
+                    $uris[] = $value['graphUri'];
+                }
+
+                // init title helper
+                $titleHelper = new OntoWiki_Model_TitleHelper();
+                $titleHelper->addResources($uris);
+                // get labels for all resources to be displayed
+                foreach ($output as $key => $value) {
+                    $label = $titleHelper->getTitle($value['graphUri'], $lang);
+                    $label = !empty($label) ? $label : $graphUri;
+                    $output[$key]['label'] = $label;
+                }
+            }
+
             // return only $_limit entries
-            $this->view->entries    = array_slice($this->view->entries, 0, $offset + $limit);
+            $this->view->entries    = $output;
             $this->view->showMeMore = true;
         } else {
             $this->view->showMeMore = false;
