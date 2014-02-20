@@ -9,9 +9,6 @@
 /**
  * Helper class for the History component.
  *
- * - register the tab for all navigations except the instances list
- *   (this should be undone if the history can be created from a Query2 too)
- *
  * @category OntoWiki
  * @package Extensions_History
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}

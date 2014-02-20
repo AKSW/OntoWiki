@@ -7,7 +7,7 @@
  */
 
 /**
- * Historyproxy component controller.
+ * Historyproxy component controller. This controler is only used for demonstration purposes of the historyproxy.
  *
  * @category   OntoWiki
  * @package    Extensions_Historyproxy

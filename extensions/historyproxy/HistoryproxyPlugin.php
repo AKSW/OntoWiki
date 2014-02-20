@@ -6,15 +6,19 @@
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
-require_once 'OntoWiki/Plugin.php';
-require_once realpath( dirname( __FILE__ ) ) . '/classes/HistoryProxyFilter.php';
-
 /**
- * Description goes here.
+ * This plugin provides several methods for querying the versioning history.
  *
  * @category   OntoWiki
  * @package    Extensions_Historyproxy
+ * @author     Sebastian Nuck
+ * @copyright  Copyright (c) 2014, {@link http://aksw.org AKSW}
+ * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
+
+require_once 'OntoWiki/Plugin.php';
+require_once realpath( dirname( __FILE__ ) ) . '/classes/HistoryProxyFilter.php';
+
 class HistoryproxyPlugin extends OntoWiki_Plugin
 {
 
