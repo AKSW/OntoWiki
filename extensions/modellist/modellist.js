@@ -32,12 +32,14 @@ $(document).ready(function() {
     };
 
     var reloadList = function() {
+        $('#modellist-search-input').addClass('is-processing');
         // do request
         $.post(urlBase + 'modellist/explore', {setup: setup}, function(data) {
             // unset search string if needed
             //if(setup.searchString) delete setup.searchString;
             // render data
             $('#modellist-container').html(data);
+            $('#modellist-search-input').removeClass('is-processing');
         });
     };
 
