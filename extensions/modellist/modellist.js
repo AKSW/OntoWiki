@@ -82,18 +82,14 @@ $(document).ready(function() {
     searchInput.on('keypress', function(event) {
         // do not create until user pressed enter
         if (event.which == 13) {
-            if(event.currentTarget.value.length > 0) {
-                // set search string
-                setup.searchString = event.currentTarget.value;
-                // reset to default values
-                setup.limit = defaultLimit;
-                setup.offset = defaultOffset;
-                setup.displayLimit = defaultDisplayLimit;
-                // clean input
-                $(event.currentTarget).val('');
-                // trigger reload
-                reloadList();
-            }
+            // set search string
+            setup.searchString = event.currentTarget.value;
+            // reset to default values
+            setup.limit = defaultLimit;
+            setup.offset = defaultOffset;
+            setup.displayLimit = defaultDisplayLimit;
+            // trigger reload
+            reloadList();
             return false;
         }
         return true;
