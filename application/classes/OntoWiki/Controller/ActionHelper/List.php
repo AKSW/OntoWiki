@@ -133,7 +133,8 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
                  'listName'     => $listName,
                  'instances'    => $list,
                  'mainTemplate' => $mainTemplate,
-                 'other'        => $other
+                 'other'        => $other,
+                 'heading'      => $list->getTitle()
             )
         );
 

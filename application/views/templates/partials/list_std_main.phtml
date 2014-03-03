@@ -43,6 +43,7 @@ $this->headScript()->prependScript(
 <div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
 <div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
 <div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
+<h3><?php echo $this->heading; ?></h3>
 <?php
     if ($this->instances->hasData()):
         ?>

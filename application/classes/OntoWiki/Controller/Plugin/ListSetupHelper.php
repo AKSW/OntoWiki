@@ -96,7 +96,7 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 || isset($request->init)
             ) {
                 // instantiate model, that selects all resources
-                $list = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array());
+                $list = new OntoWiki_Model_Instances($store, $ontoWiki->selectedModel, array(), $request->title);
             } else {
                 // use the object from the session
                 if (isset($request->list) && $request->list != $listHelper->getLastListName()) {

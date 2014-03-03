@@ -139,10 +139,16 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_titleHelper = null;
 
+
+    /**
+     * @var string
+     */
+    protected $_title = null;
+
     /**
      * Constructor
      */
-    public function __construct(Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array())
+    public function __construct(Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array(), $title = '')
     {
         parent::__construct($store, $model);
 
@@ -198,6 +204,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         //set froms to the requested graph
         $this->_valueQuery->addFrom((string)$model);
         $this->_resourceQuery->addFrom((string)$model);
+
+        $this->_title = $title;
 
         $this->invalidate();
     }
@@ -299,6 +307,16 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     public function getTitleHelper()
     {
         return $this->_titleHelper;
+    }
+
+    /**
+      * get title
+      *
+      * @return string
+      */
+    public function getTitle()
+    {
+        return $this->_title;
     }
 
     /**
@@ -1194,7 +1212,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
         }
 
-        return $url;
+        return $url . "&title=" . urlencode($this->_title);
     }
 
     /**
