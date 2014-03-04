@@ -31,8 +31,9 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
     public function setUp()
     {
         $this->markTestNeedsDatabase();
-        $this->_store = $this->getStore();
         $this->authenticateDbUser();
+
+        $this->_store = $this->getStore();
 
         //create model
         $model = $this->_store->getNewModel($this->_modelUri, '', Erfurt_Store::MODEL_TYPE_OWL, false);
@@ -43,6 +44,8 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         );
 
         $this->addTestData();
+
+        $this->_instances->getResources();
 
         parent::setUp();
     }
@@ -107,14 +110,14 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         $this->assertArrayHasKey('http://model.org/model#i2', $v);
 
         // the __TYPE and resourceUri
-        $this->assertCount(2, $v['http://model.org/model#i1']);
+        $this->assertCount(1, $v['http://model.org/model#i1']);
         $this->assertArrayHasKey('__TYPE', $v['http://model.org/model#i1']);
-        $this->assertArrayHasKey('resourceUri', $v['http://model.org/model#i1']);
+        //this->assertArrayHasKey('resourceUri', $v['http://model.org/model#i1']);
         $this->assertContains($this->_class, self::_onlyValues($v['http://model.org/model#i1']['__TYPE']));
-        $this->assertContains(
+        /*$this->assertContains(
             'http://model.org/model#i1',
             self::_onlyValues($v['http://model.org/model#i1']['resourceUri'])
-        );
+        );*/
     }
 
     /**
@@ -125,8 +128,9 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         //add properties
         $this->_instances->addShownProperty('http://model.org/prop');
         $v = $this->_instances->getValues();
+        //var_dump($v);
         //count values
-        $this->assertCount(3, $v['http://model.org/model#i1']);
+        $this->assertCount(2, $v['http://model.org/model#i1']);
         //test variable creation
         $this->assertArrayHasKey('prop', $v['http://model.org/model#i1']);
 
@@ -138,7 +142,7 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         //another one
         $this->_instances->addShownProperty('http://www.w3.org/2000/01/rdf-schema#label');
         $v = $this->_instances->getValues();
-        $this->assertCount(4, $v['http://model.org/model#i1']);
+        $this->assertCount(3, $v['http://model.org/model#i1']);
         $this->assertArrayHasKey('label', $v['http://model.org/model#i1']);
     }
 
@@ -225,24 +229,17 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         $this->assertEquals($r[0]['uri'], 'http://model.org/model#i2');
     }
 
-    public function testShownPropertiesAdd()
+    /**
+     *
+     */
+    public function testShownPropertiesAddTitles()
     {
         //add
         $r = $this->_instances->addShownProperty("http://abc");
         //test chaining
         $this->assertSame($this->_instances, $r);
-
-        return $this->_instances;
-    }
-
-    /**
-     *
-     * @depends testShownPropertiesAdd
-     */
-    public function testShownPropertiesAddTitles(OntoWiki_Model_Instances $i)
-    {
         //verify triple in value query
-        $propertiesWithTitles = $i->getShownProperties();
+        $propertiesWithTitles = $this->_instances->getShownProperties();
         $this->assertCount(2, $propertiesWithTitles);
     }
 

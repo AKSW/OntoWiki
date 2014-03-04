@@ -45,7 +45,8 @@ class ManagerIntegrationTest extends Erfurt_TestCase
      */
     public function testScan()
     {
-        $this->markTestSkipped('TODO: test with new caching backend');
+        Erfurt_App::getInstance(false)->getCache()->clean();
+
         // clear cache, since otherwise the extension manager may have the real extensions loaded
         if (function_exists('apc_clear_cache')) {
             apc_clear_cache('user');

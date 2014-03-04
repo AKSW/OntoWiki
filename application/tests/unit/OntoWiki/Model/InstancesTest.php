@@ -44,6 +44,8 @@ class OntoWiki_Model_InstancesTest extends Erfurt_TestCase
             'Test'
         );
 
+        $this->_store->setAc(new Erfurt_Ac_Test());
+
         $this->_instances = new OntoWiki_Model_Instances(
             $this->_store,
             new Erfurt_Rdf_Model('http://graph.com/123/', null, $this->_store)
