@@ -109,15 +109,10 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         $this->assertArrayHasKey('http://model.org/model#i1', $v);
         $this->assertArrayHasKey('http://model.org/model#i2', $v);
 
-        // the __TYPE and resourceUri
+        // the __TYPE
         $this->assertCount(1, $v['http://model.org/model#i1']);
         $this->assertArrayHasKey('__TYPE', $v['http://model.org/model#i1']);
-        //this->assertArrayHasKey('resourceUri', $v['http://model.org/model#i1']);
         $this->assertContains($this->_class, self::_onlyValues($v['http://model.org/model#i1']['__TYPE']));
-        /*$this->assertContains(
-            'http://model.org/model#i1',
-            self::_onlyValues($v['http://model.org/model#i1']['resourceUri'])
-        );*/
     }
 
     /**
