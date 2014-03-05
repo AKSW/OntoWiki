@@ -105,30 +105,30 @@ class ModellistController extends OntoWiki_Controller_Component
         if (($entriesCount > $limit)) {
             $output = array_slice($this->view->entries, 0, $offset + $limit);
 
-            // process titles if mode is set to title helper
-            if($titleMode == "titleHelper") {
-                // get array of URIs to be drawn
-                $uris = array();
-                foreach ($output as $key => $value) {
-                    $uris[] = $value['graphUri'];
-                }
-
-                // init title helper
-                $titleHelper = new OntoWiki_Model_TitleHelper();
-                $titleHelper->addResources($uris);
-                // get labels for all resources to be displayed
-                foreach ($output as $key => $value) {
-                    $label = $titleHelper->getTitle($value['graphUri'], $lang);
-                    $label = !empty($label) ? $label : $graphUri;
-                    $output[$key]['label'] = $label;
-                }
-            }
-
             // return only $_limit entries
             $this->view->entries    = $output;
             $this->view->showMeMore = true;
         } else {
             $this->view->showMeMore = false;
+        }
+
+        // process titles if mode is set to title helper
+        if($titleMode == "titleHelper") {
+            // get array of URIs to be drawn
+            $uris = array();
+            foreach ($this->view->entries as $key => $value) {
+                $uris[] = $value['graphUri'];
+            }
+
+            // init title helper
+            $titleHelper = new OntoWiki_Model_TitleHelper();
+            $titleHelper->addResources($uris);
+            // get labels for all resources to be displayed
+            foreach ($this->view->entries as $key => $value) {
+                $label = $titleHelper->getTitle($value['graphUri'], $lang);
+                $label = !empty($label) ? $label : $graphUri;
+                $this->view->entries[$key]['label'] = $label;
+            }
         }
 
         // save state to session
