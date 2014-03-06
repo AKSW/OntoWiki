@@ -45,7 +45,7 @@ class MarkdownPlugin extends OntoWiki_Plugin
 
         $lastKey = null;
         $lineBuffer = '';
-        $strLen = strlen($mdString);
+        $strlen = strlen($mdString);
         for ($i = 0; $i < $strlen; $i++) {
             $curChar = substr($mdString, $i, 1);
             if ($curChar != "\n") {
