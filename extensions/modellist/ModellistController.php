@@ -57,6 +57,12 @@ class ModellistController extends OntoWiki_Controller_Component
         $lang = $this->_config->languages->locale;
         $titleMode = $this->_privateConfig->defaults->titleMode;
 
+        // prepare title helper if needed
+        if($titleMode == "titleHelper") {
+             $titleHelper = new OntoWiki_Model_TitleHelper();
+             $titleHelper->addResources(array_keys($this->graphUris));
+         }
+
         $useGraphUriAsLink = false;
         if (isset($this->_privateConfig->useGraphUriAsLink) && (bool)$this->_privateConfig->useGraphUriAsLink) {
             $useGraphUriAsLink = true;
@@ -82,8 +88,15 @@ class ModellistController extends OntoWiki_Controller_Component
             $temp['graphUri'] = $graphUri;
             $temp['selected'] = ($selectedModel == $graphUri ? 'selected' : '');
 
-            // use URI as default title
-            $temp['label'] = $graphUri;
+            // use URI if no title exists
+            $label = '';
+            if($titleMode == "titleHelper") {
+                $label = $titleHelper->getTitle($graphUri, $lang);
+                $label = !empty($label) ? $label : $graphUri;
+            } else {
+                $label = $graphUri;
+            }
+            $temp['label'] = $label;
 
             $temp['backendName'] = $true;
 
@@ -94,6 +107,11 @@ class ModellistController extends OntoWiki_Controller_Component
                 if(stripos($temp['label'], $searchString) !== false) {
                     $models[] = $temp;
                 }
+            }
+
+            // check if we're full and break
+            if(count($models) > $limit) {
+                break;
             }
         }
 
@@ -110,25 +128,6 @@ class ModellistController extends OntoWiki_Controller_Component
             $this->view->showMeMore = true;
         } else {
             $this->view->showMeMore = false;
-        }
-
-        // process titles if mode is set to title helper
-        if($titleMode == "titleHelper") {
-            // get array of URIs to be drawn
-            $uris = array();
-            foreach ($this->view->entries as $key => $value) {
-                $uris[] = $value['graphUri'];
-            }
-
-            // init title helper
-            $titleHelper = new OntoWiki_Model_TitleHelper();
-            $titleHelper->addResources($uris);
-            // get labels for all resources to be displayed
-            foreach ($this->view->entries as $key => $value) {
-                $label = $titleHelper->getTitle($value['graphUri'], $lang);
-                $label = !empty($label) ? $label : $graphUri;
-                $this->view->entries[$key]['label'] = $label;
-            }
         }
 
         // save state to session
