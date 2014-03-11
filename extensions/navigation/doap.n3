@@ -105,6 +105,7 @@
           :hiddenRelation (<http://ns.ontowiki.net/SysOnt/hidden>) ;
           :showImplicitElements "true"^^xsd:boolean ;
           :showEmptyElements "true"^^xsd:boolean ;
+          :showHiddenElements "false"^^xsd:boolean ;
           :showCounts "false"^^xsd:boolean ;
           :checkSub "true"^^xsd:boolean ;
           :hideDefaultHierarchy "false"^^xsd:boolean ;
