@@ -10,5 +10,6 @@ select;Auswahl
 user;Benutzer
 timestamp;Zeitstempel
 action-type;Aktionstyp
+change-reason;Änderungsgrund
 Rollback changes;"Änderungen wiederherstellen"
 Versions for %1$s;Versionen von %1$s

@@ -546,10 +546,11 @@ class ServiceController extends Zend_Controller_Action
         $flag = false;
 
         // action spec for versioning
-        $actionSpec                = array();
-        $actionSpec['type']        = 21;
-        $actionSpec['modeluri']    = $deleteModel->getModelUri();
-        $actionSpec['resourceuri'] = !null == key($delete) ? key($delete) : key($insert);
+        $actionSpec                 = array();
+        $actionSpec['type']         = 21;
+        $actionSpec['modeluri']     = $deleteModel->getModelUri();
+        $actionSpec['resourceuri']  = !null == key($delete) ? key($delete) : key($insert);
+        $actionSpec['changeReason'] = 'this is a reason';
 
         // starting action
         $versioning->startAction($actionSpec);
