@@ -521,6 +521,8 @@ class ServiceController extends Zend_Controller_Action
             $insert = json_decode($this->_request->getParam('insert', '{}'), true);
             $delete = json_decode($this->_request->getParam('delete', '{}'), true);
 
+            $changeReason = $this->_request->getParam('changeReason', null);
+
             if ($this->_request->has('delete_hashed')) {
                 $hashedObjectStatements = $this->_findStatementsForObjectsWithHashes(
                     $namedGraph,
@@ -550,7 +552,7 @@ class ServiceController extends Zend_Controller_Action
         $actionSpec['type']         = 21;
         $actionSpec['modeluri']     = $deleteModel->getModelUri();
         $actionSpec['resourceuri']  = !null == key($delete) ? key($delete) : key($insert);
-        $actionSpec['changeReason'] = 'this is a reason';
+        $actionSpec['changeReason'] = $changeReason;
 
         // starting action
         $versioning->startAction($actionSpec);
