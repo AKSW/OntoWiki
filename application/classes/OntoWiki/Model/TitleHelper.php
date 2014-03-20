@@ -16,11 +16,6 @@
 class OntoWiki_Model_TitleHelper
 {
     /**
-     * Static title cache per graph
-     */
-    private static $_titleCache = array();
-
-    /**
      * Whether to always search all configured title properties
      * in order to find the best language match or stop at the
      * first matching title property.
@@ -38,11 +33,18 @@ class OntoWiki_Model_TitleHelper
     protected $_alwaysUseLocalNames = false;
 
     /**
+     * The singleton instance
+     *
+     * @var OntoWiki_Model_TitleHelper
+     */
+    private static $_instance = null;
+
+    /**
      * The languages to consider for title properties.
      *
      * @var array
      */
-    protected $_languages = array('', 'en');
+    protected $_languages = array('en','','localname');
 
     /**
      * The model object to operate on
@@ -52,25 +54,11 @@ class OntoWiki_Model_TitleHelper
     protected $_model = null;
 
     /**
-     * Graph pattern that defines resources to operate on.
-     *
-     * @var string
-     */
-    protected $_resourcePattern = '?p ?o . ';
-
-    /**
      * The resources for whitch to fetch title properties
      *
      * @var array
      */
-    protected $_resources = null;
-
-    /**
-     * Flag that indicates whether resources have been added
-     *
-     * @var boolean
-     */
-    protected $_resourcesAdded = false;
+    protected $_resources = array();
 
     /**
      * Resource query object
@@ -80,13 +68,6 @@ class OntoWiki_Model_TitleHelper
     protected $_resourceQuery = null;
 
     /**
-     * Array of resource titles found
-     *
-     * @var array
-     */
-    protected $_resourceTitles = array();
-
-    /**
      * Erfurt store object
      *
      * @var Erfurt_Store
@@ -94,28 +75,20 @@ class OntoWiki_Model_TitleHelper
     protected $_store = null;
 
     /**
-     * An array of naming properties whose values are
-     * displayed instead of URIs.
+     * Erfurt store object
+     *
+     * @var Erfurt_App
+     */
+    protected $_erfurtApp = null;
+
+    /**
+     * titleProperties from configuration
      *
      * @var array
      */
     protected $_titleProperties = null;
 
-    /**
-     * Title query object
-     *
-     * @var Erfurt_Sparql_SimpleQuery
-     */
-    protected $_titleQuery = null;
 
-    /**
-     * Result set from the title query
-     *
-     * @var array
-     */
-    protected $_titleQueryResults = array();
-
-    private static $_instance = null;
 
     // ------------------------------------------------------------------------
     // --- Magic methods ------------------------------------------------------
@@ -132,10 +105,12 @@ class OntoWiki_Model_TitleHelper
             $this->_model = $model;
         }
 
+        $this->_erfurtApp = Erfurt_App::getInstance();
+
         if (null !== $store) {
             $this->_store = $store;
         } else {
-            $this->_store = Erfurt_App::getInstance()->getStore();
+            $this->_store = $this->_erfurtApp->getStore();
         }
 
         if (null == $config) {
@@ -154,7 +129,10 @@ class OntoWiki_Model_TitleHelper
             }
         } else {
             if ($config instanceof Zend_Config) {
-                if (isset($config->titleHelper->properties)) { // naming properties for resources
+                //its possible to define myProperties in config.ini
+                if (isset($config->titleHelper->myProperties)) {
+                    $this->_titleProperties = array_values($config->titleHelper->myProperties->toArray());
+                } else if (isset($config->titleHelper->properties)) { // naming properties for resources
                     $this->_titleProperties = array_values($config->titleHelper->properties->toArray());
                 } else {
                     $this->_titleProperties = array();
@@ -168,17 +146,19 @@ class OntoWiki_Model_TitleHelper
                 $this->_titleProperties = array();
             }
         }
-
         // always use local name for unknown resources?
         if (isset($config->titleHelper->useLocalNames)) {
             $this->_alwaysUseLocalNames = (bool)$config->titleHelper->useLocalNames;
         }
+        // add localname to titleproperties
+        $this->_titleProperties[] = 'localname';
 
         if (null === $this->_languages) {
             $this->_languages = array();
         }
         if (isset($config->languages->locale)) {
             array_unshift($this->_languages, (string)$config->languages->locale);
+            $this->_languages = array_unique($this->_languages);
         }
     }
 
@@ -209,104 +189,60 @@ class OntoWiki_Model_TitleHelper
     public function addResource($resource)
     {
         $resourceUri = (string)$resource;
-
         if (Erfurt_Uri::check($resourceUri)) {
-            $this->_resources[$resourceUri] = $resourceUri;
+            if (empty($this->_resources[$resourceUri])) {
+                $this->_resources[$resourceUri] = null;
+            }
         } else {
             // throw exeption in debug mode only
             if (defined('_OWDEBUG')) {
-                throw new OntoWiki_Model_Exception(
-                    'Supplied resource ' . htmlentities('<' . $resource . '>') . ' is not a valid URI.'
-                );
+                $logger = OntoWiki::getInstance()->logger;
+                $logger->info('Supplied resource ' . htmlentities('<' . $resource . '>') . ' is not a valid URI.');
             }
         }
-
-        $this->_resourcesAdded = true;
-
         return $this;
     }
 
     /**
      * Adds a bunch of resources for which to query title properties.
-     *
-     * If you pass the $variable parameter, the elements of $resourceArray are
-     * interpreted as arrays where $variable holds the key which maps to the
-     * resource URI. Otherwise $resourceArray is interpreted as an array with
-     * resource URIs as values.
-     *
-     * @param array  $resourceArray
-     * @param string $variable the key which maps to the resource URI
-     *
+     * @param array  $resources
      * @return OntoWiki_Model_TitleHelper
      */
-    public function addResources(array $resourceArray, $variable = null)
+    public function addResources($resources = array(), $variable = null)
     {
         if (null === $variable) {
-            if (!empty($resourceArray)) {
-                // prepare merger array
-                $merger = array_combine($resourceArray, $resourceArray);
-
-                // merge in resources
-                $this->_resources = array_merge((array)$this->_resources, $merger);
+            foreach ($resources as $resourceUri) {
+                $this->addResource($resourceUri);
             }
         } else {
-            foreach ($resourceArray as $row) {
+            foreach ($resources as $row) {
                 foreach ((array)$variable as $key) {
                     if (!empty($row[$key])) {
                         $object = $row[$key];
-
+                        $toBeAdded = null;
                         if (is_array($object)) {
                             // probably support extended format
                             if (isset($object['type']) && ($object['type'] == 'uri')) {
-                                $this->addResource($object['value']);
+                                $toBeAdded = $object['value'];
                             }
                         } else {
                             // plain object
-                            $this->addResource($object);
+                            $toBeAdded = $object;
+                        }
+                        if ($toBeAdded != null) {
+                            $this->addResource($toBeAdded);
                         }
                     }
                 }
             }
         }
-
-        $this->_resourcesAdded = true;
-
         return $this;
-    }
-
-    /**
-     * Sets the graph pattern that identifies resources for which to query
-     * title properties.
-     *
-     * @param string $pattern
-     */
-    public function setResourcePattern($pattern)
-    {
-        $this->_resourcePattern = $pattern;
-
-        return $this;
-    }
-
-    /**
-     * Returns the resources for which to fetch title properties
-     *
-     * @return array
-     */
-    public function getResources()
-    {
-        if (!$this->_resourcesAdded) {
-            $this->_resources = array(); //sync
-            return array();
-        }
-
-        return array_keys($this->_resources);
     }
 
     /**
      * Returns the title property for the resource URI in the requested language.
-     * If no title property is found for that language a list of fallback languages
-     * is used. If no title property is found for any language, the local part
-     * of the resource URI is returned.
+     * If no title property is found for that language the local part
+     * of the resource URI  will be returned.
      *
      * @param string $resourceUri
      * @param string $language The preferred language for the title
@@ -318,150 +254,53 @@ class OntoWiki_Model_TitleHelper
         if (!Erfurt_Uri::check($resourceUri)) {
             return $resourceUri;
         }
+        // * means any language
+        if (trim($language) == '*') {
+            $language = null;
+        }
 
-        $cacheValue = $this->_cache($resourceUri, (string)$this->_model);
-        if ($cacheValue === false) {
-            // * means any language
-            if (trim($language) == '*') {
-                $language = null;
+        //Have a look if we have an entry for the given resourceUri
+        if (!array_key_exists($resourceUri, $this->_resources) ) {
+
+            if (defined('_OWDEBUG')) {
+                $logger = OntoWiki::getInstance()->logger;
+                $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
             }
+            //If we dont have an entry create one
+            $this->addResource($resourceUri);
+        }
 
-            // add if we don't have this URI (but logg)
-            if (!array_key_exists($resourceUri, (array)$this->_resources)) {
+        // prepend the language that is asked for to the array
+        // of languages we will look for
+        $languages = $this->_languages;
+        if (null !== $language) {
+            array_unshift($languages, (string)$language);
+        }
+        $languages = array_values(array_unique($languages));
 
-                if (defined('_OWDEBUG')) {
-                    $logger = OntoWiki::getInstance()->logger;
-                    $logger->info('TitleHelper: getTitle called for unknown resource. Adding resource before fetch.');
-                }
-                $this->addResource($resourceUri);
-            }
-            // if this is the first getTitle request, fetch titles
-            if (!array_key_exists($resourceUri, $this->_resourceTitles)) {
-                $this->_fetchResourceTitlesFromQueryResult();
-            }
-            // prepend the language that is asked for to the array
-            // of languages we will look for
-            $languages = $this->_languages;
-            if (null !== $language) {
-                array_unshift($languages, (string)$language);
-            }
-            $languages = array_values(array_unique($languages));
+        //Have a look if we have already a title for the given resourceUri
+        if ($this->_resources[$resourceUri] === null ) {
+            $this->_receiveTitles();
+        }
+        //Select the best found title according received titles and order of configured titleproperties
+        $title = $resourceUri;
 
-            $title = null;
-            // has anything been found for the resource?
-            if (array_key_exists($resourceUri, $this->_resourceTitles)) {
-                $titleProperties = (array)$this->_resourceTitles[$resourceUri];
-
-                $currentBestLanguage = PHP_INT_MAX;
-                foreach ($this->_titleProperties as $currentTitleProperty) {
-                    // has the property been found for the resource?
-                    if (array_key_exists($currentTitleProperty, $titleProperties)) {
-
-                        for ($i = 0, $max = count($languages); $i < $max; ++$i) {
-                            $currentLanguage = $languages[$i];
-
-                            if (($i < $currentBestLanguage)
-                                && isset($titleProperties[$currentTitleProperty][$currentLanguage])
-                            ) {
-                                $title               = $titleProperties[$currentTitleProperty][$currentLanguage];
-                                $currentBestLanguage = $i;
-
-                                if (!$this->_alwaysSearchAllProperties || ($currentBestLanguage === 0)) {
-                                    // it won't get better :)
-                                    break(2);
-                                }
-                            }
-                        }
-                    }
+        $titles = $this->_resources[$resourceUri];
+        foreach ($languages as $language) {
+            foreach ($this->_titleProperties as $titleProperty) {
+                if (isset($titles[$titleProperty][$language]) && !empty($titles[$titleProperty][$language])) {
+                    $title = $titles[$titleProperty][$language];
+                    break(2);
                 }
             }
-            // still not found?
-            if (null === $title) {
-                $title = OntoWiki_Utils::contractNamespace($resourceUri);
-
-                // not even namespace found?
-                if ($title == $resourceUri && $this->_alwaysUseLocalNames) {
-                    $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
-
-                    // now we have to add this localName to the ResourceTitles array to prevent
-                    // querying of resources without titles all the time
-                    $this->_resourceTitles[$resourceUri]["localname"]["localname"] = $title;
-                }
-            }
-
-            $this->_cache($resourceUri, (string)$this->_model, $title);
-        } else {
-            // cached title
-            $title = $cacheValue;
         }
         return $title;
     }
 
     /**
-     * Takes the current title query and fetches its result from the RDF store.
+     * Add a new title property on top of the list (most important) of title properties
      *
-     * @return array
-     */
-    public function getTitleQueryResult()
-    {
-        $execObject = $this->_model;
-        if (null !== $this->_store) {
-            $execObject = $this->_store;
-        }
-
-        // get results for all queries
-        $queries = $this->getTitleQueries();
-
-        foreach ($queries as $resourceUri => $currentQuery) {
-            if (isset($this->_titleQueryResults[$resourceUri])) {
-                continue;
-            }
-            $queryResults = $execObject->sparqlQuery($currentQuery, array('result_format' => 'extended'));
-            $this->_titleQueryResults[$resourceUri] = $queryResults;
-        }
-        if (defined('_OWDEBUG')) {
-            $numQueries = count($queries);
-
-            $logger = OntoWiki::getInstance()->logger;
-
-            $logger->info(
-                'TitleHelper: ' . $numQueries . ' queries with ' . count($this->_resources) . ' resources.'
-            );
-        }
-
-        return $this->_titleQueryResults;
-    }
-
-    /**
-     * Returns the queries for the title properties of all resources.
-     *
-     * @return Erfurt_Sparql_SimpleQuery
-     */
-    public function getTitleQueries()
-    {
-        $currentQuery = null;
-        $queries      = array();
-        $select       = 'SELECT DISTINCT ?property ?value';
-        if ($this->_resources === null) {
-            return array();
-        }
-        foreach ($this->_resources as $resourceUri) {
-            $where = 'WHERE {'
-                . $this->_getTitleWhere($resourceUri)
-                . '}';
-
-            $currentQuery = new Erfurt_Sparql_SimpleQuery();
-            $currentQuery->setProloguePart($select)
-                ->setWherePart($where);
-
-            $queries[$resourceUri] = $currentQuery;
-        }
-
-        return $queries;
-    }
-
-    /**
-     * Add a new title property on top of the list (most important)
+     * @param $propertyUri a string with the URI of the property to add
      */
     public function prependTitleProperty($propertyUri)
     {
@@ -473,136 +312,101 @@ class OntoWiki_Model_TitleHelper
                     unset($this->_titleProperties[$key]);
                 }
             }
+
             // rewrite the array
             $this->_titleProperties = array_values($this->_titleProperties);
+
             // prepend the new URI
             array_unshift($this->_titleProperties, $propertyUri);
+
+            // reset the TitleHelper to fetch resources with new title properties
+            $this->reset();
         }
     }
 
-    /**
+     /**
      * Resets the title helper, emptying all resources, results and queries stored
      */
     public function reset()
     {
-        $this->_resources      = null;
-        $this->_resourceQuery  = null;
-        $this->_resourceTitles = array();
-
-        $this->_titleQuery        = null;
-        $this->_titleQueryResults = array();
+        $this->_resources = array();
     }
 
-    // ------------------------------------------------------------------------
-    // --- Protected methods --------------------------------------------------
-    // ------------------------------------------------------------------------
+    /**
+     * operate on _resources array and call the method to fetch the titles
+     * if no titles found for the respective resource the localname will be extracted
+     *
+     * @return void
+     */
+    private function _receiveTitles()
+    {
+        //first we check if there are resourceUris without a title representation
+        $toBeReceived = array();
+        foreach ($this->_resources as $resourceUri => $resource) {
+            if ($resource == null) {
+                $toBeReceived[] = $resourceUri;
+            }
+        }
+        //now we try to receive the Titles from ResourcePool
+        $this->_fetchTitlesFromResourcePool($toBeReceived);
+
+        //If we dont find titles then we extract them from LocalName
+        foreach ($this->_resources as $resourceUri => $resource) {
+            if ($resource == null) {
+                $this->_resources[$resourceUri]['localname']['localname']
+                    = $this->_extractTitleFromLocalName($resourceUri);
+            }
+        }
+    }
 
     /**
-     * Fetches information (e.g. title properties) of resources from a query result set.
+     * fetches all titles according the given array if Uris
      *
+     * @param array resourceUris
      */
-    protected function _fetchResourceTitlesFromQueryResult()
+    private function _fetchTitlesFromResourcePool($resourceUris)
     {
-        $titleResults = $this->getTitleQueryResult();
-        if (count($titleResults) === 0) {
-            return;
+        $resourcePool = $this->_erfurtApp->getResourcePool();
+        $resources = array();
+        if (!empty($this->_model)) {
+            $modelUri = $this->_model->getModelIri();
+            $resources = $resourcePool->getResources($resourceUris, $modelUri);
+        } else {
+            $resources = $resourcePool->getResources($resourceUris);
         }
 
-        foreach ($titleResults as $resourceUri => $titleQueryResult) {
-            // fetch result
-
-            if (!(isset($titleQueryResult['head']) && isset($titleQueryResult['results']['bindings']))) {
-                continue;
-            }
-            $queryResult = $titleQueryResult;
-            $head        = $queryResult['head'];
-            $bindings    = $queryResult['results']['bindings'];
-
-            if (defined('_OWDEBUG')) {
-                $logger = OntoWiki::getInstance()->logger;
-
-                $logger->debug('TitleHelper _fetchResourceTitlesFromQueryResult count(bindings): ' . count($bindings));
-            }
-            foreach ($bindings as $row) {
-                // get the resource URI
-                $currentResource = $resourceUri;
-                $currentProperty = $row['property']['value'];
-                $titleValue      = $row['value']['value'];
-
-                // add the resource to the local title store
-                if (!array_key_exists($currentResource, (array)$this->_resourceTitles)) {
-                    $this->_resourceTitles[$currentResource] = array();
-                }
-
-                // add current title property to resource's title store
-                if (!array_key_exists($currentProperty, $this->_resourceTitles[$currentResource])) {
-                    $this->_resourceTitles[$currentResource][$currentProperty] = array();
-                }
-
-                // fetch the language or use default
-                $titleLang = '';
-                if (isset($row['value']['xml:lang'])) {
-                    $titleLang = $row['value']['xml:lang'];
-                }
-
-                // don't overwrite previously found title
-                if (!array_key_exists($titleLang, $this->_resourceTitles[$currentResource][$currentProperty])) {
-                    $this->_resourceTitles[$currentResource][$currentProperty][$titleLang] = $titleValue;
+        $memoryModel = new Erfurt_Rdf_MemoryModel();
+        foreach ($resources as $resourceUri => $resource) {
+            $resourceDescription = $resource->getDescription();
+            $memoryModel->addStatements($resourceDescription);
+            $found = false;
+            foreach ($this->_titleProperties as $titleProperty) {
+                $values = $memoryModel->getValues($resourceUri, $titleProperty);
+                foreach ($values as $value) {
+                    if (!empty($value['lang'])) {
+                        $language = $value['lang'];
+                    } else {
+                        $language = '';
+                    }
+                    $this->_resources[$resourceUri][$titleProperty][$language] = $value['value'];
                 }
             }
         }
     }
 
     /**
-     * Returns graph patterns for all title properties for a resource URI.
+     * extract the localname from given resourceUri
      *
-     * @param string $resourceUri the resource URI
-     *
-     * @return string
+     * @param string resourceUri
+     * @return string title
      */
-    protected function _getTitleWhere($resourceUri)
+    private function _extractTitleFromLocalName($resourceUri)
     {
-        $where = 'OPTIONAL { <' . $resourceUri . '> ?property ?value . }';
-
-        // build title property sameTerm filters
-        $propertyFilters = array();
-        foreach ($this->_titleProperties as $uri) {
-            array_push($propertyFilters, 'sameTerm(?property, <' . $uri . '>)');
+        $title = OntoWiki_Utils::contractNamespace($resourceUri);
+        // not even namespace found?
+        if ($title == $resourceUri && $this->_alwaysUseLocalNames) {
+            $title = OntoWiki_Utils::getUriLocalPart($resourceUri);
         }
-        if (!empty($propertyFilters)) {
-            $where .= PHP_EOL . 'FILTER(' . implode(' || ', $propertyFilters) . ')';
-        }
-
-        return $where;
-    }
-
-    private function _cache($resourceUri, $graphUri, $newValue = null)
-    {
-        $cacheBucketId = md5(serialize($this->_titleProperties));
-        if (null !== $newValue) {
-            if (!isset(self::$_titleCache[$cacheBucketId])) {
-                self::$_titleCache[$cacheBucketId] = array();
-            }
-            if (!isset(self::$_titleCache[$cacheBucketId][$graphUri])) {
-                self::$_titleCache[$cacheBucketId][$graphUri] = array();
-            }
-            self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri] = $newValue;
-
-            return true;
-        }
-
-        if (isset(self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri])) {
-            return self::$_titleCache[$cacheBucketId][$graphUri][$resourceUri];
-        }
-
-        return false;
-    }
-
-    private function _resetCache()
-    {
-        $cacheBucketId = md5(serialize($this->_titleProperties));
-        if (isset(self::$_titleCache[$cacheBucketId])) {
-            self::$_titleCache[$cacheBucketId] = array();
-        }
+        return $title;
     }
 }

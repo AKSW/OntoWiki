@@ -51,9 +51,9 @@ class OntoWiki_Utils
         $compactUri    = null;
         $prefix        = null;
 
-        // split URI in namespace and local part at "/" or "#"
+        // split URI in namespace and local part at "/", "#" or ":"
         $matches = array();
-        preg_match('/^(.+[#\/])(.+[^#\/])$/', $uri, $matches);
+        preg_match('/^(.+[#\/\:])(.+[^#\/\:])$/', $uri, $matches);
 
         if (count($matches) == 3) {
             $namespace = $matches[1];

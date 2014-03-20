@@ -526,6 +526,12 @@ function createInstanceFromClassURI(type, dataCallback) {
                     window.setTimeout(function () {
                         window.location.href = newLocation;
                     }, 500);
+                },
+                onCancel: function () {
+                    // HACK: reload whole page after 500 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
+                    }, 500);
                 }
             });
            
@@ -565,6 +571,12 @@ function editResourceFromURI(resource) {
                 loadOwStylesheet: false,
                 addPropertyValues: data['addPropertyValues'],
                 onSubmitSuccess: function () {
+                    // HACK: reload whole page after 500 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
+                    }, 500);
+                },
+                onCancel: function () {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
                         window.location.href = window.location.href;
