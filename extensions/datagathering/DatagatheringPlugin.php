@@ -57,7 +57,9 @@ class DatagatheringPlugin extends OntoWiki_Plugin
     public function init()
     {
         parent::init();
-        //$this->_properties   = $this->_privateConfig->properties->toArray();
+        if ($this->_privateConfig->sync->enabled && isset($this->_privateConfig->properties)) {
+            $this->_properties = $this->_privateConfig->properties->toArray();
+        }
         $this->_syncModelUri = $this->_privateConfig->syncModelUri;
 
         // Translation hack in order to enable the plugin to translate...
@@ -92,7 +94,8 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
         // We only add entries to the menu, if all params are given and the
         // model is editable.
-        if ((null === $resource) || (null === $model) || !$model->isEditable()
+        if (
+            (null === $resource) || (null === $model) || !$model->isEditable()
             || !$owApp->erfurt->getAc()->isModelAllowed('edit', $owApp->selectedModel)
         ) {
             return;
@@ -292,7 +295,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onDeleteResources($event)
     {
-        if ($this->_properties->sync->enabled) {
+        if ($this->_privateConfig->sync->enabled) {
             $modelUri = $event->modelUri;
             $uriArray = $event->resourceArray;
 
@@ -337,7 +340,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onPreDeleteModel($event)
     {
-        if ($this->_properties->sync->enabled) {
+        if ($this->_privateConfig->sync->enabled) {
             $modelUri = $event->modelUri;
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';

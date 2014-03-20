@@ -311,7 +311,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
             $actualUri = $uri;
         }
 
-        $graphs = $store->getReadableGraphsUsingResource($actualUri);
+        $graphs = $store->getReadableGraphsUsingResource($actualUri, true);
 
         return array($graphs[0], $actualUri);
     }

@@ -3,20 +3,21 @@
  * OntoWiki filter module template
  */
 $odd = true;
+$translate = OntoWiki::getInstance()->translate;
 ?>
 <div id="filterbox">
     <!--ul id="list"></ul-->
     <form name="search" method="get" action="<?php echo $this->actionUrl ?>">
-	<p class="width98">
-		<label class="display-block" for="filtersearchtext-input"><?php echo $this->_('Search in list') ?></label>
-		<input class="text width99 inner-label" type="text" id="filtersearchtext-input" name="s" value="<?php echo $this->s ?>" />
-	</p>	
+    <p class="width98">
+        <label class="display-block" for="filtersearchtext-input"><?php echo $this->_('Search in list') ?></label>
+        <input class="text width99 inner-label" type="text" id="filtersearchtext-input" name="s" value="<?php echo $this->s ?>" />
+    </p>
     </form>
     <?php if ($this->filter) : ?>
     <?php $linkurl = new OntoWiki_Url(array('route' => 'properties'), array('r')) ?>
     <?php echo $this->_('Active Filters') ?>:
     <ul class="bullets-none separated">
-        <?php foreach ($this->filter as $filter) : 
+        <?php foreach ($this->filter as $filter) :
             if ( isset($filter['hidden'] ) && $filter['hidden'] ) {
                 continue;
             }
@@ -80,6 +81,16 @@ $odd = true;
         </li>
         <?php endforeach ?>
     </ul>
+    <div id="helptext" style="display: none;">
+    <h3><?= $translate->translate('Help') ?></h3>
+    <ul class="separated">
+       <li><?= $translate->translate('filter_help1'); ?></li>
+       <li><?= $translate->translate('filter_help2'); ?></li>
+       <li><?= $translate->translate('filter_help3'); ?></li>
+       <li><?= $translate->translate('filter_help4'); ?>
+       (<a href="http://docs.openlinksw.com/virtuoso/queryingftcols.html"><?= $translate->translate('Further info'); ?></a>)</li>
+    </ul>
+    </div>
     <?php endif ?>
 
    

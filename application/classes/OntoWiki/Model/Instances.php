@@ -68,7 +68,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     /**
      * all resources
      */
-    protected $_resources;
+    protected $_resources = array();
 
     /**
      * @var bool
@@ -1207,10 +1207,91 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
     /**
      * Returns the property values for all resources at once.
-     *
+     * This method receives its values from Resources from the ResourcePool.
      * @return array
      */
     public function getValues()
+    {
+        if (empty($this->_resources)) {
+            return array();
+        }
+
+        //first we have to create the list of resources that have to be shown.
+        $pool = Erfurt_App::getInstance()->getResourcePool();
+        $resources = array();
+        $valueResults = array();
+        foreach ($this->_resources as $item) {
+            $resourceUri = $item['value'];
+            $resource = $pool->getResource($resourceUri, (string)$this->_model);
+
+            //secondly we have to walk throw the list of interesting properties to bw shown
+            $valueResults[$resourceUri] = array();
+            foreach ($this->_shownProperties as $key => $property) {
+                $propertyUri = $property['uri'];
+                $variable = $property['var']->getName();
+                $propertyResource = $pool->getResource($propertyUri, (string)$this->_model);
+
+                //now we have to extract the values according the current property from the resource
+                $values = $resource->getMemoryModel()->getValues($resourceUri, $propertyUri);
+                foreach ($values as $value) {
+
+                    //initialising the value with the original content
+                    $revisedValue = $value['value'];
+                    $link = null;
+
+                    //but we have to do something specific if the value is a resource
+                    if ($value['type'] == 'uri') {
+                        // skip blanknode values here due to backend problems with filters
+                        if (substr($value['value'], 0, 2) == '_:') {
+                            continue;
+                        }
+
+                        $url = new OntoWiki_Url(array('route' => 'properties'), array('r'));
+                        $link = (string)$url->setParam('r', $value['value'], true);
+                        $event = new Erfurt_Event('onDisplayObjectPropertyValue');
+                        $event->property = $propertyUri;
+                        $event->value = $value['value'];
+                        $revisedValue = $event->trigger();
+
+                        // set default if event has not been handled
+                        if (!$event->handled()) {
+                            $revisedValue = $this->_titleHelper->getTitle($value['value']);
+                        }
+
+                    } else { // the value is not a resource but a literal value
+                        $event           = new Erfurt_Event('onDisplayLiteralPropertyValue');
+                        $event->property = $propertyUri;
+                        $event->value    = $value['value'];
+                        $event->setDefault($value['value']);
+                        $revisedValue = $event->trigger();
+                    }
+                    //now we have to assign the facts to the result array
+                    $valueResults[$resourceUri][$variable][] = array(
+                        'value'     => $revisedValue,
+                        'origvalue' => $value['value'],
+                        'type'      => $value['type'],
+                        'url'       => $link,
+                        'uri'       => $value['value'] //TODO: rename (can be literal)
+                    );
+                }
+            }
+        }
+
+        //some assignments
+        $this->_values         = $valueResults;
+        $this->_valuesUptodate = true;
+
+        //returning the result
+        return $valueResults;
+    }
+
+    /**
+     * Returns the property values for all resources at once.
+     * This method generate one SPARQL query to receive all values .
+     * Original Name was getValues()
+     * @return array
+     */
+    public function getValuesBySingleQuery()
     {
         if ($this->_valuesUptodate) {
             return $this->_values;
@@ -1350,7 +1431,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $this->_values         = $valueResults;
         $this->_valuesUptodate = true;
-
         return $valueResults;
     }
 
@@ -1393,7 +1473,51 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         return $query;
     }
 
+    /**
+     * Returns a list of properties used by the current list of resources.
+     * Original Name was getValues()
+     * @return array
+     */
     public function getAllProperties($inverse = false)
+    {
+        if ((empty($this->_resources) && $this->_resourcesUptodate)) {
+            return array();
+        }
+
+        $pool = Erfurt_App::getInstance()->getResourcePool();
+        $propertyUris = array();
+
+        $memoryModel = new Erfurt_Rdf_MemoryModel();
+
+        foreach ($this->_resources as $item) {
+            $resourceUri = $item['value'];
+            $resource = $pool->getResource($resourceUri, (string)$this->_model);
+
+            if ($inverse == false) {
+                $resourceDescription = $resource->getDescription();
+                $memoryModel->addStatements($resourceDescription);
+            } else {
+                $resourceDescription = $resource->getDescription(array('fetchInverse' => true));
+                $memoryModel->addStatements($resourceDescription);
+                //remove s from memory model to extract only inverse relations
+                $memoryModel->removeS($resourceUri);
+            }
+        }
+        $predicates = $memoryModel->getPredicates();
+
+        foreach ($predicates as $uri) {
+            $propertyUris[] = array('uri' => $uri);
+        }
+        return $this->convertProperties($propertyUris);
+    }
+
+    /**
+     * Returns the list of properties used by all resources at once.
+     * This method generate one SPARQL query .
+     * Original Name was getAllProperties()
+     * @return array
+     */
+    public function getAllPropertiesBySingleQuery($inverse = false)
     {
         if (empty($this->_resources) && $this->_resourcesUptodate) {
             return array();

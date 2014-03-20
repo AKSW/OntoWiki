@@ -100,3 +100,11 @@ Render Ressources as OntoWiki Links
 Create New Knowledge Base
 FOAFSSL;FOAF+SSL
 Forgot your password?
+
+# Filter explanation
+Toggle help
+filter_help1;Words separated by spaces must all appear, but not necessarily in the given order.
+filter_help2;Phrases can be searched by enclosing them in single quotes.
+filter_help3;It is possible to use * as wildcard, but only with a minimum of four preceding letters.
+filter_help4;As soon the search includes one of the keywords AND or OR, the full bif:contains syntax must be used.
+Further info
