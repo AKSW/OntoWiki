@@ -503,6 +503,15 @@ class NavigationHelper extends OntoWiki_Component_Helper
             }
         }
 
+
+        /*
+            Now all the classes from the current user's usergroup that have the attribute hideClassFor:usergroup
+            need to be removed. (e.g. templates for defaultUserGroup)  
+         */
+        $elements = NavigationHelper::hideGroupSpecificClasses($elements);
+
+
+
         // dont't show rdfs/owl entities and subtypes in the first level
         if (!isset($setup->state->parent) && !isset($setup->config->rootElement)) {
 
@@ -612,7 +621,72 @@ class NavigationHelper extends OntoWiki_Component_Helper
             $queryOptional->addTriple(new Erfurt_Sparql_Query2_Var('resourceUri'), $sortRel, $sortVar);
             $elements[] = $queryOptional;
         }
+            
+        return $elements;
+    }
 
+    /*
+     * Returns usergroup for user
+     */
+    public static function getUserGroup($configUri, $user){
+        $owApp    = OntoWiki::getInstance();
+        $store    = $owApp->erfurt->getStore();
+
+        $query = 'SELECT ?group ';
+        $query.= 'FROM <';
+        $query.= $configUri; 
+        $query.= '> '; 
+        $query.= 'WHERE { ?group <http://rdfs.org/sioc/ns#has_member> <';
+        $query.= $user;
+        $query.= '> . } LIMIT 1';
+
+        $result = $store->sparqlQuery($query, array(Erfurt_Store::USE_AC => false));
+        return isset($result[0]) ? $result[0]['group'] : NULL;        
+    }
+
+    public static function hideGroupSpecificClasses($elements) {
+        $owApp = OntoWiki::getInstance();
+        $user = $owApp->getUser()->getUri();
+        $configUrl = 'http://localhost/OntoWiki/Config/';
+        $group = NavigationHelper::getUserGroup($configUrl ,$user);
+        if (!is_null($group)) {
+
+            // hide the ones with the hideClassFor attribute
+            $hideQuery = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+            $hideQuery->addTriple(
+                        new Erfurt_Sparql_Query2_Var('resourceUri'),
+                        new Erfurt_Sparql_Query2_IriRef('http://ns.ontowiki.net/SysOnt/hideClassFor'),
+                        new Erfurt_Sparql_Query2_Var('hide')
+            );
+            $elements[] = $hideQuery;
+            $hideFilter[] =
+                    new Erfurt_Sparql_Query2_UnaryExpressionNot( 
+                    new Erfurt_Sparql_Query2_Regex(
+                    new Erfurt_Sparql_Query2_Str(new Erfurt_Sparql_Query2_Var('hide')),
+                    new Erfurt_Sparql_Query2_RDFLiteral($group))
+            );
+            $elements[] = new Erfurt_Sparql_Query2_Filter(
+                new Erfurt_Sparql_Query2_ConditionalOrExpression($hideFilter)
+            );
+
+            
+            // show the ones with the showClassFor attribute
+            // $showQuery = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+            // $showQuery->addTriple(
+            //             new Erfurt_Sparql_Query2_Var('resourceUri'),
+            //             new Erfurt_Sparql_Query2_IriRef('http://ns.ontowiki.net/SysOnt/showClassFor'),
+            //             new Erfurt_Sparql_Query2_Var('show')
+            // );
+            // $elements[] = $showQuery;
+            // $showFilter[] =
+            //         new Erfurt_Sparql_Query2_Regex(
+            //         new Erfurt_Sparql_Query2_Str(new Erfurt_Sparql_Query2_Var('show')),
+            //         new Erfurt_Sparql_Query2_RDFLiteral($group)
+            // );
+            // $elements[] = new Erfurt_Sparql_Query2_Filter(
+            //     new Erfurt_Sparql_Query2_ConditionalOrExpression($showFilter)
+            // );
+        }
         return $elements;
     }
 }

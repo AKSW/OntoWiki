@@ -1,4 +1,5 @@
 HISTORY_ACTIONTYPE_10;Model imported
+HISTORY_ACTIONTYPE_11;Data imported
 HISTORY_ACTIONTYPE_20;Statement added
 HISTORY_ACTIONTYPE_21;Statement changed
 HISTORY_ACTIONTYPE_22;Statement deleted
@@ -7,3 +8,5 @@ HISTORY_ACTIONTYPE_120;Added data to knowledge base
 HISTORY_ACTIONTYPE_130;Resource deleted
 Versions for %1$s
 action-type;Action type
+change-reason;Change Reason
+

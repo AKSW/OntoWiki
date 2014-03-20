@@ -1,4 +1,5 @@
 HISTORY_ACTIONTYPE_10;Model importiert
+HISTORY_ACTIONTYPE_11;Daten importiert
 HISTORY_ACTIONTYPE_20;Statement hinzugefügt
 HISTORY_ACTIONTYPE_21;Statement geändert
 HISTORY_ACTIONTYPE_22;Statement gelöscht
@@ -9,5 +10,6 @@ select;Auswahl
 user;Benutzer
 timestamp;Zeitstempel
 action-type;Aktionstyp
+change-reason;Änderungsgrund
 Rollback changes;"Änderungen wiederherstellen"
 Versions for %1$s;Versionen von %1$s
