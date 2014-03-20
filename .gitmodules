@@ -10,3 +10,6 @@
 [submodule "extensions/template"]
 	path = extensions/template
 	url = git@github.com:AKSW/template.ontowiki.git
+[submodule "extensions/contextinfo"]
+	path = extensions/contextinfo
+	url = git@github.com:AKSW/contextinfo.ontowiki.git
