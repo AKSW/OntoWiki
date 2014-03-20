@@ -44,6 +44,8 @@ class OntoWiki_Model_InstancesTest extends Erfurt_TestCase
             'Test'
         );
 
+        $this->_store->setAc(new Erfurt_Ac_Test());
+
         $this->_instances = new OntoWiki_Model_Instances(
             $this->_store,
             new Erfurt_Rdf_Model('http://graph.com/123/', null, $this->_store)
@@ -243,29 +245,6 @@ class OntoWiki_Model_InstancesTest extends Erfurt_TestCase
         $triplesQuery = $this->_instances->getValueQuery()->getElements();
 
         $this->assertCount(1 + $this->_valueQueryDefaultTriples, $triplesQuery);
-    }
-
-    /**
-     *
-     * @depends testShownPropertiesAdd
-     */
-    public function testShownPropertiesAddTitles(OntoWiki_Model_Instances $i)
-    {
-        //verify triple in value query
-        $propertiesWithTitles = $i->getShownProperties();
-        $this->assertCount(2, $propertiesWithTitles);
-//
-//        $this->_shownProperties[$propertyUri.'-'.($inverse?'inverse':'direct')] = array(
-//            'uri' => $propertyUri,
-//            'name' => $propertyName,
-//            'inverse' => $inverse,
-//            'datatype' => $datatype,
-//            'varName' => $ret['var']->getName(),
-//            'var' => $ret['var'],
-//            'optionalpart' => $ret['optional'],
-//            'filter' => $ret['filter'],
-//            'hidden' => $hidden
-//        );
     }
 
     public function testtShownPropertiesRemove()

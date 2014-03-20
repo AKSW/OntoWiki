@@ -151,6 +151,9 @@ Export Knowledge Base as Turtle;Wissensbasis als Turtle exportieren
 Export Knowledge Base as Notation 3;Wissensbasis als N3 exportieren
 Delete Knowledge Base;Wissensbasis löschen
 
+Toggle show Permalink;Permalink anzeigen/verstecken
+Toggle show Resoure Query;Resource Query anzeigen/verstecken
+
 # Wochentage
 Monday
 Tuesday
@@ -211,4 +214,12 @@ Reset Navigation;Navigation zurücksetzen
 Add Resource here;Ressource hier anlegen
 Show Hidden Elements;Versteckte Ressourcen einblenden
 Hide Hidden Elements;Versteckte Ressourcen ausblenden
+
+# filter extension
+Toggle help; Hilfe (de)aktivieren
+filter_help1;Wörter die durch Leerzeichen getrennt sind müssen alle im Ergebnis enthalten sein, dabei spielt die eingegebene Reihenfolge keine Rolle.
+filter_help2;Phrasen können gesucht werden, indem die Wortgruppe in einfache Anführungszeichen gesetzt wird (Strg + #).
+filter_help3;Werden mindestens vier Buchstaben eingegeben, kann anschließend durch Sternchen '*' eine Trunkierung erfolgen.
+filter_help4;Sobald die Suche die Wörter AND oder OR enthält, muss die komplette bif:contains-Syntax benutzt werden.
+Further info;mehr Informationen
 
