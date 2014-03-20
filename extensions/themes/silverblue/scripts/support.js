@@ -437,13 +437,15 @@ function populateRDFauthor(data, protect, resource, graph, workingmode) {
                     type: String(objSpec.type).replace('typed-', '')
                 }
 
-                if (objSpec.type == 'typed-literal') {
-                    newObjectSpec.options = {
-                        datatype: objSpec.datatype
-                    }
-                } else if (objSpec.lang) {
-                    newObjectSpec.options = {
-                        lang: objSpec.lang
+                if (objSpec.value) {
+                    if (objSpec.type == 'typed-literal') {
+                        newObjectSpec.options = {
+                            datatype: objSpec.datatype
+                        }
+                    } else if (objSpec.lang) {
+                        newObjectSpec.options = {
+                            lang: objSpec.lang
+                        }
                     }
                 }
 
