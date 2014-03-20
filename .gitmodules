@@ -7,3 +7,6 @@
 [submodule "extensions/historyproxy"]
 	path = extensions/historyproxy
 	url = git@github.com:nucknorris/historyproxy.git
+[submodule "extensions/template"]
+	path = extensions/template
+	url = git@github.com:AKSW/template.ontowiki.git
