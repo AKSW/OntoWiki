@@ -11,9 +11,10 @@
 :sortproperties a doap:Project ;
   doap:name "sortproperties" ;
   owconfig:privateNamespace <https://github.com/AKSW/sortproperties/raw/master/doap.n3#> ;
-  owconfig:enabled "false"^^xsd:boolean ;
+  owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Sortproperties" ;
   owconfig:pluginEvent event:onPropertiesActionData ;
+  owconfig:pluginEvent event:onSortPropertiesRDFauthorData ;
   owconfig:config [
       a owconfig:Config;
       owconfig:id "sort";

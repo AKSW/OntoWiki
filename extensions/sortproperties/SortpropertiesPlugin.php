@@ -48,7 +48,6 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
                             $predicateOrder[] = 0;
                         }
                     }
-
                     array_multisort($predicateOrder, SORT_DESC, SORT_STRING, $predicates);
                     $data[$graphUri] = $predicates;
 
@@ -59,6 +58,62 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
             $event->predicates = $data;
 
             return true;
+        }
+    }
+
+    public function onSortPropertiesRDFauthorData($event)
+    {
+        if ($this->_privateConfig->sort->property) {
+
+            $store  = Erfurt_App::getInstance()->getStore();
+            $config = Erfurt_App::getInstance()->getConfig();
+
+            $data = $event->data;
+            $data = json_decode(json_encode($data), true);
+
+
+            $query = new Erfurt_Sparql_SimpleQuery();
+            $query->setProloguePart('SELECT DISTINCT *')
+                ->setWherePart('WHERE { ?p <' . $this->_privateConfig->sort->property . '> ?o . }');
+
+            $result = $store->sparqlQuery($query);
+
+            if (!empty($result)) {
+
+                $order = array();
+
+                foreach ($result as $v) {
+                    $order[$v['p']] = $v['o'];
+                }
+
+                $predicateOrder = array();
+
+                foreach($data as $key => $resource) {
+                    foreach($resource as $predicateUri => &$values) {
+                        if (array_key_exists($predicateUri, $order)) {
+                            $predicateOrder[$predicateUri] = (int)$order;
+                        } else {
+                            $predicateOrder[$predicateUri] = 0;
+                        }
+                    }
+                }
+
+
+                $predicates = reset($data);
+                array_multisort($predicateOrder, SORT_DESC, SORT_STRING, $predicates);
+                $data[$key] = $predicates;
+
+                // Generate an non associative array for RDFauthor containing
+                // ordered predicates as values
+                $ordering = array();
+                foreach($predicates as $predicate => $value) {
+                    $ordering[] = $predicate;
+                }
+
+                $data['propertyOrder'] = $ordering;
+                $event->output   = $data;
+                return true;
+            }
         }
     }
 }
