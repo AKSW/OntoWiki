@@ -539,7 +539,11 @@ function createInstanceFromClassURI(type, dataCallback) {
                 }
             });
            
-            RDFauthor.start(null, null, propertyOrder);
+            var options = {};
+            if (propertyOrder != null) {
+                options.propertyOrder = propertyOrder;
+            }
+            RDFauthor.start(null, options);
         })
     });
 }
