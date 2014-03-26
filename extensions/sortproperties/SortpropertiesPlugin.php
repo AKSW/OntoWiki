@@ -90,7 +90,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
 
                 $predicateOrder = array();
 
-                foreach($:data as $key => $resource) {
+                foreach($data as $key => $resource) {
                     foreach($resource as $predicateUri => &$values) {
                         if (array_key_exists($predicateUri, $order)) {
                             $predicateOrder[$predicateUri] = (int)$order;
@@ -99,7 +99,6 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
                         }
                     }
                 }
-
 
                 // create non associative array for sorted json output
                 $predicates = reset($data);
