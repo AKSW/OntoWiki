@@ -562,7 +562,13 @@ function editResourceFromURI(resource) {
            mode: 'edit',
            uri: resource
         }, function(data) {
-            
+            if (data.hasOwnProperty('propertyOrder')) {
+                var propertyOrder = data.propertyOrder;
+                delete data.propertyOrder;
+            }
+            else {
+                var propertyOrder = null;
+            }
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
             for (var subjectUri in data) {break;};
@@ -591,7 +597,11 @@ function editResourceFromURI(resource) {
                 }
             });
 
-            RDFauthor.start();
+            var options = {};
+            if (propertyOrder != null) {
+                options.propertyOrder = propertyOrder;
+            }
+            RDFauthor.start(null, options);
         })
     });
 }
