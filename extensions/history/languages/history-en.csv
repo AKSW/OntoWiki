@@ -8,3 +8,5 @@ HISTORY_ACTIONTYPE_120;Added data to knowledge base
 HISTORY_ACTIONTYPE_130;Resource deleted
 Versions for %1$s
 action-type;Action type
+change-reason;Change Reason
+

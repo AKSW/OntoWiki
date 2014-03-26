@@ -10,6 +10,7 @@
         <th><?php echo $this->_('user'); ?>            </th>
         <th><?php echo $this->_('timestamp'); ?>       </th>
         <th><?php echo $this->_('action-type'); ?>     </th>
+        <th><?php echo $this->_('change-reason'); ?>     </th>
     </tr>
     </thead>
     <tbody>
@@ -41,6 +42,7 @@
         <td class="history-detail"><a><?php echo $this->_('HISTORY_ACTIONTYPE_' . $abschnitt['action_type']); ?></a>
             <div style="display:none;" class="is-processing"><?php echo $abschnitt['id']; ?></div>
         </td>
+        <td> <?php echo $abschnitt['change_reason']; ?> </td>
     </tr>
     <?php endforeach; ?>
                     

@@ -345,7 +345,25 @@ $(document).ready(function() {
     });
 
     $('.edit.save').click(function() {
+
+        var reason = prompt("Please enter the reason of the change.\nPress cancel if you don't want to specify any change reason.");
+        if (reason != null) {
+            // we need to transmit the change reason to the corresponding controller. 
+            // To do so, we append the existing data array with the change reason.
+            $.ajaxSetup({ 
+                beforeSend: function (jqXHR, settings) { 
+                    settings.data += "&changeReason=";
+                    settings.data += reason;
+                } 
+            });
+        }
+        
+        // now commit the pre-collected RDF with the appended change reasonw if existing.
         RDFauthor.commit();
+
+        // clear the ajax requests to avoid that every request will be extended with the changeReason parameter;
+        $.ajaxSetup();
+
     });
     
     $('.edit.cancel').click(function() {
