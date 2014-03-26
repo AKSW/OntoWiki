@@ -49,7 +49,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
                         }
                     }
 
-                    array_multisort($predicateOrder, SORT_DESC, SORT_STRING, $predicates);
+                    array_multisort($predicateOrder, SORT_DESC, SORT_NUMERIC, $predicates);
                     $data[$graphUri] = $predicates;
 
                 }
