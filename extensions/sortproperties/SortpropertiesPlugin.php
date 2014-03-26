@@ -48,7 +48,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
                             $predicateOrder[] = 0;
                         }
                     }
-                    array_multisort($predicateOrder, SORT_DESC, SORT_STRING, $predicates);
+                    array_multisort($predicateOrder, SORT_DESC, SORT_NUMERIC, $predicates);
                     $data[$graphUri] = $predicates;
 
                 }
@@ -102,7 +102,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
 
                 // create non associative array for sorted json output
                 $predicates = reset($data);
-                arsort($predicateOrder);
+                arsort($predicateOrder, SORT_NUMERIC);
                 $predicateOrder = array_keys($predicateOrder);
 
                 $data['propertyOrder'] = $predicateOrder;
