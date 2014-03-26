@@ -496,6 +496,10 @@ function createInstanceFromClassURI(type, dataCallback) {
             mode: 'class',
             uri: type
         }, function(data) {
+            if (data.hasOwnProperty('propertyOrder')) {
+                propertyOrder = data.propertyOrder;
+                delete data.propertyOrder;
+            }
             // pass data through callback
             if (typeof dataCallback == 'function') {
                 data = dataCallback(data);
@@ -504,7 +508,7 @@ function createInstanceFromClassURI(type, dataCallback) {
             // grab first object key
             for (var subjectUri in data) {break;};
             // add statements to RDFauthor
-            populateRDFauthor(data, true, subjectUri, selectedGraph.URI, 'class');
+            populateRDFauthor(data, true, subjectUri, selectedGraph.URI, 'class', propertyOrder);
             RDFauthor.setOptions({
                 saveButtonTitle: 'Create Resource',
                 cancelButtonTitle: 'Cancel',
@@ -532,7 +536,7 @@ function createInstanceFromClassURI(type, dataCallback) {
                 }
             });
            
-            RDFauthor.start();
+            RDFauthor.start(null, null, propertyOrder);
         })
     });
 }
