@@ -497,8 +497,11 @@ function createInstanceFromClassURI(type, dataCallback) {
             uri: type
         }, function(data) {
             if (data.hasOwnProperty('propertyOrder')) {
-                propertyOrder = data.propertyOrder;
+                var propertyOrder = data.propertyOrder;
                 delete data.propertyOrder;
+            }
+            else {
+                var propertyOrder = null;
             }
             // pass data through callback
             if (typeof dataCallback == 'function') {
