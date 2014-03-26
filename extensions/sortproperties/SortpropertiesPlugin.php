@@ -69,6 +69,8 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
             $config = Erfurt_App::getInstance()->getConfig();
 
             $data = $event->data;
+
+            // cast stdClass to array
             $data = json_decode(json_encode($data), true);
 
 
@@ -88,7 +90,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
 
                 $predicateOrder = array();
 
-                foreach($data as $key => $resource) {
+                foreach($:data as $key => $resource) {
                     foreach($resource as $predicateUri => &$values) {
                         if (array_key_exists($predicateUri, $order)) {
                             $predicateOrder[$predicateUri] = (int)$order;
@@ -99,18 +101,12 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
                 }
 
 
+                // create non associative array for sorted json output
                 $predicates = reset($data);
-                array_multisort($predicateOrder, SORT_DESC, SORT_STRING, $predicates);
-                $data[$key] = $predicates;
+                arsort($predicateOrder);
+                $predicateOrder = array_keys($predicateOrder);
 
-                // Generate an non associative array for RDFauthor containing
-                // ordered predicates as values
-                $ordering = array();
-                foreach($predicates as $predicate => $value) {
-                    $ordering[] = $predicate;
-                }
-
-                $data['propertyOrder'] = $ordering;
+                $data['propertyOrder'] = $predicateOrder;
                 $event->output   = $data;
                 return true;
             }
