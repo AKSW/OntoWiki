@@ -93,7 +93,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
                 foreach($data as $key => $resource) {
                     foreach($resource as $predicateUri => &$values) {
                         if (array_key_exists($predicateUri, $order)) {
-                            $predicateOrder[$predicateUri] = (int)$order;
+                            $predicateOrder[$predicateUri] = (int)$order[$predicateUri];
                         } else {
                             $predicateOrder[$predicateUri] = 0;
                         }
