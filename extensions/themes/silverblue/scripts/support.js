@@ -511,7 +511,7 @@ function createInstanceFromClassURI(type, dataCallback) {
             // grab first object key
             for (var subjectUri in data) {break;};
             // add statements to RDFauthor
-            populateRDFauthor(data, true, subjectUri, selectedGraph.URI, 'class', propertyOrder);
+            populateRDFauthor(data, true, subjectUri, selectedGraph.URI, 'class');
             RDFauthor.setOptions({
                 saveButtonTitle: 'Create Resource',
                 cancelButtonTitle: 'Cancel',
