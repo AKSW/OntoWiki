@@ -1,3 +1,16 @@
+ontowiki (0.9.11-2) lod2; urgency=low
+
+  * fix lod2 virtuoso dependency
+  * fix special lod2 bd.ini handling
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Mon, 31 Mar 2014 15:16:09 +0200
+
+ontowiki (0.9.11-1) lod2; urgency=low
+
+  * downgrade virtuoso dependency to >= 6.1.4
+
+ -- Sebastian Tramp <tramp@informatik.uni-leipzig.de>  Wed, 05 Feb 2014 12:55:33 +0100
+
 ontowiki (0.9.11) lod2; urgency=low
 
   * Improve model selection in linkeddataserver extension

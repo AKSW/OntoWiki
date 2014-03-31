@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/AKSW/OntoWiki
 
 Package: ontowiki-virtuoso
 Architecture: all
-Depends: ontowiki-common (>= 0.9.11), virtuoso-opensource-6.1 (>= 6.1.6), php5-odbc, ${misc:Depends}
+Depends: ontowiki-common (>= 0.9.11), lod2-virtuoso-opensource | virtuoso-opensource-6.1 (>= 6.1.4), php5-odbc, ${misc:Depends}
 Provides: ontowiki
 Conflicts: ontowiki, ontowiki-mysql
 Replaces: ontowiki (<< 0.9.6-10)

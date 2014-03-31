@@ -5,7 +5,13 @@
 
 echo "---- starting postinst $@"
 
-virtetc="/etc/virtuoso-opensource-6.1/"
+# check environment
+if [ -d "/etc/virtuoso-opensource-6.1" ]; then
+    virtetc="/etc/virtuoso-opensource-6.1/"
+fi
+if [ -d "/etc/virtuoso-opensource" ]; then
+    virtetc="/etc/virtuoso-opensource/"
+fi
 virtuosoini="$virtetc/virtuoso.ini"
 virtbdini="$virtetc/bd.ini"
 odbcini="/etc/odbc.ini"
@@ -53,14 +59,24 @@ sed "s/%%PASSWORD%%/$password/" -i $owini
 ### VIRTUOSO CONFIG
 # add ontowiki and erfurt directory to virtuoso.ini DirsAllowed
 # try to remove the addition first in order to avoid double entries
-sed 's/^\(DirsAllowed.*\)\(, \/usr\/share\/ontowiki\)\(.*\)/\1\3/' -i $virtuosoini
-sed 's/^\(DirsAllowed.*\)/\1, \/usr\/share\/ontowiki/' -i $virtuosoini
-sed 's/^\(DirsAllowed.*\)\(, \/usr\/share\/php\/liberfurt-php\)\(.*\)/\1\3/' -i $virtuosoini
-sed 's/^\(DirsAllowed.*\)/\1, \/usr\/share\/php\/liberfurt-php/' -i $virtuosoini
+if [ -e $virtuosoini ]; then
+    sed 's/^\(DirsAllowed.*\)\(, \/usr\/share\/ontowiki\)\(.*\)/\1\3/' -i $virtuosoini
+    sed 's/^\(DirsAllowed.*\)/\1, \/usr\/share\/ontowiki/' -i $virtuosoini
+    sed 's/^\(DirsAllowed.*\)\(, \/usr\/share\/php\/liberfurt-php\)\(.*\)/\1\3/' -i $virtuosoini
+    sed 's/^\(DirsAllowed.*\)/\1, \/usr\/share\/php\/liberfurt-php/' -i $virtuosoini
+fi
 
 ### APACHE CONFIG
+
+# remove and relink the config
+rm -rf /etc/apache2/conf.d/ontowiki
+ln -s /etc/ontowiki/apache.conf /etc/apache2/conf.d/ontowiki
+
+# enable mods
 a2enmod rewrite
 a2enmod env
+
+# restart apache
 service apache2 restart
 
 #DEBHELPER#

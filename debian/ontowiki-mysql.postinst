@@ -32,6 +32,10 @@ echo "FLUSH PRIVILEGES ;" | $mysql_run
 chown www-data:www-data /etc/ontowiki/config.ini
 chmod 600 /etc/ontowiki/config.ini
 
+# remove and relink the config
+rm -rf /etc/apache2/conf.d/ontowiki
+ln -s /etc/ontowiki/apache.conf /etc/apache2/conf.d/ontowiki
+
 a2enmod rewrite
 a2enmod env
 service apache2 restart
