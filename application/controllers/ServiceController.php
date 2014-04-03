@@ -545,7 +545,7 @@ class ServiceController extends Zend_Controller_Action
          * deleteModel  :   model to delete statments from
          * deleteData   :   statements payload being deleted
          * insertModel  :   model to add statements to
-         * insertDara   :   statements payload being added
+         * insertData   :   statements payload being added
          */
         $event              = new Erfurt_Event('onUpdateServiceAction');
         $event->deleteModel = $deleteModel;
@@ -586,7 +586,7 @@ class ServiceController extends Zend_Controller_Action
             OntoWiki::getInstance()->logger->info(
                 'add Statements: ' . print_r($delete, true)
             );
-            $count = $insertModel->addMultipleStatements((array)$insert);
+            $count = $insertModel->addMultipleStatements($this->sanitizeStatements((array)$insert));
             $flag  = true;
             if (defined('_OWDEBUG')) {
                 OntoWiki::getInstance()->logger->info(
@@ -1059,5 +1059,32 @@ class ServiceController extends Zend_Controller_Action
         }
 
         return $result;
+    }
+
+    /**
+     * Removes all statements whose object has an empty URI.
+     *
+     * Seems as if these kind of statements are sometimes provided by the RDFAuthor editor.
+     *
+     * @param array(string=>array(string=>array(string=>string))) $statements
+     * @return array(string=>array(string=>array(string=>string)))
+     */
+    protected function sanitizeStatements(array $statements)
+    {
+        foreach (array_keys($statements) as $subject) {
+            /* @var $subject string */
+            foreach (array_keys($statements[$subject]) as $predicate) {
+                /* @var $predicate string */
+                foreach ($statements[$subject][$predicate] as $index => $objectSpec) {
+                    /* @var $index integer */
+                    /* @var $objectSpec array(string=>string) */
+                    if ($objectSpec['type'] === 'uri' && empty($objectSpec['value'])) {
+                        // Empty URIs are not allowed, remove this statement from the list.
+                        unset($statements[$subject][$predicate][$index]);
+                    }
+                }
+            }
+        }
+        return $statements;
     }
 }
