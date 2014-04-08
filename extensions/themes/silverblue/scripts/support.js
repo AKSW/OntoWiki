@@ -512,7 +512,7 @@ function createInstanceFromClassURI(type, dataCallback) {
             RDFauthor.setOptions({
                 saveButtonTitle: 'Create Resource',
                 cancelButtonTitle: 'Cancel',
-                title: 'Create New Instance of ' + type,  
+                title: ['createNewInstanceOf', type],
                 autoParse: false, 
                 showPropertyButton: true,
                 loadOwStylesheet: false,
@@ -561,7 +561,7 @@ function editResourceFromURI(resource) {
             RDFauthor.setOptions({
                 saveButtonTitle: 'Save Changes',
                 cancelButtonTitle: 'Cancel',
-                title: 'Edit Resource ' + resource,  
+                title: ['editResource', resource],
                 autoParse: false, 
                 showPropertyButton: true,
                 loadOwStylesheet: false,
