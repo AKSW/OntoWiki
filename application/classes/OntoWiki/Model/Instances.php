@@ -1917,4 +1917,48 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         return -1;
     }
+
+    public function getClassComment()
+    {
+        $classUri = $this->getSelectedClass();
+        if ($classUri == -1) {
+            return false;
+        }
+        else {
+            $owApp = OntoWiki::getInstance();
+            $lang = $owApp->config->languages->locale;
+            if(!isset($owApp->config->lists)) {
+                $commentPredicates = array('http://www.w3.org/2000/01/rdf-schema#comment');
+            }
+            else {
+                $commentPredicates = $owApp->config->lists->headingComment->toArray();
+            }
+
+            $property_queries = array();
+            foreach ($commentPredicates as $property) {
+                $property_queries[] = '        { <' . $classUri . '> <' . $property . '> ?comment . }';
+            }
+
+            $query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>' . PHP_EOL;
+            $query.= 'SELECT DISTINCT ?comment WHERE {' . PHP_EOL;
+            $query.= join(PHP_EOL . '          UNION' . PHP_EOL, $property_queries) . PHP_EOL;
+            $query.= 'FILTER (langMatches(lang(?comment), \'' . $lang . '\'))' . PHP_EOL;
+            $query.= '}';
+
+            $result = $this->_store->sparqlQuery($query);
+
+            if (count($result) > 0) {
+                $resultstrings = array();
+                foreach ($result as $res) {
+                    $resultstrings[] = $res['comment'];
+                }
+                return join(PHP_EOL, $resultstrings);
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+
 }
