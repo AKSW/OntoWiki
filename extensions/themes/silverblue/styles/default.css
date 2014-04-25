@@ -2160,7 +2160,7 @@ a.open:hover {
     background-position: 0 0.4em;
 }
 
-.listComment {
+#listComment {
     font-size: 0.85em;
     font-style: italic;
     margin-bottom: 1em;

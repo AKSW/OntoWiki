@@ -1927,8 +1927,10 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         else {
             $owApp = OntoWiki::getInstance();
             $lang = $owApp->config->languages->locale;
-            if(!isset($owApp->config->lists)) {
-                $commentPredicates = array('http://www.w3.org/2000/01/rdf-schema#comment');
+            if(!isset($owApp->config->lists)
+               || !isset($owApp->config->lists->showCommentsForHeading)
+               || ($owApp->config->lists->showCommentsForHeading === "false")) {
+                return false;
             }
             else {
                 $commentPredicates = $owApp->config->lists->headingComment->toArray();
@@ -1939,8 +1941,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 $property_queries[] = '        { <' . $classUri . '> <' . $property . '> ?comment . }';
             }
 
-            $query = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>' . PHP_EOL;
-            $query.= 'SELECT DISTINCT ?comment WHERE {' . PHP_EOL;
+            $query = 'SELECT DISTINCT ?comment WHERE {' . PHP_EOL;
             $query.= join(PHP_EOL . '          UNION' . PHP_EOL, $property_queries) . PHP_EOL;
             $query.= 'FILTER (langMatches(lang(?comment), \'' . $lang . '\'))' . PHP_EOL;
             $query.= '}';
@@ -1952,7 +1953,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 foreach ($result as $res) {
                     $resultstrings[] = $res['comment'];
                 }
-                return join(PHP_EOL, $resultstrings);
+                return join('<br>', $resultstrings);
             }
             else {
                 return false;
