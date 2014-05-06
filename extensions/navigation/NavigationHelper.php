@@ -644,6 +644,9 @@ class NavigationHelper extends OntoWiki_Component_Helper
         return isset($result[0]) ? $result[0]['group'] : NULL;        
     }
 
+    /**
+     * Hide those classes that have been specified for the corresponding user group.
+     */
     public static function hideGroupSpecificClasses($elements) {
         $owApp = OntoWiki::getInstance();
         $user = $owApp->getUser()->getUri();
@@ -668,24 +671,36 @@ class NavigationHelper extends OntoWiki_Component_Helper
             $elements[] = new Erfurt_Sparql_Query2_Filter(
                 new Erfurt_Sparql_Query2_ConditionalOrExpression($hideFilter)
             );
+        }
+        return $elements;
+    }
 
-            
+    /**
+     * Only show the classes that have been specified for the corresponding user group.
+     */
+    public static function showGroupSpecificClasses($elements) {
+        $owApp = OntoWiki::getInstance();
+        $user = $owApp->getUser()->getUri();
+        $configUrl = 'http://localhost/OntoWiki/Config/';
+        $group = NavigationHelper::getUserGroup($configUrl ,$user);
+        if (!is_null($group)) {
+           
             // show the ones with the showClassFor attribute
-            // $showQuery = new Erfurt_Sparql_Query2_OptionalGraphPattern();
-            // $showQuery->addTriple(
-            //             new Erfurt_Sparql_Query2_Var('resourceUri'),
-            //             new Erfurt_Sparql_Query2_IriRef('http://ns.ontowiki.net/SysOnt/showClassFor'),
-            //             new Erfurt_Sparql_Query2_Var('show')
-            // );
-            // $elements[] = $showQuery;
-            // $showFilter[] =
-            //         new Erfurt_Sparql_Query2_Regex(
-            //         new Erfurt_Sparql_Query2_Str(new Erfurt_Sparql_Query2_Var('show')),
-            //         new Erfurt_Sparql_Query2_RDFLiteral($group)
-            // );
-            // $elements[] = new Erfurt_Sparql_Query2_Filter(
-            //     new Erfurt_Sparql_Query2_ConditionalOrExpression($showFilter)
-            // );
+            $showQuery = new Erfurt_Sparql_Query2_OptionalGraphPattern();
+            $showQuery->addTriple(
+                        new Erfurt_Sparql_Query2_Var('resourceUri'),
+                        new Erfurt_Sparql_Query2_IriRef('http://ns.ontowiki.net/SysOnt/showClassFor'),
+                        new Erfurt_Sparql_Query2_Var('show')
+            );
+            $elements[] = $showQuery;
+            $showFilter[] =
+                    new Erfurt_Sparql_Query2_Regex(
+                    new Erfurt_Sparql_Query2_Str(new Erfurt_Sparql_Query2_Var('show')),
+                    new Erfurt_Sparql_Query2_RDFLiteral($group)
+            );
+            $elements[] = new Erfurt_Sparql_Query2_Filter(
+                new Erfurt_Sparql_Query2_ConditionalOrExpression($showFilter)
+            );
         }
         return $elements;
     }
