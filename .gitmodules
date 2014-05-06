@@ -13,3 +13,9 @@
 [submodule "extensions/contextinfo"]
 	path = extensions/contextinfo
 	url = git@github.com:AKSW/contextinfo.ontowiki.git
+[submodule "extensions/deadlinehelper"]
+	path = extensions/deadlinehelper
+	url = https://github.com/AKSW/deadlinehelper.ontowiki.git
+[submodule "extensions/imagehelper"]
+	path = extensions/imagehelper
+	url = https://github.com/AKSW/imagehelper.ontowiki
