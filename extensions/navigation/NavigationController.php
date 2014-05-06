@@ -405,7 +405,7 @@ class NavigationController extends OntoWiki_Controller_Component
             $entry          = array();
             $entry['title'] = $this->_getTitle($uri, $mode, $setup);
             // get resource ling
-            $entry['link'] = $this->_getListLink($uri, $setup);
+            $entry['link'] = $this->_getListLink($uri, $setup, $entry['title']);
 
             // chech if there's need to look for subresources
             $checkSubs = false;
@@ -920,7 +920,7 @@ class NavigationController extends OntoWiki_Controller_Component
      * according to a given URI in the navigation module and a
      * given navigation setup
      */
-    protected function _getListLink($uri, $setup)
+    protected function _getListLink($uri, $setup, $title = '')
     {
         if (isset($setup->config->directLink) && $setup->config->directLink) {
             $return = new OntoWiki_Url(array('route' => 'properties'), array('r'));
@@ -984,6 +984,7 @@ class NavigationController extends OntoWiki_Controller_Component
 
         //$this->_owApp->logger->info("conf: ".print_r($conf,true));
 
-        return $return . "&instancesconfig=" . urlencode(json_encode($conf));
+        return $return . "&instancesconfig=" . urlencode(json_encode($conf))
+                       . "&title=" . urlencode($title);
     }
 }

@@ -153,10 +153,16 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
      */
     protected $_titleHelper = null;
 
+
+    /**
+     * @var string
+     */
+    protected $_title = null;
+
     /**
      * Constructor
      */
-    public function __construct(Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array())
+    public function __construct(Erfurt_Store $store, Erfurt_Rdf_Model $model, $options = array(), $title = '')
     {
         parent::__construct($store, $model);
 
@@ -216,6 +222,8 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         //set froms to the requested graph
         $this->_valueQuery->addFrom((string)$model);
         $this->_resourceQuery->addFrom((string)$model);
+
+        $this->_title = $title;
 
         $this->invalidate();
     }
@@ -317,6 +325,16 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     public function getTitleHelper()
     {
         return $this->_titleHelper;
+    }
+
+    /**
+      * get title
+      *
+      * @return string
+      */
+    public function getTitle()
+    {
+        return $this->_title;
     }
 
     /**
@@ -1212,7 +1230,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             }
         }
 
-        return $url;
+        return $url . "&title=" . urlencode($this->_title);
     }
 
     /**
@@ -2041,4 +2059,49 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         return -1;
     }
+
+    public function getClassComment()
+    {
+        $classUri = $this->getSelectedClass();
+        if ($classUri == -1) {
+            return false;
+        }
+        else {
+            $owApp = OntoWiki::getInstance();
+            $lang = $owApp->config->languages->locale;
+            if(!isset($owApp->config->lists)
+               || !isset($owApp->config->lists->showCommentsForHeading)
+               || ($owApp->config->lists->showCommentsForHeading === "false")) {
+                return false;
+            }
+            else {
+                $commentPredicates = $owApp->config->lists->headingComment->toArray();
+            }
+
+            $property_queries = array();
+            foreach ($commentPredicates as $property) {
+                $property_queries[] = '        { <' . $classUri . '> <' . $property . '> ?comment . }';
+            }
+
+            $query = 'SELECT DISTINCT ?comment WHERE {' . PHP_EOL;
+            $query.= join(PHP_EOL . '          UNION' . PHP_EOL, $property_queries) . PHP_EOL;
+            $query.= 'FILTER (langMatches(lang(?comment), \'' . $lang . '\'))' . PHP_EOL;
+            $query.= '}';
+
+            $result = $this->_store->sparqlQuery($query);
+
+            if (count($result) > 0) {
+                $resultstrings = array();
+                foreach ($result as $res) {
+                    $resultstrings[] = $res['comment'];
+                }
+                return join('<br>', $resultstrings);
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+
 }

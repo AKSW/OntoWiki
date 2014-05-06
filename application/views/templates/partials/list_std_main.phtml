@@ -43,6 +43,20 @@ $this->headScript()->prependScript(
 <div id="permalink" class="messagebox" style="display:none"><?php echo $permalink; ?></div>
 <div id="resQuery" class="messagebox" style="display:none"><?php echo htmlentities($resourceQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($resourceQuery)?>">Open in editor</a></div>
 <div id="valQuery" class="messagebox" style="display:none"><?php echo htmlentities($valueQuery); ?><br><a href="<?php echo $urlBase; ?>queries/editor/?query=<?php echo urlencode($valueQuery)?>">Open in editor</a></div>
+
+<?php if (array_key_exists('heading', $this) && ($this->heading != '')): ?>
+    <h3 id="listHeading"><?php echo $this->heading; ?></h3>
+    <?php
+        $comment = $this->instances->getClassComment();
+        if ($comment !== false): ?>
+            <!-- make heading clickable to hide comment -->
+            <script type="text/javascript">
+                $('#listHeading').css('cursor', 'pointer').attr('onClick', "$('#listComment').slideToggle();");
+            </script>
+            <div id="listComment"><?php echo $comment ?></div>
+    <?php endif; ?>
+<?php endif; ?>
+
 <?php
     if ($this->instances->hasData()):
         ?>

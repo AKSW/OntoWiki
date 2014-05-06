@@ -127,13 +127,20 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
             $other = new stdClass();
         }
 
+        $config = $this->_owApp->config;
+        $listHeading = '';
+        if (($config->lists) && $config->lists->showHeading === "true") {
+            $listHeading = $list->getTitle();
+        }
+
         $renderedList = $view->partial(
             'partials/list.phtml',
             array(
                  'listName'     => $listName,
                  'instances'    => $list,
                  'mainTemplate' => $mainTemplate,
-                 'other'        => $other
+                 'other'        => $other,
+                 'heading'      => $listHeading
             )
         );
 
