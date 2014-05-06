@@ -67,7 +67,15 @@
           :pattern "/^(urn:lsid:.+)$/" ;
           :replacement <http://lsid.tdwg.org/$1>
     ];
- owconfig:config [
+
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "ISSN";
+          :pattern "/^urn:ISSN:([-0-9x]+)$/i" ;
+          :replacement <http://data.ub.uni-leipzig.de/zdb/issn/$1>
+    ] ;
+
+      owconfig:config [
           a owconfig:Config;
           owconfig:id "go";
           :pattern "/^http:\\/\\/www.geneontology.org\\/go#GO:([0-9]+)$/" ;
