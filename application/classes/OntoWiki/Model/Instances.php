@@ -30,6 +30,20 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     protected $_allTriple;
 
     /**
+     * OntoWiki Application config
+     *
+     * @var Zend_Config
+     */
+    protected $_config = null;
+
+    /**
+     * OntoWiki Application object
+     *
+     * @var OntoWiki
+     */
+    protected $_owApp = null;
+
+    /**
      * Properties whose values are to be fetched for each resource.
      *
      * @var array
@@ -157,6 +171,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->_resourceQuery = new Erfurt_Sparql_Query2();
         $this->_resourceVar   = new Erfurt_Sparql_Query2_Var('resourceUri');
 
+        $this->_owApp   = OntoWiki::getInstance();
+        $this->_config  = $this->_owApp->config;
+
         $this->_allTriple = new Erfurt_Sparql_Query2_Triple(
             $this->_resourceVar,
             new Erfurt_Sparql_Query2_Var('p'),
@@ -192,8 +209,9 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             ->addProjectionVar($this->_resourceVar)
             ->setDistinct(true);
 
-        //always query for type
-        $this->addShownProperty(EF_RDF_TYPE, '__TYPE');
+        if(!isset($this->_config->lists) || $this->_config->lists->showTypeColumnByDefault === 'true') {
+           $this->addShownProperty(EF_RDF_TYPE, '__TYPE');
+        }
 
         //set froms to the requested graph
         $this->_valueQuery->addFrom((string)$model);
@@ -246,7 +264,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
     public function __sleep()
     {
         //dont save reference to the store
-        return array_diff(array_keys(get_object_vars($this)), array('_store', '_titleHelper'));
+        return array_diff(array_keys(get_object_vars($this)), array('_store', '_titleHelper', '_config', '_owApp'));
     }
 
     public function __wakeup()
