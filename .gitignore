@@ -1,6 +1,6 @@
 # OntoWiki configs
 /config.ini
-/extensions/*.ini
+#/extensions/*.ini
 /local.ini
 
 # OntoWiki muck
