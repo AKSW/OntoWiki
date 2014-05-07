@@ -6,13 +6,13 @@
 	url = git://github.com/AKSW/Erfurt.git
 [submodule "extensions/historyproxy"]
 	path = extensions/historyproxy
-	url = git@github.com:nucknorris/historyproxy.git
+	url = git://github.com/nucknorris/historyproxy.git
 [submodule "extensions/template"]
 	path = extensions/template
-	url = git@github.com:AKSW/template.ontowiki.git
+	url = git://github.com/AKSW/template.ontowiki.git
 [submodule "extensions/contextinfo"]
 	path = extensions/contextinfo
-	url = git@github.com:AKSW/contextinfo.ontowiki.git
+	url = git://github.com/AKSW/contextinfo.ontowiki.git
 [submodule "extensions/imagehelper"]
 	path = extensions/imagehelper
-	url = https://github.com/AKSW/imagehelper.ontowiki
+	url = git://github.com/AKSW/imagehelper.ontowiki
