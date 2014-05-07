@@ -1,0 +1,19 @@
+<?php
+/**
+ * OntoWiki image helper module template
+ */
+$translate = OntoWiki::getInstance()->translate;
+?>
+
+<?php if (isset($this->noResult)): ?>
+    <?php echo($translate->translate("No upcoming dates")) ?>
+<?php endif ?>
+
+<?php if(isset ($this->properties)): ?>
+    <?php foreach($this->properties as $property): ?>
+        <a href="<?php echo $property['subjectUrl'] ?>"> <?php echo $property['subjectTitle'] ?> </a> 
+            <?php echo $property['predicateTitle'] ?>
+            <?php echo $property['value'] ?>
+            </br>
+    <?php endforeach; ?>
+<?php endif ?>

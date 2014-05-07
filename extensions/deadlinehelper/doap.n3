@@ -1,0 +1,59 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://raw.github.com/AKSW/deadlinehelper.ontowiki/master/doap.n3#> .
+
+<> foaf:primaryTopic :deadlinehelper .
+:deadlinehelper a doap:Project ;
+  doap:name "deadlinehelper" ;
+  rdfs:label "Deadline Helper Extension" ;
+  doap:homepage <https://github.com/AKSW/deadlinehelper.ontowiki>;
+  doap:description "A simple helper that looks for dates to come and displays them in a module" ;
+  doap:maintainer <http://aksw.org/NormanRadtke> ;
+  :license "http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)" ;
+
+  owconfig:privateNamespace : ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  owconfig:templates "templates/" ;
+  owconfig:languages "languages/" ;
+  owconfig:hasModule :DeadlineHelper ;
+
+  owconfig:registeredAt <http://extensions.ontowiki.net/repository> ;
+  doap:release :v1 .
+
+
+:v1 a doap:Version ;
+  doap:revision "1.0" ;
+  doap:created "2014-03-04" ;
+  owconfig:minOWVersion "0.9.10" ;
+  doap:file-release <https://github.com/AKSW/deadlinehelper.ontowiki/zipball/v1.0> .
+
+<http://aksw.org/NormanRadtke> a foaf:Person;
+  foaf:name "Norman Radtke" ;
+  foaf:homepage <http://aksw.org/NormanRadtke>;
+  foaf:mbox <mailto:norman.radtke@gmail.com> ;
+  foaf:mbox <mailto:radtke@informatik.uni-leipzig.de> .
+
+:DeadlineHelper a owconfig:Module ;
+  owconfig:context "main.window.modelinfo" ;
+  owconfig:context "main.window.dashmodelinfo" ;
+  rdfs:label "Deadline Helper" ;
+  owconfig:priority "10" .
+
+:deadlinehelper owconfig:config [
+      a owconfig:Config;
+      owconfig:id "properties";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "License End Date";
+          :property <http://vocab.ub.uni-leipzig.de/bibrm/licenseEndDate> ;
+    ]
+];
+ :dontShowController (
+      "error"
+      "debug"
+      "module"
+ ) .
