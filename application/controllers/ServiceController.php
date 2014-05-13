@@ -885,12 +885,22 @@ class ServiceController extends Zend_Controller_Action
         $output        = new stdClass();
         $newProperties = new stdClass();
 
+        //Write rdfAuthor-output to handle 'Add Property'-widget
+        if ($event->addPropertyValues !== null) {
+            $output->addPropertyValues = $event->addPropertyValues;
+        } else {
+            $output->addPropertyValues = '{}';
+        }
+
+        if ($event->addOptionalPropertyValues !== null) {
+            $output->addOptionalPropertyValues = $event->addOptionalPropertyValues;
+        } else {
+            $output->addOptionalPropertyValues = '{}';
+        }
+
         if ($workingMode == 'class') {
             if ($eventResult) {
                 $properties = $event->properties;
-                if ($event->addPropertyValues !== null) {
-                    $output->addPropertyValues = $event->addPropertyValues;
-                }
             } else {
                 $properties = $model->sparqlQuery(
                     'SELECT DISTINCT ?uri ?value {
@@ -911,9 +921,6 @@ class ServiceController extends Zend_Controller_Action
         } elseif ($workingMode == 'edit') {
             if ($eventResult) {
                 $properties = $event->properties;
-                if ($event->addPropertyValues !== null) {
-                    $output->addPropertyValues = $event->addPropertyValues;
-                }
             } else {
             $properties = $model->sparqlQuery(
                 'SELECT ?uri ?value {
@@ -942,13 +949,13 @@ class ServiceController extends Zend_Controller_Action
                    the value will not be set right now (but should probably
                    be provided in future
                 */
-                if (isset($property['value']) &&  $property['value']['value'] !== '') {
+                if (isset($property['value']) && isset($property['value']['value'])) {
                     $currentValue = $property['value']['value'];
                 } else {
                     $currentValue = '';
                 }
 
-                if (isset($property['value']) &&  $property['value']['type'] !== '') {
+                if (isset($property['value']) && isset($property['value']['type'])) {
                     $currentType  = $property['value']['type'];
                 } else {
                     $currentType = '';
@@ -1033,9 +1040,6 @@ class ServiceController extends Zend_Controller_Action
             $uri                  = EF_RDFS_LABEL;
             $newProperties->$uri  = array($value);
             $output->$resourceUri = $newProperties;
-            if (!isset($output->addPropertyValues)) {
-                $output->addPropertyValues = '{}';
-            }
         }
 
         // send the response
