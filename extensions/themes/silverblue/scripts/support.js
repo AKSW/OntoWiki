@@ -502,7 +502,9 @@ function createInstanceFromClassURI(type, dataCallback) {
                 data = dataCallback(data);
             }
             var addPropertyValues = data['addPropertyValues'];
+            var addOptionalPropertyValues = data['addOptionalPropertyValues'];
             delete data.addPropertyValues;
+            delete data.addOptionalPropertyValues;
 
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
@@ -517,6 +519,7 @@ function createInstanceFromClassURI(type, dataCallback) {
                 showPropertyButton: true,
                 loadOwStylesheet: false,
                 addPropertyValues: addPropertyValues,
+                addOptionalPropertyValues: addOptionalPropertyValues,
                 onSubmitSuccess: function (responseData) {
                     var newLocation;
                     if (responseData && responseData.changed) {
@@ -550,6 +553,10 @@ function editResourceFromURI(resource) {
            mode: 'edit',
            uri: resource
         }, function(data) {
+            var addPropertyValues = data['addPropertyValues'];
+            var addOptionalPropertyValues = data['addOptionalPropertyValues'];
+            delete data.addPropertyValues;
+            delete data.addOptionalPropertyValues;
             
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
@@ -565,7 +572,8 @@ function editResourceFromURI(resource) {
                 autoParse: false, 
                 showPropertyButton: true,
                 loadOwStylesheet: false,
-                addPropertyValues: data['addPropertyValues'],
+                addPropertyValues: addPropertyValues,
+                addOptionalPropertyValues: addOptionalPropertyValues,
                 onSubmitSuccess: function () {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
