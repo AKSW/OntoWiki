@@ -19,7 +19,7 @@ function toggleExpansion(event) {
         if (target.parent().children('.expansion').length) {
             target.parent().children('.expansion').slideDown(effectTime);
         } else {
-            var expansion = $('<div class="expansion" style="font-size:90%"></div>');
+            var expansion = $('<div class="expansion" style="font-size:100%"></div>');
             target.parent().append(expansion);
             var url    = urlBase + 'view/';
             var params = 'r=' + encodeURIComponent(resourceUri);
