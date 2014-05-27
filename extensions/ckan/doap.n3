@@ -11,7 +11,7 @@
 :ckan a doap:Project ;
   doap:name "ckan" ;
   owconfig:privateNamespace <https://github.com/AKSW/ckan/raw/master/doap.n3#> ;
-  owconfig:enabled "true"^^xsd:boolean ;
+  owconfig:enabled "false"^^xsd:boolean ;
   rdfs:label "CKAN Integration" ;
   doap:description "allows for registration of CKAN datasets from your OntoWiki instance" ;
   owconfig:authorLabel "Sebastian Tramp" ;
