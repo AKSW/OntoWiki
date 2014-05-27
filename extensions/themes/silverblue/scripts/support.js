@@ -576,9 +576,11 @@ function editResourceFromURI(resource) {
                 addOptionalPropertyValues: addOptionalPropertyValues,
                 onSubmitSuccess: function () {
                     // HACK: reload whole page after 500 ms
+                    /*
                     window.setTimeout(function () {
                         window.location.href = window.location.href;
                     }, 500);
+                    */
                 }
             });
 
@@ -690,9 +692,11 @@ function editPropertyListmode(event) {
             loadOwStylesheet: false,
             onSubmitSuccess: function () {
                 // HACK: reload whole page after 500 ms
+                /*
                 window.setTimeout(function () {
                     window.location.href = window.location.href;
                 }, 500);
+                */
             }
         });
 

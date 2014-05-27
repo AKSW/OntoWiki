@@ -395,9 +395,11 @@ $(document).ready(function() {
                         $('.edit-enable').removeClass('active');
                         
                         // HACK: reload whole page after 1000 ms
+                        /*
                         window.setTimeout(function () {
                             window.location.href = window.location.href;
                         }, 500);
+                        */
                     }, 
                     onCancel: function () {
                         $('.edit').each(function() {
@@ -470,9 +472,11 @@ $(document).ready(function() {
                             newLocation = window.location.href;
                         }
                         // HACK: reload whole page after 500 ms
+                        /*
                         window.setTimeout(function () {
                             window.location.href = newLocation;
                         }, 500);
+                        */
                     }
                 });
                 
@@ -498,11 +502,13 @@ $(document).ready(function() {
                             $(this).fadeOut(effectTime);
                         });
                         $('.edit-enable').removeClass('active');
-                        
+
                         // HACK: reload whole page after 1000 ms
+                        /*
                         window.setTimeout(function () {
                             window.location.href = window.location.href;
                         }, 500);
+                        */
                     }, 
                     onCancel: function () {
                         $('.edit').each(function() {
