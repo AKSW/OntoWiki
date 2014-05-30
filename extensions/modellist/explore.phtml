@@ -6,7 +6,9 @@
 $odd = true;
 ?>
 
-<?php if (!empty($this->entries)): ?>
+<?php if(!empty($this->prerendered)): ?>
+    <?php print $this->prerendered; ?>
+<?php elseif (!empty($this->entries)): ?>
     <ol class="bullets-none separated has-contextmenus-block">
         <?php foreach ($this->entries as $modelDetails): ?>
             <li>
