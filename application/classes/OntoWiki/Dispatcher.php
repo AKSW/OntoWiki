@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -12,22 +12,24 @@
  * Overwrites Zend_Controller_Dispatcher_Standard in order to allow for
  * multiple (component) controller directories.
  *
- * @category OntoWiki
- * @package Dispatcher
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Norman Heino <norman.heino@gmail.com>
+ * @category  OntoWiki
+ * @package   OntoWiki_Classes
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
 {
     /**
      * The extension manager
+     *
      * @var OntoWiki_Extension_Manager
      */
     protected $_extensionManager = null;
 
     /**
      * Base for building URLs
+     *
      * @var string
      */
     protected $_urlBase = '';
@@ -67,6 +69,7 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
      * if still not found, fallback to default
      *
      * @param Zend_Controller_Request_Abstract $request
+     *
      * @return string|false Returns class name on success
      */
     public function getControllerClass(Zend_Controller_Request_Abstract $request)
@@ -84,8 +87,8 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         // Zend 1.10+ changes
         $className = $this->formatControllerName($controllerName);
 
-        $controllerDirs      = $this->getControllerDirectory();
-        $module = $request->getModuleName();
+        $controllerDirs = $this->getControllerDirectory();
+        $module         = $request->getModuleName();
         if ($this->isValidModule($module)) {
             $this->_curModule    = $module;
             $this->_curDirectory = $controllerDirs[$module];
@@ -101,8 +104,11 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         // PATCH
         // if component manager has controller registered
         // redirect to specific controller dir index
-        if (null !== $this->_extensionManager && $this->_extensionManager->isComponentRegistered($controllerName)) {
-            $this->_curDirectory = $controllerDirs[$this->_extensionManager->getComponentPrefix() . $controllerName];
+        if (null !== $this->_extensionManager) {
+            if ($this->_extensionManager->isComponentRegistered($controllerName)) {
+                $dir = $this->_extensionManager->getComponentPrefix() . $controllerName;
+                $this->_curDirectory = $controllerDirs[$dir];
+            }
         }
 
         return $className;
@@ -118,15 +124,19 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
      * not necessarily indicate the dispatcher will not still dispatch the call.
      *
      * @param Zend_Controller_Request_Abstract $action
+     *
      * @return boolean
      */
     public function isDispatchable(Zend_Controller_Request_Abstract $request)
     {
         // Zend 1.10+ changes
-        $className = $this->getControllerClass($request);
+        $className    = $this->getControllerClass($request);
+        $actionMethod = strtolower($request->getActionName()) . 'Action';
 
         if (class_exists($className, false)) {
-            return true;
+            if (method_exists($className, $actionMethod)) {
+                return true;
+            }
         }
 
         $fileSpec    = $this->classToFilename($className);
@@ -134,7 +144,11 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         $test        = $dispatchDir . DIRECTORY_SEPARATOR . $fileSpec;
 
         if (Zend_Loader::isReadable($test)) {
-            return true;
+            require_once $test;
+
+            if (method_exists($className, $actionMethod)) {
+                return true;
+            }
         }
 
         /**
@@ -150,17 +164,17 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
         // URI may not contain a whitespace character!
         $pathInfo = str_replace(' ', '+', $pathInfo);
 
-        $event = new Erfurt_Event('onIsDispatchable');
+        if (class_exists($className, false)) {
+            // give a chance to let class handle (e.g. index controller news action default)
+            return true;
+        }
+
+        $event          = new Erfurt_Event('onIsDispatchable');
         $event->uri     = $this->urlBase . $pathInfo;
         $event->request = $request;
 
-        // We need to make sure that registered plugins return a boolean value!
-        // Otherwise we return false.
-        $eventResult = $event->trigger();
-        if (is_bool($eventResult)) {
-            return $eventResult;
-        }
+        $eventResult = (bool)$event->trigger();
 
-        return false;
+        return $eventResult;
     }
 }

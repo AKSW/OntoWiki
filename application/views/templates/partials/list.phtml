@@ -7,13 +7,13 @@ $store = $this->instances->getStore();
 
 // prepare namespaces
 try{
-    $namespaces = $graph->getNamespaces();
+    $namespacePrefixes = $graph->getNamespacePrefixes();
 } catch (Exception $e){
-    $namespaces = array();
+    $namespacePrefixes = array();
 }
 $graphBase  = $graph->getBaseUri();
-if (!array_key_exists($graphBase, $namespaces)) {
-    $namespaces = array_merge($namespaces, array($graphBase => OntoWiki_Utils::DEFAULT_BASE));
+if (!array_key_exists(OntoWiki_Utils::DEFAULT_BASE, $namespacePrefixes)) {
+    $namespacePrefixes[OntoWiki_Utils::DEFAULT_BASE] = $graphBase;
 }
 
 //data for filter module
@@ -33,19 +33,22 @@ if ($instances->hasData()) {
     } else {
          $instanceData = array();
     }
-    //echo '<pre>'; print_r($instanceData); echo '</pre>';
-    
+
+    if (!isset($this->other->statusBar) || $this->other->statusBar) {
+        $statusBar = $this->placeholder('main.window.statusbar');
+    } else {
+        $statusBar = null;
+    }
+
     $itemsOnPage = count($instanceData);
-    
+
     $propertyInfo = $instances->getShownProperties();
-    
+
     $time = (microtime(true) - $start) * 1000;
-    
+
     $start     = $instances->getOffset() + 1;
     $translate = OntoWiki::getInstance()->translate;
-    
-    $statusBar = $this->placeholder('main.window.statusbar');
-    
+
     $limit = $instances->getLimit();
     $offset = $instances->getOffset();
     if($limit != 0) {
@@ -56,37 +59,52 @@ if ($instances->hasData()) {
     $config = Erfurt_App::getInstance()->getConfig();
 
     if($graph->getOption($config->sysont->properties->isLarge)) {
-        $statusBar->append(OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName));
+        if ($statusBar !== null) {
+            $statusBar->append(OntoWiki_Pager::get( Erfurt_Store::COUNT_NOT_SUPPORTED, $limit, $itemsOnPage, $page, $this->listName));
+        }
     } else {
         $query = clone $instances->getResourceQuery();
-        
+
         $where = 'WHERE '.$query->getWhere();
-        
+
         try {
             $count = $store->countWhereMatches($graph->getModelIri(), $where, '?resourceUri', true);
         } catch (Erfurt_Store_Exception $e) {
             $count = Erfurt_Store::COUNT_NOT_SUPPORTED;
         }
-        $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName));
-        
-        if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
-            $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
-            $numResultsMsg = sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results);
-            $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
+        if ($statusBar !== null) {
+            $statusBar->append(OntoWiki_Pager::get($count, $limit, $itemsOnPage, $page, $this->listName));
+            if ($count != Erfurt_Store::COUNT_NOT_SUPPORTED) {
+                $results = $count > 1 ? $translate->translate('results') : $translate->translate('result');
+                $statusBar->append(sprintf($translate->translate('Search returned %1$d %2$s.'), $count, $results));
+            }
         }
     }
     if(!isset($count) || $count > 10 ){
-        $thisActionUrl = new OntoWiki_Url().'/';
-        $limit = '<ul><li>Show me: <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/10'.'">10</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/50'.'">50</a></li>';
-        $limit .= '<li><a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/100'.'">100</a></li>';
-        $limit .= '<li> ... <a class="minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/0'.'">all</a></ul></li>';
-        $statusBar->append($limit);
+        if ($statusBar !== null) {
+            $thisActionUrl = new OntoWiki_Url().'/';
+            $listLimit = $limit;
+            
+            $limit = '<ul>';
+            for($i = 10; $i <= 50; $i+=10){
+            	$additionalClass = ($i == $listLimit)? 'selected ': '';
+            	if($i == 10){
+            		$limit .= '<li> Show me: ';
+            	}else{
+            		$limit .= '<li>';
+            	}
+            	$limit .= '<a class="'.$additionalClass.'minibutton" href="'. $thisActionUrl.'list/'.$this->listName.'/limit/'.$i.'">'.$i.'</a></li>';
+            
+            }
+            $limit .= '</ul>';
+            $statusBar->append($limit);
+        }
     }
 
     if (defined('_OWDEBUG')) {
-        $timeMsg = sprintf($translate->translate('Query execution took %1$d ms.'), $time);
-        $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
+        if ($statusBar !== null) {
+            $statusBar->append(sprintf($translate->translate('Query execution took %1$d ms.'), $time));
+        }
     }
 } else {
     $instanceData = array();
@@ -103,19 +121,18 @@ $this->headScript()->prependScript(
         );
 //other contains template specific data
 $other = $this->other;
-$other->namespaces =$namespaces;
+$other->namespacePrefixes = $namespacePrefixes;
 $other->graphbase = $graphBase;
 
 //call the requested template
 echo $this->partial('partials/'.$this->mainTemplate.'.phtml',
-                array(
-                    'instances'    => $instances,
-                    'instanceData' => $instanceData,
-                    'instanceInfo' => $instanceInfo,
-                    'propertyInfo' => $propertyInfo,
-                    'other'        => $other,
-                    'listName'    => $this->listName,
-                    'start'        => $start
-                )
-             );
-?>
+    array(
+        'instances'     => $instances,
+        'instanceData'  => $instanceData,
+        'instanceInfo'  => $instanceInfo,
+        'propertyInfo'  => $propertyInfo,
+        'other'         => $other,
+        'listName'      => $this->listName,
+        'start'         => $start
+    )
+);

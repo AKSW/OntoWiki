@@ -1,0 +1,155 @@
+;;;;
+;; OntoWiki user config file
+;;
+;; Settings here will overwrite values from application/config/default.ini
+;;
+;; @package    application
+;; @subpackage config
+;; @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
+;; @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+;;
+
+[private]
+
+;;;;
+;; Database setup
+;; In most cases you only need to change username, password
+;; and database name (dbname).
+
+;;;;
+;; Backend type:
+;; Possible values are zenddb (mysql), virtuoso, arc, comparer and sparql
+;;
+store.backend = virtuoso
+
+;;;;
+;; ZendDB / MySQL backend specific options
+;;
+store.zenddb.dbname   = "ontowiki"
+store.zenddb.username = "php"
+store.zenddb.password = "php"
+store.zenddb.dbtype   = mysql
+store.zenddb.host     = localhost
+
+;;;;
+;; Virtuoso backend specific options
+;;
+store.virtuoso.dsn         = VOS
+store.virtuoso.username    = "dba"
+store.virtuoso.password    = "dba"
+;; affect the main search: searches <= 4 will be exact search (instead of bif:contains)
+store.virtuoso.search_max_length_for_bifcontains = "4"
+;store.virtuoso.use_persistent_connection = true
+
+;;;;
+;; ARC2 backend specific options
+;;
+store.arc.dbname = "ontowiki_arc2"
+store.arc.username = "ow"
+store.arc.password = "ow"
+store.arc.host = "localhost"
+store.arc.store = "ef"
+
+;store.sparql.serviceUrl = "http://dbpedia.org/sparql";
+;store.sparql.graphs[]   = "http://dbpedia.org"
+
+;;;;
+;; Comparer backend specific options
+;;
+store.comparer.reference        = virtuoso
+store.comparer.candidate        = zenddb
+store.comparer.ignoredMethods[] = sparqlQuery
+
+;;;;
+;; Frontend language
+;;
+languages.locale = "en"             ; en, de, ru, zh (Chinese)
+
+;;;;
+;; Set this identifier to a unique value if you want to run multiple OntoWiki
+;; installations on one server
+;;
+;session.identifier = "abc123"
+
+;;;;
+;; Set some session cookie parameters
+;session.lifetime = "3600"
+;session.path = "/"
+;session.domain = ""
+;session.secure = 0
+;session.httpOnly = 0
+
+;;;;
+;; Email configuration
+;; You should set the host and localname for account recovery mails here
+;; appropriate values are necessary to guarantee correct function
+;;
+mail.hostname           = "hostname.tld"
+mail.localname.recovery = "ontowiki-account-recovery"
+
+;;;;
+;; Proxy configuration
+;; You can configure an optional proxy server for connections that OntoWiki internally opens.
+;; This is for example useful in situations, where you want to access Linked Data and your OntoWiki sits
+;; behind a firewall.
+;;
+;proxy.host = ""
+;proxy.port = 8080
+;proxy.username = ""
+;proxy.password = ""
+
+;; Virtual host configurations (optional, e.g. when OntoWiki is reachable via multiple domains)
+;vhosts[] = "http://graph1.ontowiki.de"
+;vhosts[] = "http://graph2.ontowiki.de"
+
+;;;;
+;; Uncomment this line to turn off the query and object cache (NOT recommended)
+;;
+;cache.enable       = false
+;cache.query.enable = false
+
+
+;; Options for cache frontend
+cache.frontend.enable                               = true
+cache.frontend.lifetime                             = 0
+;cache.frontend.logging                             = false
+;cache.frontend.write_control                       = true
+;cache.frontend.automatic_cleaning_factor           = 10
+;cache.frontend.ignore_user_abort                   = false
+cache.frontend.cache_id_prefix                      = 'OW_'
+
+;; Cache backend options
+;; Available: file | memcached | database | sqlite | apc
+;; Recommended: memcached | file
+cache.backend.type                                  = "file"
+ 
+;; Options for file cache backend
+cache.backend.file.cache_dir                        = "./cache/"
+cache.backend.file.file_locking                     = NULL
+
+;; Options for memcached cache backend
+;cache.backend.memcached.compression                = false
+;cache.backend.memcached.compatibility              = false
+;; You can define several servers: copy block, below and increase number and configure properly
+cache.backend.memcached.servers.0.host              = "localhost"
+;cache.backend.memcached.servers.0.port             = 11211
+;cache.backend.memcached.servers.0.persistent       = true
+;cache.backend.memcached.servers.0.weight           = 1
+;cache.backend.memcached.servers.0.timeout          = 5
+;cache.backend.memcached.servers.0.retry_interval   = 15
+;cache.backend.memcached.servers.0.status           = 15
+
+;; Options for sqlite cache backend
+cache.backend.sqlite.cache_db_complete_path         = "/tmp/ow_cache.sqlite"
+;cache.backend.sqlite.automatic_vacuum_factor       = 10
+
+
+;; Options for Gearman/worker
+worker.enable	= false
+
+
+;;;;
+;; uncomment this line if you need more information
+;;
+;debug = true
+

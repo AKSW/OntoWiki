@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 require_once 'OntoWiki/Module.php';
 
@@ -6,8 +12,8 @@ require_once 'OntoWiki/Module.php';
  * OntoWiki module – Manchester Editor Module
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_modules_manchester
- * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @package    Extensions_Manchester
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 class ManchesterModule extends OntoWiki_Module
@@ -25,24 +31,25 @@ class ManchesterModule extends OntoWiki_Module
     }
 
     /**
-     * Returns the content 
+     * Returns the content
      */
-    function getContents()
+    public function getContents()
     {
-        $from = $this->_owApp->selectedModel;
+        $from      = $this->_owApp->selectedModel;
         $classname = OntoWiki::getInstance()->selectedResource;
 
         $structured = Erfurt_Owl_Structured_Util_Owl2Structured::mapOWL2Structured(
-            array( (string) $from), (string) $classname
+            array((string)$from), (string)$classname
         );
 
-        $data = new StdClass();
-        $formUrl = new OntoWiki_Url( array('controller' => 'manchester', 'action' => 'post'), array() );
+        $data    = new StdClass();
+        $formUrl = new OntoWiki_Url(array('controller' => 'manchester', 'action' => 'post'), array());
 
-        $data->formUrl = (string) $formUrl;
-        $data->manchesterString = (string) $structured;
+        $data->formUrl          = (string)$formUrl;
+        $data->manchesterString = (string)$structured;
 
         $content = $this->render('modules/manchester', $data, 'data');
+
         return $content;
     }
 

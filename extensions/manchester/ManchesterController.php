@@ -1,35 +1,38 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * Manchester Syntax Controller
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_components_manchester
- * @copyright  Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @package    Extensions_Manchester
+ * @copyright  Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-class ManchesterController extends OntoWiki_Controller_Component {
-
-
-    public function init() {
-        parent::init();
-    }
-
+class ManchesterController extends OntoWiki_Controller_Component
+{
     /*
      * post a manchester string to save/edit the class
      */
-    public function postAction() {
+    public function postAction()
+    {
         // service controller needs no view renderer
         $this->_helper->viewRenderer->setNoRender();
         // disable layout for Ajax requests
         $this->_helper->layout()->disableLayout();
 
-        $response  = $this->getResponse();
-        $request   = $this->_request;
-        $output    = false;
+        $response = $this->getResponse();
+        $request  = $this->_request;
+        $output   = false;
 
         try {
-            $model  = $this->_owApp->selectedModel;
-            $store  = $this->_owApp->erfurt->getStore();
+            $model = $this->_owApp->selectedModel;
+            $store = $this->_owApp->erfurt->getStore();
             //$store->addMultipleStatements((string) $model, $activity->toRDF());
 
             $classname = OntoWiki::getInstance()->selectedResource;
@@ -40,14 +43,14 @@ class ManchesterController extends OntoWiki_Controller_Component {
 
             $triples = $structuredOwl->toTriples();
 
-            $output   = array (
+            $output = array(
                 'message' => 'class saved',
                 'class'   => 'success',
-                'out' => $triples
+                'out'     => $triples
             );
         } catch (Exception $e) {
             // encode the exception for http response
-            $output = array (
+            $output = array(
                 'message' => $e->getMessage(),
                 'class'   => 'error'
             );
@@ -57,14 +60,13 @@ class ManchesterController extends OntoWiki_Controller_Component {
         // send the response
         $response->setHeader('Content-Type', 'application/json');
         $response->setBody(json_encode($output));
-        $response->sendResponse();
-        exit;
     }
 
-    private function initParser($inputQuery) {
+    private function initParser($inputQuery)
+    {
         require_once 'antlr/Php/antlr.php';
-        $input = new ANTLRStringStream($inputQuery);
-        $lexer = new Erfurt_Syntax_ManchesterLexer($input);
+        $input  = new ANTLRStringStream($inputQuery);
+        $lexer  = new Erfurt_Syntax_ManchesterLexer($input);
         $tokens = new CommonTokenStream($lexer);
         $parser = new Erfurt_Syntax_ManchesterParser($tokens);
 

@@ -344,26 +344,32 @@ function showResourceMenu(event, json) {
             $('#' + menuId).fadeOut();
         }
     }
-    
+
     if(json == undefined){
+        var aboutUri, modelUri, resourceUri;
+
         // URI of the resource clicked (used attribute can be about and resource)
         if ( typeof $(event.target).parent().attr('about') != 'undefined' ) {
-            resourceUri = $(event.target).parent().attr('about');
+            aboutUri = $(event.target).parent().attr('about');
         } else if ( typeof $(event.target).parent().attr('resource') != 'undefined' ) {
-            resourceUri = $(event.target).parent().attr('resource');
-        } else {
-            // no usable resource uri, so we exit here
-            return false;
+            aboutUri = $(event.target).parent().attr('resource');
         }
 
-        encodedResourceUri = encodeURIComponent(resourceUri);
-        resource = $(event.target).parent();
-
-        
+        if (aboutUri == null) {
+            // no usable resource uri, so we exit here
+            return false;
+        } else if ($(event.target).parent().hasClass('Model')) {
+            modelUri = aboutUri;
+        } else {
+            resourceUri = aboutUri;
+        }
 
         var urlParams = {};
-        urlParams.resource = resourceUri;
-
+        if (modelUri != null) {
+            urlParams.model = modelUri;
+        } else {
+            urlParams.resource = resourceUri;
+        }
 
         // load menu with specific options from service
         $.ajax({
@@ -403,7 +409,10 @@ function loadRDFauthor(callback) {
     }
 }
 
-function populateRDFauthor(data, protect, resource, graph) {
+function populateRDFauthor(data, protect, resource, graph, workingmode) {
+    /*
+     * Set default values
+     */
     protect  = arguments.length >= 2 ? protect : true;
     resource = arguments.length >= 3 ? resource : null;
     graph    = arguments.length >= 4 ? graph : null;
@@ -414,7 +423,7 @@ function populateRDFauthor(data, protect, resource, graph) {
 
             for (var i = 0; i < objects.length; i++) {
                 var objSpec = objects[i];
-                
+
                 if ( objSpec.type == 'uri' ) { 
                     var value = '<' + objSpec.value + '>'; 
                 } else if ( objSpec.type == 'bnode' ) { 
@@ -452,9 +461,11 @@ function populateRDFauthor(data, protect, resource, graph) {
                     hidden: objSpec.hidden ? objSpec.hidden : false
                 });
 
-                // remove all values except for type
-                if ( !/type/gi.test(stmt._predicateLabel) ) {
-                    stmt._object.value = "";
+                if (workingmode == 'class') {
+                    // remove all values except for type
+                    if ( stmt.predicateURI() !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' ) {
+                        stmt._object.value = "";
+                    }
                 }
 
                 RDFauthor.addStatement(stmt);
@@ -470,6 +481,12 @@ function populateRDFauthor(data, protect, resource, graph) {
  */
 function createInstanceFromClassURI(type, dataCallback) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
+
+    // check if an resource is in editing mode
+    if($(body).data('editingMode')) {
+        RDFauthor.cancel();
+        RDFauthor.reset();
+    }
 
     // remove resource menus
     removeResourceMenus();
@@ -487,13 +504,14 @@ function createInstanceFromClassURI(type, dataCallback) {
             // grab first object key
             for (var subjectUri in data) {break;};
             // add statements to RDFauthor
-            populateRDFauthor(data, true, subjectUri, selectedGraph.URI);
+            populateRDFauthor(data, true, subjectUri, selectedGraph.URI, 'class');
             RDFauthor.setOptions({
                 saveButtonTitle: 'Create Resource',
                 cancelButtonTitle: 'Cancel',
                 title: 'Create New Instance of ' + type,  
                 autoParse: false, 
-                showPropertyButton: true, 
+                showPropertyButton: true,
+                loadOwStylesheet: false,
                 onSubmitSuccess: function (responseData) {
                     var newLocation;
                     if (responseData && responseData.changed) {
@@ -504,6 +522,12 @@ function createInstanceFromClassURI(type, dataCallback) {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
                         window.location.href = newLocation;
+                    }, 500);
+                },
+                onCancel: function () {
+                    // HACK: reload whole page after 500 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
                     }, 500);
                 }
             });
@@ -540,8 +564,15 @@ function editResourceFromURI(resource) {
                 cancelButtonTitle: 'Cancel',
                 title: 'Edit Resource ' + resource,  
                 autoParse: false, 
-                showPropertyButton: true, 
+                showPropertyButton: true,
+                loadOwStylesheet: false,
                 onSubmitSuccess: function () {
+                    // HACK: reload whole page after 500 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
+                    }, 500);
+                },
+                onCancel: function () {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
                         window.location.href = window.location.href;
@@ -567,13 +598,20 @@ function resourceURL(resourceURI) {
     return urlBase + 'view/?r=' + encodeURIComponent(resourceURI);
 }
 
-/*
- * Edit a complete OW property view property section
+/**
+ * Starts RDFauthor in inline mode to edit a single property
+ *
+ * @param event the JavaScript event which startes the method
  */
 function editProperty(event) {
     var element = $.event.fix(event).target;
+
     loadRDFauthor(function () {
         RDFauthor.setOptions({
+            saveButtonTitle: 'Save Changes', 
+            cancelButtonTitle: 'Cancel',
+            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
+            loadOwStylesheet: false,
             onSubmitSuccess: function () {
                 $('.edit').each(function() {
                     $(this).fadeOut(effectTime);
@@ -591,11 +629,8 @@ function editProperty(event) {
                 });
                 $('.edit-enable').removeClass('active');
             }, 
-            saveButtonTitle: 'Save Changes', 
-            cancelButtonTitle: 'Cancel', 
-            title: $('.section-mainwindows .window').eq(0).children('.title').eq(0).text(), 
             viewOptions: {
-                type: RDFAUTHOR_VIEW_MODE, 
+                type: RDFAUTHOR_VIEW_MODE,
                 container: function (statement) {
                     var element = RDFauthor.elementForStatement(statement);
                     var parent  = $(element).closest('div');
@@ -612,15 +647,50 @@ function editProperty(event) {
             }
         });
 
-        RDFauthor.start($(element).parents('td'));
+        RDFauthor.start($(element).closest('td'));
         $('.edit-enable').addClass('active');
         $('.edit').each(function() {
             var button = this;
             $(this).fadeIn(effectTime);
         });
     });
+}
 
-    //return false;
+/**
+ * Starts RDFauthor in overlay mode to edit a single property in the listview table
+ *
+ * @param event the JavaScript event which startes the method
+ */
+function editPropertyListmode(event) {
+    var element = $.event.fix(event).target;
+    var resource = $(element).parents('td').rdf().where('?s ?p ?o').dump();
+    var resourceUri = Object.keys(resource)[0];
+    var serviceUri = urlBase + 'service/rdfauthorinit';
+
+    // remove resource menus
+    removeResourceMenus();
+
+    loadRDFauthor(function() {
+        // add statements to RDFauthor
+        populateRDFauthor(resource, false, resource, selectedGraph.URI);
+
+        RDFauthor.setOptions({
+            saveButtonTitle: 'Save Changes',
+            cancelButtonTitle: 'Cancel',
+            title: 'Edit Resource ' + resourceUri,
+            autoParse: false, 
+            showPropertyButton: false,
+            loadOwStylesheet: false,
+            onSubmitSuccess: function () {
+                // HACK: reload whole page after 500 ms
+                window.setTimeout(function () {
+                    window.location.href = window.location.href;
+                }, 500);
+            }
+        });
+
+        RDFauthor.start();
+    });
 }
 
 function addProperty() {

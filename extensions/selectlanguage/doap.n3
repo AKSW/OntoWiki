@@ -1,0 +1,34 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/selectlanguage/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :selectlanguage .
+:selectlanguage a doap:Project ;
+  doap:name "selectlanguage" ;
+  owconfig:privateNamespace <https://github.com/AKSW/selectlanguage/raw/master/doap.n3#> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  rdfs:label "Select Language" ;
+  doap:description "This plugin is used for switching to a specific language" ;
+  owconfig:authorLabel "Michael Martin" ;
+  owconfig:pluginEvent event:onPostBootstrap ;
+  owconfig:pluginEvent event:onBeforeInitController ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "languages";
+      :en "english (en)" ;
+      :de "deutsch (de)" ;
+      :zh "汉语 (zh)"
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "langzages";
+      :ru "русский язык (ru)"
+] .
+:selectlanguage doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

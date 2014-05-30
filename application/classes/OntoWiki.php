@@ -1,86 +1,95 @@
-<?php 
-
+<?php
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki main class.
  *
  * Serves as a central registry for storing objects needed througout the application.
- * Prior to 0.9.5, this class was called OntoWiki and was also partly
+ * Prior to 0.9.5, this class was called OntoWiki_Application and was also partly
  * responsible for application bootstrapping. As of 0.9.5, bootstrapping is handled
- * by the Bootstrap class. OntoWiki_Application is aliased to OntoWiki, whereby it is 
- * still usable, but deprecated and will certainly disappea in the next release.
+ * by the Bootstrap class.
  *
- * @category OntoWiki
- * @copyright Copyright (c) 2008, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
- * @author Norman Heino <norman.heino@gmail.com>
+ * @category  OntoWiki
+ * @package   OntoWiki_Classes
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki
 {
     const DEFAULT_LOG_IDENTIFIER = 'ontowiki';
-    
+
     // ------------------------------------------------------------------------
     // --- Properties
     // ------------------------------------------------------------------------
-    
+
     /**
      * The bootstrap object used during bootstrap.
+     *
      * @var Zend_Application_Bootstrap_Bootstrap
      */
     protected $_bootstrap = null;
-    
+
     /**
      * A dictionary for custom logger objects.
      * The key is the identifier for the logger.
      */
     protected $_customLogs = array();
-    
-    /** 
+
+    /**
      * Array of properties
-     * @var array 
+     *
+     * @var array
      */
     protected $_properties = array();
-    
+
     /**
      * Variables to be autoloaded from the session
+     *
      * @var array
      */
     protected $_sessionVars = array();
-    
-    /** 
+
+    /**
      * Singleton instance
-     * @var OntoWiki 
+     *
+     * @var OntoWiki
      */
-    private static $_instance = null;
-    
+    protected static $_instance = null;
+
+    /**
+     * OntoWiki_Navigation instance
+     */
+    protected $_navigation = null;
+
     // ------------------------------------------------------------------------
     // --- Magic Methods
     // ------------------------------------------------------------------------
-    
+
     /**
      * Constructor
      */
     private function __construct()
     {
     }
-    
+
     /**
      * Disallow cloning
      */
     private function __clone()
     {
     }
-    
+
     /**
      * Returns a property value
      *
      * @param string $propertyName
+     *
      * @return mixed
      * @since 0.9.5
      */
@@ -92,24 +101,25 @@ class OntoWiki
                 $this->_properties[$propertyName] = $this->session->$propertyName;
             }
         }
-        
+
         // retrieve bootstrap resource
         $bootstrap = $this->getBootstrap();
-        if ($bootstrap and $bootstrap->hasResource($propertyName)) {
+        if ($bootstrap && $bootstrap->hasResource($propertyName)) {
             return $bootstrap->getResource($propertyName);
         }
-        
+
         // retrieve locally
         if (isset($this->$propertyName)) {
             return $this->_properties[$propertyName];
         }
     }
-    
+
     /**
      * Sets a property
      *
      * @param string $propertyName
-     * @param mixed $propertyValue
+     * @param mixed  $propertyValue
+     *
      * @since 0.9.5
      */
     public function __set($propertyName, $propertyValue)
@@ -118,15 +128,16 @@ class OntoWiki
         if (in_array($propertyName, $this->_sessionVars)) {
             $this->session->$propertyName = $propertyValue;
         }
-        
+
         // set locally
         $this->_properties[$propertyName] = $propertyValue;
     }
-    
+
     /**
      * Returns whether a property is set
      *
      * @param string $propertyName
+     *
      * @return boolean
      * @since 0.9.5
      */
@@ -134,11 +145,12 @@ class OntoWiki
     {
         return array_key_exists($propertyName, $this->_properties);
     }
-    
+
     /**
      * Unsets a property
      *
      * @param string $propertyName
+     *
      * @since 0.9.5
      */
     public function __unset($propertyName)
@@ -147,33 +159,101 @@ class OntoWiki
         if (in_array($propertyName, $this->_sessionVars)) {
             unset($this->session->$propertyName);
         }
-        
+
         // unset locally
         unset($this->_properties[$propertyName]);
     }
-    
+
     // ------------------------------------------------------------------------
     // --- Public Methods
-    // ------------------------------------------------------------------------ 
-    
+    // ------------------------------------------------------------------------
+
     /**
-     * Appends a message to the message stack
+     * Appends a (translated) message to the message stack
+     * TODO: add a boolean $translate=true flag in order to allow disabling
+     * translation
      *
      * @param OntoWiki_Message $message The message to be added.
+     *
      * @return OntoWiki
      */
     public function appendMessage(OntoWiki_Message $message)
     {
         $session = $this->getBootstrap()->getResource('Session');
-        
+
         $messageStack = (array)$session->messageStack;
         array_push($messageStack, $message);
-        
+
         $session->messageStack = $messageStack;
-        
+
         return $this;
     }
-    
+
+    /**
+     * Appends an info message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendInfoMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::INFO)
+        );
+        return $this;
+    }
+
+    /**
+     * Appends a success message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendSuccessMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::SUCCESS)
+        );
+        return $this;
+    }
+
+    /**
+     * Appends a warning message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendWarningMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::WARNING)
+        );
+        return $this;
+    }
+
+    /**
+     * Appends an error message to the message stack, a convenient shortcut to
+     * appendMessage with included translate
+     *
+     * @param string $message The message to be added.
+     * @since 0.9.9
+     * @return OntoWiki
+     */
+    public function appendErrorMessage($message)
+    {
+        $this->appendMessage(
+            new OntoWiki_Message((string)$message, OntoWiki_Message::ERROR)
+        );
+        return $this;
+    }
+
+
     /**
      * Returns the current message stack and empties it.
      *
@@ -184,7 +264,7 @@ class OntoWiki
     {
         return $this->getMessages(true);
     }
-    
+
     /**
      * Returns the application bootstrap object
      *
@@ -196,10 +276,18 @@ class OntoWiki
             $frontController  = Zend_Controller_Front::getInstance();
             $this->_bootstrap = $frontController->getParam('bootstrap');
         }
-        
+
         return $this->_bootstrap;
     }
-    
+
+    /**
+     *
+     */
+    public function setBootstrap($bootstrap)
+    {
+        $this->_bootstrap = $bootstrap;
+    }
+
     /**
      * Returns the system config object
      *
@@ -209,11 +297,63 @@ class OntoWiki
     public function getConfig()
     {
         $bootstrap = $this->getBootstrap();
-        if ($bootstrap and $bootstrap->hasResource('Config')) {
+        if ($bootstrap && $bootstrap->hasResource('Config')) {
             return $this->getBootstrap()->getResource('Config');
         }
     }
-    
+
+    /**
+     * Returns the system cache object
+     *
+     * @since 0.9.9
+     * @return Zend_Cache_Core
+     */
+    public function getCache()
+    {
+        $bootstrap = $this->getBootstrap();
+        if ($bootstrap && $bootstrap->hasResource('Erfurt')) {
+            return $this->getBootstrap()->getResource('Erfurt')->getCache();
+        }
+    }
+
+    /**
+     * Returns the system worker frontend object
+     *
+     * todo: indicate a missing backend somehow
+     * todo: be robust against missing pecl stuff
+     *
+     * @since 0.9.11
+     * @return Erfurt_Worker_Frontend
+     */
+    public function getWorkerFrontend()
+    {
+        if (null === $this->_workerFrontend) {
+            $bootstrap = $this->getBootstrap();
+            $workerFrontend = Erfurt_Worker_Frontend::getInstance();
+            $workerFrontend->setBackend('gearman');
+            $workerFrontend->setServers($bootstrap->config->worker->servers);
+            $this->_workerFrontend = $workerFrontend;
+        }
+        return $this->_workerFrontend;
+    }
+
+    /**
+     * uses the system worker backend to call an async job
+     *
+     * todo: log a warning message if worker backend is not available
+     *
+     * @param string $jobId    The jobs identifier string
+     * @param mixed  $workload The jobs workload (array, object)
+     *
+     * @since 0.9.11
+     * @return null
+     */
+    public function callJob($jobId, $workload = array())
+    {
+        $client = $this->getWorkerFrontend();
+        $client->call($jobId, $workload);
+    }
+
     /**
      * Singleton instance
      *
@@ -224,16 +364,17 @@ class OntoWiki
         if (null === self::$_instance) {
             self::$_instance = new self();
         }
-        
+
         return self::$_instance;
     }
-    
+
     /**
      * Returns a custom logger object.
-     * If the $identifier parameter is missing or is equal to the default log 
+     * If the $identifier parameter is missing or is equal to the default log
      * identifier, the default logger object is returned.
      *
      * @param string $identifier (optional)
+     *
      * @return Zend_Log
      */
     public function getCustomLogger($identifier = self::DEFAULT_LOG_IDENTIFIER)
@@ -241,14 +382,13 @@ class OntoWiki
         if ($identifier === self::DEFAULT_LOG_IDENTIFIER) {
             return $this->logger;
         }
-        
+
         if (isset($this->_customLogs[$identifier])) {
             return $this->_customLogs[$identifier];
         }
-        
-        
+
         $config = $this->getConfig();
-        
+
         // support absolute path
         if (!(preg_match('/^(\w:[\/|\\\\]|\/)/', $config->log->path) === 1)) {
             // prepend OntoWiki root for relative paths
@@ -264,6 +404,7 @@ class OntoWiki
             $logger->addFilter($levelFilter);
 
             $this->_customLogs[$identifier] = $logger;
+
             return $logger;
         }
 
@@ -273,29 +414,30 @@ class OntoWiki
 
         return $logger;
     }
-    
+
     /**
      * Returns the current message stack and empties it.
      *
      * @param boolean $clearMessages Clears the message stack after retrieval
+     *
      * @return array
      */
     public function getMessages($clearMessages = false)
     {
         $session = $this->getBootstrap()->getResource('Session');
-        
+
         // store temporarily
         $messageStack = (array)$this->session->messageStack;
-        
+
         if ($clearMessages) {
             // empty message stack
             unset($session->messageStack);
         }
-        
+
         // return temp
         return $messageStack;
     }
-    
+
     /**
      * Returns the base URL for static files.
      * In case mod_rewrite is enabled, getUrlBase and getStaticUrlBase
@@ -310,7 +452,7 @@ class OntoWiki
             return $config->staticUrlBase;
         }
     }
-    
+
     /**
      * Returns the base URL for dynamic requests.
      * In case mod_rewrite is enabled, getUrlBase and getStaticUrlBase
@@ -325,7 +467,7 @@ class OntoWiki
             return $config->urlBase;
         }
     }
-    
+
     /**
      * Returns the currently logged-in user.
      *
@@ -335,7 +477,7 @@ class OntoWiki
     {
         return $this->user;
     }
-    
+
     /**
      * Returns whether OntoWiki currently has messages for the user.
      *
@@ -344,15 +486,16 @@ class OntoWiki
     public function hasMessages()
     {
         $messages = $this->getMessages();
-        
+
         return (!empty($messages));
     }
-    
+
     /**
      * Sets an array of variables that are to be synchronized
      * with the session.
      *
      * @since 0.9.5
+     *
      * @param array $sessionVars
      */
     public function setSessionVars(array $sessionVars)
@@ -360,28 +503,43 @@ class OntoWiki
         // add to session vars
         $this->_sessionVars = $sessionVars;
     }
-    
+
     /**
      * Prepends a message to the message stack
      *
      * @param OntoWiki_Message $message The message to be added.
+     *
      * @return OntoWiki
      */
     public function prependMessage(OntoWiki_Message $message)
     {
         $session = $this->getBootstrap()->getResource('Session');
-        
+
         $messageStack = (array)$session->messageStack;
         array_unshift($messageStack, $message);
-        
+
         $session->messageStack = $messageStack;
-        
+
         return $this;
     }
-    
+
+    /**
+     *
+     */
     public static function reset()
     {
         self::$_instance = null;
     }
-}
 
+    /**
+     *
+     */
+    public function getNavigation()
+    {
+        if (null == $this->_navigation) {
+            $this->_navigation = new OntoWiki_Navigation();
+        }
+
+        return $this->_navigation;
+    }
+}

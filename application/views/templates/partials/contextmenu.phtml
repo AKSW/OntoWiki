@@ -1,13 +1,10 @@
 <?php
-
 /**
  * OntoWiki context menu partial template
  *
  * @author  Norman Heino <norman.heino@gmail.com>
  * @author  Michael Haschke
- * @version $$
  */
-
 ?>
 <ul>
     <?php foreach ($this->contextmenu as $menuKey => $menuItem): ?>
@@ -24,7 +21,7 @@
                 <?php else: ?>
                     <a
                 <?php endif; ?>
-                
+
                    <?php echo (isset($menuItem['class']) ? 'class="' . $menuItem['class'] . '"' : '') ?>
                    <?php echo (isset($menuItem['id']) ? 'id="' . $menuItem['id'] . '"' : '') ?>>
                    <?php echo $this->_($menuKey) ?>

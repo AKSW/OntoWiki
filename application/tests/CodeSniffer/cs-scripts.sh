@@ -17,7 +17,7 @@ function cs-install() {
         user=`whoami`;
         if [[ $user == "root" ]]
         then
-            pear install PHP_CodeSniffer-1.3.2;
+            pear install PHP_CodeSniffer;
             echo " CodeSniffer PEAR Package installed.";
             return_value=0
         else
@@ -64,7 +64,9 @@ function cs-uninstall() {
 
 # function enables the CodeSniffer pre-commit
 function cs-enable() {
-    if `ln -s "../../$CSPATH/pre-commit" .git/hooks/pre-commit`
+    # get git directory of the current repo
+    GITDIR=`git rev-parse --git-dir`;
+    if `ln -s "../../$CSPATH/pre-commit" $GITDIR/hooks/pre-commit`
     then
         echo " CodeSniffer pre-commit enabled.";
     else

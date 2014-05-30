@@ -84,7 +84,7 @@ ARGS="-n -p -s --report=$REPORT --report-width=$WIDTH --severity=$SEVERITY --sta
 phpcs --version
 RETVAL=$?
 if [ "$RETVAL" -ne "0" ]; then
-echo "PHP CodeSniffer bin not found or executable"
+    echo "PHP CodeSniffer bin not found or executable"
     exit 1
 fi
 
@@ -101,7 +101,8 @@ fi
 COMMITFILES=$(git diff-index --name-only --cached --diff-filter=ACMR $against -- )
 
 if [ "$COMMITFILES" == "" ]; then
-    exit 1
+    echo "No files to check with PHP CodeSniffer"
+    exit 0
 fi
 
 # clean and create temporary copy of staging area
@@ -127,6 +128,7 @@ do
 done
 if [ "$FILES_TO_CHECK" == "" ]; then
     rm -rf $TMP_STAGING
+    echo "No files to check with PHP CodeSniffer"
     exit 0
 fi
 # if more than 5 files to check then show only a summary

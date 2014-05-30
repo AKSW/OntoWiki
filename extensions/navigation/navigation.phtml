@@ -1,8 +1,13 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki navigation template
- *
  */
 
 #var_dump($this->data);
@@ -19,9 +24,9 @@
         name="navigation-input"/>
 </form>
 <div id="navigation-content" class="width99 init-me-please">
-<?php 
+<?php
 if( isset($this->stateView) ){
     echo $this->stateView;
-} 
-?>    
+}
+?>
 </div>

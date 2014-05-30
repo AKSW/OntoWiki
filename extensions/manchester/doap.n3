@@ -1,0 +1,28 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/manchester/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :manchester .
+:manchester a doap:Project ;
+  doap:name "manchester" ;
+  owconfig:privateNamespace <https://github.com/AKSW/manchester/raw/master/doap.n3#> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  owconfig:templates "templates" ;
+  owconfig:languages "languages" ;
+  rdfs:label "Manchester" ;
+  doap:description "Class Editor with Manchester Syntax" ;
+  owconfig:authorLabel "AKSW" ;
+  owconfig:hasModule :Manchester .
+:Manchester a owconfig:Module ;
+  rdfs:label "Manchester Syntax" ;
+  owconfig:caching "false"^^xsd:boolean ;
+  owconfig:priority "3" ;
+  owconfig:context "main.window.properties" .
+:manchester doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

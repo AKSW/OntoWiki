@@ -2,51 +2,57 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * OntoWiki controller base class.
  *
  * @category OntoWiki
- * @package  Controller
- * @author Norman Heino <norman.heino@gmail.com>
+ * @package  OntoWiki_Classes_Controller
+ * @author   Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Controller_Base extends Zend_Controller_Action
 {
     /**
      * OntoWiki Application
+     *
      * @var OntoWiki
      */
     protected $_owApp = null;
 
     /**
      * OntoWiki Application config
+     *
      * @var Zend_Config
      */
     protected $_config = null;
 
     /**
      * The session store
+     *
      * @var Zend_Session
      */
     protected $_session = null;
 
     /**
      * Erfurt App
+     *
      * @var Erfurt_App
      */
     protected $_erfurt = null;
 
     /**
      * The Erfurt event dispatcher
+     *
      * @var Erfurt_Event_Dispatcher
      */
     protected $_eventDispatcher = null;
 
     /**
      * Time before the conroller is launched
+     *
      * @var float
      */
     private $_preController;
@@ -61,15 +67,15 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
          * Triggered before a controller of class OntoWiki_Controller_Base (or derived)
          * is initialized.
          */
-        $event = new Erfurt_Event('onBeforeInitController');
+        $event       = new Erfurt_Event('onBeforeInitController');
         $eventResult = $event->trigger();
 
         // init controller variables
-        $this->_owApp            = OntoWiki::getInstance();
-        $this->_config           = $this->_owApp->config;
-        $this->_session          = $this->_owApp->session;
-        $this->_erfurt           = $this->_owApp->erfurt;
-        $this->_eventDispatcher  = Erfurt_Event_Dispatcher::getInstance();
+        $this->_owApp           = OntoWiki::getInstance();
+        $this->_config          = $this->_owApp->config;
+        $this->_session         = $this->_owApp->session;
+        $this->_erfurt          = $this->_owApp->erfurt;
+        $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
 
         // set important script variables
         $this->view->themeUrlBase   = $this->_config->themeUrlBase;
@@ -82,12 +88,19 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
             if ($graph->isEditable()) {
                 $this->view->placeholder('update')->set(
                     array(
-                        'defaultGraph'   => $graph->getModelIri(),
-                        'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
-                        'updateEndpoint' => $this->_config->urlBase . 'update/'
+                         'defaultGraph'   => $graph->getModelIri(),
+                         'queryEndpoint'  => $this->_config->urlBase . 'sparql/',
+                         'updateEndpoint' => $this->_config->urlBase . 'update/'
                     )
                 );
             }
+        }
+
+        // check config for additional styles
+        if ($stylesExtra = $this->_config->themes->styles) {
+            $this->view->themeExtraStyles = $stylesExtra->toArray();
+        } else {
+            $this->view->themeExtraStyles = array();
         }
 
         // disable layout for Ajax requests
@@ -103,11 +116,12 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
 
         // RDFauthor view configuration
         $viewMode = isset($this->_config->rdfauthor->viewmode)
-                  ? $this->_config->rdfauthor->viewmode
-                  : 'inline';
+            ? $this->_config->rdfauthor->viewmode
+            : 'inline';
 
         // inject JSON variables into view
-        $this->view->jsonVars = '
+        $this->view->jsonVars
+            = '
             var urlBase = "' . $this->_config->urlBase . '";
             var themeUrlBase = "' . $this->_config->themeUrlBase . '";
             var _OWSESSION = "' . _OWSESSION . '";
@@ -119,17 +133,19 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         }
 
         if ($this->_owApp->selectedModel) {
-            $this->view->jsonVars .= '
+            $this->view->jsonVars
+                .= '
             var selectedGraph = {
                 URI: "' . (string)$this->_owApp->selectedModel . '",
-                title: "' . (string)$this->_owApp->selectedModel->getTitle() . '",
+                title: ' . json_encode((string)$this->_owApp->selectedModel->getTitle()) . ',
                 editable: ' . ($this->_owApp->selectedModel->isEditable() ? 'true' : 'false') . '
             };
             var RDFAUTHOR_DEFAULT_GRAPH = "' . (string)$this->_owApp->selectedModel . '";' . PHP_EOL;
         }
 
         if ($this->_owApp->selectedResource) {
-            $this->view->jsonVars .= '
+            $this->view->jsonVars
+                .= '
             var selectedResource = {
                 URI: "' . (string)$this->_owApp->selectedResource . '",
                 title: ' . json_encode((string)$this->_owApp->selectedResource->getTitle()) . ',
@@ -159,9 +175,9 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
          * Triggered after a controller from class OntoWiki_Controller_Base (or derived)
          * has been initialized.
          */
-        $event = new Erfurt_Event('onAfterInitController');
+        $event           = new Erfurt_Event('onAfterInitController');
         $event->response = $this->_response;
-        $eventResult = $event->trigger();
+        $eventResult     = $event->trigger();
     }
 
     /**
@@ -200,10 +216,13 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         // catch redirect
         if ($this->_request->has('redirect-uri')) {
             $redirectUri = urldecode($this->_request->getParam('redirect-uri'));
-            $front = Zend_Controller_Front::getInstance();
-            $options = array(
-                'prependBase' => (false === strpos($redirectUri, $front->getBaseUrl()))
-            );
+            $front       = Zend_Controller_Front::getInstance();
+            if ('' !== $front->getBaseUrl()) {
+                $prependBase = (false === strpos($redirectUri, $front->getBaseUrl()));
+            } else {
+                $prependBase = true;
+            }
+            $options     = array('prependBase' => $prependBase);
 
             $this->_redirect($redirectUri, $options);
         }
@@ -218,8 +237,9 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
      * using the local namespace table. It also strips slashes if
      * magic_quotes_gpc is turned on in PHP.
      *
-     * @param string $name the name of the parameter
+     * @param string  $name            the name of the parameter
      * @param boolean $expandNamespace Whether to expand the namespace or not
+     *
      * @deprecated 0.9.5, use OntoWiki_Request::getParam() instead
      *
      * @return mixed the parameter or null if not found
@@ -265,6 +285,60 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
 
         return $view;
     }
-}
 
+    /**
+     * tests if there is a selected model and appends an error message
+     * (optional) to the message queue
+     *
+     * @param boolean $appendMessage append a error message or not (default: true)
+     * @since 0.9.9
+     * @return boolean
+     */
+    public function isModelSelected($appendMessage = true)
+    {
+        if ($this->_owApp->selectedModel === null) {
+            if ($appendMessage) {
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message(
+                        $this->view->_('No model selected.'),
+                        OntoWiki_Message::ERROR
+                    )
+                );
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * tests if there is an editable selected model and appends an error message
+     * (optional) to the message queue
+     *
+     * @param boolean $appendMessage append a error message or not (default: true)
+     * @since 0.9.9
+     * @return boolean
+     */
+    public function isSelectedModelEditable($appendMessage = true)
+    {
+        if (!$this->isModelSelected($appendMessage)) {
+            return false;
+        } else {
+            if (!$this->_owApp->selectedModel->isEditable()) {
+                if ($appendMessage) {
+                    $this->_owApp->appendMessage(
+                        new OntoWiki_Message(
+                            $this->view->_('No write permissions on this model.'),
+                            OntoWiki_Message::ERROR
+                        )
+                    );
+                }
+                return false;
+            } else {
+                return true;
+            };
+        }
+    }
+
+}
 

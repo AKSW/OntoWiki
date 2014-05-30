@@ -1,5 +1,12 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * Generic_Sniffs_Functions_FunctionCallArgumentSpacingSniff.
  *
  * PHP version 5
@@ -30,8 +37,9 @@
 
 /**
  * Little changes for Ontowiki requirements:
- * After commas in function calls must at least one space but it can also be more to be able to align the code.
- * 
+ * After commas in function calls must at least one space but it can also be
+ * more to be able to align the code.
+ *
  * @author    Lars Eidam <larseidam@googlemail.com>
  */
 class Ontowiki_Sniffs_Functions_FunctionCallArgumentSpacingSniff implements PHP_CodeSniffer_Sniff
@@ -47,7 +55,9 @@ class Ontowiki_Sniffs_Functions_FunctionCallArgumentSpacingSniff implements PHP_
     {
         return array(T_STRING);
 
-    }//end register()
+    }
+
+    //end register()
 
 
     /**
@@ -72,13 +82,20 @@ class Ontowiki_Sniffs_Functions_FunctionCallArgumentSpacingSniff implements PHP_
         $ignoreTokens    = PHP_CodeSniffer_Tokens::$emptyTokens;
         $ignoreTokens[]  = T_BITWISE_AND;
         $functionKeyword = $phpcsFile->findPrevious($ignoreTokens, ($stackPtr - 1), null, true);
-        if ($tokens[$functionKeyword]['code'] === T_FUNCTION || $tokens[$functionKeyword]['code'] === T_CLASS) {
+        if ($tokens[$functionKeyword]['code'] === T_FUNCTION
+            || $tokens[$functionKeyword]['code'] === T_CLASS
+        ) {
             return;
         }
 
         // If the next non-whitespace token after the function or method call
         // is not an opening parenthesis then it cant really be a *call*.
-        $openBracket = $phpcsFile->findNext(PHP_CodeSniffer_Tokens::$emptyTokens, ($functionName + 1), null, true);
+        $openBracket = $phpcsFile->findNext(
+            PHP_CodeSniffer_Tokens::$emptyTokens,
+            ($functionName + 1),
+            null,
+            true
+        );
         if ($tokens[$openBracket]['code'] !== T_OPEN_PARENTHESIS) {
             return;
         }
@@ -109,22 +126,33 @@ class Ontowiki_Sniffs_Functions_FunctionCallArgumentSpacingSniff implements PHP_
                     $error = 'No space found after comma in function call';
                     $phpcsFile->addError($error, $stackPtr, 'NoSpaceAfterComma');
                 }
-                // this code is outcommented to be able to align the code in function calls (Ontowiki requirement)
+                // this code is outcommented to be able to align the code in
+                // function calls (Ontowiki requirement)
                 /**
                 else {
-                    // If there is a newline in the space, then the must be formatting
-                    // each argument on a newline, which is valid, so ignore it.
-                    
-                        if (strpos($tokens[($nextSeperator + 1)]['content'], $phpcsFile->eolChar) === false) {
-                        $space = strlen($tokens[($nextSeperator + 1)]['content']);
-                        if ($space > 1) {
-                            $error = 'Expected 1 space after comma in function call; %s found';
-                            $data  = array($space);
-                            $phpcsFile->addError($error, $stackPtr, 'TooMuchSpaceAfterComma', $data);
-                        }
-                    }
+                // If there is a newline in the space, then the must be formatting
+                // each argument on a newline, which is valid, so ignore it.
+
+                if (
+                strpos(
+                $tokens[($nextSeperator + 1)]['content'],
+                $phpcsFile->eolChar
+                ) === false
+                ) {
+                $space = strlen($tokens[($nextSeperator + 1)]['content']);
+                if ($space > 1) {
+                $error = 'Expected 1 space after comma in function call; %s found';
+                $data  = array($space);
+                $phpcsFile->addError(
+                $error,
+                $stackPtr,
+                'TooMuchSpaceAfterComma',
+                $data
+                );
                 }
-                **/
+                }
+                }
+                 **/
             } else {
                 // Token is a variable.
                 $nextToken = $phpcsFile->findNext(
@@ -145,12 +173,17 @@ class Ontowiki_Sniffs_Functions_FunctionCallArgumentSpacingSniff implements PHP_
                         }
                     }
                 }
-            }//end if
-        }//end while
+            }
+            //end if
+        }
+        //end while
 
-    }//end process()
+    }
+    //end process()
 
 
-}//end class
+}
+
+//end class
 
 ?>

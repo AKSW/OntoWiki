@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -30,13 +30,38 @@ function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
 }
 set_error_handler('errorHandler');
 
+/*
+ * method to get evironment variables which are prefixed with "REDIRECT_"
+ * in some configurations Apache prefixes the environment variables on each rewrite walkthrough
+ * e.g. under centos
+ */
+function getEnvVar ($key)
+{
+    $prefix = "REDIRECT_";
+    if (isset($_SERVER[$key])) {
+        return $_SERVER[$key];
+    }
+    foreach ($_SERVER as $k => $v) {
+        if (substr($k, 0, strlen($prefix)) == $prefix) {
+            if (substr($k, -(strlen($key))) == $key) {
+                return $v;
+            }
+        }
+    }
+    return null;
+}
+
 /**
- * Boostrap constants
+ * Bootstrap constants
  * @since 0.9.5
  */
+if (!defined('__DIR__')) {
+    define('__DIR__', dirname(__FILE__));
+} // fix for PHP < 5.3.0
 define('BOOTSTRAP_FILE', basename(__FILE__));
-define('ONTOWIKI_ROOT', rtrim(dirname(__FILE__), '/\\') . '/');
-define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application/');
+define('ONTOWIKI_ROOT', rtrim(__DIR__, '/\\') . DIRECTORY_SEPARATOR);
+define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application'.DIRECTORY_SEPARATOR);
+define('CACHE_PATH', ONTOWIKI_ROOT . 'cache'.DIRECTORY_SEPARATOR);
 
 /**
  * Old constants for < 0.9.5 backward compatibility
@@ -50,27 +75,37 @@ define('OW_SHOW_MAX', 5);
 // PHP environment settings
 ini_set('max_execution_time', 240);
 
-if ((int) substr(ini_get('memory_limit'), 0, -1) < 256) {
+if ((int)substr(ini_get('memory_limit'), 0, -1) < 256) {
     ini_set('memory_limit', '256M');
 }
 
-// add libraries to include path
-$includePath = get_include_path() . PATH_SEPARATOR;
-$includePath .= ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
-$includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
+/*
+ * include path preparation
+ */
+// init with local path in order to prefer these over system paths
+$includePath = ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
+// append local Erfurt include path
+if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/Erfurt/App.php')) {
+    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
+} else if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/library/Erfurt/App.php')) {
+    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/library' . PATH_SEPARATOR;
+}
+// append system include paths
+$includePath .= get_include_path() . PATH_SEPARATOR;
+// set the include path
 set_include_path($includePath);
 
 // use default timezone from php.ini or let PHP guess it
 date_default_timezone_set(@date_default_timezone_get());
-
 
 // determine wheter rewrite engine works
 // and redirect to a URL that doesn't need rewriting
 // TODO: check for AllowOverride All
 $rewriteEngineOn = false;
 
-if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
+if (getEnvVar('ONTOWIKI_APACHE_MOD_REWRITE_ENABLED')) {
     // used in .htaccess or in debian package config
+    // in some configurations Apache prefixes the env var with 'REDIRECT_'
     $rewriteEngineOn = true;
 } else if (function_exists('__virt_internal_dsn')) {
     // compatible with Virtuoso VAD
@@ -85,7 +120,7 @@ if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
         $rewriteEngineOn = preg_match('/.*[^#][\t ]+RewriteEngine[\t ]+On/i', $htaccess);
 
         // explicitly request /index.php for non-rewritten requests
-        if (!$rewriteEngineOn and ! strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
+        if (!$rewriteEngineOn && ! strpos($_SERVER['REQUEST_URI'], BOOTSTRAP_FILE)) {
             header('Location: ' . rtrim($_SERVER['REQUEST_URI'], '/\\') . '/' . BOOTSTRAP_FILE, true, 302);
             return;
         }
@@ -94,22 +129,12 @@ if (isset($_SERVER['ONTOWIKI_APACHE_MOD_REWRITE_ENABLED'])) {
 
 define('ONTOWIKI_REWRITE', $rewriteEngineOn);
 
-
-/**
- * Ensure compatibility for PHP <= 5.3
- */
-if (!function_exists('class_alias')) {
-    function class_alias($original, $alias)
-    {
-        eval('abstract class ' . $alias . ' extends ' . $original . ' {}');
-    }
-}
-
 /** check/include Zend_Application */
 try {
     // use include, so we can catch it with the error handler
-    include 'Zend/Application.php';
+    require_once 'Zend/Application.php';
 } catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
     echo 'Fatal Error: Could not load Zend library.<br />' . PHP_EOL
          . 'Maybe you need to install it with apt-get or with "make zend"?';
     return;
@@ -124,31 +149,37 @@ $application = new Zend_Application(
 /** check/include OntoWiki */
 try {
     // use include, so we can catch it with the error handler
-    include 'OntoWiki.php';
+    require_once 'OntoWiki.php';
 } catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
     echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.<br />' . PHP_EOL
          . 'Your installation directory seems to be screwed.';
     return;
 }
 
-/** check/include Erfurt_App */
+/* check/include Erfurt_App */
 try {
     // use include, so we can catch it with the error handler
-    include 'Erfurt/App.php';
+    require_once 'Erfurt/App.php';
 } catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
     echo 'Fatal Error: Could not load the Erfurt Framework classes.<br />' . PHP_EOL
-    . 'Maybe you should install it with apt-get or with "make erfurt"?';
+    . 'Maybe you should install it with apt-get or with "make deploy"?';
     return;
 }
 
 // restore old error handler
 restore_error_handler();
 
-// define alias for backward compatiblity
-class_alias('OntoWiki', 'OntoWiki_Application');
-
 // bootstrap
-$application->bootstrap();
+try {
+    $application->bootstrap();
+} catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
+    echo 'Error on bootstrapping application: ';
+    echo $e->getMessage();
+    return;
+}
 
 $event = new Erfurt_Event('onPostBootstrap');
 $event->bootstrap = $application->getBootstrap();

@@ -1,4 +1,11 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
 define('SCRIPT_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
 if (!defined('APPLICATION_PATH')) {
@@ -85,7 +92,7 @@ function _importData()
                 $output = shell_exec($cmd);
                 if (null !== $output) {
                     echo 'Error while converting source file to TTL.';
-                    exit;
+                    return;
                 }
                 $fullPath = $newPath;
                 break;
@@ -210,7 +217,7 @@ function _importFile($file, $graph)
     $command = "isql 1111 dba dba \"EXEC=TTLP(file_to_string_output('$file'), '', '$graph', 255)\" 2>&1 1> /dev/null";
     $output = shell_exec($command);
     if (null !== $output) {
-        var_dump($output);exit;
+        var_dump($output);return;
         return false;
     }
     

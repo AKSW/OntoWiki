@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=OntoWiki
+Comment=A Semantic Data Wiki
+Exec=gnome-www-browser http://localhost/ontowiki
+Terminal=false
+Type=Application
+Icon=/usr/share/ontowiki/application/favicon.png
+Categories=Utility;Application
+StartupNotify=false

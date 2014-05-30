@@ -1,0 +1,45 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/pingback/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :pingback .
+:pingback a doap:Project ;
+  doap:name "pingback" ;
+  owconfig:privateNamespace <https://github.com/AKSW/pingback/raw/master/doap.n3#> ;
+  owconfig:templates "templates" ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  rdfs:label "Pingback Server" ;
+  doap:description "provides a Semantic Pingback Server and pingback enables all linked data resources" ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:pluginEvent event:onBeforeLinkedDataRedirect ;
+  owconfig:pluginEvent event:onAfterInitController ;
+  owconfig:pluginEvent event:onAddStatement ;
+  owconfig:pluginEvent event:onAddMultipleStatements ;
+  owconfig:pluginEvent event:onDeleteMultipleStatements ;
+  owconfig:pluginEvent event:beforeExportResource ;
+  :genericRelation <http://rdfs.org/sioc/ns#links_to> ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "rdfa";
+      owconfig:enabled "true"^^xsd:boolean ;
+      :service <http://www.w3.org/2007/08/pyRdfa/extract?format=pretty-xml&warnings=false&parser=lax&space-preserve=true&uri=>
+];
+ :titleroperties <http://purl.org/dc/elements/1.1/title> ;
+  :titleProperties <http://purl.org/dc/terms/title> ;
+  :titleProperties <http://xmlns.com/foaf/0.1/name> ;
+  :titleProperties <http://usefulinc.com/ns/doap#name> ;
+  :titleProperties <http://rdfs.org/sioc/ns#name> ;
+  :titleProperties <http://www.w3.org/2000/01/rdf-schema#label> ;
+  :titleProperties <http://xmlns.com/foaf/0.1/nick> ;
+  :titleProperties <http://xmlns.com/foaf/0.1/surname> ;
+  :pingProperties <http://xmlns.com/foaf/0.1/knows> ;
+  :pingOnDelete "false"^^xsd:boolean .
+:pingback doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

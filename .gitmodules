@@ -1,12 +1,12 @@
 [submodule "libraries/RDFauthor"]
 	path = libraries/RDFauthor
-	url = git@github.com:AKSW/RDFauthor.git
+	url = git://github.com/AKSW/RDFauthor.git
 [submodule "libraries/Erfurt"]
 	path = libraries/Erfurt
-	url = git@github.com:AKSW/Erfurt.git
+	url = git://github.com/AKSW/Erfurt.git
 [submodule "extensions/site"]
 	path = extensions/site
-	url = git@github.com:AKSW/site.ontowiki.git
+	url = git://github.com/AKSW/site.ontowiki.git
 [submodule "extensions/feeds"]
 	path = extensions/feeds
-	url = git@github.com:AKSW/feeds.ontowiki.git
+	url = git://github.com/AKSW/feeds.ontowiki.git

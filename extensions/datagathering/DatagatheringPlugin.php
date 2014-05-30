@@ -2,18 +2,16 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * The main class for the datagathering plugin.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_plugins
- * @copyright  Copyright (c) 2011 {@link http://aksw.org aksw}
+ * @package    Extensions_Datagathering
+ * @copyright  Copyright (c) 2012 {@link http://aksw.org aksw}
  * @license    http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
@@ -59,7 +57,9 @@ class DatagatheringPlugin extends OntoWiki_Plugin
     public function init()
     {
         parent::init();
-        //$this->_properties   = $this->_privateConfig->properties->toArray();
+        if ($this->_privateConfig->sync->enabled && isset($this->_privateConfig->properties)) {
+            $this->_properties = $this->_privateConfig->properties->toArray();
+        }
         $this->_syncModelUri = $this->_privateConfig->syncModelUri;
 
         // Translation hack in order to enable the plugin to translate...
@@ -94,15 +94,17 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
         // We only add entries to the menu, if all params are given and the
         // model is editable.
-        if ((null === $resource) || (null === $model) || !$model->isEditable()
-                || !$owApp->erfurt->getAc()->isModelAllowed('edit', $owApp->selectedModel)) {
+        if (
+            (null === $resource) || (null === $model) || !$model->isEditable()
+            || !$owApp->erfurt->getAc()->isModelAllowed('edit', $owApp->selectedModel)
+        ) {
             return;
         }
 
         $owApp     = OntoWiki::getInstance();
         $translate = $owApp->translate;
 
-        $wrapperRegistry   = Erfurt_App::getInstance()->getWrapperRegistry();
+        $wrapperRegistry   = Erfurt_Wrapper_Registry::getInstance();
         $activeWrapperList = $wrapperRegistry->listActiveWrapper();
 
         if ((boolean)$this->_privateConfig->sync->enabled) {
@@ -150,8 +152,8 @@ class DatagatheringPlugin extends OntoWiki_Plugin
                 $menu->appendEntry(
                     sprintf($message, $wrapperInstance->getName()),
                     array(
-                        'about' => $uri,
-                        'class' => 'sync_data_button wrapper_' . $wrapperName
+                         'about' => $uri,
+                         'class' => 'sync_data_button wrapper_' . $wrapperName
                     )
                 );
             } else {
@@ -160,8 +162,8 @@ class DatagatheringPlugin extends OntoWiki_Plugin
                 $menu->appendEntry(
                     sprintf($message, $wrapperInstance->getName()),
                     array(
-                        'about' => $uri,
-                        'class' => 'fetch_data_button wrapper_' . $wrapperName
+                         'about' => $uri,
+                         'class' => 'fetch_data_button wrapper_' . $wrapperName
                     )
                 );
             }
@@ -225,13 +227,14 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         }
 
         // Thre resource is configured for sync, so show a message box.
-        $message = '<span id="dg_check_update" >
+        $message
+            = '<span id="dg_check_update" >
                         <span id="dg_configured_text">' .
-                            $translate->_('This Resource is configured for Sync') . '.' .
-                        '</span>' .
-                        '<span id="dg_updated_text" style="display: none">' .
-                            $translate->_('This Resource has changed since last sync') . '.' .
-                        '</span>
+            $translate->_('This Resource is configured for Sync') . '.' .
+            '</span>' .
+            '<span id="dg_updated_text" style="display: none">' .
+            $translate->_('This Resource has changed since last sync') . '.' .
+            '</span>
                         <br />';
 
         $message .= '<span style="font-size:0.8em; font-weight: bold">';
@@ -241,12 +244,12 @@ class DatagatheringPlugin extends OntoWiki_Plugin
         }
 
         $message .= '<span id="dg_lastmod_text" style="display: none">' .
-                        $translate->_('Last Modified') . ': ' .
-                        '<span id="dg_lastmod_date">
+            $translate->_('Last Modified') . ': ' .
+            '<span id="dg_lastmod_date">
                         </span>
                     </span>';
         $message .= '</span>';
-        $message .= '<a id="dg_sync_button" class="minibutton"'.
+        $message .= '<a id="dg_sync_button" class="minibutton"' .
             ' style="display: none; float: right; min-height: 20px; padding-top: 8px">';
         $message .= $translate->_('Sync') . '</a>';
         $message .= '</span>';
@@ -269,13 +272,14 @@ class DatagatheringPlugin extends OntoWiki_Plugin
     public function onPreTabsContentAction($event)
     {
         $translate = OntoWiki::getInstance()->translate;
-        $uri = $event->uri;
+        $uri       = $event->uri;
 
-        $html = '<div style="display: none; padding: 10px 20px 10px 30px" id="location_bar_container" class="cmDiv">
+        $html
+            = '<div style="display: none; padding: 10px 20px 10px 30px" id="location_bar_container" class="cmDiv">
                     <input id="location_bar_input" class="text width75" type="text" value="' . $uri . '" name="l" />
                     <a id="location_open" class="minibutton" style="float: none">' .
-                        $translate->_('View Resource') .
-                    '</a>
+            $translate->_('View Resource') .
+            '</a>
                  </div>';
 
         return $html;
@@ -291,27 +295,35 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onDeleteResources($event)
     {
-        $modelUri = $event->modelUri;
-        $uriArray = $event->resourceArray;
+        if ($this->_privateConfig->sync->enabled) {
+            $modelUri = $event->modelUri;
+            $uriArray = $event->resourceArray;
 
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
-        $query = new Erfurt_Sparql_SimpleQuery();
-        $query->setProloguePart('SELECT ?s ?o');
-        $query->addFrom($this->_syncModelUri);
-        $query->setWherePart(
-            'WHERE {
-            ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
-            ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
-            ?s <' . $this->_properties['syncResource'] . '> ?o .
-            }'
-        );
+            require_once 'Erfurt/Sparql/SimpleQuery.php';
+            $query = new Erfurt_Sparql_SimpleQuery();
+            $query->setProloguePart('SELECT ?s ?o');
+            $query->addFrom($this->_syncModelUri);
+            $query->setWherePart(
+                'WHERE {
+                ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
+                ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
+                ?s <' . $this->_properties['syncResource'] . '> ?o .
+                }'
+            );
 
-        $store = Erfurt_App::getInstance()->getStore();
-        $result = $store->sparqlQuery($query, array('use_ac' => false));
+            $store  = Erfurt_App::getInstance()->getStore();
+            $result = $store->sparqlQuery($query, array('use_ac' => false));
 
-        foreach ($result as $row) {
-            if (in_array($row['o'], $uriArray)) {
-                $store->deleteMatchingStatements($this->_syncModelUri, $row['s'], null, null, array('use_ac' => false));
+            foreach ($result as $row) {
+                if (in_array($row['o'], $uriArray)) {
+                    $store->deleteMatchingStatements(
+                        $this->_syncModelUri,
+                        $row['s'],
+                        null,
+                        null,
+                        array('use_ac' => false)
+                    );
+                }
             }
         }
 
@@ -328,24 +340,26 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onPreDeleteModel($event)
     {
-        $modelUri = $event->modelUri;
+        if ($this->_privateConfig->sync->enabled) {
+            $modelUri = $event->modelUri;
 
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
-        $query = new Erfurt_Sparql_SimpleQuery();
-        $query->setProloguePart('SELECT ?s');
-        $query->addFrom($this->_syncModelUri);
-        $query->setWherePart(
-            'WHERE {
-            ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
-            ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
-            }'
-        );
+            require_once 'Erfurt/Sparql/SimpleQuery.php';
+            $query = new Erfurt_Sparql_SimpleQuery();
+            $query->setProloguePart('SELECT ?s');
+            $query->addFrom($this->_syncModelUri);
+            $query->setWherePart(
+                'WHERE {
+                    ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
+                    ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
+                }'
+            );
 
-        $store = Erfurt_App::getInstance()->getStore();
-        $result = $store->sparqlQuery($query, array('use_ac' => false));
+            $store  = Erfurt_App::getInstance()->getStore();
+            $result = $store->sparqlQuery($query, array('use_ac' => false));
 
-        foreach ($result as $row) {
-            $store->deleteMatchingStatements($this->_syncModelUri, $row['s'], null, null, array('use_ac' => false));
+            foreach ($result as $row) {
+                $store->deleteMatchingStatements($this->_syncModelUri, $row['s'], null, null, array('use_ac' => false));
+            }
         }
 
         return true;
@@ -377,9 +391,9 @@ class DatagatheringPlugin extends OntoWiki_Plugin
     /**
      * Returns the sync config for the given parameters or false, if no such exists.
      *
-     * @param string $uri The resource uri.
+     * @param string $uri         The resource uri.
      * @param string $wrapperName The wrapper name.
-     * @param string $modelUri The model uri.
+     * @param string $modelUri    The model uri.
      *
      * @return array|bool
      */
@@ -392,11 +406,12 @@ class DatagatheringPlugin extends OntoWiki_Plugin
             $query = new Erfurt_Sparql_SimpleQuery();
             $query->setProloguePart('SELECT ?s ?p ?o');
             $query->addFrom($this->_syncModelUri);
-            $where = 'WHERE {
+            $where
+                = 'WHERE {
                 ?s ?p ?o .
                 ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
                 ?s <' . $this->_properties['syncResource'] . '> <' . $uri . '> .
-                ?s <' . $this->_properties['targetModel'] .'> <' . $modelUri . '> .
+                ?s <' . $this->_properties['targetModel'] . '> <' . $modelUri . '> .
                 ?s <' . $this->_properties['wrapperName'] . '> "' . $wrapperName . '" .
             }';
             $query->setWherePart($where);
@@ -461,7 +476,8 @@ class DatagatheringPlugin extends OntoWiki_Plugin
             $query = new Erfurt_Sparql_SimpleQuery();
             $query->setProloguePart('SELECT ?s ?p ?o');
             $query->addFrom($this->_syncModelUri);
-            $where = 'WHERE {
+            $where
+                = 'WHERE {
                 ?s ?p ?o .
                 ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> . }';
             $query->setWherePart($where);
@@ -505,8 +521,8 @@ class DatagatheringPlugin extends OntoWiki_Plugin
             }
 
             $cacheVal = array();
-            foreach ($retVal as $s=>$valueArray) {
-                $hash = $this->_getHash(
+            foreach ($retVal as $s => $valueArray) {
+                $hash            = $this->_getHash(
                     $valueArray['syncResource'],
                     $valueArray['wrapperName'],
                     $valueArray['targetModel']

@@ -1,0 +1,36 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/savedqueries/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :savedqueries .
+:savedqueries a doap:Project ;
+  doap:name "savedqueries" ;
+  owconfig:privateNamespace <https://github.com/AKSW/savedqueries/raw/master/doap.n3#> ;
+  owconfig:enabled "false"^^xsd:boolean ;
+  owconfig:defaultAction "init" ;
+  rdfs:label "Saved Queries" ;
+  owconfig:templates "templates" ;
+  owconfig:languages "languages/" ;
+  doap:description "display saved queries in a module, and execute them" ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:class "has-contextmenus-block" ;
+  owconfig:hasModule :Default .
+:Default a owconfig:Module ;
+  rdfs:label "Default" ;
+  owconfig:priority "30" ;
+  owconfig:context "main.sidewindows" .
+:savedqueries :title "saved Queries" ;
+  :queryClass <http://ns.ontowiki.net/SysOnt/SparqlQuery> ;
+  :queryLabel <http://purl.org/dc/elements/1.1/title> ;
+  :queryId <http://rdfs.org/sioc/ns#id> ;
+  :queryDesc <http://purl.org/dc/elements/1.1/description> ;
+  :queryCode <http://ns.ontowiki.net/SysOnt/sparql_code> ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

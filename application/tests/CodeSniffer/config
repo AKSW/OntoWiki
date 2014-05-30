@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # #### config ####
-# if severity classes were chanced aou must run 'cs-install' again
+# if severity classes were chanced you must run 'cs-install' again
 # standard severity class they must be fulfilled to be able to commit
 SEVERITY=5
 # intensive severity class they must not be fulfilled to be able to commit,

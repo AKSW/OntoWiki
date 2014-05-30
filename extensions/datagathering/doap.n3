@@ -1,0 +1,88 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/datagathering/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :datagathering .
+:datagathering a doap:Project ;
+  doap:name "datagathering" ;
+  owconfig:privateNamespace <https://github.com/AKSW/datagathering/raw/master/doap.n3#> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  rdfs:label "Linked Data Gathering" ;
+  doap:description "a component and a wrapper to import linked data and expand local models." ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:templates "templates/" ;
+  owconfig:languages "languages/" ;
+  owconfig:pluginEvent event:onCreateMenu ;
+  owconfig:pluginEvent event:onPropertiesAction ;
+  owconfig:pluginEvent event:onPreTabsContentAction ;
+  owconfig:pluginEvent event:onDeleteResources ;
+  owconfig:pluginEvent event:onPreDeleteModel ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "sync";
+      owconfig:enabled "false"^^xsd:boolean
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "fetch";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "default";
+          :mode "all"
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "preset";
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "0";
+              :match <http://dbpedia.org> ;
+              :mode "none" ;
+              :lang "en" ;
+              :exception <http://www.w3.org/2000/01/rdf-schema#label> ;
+              :exception <http://xmlns.com/foaf/0.1/depiction> ;
+              :exception <http://xmlns.com/foaf/0.1/name> ;
+              :exception <http://xmlns.com/foaf/0.1/page> ;
+              :exception <http://xmlns.com/foaf/0.1/homepage> ;
+              :exception <http://dbpedia.org/ontology/birthDate> ;
+              :exception <http://dbpedia.org/ontology/birthPlace> ;
+              :exception <http://dbpedia.org/ontology/abstract> ;
+              :exception <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ;
+              :exception <http://www.w3.org/2003/01/geo/wgs84_pos#long>
+        ]
+    ]
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "rewrite";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "lsid";
+          :pattern "/^(urn:lsid:.+)$/" ;
+          :replacement <http://lsid.tdwg.org/$1>
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "go";
+          :pattern "/^http:\\/\\/www.geneontology.org\\/go#GO:([0-9]+)$/" ;
+          :replacement <http://go.ontowiki.de/$1>
+    ]
+];
+ owconfig:config [
+      a owconfig:Config;
+      owconfig:id "handle";
+      :mode "all"
+];
+ :ignore <http://www.w3.org/1999/xhtml/vocab#stylesheet> ;
+  :ignore <http://www.w3.org/1999/xhtml/vocab#alternate> ;
+  :ignore <http://poshrdf.org/ns/mf#nofollow> ;
+  :defaultClass <http://xmlns.com/foaf/0.1/Document> .
+:datagathering doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

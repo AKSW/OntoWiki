@@ -5,9 +5,11 @@
 
 # OntoWiki muck
 *.log
+application/tests/cache
 /cache
 /uploads
 /libraries/Zend
+/logs
 
 # aksw specific mud
 /BlogPost
@@ -22,4 +24,16 @@
 nbproject
 *~
 *.swp
+cache.properties
 
+# test stuff
+application/tests/config.ini
+
+# build stuff
+build/
+!build/phpcs.xml
+!build/phpcmd.xml
+
+# vagrant stuff
+Vagrantfile
+.vagrant

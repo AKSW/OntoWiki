@@ -1,0 +1,30 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/auth/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :auth .
+:auth a doap:Project ;
+  doap:name "auth" ;
+  owconfig:privateNamespace <https://github.com/AKSW/auth/raw/master/doap.n3#> ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  owconfig:templates "templates/" ;
+  owconfig:languages "languages/" ;
+  rdfs:label "Authentification" ;
+  doap:description "provides WebID and FOAF+SSL authentification." ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:config [
+      a owconfig:Config;
+      owconfig:id "auth";
+      :agentId <https://localhost/ow_da/auth/agent> ;
+      :exponent "65537" ;
+      :modulus "cd98a73faf90a4013ef0477b679fe4415b8c4504823e7586a961dab8a35596fcb1803a4b4966f2515320bada80bbc61342f97405b41fdac4140ddbb12fa360befb71482a6cf886991bda3039ef7ce7fa73c9ecc7796cd3f30ce9726dce1977b426c616b6fae11af480cddf051d8631814006508a377e14fb3c8360cb615989a7"
+] ;
+  doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .

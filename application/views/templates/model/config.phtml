@@ -8,6 +8,17 @@
  */
 
 ?>
+
+<?php
+
+if (!isset($this->modeluri)) {
+    // this is the case e.g. when the model is not writable
+    return;
+}
+
+?>
+
+
 <fieldset>
     <legend><?php echo $this->_('Model Properties') ?></legend>
     <input type="hidden" name="m" value="<?php echo $this->modeluri ?>" />

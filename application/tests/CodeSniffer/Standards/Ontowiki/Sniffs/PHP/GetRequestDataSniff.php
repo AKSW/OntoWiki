@@ -1,7 +1,14 @@
 <?php
 /**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
  * Ontowiki_Sniffs_PHP_GetRequestDataSniff.
- * 
+ *
  * Ensures that no super globals are used.
  *
  * PHP version 5
@@ -34,7 +41,9 @@ class Ontowiki_Sniffs_PHP_GetRequestDataSniff implements PHP_CodeSniffer_Sniff
     {
         return array(T_VARIABLE);
 
-    }//end register()
+    }
+
+    //end register()
 
 
     /**
@@ -61,14 +70,17 @@ class Ontowiki_Sniffs_PHP_GetRequestDataSniff implements PHP_CodeSniffer_Sniff
 
         $type  = 'SuperglobalAccessed';
         $error = 'The %s super global must not be accessed directly;' .
-                 'use Zend_Controller_Front::getInstance()->getRequest() instead';
+            'use Zend_Controller_Front::getInstance()->getRequest() instead';
         $data  = array($varName);
 
         $phpcsFile->addError($error, $stackPtr, $type, $data);
 
-    }//end process()
+    }
+    //end process()
 
 
-}//end class
+}
+
+//end class
 
 ?>

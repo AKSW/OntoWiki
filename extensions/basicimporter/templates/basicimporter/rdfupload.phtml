@@ -1,0 +1,28 @@
+<?php
+/**
+ * OntoWiki rdf upload import import template
+ */
+?>
+<fieldset class="activeForm" id="importdata">
+    <legend><?php echo $this->_('Upload a File') ?></legend>
+    <div>
+    <label for="filetype-upload-select"><?php echo $this->_('File Type') ?></label>
+    <select name="filetype-upload" id="filetype-upload-select">
+        <option value="auto"><?php echo $this->_('Autodetect') ?></option>
+        <?php foreach ($this->supportedFormats as $key => $name): ?>
+            <option value="<?php echo $key ?>"><?php echo $name ?></option>
+        <?php endforeach; ?>
+    </select>
+    <br class="clearall" />
+    </div>
+    <div>
+        <label for="file-input">
+            <?php echo sprintf(
+                $this->_('File (max. %1$sB)'),
+                preg_replace('/([kMG])/', ' $1', ini_get('upload_max_filesize'))
+            ) ?>
+        </label>
+        <input type="file" id="file-input" name="source" />
+        <br class="clearall" />
+    </div>
+</fieldset>

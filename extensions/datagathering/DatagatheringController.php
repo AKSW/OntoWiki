@@ -2,19 +2,16 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-
-require_once 'Erfurt/Wrapper/Registry.php';
-require_once 'OntoWiki/Controller/Component.php';
 
 /**
  * The main controller class for the datagathering component. This class
  * provides services for URI search, statement import and statement sync.
  *
  * @category   OntoWiki
- * @package    OntoWiki_extensions_datagathering
+ * @package    Extensions_Datagathering
  * @author     Philipp Frischmuth <pfrischmuth@googlemail.com>
  */
 class DatagatheringController extends OntoWiki_Controller_Component
@@ -50,14 +47,16 @@ class DatagatheringController extends OntoWiki_Controller_Component
     /**
      * IMPORT STATUS CODES
      */
-    CONST IMPORT_OK = 10;
-    CONST IMPORT_NO_DATA = 20;
-    CONST IMPORT_WRAPPER_ERR = 30;
-    CONST IMPORT_WRAPPER_INSTANCIATION_ERR = 40;
-    CONST IMPORT_NOT_EDITABLE = 50;
-    CONST IMPORT_WRAPPER_EXCEPTION = 60;
-    CONST IMPORT_WRAPPER_NOT_AVAILABLE = 70;
-    CONST IMPORT_CUSTOMFILTER_EXCEPTION = 80;
+    const IMPORT_OK                           = 10;
+    const IMPORT_NO_DATA                      = 20;
+    const IMPORT_NO_NEW_DATA                  = 21;
+    const IMPORT_WRAPPER_ERR                  = 30;
+    const IMPORT_WRAPPER_INSTANCIATION_ERR    = 40;
+    const IMPORT_NOT_EDITABLE                 = 50;
+    const IMPORT_WRAPPER_NOT_AVAILABLE        = 70;
+    const IMPORT_WRAPPER_RESULT_NOT_AVAILABLE = 71;
+    const IMPORT_CUSTOMFILTER_EXCEPTION       = 80;
+    const IMPORT_GENERAL_EXCEPTION            = 90;
 
     // ------------------------------------------------------------------------
     // --- Import and Sync related private properties -------------------------
@@ -109,7 +108,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      *
      * @var Erfurt_Wrapper_Registry
      */
-    private $_wrapperRegisty = null;
+    private $_wrapperRegistry = null;
 
 
     // ------------------------------------------------------------------------
@@ -120,11 +119,14 @@ class DatagatheringController extends OntoWiki_Controller_Component
     {
         parent::init();
 
-        $this->_syncModelUri = $this->_privateConfig->syncModelUri;
+        $this->_syncModelUri        = $this->_privateConfig->syncModelUri;
         $this->_syncModelHelperBase = $this->_privateConfig->syncModelHelperBase;
 
         //$this->_properties = $this->_privateConfig->properties->toArray();
 
+        // For testability we reset the wrapper registry first, since
+        // multiple calls of this method would fail otherwise.
+        Erfurt_Wrapper_Registry::reset();
         $this->_wrapperRegisty = Erfurt_Wrapper_Registry::getInstance();
 
         $owApp = OntoWiki::getInstance();
@@ -133,8 +135,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
         } else {
             if (isset($this->_request->m)) {
                 $this->_graphUri = $this->_request->m;
-            } else {
-                throw new Ontowiki_Exception("model must be selected or sprecified with the m parameter");
             }
         }
     }
@@ -174,6 +174,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
     public function searchAction()
     {
         // Use the selected graph if present. If not, search all available graphs.
+        if (null === $this->_graphUri) {
+            throw new OntoWiki_Exception("model must be selected or specified with the m parameter");
+        }
         $modelUri = $this->_graphUri;
 
         // Check for the mandatory q parameter.
@@ -181,7 +184,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (null === $q) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The q parameter is missing.';
-            exit;
+
+            return;
         }
         $termsArray = explode(' ', $q);
 
@@ -219,7 +223,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $limit = self::SEARCH_DEFAULT_LIMIT;
         }
 
-
         // Check whether given term is a URI! If a URI is given we return an empty result, for some users
         // may want to enter URIs themself.
         if (count($termsArray) === 1) {
@@ -228,11 +231,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                 if (preg_match($regExp, $t)) {
                     echo json_encode('');
-                    exit;
+
+                    return;
                 }
                 if (strlen($t) > 20) {
                     echo json_encode('');
-                    exit;
+
+                    return;
                 }
             }
         }
@@ -247,7 +252,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // Step 1b: Search the local database for URIs (NOT class restricted)
         $local = $this->_searchLocal($termsArray, $modelUri, $mode, $limit);
         if (count($local) > 0) {
-            # put new result values at the end of the result array
+            // put new result values at the end of the result array
             foreach ($local as $resultKey => $resultValue) {
                 if (!isset($result[$resultKey])) {
                     $result[$resultKey] = $resultValue;
@@ -260,15 +265,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $currentCount = count($result);
 
             require_once 'Erfurt/Event.php';
-            $event = new Erfurt_Event('onDatagatheringComponentSearch');
+            $event             = new Erfurt_Event('onDatagatheringComponentSearch');
             $event->translate  = $this->_owApp->translate;
             $event->termsArray = $termsArray;
             $event->modelUri   = $modelUri;
-            $event->classes   = $classes;
-            $pluginResult = $event->trigger();
+            $event->classes    = $classes;
+            $pluginResult      = $event->trigger();
 
             if (is_array($pluginResult)) {
-                foreach ($pluginResult as $uri=>$value) {
+                foreach ($pluginResult as $uri => $value) {
                     if (!isset($result[$uri])) {
                         $result[$uri] = $value;
                         $currentCount++;
@@ -286,7 +291,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                 $expanded = $this->_expandNamespaces($termsArray, $modelUri);
                 if (count($expanded) > 0) {
-                    foreach ($expanded as $uri=>$value) {
+                    foreach ($expanded as $uri => $value) {
                         if (!isset($result[$uri])) {
                             $result[$uri] = $value;
                             $currentCount++;
@@ -310,7 +315,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                         $suffix .= ucfirst($t);
                     }
 
-                    $prefix = $model->getBaseUri();
+                    $prefix   = $model->getBaseUri();
                     $lastChar = substr($prefix, -1);
                     if ($lastChar !== '/' && $lastChar !== '#') {
                         $prefix .= '/';
@@ -318,7 +323,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
                     $uri = $prefix . urlencode($suffix);
 
                     if (!isset($result[$uri])) {
-                        $translate = $this->_owApp->translate;
+                        $translate    = $this->_owApp->translate;
                         $result[$uri] = implode(' ', $termsArray) . '|' . $uri . '|' . $translate->_('Generated URI');
                     }
                 }
@@ -328,8 +333,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // 5. if the user input was an URI, give this URI as result back too
         if (Zend_Uri::check($termsArray[0]) == true) {
             $translate = $this->_owApp->translate;
-            $result = array(
-                $termsArray[0] => $termsArray[0] .'|'.$termsArray[0].'|'.$translate->_('your manual input')
+            $result    = array(
+                $termsArray[0] => $termsArray[0] . '|' . $termsArray[0] . '|' . $translate->_('your manual input')
             ) + $result;
         }
 
@@ -340,9 +345,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
             // build jsonp
             $body = $callback
-                  . ' ('
-                  . $body
-                  . ')';
+                . ' ('
+                . $body
+                . ')';
         }
 
         // send
@@ -350,15 +355,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // comment from seebi: why this issnt set to application/json? with
         //$response->setHeader('Content-Type', 'application/json');
         $response->setBody($body);
-        $response->sendResponse();
-
-        exit;
     }
 
     /**
      * Expands qnames if possible.
      *
-     * @param array $termsArray
+     * @param array  $termsArray
      * @param string $modelUri
      *
      * @return array
@@ -373,16 +375,16 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
 
         $erfurtNamespaces = Erfurt_App::getInstance()->getNamespaces();
-        $namespaces = $erfurtNamespaces->getNamespacePrefixes($modelUri);
+        $namespaces       = $erfurtNamespaces->getNamespacePrefixes($modelUri);
 
         $translate = $this->_owApp->translate;
         foreach ($termsArray as $t) {
             if ($pos = strpos($t, ':')) {
                 $prefix = substr($t, 0, $pos);
-                $local  = substr($t, $pos+1);
+                $local  = substr($t, $pos + 1);
 
                 if (isset($namespaces[$prefix])) {
-                    $uri = $namespaces[$prefix] . $local;
+                    $uri          = $namespaces[$prefix] . $local;
                     $result[$uri] = implode(' ', $termsArray) . '|' . $uri . '|' . $translate->_('Expanded QNames');
                 }
             }
@@ -395,8 +397,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
      * Returns a number between 0 and 1, which weights a result regardings its
      * value for the given search.
      *
-     * @param array $termsArray
-     * @param string $uri
+     * @param array       $termsArray
+     * @param string      $uri
      * @param string|null $object
      *
      * @return int
@@ -414,17 +416,17 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
 
         if ($i = strrpos($uri, '#')) {
-            $uriLocalPart = substr($uri, $i+1);
-        } else if ($i = strrpos($uri, '/')) {
-            $uriLocalPart = substr($uri, $i+1);
+            $uriLocalPart = substr($uri, $i + 1);
         } else {
-            // No local part found... ignore
+            if ($i = strrpos($uri, '/')) {
+                $uriLocalPart = substr($uri, $i + 1);
+            }
         }
 
         if (null !== $uriLocalPart) {
             foreach ($termsArray as $t) {
                 if (strpos($uriLocalPart, $t) !== false) {
-                    $weight += 0.4/count($termsArray);
+                    $weight += 0.4 / count($termsArray);
                 }
             }
         }
@@ -432,7 +434,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (null !== $object) {
             foreach ($termsArray as $t) {
                 if (strpos($object, $t) !== false) {
-                    $weight += 0.5/count($termsArray);
+                    $weight += 0.5 / count($termsArray);
                 }
             }
         }
@@ -452,12 +454,17 @@ class DatagatheringController extends OntoWiki_Controller_Component
     private function _listIanaSchemes()
     {
         return array('aaa', 'aaas', 'acap', 'cap', 'cid', 'crid', 'data', 'dav', 'dict', 'dns', 'fax', 'file', 'ftp',
-            'go', 'gopher', 'h323', 'http', 'https', 'iax', 'icap', 'im', 'imap', 'info', 'ipp', 'iris', 'iris.beep',
-            'iris.xpc', 'iris.xpcs', 'iris.lwz', 'ldap', 'mailto', 'mid', 'modem', 'msrp', 'msrps', 'mtqp', 'mupdate',
-            'news', 'nfs', 'nntp', 'opaquelocktoken', 'pop', 'pres', 'rtsp', 'service', 'shttp', 'sieve', 'sip', 'sips',
-            'snmp', 'soap.beep', 'soap.beeps', 'tag', 'tel', 'telnet', 'tftp', 'thismessage', 'tip', 'tv', 'urn',
-            'vemmi', 'xmlrpc.beep', 'xmlrpc.beeps', 'xmpp', 'z39.50r', 'z39.50s', 'afs', 'dtn', 'mailserver', 'pack',
-            'tn3270', 'prospero', 'snews', 'videotex', 'wais'
+                     'go', 'gopher', 'h323', 'http', 'https', 'iax', 'icap', 'im', 'imap', 'info', 'ipp', 'iris',
+                     'iris.beep',
+                     'iris.xpc', 'iris.xpcs', 'iris.lwz', 'ldap', 'mailto', 'mid', 'modem', 'msrp', 'msrps', 'mtqp',
+                     'mupdate',
+                     'news', 'nfs', 'nntp', 'opaquelocktoken', 'pop', 'pres', 'rtsp', 'service', 'shttp', 'sieve',
+                     'sip', 'sips',
+                     'snmp', 'soap.beep', 'soap.beeps', 'tag', 'tel', 'telnet', 'tftp', 'thismessage', 'tip', 'tv',
+                     'urn',
+                     'vemmi', 'xmlrpc.beep', 'xmlrpc.beeps', 'xmpp', 'z39.50r', 'z39.50s', 'afs', 'dtn', 'mailserver',
+                     'pack',
+                     'tn3270', 'prospero', 'snews', 'videotex', 'wais'
         );
     }
 
@@ -468,15 +475,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
      *
      * the classes array is used for class restrictions
      *
-     * @param array $termsArray
+     * @param array  $termsArray
      * @param string $modelUri
-     * @param int $mode
-     * @param int $limit
-     * @param array $classes
+     * @param int    $mode
+     * @param int    $limit
+     * @param array  $classes
      *
      * @return array
      */
-    private function _searchLocal(array $termsArray, $modelUri, $mode, $limit, $classes = array() )
+    private function _searchLocal(array $termsArray, $modelUri, $mode, $limit, $classes = array())
     {
         if ($mode === self::SEARCH_MODE_PROPERTIES) {
             return $this->_searchLocalPropertiesOnly($termsArray, $modelUri, $limit);
@@ -486,7 +493,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         // get a store specific text-search query2 object
         $searchPattern = $store->getSearchPattern(implode(" ", $termsArray), $modelUri);
-        $query = new Erfurt_Sparql_Query2();
+        $query         = new Erfurt_Sparql_Query2();
         $query->addElements($searchPattern);
         $projVar = new Erfurt_Sparql_Query2_Var('resourceUri');
         $query->addProjectionVar($projVar);
@@ -528,7 +535,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         require_once 'OntoWiki/Model/TitleHelper.php';
         require_once 'OntoWiki/Utils.php';
         if (null !== $modelUri) {
-            $model = $store->getModel($modelUri, false);
+            $model       = $store->getModel($modelUri, false);
             $titleHelper = new OntoWiki_Model_TitleHelper($model);
         } else {
             $titleHelper = new OntoWiki_Model_TitleHelper();
@@ -539,7 +546,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         // create different source description strings
         if (count($classes) > 0) {
-            $sourceString = $translate->_('Local Search') . ' ('.$translate->_('recommended').')';
+            $sourceString = $translate->_('Local Search') . ' (' . $translate->_('recommended') . ')';
         } else {
             $sourceString = $translate->_('Local Search');
         }
@@ -561,9 +568,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
     /**
      * Searches for properties in the local database.
      *
-     * @param array $termsArray
+     * @param array  $termsArray
      * @param string $modelUri
-     * @param int $limit
+     * @param int    $limit
      *
      * @return array
      */
@@ -597,7 +604,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
         $where .= implode(' && ', $oRegexFilter) . ')) } UNION {';
 
-        $where .= '?s ?uri ?o .
+        $where
+            .= '?s ?uri ?o .
                   FILTER (';
         $where .= implode(' && ', $uriRegexFilter) . ') } }';
 
@@ -605,7 +613,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $query->setOrderClause('?uri');
         $query->setLimit($limit);
 
-        $store = Erfurt_App::getInstance()->getStore();
+        $store       = Erfurt_App::getInstance()->getStore();
         $queryResult = $store->sparqlQuery($query, array('result_format' => 'extended'));
 
         $tempResult = array();
@@ -630,7 +638,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         require_once 'OntoWiki/Model/TitleHelper.php';
         require_once 'OntoWiki/Utils.php';
         if (null !== $modelUri) {
-            $model = $store->getModel($modelUri, false);
+            $model       = $store->getModel($modelUri, false);
             $titleHelper = new OntoWiki_Model_TitleHelper($model);
         } else {
             $titleHelper = new OntoWiki_Model_TitleHelper();
@@ -638,7 +646,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $titleHelper->addResources(array_keys($tempResult));
 
         $translate = $this->_owApp->translate;
-        $result = array();
+        $result    = array();
         foreach ($tempResult as $uri => $w) {
             $title = $titleHelper->getTitle($uri);
 
@@ -671,7 +679,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
 
@@ -683,14 +691,14 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         $result = false;
         try {
-            $result = $this->_wrapperRegisty->getWrapperInstance($wrapperName)->isAvailable($uri, $this->_graphUri);
+            $result = $this->_wrapperRegistry->getWrapperInstance($wrapperName)->isAvailable($uri, $this->_graphUri);
         } catch (Exception $e) {
             $result = false;
         }
 
         $this->_response->setHeader('Content-Type', 'application/json', true);
         echo json_encode($result);
-        exit;
+        return;
     }
     */
 
@@ -711,12 +719,14 @@ class DatagatheringController extends OntoWiki_Controller_Component
         // We require GET requests here.
         if (!$this->_request->isGet()) {
             $this->_response->setException(new OntoWiki_Http_Exception(400));
+
             return;
         }
 
         // uri param is required.
         if (!isset($this->_request->uri)) {
             $this->_response->setException(new OntoWiki_Http_Exception(400));
+
             return;
         }
         $uri = urldecode($this->_request->uri);
@@ -726,54 +736,97 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $wrapperName = $this->_request->wrapper;
         }
 
-        $res = self::import(
-            $this->_graphUri,
-            $uri,
-            $this->_getProxyUri($uri),
-            isset(
-                $this->_privateConfig->fetch->allData
-            ) && (
-                (boolean) $this->_privateConfig->fetch->allData === true
-            ),
-            !isset(
-                $this->_privateConfig->fetch->preset
-            ) ? array() : $this->_privateConfig->fetch->preset->toArray(),
-            !isset(
-                $this->_privateConfig->fetch->default->exception
-            ) ? array() : $this->_privateConfig->fetch->default->exception->toArray(),
-            $wrapperName,
-            $this->_privateConfig->fetch->default->mode
-        );
+        if (null === $this->_graphUri) {
+            throw new OntoWiki_Exception("model must be selected or specified with the m parameter");
+        }
+
+        try {
+            $res = self::import(
+                $this->_graphUri,
+                $uri,
+                $this->_getProxyUri($uri),
+                isset($this->_privateConfig->fetch->allData)
+                && ((boolean)$this->_privateConfig->fetch->allData === true),
+                !isset($this->_privateConfig->fetch->preset)
+                ?
+                array()
+                :
+                $this->_privateConfig->fetch->preset->toArray(),
+                !isset($this->_privateConfig->fetch->default->exception)
+                ?
+                array()
+                :
+                $this->_privateConfig->fetch->default->exception->toArray(),
+                $wrapperName,
+                $this->_privateConfig->fetch->default->mode
+            );
+        } catch (Exception $e) {
+            if (defined('_EFDEBUG')) {
+                return $this->_sendResponse(false, 'An error occured: ' . $e->getMessage(), OntoWiki_Message::ERROR);
+            } else {
+                $res = null;
+            }
+        }
+
         if ($res == self::IMPORT_OK) {
             return $this->_sendResponse(
                 true,
                 'Data was found for the given URI. Statements were added.',
                 OntoWiki_Message::INFO
             );
-        } else if ($res == self::IMPORT_WRAPPER_ERR) {
-            return $this->_sendResponse(false, 'The wrapper had an error.', OntoWiki_Message::ERROR);
-        } else if ($res == self::IMPORT_NO_DATA) {
-            return $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
-        } else if ($res == self::IMPORT_WRAPPER_INSTANCIATION_ERR) {
-            return $this->_sendResponse(false, 'could not get wrapper instance.', OntoWiki_Message::ERROR);
-            //$this->_response->setException(new OntoWiki_Http_Exception(400));
-        } else if ($res == self::IMPORT_NOT_EDITABLE) {
-            return $this->_sendResponse(false, 'you cannot write to this model.', OntoWiki_Message::ERROR);
-            //$this->_response->setException(new OntoWiki_Http_Exception(403));
-        } else if ($res == self::IMPORT_WRAPPER_EXCEPTION) {
-            return $this->_sendResponse(false, 'the wrapper run threw an error.', OntoWiki_Message::ERROR);
-        } else if ($res == DatagatheringController::IMPORT_WRAPPER_NOT_AVAILABLE) {
-            return $this->_sendResponse($res, 'the data is not available.', OntoWiki_Message::ERROR);
         } else {
-            return $this->_sendResponse(false, 'unexpected return value.', OntoWiki_Message::ERROR);
+            if ($res == self::IMPORT_WRAPPER_ERR) {
+                return $this->_sendResponse(
+                    false, 'The requested wrapper failed with an error.', OntoWiki_Message::ERROR
+                );
+            } else {
+                if ($res == self::IMPORT_NO_DATA) {
+                    return $this->_sendResponse(false, 'No statements were found.', OntoWiki_Message::ERROR);
+                } else {
+                    if ($res == self::IMPORT_NO_NEW_DATA) {
+                        return $this->_sendResponse(false, 'No new statements were found.', OntoWiki_Message::ERROR);
+                    } else {
+                        if ($res == self::IMPORT_WRAPPER_INSTANCIATION_ERR) {
+                            $this->_response->setException(new OntoWiki_Http_Exception(400));
+
+                            return $this->_sendResponse(
+                                false, 'could not get wrapper instance.', OntoWiki_Message::ERROR
+                            );
+                        } else {
+                            if ($res == self::IMPORT_NOT_EDITABLE) {
+                                $this->_response->setException(new OntoWiki_Http_Exception(403));
+
+                                return $this->_sendResponse(
+                                    false, 'you cannot write to this model.', OntoWiki_Message::ERROR
+                                );
+                            } else {
+                                if ($res == self::IMPORT_WRAPPER_NOT_AVAILABLE) {
+                                    return $this->_sendResponse(
+                                        false, 'The requested wrapper is not available.', OntoWiki_Message::ERROR
+                                    );
+                                } else {
+                                    if ($res == self::IMPORT_WRAPPER_RESULT_NOT_AVAILABLE) {
+                                        return $this->_sendResponse(
+                                            false, 'The requested wrapper returned no result.', OntoWiki_Message::ERROR
+                                        );
+                                    } else {
+                                        return $this->_sendResponse(
+                                            false, 'unexpected return value.', OntoWiki_Message::ERROR
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
     public static function filterStatements(
         $statements, $uri, $all = true, $presets = array(),
         $exceptedProperties = array(), $fetchMode = 'none'
-    )
-    {
+    ) {
         // TODO handle configuration for import...
         if ($all) {
             // Keep all data...
@@ -811,12 +864,12 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $presetMatch = false;
         foreach ($presets as $i => $preset) {
             if (self::_matchUriStatic($preset['match'], $uri)) {
-                $presetMatch = true;
+                $presetMatch = $i;
                 break;
             }
         }
 
-        $data = $statements;
+        $data   = $statements;
         $result = null;
         if ($presetMatch !== false) {
             // Use the preset
@@ -901,33 +954,34 @@ class DatagatheringController extends OntoWiki_Controller_Component
             }
         }
         $statements = $result;
+
         return $statements;
     }
 
     /**
      *
-     * @param string $graphUri
-     * @param string $uri
-     * @param type $locator
+     * @param string  $graphUri
+     * @param string  $uri
+     * @param type    $locator
      * @param boolean $all
-     * @param array $presets
-     * @param array $exceptedProperties
-     * @param string $wrapperName
-     * @param string $fetchMode
-     * @param string $action
+     * @param array   $presets
+     * @param array   $exceptedProperties
+     * @param string  $wrapperName
+     * @param string  $fetchMode
+     * @param string  $action
      * @param boolean $versioning
+     *
      * @return int status code
      */
     //TODO refactor these 11 parameters (use a config object or break it down with adapters etc)
-    public static function import (
+    public static function import(
         $graphUri, $uri, $locator, $all = true, $presets = array(),
         $exceptedProperties = array(), $wrapperName = 'linkeddata', $fetchMode = 'none',
         $action = 'add', $versioning = true, $filterCallback = null
-    )
-    {
+    ) {
         // Check whether user is allowed to write the model.
-        $erfurt = Erfurt_App::getInstance();
-        $store = $erfurt->getStore();
+        $erfurt     = Erfurt_App::getInstance();
+        $store      = $erfurt->getStore();
         $storeGraph = $store->getModel($graphUri);
         if (!$storeGraph || !$storeGraph->isEditable()) {
             return self::IMPORT_NOT_EDITABLE;
@@ -943,122 +997,144 @@ class DatagatheringController extends OntoWiki_Controller_Component
         } catch (Erfurt_Wrapper_Exception $e) {
             return self::IMPORT_WRAPPER_INSTANCIATION_ERR;
         }
+        if (null == $wrapper) {
+            return self::IMPORT_WRAPPER_NOT_AVAILABLE;
+        }
 
         $wrapperResult = null;
         try {
             $wrapperResult = $wrapper->run($r, $graphUri, $all);
         } catch (Erfurt_Wrapper_Exception $e) {
-            return self::IMPORT_WRAPPER_EXCEPTION;
+            return self::IMPORT_WRAPPER_ERR;
         }
 
         if ($wrapperResult === false) {
-            return self::IMPORT_WRAPPER_NOT_AVAILABLE;
-        } else if (is_array($wrapperResult)) {
-            if (isset($wrapperResult['status_codes'])) {
-                if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
-                    $newStatements = $wrapperResult['add'];
+            return self::IMPORT_WRAPPER_RESULT_NOT_AVAILABLE;
+        } else {
+            if (is_array($wrapperResult)) {
+                if (isset($wrapperResult['status_codes'])) {
+                    if (in_array(Erfurt_Wrapper::RESULT_HAS_ADD, $wrapperResult['status_codes'])) {
+                        $newStatements = $wrapperResult['add'];
 
-                    //default filter
-                    $newStatements = self::filterStatements(
-                        $newStatements, $uri, $all, $presets, $exceptedProperties, $fetchMode
-                    );
-                    
-                    //custom filter
-                    if ($filterCallback != null && is_array($filterCallback)) {
-                        try {
-                            $newStatements = call_user_func($filterCallback, $newStatements);
-                        } catch (Exception $e) {
-                            return self::IMPORT_CUSTOMFILTER_EXCEPTION;
-                        }
-                    }
-
-                    $stmtBeforeCount = $store->countWhereMatches(
-                        $graphUri,
-                        '{ ?s ?p ?o }',
-                        '*'
-                    );
-
-                    if ($versioning) {
-                        // Prepare versioning...
-                        $versioning = $erfurt->getVersioning();
-                        $actionSpec = array(
-                            'type'        => self::VERSIONING_IMPORT_ACTION_TYPE,
-                            'modeluri'    => $graphUri,
-                            'resourceuri' => $uri
+                        //default filter
+                        $newStatements = self::filterStatements(
+                            $newStatements, $uri, $all, $presets, $exceptedProperties, $fetchMode
                         );
 
-                        // Start action, add statements, finish action.
-                        $versioning->startAction($actionSpec);
-                    }
-
-                    if ($action == 'add') {
-                        $store->addMultipleStatements($graphUri, $newStatements);
-                    } else if ($action == 'update') {
-                        $queryoptions = array(
-                            'use_ac'                 => false,
-                            'result_format'          => STORE_RESULTFORMAT_EXTENDED,
-                            'use_additional_imports' => false
-                        );
-                        $oldStatements = $store->sparqlQuery(
-                            'SELECT * FROM <'.$graphUri.'> WHERE { ?s ?p ?o }',
-                            $queryoptions
-                        );
-                        //transform resultset to rdf/php statements
-                        $modelOld = new Erfurt_Rdf_MemoryModel();
-                        $modelOld->addStatementsFromSPOQuery($oldStatements);
-                        $modelNew = new Erfurt_Rdf_MemoryModel($newStatements);
-                        $storeGraph->updateWithMutualDifference(
-                            $modelOld->getStatements(),
-                            $modelNew->getStatements()
-                        );
-                    }
-
-                    if ($versioning) {
-                        $versioning->endAction();
-                    }
-
-                    $stmtAfterCount = $store->countWhereMatches(
-                        $graphUri,
-                        '{ ?s ?p ?o }',
-                        '*'
-                    );
-
-                    $stmtAddCount = $stmtAfterCount - $stmtBeforeCount;
-
-                    if ($stmtAddCount > 0) {
-                        // TODO test ns
-                        // If we added some statements, we check for additional namespaces and add them.
-                        if (in_array(Erfurt_Wrapper::RESULT_HAS_NS, $wrapperResult['status_codes'])) {
-                            $namespaces = $wrapperResult['ns'];
-
-                            $erfurtNamespaces = $erfurt->getNamespaces();
-
-                            foreach ($namespaces as $ns => $prefix) {
-                                try {
-                                    $erfurtNamespaces->addNamespacePrefix(
-                                        $graphUri,
-                                        $prefix,
-                                        $ns,
-                                        false
-                                    );
-                                } catch (Exception $e) {
-                                    // Ignore...
-                                }
+                        //custom filter
+                        if ($filterCallback != null && is_array($filterCallback)) {
+                            try {
+                                $newStatements = call_user_func($filterCallback, $newStatements);
+                            } catch (Exception $e) {
+                                return self::IMPORT_CUSTOMFILTER_EXCEPTION;
                             }
                         }
-                        return self::IMPORT_OK;
 
+                        $stmtBeforeCount = $store->countWhereMatches(
+                            $graphUri,
+                            '{ ?s ?p ?o }',
+                            '*'
+                        );
+
+                        if ($versioning) {
+                            // Prepare versioning...
+                            $versioning = $erfurt->getVersioning();
+                            $actionSpec = array(
+                                'type'        => self::VERSIONING_IMPORT_ACTION_TYPE,
+                                'modeluri'    => $graphUri,
+                                'resourceuri' => $uri
+                            );
+
+                            // Start action
+                            $versioning->startAction($actionSpec);
+                        }
+
+                        if ($action == 'add') {
+                            try {
+                                $store->addMultipleStatements($graphUri, $newStatements);
+                            } catch (Exception $e) {
+                                $versioning->abortAction();
+
+                                if (defined('_EFDEBUG')) {
+                                    throw $e;
+                                }
+
+                                return self::IMPORT_GENERAL_EXCEPTION;
+                            }
+                        } else {
+                            if ($action == 'update') {
+                                $queryoptions  = array(
+                                    'use_ac'                 => false,
+                                    'result_format'          => Erfurt_Store::RESULTFORMAT_EXTENDED,
+                                    'use_additional_imports' => false
+                                );
+                                $oldStatements = $store->sparqlQuery(
+                                    'SELECT * FROM <' . $graphUri . '> WHERE { ?s ?p ?o }',
+                                    $queryoptions
+                                );
+                                //transform resultset to rdf/php statements
+                                $modelOld = new Erfurt_Rdf_MemoryModel();
+                                $modelOld->addStatementsFromSPOQuery($oldStatements);
+                                $modelNew = new Erfurt_Rdf_MemoryModel($newStatements);
+                                $storeGraph->updateWithMutualDifference(
+                                    $modelOld->getStatements(),
+                                    $modelNew->getStatements()
+                                );
+                            }
+                        }
+
+                        if ($versioning) {
+                            $versioning->endAction();
+                        }
+
+                        $stmtAfterCount = $store->countWhereMatches(
+                            $graphUri,
+                            '{ ?s ?p ?o }',
+                            '*'
+                        );
+
+                        $stmtAddCount = $stmtAfterCount - $stmtBeforeCount;
+
+                        if ($stmtAddCount > 0) {
+                            // TODO test ns
+                            // If we added some statements, we check for additional namespaces and add them.
+                            if (in_array(Erfurt_Wrapper::RESULT_HAS_NS, $wrapperResult['status_codes'])) {
+                                $namespaces = $wrapperResult['ns'];
+
+                                $erfurtNamespaces = $erfurt->getNamespaces();
+
+                                foreach ($namespaces as $ns => $prefix) {
+                                    try {
+                                        $erfurtNamespaces->addNamespacePrefix(
+                                            $graphUri,
+                                            $prefix,
+                                            $ns,
+                                            false
+                                        );
+                                    } catch (Exception $e) {
+                                        // Ignore...
+                                    }
+                                }
+                            }
+
+                            return self::IMPORT_OK;
+
+                        } else {
+                            if (count($newStatements) > 0) {
+                                return self::IMPORT_NO_NEW_DATA;
+                            } else {
+                                return self::IMPORT_NO_DATA;
+                            }
+                        }
                     } else {
                         return self::IMPORT_NO_DATA;
                     }
                 } else {
-                    return self::IMPORT_NO_DATA;
+                    return self::IMPORT_WRAPPER_ERR;
                 }
             } else {
                 return self::IMPORT_WRAPPER_ERR;
             }
-        } else {
-            return self::IMPORT_WRAPPER_ERR;
         }
     }
 
@@ -1073,10 +1149,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
             );
         }
 
+        $returnValue = array(
+            'code'    => $returnValue,
+            'message' => $message
+        );
+
         $this->_response->setHeader('Content-Type', 'application/json', true);
         $this->_response->setBody(json_encode($returnValue));
-        $this->_response->sendResponse();
-        exit;
     }
 
     // ------------------------------------------------------------------------
@@ -1094,7 +1173,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             $syncModel = $this->_getSyncModel();
             if (!$syncModel) {
                 echo 'Something went wrong.';
-                exit;
+                return;
             }
 
             $filename = $this->_componentRoot . $this->_privateConfig->syncModelFilename;
@@ -1107,10 +1186,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             );
 
             echo 'Init done...';
-            exit;
+            return;
         } catch (Exception $e) {
             echo 'Something went wrong.';
-            exit;
+            return;
         }
     }
     */
@@ -1127,7 +1206,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         OntoWiki_Navigation::disableNavigation();
@@ -1194,9 +1273,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 return;
             } else {
                 $toolbar = $this->_owApp->toolbar;
-        		$toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save'))
-        		        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
-        		$this->view->placeholder('main.window.toolbar')->set($toolbar);
+                $toolbar->appendButton(OntoWiki_Toolbar::SUBMIT, array('name' => 'Save'))
+                        ->appendButton(OntoWiki_Toolbar::RESET, array('name' => 'Cancel'));
+                $this->view->placeholder('main.window.toolbar')->set($toolbar);
             }
         } else if ($this->_request->isPost()) {
             $post = $this->_request->getPost();
@@ -1298,9 +1377,9 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set($windowTitle);
 
         $this->view->formActionUrl = $this->_config->urlBase . 'datagathering/config';
-		$this->view->formMethod    = 'post';
-		$this->view->formClass     = 'simple-input input-justify-left';
-		$this->view->formName      = 'config';
+        $this->view->formMethod    = 'post';
+        $this->view->formClass     = 'simple-input input-justify-left';
+        $this->view->formName      = 'config';
     }
     */
 
@@ -1317,13 +1396,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
 
@@ -1341,11 +1420,11 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(false);
-                    exit;
+                    return;
                 } else {
                     $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
                     echo '400 Bad Request - No sync config found.';
-                    exit;
+                    return;
                 }
 
             }
@@ -1368,29 +1447,29 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(array('redirect' => $redirect));
-                    exit;
+                    return;
                 } else {
                     $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
                     echo '400 Bad Request - No sync config found.';
-                    exit;
+                    return;
                 }
             } else if ($syncResult === self::SYNC_SUCCESS) {
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(true);
-                    exit;
+                    return;
                 } else {
                     echo 'Successfully synced.';
-                    exit;
+                    return;
                 }
             } else {
                  if ($this->_request->isXmlHttpRequest()) {
                      $this->_response->setHeader('Content-Type', 'application/json', true);
                      echo json_encode(false);
-                     exit;
+                     return;
                  } else {
                      echo '400 Bad Request - No sync config found.';
-                     exit;
+                     return;
                  }
             }
         }
@@ -1416,13 +1495,13 @@ class DatagatheringController extends OntoWiki_Controller_Component
         if (!(boolean)$this->_privateConfig->sync->enabled) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request';
-            exit;
+            return;
         }
 
         if (!isset($this->_request->uri)) {
             $this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             echo '400 Bad Request - The uri parameter is missing.';
-            exit;
+            return;
         }
         $uri = urldecode($this->_request->uri);
         $modelUri = $this->_graphUri;
@@ -1437,10 +1516,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'No sync config found.';
-                exit;
+                return;
             }
         }
 
@@ -1449,10 +1528,10 @@ class DatagatheringController extends OntoWiki_Controller_Component
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'Not configured for update check.';
-                exit;
+                return;
             }
         }
 
@@ -1490,15 +1569,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode($result);
-                    exit;
+                    return;
                 } else {
                     if ($this->_request->isXmlHttpRequest()) {
                         $this->_response->setHeader('Content-Type', 'application/json', true);
                         echo json_encode(false);
-                        exit;
+                        return;
                     } else {
                         echo 'No changes since last sync.';
-                        exit;
+                        return;
                     }
                 }
 
@@ -1507,20 +1586,20 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 if ($this->_request->isXmlHttpRequest()) {
                     $this->_response->setHeader('Content-Type', 'application/json', true);
                     echo json_encode(false);
-                    exit;
+                    return;
                 } else {
                     echo 'No valid date/time found.';
-                    exit;
+                    return;
                 }
             }
         } else {
             if ($this->_request->isXmlHttpRequest()) {
                 $this->_response->setHeader('Content-Type', 'application/json', true);
                 echo json_encode(false);
-                exit;
+                return;
             } else {
                 echo 'No Last-Modified information found.';
-                exit;
+                return;
             }
         }
     }*/
@@ -1528,7 +1607,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
     /**
      * Filters a result regarding the configured sparql query.
      *
-     * @param array $result
+     * @param array  $result
      * @param string $uri
      * @param string $wrapperName
      * @param string $modelUri
@@ -1537,7 +1616,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
      */
     private function _filterResult($result, $uri, $wrapperName, $modelUri)
     {
-        $store = Erfurt_App::getInstance()->getStore();
+        $store      = Erfurt_App::getInstance()->getStore();
         $syncConfig = $this->_getSyncConfig($uri, $wrapperName, $modelUri);
 
         if (!is_array($syncConfig) || count($syncConfig) === 0) {
@@ -1546,8 +1625,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
         $syncConfig = $syncConfig[0];
 
         // TODO We need support for in-memory models... this is a workaround
-        $tempModelUri = $this->_syncModelHelperBase . md5($uri.$wrapperName.$modelUri.time());
-        $tempModel = $store->getNewModel($tempModelUri, '', 'rdf', false);
+        $tempModelUri = $this->_syncModelHelperBase . md5($uri . $wrapperName . $modelUri . time());
+        $tempModel    = $store->getNewModel($tempModelUri, '', 'rdf', false);
         $store->addMultipleStatements($tempModelUri, $result);
         $simpleQuery = Erfurt_Sparql_SimpleQuery::initWithString($syncConfig['syncQuery']);
         $simpleQuery->addFrom($tempModelUri);
@@ -1568,7 +1647,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
             );
 
             if ($row['o']['type'] === 'typed-literal') {
-                $oArray['type'] = 'literal';
+                $oArray['type']     = 'literal';
                 $oArray['dataytpe'] = $row['o']['datatype'];
             } else {
                 $oArray['type'] = $row['o']['type'];
@@ -1596,7 +1675,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
     private function _getData($uri, $wrapperName, $modelUri)
     {
         try {
-            $wrapper = $this->_wrapperRegisty->getWrapperInstance($wrapperName);
+            $wrapper = $this->_wrapperRegistry->getWrapperInstance($wrapperName);
 
             $wrapperResult = $wrapper->run($uri, $modelUri);
             if (is_array($wrapperResult) && isset($wrapperResult['add'])) {
@@ -1610,9 +1689,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         return $wrapperResult;
     }
-
-
-
 
 
     private function _getProxyUri($uri)
@@ -1630,249 +1706,6 @@ class DatagatheringController extends OntoWiki_Controller_Component
 
         return null;
     }
-
-    /**
-     * Returns all sync configs for the given parameters or false, if no such exists.
-     *
-     * @param string $uri The resource uri.
-     * @param string $wrapperName The wrapper name.
-     * @param string $modelUri The model uri.
-     *
-     * @return array|false
-     */
-// TODO Remove?
-    /*private function _getSyncConfig($uri, $wrapperName = null, $modelUri = null)
-    {
-        $hash = md5($uri . (string)$wrapperName . (string)$modelUri);
-
-        if (!isset($this->_syncConfig[$hash])) {
-            $store = Erfurt_App::getInstance()->getStore();
-
-            require_once 'Erfurt/Sparql/SimpleQuery.php';
-            $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s');
-            $query->addFrom($this->_syncModelUri);
-            $where = 'WHERE {
-                ?s <' . EF_RDF_TYPE . '> <' . $this->_properties['syncConfigClass'] . '> .
-                ?s <' . $this->_properties['syncResource'] . '> <' . $uri . '> . ';
-
-            if (null !== $modelUri) {
-                $where .= '?s <' . $this->_properties['targetModel'] .'> <' . $modelUri . '> . ';
-            }
-            if (null !== $wrapperName) {
-                $where .= '?s <' . $this->_properties['wrapperName'] . '> "' . $wrapperName . '" .';
-            }
-
-            $where .= '}';
-            $query->setWherePart($where);
-
-            $result = $store->sparqlQuery($query, array('use_ac' => false));
-
-            if (count($result) === 0) {
-                return false;
-            } else {
-                $configUris = array();
-                foreach ($result as $row) {
-                    $configUris[] = $row['s'];
-                }
-            }
-
-            $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s ?p ?o');
-            $query->addFrom($this->_syncModelUri);
-            $query->setWherePart('WHERE {
-                ?s ?p ?o . FILTER (sameTerm(?s, <' . implode('>) || sameTerm(?s, <', $configUris)  . '>))
-            }');
-
-            $result = $store->sparqlQuery($query);
-
-            $retVal = array();
-            foreach($result as $row) {
-                if (!isset($retVal[$row['s']])) {
-                    $retVal[$row['s']] = array(
-                        'uri' => $row['s']
-                    );
-                }
-
-                switch ($row['p']) {
-                    case $this->_properties['targetModel']:
-                        $retVal[$row['s']]['targetModel'] = $row['o'];
-                        break;
-                    case $this->_properties['syncResource']:
-                        $retVal[$row['s']]['syncResource'] = $row['o'];
-                        break;
-                    case $this->_properties['wrapperName']:
-                        $retVal[$row['s']]['wrapperName'] = $row['o'];
-                        break;
-                    case $this->_properties['lastSyncPayload']:
-                        $retVal[$row['s']]['lastSyncPayload'] = unserialize($row['o']);
-                        break;
-                    case $this->_properties['lastSyncDateTime']:
-                        $retVal[$row['s']]['lastSyncDateTime'] = $row['o'];
-                        break;
-                    case $this->_properties['syncQuery']:
-                        $retVal[$row['s']]['syncQuery'] = $row['o'];
-                        break;
-                    case $this->_properties['checkHasChanged']:
-                        $retVal[$row['s']]['checkHasChanged'] = ($row['o'] === 'true') ? true : false;
-                        break;
-                }
-            }
-
-            $this->_syncConfig[$hash] = array_values($retVal);
-        }
-
-        return $this->_syncConfig[$hash];
-    }*/
-
-    /**
-     * Checks whether the sync model is available and imports it if needed.
-     *
-     * @return Erfurt_Rdf_Model
-     */
-// TODO Remove?
-    /*private function _getSyncModel()
-    {
-        $store = Erfurt_App::getInstance()->getStore();
-
-        if (!$store->isModelAvailable($this->_syncModelUri, false)) {
-            try {
-                $syncModel = $store->getNewModel($this->_syncModelUri, '', 'owl');
-
-                if (!$syncModel) {
-                    return false;
-                }
-
-                $sysOnt = Erfurt_App::getInstance()->getSysOntModel();
-                $store->addStatement(
-                    $sysOnt->getModelUri(),
-                    'http://ns.ontowiki.net/SysOnt/Anonymous',
-                    'http://ns.ontowiki.net/SysOnt/denyModelView',
-                    array(
-                        'type'  => 'uri',
-                        'value' => $this->_syncModelUri
-                    )
-                );
-
-                $store->addStatement(
-                    $sysOnt->getModelUri(),
-                    'http://localhost/OntoWiki/Config/DefaultUserGroup',
-                    'http://ns.ontowiki.net/SysOnt/denyModelView',
-                    array(
-                        'type'  => 'uri',
-                        'value' => $this->_syncModelUri
-                    )
-                );
-            } catch (Exception $e) {
-                return false;
-            }
-        } else {
-            $syncModel = $store->getModel($this->_syncModelUri, false);
-        }
-
-        return $syncModel;
-    }
-    */
-
-    /**
-     * Executes the sync.
-     */
-// TODO Remove or make usable
-    /*private function _sync($uri, $wrapperName, $modelUri)
-    {
-        $store = Erfurt_App::getInstance()->getStore();
-
-        $importModel = $store->getModel($modelUri);
-        if (!$importModel || !$importModel->isEditable()) {
-            return self::NO_EDITING_RIGHTS;
-        }
-
-        $syncConfig = $this->_getSyncConfig($uri, $wrapperName, $modelUri);
-        if ($syncConfig === false) {
-            return self::NO_SYNC_CONFIG_FOUND;
-        }
-        $syncConfig = $syncConfig[0];
-
-        $configUri = $syncConfig['uri'];
-        if (isset($syncConfig['lastSyncPayload'])) {
-            $lastSyncPayload = $syncConfig['lastSyncPayload'];
-        } else {
-            // No last sync, so last payload was empty (we need this info for update with mutual difference).
-            $lastSyncPayload = array();
-        }
-
-        $newPayload = $this->_getData($uri, $wrapperName, $modelUri);
-        $namespaces = $newPayload['ns'];
-        $newPayload = $newPayload['add'];
-        $newPayload = $this->_filterResult($newPayload, $uri, $wrapperName, $modelUri);
-
-        $versioning = Erfurt_App::getInstance()->getVersioning();
-        $actionSpec = array(
-            'type'        => self::VERSIONING_SYNC_ACTION_TYPE,
-            'modeluri'    => $modelUri,
-            'resourceuri' => $uri
-        );
-
-        $erfurtNamespaces = Erfurt_App::getInstance()->getNamespaces();
-
-        // Try to add new namespaces
-        if (is_array($namespaces)) {
-            foreach ($namespaces as $ns => $prefix) {
-                try {
-                    $erfurtNamespaces->addNamespacePrefix(
-                        $modelUri,
-                        $prefix,
-                        $ns,
-                        false
-                    );
-                } catch (Erfurt_Namespaces_Exception $e) {
-                    // Ignore...
-                }
-            }
-        }
-
-        try {
-            $versioning->startAction($actionSpec);
-            // We do not use update here, for otherwise there are problems, if lastSyncPayload contains data, but
-            // real data differs (e.g. when deleting a resource through rollback).
-            $importModel->deleteMultipleStatements($lastSyncPayload);
-            $importModel->addMultipleStatements($newPayload);
-            $versioning->endAction();
-
-            // Save payload for next sync
-            $add = array(
-                $configUri => array(
-                    $this->_properties['lastSyncPayload'] => array(array(
-                        'type'  => 'literal',
-                        'value' => serialize($newPayload)
-                    )),
-                    $this->_properties['lastSyncDateTime'] => array(array(
-                        'type'  => 'literal',
-                        'value' => date('c')
-                    ))
-                )
-            );
-
-            $store->deleteMatchingStatements(
-                $this->_syncModelUri,
-                $configUri,
-                $this->_properties['lastSyncPayload'],
-                null
-            );
-            $store->deleteMatchingStatements(
-                $this->_syncModelUri,
-                $configUri,
-                $this->_properties['lastSyncDateTime'],
-                null
-            );
-            $store->addMultipleStatements($this->_syncModelUri, $add);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        // If we reach this point, the sync was successful.
-        return self::SYNC_SUCCESS;
-    }*/
 
     private function _matchUri($pattern, $uri)
     {

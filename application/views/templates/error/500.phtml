@@ -1,0 +1,40 @@
+<?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
+/**
+ * OntoWiki internal server error template
+ */
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>500: Internal Server Error</title>
+<style type="text/css">
+body {
+    font-family: sans-serif;
+    line-height: 1.5;
+    background-color: #eff9ff;
+}
+
+h1 {
+    font-size: 100%
+}
+</style>
+</head>
+<body>
+<h1>Internal Server Error</h1>
+<p>
+We're sorry, but something went wrong (e.g. configuration).<br />
+Please inform your system administrator.<br />
+Details are logged and debug mode can be turned on.
+</p>
+<p>
+<a href="<?php echo $this->urlBase; ?>">go back</a>
+</p>
+</body>
+</html>

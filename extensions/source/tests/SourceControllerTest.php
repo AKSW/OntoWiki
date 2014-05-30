@@ -1,27 +1,31 @@
-<?php 
+<?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
-require_once '../../../../application/tests/test_base.php';
-
-class SourceControllerTest extends Zend_Test_PHPUnit_ControllerTestCase
+class SourceControllerTest extends OntoWiki_Test_ControllerTestCase
 {
     public function setUp()
     {
-        $this->bootstrap = new Zend_Application(
-            'default',
-            ONTOWIKI_ROOT . 'application/config/application.ini'
-        );
-        parent::setUp();
+        $this->_extensionName = 'source';
+
+        $this->setUpExtensionUnitTest();
     }
-    
+
     public function testDispatching()
     {
-        $this->dispatch('/source/edit');
+        $this->_storeAdapter->createModel('http://localhost/OntoWiki/Config/');
+        $this->_ac->setUserModelRight('http://localhost/OntoWiki/Config/', 'view', 'grant');
+        $this->_ac->setUserModelRight('http://localhost/OntoWiki/Config/', 'edit', 'grant');
+
         $this->request->setParam('m', 'http://localhost/OntoWiki/Config/');
-        
-        $r = $this->getResponse();
-        var_dump($r->getBody());
-        
+        $this->dispatch('/source/edit');
+
         $this->assertController('source');
         $this->assertAction('edit');
+        @$this->assertResponseCode(200);
     }
 }

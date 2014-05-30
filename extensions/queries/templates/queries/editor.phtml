@@ -1,19 +1,45 @@
 <?php
+/**
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
+ *
+ * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
+ * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 
 /**
  * OntoWiki query editor template
  */
 ?>
+
+<?php
+if (isset($this->errorFlag) && $this->errorFlag !== false) {
+    return;
+}
+?>
+
 <input id="editortype" type="hidden" value="queryeditor" />
+<div class="configMmodules">
+<div class="width49 float margin">
+<strong><?= $this->_('Output Format') ?></strong>
+<?= $this->render('sparqloptions.phtml') ?>
+</div>
+<div class="width49 float margin">
+<strong><?= $this->_('Query Source') ?></strong>
+<?= $this->render('queryeditorfromsetter.phtml') ?>
+</div>
+</div>
 <p class="messagebox info"><?php echo $this->_('Predefined namespaces') ?>:
-    <?php $i = 0; ?>
-    <?php foreach ($this->prefixes as $prefix => $namespace): ?>
-        <a href="<?php echo $namespace ?>" 
-           title="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
-    <?php endforeach ?>
+<?php $i = 0; ?>
+<?php foreach ($this->prefixes as $prefix => $namespace): ?>
+    <a href="<?php echo $namespace ?>" 
+       title="<?php echo $namespace ?>"><?php echo $prefix ?></a><?php if (++$i < count($this->prefixes)) echo ', ' ?>
+<?php endforeach ?>
+</p>
+<p class="messagebox info" id="resourceuri-hint">
+    <?php echo $this->_('You have to specify a projection variable called “?resourceUri” if you want to use the default list') ?>
 </p>
 <fieldset>
-    <div style="border: 1px solid black">
+    <div>
     <textarea id="inputfield" class="width99 code-input" name="query"><?php echo $this->query ?></textarea>
     </div>
 <?php if ($this->has('error')): ?>
@@ -32,7 +58,15 @@
             if(class_exists("QuerybuildingHelper")){
                 echo $this->partial('partials/resultset.phtml', array('data' => $this->data, 'header' => $this->header, 'caption'=>'Results', 'urlBase' => $this->urlBase));
             } else {
-            	echo $this->partial('partials/table.phtml', array('data' => $this->data, 'header' => $this->header));
+                echo $this->partial(
+                    'partials/table.phtml',
+                    array(
+                        'data' => $this->data,
+                        'header' => $this->header,
+                        'tableClass' => 'query-result',
+                        'querylink' => true
+                    )
+                );
             }
             ?>
         <?php else: ?>
@@ -46,11 +80,11 @@
 // make sure jQuery is included
 if (typeof jQuery != 'undefined') {
     function insertModelUri() {
-        editor.setCode(editor.getCode() + '<<?php echo $this->modelUri ?>>');
+        editor.setCode(editor.getValue() + '<<?php echo $this->modelUri ?>>');
     }
 
     function insertResourceUri() {
-        editor.setCode(editor.getCode()  + '<<?php echo (isset($this->resourceUri) ? $this->resourceUri : "") ?>>');
+        editor.setCode(editor.getValue()  + '<<?php echo (isset($this->resourceUri) ? $this->resourceUri : "") ?>>');
     }
 }
 </script>

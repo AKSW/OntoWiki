@@ -2,8 +2,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -18,19 +18,21 @@
  * - the folder as well contains a 'plugin.ini' config file
  *
  * @category OntoWiki
- * @package  Plugin
+ * @package  OntoWiki_Classes
  * @author   Norman Heino <norman.heino@gmail.com>
  */
 class OntoWiki_Plugin extends Erfurt_Plugin
 {
     /**
      * The plug-in's view for rendering templates
+     *
      * @var OntoWiki_View
      */
     public $view = null;
 
     /**
      * The plug-in URL base
+     *
      * @var string
      */
     protected $_pluginUrlBase = null;
@@ -51,7 +53,7 @@ class OntoWiki_Plugin extends Erfurt_Plugin
         }
 
         $this->_pluginUrlBase = OntoWiki::getInstance()->getStaticUrlBase()
-                              . str_replace(ONTOWIKI_ROOT, '', $root);
+            . str_replace(ONTOWIKI_ROOT, '', $root);
 
         parent::__construct($root, $config);
     }

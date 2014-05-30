@@ -1,0 +1,67 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owconfig: <http://ns.ontowiki.net/SysOnt/ExtensionConfig/> .
+@prefix extension: <http://ns.ontowiki.net/Extensions/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix event: <http://ns.ontowiki.net/SysOnt/Events/> .
+@prefix : <https://github.com/AKSW/filter/raw/master/doap.n3#> .
+
+<> foaf:primaryTopic :filter .
+:filter a doap:Project ;
+  doap:name "filter" ;
+  owconfig:privateNamespace <https://github.com/AKSW/filter/raw/master/doap.n3#> ;
+  owconfig:templates "templates" ;
+  owconfig:enabled "true"^^xsd:boolean ;
+  rdfs:label "Filter Resource Lists" ;
+  doap:description "provides a GUI to apply filters on a list of resources." ;
+  owconfig:authorLabel "AKSW" ;
+  doap:maintainer <http://aksw.org> ;
+  owconfig:hasModule :Filter .
+:Filter a owconfig:Module ;
+  rdfs:label "Filter" ;
+  owconfig:priority "30" ;
+  owconfig:context "main.window.list" .
+:filter owconfig:config [
+      a owconfig:Config;
+      owconfig:id "customfilter";
+      owconfig:config [
+          a owconfig:Config;
+          owconfig:id "prop1";
+          :uri <http://example.com/aProp1/> ;
+          :label "prop1" ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "value1";
+              :uri <http://example.com/aVal11/> ;
+              :label "val11"
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "value2";
+              :uri <http://example.com/aVal12/> ;
+              :label "val12"
+        ]
+    ];
+ owconfig:config [
+          a owconfig:Config;
+          owconfig:id "prop2";
+          :uri <http://example.com/aProp2/> ;
+          :label "prop2" ;
+          owconfig:config [
+              a owconfig:Config;
+              owconfig:id "value1";
+              :uri <http://example.com/aVal21/> ;
+              :label "val21"
+        ];
+ owconfig:config [
+              a owconfig:Config;
+              owconfig:id "value2";
+              :uri <http://example.com/aVal22/> ;
+              :label "val22"
+        ]
+    ]
+] .
+:filter doap:release :v1-0 .
+:v1-0 a doap:Version ;
+  doap:revision "1.0" .
