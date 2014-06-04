@@ -165,7 +165,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
-        $httpHost = $_SERVER['HTTP_HOST'];
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $httpHost = $_SERVER['HTTP_HOST'];
+        } else {
+            $httpHost = 'localhost';
+        }
 
         $urlBase = sprintf(
             '%s://%s%s',
