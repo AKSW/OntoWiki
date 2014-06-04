@@ -165,7 +165,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
-        if (isset($_SERVER['SERVER_PORT'])
+        if (
+            isset($_SERVER['SERVER_PORT'])
             && $_SERVER['SERVER_PORT'] != '80'
             && $_SERVER['SERVER_PORT'] != '443'
         ) {
@@ -231,8 +232,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'lifetime' => isset($sessionConfig->lifetime) ? $sessionConfig->lifetime        : 0,
             'path'     => isset($sessionConfig->path)     ? $sessionConfig->path            : '/',
             'domain'   => isset($sessionConfig->domain)   ? $sessionConfig->domain          : '',
-            'secure'   => isset($sessionConfig->secure)   ? (bool) $sessionConfig->secure   : false,
-            'httpOnly' => isset($sessionConfig->httpOnly) ? (bool) $sessionConfig->httpOnly : false
+            'secure'   => isset($sessionConfig->secure)   ? (bool)$sessionConfig->secure    : false,
+            'httpOnly' => isset($sessionConfig->httpOnly) ? (bool)$sessionConfig->httpOnly  : false
         );
         call_user_func_array('session_set_cookie_params', $cookieParams);
     }
