@@ -165,32 +165,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
-        if (
-            isset($_SERVER['SERVER_PORT'])
-            && $_SERVER['SERVER_PORT'] != '80'
-            && $_SERVER['SERVER_PORT'] != '443'
-        ) {
-            $port = ':' . $_SERVER['SERVER_PORT'];
-        } else {
-            $port = '';
-        }
-
-        if (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], ':') !== false) {
-            // IPv6
-            $serverName = '[' . $_SERVER['SERVER_NAME'] . ']';
-        } else if (isset($_SERVER['SERVER_NAME'])) {
-            // IPv4 or host name
-            $serverName = $_SERVER['SERVER_NAME'];
-        } else {
-            // localhost
-            $serverName = 'localhost';
-        }
+        $httpHost = $_SERVER['HTTP_HOST'];
 
         $urlBase = sprintf(
-            '%s://%s%s%s',
+            '%s://%s%s',
             $protocol,
-            $serverName,
-            $port,
+            $httpHost,
             $rewriteBase
         );
 
