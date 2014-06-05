@@ -165,31 +165,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
         $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
-        if (isset($_SERVER['SERVER_PORT'])
-            && $_SERVER['SERVER_PORT'] != '80'
-            && $_SERVER['SERVER_PORT'] != '443'
-        ) {
-            $port = ':' . $_SERVER['SERVER_PORT'];
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $httpHost = $_SERVER['HTTP_HOST'];
         } else {
-            $port = '';
-        }
-
-        if (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], ':') !== false) {
-            // IPv6
-            $serverName = '[' . $_SERVER['SERVER_NAME'] . ']';
-        } else if (isset($_SERVER['SERVER_NAME'])) {
-            // IPv4 or host name
-            $serverName = $_SERVER['SERVER_NAME'];
-        } else {
-            // localhost
-            $serverName = 'localhost';
+            $httpHost = 'localhost';
         }
 
         $urlBase = sprintf(
-            '%s://%s%s%s',
+            '%s://%s%s',
             $protocol,
-            $serverName,
-            $port,
+            $httpHost,
             $rewriteBase
         );
 
@@ -231,8 +216,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'lifetime' => isset($sessionConfig->lifetime) ? $sessionConfig->lifetime        : 0,
             'path'     => isset($sessionConfig->path)     ? $sessionConfig->path            : '/',
             'domain'   => isset($sessionConfig->domain)   ? $sessionConfig->domain          : '',
-            'secure'   => isset($sessionConfig->secure)   ? (bool) $sessionConfig->secure   : false,
-            'httpOnly' => isset($sessionConfig->httpOnly) ? (bool) $sessionConfig->httpOnly : false
+            'secure'   => isset($sessionConfig->secure)   ? (bool)$sessionConfig->secure    : false,
+            'httpOnly' => isset($sessionConfig->httpOnly) ? (bool)$sessionConfig->httpOnly  : false
         );
         call_user_func_array('session_set_cookie_params', $cookieParams);
     }
