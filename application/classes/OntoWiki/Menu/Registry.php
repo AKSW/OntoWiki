@@ -154,13 +154,17 @@ class OntoWiki_Menu_Registry
 
         // help sub menue
         $helpMenu = new OntoWiki_Menu();
-        $helpMenu->setEntry('Documentation', $owApp->config->help->documentation)
-            ->setEntry('Bug Report', $owApp->config->help->issues)
-            ->setEntry(
-                'Version Info', $owApp->config->help->versioninfo . '#' .
-                $owApp->config->version->number
-            )
-            ->setEntry('About', $owApp->config->urlBase . 'application/about');
+
+        if (isset($owApp->config->help->documentation) && (trim($owApp->config->help->documentation) !== '')) {
+            $helpMenu->setEntry('Documentation', trim($owApp->config->help->documentation));
+        }
+        if (isset($owApp->config->help->issues) && (trim($owApp->config->help->issues) !== '')) {
+            $helpMenu->setEntry('Bug Report', trim($owApp->config->help->issues));
+        }
+        if (isset($owApp->config->help->versioninfo) && (trim($owApp->config->help->versioninfo) !== '')) {
+            $helpMenu->setEntry('Version Info', trim($owApp->config->help->versioninfo));
+        }
+        $helpMenu->setEntry('About', $owApp->config->urlBase . 'application/about');
 
         // build menu out of sub menus
         $applicationMenu = new OntoWiki_Menu();

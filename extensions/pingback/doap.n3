@@ -12,7 +12,7 @@
   doap:name "pingback" ;
   owconfig:privateNamespace <https://github.com/AKSW/pingback/raw/master/doap.n3#> ;
   owconfig:templates "templates" ;
-  owconfig:enabled "true"^^xsd:boolean ;
+  owconfig:enabled "false"^^xsd:boolean ;
   rdfs:label "Pingback Server" ;
   doap:description "provides a Semantic Pingback Server and pingback enables all linked data resources" ;
   owconfig:authorLabel "AKSW" ;

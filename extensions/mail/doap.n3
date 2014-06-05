@@ -11,7 +11,7 @@
 :mail a doap:Project ;
   doap:name "mail" ;
   owconfig:privateNamespace <https://github.com/AKSW/mail/raw/master/doap.n3#> ;
-  owconfig:enabled "true"^^xsd:boolean ;
+  owconfig:enabled "false"^^xsd:boolean ;
   rdfs:label "Mail" ;
   doap:description "A plug-in that tests mail support" ;
   owconfig:authorLabel "Würker Christian" ;
