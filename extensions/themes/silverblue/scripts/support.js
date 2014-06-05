@@ -509,7 +509,9 @@ function createInstanceFromClassURI(type, dataCallback) {
                 data = dataCallback(data);
             }
             var addPropertyValues = data['addPropertyValues'];
+            var addOptionalPropertyValues = data['addOptionalPropertyValues'];
             delete data.addPropertyValues;
+            delete data.addOptionalPropertyValues;
 
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
@@ -524,6 +526,7 @@ function createInstanceFromClassURI(type, dataCallback) {
                 showPropertyButton: true,
                 loadOwStylesheet: false,
                 addPropertyValues: addPropertyValues,
+                addOptionalPropertyValues: addOptionalPropertyValues,
                 onSubmitSuccess: function (responseData) {
                     var newLocation;
                     if (responseData && responseData.changed) {
@@ -568,13 +571,10 @@ function editResourceFromURI(resource) {
            mode: 'edit',
            uri: resource
         }, function(data) {
-            if (data.hasOwnProperty('propertyOrder')) {
-                var propertyOrder = data.propertyOrder;
-                delete data.propertyOrder;
-            }
-            else {
-                var propertyOrder = null;
-            }
+            var addPropertyValues = data['addPropertyValues'];
+            var addOptionalPropertyValues = data['addOptionalPropertyValues'];
+            delete data.addPropertyValues;
+            delete data.addOptionalPropertyValues;
             // get default resource uri for subjects in added statements (issue 673)
             // grab first object key
             for (var subjectUri in data) {break;};
@@ -589,7 +589,8 @@ function editResourceFromURI(resource) {
                 autoParse: false, 
                 showPropertyButton: true,
                 loadOwStylesheet: false,
-                addPropertyValues: data['addPropertyValues'],
+                addPropertyValues: addPropertyValues,
+                addOptionalPropertyValues: addOptionalPropertyValues,
                 onSubmitSuccess: function () {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
@@ -598,9 +599,11 @@ function editResourceFromURI(resource) {
                 },
                 onCancel: function () {
                     // HACK: reload whole page after 500 ms
+                    /*
                     window.setTimeout(function () {
                         window.location.href = window.location.href;
                     }, 500);
+                    */
                 }
             });
 
@@ -717,9 +720,11 @@ function editPropertyListmode(event) {
             loadOwStylesheet: false,
             onSubmitSuccess: function () {
                 // HACK: reload whole page after 500 ms
+                /*
                 window.setTimeout(function () {
                     window.location.href = window.location.href;
                 }, 500);
+                */
             }
         });
 
