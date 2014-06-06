@@ -571,6 +571,13 @@ function editResourceFromURI(resource) {
            mode: 'edit',
            uri: resource
         }, function(data) {
+            if (data.hasOwnProperty('propertyOrder')) {
+                var propertyOrder = data.propertyOrder;
+                delete data.propertyOrder;
+            }
+            else {
+                var propertyOrder = null;
+            }
             var addPropertyValues = data['addPropertyValues'];
             var addOptionalPropertyValues = data['addOptionalPropertyValues'];
             delete data.addPropertyValues;
