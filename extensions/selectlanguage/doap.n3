@@ -22,11 +22,7 @@
       owconfig:id "languages";
       :en "english (en)" ;
       :de "deutsch (de)" ;
-      :zh "汉语 (zh)"
-];
- owconfig:config [
-      a owconfig:Config;
-      owconfig:id "langzages";
+      :zh "汉语 (zh)" ;
       :ru "русский язык (ru)"
 ] .
 :selectlanguage doap:release :v1-0 .
