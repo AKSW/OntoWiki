@@ -1,3 +1,9 @@
+<?php
+$author = $this->author;
+if ($author === null) {
+    $author = '<em>anonymous</em>';
+}
+?>
     <tr
         about="<?php echo $this->comment ?>"
         resource="<?php echo $this->comment ?>"
@@ -13,7 +19,7 @@
                         </span>
                     </a>
                 </div>
-                <strong><?php echo $this->author ?></strong>
+                <strong><?= $author ?></strong>
                 <?php if (isset($this->resource)) : ?>
                 on 
                 <a

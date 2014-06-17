@@ -2,8 +2,12 @@
 <?php
 $odd = true;
 foreach ($this->instanceInfo as $instance){
+    $author = null;
+    if (isset($this->instanceData[$instance['uri']]['creator'][0]['value'])) {
+        $author = $this->instanceData[$instance['uri']]['creator'][0]['value'];
+    }
     $options = array(
-        'author'        => $this->instanceData[$instance['uri']]['creator'][0]['value'],
+        'author'        => $author,
         'comment'       => $instance['uri'],
         'commentUrl'    => $instance['url'],
         'content'       => $this->instanceData[$instance['uri']]['content'][0]['value'],
