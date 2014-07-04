@@ -22,6 +22,7 @@
       owconfig:id "languages";
       :en "english (en)" ;
       :de "deutsch (de)" ;
+      :fr "français (fr)" ;
       :zh "汉语 (zh)" ;
       :ru "русский язык (ru)"
 ] .
