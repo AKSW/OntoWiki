@@ -20,9 +20,10 @@
   owconfig:config [
       a owconfig:Config;
       owconfig:id "languages";
-      :en "english (en)" ;
-      :de "deutsch (de)" ;
-      :fr "français (fr)" ;
+      :en "English (en)" ;
+      :de "Deutsch (de)" ;
+      :fr "Français (fr)" ;
+      :hu "Magyar (hu)" ;
       :zh "汉语 (zh)" ;
       :ru "русский язык (ru)"
 ] .
