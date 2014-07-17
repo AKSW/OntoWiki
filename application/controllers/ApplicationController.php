@@ -310,6 +310,10 @@ class ApplicationController extends OntoWiki_Controller_Base
                                             $this->_owApp->appendMessage(
                                                 new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
                                             );
+
+                                            $event           = new Erfurt_Event('onRegisterUser');
+                                            $event->username = $username;
+                                            $event->trigger();
                                         } else {
                                             $message = 'A registration error occured. Please refer to the log entries.';
                                             $this->_owApp->appendMessage(
