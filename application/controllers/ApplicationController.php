@@ -225,6 +225,8 @@ class ApplicationController extends OntoWiki_Controller_Base
         );
 
         if ($post) {
+            /* status var in order to fire corresponding events */
+            $registrationError = true;
             $registeredUsernames      = array();
             $registeredEmailAddresses = array();
 
@@ -310,10 +312,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                                             $this->_owApp->appendMessage(
                                                 new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
                                             );
-
-                                            $event           = new Erfurt_Event('onRegisterUser');
-                                            $event->username = $username;
-                                            $event->trigger();
+                                            $registrationError = false;
                                         } else {
                                             $message = 'A registration error occured. Please refer to the log entries.';
                                             $this->_owApp->appendMessage(
@@ -326,6 +325,19 @@ class ApplicationController extends OntoWiki_Controller_Base
                         }
                     }
                 }
+            }
+
+            /*
+             * fire events for success and error
+             */
+            if ($registrationError === false) {
+                $event           = new Erfurt_Event('onRegisterUser');
+                $event->username = $username;
+                $event->trigger();
+            } else {
+                $event           = new Erfurt_Event('onRegisterUserFailed');
+                $event->username = $username;
+                $event->trigger();
             }
         }
     }
