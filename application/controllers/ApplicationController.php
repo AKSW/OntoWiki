@@ -333,10 +333,13 @@ class ApplicationController extends OntoWiki_Controller_Base
             if ($registrationError === false) {
                 $event           = new Erfurt_Event('onRegisterUser');
                 $event->username = $username;
+                $event->response = $this->_response;
                 $event->trigger();
             } else {
                 $event           = new Erfurt_Event('onRegisterUserFailed');
                 $event->username = $username;
+                $event->message = $message;
+                $event->response = $this->_response;
                 $event->trigger();
             }
         }
