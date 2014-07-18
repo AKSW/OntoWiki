@@ -29,7 +29,7 @@
 :navigation owconfig:config [
       a owconfig:Config;
       owconfig:id "defaults";
-      :config "classes" ;
+      :config "bibrm" ;
       :limit "10" ;
       :checkTypes "true"^^xsd:boolean ;
       :showMenu "true"^^xsd:boolean
