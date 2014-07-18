@@ -91,11 +91,13 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
                 $predicateOrder = array();
 
                 foreach($data as $key => $resource) {
-                    foreach($resource as $predicateUri => &$values) {
-                        if (array_key_exists($predicateUri, $order)) {
-                            $predicateOrder[$predicateUri] = (int)$order[$predicateUri];
-                        } else {
-                            $predicateOrder[$predicateUri] = 0;
+                    if (Erfurt_Uri::check($key)) {
+                        foreach($resource as $predicateUri => &$values) {
+                            if (array_key_exists($predicateUri, $order)) {
+                                $predicateOrder[$predicateUri] = (int)$order[$predicateUri];
+                            } else {
+                                $predicateOrder[$predicateUri] = 0;
+                            }
                         }
                     }
                 }
