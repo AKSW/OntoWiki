@@ -332,8 +332,14 @@ $(document).ready(function() {
 
             if (Object.keys(types).length == 1) {
                 createInstanceFromClassURI(Object.keys(types)[0]);
-            } else {
+            } else if (Object.keys(types).length > 1) {
                 showAddInstanceMenu(event, types);
+            } else {
+                // we added an option to not display the type, so in this
+                // case, the type cannot be read from the resource list, even
+                // if there are resources. in this case, we fall back to the
+                // workaround for empty classes
+                createInstanceFromClassURI($('#filterbox a').attr('about'));
             }
         } else {
             // workaround to create instance when number of instances of a class is null
