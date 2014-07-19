@@ -223,6 +223,13 @@ class ApplicationController extends OntoWiki_Controller_Base
                 array('escape' => false, 'translate' => false)
             )
         );
+        
+        $contentType = $this->_request->getHeader('Content-Type');
+        if(strstr($contentType, 'application/json')){
+            $rawBody     = $this->_request->getRawBody();
+            echo $rawBody;
+            $post = Zend_Json::decode($rawBody);
+        }
 
         if ($post) {
             /* status var in order to fire corresponding events */
