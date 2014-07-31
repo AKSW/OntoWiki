@@ -2668,7 +2668,11 @@
       if (typeof triple === 'string') {
         triple = $.rdf.triple(triple, { namespaces: namespaces, base: base, source: triple });
       }
-      this.tripleStore.splice($.inArray(triple, this.tripleStore), 1);
+      var pos = $.inArray(triple, this.tripleStore);
+      if (pos === -1) {
+          return this;
+      }
+      this.tripleStore.splice(pos, 1);
       striples = this.subjectIndex[triple.subject];
       if (striples !== undefined) {
         striples.splice($.inArray(triple, striples), 1);
