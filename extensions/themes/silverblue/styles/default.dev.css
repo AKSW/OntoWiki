@@ -1,12 +1,15 @@
 /**
-  * default.dev.css
-  * Ontowiki developer/experimental style sheet, advanced theme
-  *
-  * ATTENTION, since this file contains of development styles, it only included in
-  * debug mode. See more infos on CSS Development on
-  * http://code.google.com/p/ontowiki/wiki/CSSDevelopment
-  *
-  */
+ * default.dev.css
+ * Ontowiki developer/experimental style sheet, advanced theme
+ *
+ * @copyright Copyright (c) 2014, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ *
+ * ATTENTION, since this file contains of development styles, it only included in
+ * debug mode. See more infos on CSS Development on
+ * http://code.google.com/p/ontowiki/wiki/CSSDevelopment
+ *
+ */
 
 /* form stuff ****************************************************************/
 

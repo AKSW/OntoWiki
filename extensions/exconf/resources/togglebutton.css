@@ -1,11 +1,10 @@
-/*
-    Document   : togglebutton
-    Created on : 21.08.205, 21:39:53
-    Author     : jonas
-    Description:
-        style for the jquery.togglebutton plugin
-*/
-
+/**
+ * Style for the jquery.togglebutton plugin.
+ * @copyright Copyright (c) 2014, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @author    jonas
+ * @since     21.08.205, 21:39:53
+ */
 .togglebutton {
     border: none;
     background: transparent;
