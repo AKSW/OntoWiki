@@ -1,3 +1,7 @@
+/*
+ * @copyright Copyright (c) 2014, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 .content h2.navRoot
 {
     font-size:1em;
@@ -21,12 +25,28 @@
 }
 
 #navigation .icon.icon-arrow-previous { background-image:url(icon-previous.png); width:12px; }
+
 #navigation .icon.icon-arrow-first { background-image:url(icon-first.png); width:8px; }
 
 #navigation .navRoot.fancybuttons .icon.icon-arrow-previous
-{ background-color:#999; width:1.2em; height:1.2em; -moz-border-radius:0.6em; border-radius:0.6em; position:relative; left:-0.25em; }
+{
+    background-color:#999;
+    width:1.2em;
+    height:1.2em;
+    -moz-border-radius:0.6em;
+    border-radius:0.6em;
+    position:relative;
+    left:-0.25em;
+}
+
 #navigation .navRoot.fancybuttons .icon.icon-arrow-first
-{ background-color:#bbb; width:0.9em; height:0.9em; -moz-border-radius:0.45em; border-radius:0.45em; }
+{
+    background-color:#bbb;
+    width:0.9em;
+    height:0.9em;
+    -moz-border-radius:0.45em;
+    border-radius:0.45em;
+}
 
 /* set contextmenu more left */
 #navigation .has-contextmenus-block li a:hover span.button

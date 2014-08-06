@@ -1,3 +1,7 @@
+/**
+ * @copyright Copyright (c) 2014, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 $(document).ready(function() {
 
     var rating_disp = document.getElementsByName('rating');
@@ -71,8 +75,6 @@ $(document).ready(function() {
         tab5.style.display = '';
     }
 
-
-
     $('#changebutton').click(function(){
         tab0.style.display = '';
         tab1.style.display = '';
@@ -85,11 +87,11 @@ $(document).ready(function() {
     });
 
     $('#ratingfield').mouseout(function(){
- 
+
     $('#submit').val(getCheckedValue(rating_in));
- 
+
     });
- 
+
 });
 
 function getCheckedValue(radioObj) {
@@ -108,8 +110,3 @@ function getCheckedValue(radioObj) {
     }
     return "";
 }
-
-
-
-
-

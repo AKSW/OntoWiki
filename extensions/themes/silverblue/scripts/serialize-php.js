@@ -1,3 +1,8 @@
+/**
+ * @copyright Copyright (c) 2014, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
+
 function serialize (mixed_value) {
     // Returns a string representation of variable (which can later be unserialized by php)
     //
