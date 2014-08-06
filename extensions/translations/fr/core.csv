@@ -1,0 +1,225 @@
+#
+# OntoWiki German language translation
+# Encoding:  UTF-8
+# Separator: ;
+#
+Back;Retour
+Submit;Envoyer
+Cancel;Terminer
+Save Changes;"Sauvegarder les modificitions"
+Reset Form;Reculer formulaire
+Edit Instances;TODO
+Edit Properties;TODO
+Add Property;"Ajouter propriété"
+Rendered in %1$d microseconds using %2$d SPARQL queries.;Gerendert in %1$d Mikrosekunden mit %2$d SPARQL-Anfragen.
+more;mehr
+
+moments ago;TODO
+approx. 1 minute ago;il y'a une minute
+approx. %d minutes ago;il y'a %d minutes
+approx. 1 hour ago;il y'a une heure
+approx. %d hours ago;il y'a %d heures
+approx. %d days ago;il y'a %d jours
+
+# test
+page1;Page 1
+page2;Page 2
+
+
+# Module
+Search all Knowledge Bases;Chercher tous les bases de connaissance
+Search Text;TODO
+Knowledge Bases;Bases de connaissance
+Create Knowledge Base;"Créer une base de connaissance"
+Show Hidden Knowledge Bases;"Afficher bases de connaissance cachées"
+Hide Hidden Knowledge Bases;"Cacher bases de connaissance cachées"
+Languages (Tagged Literals);Sprachen (ausgezeichnete Labels)
+none;aucun
+Classes;Classes
+Create Class;"Créer une classe"
+Show Empty Classes;Afficher des classes vides
+Hide Empty Classes;Cacher des classes vides
+Show System Classes;Afficher des classes TODO
+Hide System Classes;TODO
+Show Hidden Classes;Afficher des classes cachées
+Hide Hidden Classes;Cacher des classes cachées
+Most Popular | Most Active;Populär | Aktiv
+Rec. Changes;"Modifications"
+Rec. Comments;Commentaires
+Login;Connecter
+No matches.;Keine Entsprechungen.
+Predicates;Prädikate
+Similar Instances;"Des instances similaires"
+Instances Linking Here;Verlinkte Ressourcen
+Usage as Property;Auftreten als Prädikat
+Not implemented yet.;Noch nicht implementiert.
+Latest Changes;Aktuelle Änderungen
+Latest Discussions;Aktuelle Diskussionen
+Comments, Descriptions and Notes;Kurzbeschreibung
+Actions; Aktionen
+There are no comments, descriptions or notes on this knowledge base.; Es sind keine Kommentare, Beschreibungen oder Anmerkungen in der Wissensbasis enthalten.
+view all resources; Alle Ressourcen anzeigen
+Search for Resources;Suche nach Ressourcen
+Source;Code source
+by;von
+Objects;Objekte
+Subjects;Subjekte
+
+
+# Komponenten
+# TODO: sollten Komponenten ihre Übersetzung selbst verwalten?
+Properties;"Propriétés"
+Instances;Instances
+Calendar;Calendrier
+History;ChangeLog
+Map;Carte
+
+# application menu
+User;Utilisateur
+Register New User;Enregistrer nouvel utilisateur
+Preferences;"Préférences"
+Logout;Annuler
+View;"Aperçu"
+Edit;"Éditer"
+Extras;Extras
+SPARQL Query Editor;SPARQL-Anfrage-Editor
+File Resource Manager;Dateiressourcen-Manager
+News;Nouvelles
+Clear Cache;Vider cache
+Help;Aide
+Documentation;Documentation
+Bug Report;Fehler melden
+Version Info;Versionsinfo
+About;"Über"
+
+#Pager
+First;Erste
+Previous;Vorherige
+Next;Nächste
+Last;Letzte
+
+Create New Knowledge Base;Neue Wissensbasis anlegen
+Model URI;Modell-URI
+Create an Empty Knowledge Base; Eine leere Wissensbasis anlegen
+Base URI;Basis-URI
+Type;Typ
+Import From the Web;Aus dem WWW importieren
+Upload a File;Eine Datei hochladen
+File Type;Dateityp
+File (max. %1$sB);Datei (max. %1$sB)
+Paste Source;Quelltext eingeben
+Source Code;Quelltext
+Enter the URL where the model should be downloaded from. If you leave the field empty the model URI will be used.;Geben Sie die URL zur Modelldatei an. Wenn Sie dieses Feld leer lassen, wird stattdessen die Modell-URI benutzt.
+Location;URL zur Datei
+Instances of %1$s;Instanzen von %1$s
+Properties of %1$s;Eigenschaften von %1$s
+
+Register User;Enregister utilisateur
+Username;Nom d'utilisateur
+Email Address;Adresse e-mail
+Password;Mot de passe
+Password (repeat);"Mot de passe (répéter)"
+Unknown user identifier.;Unbekannte Benutzerkennung.
+Forgot your password?;Passwort vergessen?
+
+Predefined namespaces;Vordefinierte Namensräume
+SPARQL Options;SPARQL-Optionen
+Plain;Einfach
+Submit Query;Anfrage absenden
+result;Ergebnis
+results;Ergebnisse
+Search returned %1$d %2$s.;Die Suche lieferte %1$d %2$s. 
+Query execution took %1$d ms.;Die Bearbeitung der Anfrage dauerte %1$d ms.
+
+# Menüs
+View Resource;Regarder ressource
+Edit Resource;"Éditer ressource"
+Delete Resource;Effacer ressource
+
+List Instances;Lister les instances
+Create Instance;"Créer instance"
+Create Subclass;"Créer sous-classe"
+
+Select Knowledge Base;"Sélectionner base de connaissance"
+Configure Knowledge Base;"Configurer base de connaissance"
+Add Data to Knowledge Base;"Ajouter des données à base de connaissance"
+Export Knowledge Base as RDF/XML;Exporter base de connaissance comme RDF/XML
+Export Knowledge Base as RDF/JSON;Exporter base de connaissance comme RDF/JSON
+Export Knowledge Base as RDF/N3;Exorter base de connaissance comme RDF/N3
+Export Knowledge Base as RDF/JSON (Talis);Exporter base de connaisssance comme RDF/JSON (Talis)
+Export Knowledge Base as Turtle;Exporter base de connaissance comme Turtle
+Export Knowledge Base as Notation 3;Exporter base de connaissance comme N3
+Delete Knowledge Base;Supprimer base de connaissance
+
+Toggle show Permalink;Afficher/cacher Permalien
+Toggle show Resoure Query;Afficher/cacher Resource Query
+
+# Wochentage
+Monday;Lundi
+Tuesday;Mardi
+Wednesday;Mercredi
+Thursday;Jeudi
+Friday;Vendredi
+Saturday;Samedi
+Sunday;Dimance
+
+Add Class;Ajouter classe
+Add Instance;Ajouter instance
+
+Show Properties;"Afficher propriétés"
+
+Filter;Filter
+Combine Filters (Conjunction);Filter kombinieren (Konjunktion)
+
+Merge;Fusionner
+Visit resource on the web;Ressource im Netz aufsuchen
+
+Create instances from property value by regexp
+Similar Instances
+Rating
+Average Rating
+Your Rating
+Instances Linking Here
+Usage as Property
+Instances
+Values
+Search | OntoWiki
+Search Text
+Submit
+Search All Knowledge Bases
+Search
+Add Property
+Submit Values
+SPARQL Query Editor
+Result Options
+Table
+SPARQL Query Results XML Format
+Render Ressources as OntoWiki Links
+Create New Knowledge Base
+FOAFSSL;FOAF+SSL
+
+# explore tags module
+Explore Tags;Schlagwörter / Tag-Wolken
+Reset Explore Tags Box;Modul zurücksetzen
+Reset selected tags;Tag-Auswahl zurücksetzen
+Number of showed tags;Anzahl Tags
+Sort;Triage
+by name; par nom
+by frequency;"par quantité"
+
+# navigation module
+Number of Elements;Anzahl Ressourcen
+Toggle Elements;Spezielle Elemente
+Reset Navigation;Navigation zurücksetzen
+Add Resource here;Ajouter ressource ici
+Show Hidden Elements;Versteckte Ressourcen einblenden
+Hide Hidden Elements;Versteckte Ressourcen ausblenden
+
+# filter extension
+Toggle help; Hilfe (de)aktivieren
+filter_help1;Wörter die durch Leerzeichen getrennt sind müssen alle im Ergebnis enthalten sein, dabei spielt die eingegebene Reihenfolge keine Rolle.
+filter_help2;Phrasen können gesucht werden, indem die Wortgruppe in einfache Anführungszeichen gesetzt wird (Strg + #).
+filter_help3;Werden mindestens vier Buchstaben eingegeben, kann anschließend durch Sternchen '*' eine Trunkierung erfolgen.
+filter_help4;Sobald die Suche die Wörter AND oder OR enthält, muss die komplette bif:contains-Syntax benutzt werden.
+Further info;mehr Informationen
+

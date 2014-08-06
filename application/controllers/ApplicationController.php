@@ -223,8 +223,17 @@ class ApplicationController extends OntoWiki_Controller_Base
                 array('escape' => false, 'translate' => false)
             )
         );
+        
+        $contentType = $this->_request->getHeader('Content-Type');
+        if(strstr($contentType, 'application/json')){
+            $rawBody     = $this->_request->getRawBody();
+            echo $rawBody;
+            $post = Zend_Json::decode($rawBody);
+        }
 
         if ($post) {
+            /* status var in order to fire corresponding events */
+            $registrationError = true;
             $registeredUsernames      = array();
             $registeredEmailAddresses = array();
 
@@ -310,6 +319,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                                             $this->_owApp->appendMessage(
                                                 new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
                                             );
+                                            $registrationError = false;
                                         } else {
                                             $message = 'A registration error occured. Please refer to the log entries.';
                                             $this->_owApp->appendMessage(
@@ -322,6 +332,22 @@ class ApplicationController extends OntoWiki_Controller_Base
                         }
                     }
                 }
+            }
+
+            /*
+             * fire events for success and error
+             */
+            if ($registrationError === false) {
+                $event           = new Erfurt_Event('onRegisterUser');
+                $event->username = $username;
+                $event->response = $this->_response;
+                $event->trigger();
+            } else {
+                $event           = new Erfurt_Event('onRegisterUserFailed');
+                $event->username = $username;
+                $event->message = $message;
+                $event->response = $this->_response;
+                $event->trigger();
             }
         }
     }

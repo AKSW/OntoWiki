@@ -2,7 +2,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2009, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -600,9 +600,11 @@ function editResourceFromURI(resource) {
                 addOptionalPropertyValues: addOptionalPropertyValues,
                 onSubmitSuccess: function () {
                     // HACK: reload whole page after 500 ms
+                    /*
                     window.setTimeout(function () {
                         window.location.href = window.location.href;
                     }, 500);
+                    */
                 },
                 onCancel: function () {
                     // HACK: reload whole page after 500 ms

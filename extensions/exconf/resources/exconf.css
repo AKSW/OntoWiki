@@ -1,11 +1,10 @@
-/* 
-    Document   : exconf
-    Created on : 03.02.2011, 19:29:44
-    Author     : haschek
-    Description:
-        defines special elements for the extension configurator
-*/
-
+/**
+ * Defines special elements for the extension configurator
+ * @author    haschek
+ * @since     03.02.2011, 19:29:44
+ * @copyright Copyright (c) 2014, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 #show_extension input, legend
 {
     position:absolute;

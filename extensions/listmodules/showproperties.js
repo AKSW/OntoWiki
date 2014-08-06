@@ -1,12 +1,16 @@
+/**
+ * @copyright Copyright (c) 2014, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ */
 $(document).ready(function() {
     //Set up drag- and drop-functionality
     $('.show-property').draggable({
-                            scope: 'Resource',
-                            helper: 'clone',
-                            zIndex: 10000,
-                            scroll: false,
-                            appendTo: 'body'
-                        });
+        scope: 'Resource',
+        helper: 'clone',
+        zIndex: 10000,
+        scroll: false,
+        appendTo: 'body'
+});
 
     // highlight previously selected properties
     $('.show-property').each(function() {
@@ -16,29 +20,25 @@ $(document).ready(function() {
         } else {
             var pos = $.inArray(propUri, shownInverseProperties);
         }
-        	
         if (pos > -1) {
             $(this).addClass('selected');
         }
     })
+
     function handleNewSelect() {
         var propUri = $(this).attr('about');
         $(this).toggleClass('selected');
         
         var action = $(this).hasClass('selected')? "add" : "remove";
-           
         var inverse = $(this).hasClass('InverseProperty');
-
         var label = $(this).attr("title");
-        
         var data = { shownProperties : [{
-                "uri" : propUri,
-                "label" : label,
-                "action" : action,
-                "inverse" : inverse
-            }]
-        };
-        
+            "uri" : propUri,
+            "label" : label,
+            "action" : action,
+            "inverse" : inverse
+        }]};
+
         var serialized = $.toJSON(data);
         //
         //reload page
@@ -57,7 +57,6 @@ $(document).ready(function() {
                 $('body').trigger('ontowiki.resource-list.reloaded');
                 showPropertiesAddDroppableToListTable();
             });
-
       };
 
     function showPropertiesAddDroppableToListTable() {
@@ -69,10 +68,9 @@ $(document).ready(function() {
              drop:
                  function(event, ui) {$(ui.draggable).each(handleNewSelect);}
         });
-    }    
-    
+    }
+
     //set click handler for the properties
     $('.show-property').click(handleNewSelect);
-    
     showPropertiesAddDroppableToListTable();
 })
