@@ -633,24 +633,9 @@ class ModelController extends OntoWiki_Controller_Base
 
             $filename = 'export' . date('Y-m-d_Hi');
 
-            switch ($format) {
-                case 'rdfxml':
-                    $contentType = 'application/rdf+xml';
-                    $filename .= '.rdf';
-                    break;
-                case 'rdfn3':
-                    $contentType = 'text/rdf+n3';
-                    $filename .= '.n3';
-                    break;
-                case 'rdfjson':
-                    $contentType = 'application/json';
-                    $filename .= '.json';
-                    break;
-                case 'turtle':
-                    $contentType = 'application/x-turtle';
-                    $filename .= '.ttl';
-                    break;
-            }
+            $description = Erfurt_Syntax_RdfSerializer::getFormatDescription($format);
+            $contentType = $description['contentType'];
+            $filename .= $description['fileExtension'];
 
             $this->_helper->viewRenderer->setNoRender();
             $this->_helper->layout->disableLayout();
