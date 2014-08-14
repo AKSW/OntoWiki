@@ -23,6 +23,7 @@ class MetaJsonrpcAdapter
         'meta'      => 'methods to query the json service itself',
         'store'     => 'methods to manipulate and query the store',
         'model'     => 'methods to manipulate and query a specific model',
+        'resource'  => 'methods to manipulate and query a specific resource',
         //'evolution' => 'methods to manage and use the evolution engine',
     );
 
