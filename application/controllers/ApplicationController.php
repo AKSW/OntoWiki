@@ -90,10 +90,9 @@ class ApplicationController extends OntoWiki_Controller_Base
 
         // check if the git comand exists and ontowiki is a working directory
         if (file_exists('.git') && substr(@exec('git --version'), 0, 11) == 'git version') {
-            @exec('git status', $arr);
             $data['Git Versioning'] = array(
                 'Version'     => @exec('git describe'),
-                'Branch'      => substr($arr[0], 12),
+                'Branch'      => @exec('git rev-parse --abbrev-ref HEAD'),
                 'last commit' => @exec("git log --pretty=format:'%ar' -n 1")
             );
         }

@@ -23,6 +23,14 @@ class BasicimporterPlugin extends OntoWiki_Plugin
         $this->provideImportActions($event);
     }
 
+    /**
+     * Listen for the store initialization event
+     */
+    public function onSetupStore($event)
+    {
+     //   $this->importModels();
+    }
+
     /*
      * here we add new import actions
      */
@@ -56,5 +64,33 @@ class BasicimporterPlugin extends OntoWiki_Plugin
 
         $event->importActions = array_merge($event->importActions, $myImportActions);
         return $event;
+    }
+
+    private function importModels ()
+    {
+        // read config for models to import
+        $owApp = OntoWiki::getInstance();
+        $models = $this->_privateConfig->setup->model->toArray();
+        foreach ($models as $info) {
+            // import models
+            $path = ONTOWIKI_ROOT . '/' . $info['path'];
+            $uri = $info['uri'];
+            $hidden = $info['hidden'];
+            $this->_import($uri, $path);
+        }
+    }
+
+    private function _import($modelIri, $fileOrUrl)
+    {
+        try {
+            Erfurt_App::getInstance()->getStore()->importRdf($modelIri, $fileOrUrl);
+        } catch (Erfurt_Exception $e) {
+            // re-throw
+            throw new OntoWiki_Controller_Exception(
+                'Could not import given model: ' . $e->getMessage(),
+                0,
+                $e
+            );
+        }
     }
 }
