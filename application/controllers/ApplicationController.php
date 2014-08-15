@@ -30,12 +30,17 @@ class ApplicationController extends OntoWiki_Controller_Base
             $version .= ' ' . $this->_config->version->suffix;
         }
 
-        $cacheWritable = is_writable($this->_config->cache->path)
-            ? ' <span style="color:#aea">(writable)</span>'
-            : ' <span style="color:#eaa">(not writable!)</span>';
-        $logWritable   = is_writable($this->_config->log->path)
-            ? ' <span style="color:#aea">(writable)</span>'
-            : ' <span style="color:#eaa">(not writable!)</span>';
+        if (is_writable($this->_config->cache->path)) {
+            $cacheWritable = ' <span style="color:#aea">(writable)</span>';
+        } else {
+            $cacheWritable = ' <span style="color:#eaa">(not writable!)</span>';
+        }
+
+        if (is_writable($this->_config->log->path)) {
+            $logWritable = ' <span style="color:#aea">(writable)</span>';
+        } else {
+            $logWritable = ' <span style="color:#eaa">(not writable!)</span>';
+        }
 
         $cacheBackend         = $this->_config->cache->backend->type;
         $cacheBackendOptions  = array();
@@ -84,15 +89,12 @@ class ApplicationController extends OntoWiki_Controller_Base
         );
 
         // check if the git comand exists and ontowiki is a working directory
-        if (file_exists(".git")
-            && substr(@exec("git --version"), 0, 11) == "git version"
-        ) {
+        if (file_exists('.git') && substr(@exec('git --version'), 0, 11) == 'git version') {
             @exec('git status', $arr);
             $data['Git Versioning'] = array(
-                'Version'     => @exec("git describe"),
+                'Version'     => @exec('git describe'),
                 'Branch'      => substr($arr[0], 12),
                 'last commit' => @exec("git log --pretty=format:'%ar' -n 1")
-                //'Git Version'  => substr(@exec("git --version"),12),
             );
         }
 
@@ -223,9 +225,9 @@ class ApplicationController extends OntoWiki_Controller_Base
                 array('escape' => false, 'translate' => false)
             )
         );
-        
+
         $contentType = $this->_request->getHeader('Content-Type');
-        if(strstr($contentType, 'application/json')){
+        if (strstr($contentType, 'application/json')) {
             $rawBody     = $this->_request->getRawBody();
             echo $rawBody;
             $post = Zend_Json::decode($rawBody);
@@ -256,7 +258,8 @@ class ApplicationController extends OntoWiki_Controller_Base
 
             $emailValidator = new Zend_Validate_EmailAddress();
 
-            if (!$this->_erfurt->isActionAllowed('RegisterNewUser')
+            if (
+                !$this->_erfurt->isActionAllowed('RegisterNewUser')
                 || !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))
             ) {
                 $message = 'Action not permitted for the current user.';
@@ -270,20 +273,23 @@ class ApplicationController extends OntoWiki_Controller_Base
                 $message = 'Email address is already registered.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
             } else {
-                if (isset($actionConfig['mailvalidation'])
+                if (
+                    isset($actionConfig['mailvalidation'])
                     && $actionConfig['mailvalidation'] == 'yes'
                     && !$emailValidator->isValid($email)
                 ) {
                     $message = 'Email address validation failed.';
                     $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
                 } else {
-                    if (in_array($username, $registeredUsernames)
+                    if (
+                        in_array($username, $registeredUsernames)
                         || ($username == $this->_owApp->erfurt->getStore()->getDbUser())
                     ) {
                         $message = 'Username already registered.';
                         $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
                     } else {
-                        if (isset($actionConfig['uidregexp'])
+                        if (
+                            isset($actionConfig['uidregexp'])
                             && !preg_match($actionConfig['uidregexp'], $username)
                         ) {
                             $message = 'Username contains illegal characters.';
@@ -299,7 +305,8 @@ class ApplicationController extends OntoWiki_Controller_Base
                                         new OntoWiki_Message($message, OntoWiki_Message::ERROR)
                                     );
                                 } else {
-                                    if (isset($actionConfig['passregexp'])
+                                    if (
+                                        isset($actionConfig['passregexp'])
                                         && $actionConfig['passregexp'] != ''
                                         && !@preg_match($actionConfig['passregexp'], $password)
                                     ) {
@@ -382,7 +389,8 @@ class ApplicationController extends OntoWiki_Controller_Base
                 $emailValidator = new Zend_Validate_EmailAddress();
 
                 // Is register action allowed for current user?
-                if (!$this->_erfurt->isActionAllowed('RegisterNewUser')
+                if (
+                    !$this->_erfurt->isActionAllowed('RegisterNewUser')
                     || !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))
                 ) {
 
@@ -396,7 +404,9 @@ class ApplicationController extends OntoWiki_Controller_Base
                     // Does user already exist?
                     $message = 'A user with the given OpenID is already registered.';
                     $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-                } else if (!empty($email) && isset($actionConfig['mailvalidation'])
+                } else if (
+                    !empty($email)
+                    && isset($actionConfig['mailvalidation'])
                     && $actionConfig['mailvalidation'] === 'yes'
                     && !$emailValidator->isValid($email)
                 ) {
@@ -654,10 +664,10 @@ class ApplicationController extends OntoWiki_Controller_Base
             $emailValidator = new Zend_Validate_EmailAddress();
 
             // Is register action allowed for current user?
-            if (!$this->_erfurt->isActionAllowed('RegisterNewUser')
+            if (
+                !$this->_erfurt->isActionAllowed('RegisterNewUser')
                 || !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))
             ) {
-
                 $message = 'Action not permitted for the current user.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
             } else if (empty($webId)) {
@@ -668,7 +678,9 @@ class ApplicationController extends OntoWiki_Controller_Base
                 // Does user already exist?
                 $message = 'A user with the given WebID is already registered.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if (!empty($email) && isset($actionConfig['mailvalidation'])
+            } else if (
+                !empty($email)
+                && isset($actionConfig['mailvalidation'])
                 && $actionConfig['mailvalidation'] === 'yes'
                 && !$emailValidator->isValid($email)
             ) {
