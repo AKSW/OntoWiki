@@ -465,6 +465,8 @@ function populateRDFauthor(data, protect, resource, graph, workingmode) {
                     // remove all values except for type
                     if ( stmt.predicateURI() !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' ) {
                         stmt._object.value = "";
+                    } else {
+                        stmt._hidden = true;
                     }
                 }
 
