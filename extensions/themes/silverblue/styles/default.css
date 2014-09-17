@@ -1317,6 +1317,11 @@ select {
     vertical-align: middle;
 }
 
+/* -- reset width for 'year' dropdown --------------------------------------- */
+select.ui-datepicker-year {
+     min-width: initial;
+}
+
 select.multiselect, select[multiple="multiple"], select.multiple {
     vertical-align: text-top;
     max-height: 32em;
