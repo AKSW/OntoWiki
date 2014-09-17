@@ -446,7 +446,7 @@ $(document).ready(function() {
             });
         }
     });
-    
+
     $('.clone-resource').click(function() {
         loadRDFauthor(function () {
             var serviceURI = urlBase + 'service/rdfauthorinit';
@@ -457,6 +457,10 @@ $(document).ready(function() {
                mode: 'clone',
                uri: prototypeResource
             }, function(data) {
+                var addPropertyValues = data['addPropertyValues'];
+                var addOptionalPropertyValues = data['addOptionalPropertyValues'];
+                delete data.addPropertyValues;
+                delete data.addOptionalPropertyValues;
                 // get default resource uri for subjects in added statements (issue 673)
                 // grab first object key
                 for (var subjectUri in data) {break;};
@@ -470,6 +474,8 @@ $(document).ready(function() {
                     autoParse: false, 
                     showPropertyButton: true,
                     loadOwStylesheet: false,
+                    addPropertyValues: addPropertyValues,
+                    addOptionalPropertyValues: addOptionalPropertyValues,
                     onSubmitSuccess: function (responseData) {
                         var newLocation;
                         if (responseData && responseData.changed) {
