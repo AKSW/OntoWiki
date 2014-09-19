@@ -482,11 +482,13 @@ function createInstanceFromClassURI(type, dataCallback) {
     var serviceUri = urlBase + 'service/rdfauthorinit';
 
     // check if an resource is in editing mode
-    if($(body).data('editingMode')) {
-        alert("Please finish all other editing actions before creating a new instance.");
-        return;
-        //RDFauthor.cancel();
-        //RDFauthor.reset();
+    if(typeof RDFAUTHOR_STATUS != 'undefined') {
+        if(RDFAUTHOR_STATUS === 'active') {
+            alert("Please finish all other editing actions before creating a new instance.");
+            return;
+            //RDFauthor.cancel();
+            //RDFauthor.reset();
+        }
     }
 
     // remove resource menus
@@ -622,8 +624,6 @@ function resourceURL(resourceURI) {
 function editProperty(event) {
     var element = $.event.fix(event).target;
 
-    $(body).data('editingMode', true);
-
     loadRDFauthor(function () {
         RDFauthor.setOptions({
             saveButtonTitle: 'Save Changes', 
@@ -635,7 +635,6 @@ function editProperty(event) {
                     $(this).fadeOut(effectTime);
                 });
                 $('.edit-enable').removeClass('active');
-                $(body).data('editingMode', false);
 
                 // HACK: reload whole page after 1000 ms
                 /*
@@ -771,7 +770,6 @@ function addProperty() {
             RDFauthor.getView().addWidget(statement, null, {container: $('#' + td2ID), activate: true});
         }
     };
-    
     var selector = new Selector(RDFAUTHOR_DEFAULT_GRAPH, RDFAUTHOR_DEFAULT_SUBJECT, selectorOptions);
     selector.presentInContainer();
 }

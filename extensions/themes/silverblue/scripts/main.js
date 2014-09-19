@@ -355,7 +355,6 @@ $(document).ready(function() {
     });
     
     $('.edit.cancel').click(function() {
-        $(body).data('editingMode', false);
         // reload page
         window.location.href = window.location.href;
         RDFauthor.cancel();
@@ -373,7 +372,6 @@ $(document).ready(function() {
     
     // edit mode
     $('.edit-enable').click(function() {
-        $(body).data('editingMode', true);
         var button = this;
         if ($(button).hasClass('active')) {
             RDFauthor.cancel();
@@ -499,8 +497,7 @@ $(document).ready(function() {
     
     // add property
     $('.property-add').click(function() {
-        $(body).data('editingMode', true);
-        if(typeof(RDFauthor) === 'undefined') {
+        if(typeof(RDFauthor) === 'undefined' || ((typeof(RDFAUTHOR_STATUS) != 'undefined') && (RDFAUTHOR_STATUS === 'inactive'))) {
             loadRDFauthor(function () {
                 RDFauthor.setOptions({
                     onSubmitSuccess: function () {
