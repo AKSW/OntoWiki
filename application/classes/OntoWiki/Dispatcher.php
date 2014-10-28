@@ -163,6 +163,7 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
 
         // URI may not contain a whitespace character!
         $pathInfo = str_replace(' ', '+', $pathInfo);
+        $pathInfo = urldecode($pathInfo);
 
         if (class_exists($className, false)) {
             // give a chance to let class handle (e.g. index controller news action default)
