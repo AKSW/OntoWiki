@@ -137,6 +137,30 @@ class ModelJsonrpcAdapter
     }
 
     /**
+     * @desc get the titles for a given array of resources
+     *
+     * @param string modelIri
+     * @param array resources
+     *
+     * @return array An associative array of resources and their titles
+     */
+    public function getTitles($modelIri, $resources)
+    {
+        // ["http://pfarrerbuch.comiles.eu/sachsen/"]
+        $resources = json_decode($resources);
+
+        $model    = $this->_store->getModel($modelIri);
+        $titleHelper = new OntoWiki_Model_TitleHelper($model, $this->_store);
+        $titleHelper->addResources($resources);
+        $titles = array();
+        foreach ($resources as $resourceUri) {
+            $titles[$resourceUri] = $titleHelper->getTitle($resourceUri);
+        }
+
+        return $titles;
+    }
+
+    /**
      * @desc counts the number of statements of a model
      *
      * @param string modelIri
