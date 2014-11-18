@@ -382,9 +382,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         // get last route or default
-        $route = isset($session->lastRoute)
-               ? $session->lastRoute
-               : $config->route->default->name;
+        $route = isset($session->lastRoute) ? $session->lastRoute : $config->route->default->name;
 
         // register with navigation
         if (isset($config->routes->{$route})) {
