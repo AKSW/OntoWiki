@@ -164,7 +164,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // set path variables
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
 
-        // set protocol and read headers send by proxies
+        // set protocol and read headers sent by proxies
         $protocol = 'http';
         if (isset($_SERVER['X-Forwarded-Protocol'])) {
                 $protocol = strtolower($_SERVER['X-Forwarded-Protocol']);
