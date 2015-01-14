@@ -71,7 +71,10 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $request  = Zend_Controller_Front::getInstance()->getRequest();
         $response = Zend_Controller_Front::getInstance()->getResponse();
 
-        $uri = $event->uri;
+        $aliascheck = new Erfurt_Event('onResolveDomainAliasInput');
+        $aliascheck->uri = $event->uri;
+        $aliascheck->trigger();
+        $uri = $aliascheck->uri;
 
         try {
             // Check for a supported type by investigating the suffix of the URI or by
