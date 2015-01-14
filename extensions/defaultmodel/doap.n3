@@ -11,12 +11,12 @@
 :defaultmodel a doap:Project ;
   doap:name "defaultmodel" ;
   owconfig:privateNamespace <https://github.com/AKSW/defaultmodel/raw/master/doap.n3#> ;
-  owconfig:enabled "false"^^xsd:boolean ;
+  owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Default Model" ;
   doap:description "Plugin to select default model if only one available or always" ;
   owconfig:authorLabel "Christoph Rieß" ;
   owconfig:pluginEvent event:onAfterInitController ;
-  :modelUri <http://showcase.ontowiki.net/> ;
+  :modelUri <http://linkedspending.aksw.org/> ;
   :setOnce "true"^^xsd:boolean ;
   :modelsHide "true"^^xsd:boolean ;
   :modelsExclusiveRight "ModelManagement" ;
