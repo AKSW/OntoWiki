@@ -37,3 +37,6 @@ build/
 # vagrant stuff
 Vagrantfile
 .vagrant
+
+# dataset files
+export

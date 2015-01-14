@@ -1,0 +1,116 @@
+<!-- doesnt work because its not in the head:
+<style type="text/css">
+ .button {background-color:#4C78A4;color:white;font-size:221.5em;margin-left:2em;}
+</style> -->
+<div style ="background-color: #fff ; padding:10px; color: #446644; font-family:sans-serif;">
+
+
+<!--<a href="http://latc-project.eu/" style="text-decoration:none; float:right "><img src="http://latc-project.eu/sites/default/files/latc-logo.gif" style="border:0px"> </a>-->
+    <h1>Welcome to linkedspending.aksw.org</h1>
+    <div style="margin: 2em auto; background-color: #fafafa ; border-top:1px solid #ababab; padding:10px; ">
+        <p>
+<div style="float:right">
+<a class="button" style="float:right;background-color:#4C78A4;color:white;font-size:1.5em;margin-left:2em;" href='http://linkedspending.aksw.org/list?init&instancesconfig=%7B%22filter%22%3A%5B%7B%22rdfsclass%22%3A%22http%3A%5C%2F%5C%2Fpurl.org%5C%2Flinked-data%5C%2Fcube%23DataSet%22%2C%22mode%22%3A%22rdfsclass%22%7D%5D%7D'>Browse Datasets</a></br>
+<a class="button" style="float:right;background-color:#4C78A4;color:white;font-size:1.5em;margin-left:2em;" href='http://linkedspending.aksw.org/resource/properties/?r=http%3A%2F%2Flinkedspending.aksw.org%2Finstance%2Ffinland-aid'>Example Dataset</a></br>
+<!--<a class="button" style="float:right;background-color:#4C78A4;color:white;font-size:1.5em;margin-left:2em;" href='http://linkedspending.aksw.org/cubeviz/?m=http%3A%2F%2Flinkedspending.aksw.org%2F&cv_dataHash=663948d44d591284352063f9173a82ae&cv_uiHash=3721624022a2ebea8cf9e412d1cf32d5'>Example Visualization 1</a></br>-->
+<!--<a class="button" style="float:right;background-color:#4C78A4;color:white;font-size:1.5em;margin-left:2em;" href='http://linkedspending.aksw.org/cubeviz/?m=http%3A%2F%2Flinkedspending.aksw.org%2F&cv_dataHash=60a3239469705510e52953511b539a26&cv_uiHash=3721624022a2ebea8cf9e412d1cf32d5'>Example Visualization 1</a></br>
+<a class="button" style="float:right;background-color:#4C78A4;color:white;font-size:1.5em;margin-left:2em;" href='http://linkedspending.aksw.org/cubeviz/?m=http%3A%2F%2Flinkedspending.aksw.org%2F&cv_dataHash=a6a109991c27aa00ed63b8eab23b4d12&cv_uiHash=7bf972e276e34954444456cc1b13eada'>Example Visualization 2</a></br>-->
+<a class="button" style="float:right;background-color:#4C78A4;color:white;font-size:1.5em;margin-left:2em;" href='http://linkedspending.aksw.org/sparql/'>Virtuoso SPARQL Editor</a></br>
+<a href="http://linkedspending.aksw.org/sparql?default-graph-uri=&query=select+distinct+%3Fdate+{%3Fo+a+qb%3AObservation.+%3Fo+qb%3AdataSet+ls%3Ade-bund.+%3Fo+lso%3ArefDate+%3Fdate.+FILTER+%28xsd%3Adate%28%3Fdate%29+%3E%3D+%222020-1-1%22^^xsd%3Adate%29+}&format=text%2Fhtml&timeout=0&debug=on" style="float:right; background-color:#4C78A4;color:white;font-size:1.5em;margin-left:2em" class="button"> Example SPARQL Query</a>
+</div>
+<b>LinkedSpending</b> contains government spendings from all over the world as Linked Data.
+LinkedSpending uses the information collected by the <a href="http://openspending.org">OpenSpending project</a> and makes it available as an RDF knowledge base according to the Linked Data principles. Just follow the examples on the right or discover the data by yourself! 
+
+<h2>DataSet Version 2014-3 now online! Version 0.1 is still available as <a href="extensions/page/page/export/lscomplete-0.1.tar.gz">download</a>.</h2>
+<!--<h2>CubeViz suffers from performance issues on big datasets. In case it doesn't work for a dataset, please use "browse datasets" to get the OntoWiki browse view for that dataset.</h2>-->
+<h2>CubeViz visualization temporarily disabled because of the new system. It should be back up in the next days. Please use normal OntoWiki browsing or the endpoint in the meantime.</h2>
+<h2>Abstract</h2>
+Transparency into government spending is in high demand from the public.
+Open spending data has the power to reduce corruption by increasing accountability and strengthens democracy because voters can make better informed decisions.
+An informed and trusting public also strengthens the government itself because is more likely to commit to large projects.
+We present LinkedSpending which provides more than 2 million planned and carried out financial transactions from all over the world from 2005 to 2035 as Linked Open Data.
+This data is represented in the RDF data cube format and is freely available and openly licensed.
+
+<h2>Examples</h2>
+The example visualizations show <a href='http://linkedspending.aksw.org/cubeviz/?m=http%3A%2F%2Flinkedspending.aksw.org%2F&cv_dataHash=e7c727da6a1873a2ab93058109fe35dd&cv_uiHash=532b34666ff95c54d0994482714a8db1'>the proportion of the different categories of the budget of Romania of 2013</a>
+and <a href='http://linkedspending.aksw.org/cubeviz/?m=http%3A%2F%2Flinkedspending.aksw.org%2F&cv_dataHash=756b404c6e0cef0dfecf57054433cf4b&cv_uiHash=3721624022a2ebea8cf9e412d1cf32d5'>greek spending on police in certain regions in 2012</a>.
+
+<h2>Vocabularies</h2>
+Apart from to standard vocabularies such as
+<a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#">RDF</a>,
+<a href="http://www.w3.org/2000/01/rdf-schema#">RDFS</a>,
+<a href="http://www.w3.org/2002/07/owl#">OWL</a> and
+<a href="http://prefix.cc/xsd">XSD</a>,
+the datasets are modelled, first and foremost, according to the <a href="http://www.w3.org/TR/vocab-data-cube/#slices">RDF Data Cube vocabulary</a>.
+LinkedSpending follows the RDF Data Cube recommendation to make heavy use of the model of the <a href="http://sdmx.org/">Statistical Data and Metadata eXchange (SDMX) initiative</a> for measures, attributes and dimensions.
+The deep structure of the datasets is very heterogeneous but there are some properties which are commonly specified and thus modelled with established vocabularies.
+The year and date, a dataset and an observation refer to, respectively, is expressed by <code>sdmx-dimension:refPeriod</code> and XSD.
+
+Dates are handled by the XSD vocabulary, currencies are taken from DBpedia and countries are represented using the vocabulary of <a href="http://linkedgeodata.org">LinkedGeoData</a>, which is the main hub for spatial linked data.
+
+    </div>
+<!--    <div style="margin: 2em auto; background-color: #fafafa ; border-top:1px solid #ababab; padding:10px; ">
+	<h2 id="browse">Browsing the Data</h2>
+        <p>-->
+<!--          <a href="http://linkedspending.aksw.org/model/info/?m=http%3A%2F%2Flinkedspending.aksw.org%2F" style="float:right; background-color:#4C78A4;color:white;font-size:1.5em;margin-left:2em" class="button"> Browse the Data </a>-->
+<!--
+          If you want to <b>browse the data</b>, please click <a href="http://linkedspending.aksw.org/model/info/?m=http%3A%2F%2Flinkedspending.aksw.org%2F">here</a> to select the knowledge base (http://linkedspending.aksw.org/). 
+	  After selection the "navigation box" module is visible on the left side providing links for navigation.
+          This way, it is possible get a list of all data sets  when selecting the class 
+   	  <a href='http://linkedspending.aksw.org/list?init&instancesconfig=%7B%22filter%22%3A%5B%7B%22rdfsclass%22%3A%22http%3A%5C%2F%5C%2Fpurl.org%5C%2Flinked-data%5C%2Fcube%23DataSet%22%2C%22mode%22%3A%22rdfsclass%22%7D%5D%7D'>Data set </a>, for example.
+        </p>
+
+        <p>
+         Furthermore, it is possible to create your own SPARQL query using the following editor:
+	  <ul>
+-		<li><a href='http://linkedspending.aksw.org/queries/editor/'>OntoWiki SPARQL Editor</a> (or select "Extras - Queries" in the OntoWiki menu) </li>
+	  </ul>-->
+<!--	<p>
+As an example you can click on the Example Query Button on the right. It selects all years which have observations in the de-bund dataset observations from the de-bund dataset from the year 2020 onwards.
+	</p>
+    </div>-->
+    <div style="margin: 2em auto; background-color: #fafafa ; border-top:1px solid #ababab; padding:10px; ">
+	<h2 id="schema">DataCube Ontology</h2>
+	<p>
+          This dataset (<a href='http://linkedspending.aksw.org/'>http://linkedspending.aksw.org/</a>) was triplified and published by the research group <a href='http://aksw.org/'>AKSW (Agile Knowledge Engineering and Semantic Web)</a> and uses the a part of the RDF Data Cube schema visualized in the folowing depiction:
+        </p>
+	<br>
+	<p align=center>
+  	  <br><br>
+		<img src="http://linkedspending.aksw.org/extensions/page/page/img/rdfdatacube_shrinked.png" style="border:0px solid black; width:80em;"/>
+	  <br><br>
+<!--	  Statistics about the dataset are republished on <a href="http://thedatahub.org/de/dataset/beneficiaries-of-the-european-commission">thedatahub.org</a>.-->
+
+        </p>
+    </div>
+
+    <div style="margin: 2em auto; background-color: #fafafa ; border-top:1px solid #ababab; padding:10px; ">
+	<h2 id="download">Download the Data</h2>
+	<p>
+		This RDF version of the dataset is published under <a href = "http://opendatacommons.org/licenses/pddl/1.0/" >PDDL 1.0</a> .<br>
+		If you want to download a dump of the dataset click one of the following items:
+		<ul>
+			<li><a href="extensions/page/page/export/lscomplete20143.tar.gz">Download LS package 2014-3 as TAR.GZ compressed ntriples (~2.4 GB compressed,)</a></li>
+			<li><a href="extensions/page/page/export/lscomplete-0.1.tar.gz">Download LS package 2013-9 as TAR.GZ compressed ntriples (~1 GB compressed, ~10 GB uncompressed)</a></li>
+		</ul>
+		We will update this dataset regularily in case that OpenSpending will publish new datasets.
+	<p>
+    </div>
+
+
+    <div style="margin: 2em auto; background-color: #fafafa ; border-top:1px solid #ababab; padding:10px; ">
+	<h2 id="contact">Contact and Feedback</h2>
+        If you have further ideas or questions about this tool feel free to contact us at:<br>
+<table style="width:40%">
+<tr><td><b>AKSW team</b></td><td><a href='http://aksw.org/Team'>Website</a></td></tr>
+<tr><td><b>Konrad Höffner (Creator and Maintainer)</b></td><td><a href='http://aksw.org/KonradHoeffner'>Website</a></td></tr>
+<tr><td><b>Michael Martin (OntoWiki and CubeViz Developer, Data Cube Expert)</b></td><td><a href='http://aksw.org/MichaelMartin'>Website</a></td></tr>
+<tr><td><b>Jens Lehmann (Project Supervisor)</b></td><td><a href='http://jens-lehmann.org/'>Website</a></td></tr>
+</table>
+
+        For further information about AKSW please visit our <a href='http://aksw.org/'>website</a>.
+<!--        <p>
+        Please visit the <a href='http://latc-project.eu/'>website</a> of the LATC project meanwhile.
+        </p>-->
+    </div>
+</div>
