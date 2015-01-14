@@ -1,0 +1,533 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>OntoWiki � Instances of Person</title>    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="OntoWiki � Collaborative Knowledge Engineering" />
+<script type="text/javascript">
+var urlBase = "http://localhost/ow/trunk/";
+var themeUrlBase = "http://localhost/ow/trunk/extensions/themes/silverblue/";
+var _OWSESSION = "ONTOWIKItrunk";
+var widgetBase = "http://localhost/ow/trunk/libraries/RDFauthor/";
+var defaultGraph = "http://sebastian.dietzold.de/rdf/foaf.rdf";
+var defaultResource = "http://xmlns.com/foaf/0.1/Person";
+</script>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="./../scripts/libraries/jquery.js"></script>
+    <script type="text/javascript" src="./../scripts/libraries/jquery-ui.js"></script>
+
+    <!-- included js libraries -->
+    <script type="text/javascript" src="./../scripts/libraries/jquery.json.js"></script>
+    <script type="text/javascript" src="./../scripts/libraries/jquery.livequery.js"></script>
+
+    <script type="text/javascript" src="./../scripts/libraries/jquery.clickmenu.js"></script>
+    <script type="text/javascript" src="./../scripts/libraries/jquery.simplemodal.js"></script>
+    <script type="text/javascript" src="./../scripts/libraries/jquery.tablesorter.js"></script>
+
+    <!-- ontowiki js -->
+    <script type="text/javascript" src="./../themes/silverblue/scripts/jquery.ontowiki.js"></script>
+    <script type="text/javascript" src="./../themes/silverblue/scripts/main.js"></script>
+
+    <!-- dynamic js -->
+
+<script type="text/javascript">
+    //<![CDATA[
+var classUri = "foaf:Person";    //]]>
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var tags = [{
+                label: "Sebastian Tramp",
+                source: "Auto-generated URI",
+                uri: "http://tramp.de"
+            },
+            {
+                label: "Norman Heino",
+                source: "Sindice result",
+                uri: "http://heino.de"
+            },
+            {
+                label: "Philipp Frischmuth",
+                source: "Local result",
+                uri: "http://frischmuth.de"
+            },
+            {
+                label: "Clemens Hoffmann",
+                source: "Auto-generated URI",
+                uri: "http://hoffmann.de"
+            }
+        ];
+        
+        $('#button-tests button, #button-tests input, #button-tests a').button().click(function(){ $('#dialog-test').dialog('open'); return false;});
+        $('#button-tests-2 button, #button-tests-2 input, #button-tests-2 a').button().click(function(){ $('#dialog-test').dialog('open'); return false;});
+        $('#tabs').tabs();
+        $('#tabs2').tabs();
+        $('#progressbar-1').progressbar({ value: 75 });
+        $('#progressbar-2').progressbar({ value: 20 });
+        $('#dialog-test').dialog({autoOpen: false});
+        $('#slider-1').slider();
+        $('#slider-2').slider({ value: 100, max: 400, min: 0, step: 50});
+        $('#accordion').accordion();
+        $('#progressbar-3').progressbar({ value: 75 });
+        $('#progressbar-4').progressbar({ value: 20 });
+        $('#slider-3').slider();
+        $('#slider-4').slider({ value: 100, max: 400, min: 0, step: 10});
+        $('#accordion-2').accordion();
+        $('#datepicker').datepicker();
+        $('#datepicker-2').datepicker();
+        $('#autocomplete').autocomplete({ 
+            source: tags,
+            focus: function( event, ui ) {
+                    $( "#autocomplete" ).val( ui.item.label );
+                    return false;
+            },
+            select: function( event, ui ) {
+                    $( "#autocomplete" ).val( ui.item.label );
+            }
+        }).data( "autocomplete" )._renderItem = function( ul, item ) {
+                return $( "<li></li>" )
+                        .data( "item.autocomplete", item )
+                        .append( "<a><span class='resource-edit-source'>" + item.source + "</span><span class='resource-edit-label'>" + item.label + "</span><span class='resource-edit-uri'>" + item.uri + "</span></a>" )
+                        .appendTo( ul );
+        };
+        $('#autocomplete-2').autocomplete({ 
+            source: tags,
+            focus: function( event, ui ) {
+                    $( "#autocomplete-2" ).val( ui.item.label );
+                    return false;
+            },
+            select: function( event, ui ) {
+                    $( "#autocomplete-2" ).val( ui.item.label );
+            }
+        }).data( "autocomplete" )._renderItem = function( ul, item ) {
+                return $( "<li></li>" )
+                        .data( "item.autocomplete", item )
+                        .append( "<a><span class='resource-edit-source'>" + item.source + "</span><span class='resource-edit-label'>" + item.label + "</span><span class='resource-edit-uri'>" + item.uri + "</span></a>" )
+                        .appendTo( ul );
+        };
+        $('#autocomplete-3').autocomplete({ source: tags });
+        $('#autocomplete-4').autocomplete({ source: tags });
+    });
+</script>
+
+    <!-- ontowiki stylesheets -->
+
+    <link rel="stylesheet" href="./../styles/default.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="./../styles/clickmenu.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="./../styles/jquery-ui.css" type="text/css" media="screen" />
+
+    <!-- IE conditional stylesheets -->
+    <!--[if lte IE 6]><link rel="stylesheet" media="screen" href="http://localhost/ow/trunk/extensions/themes/silverblue/styles/default.ie6.css" /><![endif]-->
+    <!--[if lte IE 6]><link rel="stylesheet" media="screen" href="http://localhost/ow/trunk/extensions/themes/silverblue/styles/clickmenu.msie.css" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" media="screen" href="http://localhost/ow/trunk/extensions/themes/silverblue/styles/default.ie7.css" /><![endif]-->
+
+    <!-- dynamic styles -->
+    </head>
+
+
+
+</head>
+    <body class="javascript-off">
+
+
+    <script type="text/javascript">
+        // get body element
+        var body = document.body;
+        var bodyClass = body.className;
+        // set javascript = on
+        bodyClass = bodyClass.replace(/javascript-off/g, "javascript-on");
+        // process changes
+        body.setAttribute("class", bodyClass, 0);
+    </script>
+
+    <script type="text/javascript">
+    //<![CDATA[
+/* from modules/navigation/ */
+var navigationConfigString = '{"default":"classes","config":{"skos":{"name":"SKOS","hierarchyTypes":["http:\/\/www.w3.org\/2004\/02\/skos\/core#Concept","http:\/\/www.w3.org\/2004\/02\/skos\/core#Collection"],"hierarchyRelations":{"in":["http:\/\/www.w3.org\/2004\/02\/skos\/core#broader"],"out":["http:\/\/www.w3.org\/2004\/02\/skos\/core#narrower"]}},"classes":{"name":"Classes","hierarchyTypes":["http:\/\/www.w3.org\/2000\/01\/rdf-schema#Class","http:\/\/www.w3.org\/2002\/07\/owl#Class"],"hierarchyRelations":{"in":["http:\/\/www.w3.org\/2000\/01\/rdf-schema#subClassOf"]},"instanceRelation":{"out":["http:\/\/www.w3.org\/1999\/02\/22-rdf-syntax-ns#type"]},"hiddenNS":["http:\/\/www.w3.org\/1999\/02\/22-rdf-syntax-ns#","http:\/\/www.w3.org\/2000\/01\/rdf-schema#","http:\/\/www.w3.org\/2002\/07\/owl#"],"hiddenRelation":["http:\/\/ns.ontowiki.net\/SysOnt\/hidden"]}}}'
+var navigationConfig = $.evalJSON(navigationConfigString);
+    //]]>
+</script>
+    <div class="section-mainwindows">
+        <div class="window tabbed windowbuttonscount-right-1">
+                        <h1 class="title">Instances of Person</h1>
+            <div class="slidehelper">
+                                    <ol class="tabs">
+                    <li id="index" class="active">
+                <a href="http://localhost/ow/trunk/list/r/foaf%3APerson">Instances</a>
+            </li>
+                    <li id="history" class="">
+                <a href="http://localhost/ow/trunk/history/list/r/foaf%3APerson">History</a>
+            </li>
+                    <li id="community" class="">
+                <a href="http://localhost/ow/trunk/community/list/r/foaf%3APerson">Community</a>
+            </li>
+                    <li id="source" class="">
+                <a href="http://localhost/ow/trunk/source/edit/r/foaf%3APerson">Source</a>
+            </li>
+            </ol>
+
+                                    <div class="content has-innerwindows active-tab-content">
+                                                    <form action="http://localhost/ow/trunk/resource/delete" method="post" name="instancelist" enctype="multipart/form-data">
+                                                                        <input name="redirect" value="http://localhost/ow/trunk/list/r/foaf%3APerson" type="hidden">
+
+                                                    <div class="messagebox"><div class="toolbar"><a href="uitestow.html" class="button edit"><span>jQuery UI Testpage</span></a><a class="button edit"><img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/icon-save2.png"><span>&nbsp;Save Changes</span></a><a class="button edit"><img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/icon-cancel.png"><span>&nbsp;Cancel</span></a><a class="button separator"></a><a class="button init-resource"><img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/icon-editadd.png"><span>&nbsp;Add Instance</span></a><a class="button separator"></a><a class="button submit"><img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/icon-delete.png"><span>&nbsp;Delete Selected</span></a></div></div>
+
+                        <div class="innercontent">
+    <h3>datepicker</h3>
+    <div>
+        <p>Date: <input id="datepicker" class="text" type="text"></p>
+    </div>
+    <h3>autocomplete - type space to get all results</h3>
+    <div>
+        <p><input id="autocomplete" class="text" type="text"></p>
+        <p><input id="autocomplete-3" class="text" type="text"></p>
+    </div>
+    <h3>tabs</h3>
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1">tab1</a></li>
+            <li><a href="#tabs-2">tab2</a></li>
+            <li><a href="#tabs-3">tab3</a></li>
+        </ul>
+        <div id="tabs-1">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+        <div id="tabs-2">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam</div>
+        <div id="tabs-3">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
+    </div>
+    <h3>buttons - click to open dialog</h3>
+    <div id="button-tests">
+        <p>
+            <button>Element Button</button>
+            <input value="Submit Button" type="submit"></input>
+            <a href="#">An anchor Button</a>
+        </p>
+    </div>
+    <h3>progressbars</h3>
+    <div id="progressbar-test">
+        <div id="progressbar-1"></div>
+        <br></br>
+        <div id="progressbar-2"></div>
+    </div>
+    <div id="dialog-test" title="Ontowiki Dialog Test">
+	<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+    </div>
+    <h3>slider</h3>
+    <div id="slider-test">
+        <div id="slider-1"></div>
+        <br></br>
+        <div id="slider-2"></div>
+    </div>
+    <h3>accordion</h3>
+    <div id="accordion">
+        <h3>One</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+        <h3>Two</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+        <h3>Three</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+    </div>
+    
+                        </div><!-- .innercontent -->
+
+                                                    </form>
+                                                <div class="innerwindows">
+    <h3>datepicker</h3>
+    <div>
+        <p>Date: <input id="datepicker-2" class="text" type="text"></p>
+    </div>
+    <h3>autocomplete - type space to get all results</h3>
+    <div>
+        <p><input id="autocomplete-2" class="text" type="text"></p>
+        <p><input id="autocomplete-4" class="text" type="text"></p>
+    </div>
+    <h3>tabs</h3>
+    <div id="tabs2">
+        <ul>
+            <li><a href="#tabs-2_1">tab1</a></li>
+            <li><a href="#tabs-2_2">tab2</a></li>
+            <li><a href="#tabs-2_3">tab3</a></li>
+        </ul>
+        <div id="tabs-2_1">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+        <div id="tabs-2_2">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam</div>
+        <div id="tabs-2_3">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
+    </div>
+    <h3>buttons - click to open dialog</h3>
+    <div id="button-tests-2">
+        <p>
+            <button>Element Button</button>
+            <input value="Submit Button" type="submit"></input>
+            <a href="#">An anchor Button</a>
+        </p>
+    </div>
+    <h3>progressbars</h3>
+    <div id="progressbar-test">
+        <div id="progressbar-3"></div>
+        <br></br>
+        <div id="progressbar-4"></div>
+    </div>
+    <h3>slider</h3>
+    <div id="slider-test">
+        <div id="slider-3"></div>
+        <br></br>
+        <div id="slider-4"></div>
+    </div>
+    <h3>accordion</h3>
+    <div id="accordion-2">
+        <h3>One</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+        <h3>Two</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+        <h3>Three</h3>
+        <div>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+    </div>
+
+</div><!-- .window -->
+                        </div><!-- .innerwindows -->
+
+                    </div><!-- .content .has-innerwindows -->
+
+
+                    <div class="messagebox statusbar">
+            </div>
+            </div><!-- .slidehelper -->
+        <div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+    </div><!-- .section-mainwindows -->
+
+    <div class="section-sidewindows">
+        <div class="window windowbuttonscount-right-1 has-menu" id="application">
+
+            <h1 class="title">OntoWiki (Admin)</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+
+<form name="search" method="get" action="http://localhost/ow/trunk/resource/instances/">
+		<p class="width98">
+		<label class="display-block onlyAural" for="searchtext-input">Search for Resources</label>
+		<input class="text width99 inner-label" id="searchtext-input" name="s" value="" type="text">
+	</p>
+		<p>
+		<!--label class="display-block">
+		    			<input class="checkbox" type="checkbox" name="allModels" id="allModels" />
+			Search all Knowledge Bases		</label-->
+				<!--a class="button submit">Submit</a-->
+	</p>
+</form>
+                </div><!-- .window .content -->
+
+                    <div class="cmDiv"><ul class="menu clickMenu">
+                                        <li class="main">User            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="http://localhost/ow/trunk/application/register">Register New User</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/application/preferences">Preferences</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/application/logout">Logout</a></li>
+                                                </ul></div>
+        </li>
+                                <li class="main">Extras            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="http://localhost/ow/trunk/querybuilding/editor">SPARQL Query Editor</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/index/news">News</a></li>
+                                                </ul></div>
+        </li>
+                                <li class="main">Help            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="http://ontowiki.net/Projects/OntoWiki/Help">Documentation</a></li>
+                                                                                <li><a href="http://code.google.com/p/ontowiki/issues/entry">Bug Report</a></li>
+                                                                                <li><a href="http://ontowiki.net/Projects/OntoWiki/ChangeLog#0.9.5">Version Info</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/application/about">About</a></li>
+                                                </ul></div>
+        </li>
+                                <li class="main">Debug            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="http://localhost/ow/trunk/debug/clearmodulecache">Clear Module Cache</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/debug/cleartranslationcache">Clear Translation Cache</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/debug/clearquerycache">Clear Query Cache</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/debug/destroysession">Destroy Session</a></li>
+                                                </ul></div>
+        </li>
+                    </ul><div style="clear: both; visibility: hidden;"></div></div>
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+<div class="window has-contextmenus-block windowbuttonscount-right-1 windowbuttonscount-left-1" id="modellist">
+
+            <h1 class="title">Knowledge Bases</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+                                            <ol class="bullets-none separated-vertical">
+    	    		<li>
+    			<a class="Model Resource" href="http://localhost/ow/trunk/model/select/?m=http%3A%2F%2Flocalhost%2FOntoWiki%2FConfig%2F" about="http://localhost/OntoWiki/Config/">
+    				OntoWiki System Configuration    			<span class="button"></span></a>
+    		</li>
+    	    		<li>
+    			<a class="Model selected Resource" href="http://localhost/ow/trunk/model/select/?m=http%3A%2F%2Fsebastian.dietzold.de%2Frdf%2Ffoaf.rdf" about="http://sebastian.dietzold.de/rdf/foaf.rdf">
+    				Seebis FOAF Profile    			<span class="button"></span></a>
+    		</li>
+    	    </ol>
+                </div><!-- .window .content -->
+
+
+                    <div class="contextmenu">
+                <ul>
+                        <li><a href="http://localhost/ow/trunk/model/create">Create Knowledge Base</a></li>
+                                </ul>
+                <hr>
+            <ul>
+                                <li>
+                                    <a class="modellist_hidden_button show">
+                   Show Hidden Knowledge Bases                </a>
+            </li>
+            </ul>
+            </div>
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"><span class="button button-contextmenu"></span></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+<div class="window has-contextmenus-block windowbuttonscount-right-1" id="hierarchy">
+
+            <h1 class="title">Classes</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+                                        <!--form name="search" method="get" action="">
+	<p class="width98">
+		<label class="display-block" for="hierarchy-input">Type to search ...</label>
+		<input class="inner-label text width100 live-search" type="text" id="hierarchy-input" name="q"/>
+	</p>
+</form-->
+	<ul class="bullets-none separated-vertical hierarchy">
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/?r=http%3A%2F%2Fpurl.org%2Frss%2F1.0%2Fchannel" about="http://purl.org/rss/1.0/channel">
+					channel				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/?r=http%3A%2F%2Fwww.w3.org%2F2002%2F12%2Fcal%2Fical%23Vcalendar" about="http://www.w3.org/2002/12/cal/ical#Vcalendar">
+					Vcalendar				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AGroup" about="http://xmlns.com/foaf/0.1/Group">
+					Group				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AOnlineAccount" about="http://xmlns.com/foaf/0.1/OnlineAccount">
+					Online Account				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AOrganization" about="http://xmlns.com/foaf/0.1/Organization">
+					Organization				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class selected Resource" href="http://localhost/ow/trunk/list/r/foaf%3APerson" about="http://xmlns.com/foaf/0.1/Person">
+					Person				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3APersonalProfileDocument" about="http://xmlns.com/foaf/0.1/PersonalProfileDocument">
+					PersonalProfileDocument				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AProject" about="http://xmlns.com/foaf/0.1/Project">
+					Project				<span class="button"></span></a>
+							</li>
+			</ul>
+                </div><!-- .window .content -->
+
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+<div class="window has-contextmenus-block windowbuttonscount-right-1 has-menu" id="navigation">
+
+            <h1 class="title">Navigation</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+
+<p><input class="text width98 inner-label" id="navigation-input" name="navigation-input" value="" type="text"></p>
+<p style="overflow: hidden; margin-left: 0px;" id="navigation-content" class="">
+    <ol class="bullets-none separated-vertical">
+            <li class="even">
+            <a class="navigation Resource" about="http://purl.org/rss/1.0/channel">channel<span class="button"></span></a>
+        </li>
+            <li class="odd">
+            <a class="navigation Resource" about="http://www.w3.org/2002/12/cal/ical#Vcalendar">ical#Vcalendar<span class="button"></span></a>
+        </li>
+            <li class="even">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/Group">Group<span class="button"></span></a>
+        </li>
+            <li class="odd">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/OnlineAccount">OnlineAccount<span class="button"></span></a>
+        </li>
+            <li class="even">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/Organization">Organization<span class="button"></span></a>
+        </li>
+            <li class="odd">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/Person">Person<span class="button"></span></a>
+        </li>
+            <li class="even">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/PersonalProfileDocument">PersonalProfileDocument<span class="button"></span></a>
+        </li>
+            <li class="odd">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/Project">Project<span class="button"></span></a>
+        </li>
+        </ol>
+
+<pre></pre></p>
+                </div><!-- .window .content -->
+
+                    <div class="cmDiv"><ul class="menu clickMenu">
+                                        <li class="main">Type            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="javascript:navigationEvent('setType', 'skos')">SKOS</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setType', 'classes')">Classes</a></li>
+                                                </ul></div>
+        </li>
+                                <li class="main">View            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="javascript:navigationEvent('reset')">Reset Navigation</a></li>
+                                                                                            <li>Number of entries            <img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/submenu-indicator.png" class="liArrow"><div style="position: absolute;" class="outerbox"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="javascript:navigationEvent('setCount', 10)">10</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setCount', 20)">20</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setCount', 30)">30</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setCount', 'all')">all</a></li>
+                                                </ul></div>
+        </li>
+                                                                                                <li>Sort            <img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/submenu-indicator.png" class="liArrow"><div style="position: absolute;" class="outerbox"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="javascript:navigationEvent('setSort', 'name')">by name</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setSort', 'frequency')">by frequency</a></li>
+                                                </ul></div>
+        </li>
+                                                    </ul></div>
+        </li>
+                    </ul><div style="clear: both; visibility: hidden;"></div></div>
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+    <span style="cursor: ew-resize; position: absolute; height: 831px;" class="resizer-horizontal ui-draggable"></span></div><!-- .section-sidewindows -->
+        <!-- Rendered in 434 ms using 23 SPARQL queries. -->
+<div class="contextmenu-enhanced"></div>
+
+    </body>
+</html>
+

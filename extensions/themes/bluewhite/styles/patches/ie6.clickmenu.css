@@ -1,0 +1,19 @@
+.clickMenu ul {
+	float: left;
+	width: 100%;
+}
+
+.clickMenu div.inner {
+}
+
+.clickMenu div.inner div.outerbox {
+	left: 90px;
+}
+
+.clickMenu li.main {
+}
+
+.clickMenu li {
+	padding: 0.35em 0.5em 0.25em 0.5em;
+}
+

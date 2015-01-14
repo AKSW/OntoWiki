@@ -1,0 +1,581 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>OntoWiki — Instances of Person</title>    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="OntoWiki — Collaborative Knowledge Engineering" />
+<script type="text/javascript">
+var urlBase = "http://localhost/ow/trunk/";
+var themeUrlBase = "http://localhost/ow/trunk/extensions/themes/silverblue/";
+var _OWSESSION = "ONTOWIKItrunk";
+var widgetBase = "http://localhost/ow/trunk/libraries/RDFauthor/";
+var defaultGraph = "http://sebastian.dietzold.de/rdf/foaf.rdf";
+var defaultResource = "http://xmlns.com/foaf/0.1/Person";
+</script>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="./../scripts/libraries/jquery.js"></script>
+    <script type="text/javascript" src="./../scripts/libraries/jquery-ui.js"></script>
+
+    <!-- included js libraries -->
+    <script type="text/javascript" src="./../scripts/libraries/jquery.json.js"></script>
+    <script type="text/javascript" src="./../scripts/libraries/jquery.livequery.js"></script>
+
+    <script type="text/javascript" src="./../scripts/libraries/jquery.clickmenu.js"></script>
+    <script type="text/javascript" src="./../scripts/libraries/jquery.simplemodal.js"></script>
+    <script type="text/javascript" src="./../scripts/libraries/jquery.tablesorter.js"></script>
+
+    <!-- ontowiki js -->
+    <script type="text/javascript" src="./../themes/silverblue/scripts/jquery.ontowiki.js"></script>
+    <script type="text/javascript" src="./../themes/silverblue/scripts/main.js"></script>
+
+    <!-- dynamic js -->
+
+<script type="text/javascript">
+    //<![CDATA[
+var classUri = "foaf:Person";    //]]>
+</script>
+
+    <!-- ontowiki stylesheets -->
+
+    <link rel="stylesheet" href="./../styles/default.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="./../styles/clickmenu.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="./../styles/jquery-ui.css" type="text/css" media="screen" />
+
+    <!-- IE conditional stylesheets -->
+    <!--[if lte IE 6]><link rel="stylesheet" media="screen" href="http://localhost/ow/trunk/extensions/themes/silverblue/styles/default.ie6.css" /><![endif]-->
+    <!--[if lte IE 6]><link rel="stylesheet" media="screen" href="http://localhost/ow/trunk/extensions/themes/silverblue/styles/clickmenu.msie.css" /><![endif]-->
+    <!--[if IE 7]><link rel="stylesheet" media="screen" href="http://localhost/ow/trunk/extensions/themes/silverblue/styles/default.ie7.css" /><![endif]-->
+
+    <!-- dynamic styles -->
+    </head>
+
+
+
+</head>
+    <body class="javascript-off">
+
+
+
+    <script type="text/javascript">
+        // get body element
+        var body = document.body;
+        var bodyClass = body.className;
+        // set javascript = on
+        bodyClass = bodyClass.replace(/javascript-off/g, "javascript-on");
+        // process changes
+        body.setAttribute("class", bodyClass, 0);
+    </script>
+
+    <script type="text/javascript">
+    //<![CDATA[
+/* from modules/navigation/ */
+var navigationConfigString = '{"default":"classes","config":{"skos":{"name":"SKOS","hierarchyTypes":["http:\/\/www.w3.org\/2004\/02\/skos\/core#Concept","http:\/\/www.w3.org\/2004\/02\/skos\/core#Collection"],"hierarchyRelations":{"in":["http:\/\/www.w3.org\/2004\/02\/skos\/core#broader"],"out":["http:\/\/www.w3.org\/2004\/02\/skos\/core#narrower"]}},"classes":{"name":"Classes","hierarchyTypes":["http:\/\/www.w3.org\/2000\/01\/rdf-schema#Class","http:\/\/www.w3.org\/2002\/07\/owl#Class"],"hierarchyRelations":{"in":["http:\/\/www.w3.org\/2000\/01\/rdf-schema#subClassOf"]},"instanceRelation":{"out":["http:\/\/www.w3.org\/1999\/02\/22-rdf-syntax-ns#type"]},"hiddenNS":["http:\/\/www.w3.org\/1999\/02\/22-rdf-syntax-ns#","http:\/\/www.w3.org\/2000\/01\/rdf-schema#","http:\/\/www.w3.org\/2002\/07\/owl#"],"hiddenRelation":["http:\/\/ns.ontowiki.net\/SysOnt\/hidden"]}}}'
+var navigationConfig = $.evalJSON(navigationConfigString);
+    //]]>
+</script>
+    <div class="section-mainwindows">
+        <div class="window tabbed windowbuttonscount-right-1 has-menu">
+                        <h1 class="title">Properties of Michael Haschke</h1>
+            <div class="slidehelper">
+                                    <div id="pre_tabs_content">
+                        <div style="padding: 10px 20px 10px 30px; display: none;" id="location_bar_container" class="cmDiv">
+                    <input id="location_bar_input" class="text width75" value="http://eye48.com/foaf.rdf#me" name="l" type="text">
+                    <a id="location_open" class="minibutton" style="float: none;">View Resource</a>
+                 </div>                    </div>
+                                    <ol class="tabs">
+                    <li id="index" class="active">
+                <a href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me">Properties</a>
+            </li>
+                    <li id="history" class="">
+                <a href="http://localhost/ow/trunk/history/list/?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me">History</a>
+            </li>
+                    <li id="community" class="">
+                <a href="http://localhost/ow/trunk/community/list/?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me">Community</a>
+            </li>
+                    <li id="source" class="">
+                <a href="http://localhost/ow/trunk/source/edit/?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me">Source</a>
+            </li>
+            </ol>
+
+                                    <div class="content has-innerwindows active-tab-content">
+
+                                                    <div class="messagebox"><div class="toolbar"><a class="button edit-enable"><img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/icon-edit.png"><span>&nbsp;Edit Properties</span></a><a class="button" href="javascript:createInstanceFromURI('http://eye48.com/foaf.rdf#me');"><img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/icon-editadd.png"><span>&nbsp;Clone Resource</span></a><a class="button separator"></a><a class="button" href="http://localhost/ow/trunk/resource/delete/?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me"><img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/icon-delete.png"><span>&nbsp;Delete Resource</span></a></div></div>
+
+                        <div class="innercontent">
+
+                            <span about="http://eye48.com/foaf.rdf#me" style="display: none;" class="about_span Resource"></span>
+<table class="separated-vertical rdfa Resource" about="http://eye48.com/foaf.rdf#me" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:ns0="http://webns.net/mvcb/" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:__default="http://sebastian.dietzold.de/rdf/foaf.rdf">
+
+                                        <tbody update:from="http://sebastian.dietzold.de/rdf/foaf.rdf" id="table-group-1">
+                                            <tr>
+                <td width="25%">
+                    <a class="hasMenu Resource" about="http://www.w3.org/2000/01/rdf-schema#seeAlso" href="http://localhost/ow/trunk/view/r/rdfs%3AseeAlso">seeAlso<span class="toggle" title="Menu"></span></a>
+                </td>
+                                                    <td>
+                                                                        <span class="icon-button expand"></span><a rel="rdfs:seeAlso" class="expandable hasMenu Resource" resource="http://eye48.com/foaf.rdf" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf"><span class="toggle" title="Menu"></span></a><a resource="http://eye48.com/foaf.rdf" class="hasMenu Resource" href="http://eye48.com/foaf.rdf">http://eye48.com/foaf.rdf<span class="toggle" title="Menu"></span></a>
+                                                            </td>
+                            </tr>
+                                <tr>
+                <td width="25%">
+                    <a class="hasMenu Resource" about="http://xmlns.com/foaf/0.1/depiction" href="http://localhost/ow/trunk/view/r/foaf%3Adepiction">depiction<span class="toggle" title="Menu"></span></a>
+                </td>
+                                                    <td>
+                                                                        <span class="icon-button expand"></span><a rel="foaf:depiction" class="expandable hasMenu Resource" resource="http://sebastian.dietzold.de/pics/people/haschek.jpg" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fpics%2Fpeople%2Fhaschek.jpg"><img class="object" src="http://sebastian.dietzold.de/pics/people/haschek.jpg" alt="image of http://sebastian.dietzold.de/pics/people/haschek.jpg"><span class="toggle" title="Menu"></span></a>
+                                                            </td>
+                            </tr>
+                                <tr>
+                <td width="25%">
+                    <a class="hasMenu Resource" about="http://xmlns.com/foaf/0.1/knows" href="http://localhost/ow/trunk/view/r/foaf%3Aknows">knows<span class="toggle" title="Menu"></span></a>
+                </td>
+                                <td><div class="has-contextmenu-area">
+                    <ul class="bullets-none">
+                                                                                    <li>
+                                    <span class="icon-button expand"></span><a resource="http://sebastian.dietzold.de/terms/Nudge" rel="foaf:knows" class="expandable hasMenu Resource" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2FNudge">Mathias Lieber<span class="toggle" title="Menu"></span></a>
+                                </li>
+                                                                                                                <li>
+                                    <span class="icon-button expand"></span><a resource="http://sebastian.dietzold.de/terms/Seppl" rel="foaf:knows" class="expandable hasMenu Resource" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2FSeppl">Sebastian Uhlig<span class="toggle" title="Menu"></span></a>
+                                </li>
+                                                                                                                <li>
+                                    <span class="icon-button expand"></span><a resource="http://sebastian.dietzold.de/terms/me" rel="foaf:knows" class="expandable hasMenu Resource" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2Fme">Sebastian Dietzold<span class="toggle" title="Menu"></span></a>
+                                </li>
+                                                                                                </ul>
+                    <div class="contextmenu">
+                        <a class="item"><span class="icon icon-edit" title="Editieren"><span>Editieren</span></span></a>
+                    </div>
+                </div></td>
+                            </tr>
+                                <tr>
+                <td width="25%">
+                    <a class="hasMenu Resource" about="http://xmlns.com/foaf/0.1/mbox_sha1sum" href="http://localhost/ow/trunk/view/r/foaf%3Ambox_sha1sum">sha1sum of a personal mailbox URI name<span class="toggle" title="Menu"></span></a>
+                </td>
+                                                    <td>
+                                            <span property="foaf:mbox_sha1sum" content="b46e0640d19dcc6ac3d4c0da17c4e65152c0ad37">b46e0640d19dcc6ac3d4c0da17c4e65152c0ad37</span>
+                                    </td>
+                            </tr>
+                                <tr>
+                <td width="25%">
+                    <a class="hasMenu Resource" about="http://xmlns.com/foaf/0.1/name" href="http://localhost/ow/trunk/view/r/foaf%3Aname">name<span class="toggle" title="Menu"></span></a>
+                </td>
+                                                    <td>
+                                            <span property="foaf:name" content="Michael Haschke">Michael Haschke</span>
+                                    </td>
+                            </tr>
+                                <tr>
+                <td width="25%">
+                    <a class="hasMenu Resource" about="http://xmlns.com/foaf/0.1/nick" href="http://localhost/ow/trunk/view/r/foaf%3Anick">nickname<span class="toggle" title="Menu"></span></a>
+                </td>
+                                                    <td>
+                                            <span property="foaf:nick" content="Haschek">Haschek</span>
+                                    </td>
+                            </tr>
+                                <tr>
+                <td width="25%">
+                    <a class="hasMenu Resource" about="http://xmlns.com/foaf/0.1/weblog" href="http://localhost/ow/trunk/view/r/foaf%3Aweblog">weblog<span class="toggle" title="Menu"></span></a>
+                </td>
+                                                    <td>
+                                                                        <span class="icon-button expand"></span><a rel="foaf:weblog" class="expandable hasMenu Resource" resource="http://haschek.eye48.com/" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fhaschek.eye48.com%2F"><span class="toggle" title="Menu"></span></a><a resource="http://haschek.eye48.com/" class="hasMenu Resource" href="http://haschek.eye48.com/">http://haschek.eye48.com/<span class="toggle" title="Menu"></span></a>
+                                                            </td>
+                            </tr>
+            </tbody>
+        </table>
+                        </div><!-- .innercontent -->
+
+                                                <div class="innerwindows">
+                            <div class="window windowbuttonscount-right-1" id="tagging">
+
+            <h1 class="title">Tagging</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+
+<p><input autocomplete="off" class="text width98 inner-label ac_input" id="tagging-input" name="tagging-input" value="" type="text"></p>
+<div class="Resource" id="tagging-content" about="http://eye48.com/foaf.rdf#me"><ol class="bullets-none horizontal">
+</ol>
+
+            <span class="messagebox info">No tags yet.</span>
+    </div>                </div><!-- .window .content -->
+
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+<div class="window windowbuttonscount-right-1" id="similarinstances">
+
+            <h1 class="title">Similar Instances</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+                                        	<ul class="bullets-none separated-vertical">
+	    	        <li>Person:
+	            <ul class="bullets-none separated-horizontal">
+	                	                	                    	                        <li><a class="hasMenu Resource" about="http://sebastian.dietzold.de/terms/Joerg" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2FJoerg">Jörg Linke<span class="toggle" title="Menu"></span></a></li>
+	                                        	                    	                        <li><a class="hasMenu Resource" about="http://sebastian.dietzold.de/terms/Nici" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2FNici">Nicole Lieber<span class="toggle" title="Menu"></span></a></li>
+	                                        	                    	                        <li><a class="hasMenu Resource" about="http://sebastian.dietzold.de/terms/Dominik" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2FDominik">Dominik Wolf<span class="toggle" title="Menu"></span></a></li>
+	                                        	                    	                        <li><a class="hasMenu Resource" about="http://sebastian.dietzold.de/terms/Nudge" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2FNudge">Mathias Lieber<span class="toggle" title="Menu"></span></a></li>
+	                                        	                    	                        <li class="last-child"><a class="hasMenu Resource" about="http://sebastian.dietzold.de/terms/Roland" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2FRoland">Roland Mücke<span class="toggle" title="Menu"></span></a></li>
+	                                                                	                <li class="last-child">
+    	                    <a href="http://localhost/ow/trunk/list/r/foaf%3APerson">[more]</a>
+    	                </li>
+    	            	            </ul>
+	        </li>
+	    	</ul>
+                </div><!-- .window .content -->
+
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+<div class="window windowbuttonscount-right-1" id="linkinghere">
+
+            <h1 class="title">Instances Linking Here</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+                                        	<ul class="bullets-none separated-vertical">
+	    	        <li>member<sup>-1</sup>
+	            <ul class="bullets-none separated-horizontal">
+	                	                	                    	                        <li class="last-child"><a class="hasMenu Resource" about="http://musicbrainz.org/mm-2.1/artist/53c809d4-5ada-4463-95ae-e3cb95488e94" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fmusicbrainz.org%2Fmm-2.1%2Fartist%2F53c809d4-5ada-4463-95ae-e3cb95488e94">Farmer's Boulevard<span class="toggle" title="Menu"></span></a></li>
+	                                        	            </ul>
+	        </li>
+	    	        <li>close friend of<sup>-1</sup>
+	            <ul class="bullets-none separated-horizontal">
+	                	                	                    	                        <li class="last-child"><a class="hasMenu Resource" about="http://sebastian.dietzold.de/terms/me" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2Fme">Sebastian Dietzold<span class="toggle" title="Menu"></span></a></li>
+	                                        	            </ul>
+	        </li>
+	    	        <li>maker<sup>-1</sup>
+	            <ul class="bullets-none separated-horizontal">
+	                	                	                    	                        <li><a class="hasMenu Resource" about="http://sebastian.dietzold.de/terms/project.sxhc" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fsebastian.dietzold.de%2Fterms%2Fproject.sxhc">sxhc.de<span class="toggle" title="Menu"></span></a></li>
+	                                        	                    	                        <li class="last-child"><a class="hasMenu Resource" about="http://weltweit24maerz.de/doap.rdf#this" href="http://localhost/ow/trunk/view/?r=http%3A%2F%2Fweltweit24maerz.de%2Fdoap.rdf%23this">Weltweit 24.März<span class="toggle" title="Menu"></span></a></li>
+	                                        	            </ul>
+	        </li>
+	    	</ul>
+                </div><!-- .window .content -->
+
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+                        </div><!-- .innerwindows -->
+
+                    </div><!-- .content .has-innerwindows -->
+
+                                    <div class="cmDiv"><ul class="menu clickMenu">
+                                    <li class="main">Resource            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li>
+                                                            <a class="location_bar show">
+                                Show/Hide Location Bar                            </a>
+                        </li>
+                                                                                <!-- TODO: this is invalid XHTML -->
+                        <hr class="menusep">
+                                                                                <li><a href="http://localhost/ow/trunk/resource/export/f/rdfxml?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me">Export Resource as RDF/XML</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/resource/export/f/turtle?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me">Export Resource as Turtle</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/resource/export/f/rdfjson?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me">Export Resource as RDF/JSON (Talis)</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/resource/export/f/rdfn3?r=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me">Export Resource as Notation 3</a></li>
+                                                                                <!-- TODO: this is invalid XHTML -->
+                        <hr class="menusep">
+                                                                                <li>
+                                                            <a about="http://eye48.com/foaf.rdf#me" class="fetch_data_button wrapper_linkeddata Resource">
+                                Import Data with Linked Data Wrapper                            </a>
+                        </li>
+                                                                                <li><a href="http://localhost/ow/trunk/datagathering/config?uri=http%3A%2F%2Feye48.com%2Ffoaf.rdf%23me&amp;wrapper=linkeddata">Configure Sync with Linked Data Wrapper</a></li>
+                                                </ul></div>
+        </li>
+                        </ul><div style="clear: both; visibility: hidden;"></div></div>
+
+                            </div><!-- .slidehelper -->
+        <div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+    </div><!-- .section-mainwindows -->
+
+    <div class="section-sidewindows">
+        <div class="window windowbuttonscount-right-1 has-menu" id="application">
+
+            <h1 class="title">OntoWiki (Admin)</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+
+<form name="search" method="get" action="http://localhost/ow/trunk/resource/instances/">
+		<p class="width98">
+		<label class="display-block onlyAural" for="searchtext-input">Search for Resources</label>
+		<input class="text width99 inner-label" id="searchtext-input" name="s" value="" type="text">
+	</p>
+		<p>
+		<!--label class="display-block">
+		    			<input class="checkbox" type="checkbox" name="allModels" id="allModels" />
+			Search all Knowledge Bases		</label-->
+				<!--a class="button submit">Submit</a-->
+	</p>
+</form>
+                </div><!-- .window .content -->
+
+                    <div class="cmDiv"><ul class="menu clickMenu">
+                                        <li class="main">User            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="http://localhost/ow/trunk/application/register">Register New User</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/application/preferences">Preferences</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/application/logout">Logout</a></li>
+                                                </ul></div>
+        </li>
+                                <li class="main">Extras            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="http://localhost/ow/trunk/querybuilding/editor">SPARQL Query Editor</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/index/news">News</a></li>
+                                                </ul></div>
+        </li>
+                                <li class="main">Help            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="http://ontowiki.net/Projects/OntoWiki/Help">Documentation</a></li>
+                                                                                <li><a href="http://code.google.com/p/ontowiki/issues/entry">Bug Report</a></li>
+                                                                                <li><a href="http://ontowiki.net/Projects/OntoWiki/ChangeLog#0.9.5">Version Info</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/application/about">About</a></li>
+                                                </ul></div>
+        </li>
+                                <li class="main">Debug            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="http://localhost/ow/trunk/debug/clearmodulecache">Clear Module Cache</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/debug/cleartranslationcache">Clear Translation Cache</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/debug/clearquerycache">Clear Query Cache</a></li>
+                                                                                <li><a href="http://localhost/ow/trunk/debug/destroysession">Destroy Session</a></li>
+                                                </ul></div>
+        </li>
+                    </ul><div style="clear: both; visibility: hidden;"></div></div>
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+<div class="window has-contextmenus-block windowbuttonscount-right-1 windowbuttonscount-left-1" id="modellist">
+
+            <h1 class="title">Knowledge Bases</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+                                            <ol class="bullets-none separated-vertical">
+    	    		<li>
+    			<a class="Model Resource" href="http://localhost/ow/trunk/model/select/?m=http%3A%2F%2Flocalhost%2FOntoWiki%2FConfig%2F" about="http://localhost/OntoWiki/Config/">
+    				OntoWiki System Configuration    			<span class="button"></span></a>
+    		</li>
+    	    		<li>
+    			<a class="Model selected Resource" href="http://localhost/ow/trunk/model/select/?m=http%3A%2F%2Fsebastian.dietzold.de%2Frdf%2Ffoaf.rdf" about="http://sebastian.dietzold.de/rdf/foaf.rdf">
+    				Seebis FOAF Profile    			<span class="button"></span></a>
+    		</li>
+    	    </ol>
+                </div><!-- .window .content -->
+
+
+                    <div class="contextmenu">
+                <ul>
+                        <li><a href="http://localhost/ow/trunk/model/create">Create Knowledge Base</a></li>
+                                </ul>
+                <hr>
+            <ul>
+                                <li>
+                                    <a class="modellist_hidden_button show">
+                   Show Hidden Knowledge Bases                </a>
+            </li>
+            </ul>
+            </div>
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"><span class="button button-contextmenu"></span></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+<div class="window has-contextmenus-block windowbuttonscount-right-1" id="hierarchy">
+
+            <h1 class="title">Classes</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+                                        <!--form name="search" method="get" action="">
+	<p class="width98">
+		<label class="display-block" for="hierarchy-input">Type to search ...</label>
+		<input class="inner-label text width100 live-search" type="text" id="hierarchy-input" name="q"/>
+	</p>
+</form-->
+	<ul class="bullets-none separated-vertical hierarchy">
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/?r=http%3A%2F%2Fpurl.org%2Frss%2F1.0%2Fchannel" about="http://purl.org/rss/1.0/channel">
+					channel				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/?r=http%3A%2F%2Fwww.w3.org%2F2002%2F12%2Fcal%2Fical%23Vcalendar" about="http://www.w3.org/2002/12/cal/ical#Vcalendar">
+					Vcalendar				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AGroup" about="http://xmlns.com/foaf/0.1/Group">
+					Group				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AOnlineAccount" about="http://xmlns.com/foaf/0.1/OnlineAccount">
+					Online Account				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AOrganization" about="http://xmlns.com/foaf/0.1/Organization">
+					Organization				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3APerson" about="http://xmlns.com/foaf/0.1/Person">
+					Person				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3APersonalProfileDocument" about="http://xmlns.com/foaf/0.1/PersonalProfileDocument">
+					PersonalProfileDocument				<span class="button"></span></a>
+							</li>
+					<li>
+			    			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AProject" about="http://xmlns.com/foaf/0.1/Project">
+					Project				<span class="button"></span></a>
+							</li>
+			</ul>
+                </div><!-- .window .content -->
+
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+<div class="window has-contextmenus-block windowbuttonscount-right-1 has-menu" id="navigation">
+
+            <h1 class="title">Navigation</h1>
+
+    <div class="slidehelper">
+
+
+                                    <div class="content">
+
+<p><input class="text width98 inner-label" id="navigation-input" name="navigation-input" value="" type="text"></p>
+<p style="overflow: hidden; margin-left: 0px;" id="navigation-content" class="">
+    <ol class="bullets-none separated-vertical">
+            <li class="even">
+            <a class="navigation Resource" about="http://purl.org/rss/1.0/channel">channel<span class="button"></span></a>
+        </li>
+            <li class="odd">
+            <a class="navigation Resource" about="http://www.w3.org/2002/12/cal/ical#Vcalendar">ical#Vcalendar<span class="button"></span></a>
+        </li>
+            <li class="even">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/Group">Group<span class="button"></span></a>
+        </li>
+            <li class="odd">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/OnlineAccount">OnlineAccount<span class="button"></span></a>
+        </li>
+            <li class="even">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/Organization">Organization<span class="button"></span></a>
+        </li>
+            <li class="odd">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/Person">Person<span class="button"></span></a>
+        </li>
+            <li class="even">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/PersonalProfileDocument">PersonalProfileDocument<span class="button"></span></a>
+        </li>
+            <li class="odd">
+            <a class="navigation Resource" about="http://xmlns.com/foaf/0.1/Project">Project<span class="button"></span></a>
+        </li>
+        </ol>
+
+<pre></pre></p>
+                </div><!-- .window .content -->
+
+                    <div class="cmDiv"><ul class="menu clickMenu">
+                                        <li class="main">Type            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="javascript:navigationEvent('setType', 'skos')">SKOS</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setType', 'classes')">Classes</a></li>
+                                                </ul></div>
+        </li>
+                                <li class="main">View            <div style="position: absolute;" class="outerbox inner"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="javascript:navigationEvent('reset')">Reset Navigation</a></li>
+                                                                                            <li>Number of entries            <img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/submenu-indicator.png" class="liArrow"><div style="position: absolute;" class="outerbox"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="javascript:navigationEvent('setCount', 10)">10</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setCount', 20)">20</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setCount', 30)">30</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setCount', 'all')">all</a></li>
+                                                </ul></div>
+        </li>
+                                                                                                <li>Sort            <img src="http://localhost/ow/trunk/extensions/themes/silverblue/images/submenu-indicator.png" class="liArrow"><div style="position: absolute;" class="outerbox"><div class="shadowbox1"></div><div class="shadowbox2"></div><div class="shadowbox3"></div><ul class="innerBox">
+                                                            <li><a href="javascript:navigationEvent('setSort', 'name')">by name</a></li>
+                                                                                <li><a href="javascript:navigationEvent('setSort', 'frequency')">by frequency</a></li>
+                                                </ul></div>
+        </li>
+                                                    </ul></div>
+        </li>
+                    </ul><div style="clear: both; visibility: hidden;"></div></div>
+
+
+    </div><!-- .slidehelper -->
+
+<div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div><!-- .window -->
+    <span style="cursor: ew-resize; position: absolute; height: 831px;" class="resizer-horizontal ui-draggable"></span></div><!-- .section-sidewindows -->
+        <!-- Rendered in 1557 ms using 27 SPARQL queries. -->
+<div class="contextmenu-enhanced"></div>
+
+<div class="overlay"></div>
+<div id="ziel" class="versatile shadowed centered">
+        <div class="window has-contextmenus-block windowbuttonscount-right-1">
+
+                    <h1 class="title">Classes</h1>
+
+            <div class="slidehelper">
+
+
+                                            <div class="content">
+	        <ul class="bullets-none separated-vertical hierarchy">
+
+					        <li>
+			            			    <a class="Class Resource" href="http://localhost/ow/trunk/list/?r=http%3A%2F%2Fpurl.org%2Frss%2F1.0%2Fchannel" about="http://purl.org/rss/1.0/channel">
+					        channel				<span class="button"></span></a>
+							        </li>
+					        <li>
+			            			    <a class="Class Resource" href="http://localhost/ow/trunk/list/?r=http%3A%2F%2Fwww.w3.org%2F2002%2F12%2Fcal%2Fical%23Vcalendar" about="http://www.w3.org/2002/12/cal/ical#Vcalendar">
+					        Vcalendar				<span class="button"></span></a>
+							        </li>
+
+					        <li>
+			            			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AGroup" about="http://xmlns.com/foaf/0.1/Group">
+					        Group				<span class="button"></span></a>
+							        </li>
+					        <li>
+			            			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AOnlineAccount" about="http://xmlns.com/foaf/0.1/OnlineAccount">
+					        Online Account				<span class="button"></span></a>
+							        </li>
+
+					        <li>
+			            			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AOrganization" about="http://xmlns.com/foaf/0.1/Organization">
+					        Organization				<span class="button"></span></a>
+							        </li>
+					        <li>
+			            			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3APerson" about="http://xmlns.com/foaf/0.1/Person">
+					        Person				<span class="button"></span></a>
+							        </li>
+
+					        <li>
+			            			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3APersonalProfileDocument" about="http://xmlns.com/foaf/0.1/PersonalProfileDocument">
+					        PersonalProfileDocument				<span class="button"></span></a>
+							        </li>
+					        <li>
+			            			    <a class="Class Resource" href="http://localhost/ow/trunk/list/r/foaf%3AProject" about="http://xmlns.com/foaf/0.1/Project">
+					        Project				<span class="button"></span></a>
+							        </li>
+
+			        </ul>
+                        </div><!-- .window .content -->
+
+
+
+            </div><!-- .slidehelper -->
+
+        <div class="window-buttons"><div class="window-buttons-left"></div><div class="window-buttons-right"><span class="button button-windowminimize"></span></div></div></div>
+</div>
+
+    </body>
+</html>
+

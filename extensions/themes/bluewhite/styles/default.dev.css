@@ -1,0 +1,120 @@
+/**
+  * default.dev.css
+  * Ontowiki developer/experimental style sheet, advanced theme
+  *
+  * ATTENTION, since this file contains of development styles, it only included in
+  * debug mode. See more infos on CSS Development on
+  * http://code.google.com/p/ontowiki/wiki/CSSDevelopment
+  *
+  */
+
+/* form stuff ****************************************************************/
+
+.input-text[readonly="readonly"] {
+	color: #999 !important;
+}
+
+input.checkbox, input.radio {
+	vertical-align: text-top !important;
+	margin-right: 0.3em !important;
+}
+
+
+/* lists *******************************************************************/
+
+/* Die Spearatoren müssen unbedingt rechts vom Element sein --
+   Spearatoren am Anfang einer Zeile gehen gar nicht.
+   Lieder ist dann :first-child nicht mehr brauchbar und die Klasse
+   .last-child wird nötig. */
+
+
+.highlighted {
+	background-color: #f70;
+	padding: 0 0.2em;
+}
+
+/* type **********************************************************************/
+
+.light {
+	color: #999;
+}
+
+.inline-edit {
+	display: none;
+}
+
+
+/* dev phil: to be sorted or deleted in the future ************************/
+
+/* -> login module - OpenID Tab */
+
+.openid {
+	background-image: url(./../images/openid.gif);
+	background-repeat: no-repeat;
+	background-position: 0 4px;
+}
+
+span.openid {
+	padding-left: 20px;
+	padding-top: 1px;
+	background-position: 0 0;
+}
+
+
+/* -> application controller - openidreg action -  */
+
+div.openid_logo {
+	width: 250px;
+	height: 100px;
+	margin: 0 0 0 10px;
+	background-image: url(./../images/openid-logo-wordmark.png);
+	background-repeat: no-repeat;
+}
+
+.success_icon {
+	float: left;
+	width: 18px;
+	height: 18px;
+	background: url(./../images/icon-success.png) no-repeat;
+	background-position: 0 3px;
+}
+
+
+/* -> hierarchy module  */
+
+a.closed {
+    float: left;
+    width: 8px;
+    height: 1.5em;
+    background-image: url(./../images/tree-toggle.png);
+    background-position: 0px 50%;
+    background-repeat: no-repeat;
+    margin-left: 0 !important;
+}
+
+a.closed:hover {
+    background-position: -10px 50%;
+}
+
+
+/* -> multimedia plugin */
+
+.object-30em {
+    max-width: 30em;
+    overflow: hidden;
+    margin: 0 auto 10px auto;
+    display: block;
+}
+
+
+/**
+ * Horizontal/Inline lists
+ *
+ * - please use directly ul.inline
+ */
+ul.horizontal > li,
+ol.horizontal > li {
+    display: inline;
+    padding: 0;
+    margin: 0em;
+}
