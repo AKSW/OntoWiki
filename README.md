@@ -1,3 +1,6 @@
+**Attention for composer users!**
+This version is not ready for use with composer, currently it is only the `feature/php-composer` branch. If you like to check it out, please require `dev-feature/php-composer`.
+
 # OntoWiki
 
 [![Build Status](http://owdev.ontowiki.net/job/OntoWiki/badge/icon)](http://owdev.ontowiki.net/job/OntoWiki/)
