@@ -105,7 +105,6 @@
                 /**
                  * @trigger onDisplayMainWindowTitle
                  */
-                require_once 'Erfurt/Event.php';
                 $event = new Erfurt_Event('onDisplayMainWindowTitle');
                 $event->setDefault($this->placeholder('main.window.title'));
                 $title = $event->trigger();

@@ -314,15 +314,14 @@ class OntoWiki_Utils
      * @return string
      */
     public static function matchMimetypeFromRequest(
-        Zend_Controller_Request_Abstract $request,
+        Zend_Controller_Request_Http $request,
         array $supportedMimetypes
     ) {
         // get accept header
         $acceptHeader = strtolower($request->getHeader('Accept'));
 
-        require_once 'Mimeparse.php';
         try {
-            $match = @Mimeparse::best_match($supportedMimetypes, $acceptHeader);
+            $match = \Bitworking\Mimeparse::bestMatch($supportedMimetypes, $acceptHeader);
         } catch (Exception $e) {
             $match = '';
         }
@@ -437,4 +436,3 @@ class OntoWiki_Utils
         return $ret;
     }
 }
-
