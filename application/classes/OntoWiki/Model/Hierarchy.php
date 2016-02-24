@@ -184,8 +184,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
     protected function _buildQuery()
     {
         $query    = new Erfurt_Sparql_SimpleQuery();
-        $prologue = 'SELECT DISTINCT ?classUri ?sub ?subsub ?subsubsub';
-        $query->setProloguePart($prologue);
+        $query->setSelectClause('SELECT DISTINCT ?classUri ?sub ?subsub ?subsubsub');
 
         $whereSpecs = array();
         $whereSpec  = '';
@@ -210,7 +209,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         if (!$this->_options['entry']) {
             $whereSpec .= ' FILTER (regex(str(?super), "^' . EF_OWL_NS . '") || !bound(?super))';
         }
-        $whereSpec .= ' OPTIONAL {?sub <' . $this->_options['sub_relation'] . '> ?classUri. 
+        $whereSpec .= ' OPTIONAL {?sub <' . $this->_options['sub_relation'] . '> ?classUri.
                             OPTIONAL {?subsub <' . $this->_options['sub_relation'] . '> ?sub.
                                   OPTIONAL {?subsubsub <' . $this->_options['sub_relation'] . '> ?subsub}
                             }
@@ -232,4 +231,3 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         return $query;
     }
 }
-

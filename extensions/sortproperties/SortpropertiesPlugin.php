@@ -25,7 +25,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
 
             foreach ($data as $graphUri => $predicates) {
                 $query = new Erfurt_Sparql_SimpleQuery();
-                $query->setProloguePart('SELECT DISTINCT *')
+                $query->setSelectClause('SELECT DISTINCT *')
                     ->addFrom((string)$graphUri)
                     ->setWherePart('WHERE { ?p <' . $this->_privateConfig->sort->property . '> ?o . }');
 

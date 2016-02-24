@@ -40,9 +40,9 @@ class RatingModule extends OntoWiki_Module
             'prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
              prefix ns0: <http://rdfs.org/sioc/ns#>
              prefix ns1: <http://rdfs.org/sioc/types#>
-             prefix terms: <http://purl.org/dc/terms/>
-             SELECT *'
-        )->setWherePart(
+             prefix terms: <http://purl.org/dc/terms/>')
+        ->setSelectClause('SELECT *')
+        ->setWherePart(
             'where {
                 ?rating rdf:type ns1:Poll.
                 ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
@@ -124,7 +124,7 @@ class RatingModule extends OntoWiki_Module
 
             $query = new Erfurt_Sparql_SimpleQuery();
 
-            $query->setProloguePart('SELECT *')->setWherePart(
+            $query->setSelectClause('SELECT *')->setWherePart(
                 'WHERE {
                     <' . $resource . '> <' . EF_RDF_TYPE . '> ?type
                 }'

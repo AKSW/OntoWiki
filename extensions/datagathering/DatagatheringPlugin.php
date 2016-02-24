@@ -301,7 +301,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s ?o');
+            $query->setSelectClause('SELECT ?s ?o');
             $query->addFrom($this->_syncModelUri);
             $query->setWherePart(
                 'WHERE {
@@ -345,7 +345,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s');
+            $query->setSelectClause('SELECT ?s');
             $query->addFrom($this->_syncModelUri);
             $query->setWherePart(
                 'WHERE {
@@ -404,7 +404,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s ?p ?o');
+            $query->setSelectClause('SELECT ?s ?p ?o');
             $query->addFrom($this->_syncModelUri);
             $where
                 = 'WHERE {
@@ -474,7 +474,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s ?p ?o');
+            $query->setSelectClause('SELECT ?s ?p ?o');
             $query->addFrom($this->_syncModelUri);
             $where
                 = 'WHERE {

@@ -371,7 +371,7 @@ class ResourceController extends OntoWiki_Controller_Base
 
                 // query for all triples to delete them
                 $sparqlQuery = new Erfurt_Sparql_SimpleQuery();
-                $sparqlQuery->setProloguePart('SELECT ?p, ?o');
+                $sparqlQuery->setSelectClause('SELECT ?p, ?o');
                 $sparqlQuery->addFrom($modelIri);
                 $sparqlQuery->setWherePart('{ <' . $resource . '> ?p ?o . }');
 

@@ -44,7 +44,7 @@ class UsageModule extends OntoWiki_Module
     {
         // instances (subjects)
         $this->_subjectQuery = new Erfurt_Sparql_SimpleQuery();
-        $this->_subjectQuery->setProloguePart('SELECT DISTINCT ?resourceUri')
+        $this->_subjectQuery->setSelectClause('SELECT DISTINCT ?resourceUri')
             ->setWherePart(
                 'WHERE { ?resourceUri <' . (string)$this->_owApp->selectedResource . '> ?object . ' .
                 'FILTER (isURI(?resourceUri)) }'
@@ -54,7 +54,7 @@ class UsageModule extends OntoWiki_Module
 
         // objects
         $this->_objectQuery = new Erfurt_Sparql_SimpleQuery();
-        $this->_objectQuery->setProloguePart('SELECT DISTINCT ?resourceUri')
+        $this->_objectQuery->setSelectClause('SELECT DISTINCT ?resourceUri')
             ->setWherePart(
                 'WHERE { ?subject <' . (string)$this->_owApp->selectedResource . '> ?resourceUri . ' .
                 'FILTER (isURI(?resourceUri)) }'
@@ -169,5 +169,3 @@ class UsageModule extends OntoWiki_Module
         return $id;
     }
 }
-
-

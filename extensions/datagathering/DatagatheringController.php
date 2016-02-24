@@ -578,7 +578,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
     {
         require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = new Erfurt_Sparql_SimpleQuery();
-        $query->setProloguePart('SELECT DISTINCT ?uri ?o');
+        $query->setSelectClause('SELECT DISTINCT ?uri ?o');
 
         if (null !== $modelUri) {
             $query->addFrom($modelUri);

@@ -101,7 +101,7 @@ class ShowpropertiesModule extends OntoWiki_Module
             $store = $this->_owApp->erfurt->getStore();
             //query for hidden properties
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart(
+            $query->setSelectClause(
                 'PREFIX sysont: <http://ns.ontowiki.net/SysOnt/>
                                      SELECT ?uri'
             )
