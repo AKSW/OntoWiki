@@ -42,29 +42,12 @@ if (!defined('_TESTROOT')) {
 // path to OntoWiki
 define('_OWROOT', ONTOWIKI_ROOT);
 
-// add libraries to include path
-$includePath = get_include_path() . PATH_SEPARATOR;
-$includePath .= _TESTROOT . PATH_SEPARATOR;
-$includePath .= ONTOWIKI_ROOT . 'application/classes/' . PATH_SEPARATOR;
-$includePath .= ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
-
-$includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/library' . PATH_SEPARATOR;
-$includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/tests/unit' . PATH_SEPARATOR; // for test base class
-set_include_path($includePath);
+require_once(ONTOWIKI_ROOT . '/vendor/autoload.php');
 
 // start dummy session before any PHPUnit output
-require_once 'Zend/Session/Namespace.php';
 $session = new Zend_Session_Namespace('OntoWiki_Test');
 
-// Zend_Loader for class autoloading
-require_once 'Zend/Loader/Autoloader.php';
-$loader = Zend_Loader_Autoloader::getInstance();
-$loader->registerNamespace('OntoWiki_');
-$loader->registerNamespace('Erfurt_');
-//$loader->registerNamespace('PHPUnit_');
 
 // Access Erfurt app for constant loading etc.
 Erfurt_App::getInstance(false);
 
-/** OntoWiki */
-require_once 'OntoWiki.php';

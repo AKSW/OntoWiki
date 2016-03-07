@@ -4,7 +4,7 @@
 
     <!-- Generic sniffs -->
     <rule ref="Generic.Classes.DuplicateClassName" />
-    <!--<rule ref="Generic.CodeAnalysis.EmptyStatement" />-->
+    <rule ref="Generic.CodeAnalysis.EmptyStatement" />
     <rule ref="Generic.CodeAnalysis.ForLoopWithTestFunctionCall" />
     <rule ref="Generic.CodeAnalysis.JumbledIncrementer" />
     <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement" />
@@ -74,7 +74,6 @@
     <!--<rule ref="Squiz.Arrays.ArrayDeclaration" />-->
     <rule ref="Squiz.Classes.LowercaseClassKeywords" />
     <rule ref="Squiz.Classes.SelfMemberReference" />
-    <rule ref="Squiz.CodeAnalysis.EmptyStatement" />
     <rule ref="Squiz.Commenting.EmptyCatchComment" />
     <rule ref="Squiz.Functions.FunctionDuplicateArgument" />
     <rule ref="Squiz.Functions.GlobalFunction">
