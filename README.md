@@ -19,9 +19,12 @@ Other remarkable features are:
 * OntoWiki is backend independent, which means you can save your data on a MySQL database as well as on a Virtuoso Triple Store.
 * OntoWiki is easily extendible by you, since it features a sophisticated Extension System.
 
-## Installation
+## Installation/Update
 
-For an installation guide have a look at our [wiki](https://github.com/AKSW/OntoWiki/wiki/GetOntowikiUsers).
+If you are updating OntoWiki, please don't forget to run `make deploy`.
+If `make deploy` fails, you might also have to run `make getcomposer` once before run `make deploy` again.
+
+For further installation instructions please have a look at our [wiki](https://github.com/AKSW/OntoWiki/wiki/GetOntowikiUsers) (might be outdated in some parts).
 
 ## Screenshot / Webinar
 Below is a screenshot showing OntoWiki in editing mode.
