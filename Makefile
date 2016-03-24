@@ -53,9 +53,6 @@ help-test:
 	@echo "  test-integration-mysql ....... Run OntoWiki integration tests with mysql"
 	@echo "  test-extensions .............. Run tests for extensions"
 
-# top level target
-shorttest:
-	@echo $(COMPOSER)
 
 getcomposer:
 	curl -o composer.phar "https://getcomposer.org/composer.phar"
