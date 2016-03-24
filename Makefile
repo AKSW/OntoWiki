@@ -1,6 +1,17 @@
 PHPUNIT = ./vendor/bin/phpunit
 PHPCS = ./vendor/bin/phpcs
 PHPCBF = ./vendor/bin/phpcbf
+
+# Get calid composer executable
+COMPOSER = $(shell which composer)
+ifeq ($(findstring composer, $(COMPOSER)), )
+	ifneq ($(wildcard composer.phar), )
+		COMPOSER = php composer.phar
+	else
+		COMPOSER =
+	endif
+endif
+
 default:
 	@echo "Typical targets your could want to reach:"
 	@echo ""
@@ -43,12 +54,11 @@ help-test:
 	@echo "  test-extensions .............. Run tests for extensions"
 
 # top level target
+shorttest:
+	@echo $(COMPOSER)
 
-getcomposer: #seems that there is no way to constantly get the newest version(install way outdates with new versions)
-	php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php
-	php -r "if (hash('SHA384', file_get_contents('composer-setup.php')) === '41e71d86b40f28e771d4bb662b997f79625196afcca95a5abf44391188c695c6c1456e16154c75a211d238cc3bc5cb47') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); }"
-	php composer-setup.php
-	php -r "unlink('composer-setup.php');"
+getcomposer:
+	curl -o composer.phar "https://getcomposer.org/composer.phar"
 	php composer.phar self-update
 
 install: deploy
@@ -75,8 +85,20 @@ directories: clean
 	mkdir -p logs cache
 	chmod 777 logs cache extensions
 
+ifdef COMPOSER
 composer-install: #add difference for user and dev (with phpunit etc and without)
-	php composer.phar install
+	$(COMPOSER) install
+else
+composer-install:
+	@echo
+	@echo
+	@echo "!!! make $@ failed !!!"
+	@echo
+	@echo "Sorry, there doesn't seem to be a PHP composer (dependency manager for PHP) on your system!"
+	@echo "Please have a look at http://getcomposer.org/ for further information,"
+	@echo "or just run 'make getcomposer' to download the composer locally"
+	@echo "and run 'make $@' again"
+endif
 # test stuff
 
 test-directories:
