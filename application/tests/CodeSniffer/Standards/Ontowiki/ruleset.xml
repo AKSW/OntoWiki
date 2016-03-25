@@ -118,9 +118,10 @@
     <rule ref="Zend.NamingConventions.ValidVariableName" />
 
     <!-- OntoWiki -->
-    <rule ref="Ontowiki.Commenting.FileComment.WrongFileCommentYear">
+    <!--<rule ref="Ontowiki.Commenting.FileComment.WrongFileCommentYear">
         <severity>3</severity>
     </rule>
+    <rule ref="Ontowiki.Commenting.TypoFileComment" />-->
     <rule ref="Ontowiki.Functions.ForbiddenFunctions">
         <exclude-pattern>application/tests/Bootstrap.php</exclude-pattern>
     </rule>
