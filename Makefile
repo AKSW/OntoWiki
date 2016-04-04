@@ -5,11 +5,14 @@ PHPCBF = ./vendor/bin/phpcbf
 # Get calid composer executable
 COMPOSER = $(shell which composer)
 ifeq ($(findstring composer, $(COMPOSER)), )
-	ifneq ($(wildcard composer.phar), )
-		COMPOSER = php composer.phar
-	else
-		COMPOSER =
-	endif
+    COMPOSER = $(shell which composer.phar)
+    ifeq ($(findstring composer.phar, $(COMPOSER)), )
+        ifneq ($(wildcard composer.phar), )
+            COMPOSER = php composer.phar
+        else
+            COMPOSER =
+        endif
+    endif
 endif
 
 default:
