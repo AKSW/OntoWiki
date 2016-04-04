@@ -19,10 +19,7 @@ default:
 	@echo "Typical targets your could want to reach:"
 	@echo ""
 	@echo "-->   make deploy ............... Install OntoWiki <-- in doubt, use this"
-	@echo "                                  (use this for server installations)"
-	@echo ""
-	@echo "      make install .............. Install OntoWiki for developer"
-	@echo "                                  (you will need github access and ssh for this)"
+	@echo "      make install .............. deploy and install are equivalent"
 	@echo ""
 	@echo "      make help ................. Show more (developer related) make targets"
 	@echo ""
@@ -33,7 +30,7 @@ default:
 help:
 	@echo "Please use: (e.g. make deploy)"
 	@echo "     deploy ..................... Runs everything which is needed for a deployment"
-	@echo "     install .................... Make directories and libraries"
+	@echo "     install .................... Equivalent to deploy"
 	@echo "     help ....................... This help screen"
 	@echo "     help-cs .................... Show help for code sniffing targets"
 	@echo "     help-test .................. Show help for test related targets"
@@ -56,14 +53,18 @@ help-test:
 	@echo "  test-integration-mysql ....... Run OntoWiki integration tests with mysql"
 	@echo "  test-extensions .............. Run tests for extensions"
 
-
 getcomposer:
 	curl -o composer.phar "https://getcomposer.org/composer.phar"
 	php composer.phar self-update
 
 install: deploy
 
+ifdef COMPOSER
 deploy: directories clean composer-install
+else
+deploy: getcomposer
+	make deploy
+endif
 
 vagrant: directories clean #add composer install
 	rm -rf libraries/Zend # vagrant has own zend
