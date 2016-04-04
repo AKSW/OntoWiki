@@ -67,20 +67,6 @@ class OntoWiki_Message
     protected $_text = null;
 
     /**
-     * The current view object
-     *
-     * @var OntoWiki_View
-     */
-    protected $_view = null;
-
-    /**
-     * The translation object
-     *
-     * @var Zend_Translate
-     */
-    protected $_translate = null;
-
-    /**
      * Constructor
      *
      * @param string $text
@@ -97,19 +83,6 @@ class OntoWiki_Message
 
         $this->_type = $type;
         $this->_text = $text;
-
-        // Clone view
-        if (null === $this->_view) {
-            $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
-            if (null === $viewRenderer->view) {
-                $viewRenderer->initView();
-            }
-            $this->_view = clone $viewRenderer->view;
-            $this->_view->clearVars();
-        }
-
-        // get translation for current language
-        $this->_translate = OntoWiki::getInstance()->translate;
     }
 
     /**
@@ -133,19 +106,45 @@ class OntoWiki_Message
         if (strlen($text) > 1000) {
             $text = substr($text, 0, 1000) . '...';
         }
-        $text = $this->_options['escape'] ? $this->_view->escape($text) : $text;
+        $text = $this->_options['escape'] ? $this->getView()->escape($text) : $text;
 
         return $text;
+    }
+
+    /**
+     * Returns the view object.
+     *
+     * @return OntoWiki_View
+     */
+    protected function getView()
+    {
+        $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+        if (null === $viewRenderer->view) {
+            $viewRenderer->initView();
+        }
+        $view = clone $viewRenderer->view;
+        $view->clearVars();
+        return $view;
+    }
+
+    /**
+     * Returns the translator.
+     *
+     * @return Zend_Translate
+     */
+    protected function getTranslator()
+    {
+        return OntoWiki::getInstance()->translate;
     }
 
     private function _translate($text)
     {
-        if (($this->_options['translate'] === true) && (null !== $this->_translate)) {
-            return $this->_translate->translate($text);
+        if (($this->_options['translate'] === true) && ($translator = $this->getTranslator()) !== null) {
+            return $translator->translate($text);
         }
-
         return $text;
     }
+
 }
 
 

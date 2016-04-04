@@ -42,7 +42,7 @@ body {
 <?php endif; ?>
 </h1>
 <details>
-<summary><?php echo $this->errorText ?></summary>
+<summary><?php echo $this->escape($this->errorText) ?></summary>
 <?php if (isset($this->exceptionType)): ?>
 <p><code><?php echo $this->exceptionType ?></code></p>
 <?php endif; ?>

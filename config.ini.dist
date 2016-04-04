@@ -147,6 +147,9 @@ cache.backend.sqlite.cache_db_complete_path         = "/tmp/ow_cache.sqlite"
 ;; Options for Gearman/worker
 worker.enable	= false
 
+;; Option for specifying the RSS/Atom feed loaded in the OntoWiki index actions "News" module
+;; set to "false" to completely disable the feed
+news.feedUrl = "http://blog.aksw.org/feed/?cat=5&client={{version.label}}&version={{version.number}}&suffix={{version.suffix}}"
 
 ;;;;
 ;; uncomment this line if you need more information
