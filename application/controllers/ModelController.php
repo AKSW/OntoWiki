@@ -840,9 +840,8 @@ class ModelController extends OntoWiki_Controller_Base
      */
     private function _doImportActionRedirect($modelUri)
     {
-        $post          = $this->_request->getPost();
-        $id            = $post['importAction'];
-        $importOptions = $post['importOptions'];
+        $id            = $this->_request->getPost('importAction');
+        $importOptions = $this->_request->getPost('importOptions');
         $actions       = $this->_getImportActions();
 
         if (isset($actions[$id])) {

@@ -73,7 +73,9 @@ define('OW_SHOW_MAX', 5);
 
 
 // PHP environment settings
-ini_set('max_execution_time', 240);
+if ((int)ini_get('max_execution_time') < 240) {
+    ini_set('max_execution_time', 240);
+}
 
 if ((int)substr(ini_get('memory_limit'), 0, -1) < 256) {
     ini_set('memory_limit', '256M');

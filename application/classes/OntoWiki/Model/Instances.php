@@ -164,10 +164,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $this->_useCache = $options[Erfurt_Store::USE_CACHE];
         }
 
-        //TODO still needed?
-        $this->_defaultUrl['resource']      = new OntoWiki_Url(array('route' => 'properties'), array());
-        $this->_defaultUrlParam['resource'] = 'r';
-
         $this->_resourceQuery = new Erfurt_Sparql_Query2();
         $this->_resourceVar   = new Erfurt_Sparql_Query2_Var('resourceUri');
 

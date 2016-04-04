@@ -14,6 +14,9 @@
  * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author    Norman Heino <norman.heino@gmail.com>
+ * @property Zend_Log $_logger
+ * @property Erfurt_Event_Dispatcher $_eventDispatcher
+ * @property Zend_Config $_config The application configuration.
  */
 class OntoWiki_Model
 {
@@ -25,25 +28,11 @@ class OntoWiki_Model
     protected $_store = null;
 
     /**
-     * The OntoWiki Application config
-     *
-     * @var Zend_Config
-     */
-    protected $_config = null;
-
-    /**
      * Whether inference features are turned on
      *
      * @var boolean
      */
     protected $_inference = true;
-
-    /**
-     * The Application logger
-     *
-     * @var Zend_Log
-     */
-    protected $_logger = null;
 
     /**
      * Model instance
@@ -60,22 +49,12 @@ class OntoWiki_Model
     protected $_graph = null;
 
     /**
-     * The Erfurt event dispatcher
-     *
-     * @var Erfurt_Event_Dispatcher
-     */
-    protected $_eventDispatcher = null;
-
-    /**
      * Constructor
      */
     public function __construct(Erfurt_Store $store, Erfurt_Rdf_Model $graph)
     {
         // system variables
         $this->_store           = $store;
-        $this->_config          = OntoWiki::getInstance()->config;
-        $this->_logger          = OntoWiki::getInstance()->logger;
-        $this->_eventDispatcher = Erfurt_Event_Dispatcher::getInstance();
 
         if (isset($this->_config->system->inference) && !(bool)$this->_config->system->inference) {
             $this->_inference = false;
@@ -110,5 +89,29 @@ class OntoWiki_Model
     {
         return $this->_model;
     }
+
+    /**
+     * Simulates properties that reference global objects.
+     *
+     * The globals are *not* stored as properties of this objects, otherwise
+     * these globals (and the whole object graph that is connected to them)
+     * are serialized when this object is stored in the session.
+     *
+     * @param string $name
+     * @return Erfurt_Event_Dispatcher|Zend_Log|Zend_Config|null
+     */
+    public function __get($name)
+    {
+        switch ($name) {
+            case '_logger':
+                return OntoWiki::getInstance()->logger;;
+            case '_eventDispatcher':
+                return Erfurt_Event_Dispatcher::getInstance();
+            case '_config':
+                return OntoWiki::getInstance()->config;
+        }
+        return null;
+    }
+
 }
 
