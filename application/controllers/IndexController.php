@@ -126,18 +126,34 @@ class IndexController extends OntoWiki_Controller_Base
         $version = $this->_config->version;
         // try reading
         try {
-            $url = $this->_config->news->feedUrl;
-            $url = strtr($url, array(
-                '{{version.label}}'  => urlencode($version->label),
-                '{{version.number}}' => urlencode($version->number),
-                '{{version.suffix}}' => urlencode($version->suffix)
-            ));
+            if (isset($this->_config->news) && isset($this->_config->news->feedUrl)) {
+                $url = $this->_config->news->feedUrl;
+            } else {
+                $url = 'http://blog.aksw.org/feed/?cat=5&client='
+                    . urlencode($version->label)
+                    . '&version='
+                    . urlencode($version->number)
+                    . '&suffix='
+                    . urlencode($version->suffix);
+            }
+            if ($url) {
+                $url = strtr($url, array(
+                    '{{version.label}}'  => urlencode($version->label),
+                    '{{version.number}}' => urlencode($version->number),
+                    '{{version.suffix}}' => urlencode($version->suffix)
+                ));
 
-            /* @var $client Zend_Http_Client */
-            $client = Zend_Feed::getHttpClient();
-            $client->setConfig(array('timeout' => self::NEWS_FEED_TIMEOUT_IN_SECONDS));
-            $owFeed = Zend_Feed::import($url);
-            return $owFeed;
+                /* @var $client Zend_Http_Client */
+                $client = Zend_Feed::getHttpClient();
+                $client->setConfig(array('timeout' => self::NEWS_FEED_TIMEOUT_IN_SECONDS));
+                $owFeed = Zend_Feed::import($url);
+                return $owFeed;
+            } else {
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('Feed disabled in config.ini. You can configure a feed using the "news.feedUrl" key in your config.ini.', OntoWiki_Message::INFO)
+                );
+                return array();
+            }
         } catch (Exception $e) {
             $this->_owApp->appendMessage(
                 new OntoWiki_Message('Error loading feed: ' . $url, OntoWiki_Message::WARNING)
