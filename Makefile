@@ -149,21 +149,13 @@ debianize:
 	rm Makefile
 	@echo "now do: cp -R application/scripts/debian debian"
 
-
-# coding standard
-STANDARD =application/tests/CodeSniffer/Standards/Ontowiki/ruleset.xml
 # #### config ####
 
-# ignore pattern
-IGNOREPATTERN =libraries,extensions/exconf/pclzip.lib.php,extensions/exconf/Archive.php,application/scripts,extensions/markdown/parser/markdown.php,vendor
-
-REQUESTSTR =-p --standard=$(STANDARD) --ignore=$(IGNOREPATTERN) --extensions=php */
-
 codesniffer:
-	$(PHPCS) $(REQUESTSTR)
+	$(PHPCS)
 
 codebeautifier:
-	$(PHPCBF) $(REQUESTSTR)
+	$(PHPCBF)
 
 # other stuff
 
