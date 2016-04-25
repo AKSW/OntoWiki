@@ -43,7 +43,8 @@ help:
 
 help-cs:
 	@echo "Please use: (e.g. make codesniffer)"
-	@echo "     codesniffer ............................ Run CodeSniffer"
+	@echo "     codesniffer ............................ Run CodeSniffer except for the FileCommentSniff"
+	@echo "			codesniffer_year ....................... Run CodeSniffer including the FileCommentSniff"
 	@echo "     codebeautifier ......................... Run CodeBeautifier"
 
 help-test:
@@ -154,6 +155,8 @@ debianize:
 codesniffer:
 	$(PHPCS)
 
+codesniffer_year:
+	$(PHPCS) --standard=phpcs_year.xml
 codebeautifier:
 	$(PHPCBF)
 
