@@ -63,8 +63,6 @@ class AccountController extends OntoWiki_Controller_Component
         $this->view->placeholder('main.window.title')->set($title);
         $this->view->phase = $phase;
 
-        require_once 'Erfurt/Auth/Identity/Recovery.php';
-
         $recoveryObject = new Erfurt_Auth_Identity_Recovery();
 
         try {
