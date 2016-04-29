@@ -17,7 +17,7 @@
     "require": {
         "php": ">=5.3.3",
         "mnsami/composer-custom-directory-installer": "1.1.*",
-        "aksw/erfurt": "dev-feature/php-composer",
+        "aksw/erfurt": "dev-develop",
         "bitworking/mimeparse": "2.1.*",
         "zendframework/zendframework1": "1.*",
         "aksw/rdfauthor": "dev-develop"
