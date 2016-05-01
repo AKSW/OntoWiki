@@ -134,7 +134,5 @@
     <rule ref="Ontowiki.Functions.ForbiddenFunctions">
         <exclude-pattern>application/tests/Bootstrap.php</exclude-pattern>
     </rule>
-    <rule ref="Ontowiki.Commenting.FileComment">
-      <exclude name="Ontowiki.Commenting.FileComment"/>
-    </rule>
+
 </ruleset>

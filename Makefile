@@ -154,9 +154,6 @@ debianize:
 
 codesniffer:
 	$(PHPCS)
-
-codesniffer_year:
-	$(PHPCS) --standard=phpcs_year.xml
 codebeautifier:
 	$(PHPCBF)
 

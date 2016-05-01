@@ -62,13 +62,30 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
      */
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
-        exec('git log -1 ' . $phpcsFile->getFilename(), $output);
-        preg_match("/( )[0-9]{4}( )/", $output[2],$git_year_array);
-        $git_year=str_replace(' ','',$git_year_array[0]);
-        //$year = " * @copyright Copyright (c) " . date('Y') . ", {@link http://aksw.org AKSW}\n";
-        $year = " * @copyright Copyright (c) " . $git_year . ", {@link http://aksw.org AKSW}\n";
-        $this->copyright[4]= $year;
         $tokens = $phpcsFile->getTokens();
+        exec('([ -d .git ] && echo .git) || git rev-parse --git-dir 2> /dev/null', $git_test);
+        if(!empty($git_test))
+        {
+          exec('git log --reverse ' . $phpcsFile->getFilename() . ' | head -3' , $output1);
+          preg_match("/( )[0-9]{4}( )/", $output1[2],$git_year_array1);
+          $git_year1=str_replace(' ','',$git_year_array1[0]);
+          exec('git log -1 ' . $phpcsFile->getFilename(), $output2);
+          preg_match("/( )[0-9]{4}( )/", $output2[2],$git_year_array2);
+          $git_year2=str_replace(' ','',$git_year_array2[0]);
+          if(strcmp($git_year1,$git_year2)!=0)
+          {
+            $git_year1 .='-';
+            $git_year1 .=$git_year2;
+          }
+          //$year = " * @copyright Copyright (c) " . date('Y') . ", {@link http://aksw.org AKSW}\n";
+          $year = " * @copyright Copyright (c) " . $git_year1 . ", {@link http://aksw.org AKSW}\n";
+          $this->copyright[4]= $year;
+        }
+        else {
+          preg_match("/( )[0-9]{4}(-[0-9]{4})?/",$tokens[16]['content'],$non_git_year);
+          $year = " * @copyright Copyright (c) " . str_replace(' ','',$non_git_year[0]) . ", {@link http://aksw.org AKSW}\n";
+          $this->copyright[4]= $year;
+        }
         $tokenizer = new PHP_CodeSniffer_Tokenizers_Comment();
         $expectedString = implode($this->copyright);
         $expectedTokens = $tokenizer->tokenizeString($expectedString, PHP_EOL, 0);
@@ -118,7 +135,6 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
             );
             return;
         }
-
         $j = 0;
         for ($i = $commentStart; $i <= $commentEnd; $i++) {
             if ($tokens[$i]['content'] !== $expectedTokens[$j]["content"]) {
