@@ -110,7 +110,7 @@ mail.localname.recovery = "ontowiki-account-recovery"
 
 
 ;; Options for cache frontend
-cache.frontend.enable                               = true
+cache.frontend.enable                               = false
 cache.frontend.lifetime                             = 0
 ;cache.frontend.logging                             = false
 ;cache.frontend.write_control                       = true
@@ -122,7 +122,7 @@ cache.frontend.cache_id_prefix                      = 'OW_'
 ;; Available: file | memcached | database | sqlite | apc
 ;; Recommended: memcached | file
 cache.backend.type                                  = "file"
- 
+
 ;; Options for file cache backend
 cache.backend.file.cache_dir                        = "./cache/"
 cache.backend.file.file_locking                     = NULL
@@ -155,4 +155,3 @@ news.feedUrl = "http://blog.aksw.org/feed/?cat=5&client={{version.label}}&versio
 ;; uncomment this line if you need more information
 ;;
 ;debug = true
-
