@@ -6,8 +6,6 @@
     <file>./extensions/</file>
 
     <arg name="extensions" value="php" />
-    <!-- remove this entry if you want to see the full codesniffer report-->>
-    <arg value="p"/>
 
     <exclude-pattern>./application/scripts/</exclude-pattern>
     <exclude-pattern>./extensions/exconf/pclzip.lib.php</exclude-pattern>

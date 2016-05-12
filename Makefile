@@ -153,7 +153,8 @@ debianize:
 # #### config ####
 
 codesniffer:
-	$(PHPCS)
+	$(PHPCS) -p
+
 codebeautifier:
 	$(PHPCBF)
 
