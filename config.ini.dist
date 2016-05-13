@@ -103,35 +103,35 @@ mail.localname.recovery = "ontowiki-account-recovery"
 ;vhosts[] = "http://graph2.ontowiki.de"
 
 ;;;;
-;; Uncomment this line to turn off the query and object cache (NOT recommended)
+;; Uncomment this line to turn on the query and object cache (experimental)
 ;;
-;cache.enable       = false
-;cache.query.enable = false
+;cache.enable       = true
+;cache.query.enable = true
 
 
-;; Options for cache frontend
-cache.frontend.enable                               = false
-cache.frontend.lifetime                             = 0
+;; Options for cache frontend (experimental)
+;cache.frontend.enable                              = true
+;cache.frontend.lifetime                            = 0
 ;cache.frontend.logging                             = false
 ;cache.frontend.write_control                       = true
 ;cache.frontend.automatic_cleaning_factor           = 10
 ;cache.frontend.ignore_user_abort                   = false
-cache.frontend.cache_id_prefix                      = 'OW_'
+;cache.frontend.cache_id_prefix                     = 'OW_'
 
 ;; Cache backend options
 ;; Available: file | memcached | database | sqlite | apc
 ;; Recommended: memcached | file
-cache.backend.type                                  = "file"
+;cache.backend.type                                 = "file"
 
 ;; Options for file cache backend
-cache.backend.file.cache_dir                        = "./cache/"
-cache.backend.file.file_locking                     = NULL
+;cache.backend.file.cache_dir                       = "./cache/"
+;cache.backend.file.file_locking                    = NULL
 
 ;; Options for memcached cache backend
 ;cache.backend.memcached.compression                = false
 ;cache.backend.memcached.compatibility              = false
 ;; You can define several servers: copy block, below and increase number and configure properly
-cache.backend.memcached.servers.0.host              = "localhost"
+;cache.backend.memcached.servers.0.host             = "localhost"
 ;cache.backend.memcached.servers.0.port             = 11211
 ;cache.backend.memcached.servers.0.persistent       = true
 ;cache.backend.memcached.servers.0.weight           = 1
@@ -144,12 +144,12 @@ cache.backend.sqlite.cache_db_complete_path         = "/tmp/ow_cache.sqlite"
 ;cache.backend.sqlite.automatic_vacuum_factor       = 10
 
 
-;; Options for Gearman/worker
-worker.enable	= false
+;; Options for Gearman/worker (experimental)
+;worker.enable	= true
 
 ;; Option for specifying the RSS/Atom feed loaded in the OntoWiki index actions "News" module
 ;; set to "false" to completely disable the feed
-news.feedUrl = "http://blog.aksw.org/feed/?cat=5&client={{version.label}}&version={{version.number}}&suffix={{version.suffix}}"
+;news.feedUrl = "http://blog.aksw.org/feed/?cat=5&client={{version.label}}&version={{version.number}}&suffix={{version.suffix}}"
 
 ;;;;
 ;; uncomment this line if you need more information
