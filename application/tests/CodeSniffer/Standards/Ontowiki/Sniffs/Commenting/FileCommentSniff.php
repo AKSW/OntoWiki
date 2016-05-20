@@ -147,8 +147,8 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
             if ($tokens[$i]['content'] !== $expectedTokens[$j]["content"]) {
                 $error = 'Found wrong part of copyright notice. Expected "%s", but found "%s"';
                 $data  = array(
-                          trim($expectedTokens[$j]["content"]),
-                          trim($tokens[$i]['content']),
+                          $expectedTokens[$j]["content"],
+                          $tokens[$i]['content'],
                          );
                 $fix   = $phpcsFile->addFixableError($error, $i, 'WrongText', $data);
 
