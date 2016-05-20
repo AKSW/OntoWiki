@@ -14,7 +14,7 @@
  * @subpackage UnitTests
  * @copyright  Copyright (c) 2016, {@link http://aksw.org AKSW}
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPLv2)
- * @author     Natanael Arndt <arndtn@googlemail.com>
+ * @author     Natanael Arndt <arndtn@gmail.com>
  */
 class OntoWiki_UtilsTest extends PHPUnit_Framework_TestCase
 {

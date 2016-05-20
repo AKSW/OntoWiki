@@ -3,8 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2012-2016, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -186,4 +186,3 @@ $ontowiki->callJob("cron");
 /*  -- END OF EXAMPLE --------------------------------------------------  */
 
 echo "done in " . round((microtime(true) - $timeStart) * 1000, 2) . "ms" . PHP_EOL;
-
