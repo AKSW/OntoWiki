@@ -132,5 +132,8 @@
     <rule ref="Ontowiki.Functions.ForbiddenFunctions">
         <exclude-pattern>application/tests/Bootstrap.php</exclude-pattern>
     </rule>
+    <rule ref="Ontowiki.Commenting.FileComment">
+        <exclude-pattern>extensions\/(?!account\/|application\/|auth\/|autologin\/|basicimporter\/|bookmarklet\/|ckan\/|community\/|cors\/|datagathering\/|defaultmodel\/|exconf\/|filter\/|googletracking\/|hideproperties\/|history\/|imagelink\/|imprint\/|jsonrpc\/|linkeddataserver\/|listmodules\/|literaltypes\/|mail\/|mailtolink\/|manchester\/|markdown\/|modellist\/|navigation\/|pingback\/|queries\/|resourcecreationuri\/|resourcemodules\/|savedqueries\/|selectlanguage\/|semanticsitemap\/|sendmail\/|sindice\/|sortproperties\/|source\/|themes\/|translations\/|weblink\/).*</exclude-pattern>
+    </rule>
 
 </ruleset>
