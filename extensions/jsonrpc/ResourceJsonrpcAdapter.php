@@ -145,7 +145,7 @@ class ResourceJsonrpcAdapter
      *
      * @return string with the hash value
      */
-    private function _getCurrentResourceHash ($modelIri, $resourceIri)
+    private function _getCurrentResourceHash($modelIri, $resourceIri)
     {
         $resource = $this->_store->getModel($modelIri)->getResource($resourceIri);
         $statements = $resource->getDescription();

@@ -33,7 +33,7 @@ class CorsPlugin extends OntoWiki_Plugin
         /*
          * TODO: allow more CORS header fields here
          */
-        if (isset ($this->_privateConfig->accessControlAllowOrigin)) {
+        if (isset($this->_privateConfig->accessControlAllowOrigin)) {
             $value = $this->_privateConfig->accessControlAllowOrigin;
             $response->setHeader('Access-Control-Allow-Origin', $value, true);
         }

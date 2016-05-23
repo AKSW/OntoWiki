@@ -280,8 +280,7 @@ class OntoWiki_Menu_Registry
         }
 
         // can user delete models?
-        if (
-            $owApp->erfurt->getAc()->isModelAllowed('edit', $model)
+        if ($owApp->erfurt->getAc()->isModelAllowed('edit', $model)
             && $owApp->erfurt->getAc()->isActionAllowed('ModelManagement')
         ) {
 
@@ -408,8 +407,7 @@ class OntoWiki_Menu_Registry
             $typeArray[] = $row['type'];
         }
 
-        if (
-            in_array(EF_RDFS_CLASS, $typeArray)
+        if (in_array(EF_RDFS_CLASS, $typeArray)
             || in_array(EF_OWL_CLASS, $typeArray)
             || $hasInstances
         ) {

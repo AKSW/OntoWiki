@@ -89,8 +89,7 @@ class PingbackPlugin extends OntoWiki_Plugin
     public function onDeleteMultipleStatements($event)
     {
         // If pingOnDelete is configured, we also ping on statement delete, otherwise we skip.
-        if (
-            !isset($this->_privateConfig->pingOnDelete)
+        if (!isset($this->_privateConfig->pingOnDelete)
             || ((boolean)$this->_privateConfig->pingOnDelete === false)
         ) {
 

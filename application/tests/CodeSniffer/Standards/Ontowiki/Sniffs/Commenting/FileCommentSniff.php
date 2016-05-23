@@ -66,14 +66,14 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
         // Find the next non whitespace token.
         $commentStart = $phpcsFile->findNext(T_WHITESPACE, ($stackPtr + 1), null, true);
 
-        $noGit= true;
-        if(count($tokens)>15) {
-            preg_match("/ ([0-9]{4})(-[0-9]{4})?/",$tokens[$commentStart+15]['content'], $nonGitYear);
+        $noGit = true;
+        if(count($tokens) > 15) {
+            preg_match("/ ([0-9]{4})(-[0-9]{4})?/", $tokens[$commentStart + 15]['content'], $nonGitYear);
         }
 
         //test if a git exists to get the years from 'git log'
         exec('([ -d .git ] && echo .git) || git rev-parse --git-dir 2> /dev/null', $gitTest);
-        if(!empty($gitTest)){
+        if(!empty($gitTest)) {
             $output = array();
             exec('git ls-files --error-unmatch ' . $phpcsFile->getFilename() . ' 2> /dev/null', $output, $returnValue);
             if ($returnValue == 0) {
@@ -81,31 +81,30 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
             }
         }
 
-        if(!$noGit){
+        if(!$noGit) {
             //test if a git entry exists to get the years from 'git log'
-            exec('git log --reverse ' . $phpcsFile->getFilename() . ' | head -3' , $outputCreationYear);
+            exec('git log --reverse ' . $phpcsFile->getFilename() . ' | head -3', $outputCreationYear);
             //if(!empty($outputCreationYear)) {
-                preg_match("/( )[0-9]{4}( )/", $outputCreationYear[2],$gitOldYearArray);
-                $gitYearOld=str_replace(' ','',$gitOldYearArray[0]);
+                preg_match("/( )[0-9]{4}( )/", $outputCreationYear[2], $gitOldYearArray);
+                $gitYearOld = str_replace(' ', '', $gitOldYearArray[0]);
                 if (isset($nonGitYear) && isset($nonGitYear[1]) && $gitYearOld > $nonGitYear[1]) {
                     $gitYearOld = $nonGitYear[1];
                 }
                 exec('git log -1 ' . $phpcsFile->getFilename(), $outputLastEditYear);
-                preg_match("/( )[0-9]{4}( )/", $outputLastEditYear[2],$gitNewYearArray);
-                $gitYearNew=str_replace(' ','',$gitNewYearArray[0]);
-                if(strcmp($gitYearOld,$gitYearNew)!=0) {
-                    $gitYearOld .='-';
-                    $gitYearOld .=$gitYearNew;
+                preg_match("/( )[0-9]{4}( )/", $outputLastEditYear[2], $gitNewYearArray);
+                $gitYearNew = str_replace(' ', '', $gitNewYearArray[0]);
+                if(strcmp($gitYearOld, $gitYearNew) != 0) {
+                    $gitYearOld .= '-';
+                    $gitYearOld .= $gitYearNew;
                 }
                 $year = " * @copyright Copyright (c) " . $gitYearOld . ", {@link http://aksw.org AKSW}\n";
-                $this->copyright[4]= $year;
+                $this->copyright[4] = $year;
             //}
         } else {
             //tests if the file has no year/wrong editing and the year can't be found
-            if(!empty($nonGitYear))
-            {
-                $year = " * @copyright Copyright (c) " . str_replace(' ','',$nonGitYear[0]) . ", {@link http://aksw.org AKSW}\n";
-                $this->copyright[4]= $year;
+            if(!empty($nonGitYear)) {
+                $year = " * @copyright Copyright (c) " . str_replace(' ', '', $nonGitYear[0]) . ", {@link http://aksw.org AKSW}\n";
+                $this->copyright[4] = $year;
             }
         }
 

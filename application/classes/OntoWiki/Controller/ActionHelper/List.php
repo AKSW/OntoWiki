@@ -171,7 +171,7 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         $lists = $this->_owApp->session->managedLists;
 
         if (key_exists($name, $lists)) {
-            unset ($lists[$name]);
+            unset($lists[$name]);
         }
 
         throw new InvalidArgumentException('list was not found. check with listExists() first');

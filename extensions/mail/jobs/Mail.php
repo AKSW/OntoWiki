@@ -40,16 +40,16 @@ class Mail_Job_Mail extends Erfurt_Worker_Job_Abstract
         $transport = new Zend_Mail_Transport_Smtp($smtpServer, $config);
 
         if (is_object($workload)) {
-            if (empty($workload->sender)){
+            if (empty($workload->sender)) {
                 throw new InvalidArgumentException('Workload is missing sender');
             }
-            if (empty($workload->receiver)){
+            if (empty($workload->receiver)) {
                 throw new InvalidArgumentException('Workload is missing receiver');
             }
-            if (empty($workload->subject)){
+            if (empty($workload->subject)) {
                 throw new InvalidArgumentException('Workload is missing subject');
             }
-            if (empty($workload->body)){
+            if (empty($workload->body)) {
                 throw new InvalidArgumentException('Workload is missing body');
             }
             $mail = new Zend_Mail();

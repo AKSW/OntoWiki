@@ -66,7 +66,7 @@ class BasicimporterPlugin extends OntoWiki_Plugin
         return $event;
     }
 
-    private function importModels ()
+    private function importModels()
     {
         // read config for models to import
         $owApp = OntoWiki::getInstance();

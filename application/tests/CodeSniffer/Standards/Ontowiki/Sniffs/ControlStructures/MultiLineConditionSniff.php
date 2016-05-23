@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
- 
+
 /**
  * Ontowiki_Sniffs_ControlStructures_MultiLineConditionSniff.
  *

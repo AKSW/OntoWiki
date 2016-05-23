@@ -51,7 +51,7 @@ class AccountController extends OntoWiki_Controller_Component
         // phase 3 for cleanup and password change in ow system
         $params['password_o'] = $this->getParam('password_o');
         $params['password_r'] = $this->getParam('password_r');
-        if (empty($params['hash']) || empty($params['password_o']) || empty ($params['password_r'])) {
+        if (empty($params['hash']) || empty($params['password_o']) || empty($params['password_r'])) {
             unset($params['password_o']);
             unset($params['password_r']);
         } else {

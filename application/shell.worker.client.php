@@ -18,7 +18,7 @@
  * error handling for the very first includes etc.
  * http://stackoverflow.com/questions/1241728/
  */
-function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
+function errorHandler($errno, $errstr, $errfile, $errline, array $errcontext)
 {
     // error was suppressed with the @-operator
     if (0 === error_reporting()) {
@@ -32,7 +32,7 @@ function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
  * in some configurations Apache prefixes the environment variables on each rewrite walkthrough
  * e.g. under centos
  */
-function getEnvVar ($key)
+function getEnvVar($key)
 {
     $prefix = "REDIRECT_";
     if (isset($_SERVER[$key])) {

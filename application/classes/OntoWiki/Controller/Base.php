@@ -115,9 +115,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         $this->view->headMeta()->setName('generator', 'OntoWiki — Collaborative Knowledge Engineering');
 
         // RDFauthor view configuration
-        $viewMode = isset($this->_config->rdfauthor->viewmode)
-            ? $this->_config->rdfauthor->viewmode
-            : 'inline';
+        $viewMode = isset($this->_config->rdfauthor->viewmode) ? $this->_config->rdfauthor->viewmode : 'inline';
 
         // inject JSON variables into view
         $this->view->jsonVars

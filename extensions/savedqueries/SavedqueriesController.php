@@ -65,7 +65,7 @@ class SavedqueriesController extends OntoWiki_Controller_Component
 
         $header = array();
         try {
-            if (is_array($queryResult) && isset ($queryResult[0]) && is_array($queryResult[0])) {
+            if (is_array($queryResult) && isset($queryResult[0]) && is_array($queryResult[0])) {
                 $header = array_keys($queryResult[0]);
             } else {
                 if (is_bool($queryResult)) {

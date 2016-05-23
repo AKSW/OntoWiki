@@ -192,9 +192,7 @@ abstract class OntoWiki_Module
      */
     public function setContext($context)
     {
-        $this->_context = $context
-            ? (string)$context
-            : OntoWiki_Module_Registry::DEFAULT_CONTEXT;
+        $this->_context = $context ? (string)$context : OntoWiki_Module_Registry::DEFAULT_CONTEXT;
     }
 
     /**
