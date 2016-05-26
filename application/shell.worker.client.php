@@ -119,7 +119,7 @@ function initApp()
         header('HTTP/1.1 500 Internal Server Error');
         echo 'Fatal Error: Could not load Zend library.<br />' . PHP_EOL
              . 'Maybe you need to install it with apt-get or with "make zend"?' . PHP_EOL;
-        exit;
+        return false;
     }
 
     // create application
@@ -135,7 +135,7 @@ function initApp()
     } catch (Exception $e) {
         echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.' . PHP_EOL;
         echo 'Your installation directory seems to be screwed.' . PHP_EOL;
-        exit;
+        return false;
     }
 
     /* check/include Erfurt_App */
@@ -145,7 +145,7 @@ function initApp()
     } catch (Exception $e) {
         echo 'Fatal Error: Could not load the Erfurt Framework classes.' . PHP_EOL;
         echo 'Maybe you should install it with apt-get or with "make deploy"?' . PHP_EOL;
-        exit;
+        return false;
     }
 
     // restore old error handler
@@ -156,12 +156,16 @@ function initApp()
         $application->bootstrap();
     } catch (Exception $e) {
         echo 'Error on bootstrapping application: ' . $e->getMessage() . PHP_EOL;
-        exit;
+        return false;
     }
     return $application;
 }
 
 $application = initApp();
+if ($application === false) {
+    return 1;
+}
+
 $ontowiki    = OntoWiki::getInstance();
 echo $ontowiki->config->version->label . ' ' . $ontowiki->config->version->number . PHP_EOL;
 
