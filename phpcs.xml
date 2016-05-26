@@ -7,10 +7,13 @@
 
     <arg name="extensions" value="php" />
 
+    <exclude-pattern>./application/tests/integration/OntoWiki/Extension/_files/test1/MoreModule.php</exclude-pattern>
+    <exclude-pattern>./application/tests/integration/OntoWiki/Extension/_files/test2/Test2Plugin.php</exclude-pattern>
     <exclude-pattern>./application/scripts/</exclude-pattern>
     <exclude-pattern>./extensions/exconf/pclzip.lib.php</exclude-pattern>
     <exclude-pattern>./extensions/exconf/Archive.php</exclude-pattern>
     <exclude-pattern>./extensions/markdown/parser/markdown.php</exclude-pattern>
+    <exclude-pattern>./extensions\/(?!account\/|application\/|auth\/|autologin\/|basicimporter\/|bookmarklet\/|ckan\/|community\/|cors\/|datagathering\/|defaultmodel\/|exconf\/|filter\/|googletracking\/|hideproperties\/|history\/|imagelink\/|imprint\/|jsonrpc\/|linkeddataserver\/|listmodules\/|literaltypes\/|mail\/|mailtolink\/|manchester\/|markdown\/|modellist\/|navigation\/|pingback\/|queries\/|resourcecreationuri\/|resourcemodules\/|savedqueries\/|selectlanguage\/|semanticsitemap\/|sendmail\/|sindice\/|sortproperties\/|source\/|themes\/|translations\/|weblink\/).*</exclude-pattern>
 
     <!-- Generic sniffs -->
     <rule ref="Generic.Classes.DuplicateClassName" />

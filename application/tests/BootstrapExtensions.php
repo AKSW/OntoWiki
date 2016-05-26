@@ -16,17 +16,6 @@ error_reporting(E_ALL | E_STRICT);
  */
 date_default_timezone_set('Europe/Berlin');
 
-/*
- * Check for minimum supported PHPUnit version
- */
-$phpUnitVersion = PHPUnit_Runner_Version::id();
-if ('@package_version@' !== $phpUnitVersion && version_compare($phpUnitVersion, '3.5.0', '<')) {
-    echo 'This version of PHPUnit (' . PHPUnit_Runner_Version::id() . ') is not supported in OntoWiki unit tests.' .
-        PHP_EOL;
-    exit(1);
-}
-unset($phpUnitVersion);
-
 define('BOOTSTRAP_FILE', basename(__FILE__));
 define('ONTOWIKI_ROOT', realpath(dirname(__FILE__) . '/../..') . '/');
 define('APPLICATION_PATH', ONTOWIKI_ROOT . 'application/');
@@ -42,11 +31,10 @@ if (!defined('_TESTROOT')) {
 // path to OntoWiki
 define('_OWROOT', ONTOWIKI_ROOT);
 
-require_once(ONTOWIKI_ROOT . '/vendor/autoload.php');
+require_once ONTOWIKI_ROOT . '/vendor/autoload.php';
 
 // start dummy session before any PHPUnit output
 $session = new Zend_Session_Namespace('OntoWiki_Test');
 
 // Access Erfurt app for constant loading etc.
 Erfurt_App::getInstance(false);
-

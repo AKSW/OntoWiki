@@ -183,7 +183,7 @@ class QueriesController extends OntoWiki_Controller_Component
             foreach ($prefixes as $prefix => $namespace) {
                 $prefixString = 'PREFIX ' . $prefix . ': <' . $namespace . '>';
                 // only add prefix if it's not there yet
-                if(strpos($query, $prefixString) === false) {
+                if (strpos($query, $prefixString) === false) {
                     $query = $prefixString . PHP_EOL . $query;
                 }
             }

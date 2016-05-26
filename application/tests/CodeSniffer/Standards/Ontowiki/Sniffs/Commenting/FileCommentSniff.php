@@ -1,19 +1,14 @@
 <?php
 /**
- * Parses and verifies the TYPO3 copyright notice.
+ * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * PHP version 5
- *
- * @category  PHP
- * @package   TYPO3SniffPool
- * @author    Stefano Kowalke <blueduck@mailbox.org>
- * @copyright 2015 Stefano Kowalke
- * @license   http://www.gnu.org/copyleft/gpl.html GNU Public License
- * @link      https://github.com/typo3-ci/TYPO3SniffPool
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
  * Parses and verifies the TYPO3 copyright notice.
+ * PHP version 5
  *
  * @category  PHP
  * @package   TYPO3SniffPool
@@ -30,12 +25,13 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
      *
      * @var array
      */
-    protected $copyright = array(
+    protected $_copyright = array(
                             1  => "/**\n",
                             2  => " * This file is part of the {@link http://ontowiki.net OntoWiki} project.\n",
                             3  => " *\n",
                             4  => "",
-                            5  => " * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)\n",
+                            5  => " * @license   http://opensource.org/licenses/gpl-license.php "
+                                . "GNU General Public License (GPL)\n",
                             6  => " */",
                            );
 
@@ -65,15 +61,19 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
         $tokens = $phpcsFile->getTokens();
         // Find the next non whitespace token.
         $commentStart = $phpcsFile->findNext(T_WHITESPACE, ($stackPtr + 1), null, true);
+        if ($commentStart === false) {
+            $phpcsFile->addError('Not file level comment given', $commentStart, 'NoFileLevelCommentFound');
+            return;
+        }
 
         $noGit = true;
-        if(count($tokens) > 15) {
+        if (count($tokens) > 15) {
             preg_match("/ ([0-9]{4})(-[0-9]{4})?/", $tokens[$commentStart + 15]['content'], $nonGitYear);
         }
 
         //test if a git exists to get the years from 'git log'
         exec('([ -d .git ] && echo .git) || git rev-parse --git-dir 2> /dev/null', $gitTest);
-        if(!empty($gitTest)) {
+        if (!empty($gitTest)) {
             $output = array();
             exec('git ls-files --error-unmatch ' . $phpcsFile->getFilename() . ' 2> /dev/null', $output, $returnValue);
             if ($returnValue == 0) {
@@ -81,7 +81,7 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
             }
         }
 
-        if(!$noGit) {
+        if (!$noGit) {
             //test if a git entry exists to get the years from 'git log'
             exec('git log --reverse ' . $phpcsFile->getFilename() . ' | head -3', $outputCreationYear);
             //if(!empty($outputCreationYear)) {
@@ -93,23 +93,24 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
                 exec('git log -1 ' . $phpcsFile->getFilename(), $outputLastEditYear);
                 preg_match("/( )[0-9]{4}( )/", $outputLastEditYear[2], $gitNewYearArray);
                 $gitYearNew = str_replace(' ', '', $gitNewYearArray[0]);
-                if(strcmp($gitYearOld, $gitYearNew) != 0) {
+                if (strcmp($gitYearOld, $gitYearNew) != 0) {
                     $gitYearOld .= '-';
                     $gitYearOld .= $gitYearNew;
                 }
                 $year = " * @copyright Copyright (c) " . $gitYearOld . ", {@link http://aksw.org AKSW}\n";
-                $this->copyright[4] = $year;
+                $this->_copyright[4] = $year;
             //}
         } else {
             //tests if the file has no year/wrong editing and the year can't be found
-            if(!empty($nonGitYear)) {
-                $year = " * @copyright Copyright (c) " . str_replace(' ', '', $nonGitYear[0]) . ", {@link http://aksw.org AKSW}\n";
-                $this->copyright[4] = $year;
+            if (!empty($nonGitYear)) {
+                $year = str_replace(' ', '', $nonGitYear[0]);
+                $copyright = " * @copyright Copyright (c) " . $year . ", {@link http://aksw.org AKSW}\n";
+                $this->_copyright[4] = $copyright;
             }
         }
 
         $tokenizer = new PHP_CodeSniffer_Tokenizers_Comment();
-        $expectedString = implode($this->copyright);
+        $expectedString = implode($this->_copyright);
         $expectedTokens = $tokenizer->tokenizeString($expectedString, PHP_EOL, 0);
         // Allow namespace statements at the top of the file.
         if ($tokens[$commentStart]['code'] === T_NAMESPACE) {
@@ -138,14 +139,14 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
         }
         $commentEndLine = $tokens[$commentEnd]['line'];
         $commentStartLine = $tokens[$commentStart]['line'];
-        if ((($commentEndLine - $commentStartLine) + 1) < count($this->copyright)) {
+        if ((($commentEndLine - $commentStartLine) + 1) < count($this->_copyright)) {
             $phpcsFile->addError(
                 'Copyright notice too short',
                 $commentStart,
                 'CommentTooShort'
             );
             return;
-        } else if ((($commentEndLine - $commentStartLine) + 1) > count($this->copyright)) {
+        } else if ((($commentEndLine - $commentStartLine) + 1) > count($this->_copyright)) {
             $phpcsFile->addError(
                 'Copyright notice too long',
                 $commentStart,
@@ -167,12 +168,8 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
                     $phpcsFile->fixer->replaceToken($i, $expectedTokens[$j]["content"]);
                 }
             }
-
             $j++;
         }
-
-        return;
-
     }//end process()
 
 

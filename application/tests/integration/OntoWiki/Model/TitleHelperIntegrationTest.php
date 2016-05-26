@@ -34,14 +34,21 @@ class OntoWiki_Model_TitleHelperIntegrationTest extends Erfurt_TestCase
 
     private function _addTestData()
     {
-        $model = $this->_store->getNewModel($this->_modelUri, '', Erfurt_Store::MODEL_TYPE_OWL, false);
+        $model = $this->_store->getNewModel(
+            $this->_modelUri, '', Erfurt_Store::MODEL_TYPE_OWL, false
+        );
         $this->authenticateDbUser();
         $turtleString
-            = '<http://purl.org/dc/terms/title> <http://www.w3.org/2000/01/rdf-schema#label> "testABC_en"@en .'
-            . '<http://example.org/resourceXYZ> <http://www.w3.org/2004/02/skos/core#prefLabel> "testABC_noLang" ;'
-            . '                                 <http://www.w3.org/2000/01/rdf-schema#label> "testABC_de"@de .'
-            . '<http://example.org/graph123/resourceABC> <http://www.w3.org/2000/01/rdf-schema#label> "testABC" ;'
-            . '                                          <http://ns.ontowiki.net/SysOnt/Site/menuLabel> "testMenuLabel" .';
+            = '<http://purl.org/dc/terms/title> '
+            . '<http://www.w3.org/2000/01/rdf-schema#label> "testABC_en"@en .'
+            . '<http://example.org/resourceXYZ> '
+            . '<http://www.w3.org/2004/02/skos/core#prefLabel> "testABC_noLang" ;'
+            . '                                 '
+            . '<http://www.w3.org/2000/01/rdf-schema#label> "testABC_de"@de .'
+            . '<http://example.org/graph123/resourceABC> '
+            . '<http://www.w3.org/2000/01/rdf-schema#label> "testABC" ;'
+            . '                                          '
+            . '<http://ns.ontowiki.net/SysOnt/Site/menuLabel> "testMenuLabel" .';
 
         $this->_store->importRdf(
             $this->_modelUri,

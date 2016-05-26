@@ -42,7 +42,7 @@ if (!defined('_TESTROOT')) {
 // path to OntoWiki
 define('_OWROOT', ONTOWIKI_ROOT);
 
-require_once(ONTOWIKI_ROOT . '/vendor/autoload.php');
+require_once ONTOWIKI_ROOT . '/vendor/autoload.php';
 
 // start dummy session before any PHPUnit output
 $session = new Zend_Session_Namespace('OntoWiki_Test');
@@ -50,4 +50,3 @@ $session = new Zend_Session_Namespace('OntoWiki_Test');
 
 // Access Erfurt app for constant loading etc.
 Erfurt_App::getInstance(false);
-

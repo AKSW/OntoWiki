@@ -741,7 +741,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
         }
 
         $presets = array();
-        if(isset($this->_privateConfig->fetch->preset)) {
+        if (isset($this->_privateConfig->fetch->preset)) {
             $presets = $this->_privateConfig->fetch->preset->toArray();
         }
 
@@ -764,7 +764,8 @@ class DatagatheringController extends OntoWiki_Controller_Component
             );
         } catch (Exception $e) {
             if (defined('_EFDEBUG')) {
-                return $this->_sendResponse(false, 'An error occured: ' . $e->getMessage() . " – " . $e->getTraceAsString(), OntoWiki_Message::ERROR);
+                $errorMessage = 'An error occured: ' . $e->getMessage() . " – " . $e->getTraceAsString();
+                return $this->_sendResponse(false, $errorMessage, OntoWiki_Message::ERROR);
             } else {
                 $res = null;
             }

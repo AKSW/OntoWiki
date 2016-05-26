@@ -151,8 +151,10 @@ class IndexController extends OntoWiki_Controller_Base
                 $owFeed = Zend_Feed::import($url);
                 return $owFeed;
             } else {
+                $message = 'Feed disabled in config.ini. You can configure a feed '
+                         . 'using the "news.feedUrl" key in your config.ini.';
                 $this->_owApp->appendMessage(
-                    new OntoWiki_Message('Feed disabled in config.ini. You can configure a feed using the "news.feedUrl" key in your config.ini.', OntoWiki_Message::INFO)
+                    new OntoWiki_Message($message, OntoWiki_Message::INFO)
                 );
                 return array();
             }

@@ -128,8 +128,8 @@ function initApp()
         // use include, so we can catch it with the error handler
         require_once 'OntoWiki.php';
     } catch (Exception $e) {
-        print ('Fatal Error: Could not load the OntoWiki Application Framework classes.' . PHP_EOL);
-        print ('Your installation directory seems to be screwed.' . PHP_EOL);
+        echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.' . PHP_EOL;
+        echo 'Your installation directory seems to be screwed.' . PHP_EOL;
         exit;
     }
 
@@ -138,8 +138,8 @@ function initApp()
         // use include, so we can catch it with the error handler
         require_once 'Erfurt/App.php';
     } catch (Exception $e) {
-        print ('Fatal Error: Could not load the Erfurt Framework classes.' . PHP_EOL);
-        print ('Maybe you should install it with apt-get or with "make deploy"?' . PHP_EOL);
+        echo 'Fatal Error: Could not load the Erfurt Framework classes.' . PHP_EOL;
+        echo 'Maybe you should install it with apt-get or with "make deploy"?' . PHP_EOL;
         exit;
     }
 
@@ -150,7 +150,7 @@ function initApp()
     try {
         $application->bootstrap();
     } catch (Exception $e) {
-        print ('Error on bootstrapping application: ' . $e->getMessage() . PHP_EOL);
+        echo 'Error on bootstrapping application: ' . $e->getMessage() . PHP_EOL;
         exit;
     }
     return $application;
@@ -163,7 +163,7 @@ $ontoWiki       = OntoWiki::getInstance();
 $extManager     = $ontoWiki->extensionManager;
 $extensions     = $extManager->getExtensions();
 
-print ($ontoWiki->config->version->label . ' ' . $ontoWiki->config->version->number . PHP_EOL);
+echo $ontoWiki->config->version->label . ' ' . $ontoWiki->config->version->number . PHP_EOL;
 
 // create a worker registry
 $workerRegistry = Erfurt_Worker_Registry::getInstance();
@@ -174,7 +174,7 @@ $event->bootstrap   = $bootstrap;
 $event->registry    = $workerRegistry;
 $event->trigger();
 if (!count($workerRegistry->getJobs())) {
-    print ('No jobs registered - nothing to do or wait for.' . PHP_EOL );
+    echo 'No jobs registered - nothing to do or wait for.' . PHP_EOL;
     exit;
 }
 
@@ -202,4 +202,3 @@ $workerRegistry->registerJob(
 $worker = new Erfurt_Worker_Backend($workerRegistry);
 //  set worker and Gearman worker to listen mode and wait
 $worker->listen();
-
