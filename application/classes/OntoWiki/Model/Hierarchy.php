@@ -167,6 +167,9 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
 
         $this->_url->setParam('r', $resultUri, true);
 
+        $hierarchyOpen = is_array($this->_session->hierarchyOpen) &&
+                         in_array($resultUri, $this->_session->hierarchyOpen);
+
         $entry = array(
             'uri'          => $resultUri,
             'url'          => (string)$this->_url,
@@ -174,8 +177,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
             'title'        => $this->_titleHelper->getTitle($resultUri, $this->_config->languages->locale),
             'children'     => array(),
             'has_children' => $hasChildren,
-            'open'         =>
-            is_array($this->_session->hierarchyOpen) && in_array($resultUri, $this->_session->hierarchyOpen)
+            'open'         => $hierarchyOpen
         );
 
         return $entry;

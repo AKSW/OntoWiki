@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2013-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -44,13 +44,14 @@ class OntoWiki_Jobs_Cron extends Erfurt_Worker_Job_Abstract
      */
     private function _toSeconds(DateInterval $interval)
     {
-        return
-            ($interval->y * 365 * 24 * 60 * 60) +
-            ($interval->m * 30 * 24 * 60 * 60) +
-            ($interval->d * 24 * 60 * 60) +
-            ($interval->h * 60 * 60) +
-            ($interval->i * 60) +
-            $interval->s;
+        $y = $interval->y * 365 * 24 * 60 * 60;
+        $m = $interval->m * 30 * 24 * 60 * 60;
+        $d = $interval->d * 24 * 60 * 60;
+        $h = $interval->h * 60 * 60;
+        $i = $interval->i * 60;
+        $s = $interval->s;
+
+        return $y + $m + $d + $h + $i + $s;
     }
 
     /**

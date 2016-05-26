@@ -539,7 +539,7 @@ class OntoWiki_Extension_Manager
      */
     public function clearCache()
     {
-        $cache	= OntoWiki::getInstance()->getCache();
+        $cache = OntoWiki::getInstance()->getCache();
         $cache->clean(Zend_Cache::CLEANING_MODE_ALL);
     }
 
@@ -556,11 +556,11 @@ class OntoWiki_Extension_Manager
             foreach ($dir as $file) {
                 if (!$file->isDot() && $file->isDir()) {
                     if (!in_array($file->getFileName(), $this->reservedNames)) {
-                        $extensionName			= $file->getFileName();
-                        $currentExtensionPath	= $file->getPathname() . DIRECTORY_SEPARATOR;
+                        $extensionName          = $file->getFileName();
+                        $currentExtensionPath   = $file->getPathname() . DIRECTORY_SEPARATOR;
                         // parse all extensions on the filesystem
                         if (is_readable($currentExtensionPath . self::EXTENSION_DEFAULT_DOAP_FILE)) {
-                            $config[$extensionName]	= $this->_loadConfigs($extensionName);
+                            $config[$extensionName] = $this->_loadConfigs($extensionName);
                         }
                     }
                 }
@@ -1134,7 +1134,7 @@ class OntoWiki_Extension_Manager
         }
 
         //fix missing names
-        if (!isset ($config->name)) {
+        if (!isset($config->name)) {
             $config->name = $name;
         }
 
