@@ -236,9 +236,9 @@ class ExconfController extends OntoWiki_Controller_Component
                     $ini->enabled = $this->_request->getParam('enabled') == "true";
                     $writer       = new Zend_Config_Writer_Ini(array());
                     $writer->write($localIniPath, $ini, true);
-                    
+
                     //invalidate the cache to get changes distributed
-                    $cache	= OntoWiki::getInstance()->getCache();
+                    $cache = OntoWiki::getInstance()->getCache();
                     $cache->remove('ow_extensionConfig');
                 }
                 // the conf action sends a complete config array as json
@@ -263,9 +263,9 @@ class ExconfController extends OntoWiki_Controller_Component
                         OntoWiki::getInstance()->appendMessage(
                             new OntoWiki_Message('config sucessfully changed', OntoWiki_Message::SUCCESS)
                         );
-                        
+
                         //invalidate the cache to get changes distributed
-                        $cache	= OntoWiki::getInstance()->getCache();
+                        $cache = OntoWiki::getInstance()->getCache();
                         $cache->remove('ow_extensionConfig');
                     }
                     $this->_redirect($this->urlBase . 'exconf/conf/?name=' . $name);

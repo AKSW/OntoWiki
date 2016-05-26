@@ -205,7 +205,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             ->addProjectionVar($this->_resourceVar)
             ->setDistinct(true);
 
-        if(!isset($this->_config->lists) || $this->_config->lists->showTypeColumnByDefault === 'true') {
+        if (!isset($this->_config->lists) || $this->_config->lists->showTypeColumnByDefault === 'true') {
            $this->addShownProperty(EF_RDF_TYPE, '__TYPE');
         }
 
@@ -1904,13 +1904,12 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $this->_valueQuery->addElement($this->_valueQueryResourceFilter);
         }
 
-        $this->_valueQueryResourceFilter->setConstraint(
-            empty($resources)
-            ?
-            new Erfurt_Sparql_Query2_BooleanLiteral(false)
-            :
-            new Erfurt_Sparql_Query2_ConditionalOrExpression($resources)
-        );
+        if (!empty($resources)) {
+            $constraint = new Erfurt_Sparql_Query2_ConditionalOrExpression($resources);
+        } else {
+            $constraint = new Erfurt_Sparql_Query2_BooleanLiteral(false);
+        }
+        $this->_valueQueryResourceFilter->setConstraint($constraint);
 
         //fix for a strange issue where a query with only optionals fails
         //(but there is a magic/unkown condition, that makes it work for some queries!?)
@@ -2030,9 +2029,7 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $list   = $listHelper->getList($listName);
             $filter = $list->getFilter();
 
-            return isset($filter['type0']['rdfsclass'])
-                ? $filter['type0']['rdfsclass']
-                : -1;
+            return isset($filter['type0']['rdfsclass']) ? $filter['type0']['rdfsclass'] : -1;
         }
 
         return -1;

@@ -40,14 +40,15 @@ class RatingModule extends OntoWiki_Module
             'prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
              prefix ns0: <http://rdfs.org/sioc/ns#>
              prefix ns1: <http://rdfs.org/sioc/types#>
-             prefix terms: <http://purl.org/dc/terms/>')
-        ->setSelectClause('SELECT *')
-        ->setWherePart(
+             prefix terms: <http://purl.org/dc/terms/>'
+        );
+        $query->setSelectClause('SELECT *');
+        $query->setWherePart(
             'where {
-                ?rating rdf:type ns1:Poll.
-                ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
-                ?rating ns0:note ?note.
-                ?rating ns0:has_creator ?creator}'
+            ?rating rdf:type ns1:Poll.
+            ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
+            ?rating ns0:note ?note.
+            ?rating ns0:has_creator ?creator}'
         );
 
         $results = $this->_store->sparqlQuery($query);

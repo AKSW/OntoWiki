@@ -75,8 +75,13 @@ class LastchangesModule extends OntoWiki_Module
 
                 if (Erfurt_Uri::check($change['resource'])) {
                     $change['aresource'] = new OntoWiki_Resource((string)$change['useruri'], $this->systemModel);
-                    $change['author']    = $change['aresource']->getTitle() ? $change['aresource']->getTitle()
-                        : OntoWiki_Utils::getUriLocalPart($change['aresource']);
+
+                    if ($change['aresource']->getTitle()) {
+                        $change['author'] = $change['aresource']->getTitle();
+                    } else {
+                        $change['author'] = OntoWiki_Utils::getUriLocalPart($change['aresource']);
+                    }
+
                     $url->setParam('r', (string)$change['aresource'], true);
                     $change['ahref'] = (string)$url;
 
@@ -84,8 +89,12 @@ class LastchangesModule extends OntoWiki_Module
                     $url->setParam('r', (string)$change['resource'], true);
                     $change['rhref']    = (string)$url;
                     $change['resource'] = new OntoWiki_Resource((string)$change['resource'], $this->model);
-                    $change['rname']    = $change['resource']->getTitle() ? $change['resource']->getTitle()
-                        : OntoWiki_Utils::contractNamespace($change['resource']->getIri());
+
+                    if ($change['resource']->getTitle()) {
+                        $change['rname'] = $change['resource']->getTitle();
+                    } else {
+                        $change['rname'] = OntoWiki_Utils::contractNamespace($change['resource']->getIri());
+                    }
 
                     $changes[] = $change;
                 }

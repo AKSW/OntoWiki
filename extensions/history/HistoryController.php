@@ -8,7 +8,7 @@
 
 /**
  * History component controller.
- * 
+ *
  * @category   OntoWiki
  * @package    Extensions_History
  * @author     Christoph Rieß <c.riess.dev@googlemail.com>
@@ -65,8 +65,7 @@ class HistoryController extends OntoWiki_Controller_Component
                 $userArray[$entry['useruri']] = 'Anonymous';
             } elseif ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->superAdmin) {
                 $userArray[$entry['useruri']] = 'SuperAdmin';
-            } elseif (
-                is_array($userArray[$entry['useruri']]) &&
+            } elseif (is_array($userArray[$entry['useruri']]) &&
                 array_key_exists('userName', $userArray[$entry['useruri']])
             ) {
                 $userArray[$entry['useruri']] = $userArray[$entry['useruri']]['userName'];
@@ -198,9 +197,11 @@ class HistoryController extends OntoWiki_Controller_Component
 
         // redirecting to home if no model/resource is selected
         if (empty($model)
-            || (empty($this->_owApp->selectedResource)
+            || (
+            empty($this->_owApp->selectedResource)
             && empty($params['r'])
-            && ($this->_owApp->lastRoute !== 'instances'))
+            && ($this->_owApp->lastRoute !== 'instances')
+            )
         ) {
             $this->_abort('No model/resource selected.', OntoWiki_Message::ERROR);
         }
@@ -224,9 +225,11 @@ class HistoryController extends OntoWiki_Controller_Component
         // setting if class or instances
         if ($this->_owApp->lastRoute === 'instances') {
             // setting default title
-            $title = $resource->getTitle() ?
-                $resource->getTitle() :
-                OntoWiki_Utils::contractNamespace($resource->getIri());
+            if (!empty($resource->getTitle())) {
+                $title = $resource->getTitle();
+            } else {
+                $title = OntoWiki_Utils::contractNamespace($resource->getIri());
+            }
             $windowTitle = $translate->_('Versions for elements of the list');
 
             $listHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('List');
@@ -264,9 +267,11 @@ class HistoryController extends OntoWiki_Controller_Component
             $singleResource = false;
         } else {
             // setting default title
-            $title = $resource->getTitle() ?
-                $resource->getTitle() :
-                OntoWiki_Utils::contractNamespace($resource->getIri());
+            if (!empty($resource->getTitle())) {
+                $title = $resource->getTitle();
+            } else {
+                $title = OntoWiki_Utils::contractNamespace($resource->getIri());
+            }
             $windowTitle = sprintf($translate->_('Versions for %1$s'), $title);
 
             $historyArray = $versioning->getHistoryForResource(
@@ -373,7 +378,11 @@ class HistoryController extends OntoWiki_Controller_Component
         OntoWiki::getInstance()->getNavigation()->setActive('history');
 
         // setting default title
-        $title = $resource->getTitle() ? $resource->getTitle() : OntoWiki_Utils::contractNamespace($resource->getIri());
+        if (!empty($resource->getTitle())) {
+            $title = $resource->getTitle();
+        } else {
+            $title = OntoWiki_Utils::contractNamespace($resource->getIri());
+        }
         $windowTitle = sprintf($translate->_('Versions for %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
 
@@ -411,7 +420,7 @@ class HistoryController extends OntoWiki_Controller_Component
 
         // Trying to rollback actions from POST parameters (style: serialized in actionid)
         foreach (unserialize($params['actionid']) as $id) {
-                if ( $versioning->rollbackAction($id) ) {
+                if ($versioning->rollbackAction($id)) {
                     $successIDs[] = $id;
                 } else {
                     $errorIDs[] = $id;

@@ -162,13 +162,14 @@ class CommunityController extends OntoWiki_Controller_Component
                 '
                 prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 prefix ns0: <http://rdfs.org/sioc/ns#>
-                prefix ns1: <http://rdfs.org/sioc/types#>')
-            ->setSelectClause('SELECT *')
-            ->setWherePart(
+                prefix ns1: <http://rdfs.org/sioc/types#>'
+            );
+            $query->setSelectClause('SELECT *');
+            $query->setWherePart(
                 'where {
-                    ?rating rdf:type ns1:Poll.
-                    ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
-                    ?rating ns0:has_creator ?creator}'
+                ?rating rdf:type ns1:Poll.
+                ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
+                ?rating ns0:has_creator ?creator}'
             );
 
             $results = $model->sparqlQuery($query);

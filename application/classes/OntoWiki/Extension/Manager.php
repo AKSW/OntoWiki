@@ -524,8 +524,8 @@ class OntoWiki_Extension_Manager
      * get the location of the cache
      *
      * @return string
-	 * @deprecated	use Ontowiki::getCache to access cache
-	 * @todo		to be deleted in next version
+     * @deprecated  use Ontowiki::getCache to access cache
+     * @todo        to be deleted in next version
      */
     public function getCachePath()
     {

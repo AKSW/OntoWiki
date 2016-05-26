@@ -36,11 +36,11 @@ class IndexController extends OntoWiki_Controller_Base
         // parse feed items into array
         foreach ($owFeed as $feedItem) {
             // form temporary array with needed data
+            $description = substr($feedItem->description(), 0, strpos($feedItem->description(), ' ', 40)) . ' [...]';
             $tempdata = array(
                 'link'        => $feedItem->link(),
                 'title'       => $feedItem->title(),
-                'description' =>
-                substr($feedItem->description(), 0, strpos($feedItem->description(), ' ', 40)) . ' [...]'
+                'description' => $description
             );
             // append temporary array to data array
             $data[] = $tempdata;
@@ -137,11 +137,13 @@ class IndexController extends OntoWiki_Controller_Base
                     . urlencode($version->suffix);
             }
             if ($url) {
-                $url = strtr($url, array(
+                $url = strtr(
+                    $url, array(
                     '{{version.label}}'  => urlencode($version->label),
                     '{{version.number}}' => urlencode($version->number),
                     '{{version.suffix}}' => urlencode($version->suffix)
-                ));
+                    )
+                );
 
                 /* @var $client Zend_Http_Client */
                 $client = Zend_Feed::getHttpClient();

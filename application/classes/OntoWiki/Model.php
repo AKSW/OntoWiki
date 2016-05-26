@@ -104,7 +104,7 @@ class OntoWiki_Model
     {
         switch ($name) {
             case '_logger':
-                return OntoWiki::getInstance()->logger;;
+                return OntoWiki::getInstance()->logger;
             case '_eventDispatcher':
                 return Erfurt_Event_Dispatcher::getInstance();
             case '_config':
@@ -114,4 +114,3 @@ class OntoWiki_Model
     }
 
 }
-

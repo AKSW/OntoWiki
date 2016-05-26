@@ -27,9 +27,11 @@ class SourceController extends OntoWiki_Controller_Component
             );
             $title = 'RDF Source';
         } else {
-            $title = $resource->getTitle()
-                ? $resource->getTitle()
-                : OntoWiki_Utils::contractNamespace($resource->getIri());
+            if ($resource->getTitle()) {
+                $title = $resource->getTitle();
+            } else {
+                $title = OntoWiki_Utils::contractNamespace($resource->getIri());
+            }
         }
         $windowTitle = sprintf(
             $translate->_('Source of Statements about %1$s') .
