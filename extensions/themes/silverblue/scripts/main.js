@@ -34,24 +34,42 @@ $(document).ready(function() {
     $(document).keydown(function(e) {
         if (/view\/?|resource\/properties\/?/gi.test(window.document.baseURI)) {
             if (e.shiftKey && e.altKey) {
-                e.preventDefault();
+                var shouldPreventDefault = false;
+
                 switch(e.which) {
                     //e - 101 - edit E - 69
-                    case 69 : $('.edit-enable').trigger('click'); break;
+                    case 69 :
+                        $('.edit-enable').trigger('click');
+                        shouldPreventDefault = true;
+                        break;
                     //a - 97 - add property - A - 65
-                    case 65 : $('.property-add').trigger('click'); break;
+                    case 65 :
+                        $('.property-add').trigger('click');
+                        e.preventDefault();
+                        break;
                     //s - 115 - save S - 83
-                    case 83 : if ($('.edit-enable').hasClass('active')) { 
-                                   $('.edit.save').trigger('click'); 
-                               }; 
-                               break;
+                    case 83 :
+                        if ($('.edit-enable').hasClass('active')) {
+                            $('.edit.save').trigger('click');
+                            e.preventDefault();
+                        }; 
+                        break;
                     //c  - 99 - cancel C - 67
-                    case 67 : if ($('.edit-enable').hasClass('active')) { 
-                                  $('.edit.cancel').trigger('click'); 
-                              }; 
-                              break;
+                    case 67 :
+                        if ($('.edit-enable').hasClass('active')) {
+                            $('.edit.cancel').trigger('click');
+                            e.preventDefault();
+                        };
+                        break;
                     //l - 108 - clone L - 76
-                    case 76 : $('.clone-resource').trigger('click'); break;
+                    case 76 :
+                        $('.clone-resource').trigger('click');
+                        e.preventDefault();
+                        break;
+                }
+
+                if (shouldPreventDefault) {
+                    e.preventDefault();
                 }
             }
         }
