@@ -83,15 +83,21 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
 
         if (!$noGit) {
             //test if a git entry exists to get the years from 'git log'
-            exec('git log --reverse ' . $phpcsFile->getFilename() . ' | head -3', $outputCreationYear);
+            exec('git log --reverse ' . $phpcsFile->getFilename() . ' | head -4', $outputCreationYear);
             //if(!empty($outputCreationYear)) {
                 preg_match("/( )[0-9]{4}( )/", $outputCreationYear[2], $gitOldYearArray);
+                if (empty($gitOldYearArray) && count($outputCreationYear) > 3) {
+                    preg_match("/( )[0-9]{4}( )/", $outputCreationYear[3], $gitOldYearArray);
+                }
                 $gitYearOld = str_replace(' ', '', $gitOldYearArray[0]);
                 if (isset($nonGitYear) && isset($nonGitYear[1]) && $gitYearOld > $nonGitYear[1]) {
                     $gitYearOld = $nonGitYear[1];
                 }
                 exec('git log -1 ' . $phpcsFile->getFilename(), $outputLastEditYear);
                 preg_match("/( )[0-9]{4}( )/", $outputLastEditYear[2], $gitNewYearArray);
+                if (empty($gitNewYearArray) && count($outputLastEditYear) > 3) {
+                    preg_match("/( )[0-9]{4}( )/", $outputLastEditYear[3], $gitNewYearArray);
+                }
                 $gitYearNew = str_replace(' ', '', $gitNewYearArray[0]);
                 if (strcmp($gitYearOld, $gitYearNew) != 0) {
                     $gitYearOld .= '-';
