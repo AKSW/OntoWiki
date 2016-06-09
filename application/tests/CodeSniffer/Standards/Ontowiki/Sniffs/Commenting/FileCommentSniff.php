@@ -67,7 +67,7 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
         }
 
         $noGit = true;
-        if (count($tokens) > 15) {
+        if (count($tokens) > ($commentStart + 14)) {
             preg_match("/ ([0-9]{4})(-[0-9]{4})?/", $tokens[$commentStart + 15]['content'], $nonGitYear);
         }
 
