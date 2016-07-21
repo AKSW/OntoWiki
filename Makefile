@@ -88,6 +88,11 @@ composer-install:
 endif
 # test stuff
 
+devenv:
+	git clone "https://github.com/pfrischmuth/ontowiki-devenv.git" devenv
+	cp -i devenv/config.ini.dist ./config.ini
+	cp -i devenv/config-test.ini.dist ./application/tests/config.ini
+
 test-directories:
 	rm -rf application/tests/cache application/tests/unit/cache application/tests/integration/cache
 	mkdir -p application/tests/cache application/tests/unit/cache application/tests/integration/cache
