@@ -35,8 +35,6 @@ help:
 	@echo "     help-cs .................... Show help for code sniffing targets"
 	@echo "     help-test .................. Show help for test related targets"
 	@echo "     -------------------------------------------------------------------"
-	@echo "     vagrant .................... Prepare environment to run with Vagrant"
-	@echo "     vagrant-clean .............. Removes owdev box in order to ensure you have the latest version"
 	@echo "     directories ................ Create cache/log dir and chmod environment"
 	@echo "     clean ...................... Deletes all log and cache files"
 	@echo "     odbctest ................... Executes some tests to check the Virtuoso connection"
@@ -67,19 +65,6 @@ deploy: getcomposer
 	make deploy
 endif
 
-vagrant: directories clean #add composer install
-	rm -rf libraries/Zend # vagrant has own zend
-	rm -f Vagrantfile
-	!(ls $(PWD)/application/scripts/Vagrantfile > /dev/null 2> /dev/null) || ln -s $(PWD)/application/scripts/Vagrantfile $(PWD)/Vagrantfile
-	(ls $(PWD)/Vagrantfile > /dev/null 2> /dev/null) || ln -s $(PWD)/application/scripts/Vagrantfile-dist $(PWD)/Vagrantfile
-	(ls $(HOME)/.vagrant.d/boxes/owdev > /dev/null 2> /dev/null) || vagrant box add owdev http://files.ontowiki.net/owdev.box
-	@echo ""
-	@echo '=> Now type "vagrant up"'
-
-vagrant-clean:
-	rm -f Vagrantfile
-	vagrant box remove owdev
-
 clean:
 	rm -rf cache/* logs/* libraries/*
 
@@ -102,6 +87,11 @@ composer-install:
 	@echo "and run 'make $@' again"
 endif
 # test stuff
+
+devenv:
+	git clone "https://github.com/pfrischmuth/ontowiki-devenv.git" devenv
+	cp -i devenv/config.ini.dist ./config.ini
+	cp -i devenv/config-test.ini.dist ./application/tests/config.ini
 
 test-directories:
 	rm -rf application/tests/cache application/tests/unit/cache application/tests/integration/cache
