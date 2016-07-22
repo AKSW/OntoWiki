@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.4.0",
         "mnsami/composer-custom-directory-installer": "1.1.*",
         "aksw/erfurt": "dev-develop",
         "bitworking/mimeparse": "2.1.*",
