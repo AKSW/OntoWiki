@@ -347,10 +347,9 @@ class OntoWiki_Menu_Registry
             // Delete resource option
             $url = new OntoWiki_Url(
                 array('controller' => 'resource', 'action' => 'delete'),
-                array()
+                array('r')
             );
-
-            $url->setParam('r', $resource, true);
+            $url->setParam('r', (string)$resource, false);
             $resourceMenu->appendEntry('Delete Resource', (string)$url);
         }
 
