@@ -28,18 +28,17 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      *
      * @var array
      */
-    private $_typeMapping
-        = array(
-            DEFAULT_TYPE            => 'html', // default is xhtml
-            'text/html'             => 'html', // we only deliver XML-compatible html
-            'application/xhtml+xml' => 'html',
-            'application/rdf+xml'   => 'rdf',
-            'text/n3'               => 'n3',
-            'text/turtle'           => 'ttl',
-            'application/rdf+json'  => 'json',
-            'application/json'      => 'json',
-            'application/xml'       => 'html' // TODO: should this be xhtml or rdf?
-        );
+    private $_typeMapping = array(
+        DEFAULT_TYPE            => 'html', // default is xhtml
+        'text/html'             => 'html', // we only deliver XML-compatible html
+        'application/xhtml+xml' => 'html',
+        'application/rdf+xml'   => 'rdf',
+        'text/n3'               => 'n3',
+        'text/turtle'           => 'ttl',
+        'application/rdf+json'  => 'json',
+        'application/json'      => 'json',
+        'application/xml'       => 'html' // TODO: should this be xhtml or rdf?
+    );
 
     /**
      * This method is called, when the onIsDispatchable event was triggered.
