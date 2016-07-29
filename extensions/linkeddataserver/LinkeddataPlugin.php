@@ -110,6 +110,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 case 'rdf':
                 case 'n3':
                 case 'ttl':
+                case 'json':
                     // Check the config, whether provenance information should be included.
                     $prov = false;
                     if (isset($this->_privateConfig->provenance)
