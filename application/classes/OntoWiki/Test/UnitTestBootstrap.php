@@ -61,9 +61,20 @@ class OntoWiki_Test_UnitTestBootstrap extends Bootstrap
         );
         $erfurt->setStore($store);
 
+        $erfurt->setAc(new Erfurt_Ac_None());
+
         // make available
         $ontoWiki->erfurt = $erfurt;
 
         return $erfurt;
+    }
+
+    public function _initPlugins()
+    {
+        // require front controller
+        $this->bootstrap('frontController');
+        $frontController = $this->getResource('frontController');
+
+        // We do not register any plugins for unit tests.
     }
 }
