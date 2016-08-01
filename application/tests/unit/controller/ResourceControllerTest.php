@@ -23,71 +23,20 @@ class ResourceControllerTest extends OntoWiki_Test_ControllerTestCase
         $this->setUpUnitTest();
     }
 
-    public function testDummyTestUnlessNoWorkingActualTestExists()
+    public function testExportActionReturnsCorrectContentTypeForTurtle()
     {
-        $this->assertTrue(true);
+        $r = 'http://example.org/resource1';
+        $m = 'http://example.org/model1/';
+        $this->_storeAdapter->createModel($m);
+
+        $this->request->setParam('r', $r);
+        $this->request->setParam('m', $m);
+        $this->request->setParam('f', 'turtle');
+        $this->dispatch('/resource/export');
+
+        $this->assertController('resource');
+        $this->assertAction('export');
+        $this->assertResponseCode(200);
+        $this->assertHeaderContains('Content-Type', 'text/turtle');
     }
-
-    /*
-        public function testListInstantiation()
-        {
-            $this->request->setMethod('POST')
-                ->setPost(
-                array(
-                    'list' => 'instances',
-                    'init' => true,
-                )
-            );
-
-            $this->dispatch('/list');
-
-            $this->assertController('resource');
-            $this->assertAction('instances');
-            $this->assertResponseCode(200);
-        }
-
-
-        public function testListConfig()
-        {
-            $c = array(
-                'filter' => array(
-                    'action' => 'add',
-                    'mode' => 'box',
-                    'filter' => 'equals',
-                    'value' => 'http://test.com/'
-                )
-            );
-            $this->request->setMethod('POST')
-                ->setPost(
-                array(
-                    'list' => 'instances',
-                    'init' => true,
-                    'instancesconfig' => json_encode($c)
-                )
-            );
-
-            $this->dispatch('/list');
-
-            $this->assertController('resource');
-            $this->assertAction('instances');
-            $this->assertResponseCode(200);
-        }
-
-        public function testListError()
-        {
-            $c = array();
-            $this->request->setMethod('POST')
-                ->setPost(
-                array(
-                    'list' => 'newone',
-                    //no init parameter
-                    'instancesconfig' => json_encode($c)
-                )
-            );
-
-            $this->dispatch('/list');
-
-            $this->assertController('error');
-        }
-    */
 }
