@@ -478,24 +478,9 @@ class ResourceController extends OntoWiki_Controller_Base
 
         $filename = 'export' . date('Y-m-d_Hi');
 
-        switch ($format) {
-            case 'rdfxml':
-                $contentType = 'application/rdf+xml';
-                $filename .= '.rdf';
-                break;
-            case 'rdfn3':
-                $contentType = 'text/rdf+n3';
-                $filename .= '.n3';
-                break;
-            case 'rdfjson':
-                $contentType = 'application/json';
-                $filename .= '.json';
-                break;
-            case 'turtle':
-                $contentType = 'application/x-turtle';
-                $filename .= '.ttl';
-                break;
-        }
+        $formatDescription = Erfurt_Syntax_RdfSerializer::getFormatDescription($format);
+        $contentType = $formatDescription['contentType'];
+        $filename .= $formatDescription['fileExtension'];
 
         /*
          * Event: allow for adding / deleting statements to the export

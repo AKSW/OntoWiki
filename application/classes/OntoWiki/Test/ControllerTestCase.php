@@ -43,6 +43,8 @@ class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestC
         );
 
         parent::setUp();
+
+        $this->_storeAdapter = Erfurt_App::getInstance(false)->getStore()->getBackendAdapter();
     }
 
     public function setUpExtensionUnitTest()
