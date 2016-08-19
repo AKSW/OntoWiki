@@ -2,7 +2,7 @@
     <fieldset>
         <?php if (is_array($this->queryResult)): ?>
             <?php 
-               	echo $this->partial('partials/resultset.phtml', array('data' => $this->queryResult, 'header' => $this->header, 'caption'=>'')); 
+               	echo $this->partial('partials/resultset.phtml', array('data' => $this->queryResult, 'urlBase' => $this->urlBase, 'header' => $this->header, 'caption'=>'')); 
             ?>
         <?php else: ?>
             <pre><?php echo $this->escape($this->queryResult) ?></pre>

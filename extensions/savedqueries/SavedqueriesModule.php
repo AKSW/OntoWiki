@@ -6,11 +6,6 @@
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
-require_once 'Erfurt/Sparql/SimpleQuery.php';
-require_once 'OntoWiki/Module.php';
-require_once 'OntoWiki/Url.php';
-require_once 'OntoWiki/Utils.php';
-
 /**
  * @category   OntoWiki
  * @package    Extensions_Savedqueries
@@ -38,8 +33,8 @@ class SavedqueriesModule extends OntoWiki_Module
                 ?query a <" . $this->_privateConfig->queryClass . "> .
                 ?query <" . $this->_privateConfig->queryLabel . "> ?label .
                 ?query <" . $this->_privateConfig->queryId . "> ?id .
-                ?query <" . $this->_privateConfig->queryDesc . "> ?description .
-                ?query <" . $this->_privateConfig->queryCode . "> ?code
+                ?query <" . $this->_privateConfig->queryCode . "> ?code.
+                OPTIONAL { ?query <" . $this->_privateConfig->queryDesc . "> ?description . }
         }";
 
         $elements = $storeGraph->sparqlQuery($query);
