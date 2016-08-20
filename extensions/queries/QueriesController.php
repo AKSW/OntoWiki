@@ -404,17 +404,33 @@ class QueriesController extends OntoWiki_Controller_Component
         $store = $this->_erfurt->getStore();
         $storeGraph = $this->_owApp->selectedModel;
         $graphUri = (string)$this->_owApp->selectedModel;
-
         $res = "json or desc missing";
         // checking for post data to save queries
         $params = $this->_request->getParams();
-        if (isset($params['json']) && isset($params['json'])) {
-            if ($this->_request->getParam('share') == "true") {
+        if (isset($params['json'])) {
+            if ($this->_request->getParam('share') == 'true') {
+                //The User wants to story the Query in the DB he is querying -> check if he can edit it
+                if (!$this->_owApp->selectedModel->isEditable()) {
+                    $res = "The Query cannot be shared, because the Model is not editable.";
+                    $response->setBody($res);
+                    return;
+                }
                 // store in the model itself - everybody can see it
                 $storeGraph = $this->_owApp->selectedModel;
             } else {
-                //private db - should be configured so only the user can see it
-                $storeGraph = $this->getUserQueryDB();
+                //the User wants to Store the Query in his private DB -> check rights/if it already exists
+                if (!Erfurt_App::getInstance()->isActionAllowed('ModelManagement')) {
+                    if ($this->findDB($this->_userDbUri) == null) {
+                        $res = 'You dont have the Permission to create a DB for your Queries,'
+                        . ' ask your Admin about it.';
+                        $response->setBody($res);
+                        return;
+                    } else {
+                        $storeGraph = $this->getUserQueryDB();
+                    }
+                } else {
+                    $storeGraph = $this->getUserQueryDB();
+                }
             }
 
             // checking whether any queries exist yet in this store
@@ -581,6 +597,8 @@ class QueriesController extends OntoWiki_Controller_Component
             } else {
                 $res = 'Save failed. (Query with same pattern exists)';
             }
+        } else {
+            $res = 'You dont have the permissions to save your Queries non-shared.';
         }
         $response->setBody($res);
     }
@@ -693,12 +711,12 @@ class QueriesController extends OntoWiki_Controller_Component
         $proposedDBname = $this->_userDbUri;
 
         $store = $this->_erfurt->getStore();
-        $newModel = $store->getNewModel($proposedDBname);
+        $newModel = $store->getNewModel($proposedDBname, null, null, true);
 
         $object = array();
 
         // add english label for this db
-        $object['object_type'] = Erfurt_Store::TYPE_LITERAL;
+        $object['type'] = 'literal';
         $object['value'] = 'GQB Query DB of ' . $this->_userName;
         $newModel->addStatement($proposedDBname, EF_RDFS_LABEL, $object);
 
@@ -714,7 +732,7 @@ class QueriesController extends OntoWiki_Controller_Component
 
         //domain of this db (needed?)
         $object['value'] = $this->_privateConfig->saving->baseQueryDbUri;
-        $object['object_type'] = Erfurt_Store::TYPE_IRI;
+        $object['type'] = 'uri';
         $newModel->addStatement($proposedDBname, EF_RDFS_DOMAIN, $object);
 
         //add owner/maker of this db

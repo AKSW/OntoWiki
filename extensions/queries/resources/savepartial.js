@@ -22,7 +22,7 @@ $(document).ready(function() {
           success: function(msg){
            //TODO check for status
            if(msg != "All OK")
-            alert("Fehler "+msg);
+            alert("Error "+msg);
            //open(urlBase + "querybuilding/listquery");
           }
         });
@@ -46,8 +46,7 @@ $(document).ready(function() {
           name: $('#qname').val(),
           "query": editor.getValue(),
           generator: "qe",
-          //share: $("#savequerysharecheckbox").is(':checked') ? "true" : "false"
-          share: "true"
+          share: $("#savequerysharecheckbox").is(':checked') ? "true" : "false"
           }),
           dataType: "text",
                 error: function(xmlHttpObj, type, error){
@@ -56,7 +55,7 @@ $(document).ready(function() {
           success: function(msg){
            //TODO check for status
            if (msg != "All OK") {
-            alert("Fehler " + msg);
+            alert("Error " + msg);
            } else {
             $('.innercontent').prepend("<p class=\"messagebox info\" id=\"savequerynotification\">The Query was saved</p>");
             
