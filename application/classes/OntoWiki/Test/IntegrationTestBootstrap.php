@@ -57,7 +57,14 @@ class OntoWiki_Test_IntegrationTestBootstrap extends Bootstrap
         // editing the config
         if ($config instanceof Zend_Config) {
             $storeAdapter = getenv('EF_STORE_ADAPTER');
-            if (($storeAdapter === 'virtuoso') || ($storeAdapter === 'zenddb')) {
+
+            $supportedStores = [
+                'virtuoso',
+                'zenddb',
+                'stardog'
+            ];
+
+            if (in_array($storeAdapter, $supportedStores)) {
                 $config->store->backend = $storeAdapter;
             } else {
                 if ($storeAdapter !== false) {

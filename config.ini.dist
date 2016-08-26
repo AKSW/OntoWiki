@@ -42,6 +42,14 @@ store.virtuoso.search_max_length_for_bifcontains = "4"
 ;store.virtuoso.use_persistent_connection = true
 
 ;;;;
+;; Stardog backend specific options
+;;
+store.stardog.base_url = "http://localhost:5820"
+store.stardog.username = admin
+store.stardog.password = admin
+store.stardog.database = "ontowiki"
+
+;;;;
 ;; ARC2 backend specific options
 ;;
 store.arc.dbname = "ontowiki_arc2"
