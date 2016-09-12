@@ -38,8 +38,6 @@ build/
 /vendor
 composer.phar
 # for now we ignore the composer.lock, but we should commit it some dome day, especially for releases
-# see also: https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file
-composer.lock
 
 # devenv stuff
 /devenv
