@@ -2,8 +2,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -183,10 +183,11 @@ class QueriesController extends OntoWiki_Controller_Component
             foreach ($prefixes as $prefix => $namespace) {
                 $prefixString = 'PREFIX ' . $prefix . ': <' . $namespace . '>';
                 // only add prefix if it's not there yet
-                if(strpos($query, $prefixString) === false) {
+                if (strpos($query, $prefixString) === false) {
                     $query = $prefixString . PHP_EOL . $query;
                 }
             }
+
             if ($format == 'list') {
                 $url = new OntoWiki_Url(array('controller' => 'list'), array());
                 $query = str_replace("\r\n", ' ', $query);
@@ -240,7 +241,7 @@ class QueriesController extends OntoWiki_Controller_Component
                 }
 
                 //this is for the "output to file option
-                if (($format == 'json' || $format == 'xml')
+                if (($format == 'json' || $format == 'xml' || $format == 'csv')
                     && ($this->_request->getParam('result_outputfile') == 'true')
                 ) {
                     $this->_helper->viewRenderer->setNoRender();
@@ -255,6 +256,10 @@ class QueriesController extends OntoWiki_Controller_Component
                         case 'json':
                             $contentType = 'application/json';
                             $filename = 'query-result.json';
+                            break;
+                        case 'csv':
+                            $contentType = 'text/csv';
+                            $filename = 'query-result.csv';
                             break;
                     }
 

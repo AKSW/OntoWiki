@@ -11,7 +11,7 @@
 :extension a doap:Project ;
   doap:name "basicimporter" ;
   owconfig:privateNamespace <http://ns.ontowiki.net/Extensions/basicimporter/> ;
-  owconfig:pluginEvent event:onProvideImportActions ;
+  owconfig:pluginEvent event:onProvideImportActions, event:onSetupStore ;
   owconfig:enabled "true"^^xsd:boolean ;
   rdfs:label "Basic Data Import Actions" ;
   doap:description "provides import from web an RDF files" ;

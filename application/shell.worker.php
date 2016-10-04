@@ -3,8 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2012-2016, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -18,7 +18,7 @@
  * error handling for the very first includes etc.
  * http://stackoverflow.com/questions/1241728/
  */
-function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
+function errorHandler($errno, $errstr, $errfile, $errline, array $errcontext)
 {
     // error was suppressed with the @-operator
     if (0 === error_reporting()) {
@@ -32,7 +32,7 @@ function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
  * in some configurations Apache prefixes the environment variables on each rewrite walkthrough
  * e.g. under centos
  */
-function getEnvVar ($key)
+function getEnvVar($key)
 {
     $prefix = "REDIRECT_";
     if (isset($_SERVER[$key])) {
@@ -48,7 +48,8 @@ function getEnvVar ($key)
     return null;
 }
 
-function initApp(){
+function initApp()
+{
     /* Profiling */
     define('REQUEST_START', microtime(true));
 
@@ -113,7 +114,7 @@ function initApp(){
         header('HTTP/1.1 500 Internal Server Error');
         echo 'Fatal Error: Could not load Zend library.<br />' . PHP_EOL
              . 'Maybe you need to install it with apt-get or with "make zend"?' . PHP_EOL;
-        exit;
+        return false;
     }
 
     // create application
@@ -127,9 +128,9 @@ function initApp(){
         // use include, so we can catch it with the error handler
         require_once 'OntoWiki.php';
     } catch (Exception $e) {
-        print('Fatal Error: Could not load the OntoWiki Application Framework classes.' . PHP_EOL);
-        print('Your installation directory seems to be screwed.' . PHP_EOL);
-        exit;
+        echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.' . PHP_EOL;
+        echo 'Your installation directory seems to be screwed.' . PHP_EOL;
+        return false;
     }
 
     /* check/include Erfurt_App */
@@ -137,9 +138,9 @@ function initApp(){
         // use include, so we can catch it with the error handler
         require_once 'Erfurt/App.php';
     } catch (Exception $e) {
-        print('Fatal Error: Could not load the Erfurt Framework classes.' . PHP_EOL);
-        print('Maybe you should install it with apt-get or with "make deploy"?' . PHP_EOL);
-        exit;
+        echo 'Fatal Error: Could not load the Erfurt Framework classes.' . PHP_EOL;
+        echo 'Maybe you should install it with apt-get or with "make deploy"?' . PHP_EOL;
+        return false;
     }
 
     // restore old error handler
@@ -149,20 +150,23 @@ function initApp(){
     try {
         $application->bootstrap();
     } catch (Exception $e) {
-        print('Error on bootstrapping application: ' . $e->getMessage() . PHP_EOL);
-        exit;
+        echo 'Error on bootstrapping application: ' . $e->getMessage() . PHP_EOL;
+        return false;
     }
     return $application;
 }
 
 $application    = initApp();
+if ($application === false) {
+    return 1;
+}
 
 $bootstrap      = $application->getBootstrap();
 $ontoWiki       = OntoWiki::getInstance();
 $extManager     = $ontoWiki->extensionManager;
 $extensions     = $extManager->getExtensions();
 
-print($ontoWiki->config->version->label . ' ' . $ontoWiki->config->version->number . PHP_EOL);
+echo $ontoWiki->config->version->label . ' ' . $ontoWiki->config->version->number . PHP_EOL;
 
 // create a worker registry
 $workerRegistry = Erfurt_Worker_Registry::getInstance();
@@ -173,8 +177,8 @@ $event->bootstrap   = $bootstrap;
 $event->registry    = $workerRegistry;
 $event->trigger();
 if (!count($workerRegistry->getJobs())) {
-    print('No jobs registered - nothing to do or wait for.' . PHP_EOL );
-    exit;
+    echo 'No jobs registered - nothing to do or wait for.' . PHP_EOL;
+    return;
 }
 
 // register  jobs manually
@@ -201,4 +205,3 @@ $workerRegistry->registerJob(
 $worker = new Erfurt_Worker_Backend($workerRegistry);
 //  set worker and Gearman worker to listen mode and wait
 $worker->listen();
-

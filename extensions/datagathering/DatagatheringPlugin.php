@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -57,7 +57,9 @@ class DatagatheringPlugin extends OntoWiki_Plugin
     public function init()
     {
         parent::init();
-        //$this->_properties   = $this->_privateConfig->properties->toArray();
+        if ($this->_privateConfig->sync->enabled && isset($this->_privateConfig->properties)) {
+            $this->_properties = $this->_privateConfig->properties->toArray();
+        }
         $this->_syncModelUri = $this->_privateConfig->syncModelUri;
 
         // Translation hack in order to enable the plugin to translate...
@@ -292,13 +294,13 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onDeleteResources($event)
     {
-        if ($this->_properties->sync->enabled) {
+        if ($this->_privateConfig->sync->enabled) {
             $modelUri = $event->modelUri;
             $uriArray = $event->resourceArray;
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s ?o');
+            $query->setSelectClause('SELECT ?s ?o');
             $query->addFrom($this->_syncModelUri);
             $query->setWherePart(
                 'WHERE {
@@ -337,12 +339,12 @@ class DatagatheringPlugin extends OntoWiki_Plugin
      */
     public function onPreDeleteModel($event)
     {
-        if ($this->_properties->sync->enabled) {
+        if ($this->_privateConfig->sync->enabled) {
             $modelUri = $event->modelUri;
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s');
+            $query->setSelectClause('SELECT ?s');
             $query->addFrom($this->_syncModelUri);
             $query->setWherePart(
                 'WHERE {
@@ -401,7 +403,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s ?p ?o');
+            $query->setSelectClause('SELECT ?s ?p ?o');
             $query->addFrom($this->_syncModelUri);
             $where
                 = 'WHERE {
@@ -471,7 +473,7 @@ class DatagatheringPlugin extends OntoWiki_Plugin
 
             require_once 'Erfurt/Sparql/SimpleQuery.php';
             $query = new Erfurt_Sparql_SimpleQuery();
-            $query->setProloguePart('SELECT ?s ?p ?o');
+            $query->setSelectClause('SELECT ?s ?p ?o');
             $query->addFrom($this->_syncModelUri);
             $where
                 = 'WHERE {

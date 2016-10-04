@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -27,9 +27,11 @@ class SourceController extends OntoWiki_Controller_Component
             );
             $title = 'RDF Source';
         } else {
-            $title = $resource->getTitle()
-                ? $resource->getTitle()
-                : OntoWiki_Utils::contractNamespace($resource->getIri());
+            if ($resource->getTitle()) {
+                $title = $resource->getTitle();
+            } else {
+                $title = OntoWiki_Utils::contractNamespace($resource->getIri());
+            }
         }
         $windowTitle = sprintf(
             $translate->_('Source of Statements about %1$s') .

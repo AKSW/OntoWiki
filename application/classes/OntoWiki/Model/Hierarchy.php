@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -167,6 +167,9 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
 
         $this->_url->setParam('r', $resultUri, true);
 
+        $hierarchyOpen = is_array($this->_session->hierarchyOpen) &&
+                         in_array($resultUri, $this->_session->hierarchyOpen);
+
         $entry = array(
             'uri'          => $resultUri,
             'url'          => (string)$this->_url,
@@ -174,8 +177,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
             'title'        => $this->_titleHelper->getTitle($resultUri, $this->_config->languages->locale),
             'children'     => array(),
             'has_children' => $hasChildren,
-            'open'         =>
-            is_array($this->_session->hierarchyOpen) && in_array($resultUri, $this->_session->hierarchyOpen)
+            'open'         => $hierarchyOpen
         );
 
         return $entry;
@@ -184,8 +186,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
     protected function _buildQuery()
     {
         $query    = new Erfurt_Sparql_SimpleQuery();
-        $prologue = 'SELECT DISTINCT ?classUri ?sub ?subsub ?subsubsub';
-        $query->setProloguePart($prologue);
+        $query->setSelectClause('SELECT DISTINCT ?classUri ?sub ?subsub ?subsubsub');
 
         $whereSpecs = array();
         $whereSpec  = '';
@@ -210,7 +211,7 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         if (!$this->_options['entry']) {
             $whereSpec .= ' FILTER (regex(str(?super), "^' . EF_OWL_NS . '") || !bound(?super))';
         }
-        $whereSpec .= ' OPTIONAL {?sub <' . $this->_options['sub_relation'] . '> ?classUri. 
+        $whereSpec .= ' OPTIONAL {?sub <' . $this->_options['sub_relation'] . '> ?classUri.
                             OPTIONAL {?subsub <' . $this->_options['sub_relation'] . '> ?sub.
                                   OPTIONAL {?subsubsub <' . $this->_options['sub_relation'] . '> ?subsub}
                             }
@@ -232,4 +233,3 @@ class OntoWiki_Model_Hierarchy extends OntoWiki_Model
         return $query;
     }
 }
-

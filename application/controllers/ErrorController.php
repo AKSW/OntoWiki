@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -130,11 +130,13 @@ class ErrorController extends Zend_Controller_Action
             $stacktrace       = $exception->getTrace();
             $stacktraceString = '';
             foreach ($stacktrace as $i => $spec) {
-                $lineStr = isset($spec['file'])
-                    ?
-                    ('@' . $spec['file'] . (isset($spec['line']) ? ':' . $spec['line'] : ''))
-                    :
-                    '';
+                $lineStr = '';
+                if (isset($spec['file'])) {
+                    $lineStr = '@' . $spec['file'];
+                    if (isset($spec['line'])) {
+                        $lineStr .= ':' . $spec['line'];
+                    }
+                }
                 $stacktraceString .= '#' . $i . ': ' . (isset($spec['class']) ? $spec['class'] : '') .
                     (isset($spec['type']) ? $spec['type'] : '') . $spec['function'] .
                     $lineStr . '<br />';
@@ -223,4 +225,3 @@ class ErrorController extends Zend_Controller_Action
         }
     }
 }
-

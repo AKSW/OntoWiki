@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -545,8 +545,7 @@ class ModelController extends OntoWiki_Controller_Base
             try {
                 $this->_erfurt->getStore()->deleteModel($model);
 
-                if (
-                    (null !== $this->_owApp->selectedModel)
+                if ((null !== $this->_owApp->selectedModel)
                     && ($this->_owApp->selectedModel->getModelIri() === $model)
                 ) {
                     $this->_owApp->selectedModel = null;
@@ -633,24 +632,9 @@ class ModelController extends OntoWiki_Controller_Base
 
             $filename = 'export' . date('Y-m-d_Hi');
 
-            switch ($format) {
-                case 'rdfxml':
-                    $contentType = 'application/rdf+xml';
-                    $filename .= '.rdf';
-                    break;
-                case 'rdfn3':
-                    $contentType = 'text/rdf+n3';
-                    $filename .= '.n3';
-                    break;
-                case 'rdfjson':
-                    $contentType = 'application/json';
-                    $filename .= '.json';
-                    break;
-                case 'turtle':
-                    $contentType = 'application/x-turtle';
-                    $filename .= '.ttl';
-                    break;
-            }
+            $description = Erfurt_Syntax_RdfSerializer::getFormatDescription($format);
+            $contentType = $description['contentType'];
+            $filename .= $description['fileExtension'];
 
             $this->_helper->viewRenderer->setNoRender();
             $this->_helper->layout->disableLayout();
@@ -740,8 +724,7 @@ class ModelController extends OntoWiki_Controller_Base
                     . '     <' . (string)$resource . '> a <http://xmlns.com/foaf/0.1/PersonalProfileDocument>'
                     . ' }';
                 $q     = Erfurt_Sparql_SimpleQuery::initWithString($query);
-                if (
-                    $this->_owApp->extensionManager->isExtensionActive('foafprofileviewer')
+                if ($this->_owApp->extensionManager->isExtensionActive('foafprofileviewer')
                     && $store->sparqlAsk($q) === true
                 ) {
                     $this->view->showFoafLink = true;
@@ -855,9 +838,8 @@ class ModelController extends OntoWiki_Controller_Base
      */
     private function _doImportActionRedirect($modelUri)
     {
-        $post          = $this->_request->getPost();
-        $id            = $post['importAction'];
-        $importOptions = $post['importOptions'];
+        $id            = $this->_request->getPost('importAction');
+        $importOptions = $this->_request->getPost('importOptions');
         $actions       = $this->_getImportActions();
 
         if (isset($actions[$id])) {

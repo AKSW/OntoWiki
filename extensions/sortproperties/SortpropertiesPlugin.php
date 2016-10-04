@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -25,7 +25,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
 
             foreach ($data as $graphUri => $predicates) {
                 $query = new Erfurt_Sparql_SimpleQuery();
-                $query->setProloguePart('SELECT DISTINCT *')
+                $query->setSelectClause('SELECT DISTINCT *')
                     ->addFrom((string)$graphUri)
                     ->setWherePart('WHERE { ?p <' . $this->_privateConfig->sort->property . '> ?o . }');
 
@@ -49,7 +49,7 @@ class SortpropertiesPlugin extends OntoWiki_Plugin
                         }
                     }
 
-                    array_multisort($predicateOrder, SORT_DESC, SORT_STRING, $predicates);
+                    array_multisort($predicateOrder, SORT_DESC, SORT_NUMERIC, $predicates);
                     $data[$graphUri] = $predicates;
 
                 }

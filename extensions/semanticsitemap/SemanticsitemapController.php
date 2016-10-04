@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -61,14 +61,14 @@ class SemanticsitemapController extends OntoWiki_Controller_Component
         // these dataset items are used by the template
         $datasets = array();
         foreach ($this->_models as $modelUri => $model) {
+            $dataDump = $owApp->config->urlBase . 'model/export?output=xml&amp;m=' . urlencode($modelUri);
             $datasets[] = array(
                 'datasetURI'             => $modelUri,
                 'datasetLabel'           => $this->_store->getModel($modelUri)->getTitle(),
                 'sparqlEndpoint'         => $owApp->config->urlBase . 'service/sparql',
                 'sparqlGraphName'        => $modelUri,
                 'sparqlEndpointLocation' => $owApp->config->urlBase . 'service/sparql',
-                'dataDump'               =>
-                $owApp->config->urlBase . 'model/export?output=xml&amp;m=' . urlencode($modelUri)
+                'dataDump'               => $dataDump
             );
         }
 

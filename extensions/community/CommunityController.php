@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -162,13 +162,14 @@ class CommunityController extends OntoWiki_Controller_Component
                 '
                 prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                 prefix ns0: <http://rdfs.org/sioc/ns#>
-                prefix ns1: <http://rdfs.org/sioc/types#>
-                SELECT *'
-            )->setWherePart(
+                prefix ns1: <http://rdfs.org/sioc/types#>'
+            );
+            $query->setSelectClause('SELECT *');
+            $query->setWherePart(
                 'where {
-                    ?rating rdf:type ns1:Poll.
-                    ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
-                    ?rating ns0:has_creator ?creator}'
+                ?rating rdf:type ns1:Poll.
+                ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
+                ?rating ns0:has_creator ?creator}'
             );
 
             $results = $model->sparqlQuery($query);

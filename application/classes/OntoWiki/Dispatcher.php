@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2009-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -163,6 +163,7 @@ class OntoWiki_Dispatcher extends Zend_Controller_Dispatcher_Standard
 
         // URI may not contain a whitespace character!
         $pathInfo = str_replace(' ', '+', $pathInfo);
+        $pathInfo = urldecode($pathInfo);
 
         if (class_exists($className, false)) {
             // give a chance to let class handle (e.g. index controller news action default)

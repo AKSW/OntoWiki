@@ -2,11 +2,9 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
-
-require_once 'OntoWiki/Controller/Component.php';
 
 /**
  * Mass Geocoding of Ressources via attributes (parameter r)
@@ -32,14 +30,12 @@ class SavedqueriesController extends OntoWiki_Controller_Component
         parent::init();
         // m is automatically used and selected
         if ((!isset($this->_request->m)) && (!$this->_owApp->selectedModel)) {
-            require_once 'OntoWiki/Exception.php';
             throw new OntoWiki_Exception('No model pre-selected and missing parameter m (model)!');
         } else {
             $this->_model = $this->_owApp->selectedModel;
         }
 
         // disable tabs
-        require_once 'OntoWiki/Navigation.php';
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
 
         // get translation object
@@ -61,11 +57,18 @@ class SavedqueriesController extends OntoWiki_Controller_Component
     public function initAction()
     {
         // create a new button on the toolbar
-        $queryResult = $this->_getQueryResult($this->queryString);
-
+        try {
+            $queryResult = $this->_getQueryResult($this->queryString);
+        } catch (Exception $e){
+            $queryResult = array(
+                array(
+                    "error" => "This Query contains errors and should be corrected in the Query Editor",
+                    ),
+                );
+        }
         $header = array();
         try {
-            if (is_array($queryResult) && isset ($queryResult[0]) && is_array($queryResult[0])) {
+            if (is_array($queryResult) && isset($queryResult[0]) && is_array($queryResult[0])) {
                 $header = array_keys($queryResult[0]);
             } else {
                 if (is_bool($queryResult)) {

@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -115,9 +115,7 @@ class OntoWiki_Controller_Base extends Zend_Controller_Action
         $this->view->headMeta()->setName('generator', 'OntoWiki — Collaborative Knowledge Engineering');
 
         // RDFauthor view configuration
-        $viewMode = isset($this->_config->rdfauthor->viewmode)
-            ? $this->_config->rdfauthor->viewmode
-            : 'inline';
+        $viewMode = isset($this->_config->rdfauthor->viewmode) ? $this->_config->rdfauthor->viewmode : 'inline';
 
         // inject JSON variables into view
         $this->view->jsonVars

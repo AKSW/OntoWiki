@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -276,6 +276,16 @@ class OntoWiki_Toolbar
             $title = null;
         }
 
+        if (array_key_exists('attributes', $options) && is_array($options['attributes'])) {
+            $attributes = array();
+            foreach ($options['attributes'] as $key => $value) {
+                $attributes[] = $key . '="' . $value . '"';
+            }
+            $attributes = implode(' ', $attributes);
+        } else {
+            $attributes = null;
+        }
+
         // set image
         if (array_key_exists('image_url', $options)) {
             $image = $options['image_url'];
@@ -289,11 +299,12 @@ class OntoWiki_Toolbar
 
         // construct button link
         $button = sprintf(
-            '<a class="button %s" %s %s %s><img src="%s"/><span>&nbsp;%s</span></a>',
+            '<a class="button %s" %s %s %s %s><img src="%s"/><span>&nbsp;%s</span></a>',
             $class,
             $id,
             $href,
             $title,
+            $attributes,
             $image,
             $label
         );

@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -40,14 +40,15 @@ class RatingModule extends OntoWiki_Module
             'prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
              prefix ns0: <http://rdfs.org/sioc/ns#>
              prefix ns1: <http://rdfs.org/sioc/types#>
-             prefix terms: <http://purl.org/dc/terms/>
-             SELECT *'
-        )->setWherePart(
+             prefix terms: <http://purl.org/dc/terms/>'
+        );
+        $query->setSelectClause('SELECT *');
+        $query->setWherePart(
             'where {
-                ?rating rdf:type ns1:Poll.
-                ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
-                ?rating ns0:note ?note.
-                ?rating ns0:has_creator ?creator}'
+            ?rating rdf:type ns1:Poll.
+            ?rating ns0:about <' . $this->_owApp->selectedResource . '>.
+            ?rating ns0:note ?note.
+            ?rating ns0:has_creator ?creator}'
         );
 
         $results = $this->_store->sparqlQuery($query);
@@ -124,7 +125,7 @@ class RatingModule extends OntoWiki_Module
 
             $query = new Erfurt_Sparql_SimpleQuery();
 
-            $query->setProloguePart('SELECT *')->setWherePart(
+            $query->setSelectClause('SELECT *')->setWherePart(
                 'WHERE {
                     <' . $resource . '> <' . EF_RDF_TYPE . '> ?type
                 }'

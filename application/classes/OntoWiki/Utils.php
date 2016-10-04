@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -51,9 +51,9 @@ class OntoWiki_Utils
         $compactUri    = null;
         $prefix        = null;
 
-        // split URI in namespace and local part at "/" or "#"
+        // split URI in namespace and local part at "/", "#" or ":"
         $matches = array();
-        preg_match('/^(.+[#\/])(.+[^#\/])$/', $uri, $matches);
+        preg_match('/^(.+[#\/\:])(.+[^#\/\:])$/', $uri, $matches);
 
         if (count($matches) == 3) {
             $namespace = $matches[1];
@@ -314,15 +314,14 @@ class OntoWiki_Utils
      * @return string
      */
     public static function matchMimetypeFromRequest(
-        Zend_Controller_Request_Abstract $request,
+        Zend_Controller_Request_Http $request,
         array $supportedMimetypes
     ) {
         // get accept header
         $acceptHeader = strtolower($request->getHeader('Accept'));
 
-        require_once 'Mimeparse.php';
         try {
-            $match = @Mimeparse::best_match($supportedMimetypes, $acceptHeader);
+            $match = \Bitworking\Mimeparse::bestMatch($supportedMimetypes, $acceptHeader);
         } catch (Exception $e) {
             $match = '';
         }
@@ -437,4 +436,3 @@ class OntoWiki_Utils
         return $ret;
     }
 }
-

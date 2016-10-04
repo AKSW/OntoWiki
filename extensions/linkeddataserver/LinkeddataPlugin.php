@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -28,17 +28,17 @@ class LinkeddataPlugin extends OntoWiki_Plugin
      *
      * @var array
      */
-    private $_typeMapping
-        = array(
-            DEFAULT_TYPE            => 'html', // default is xhtml
-            'text/html'             => 'html', // we only deliver XML-compatible html
-            'application/xhtml+xml' => 'html',
-            'application/rdf+xml'   => 'rdf',
-            'text/n3'               => 'n3',
-            'text/turtle'           => 'ttl',
-            'application/json'      => 'json',
-            'application/xml'       => 'html' // TODO: should this be xhtml or rdf?
-        );
+    private $_typeMapping = array(
+        DEFAULT_TYPE            => 'html', // default is xhtml
+        'text/html'             => 'html', // we only deliver XML-compatible html
+        'application/xhtml+xml' => 'html',
+        'application/rdf+xml'   => 'rdf',
+        'text/n3'               => 'n3',
+        'text/turtle'           => 'ttl',
+        'application/rdf+json'  => 'json',
+        'application/json'      => 'json',
+        'application/xml'       => 'html' // TODO: should this be xhtml or rdf?
+    );
 
     /**
      * This method is called, when the onIsDispatchable event was triggered.
@@ -71,7 +71,10 @@ class LinkeddataPlugin extends OntoWiki_Plugin
         $request  = Zend_Controller_Front::getInstance()->getRequest();
         $response = Zend_Controller_Front::getInstance()->getResponse();
 
-        $uri = $event->uri;
+        $aliascheck = new Erfurt_Event('onResolveDomainAliasInput');
+        $aliascheck->uri = $event->uri;
+        $aliascheck->trigger();
+        $uri = $aliascheck->uri;
 
         try {
             // Check for a supported type by investigating the suffix of the URI or by
@@ -106,6 +109,7 @@ class LinkeddataPlugin extends OntoWiki_Plugin
                 case 'rdf':
                 case 'n3':
                 case 'ttl':
+                case 'json':
                     // Check the config, whether provenance information should be included.
                     $prov = false;
                     if (isset($this->_privateConfig->provenance)
@@ -117,20 +121,16 @@ class LinkeddataPlugin extends OntoWiki_Plugin
 
                     // Special case: If the graph URI is identical to the requested URI, we export
                     // the whole graph instead of only data regarding the resource.
+                    $urlSpec = array();
                     if ($graph === $uri) {
-                        $controllerName = 'model';
-                        $actionName     = 'export';
+                        $urlSpec = array('controller' => 'model', 'action' => 'export');
                     } else {
-                        $controllerName = 'resource';
-                        $actionName     = 'export';
+                        $urlSpec = array('route' => 'data');
                     }
 
                     // Create a URL with the export action on the resource or model controller.
                     // Set the required parameters for this action.
-                    $url = new OntoWiki_Url(
-                        array('controller' => $controllerName, 'action' => $actionName),
-                        array()
-                    );
+                    $url = new OntoWiki_Url($urlSpec, array());
                     $url->setParam('r', $uri, true)
                         ->setParam('f', $type)
                         ->setParam('m', $graph)

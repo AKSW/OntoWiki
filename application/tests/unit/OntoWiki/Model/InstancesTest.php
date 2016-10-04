@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -43,6 +43,8 @@ class OntoWiki_Model_InstancesTest extends Erfurt_TestCase
             ),
             'Test'
         );
+
+        $this->_store->setAc(new Erfurt_Ac_Test());
 
         $this->_instances = new OntoWiki_Model_Instances(
             $this->_store,

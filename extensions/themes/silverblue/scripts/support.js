@@ -3,7 +3,7 @@
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
  * @copyright Copyright (c) 2009, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -463,8 +463,10 @@ function populateRDFauthor(data, protect, resource, graph, workingmode) {
 
                 if (workingmode == 'class') {
                     // remove all values except for type
-                    if ( !/type/gi.test(stmt._predicateLabel) ) {
+                    if ( stmt.predicateURI() !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' ) {
                         stmt._object.value = "";
+                    } else {
+                        stmt._hidden = true;
                     }
                 }
 
@@ -523,6 +525,12 @@ function createInstanceFromClassURI(type, dataCallback) {
                     window.setTimeout(function () {
                         window.location.href = newLocation;
                     }, 500);
+                },
+                onCancel: function () {
+                    // HACK: reload whole page after 500 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
+                    }, 500);
                 }
             });
            
@@ -561,6 +569,12 @@ function editResourceFromURI(resource) {
                 showPropertyButton: true,
                 loadOwStylesheet: false,
                 onSubmitSuccess: function () {
+                    // HACK: reload whole page after 500 ms
+                    window.setTimeout(function () {
+                        window.location.href = window.location.href;
+                    }, 500);
+                },
+                onCancel: function () {
                     // HACK: reload whole page after 500 ms
                     window.setTimeout(function () {
                         window.location.href = window.location.href;

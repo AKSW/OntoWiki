@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2011, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2009-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -192,9 +192,7 @@ abstract class OntoWiki_Module
      */
     public function setContext($context)
     {
-        $this->_context = $context
-            ? (string)$context
-            : OntoWiki_Module_Registry::DEFAULT_CONTEXT;
+        $this->_context = $context ? (string)$context : OntoWiki_Module_Registry::DEFAULT_CONTEXT;
     }
 
     /**

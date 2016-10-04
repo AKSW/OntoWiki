@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -67,9 +67,12 @@ class ResourceController extends OntoWiki_Controller_Base
         // Give plugins a chance to add entries to the menu
         $this->view->placeholder('main.window.menu')->set($menu->toArray(false, true));
 
-        $title       = $resource->getTitle($this->_config->languages->locale)
-            ? $resource->getTitle($this->_config->languages->locale)
-            : OntoWiki_Utils::contractNamespace((string)$resource);
+        if ($resource->getTitle($this->_config->languages->locale)) {
+            $title = $resource->getTitle($this->_config->languages->locale);
+        } else {
+            $title = OntoWiki_Utils::contractNamespace((string)$resource);
+        }
+
         $windowTitle = sprintf($translate->_('Properties of %1$s'), $title);
         $this->view->placeholder('main.window.title')->set($windowTitle);
 
@@ -169,9 +172,14 @@ class ResourceController extends OntoWiki_Controller_Base
                 )
             );
             // ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Property', 'class' => 'property-add'));
+            $url = new OntoWiki_Url(
+                array('controller' => 'resource', 'action' => 'delete'),
+                array('r')
+            );
+            $url->setParam('r', (string)$resource, false);
             $params = array(
                 'name' => 'Delete',
-                'url'  => $this->_config->urlBase . 'resource/delete/?r=' . urlencode((string)$resource)
+                'url'  => (string)$url
             );
             $toolbar->appendButton(OntoWiki_Toolbar::SEPARATOR);
             $toolbar->appendButton(OntoWiki_Toolbar::DELETE, $params);
@@ -371,7 +379,7 @@ class ResourceController extends OntoWiki_Controller_Base
 
                 // query for all triples to delete them
                 $sparqlQuery = new Erfurt_Sparql_SimpleQuery();
-                $sparqlQuery->setProloguePart('SELECT ?p, ?o');
+                $sparqlQuery->setSelectClause('SELECT ?p ?o');
                 $sparqlQuery->addFrom($modelIri);
                 $sparqlQuery->setWherePart('{ <' . $resource . '> ?p ?o . }');
 
@@ -470,24 +478,9 @@ class ResourceController extends OntoWiki_Controller_Base
 
         $filename = 'export' . date('Y-m-d_Hi');
 
-        switch ($format) {
-            case 'rdfxml':
-                $contentType = 'application/rdf+xml';
-                $filename .= '.rdf';
-                break;
-            case 'rdfn3':
-                $contentType = 'text/rdf+n3';
-                $filename .= '.n3';
-                break;
-            case 'rdfjson':
-                $contentType = 'application/json';
-                $filename .= '.json';
-                break;
-            case 'turtle':
-                $contentType = 'application/x-turtle';
-                $filename .= '.ttl';
-                break;
-        }
+        $formatDescription = Erfurt_Syntax_RdfSerializer::getFormatDescription($format);
+        $contentType = $formatDescription['contentType'];
+        $filename .= $formatDescription['fileExtension'];
 
         /*
          * Event: allow for adding / deleting statements to the export

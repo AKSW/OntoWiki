@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -30,12 +30,17 @@ class ApplicationController extends OntoWiki_Controller_Base
             $version .= ' ' . $this->_config->version->suffix;
         }
 
-        $cacheWritable = is_writable($this->_config->cache->path)
-            ? ' <span style="color:#aea">(writable)</span>'
-            : ' <span style="color:#eaa">(not writable!)</span>';
-        $logWritable   = is_writable($this->_config->log->path)
-            ? ' <span style="color:#aea">(writable)</span>'
-            : ' <span style="color:#eaa">(not writable!)</span>';
+        if (is_writable($this->_config->cache->path)) {
+            $cacheWritable = ' <span style="color:#aea">(writable)</span>';
+        } else {
+            $cacheWritable = ' <span style="color:#eaa">(not writable!)</span>';
+        }
+
+        if (is_writable($this->_config->log->path)) {
+            $logWritable = ' <span style="color:#aea">(writable)</span>';
+        } else {
+            $logWritable = ' <span style="color:#eaa">(not writable!)</span>';
+        }
 
         $cacheBackend         = $this->_config->cache->backend->type;
         $cacheBackendOptions  = array();
@@ -79,20 +84,16 @@ class ApplicationController extends OntoWiki_Controller_Base
             ),
             'Logging'        => array(
                 'Path'  => rtrim($this->_config->log->path, '/') . $logWritable,
-                'Level' => (bool)$this->_config->loglevel ? $this->_config->loglevel : 'disabled'
+                'Level' => (bool)$this->_config->log->level ? $this->_config->log->level : 'disabled'
             )
         );
 
         // check if the git comand exists and ontowiki is a working directory
-        if (file_exists(".git")
-            && substr(@exec("git --version"), 0, 11) == "git version"
-        ) {
-            @exec('git status', $arr);
+        if (file_exists('.git') && substr(@exec('git --version'), 0, 11) == 'git version') {
             $data['Git Versioning'] = array(
-                'Version'     => @exec("git describe"),
-                'Branch'      => substr($arr[0], 12),
+                'Version'     => @exec('git describe'),
+                'Branch'      => @exec('git rev-parse --abbrev-ref HEAD'),
                 'last commit' => @exec("git log --pretty=format:'%ar' -n 1")
-                //'Git Version'  => substr(@exec("git --version"),12),
             );
         }
 
@@ -224,7 +225,16 @@ class ApplicationController extends OntoWiki_Controller_Base
             )
         );
 
+        $contentType = $this->_request->getHeader('Content-Type');
+        if (strstr($contentType, 'application/json')) {
+            $rawBody     = $this->_request->getRawBody();
+            echo $rawBody;
+            $post = Zend_Json::decode($rawBody);
+        }
+
         if ($post) {
+            /* status var in order to fire corresponding events */
+            $registrationError = true;
             $registeredUsernames      = array();
             $registeredEmailAddresses = array();
 
@@ -310,6 +320,7 @@ class ApplicationController extends OntoWiki_Controller_Base
                                             $this->_owApp->appendMessage(
                                                 new OntoWiki_Message($message, OntoWiki_Message::SUCCESS)
                                             );
+                                            $registrationError = false;
                                         } else {
                                             $message = 'A registration error occured. Please refer to the log entries.';
                                             $this->_owApp->appendMessage(
@@ -322,6 +333,22 @@ class ApplicationController extends OntoWiki_Controller_Base
                         }
                     }
                 }
+            }
+
+            /*
+             * fire events for success and error
+             */
+            if ($registrationError === false) {
+                $event           = new Erfurt_Event('onRegisterUser');
+                $event->username = $username;
+                $event->response = $this->_response;
+                $event->trigger();
+            } else {
+                $event           = new Erfurt_Event('onRegisterUserFailed');
+                $event->username = $username;
+                $event->message = $message;
+                $event->response = $this->_response;
+                $event->trigger();
             }
         }
     }
@@ -370,7 +397,8 @@ class ApplicationController extends OntoWiki_Controller_Base
                     // Does user already exist?
                     $message = 'A user with the given OpenID is already registered.';
                     $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-                } else if (!empty($email) && isset($actionConfig['mailvalidation'])
+                } else if (!empty($email)
+                    && isset($actionConfig['mailvalidation'])
                     && $actionConfig['mailvalidation'] === 'yes'
                     && !$emailValidator->isValid($email)
                 ) {
@@ -631,7 +659,6 @@ class ApplicationController extends OntoWiki_Controller_Base
             if (!$this->_erfurt->isActionAllowed('RegisterNewUser')
                 || !($actionConfig = $this->_erfurt->getActionConfig('RegisterNewUser'))
             ) {
-
                 $message = 'Action not permitted for the current user.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
             } else if (empty($webId)) {
@@ -642,7 +669,8 @@ class ApplicationController extends OntoWiki_Controller_Base
                 // Does user already exist?
                 $message = 'A user with the given WebID is already registered.';
                 $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
-            } else if (!empty($email) && isset($actionConfig['mailvalidation'])
+            } else if (!empty($email)
+                && isset($actionConfig['mailvalidation'])
                 && $actionConfig['mailvalidation'] === 'yes'
                 && !$emailValidator->isValid($email)
             ) {

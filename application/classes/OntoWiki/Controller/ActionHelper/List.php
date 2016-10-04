@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -171,7 +171,7 @@ class OntoWiki_Controller_ActionHelper_List extends Zend_Controller_Action_Helpe
         $lists = $this->_owApp->session->managedLists;
 
         if (key_exists($name, $lists)) {
-            unset ($lists[$name]);
+            unset($lists[$name]);
         }
 
         throw new InvalidArgumentException('list was not found. check with listExists() first');

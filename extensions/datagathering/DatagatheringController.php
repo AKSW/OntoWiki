@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -578,7 +578,7 @@ class DatagatheringController extends OntoWiki_Controller_Component
     {
         require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = new Erfurt_Sparql_SimpleQuery();
-        $query->setProloguePart('SELECT DISTINCT ?uri ?o');
+        $query->setSelectClause('SELECT DISTINCT ?uri ?o');
 
         if (null !== $modelUri) {
             $query->addFrom($modelUri);
@@ -740,6 +740,16 @@ class DatagatheringController extends OntoWiki_Controller_Component
             throw new OntoWiki_Exception("model must be selected or specified with the m parameter");
         }
 
+        $presets = array();
+        if (isset($this->_privateConfig->fetch->preset)) {
+            $presets = $this->_privateConfig->fetch->preset->toArray();
+        }
+
+        $exceptedProperties = array();
+        if (isset($this->_privateConfig->fetch->default->exception)) {
+            $exceptedProperties = $this->_privateConfig->fetch->default->exception->toArray();
+        }
+
         try {
             $res = self::import(
                 $this->_graphUri,
@@ -747,22 +757,15 @@ class DatagatheringController extends OntoWiki_Controller_Component
                 $this->_getProxyUri($uri),
                 isset($this->_privateConfig->fetch->allData)
                 && ((boolean)$this->_privateConfig->fetch->allData === true),
-                !isset($this->_privateConfig->fetch->preset)
-                ?
-                array()
-                :
-                $this->_privateConfig->fetch->preset->toArray(),
-                !isset($this->_privateConfig->fetch->default->exception)
-                ?
-                array()
-                :
-                $this->_privateConfig->fetch->default->exception->toArray(),
+                $presets,
+                $exceptedProperties,
                 $wrapperName,
                 $this->_privateConfig->fetch->default->mode
             );
         } catch (Exception $e) {
             if (defined('_EFDEBUG')) {
-                return $this->_sendResponse(false, 'An error occured: ' . $e->getMessage(), OntoWiki_Message::ERROR);
+                $errorMessage = 'An error occured: ' . $e->getMessage() . " – " . $e->getTraceAsString();
+                return $this->_sendResponse(false, $errorMessage, OntoWiki_Message::ERROR);
             } else {
                 $res = null;
             }

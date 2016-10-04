@@ -8,7 +8,7 @@
 application/tests/cache
 /cache
 /uploads
-/libraries/Zend
+/libraries
 /logs
 
 # aksw specific mud
@@ -34,6 +34,10 @@ build/
 !build/phpcs.xml
 !build/phpcmd.xml
 
-# vagrant stuff
-Vagrantfile
-.vagrant
+# composer stuff
+/vendor
+composer.phar
+# for now we ignore the composer.lock, but we should commit it some dome day, especially for releases
+
+# devenv stuff
+/devenv

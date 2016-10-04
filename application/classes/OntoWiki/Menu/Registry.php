@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2009-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -154,13 +154,17 @@ class OntoWiki_Menu_Registry
 
         // help sub menue
         $helpMenu = new OntoWiki_Menu();
-        $helpMenu->setEntry('Documentation', $owApp->config->help->documentation)
-            ->setEntry('Bug Report', $owApp->config->help->issues)
-            ->setEntry(
-                'Version Info', $owApp->config->help->versioninfo . '#' .
-                $owApp->config->version->number
-            )
-            ->setEntry('About', $owApp->config->urlBase . 'application/about');
+
+        if (isset($owApp->config->help->documentation) && (trim($owApp->config->help->documentation) !== '')) {
+            $helpMenu->setEntry('Documentation', trim($owApp->config->help->documentation));
+        }
+        if (isset($owApp->config->help->issues) && (trim($owApp->config->help->issues) !== '')) {
+            $helpMenu->setEntry('Bug Report', trim($owApp->config->help->issues));
+        }
+        if (isset($owApp->config->help->versioninfo) && (trim($owApp->config->help->versioninfo) !== '')) {
+            $helpMenu->setEntry('Version Info', trim($owApp->config->help->versioninfo));
+        }
+        $helpMenu->setEntry('About', $owApp->config->urlBase . 'application/about');
 
         // build menu out of sub menus
         $applicationMenu = new OntoWiki_Menu();
@@ -276,8 +280,7 @@ class OntoWiki_Menu_Registry
         }
 
         // can user delete models?
-        if (
-            $owApp->erfurt->getAc()->isModelAllowed('edit', $model)
+        if ($owApp->erfurt->getAc()->isModelAllowed('edit', $model)
             && $owApp->erfurt->getAc()->isActionAllowed('ModelManagement')
         ) {
 
@@ -344,10 +347,9 @@ class OntoWiki_Menu_Registry
             // Delete resource option
             $url = new OntoWiki_Url(
                 array('controller' => 'resource', 'action' => 'delete'),
-                array()
+                array('r')
             );
-
-            $url->setParam('r', $resource, true);
+            $url->setParam('r', (string)$resource, false);
             $resourceMenu->appendEntry('Delete Resource', (string)$url);
         }
 
@@ -404,8 +406,7 @@ class OntoWiki_Menu_Registry
             $typeArray[] = $row['type'];
         }
 
-        if (
-            in_array(EF_RDFS_CLASS, $typeArray)
+        if (in_array(EF_RDFS_CLASS, $typeArray)
             || in_array(EF_OWL_CLASS, $typeArray)
             || $hasInstances
         ) {

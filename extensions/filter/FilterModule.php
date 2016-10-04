@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -94,8 +94,12 @@ class FilterModule extends OntoWiki_Module
         $edit->setEntry('Add', 'javascript:showAddFilterBox()')
             ->setEntry('Remove all', 'javascript:removeAllFilters()');
 
+        $help = new OntoWiki_Menu();
+        $help->setEntry('Toggle help', 'javascript:toggleHelp()');
+
         $main = new OntoWiki_Menu();
         $main->setEntry('Edit', $edit);
+        $main->setEntry('Help', $help);
 
         return $main;
     }

@@ -2,8 +2,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2009-2016, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -163,33 +163,27 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // set path variables
         $rewriteBase = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], BOOTSTRAP_FILE));
-        $protocol    = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
-        if (isset($_SERVER['SERVER_PORT'])
-            && $_SERVER['SERVER_PORT'] != '80'
-            && $_SERVER['SERVER_PORT'] != '443'
-        ) {
-            $port = ':' . $_SERVER['SERVER_PORT'];
-        } else {
-            $port = '';
+        // set protocol and read headers sent by proxies
+        $protocol = 'http';
+        if (isset($_SERVER['X-Forwarded-Protocol'])) {
+                $protocol = strtolower($_SERVER['X-Forwarded-Protocol']);
+        } else if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+                $protocol = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']);
+        } else if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') {
+                 $protocol = 'https';
         }
 
-        if (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], ':') !== false) {
-            // IPv6
-            $serverName = '[' . $_SERVER['SERVER_NAME'] . ']';
-        } else if (isset($_SERVER['SERVER_NAME'])) {
-            // IPv4 or host name
-            $serverName = $_SERVER['SERVER_NAME'];
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $httpHost = $_SERVER['HTTP_HOST'];
         } else {
-            // localhost
-            $serverName = 'localhost';
+            $httpHost = 'localhost';
         }
 
         $urlBase = sprintf(
-            '%s://%s%s%s',
+            '%s://%s%s',
             $protocol,
-            $serverName,
-            $port,
+            $httpHost,
             $rewriteBase
         );
 
@@ -228,11 +222,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function applySessionConfig($sessionConfig)
     {
         $cookieParams = array(
-            'lifetime' => isset($sessionConfig->lifetime) ? $sessionConfig->lifetime        : 0,
-            'path'     => isset($sessionConfig->path)     ? $sessionConfig->path            : '/',
-            'domain'   => isset($sessionConfig->domain)   ? $sessionConfig->domain          : '',
-            'secure'   => isset($sessionConfig->secure)   ? (bool) $sessionConfig->secure   : false,
-            'httpOnly' => isset($sessionConfig->httpOnly) ? (bool) $sessionConfig->httpOnly : false
+            'lifetime' => isset($sessionConfig->lifetime) ? $sessionConfig->lifetime : 0,
+            'path'     => isset($sessionConfig->path) ? $sessionConfig->path : '/',
+            'domain'   => isset($sessionConfig->domain) ? $sessionConfig->domain : '',
+            'secure'   => isset($sessionConfig->secure) ? (bool)$sessionConfig->secure : false,
+            'httpOnly' => isset($sessionConfig->httpOnly) ? (bool)$sessionConfig->httpOnly : false
         );
         call_user_func_array('session_set_cookie_params', $cookieParams);
     }
@@ -397,9 +391,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         // get last route or default
-        $route = isset($session->lastRoute)
-               ? $session->lastRoute
-               : $config->route->default->name;
+        $route = isset($session->lastRoute) ? $session->lastRoute : $config->route->default->name;
 
         // register with navigation
         if (isset($config->routes->{$route})) {

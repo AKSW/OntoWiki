@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -23,6 +23,7 @@ class MetaJsonrpcAdapter
         'meta'      => 'methods to query the json service itself',
         'store'     => 'methods to manipulate and query the store',
         'model'     => 'methods to manipulate and query a specific model',
+        'resource'  => 'methods to manipulate and query a specific resource',
         //'evolution' => 'methods to manage and use the evolution engine',
     );
 

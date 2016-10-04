@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -198,7 +198,7 @@ class PingbackPlugin extends OntoWiki_Plugin
     protected function _discoverPingbackServer($targetUri)
     {
         // 1. Retrieve HTTP-Header and check for X-Pingback
-        $headers = get_headers($targetUri, 1);
+        $headers = self::_get_headers($targetUri);
         if (!is_array($headers)) {
             return null;
         }
@@ -343,6 +343,43 @@ class PingbackPlugin extends OntoWiki_Plugin
     {
         $logger = OntoWiki::getInstance()->getCustomLogger('pingback_plugin');
         $logger->debug($msg);
+    }
+
+    /**
+     * This method provides and alternative to PHP's get_headers method, which has no timeout.
+     * It is inspired by: http://snipplr.com/view/61985/
+     */
+    private static function _get_headers($url)
+    {
+        $connection = curl_init();
+
+        $options = array(
+            CURLOPT_URL             => $url,
+            CURLOPT_NOBODY          => true,
+            CURLOPT_HEADER          => true,
+            CURLOPT_TIMEOUT         => 10,
+            CURLOPT_RETURNTRANSFER  => true
+        );
+
+        curl_setopt_array($connection, $options);
+        $result = curl_exec($connection);
+        curl_close($connection);
+
+        if ($result !== false) {
+            $resultArray = explode("\n", $result);
+
+            $header = array();
+            foreach ($resultArray as $headerLine) {
+                $match = preg_match('#(.*?)\:\s(.*)#', $headerLine, $part);
+                if ($match) {
+                    $header[$part[1]] = trim($part[2]);
+                }
+            }
+
+            return $header;
+        } else {
+            return false;
+        }
     }
 
 }

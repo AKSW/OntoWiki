@@ -3,8 +3,8 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
- * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
+ * @copyright Copyright (c) 2012-2016, {@link http://aksw.org AKSW}
+ * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
 /**
@@ -18,7 +18,7 @@
  * error handling for the very first includes etc.
  * http://stackoverflow.com/questions/1241728/
  */
-function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
+function errorHandler($errno, $errstr, $errfile, $errline, array $errcontext)
 {
     // error was suppressed with the @-operator
     if (0 === error_reporting()) {
@@ -32,7 +32,7 @@ function errorHandler ($errno, $errstr, $errfile, $errline, array $errcontext)
  * in some configurations Apache prefixes the environment variables on each rewrite walkthrough
  * e.g. under centos
  */
-function getEnvVar ($key)
+function getEnvVar($key)
 {
     $prefix = "REDIRECT_";
     if (isset($_SERVER[$key])) {
@@ -119,7 +119,7 @@ function initApp()
         header('HTTP/1.1 500 Internal Server Error');
         echo 'Fatal Error: Could not load Zend library.<br />' . PHP_EOL
              . 'Maybe you need to install it with apt-get or with "make zend"?' . PHP_EOL;
-        exit;
+        return false;
     }
 
     // create application
@@ -135,7 +135,7 @@ function initApp()
     } catch (Exception $e) {
         echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.' . PHP_EOL;
         echo 'Your installation directory seems to be screwed.' . PHP_EOL;
-        exit;
+        return false;
     }
 
     /* check/include Erfurt_App */
@@ -145,7 +145,7 @@ function initApp()
     } catch (Exception $e) {
         echo 'Fatal Error: Could not load the Erfurt Framework classes.' . PHP_EOL;
         echo 'Maybe you should install it with apt-get or with "make deploy"?' . PHP_EOL;
-        exit;
+        return false;
     }
 
     // restore old error handler
@@ -156,12 +156,16 @@ function initApp()
         $application->bootstrap();
     } catch (Exception $e) {
         echo 'Error on bootstrapping application: ' . $e->getMessage() . PHP_EOL;
-        exit;
+        return false;
     }
     return $application;
 }
 
 $application = initApp();
+if ($application === false) {
+    return 1;
+}
+
 $ontowiki    = OntoWiki::getInstance();
 echo $ontowiki->config->version->label . ' ' . $ontowiki->config->version->number . PHP_EOL;
 
@@ -186,4 +190,3 @@ $ontowiki->callJob("cron");
 /*  -- END OF EXAMPLE --------------------------------------------------  */
 
 echo "done in " . round((microtime(true) - $timeStart) * 1000, 2) . "ms" . PHP_EOL;
-

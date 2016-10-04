@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2015, {@link http://aksw.org AKSW}
  * @license http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -73,27 +73,16 @@ define('OW_SHOW_MAX', 5);
 
 
 // PHP environment settings
-ini_set('max_execution_time', 240);
+if ((int)ini_get('max_execution_time') < 240) {
+    ini_set('max_execution_time', 240);
+}
 
 if ((int)substr(ini_get('memory_limit'), 0, -1) < 256) {
     ini_set('memory_limit', '256M');
 }
 
-/*
- * include path preparation
- */
-// init with local path in order to prefer these over system paths
-$includePath = ONTOWIKI_ROOT . 'libraries/' . PATH_SEPARATOR;
 // append local Erfurt include path
-if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/Erfurt/App.php')) {
-    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/' . PATH_SEPARATOR;
-} else if (file_exists(ONTOWIKI_ROOT . 'libraries/Erfurt/library/Erfurt/App.php')) {
-    $includePath .= ONTOWIKI_ROOT . 'libraries/Erfurt/library' . PATH_SEPARATOR;
-}
-// append system include paths
-$includePath .= get_include_path() . PATH_SEPARATOR;
-// set the include path
-set_include_path($includePath);
+require_once('vendor/autoload.php');
 
 // use default timezone from php.ini or let PHP guess it
 date_default_timezone_set(@date_default_timezone_get());
@@ -129,44 +118,11 @@ if (getEnvVar('ONTOWIKI_APACHE_MOD_REWRITE_ENABLED')) {
 
 define('ONTOWIKI_REWRITE', $rewriteEngineOn);
 
-/** check/include Zend_Application */
-try {
-    // use include, so we can catch it with the error handler
-    require_once 'Zend/Application.php';
-} catch (Exception $e) {
-    header('HTTP/1.1 500 Internal Server Error');
-    echo 'Fatal Error: Could not load Zend library.<br />' . PHP_EOL
-         . 'Maybe you need to install it with apt-get or with "make zend"?';
-    return;
-}
-
 // create application
 $application = new Zend_Application(
     'default',
     ONTOWIKI_ROOT . 'application/config/application.ini'
 );
-
-/** check/include OntoWiki */
-try {
-    // use include, so we can catch it with the error handler
-    require_once 'OntoWiki.php';
-} catch (Exception $e) {
-    header('HTTP/1.1 500 Internal Server Error');
-    echo 'Fatal Error: Could not load the OntoWiki Application Framework classes.<br />' . PHP_EOL
-         . 'Your installation directory seems to be screwed.';
-    return;
-}
-
-/* check/include Erfurt_App */
-try {
-    // use include, so we can catch it with the error handler
-    require_once 'Erfurt/App.php';
-} catch (Exception $e) {
-    header('HTTP/1.1 500 Internal Server Error');
-    echo 'Fatal Error: Could not load the Erfurt Framework classes.<br />' . PHP_EOL
-    . 'Maybe you should install it with apt-get or with "make deploy"?';
-    return;
-}
 
 // restore old error handler
 restore_error_handler();

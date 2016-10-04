@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -51,7 +51,7 @@ class AccountController extends OntoWiki_Controller_Component
         // phase 3 for cleanup and password change in ow system
         $params['password_o'] = $this->getParam('password_o');
         $params['password_r'] = $this->getParam('password_r');
-        if (empty($params['hash']) || empty($params['password_o']) || empty ($params['password_r'])) {
+        if (empty($params['hash']) || empty($params['password_o']) || empty($params['password_r'])) {
             unset($params['password_o']);
             unset($params['password_r']);
         } else {
@@ -62,8 +62,6 @@ class AccountController extends OntoWiki_Controller_Component
 
         $this->view->placeholder('main.window.title')->set($title);
         $this->view->phase = $phase;
-
-        require_once 'Erfurt/Auth/Identity/Recovery.php';
 
         $recoveryObject = new Erfurt_Auth_Identity_Recovery();
 

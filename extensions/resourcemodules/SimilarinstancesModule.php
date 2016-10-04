@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -54,7 +54,7 @@ class SimilarinstancesModule extends OntoWiki_Module
             }
 
             $query->resetInstance()
-                ->setProloguePart('SELECT DISTINCT ?uri')
+                ->setSelectClause('SELECT DISTINCT ?uri')
                 ->setWherePart(
                     'WHERE {
                         ?uri a <' . $typeUri . '> .
@@ -137,7 +137,7 @@ class SimilarinstancesModule extends OntoWiki_Module
 
         $query = new Erfurt_Sparql_SimpleQuery();
 
-        $query->setProloguePart('SELECT DISTINCT ?uri')
+        $query->setSelectClause('SELECT DISTINCT ?uri')
             ->setWherePart(
                 'WHERE {
                     <' . (string)$this->_owApp->selectedResource . '> a ?uri.
@@ -163,5 +163,3 @@ class SimilarinstancesModule extends OntoWiki_Module
         return array_keys($typesInferred);
     }
 }
-
-

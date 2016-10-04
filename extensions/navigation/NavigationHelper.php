@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2011-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -130,7 +130,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
             $uriElem      = new Erfurt_Sparql_Query2_IriRef($uri);
             $filterUris[] = $uriElem;
-            $filterType[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
+            $filterType[] = new Erfurt_Sparql_Query2_Equals($classVar, $uriElem);
 
             // add uri to counted
             $counted[] = $uri;
@@ -317,7 +317,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 foreach ($setup->config->hierarchyTypes as $type) {
                     $uriElem      = new Erfurt_Sparql_Query2_IriRef($type);
                     $filterUris[] = $uriElem;
-                    $filterType[] = new Erfurt_Sparql_Query2_sameTerm($classVar, $uriElem);
+                    $filterType[] = new Erfurt_Sparql_Query2_Equals($classVar, $uriElem);
                 }
 
                 $owApp = OntoWiki::getInstance();

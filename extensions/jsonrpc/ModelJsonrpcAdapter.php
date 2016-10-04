@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2012-2016, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -134,6 +134,30 @@ class ModelJsonrpcAdapter
 
             return true;
         }
+    }
+
+    /**
+     * @desc get the titles for a given array of resources
+     *
+     * @param string modelIri
+     * @param array resources
+     *
+     * @return array An associative array of resources and their titles
+     */
+    public function getTitles($modelIri, $resources)
+    {
+        // ["http://pfarrerbuch.comiles.eu/sachsen/"]
+        $resources = json_decode($resources);
+
+        $model    = $this->_store->getModel($modelIri);
+        $titleHelper = new OntoWiki_Model_TitleHelper($model, $this->_store);
+        $titleHelper->addResources($resources);
+        $titles = array();
+        foreach ($resources as $resourceUri) {
+            $titles[$resourceUri] = $titleHelper->getTitle($resourceUri);
+        }
+
+        return $titles;
     }
 
     /**

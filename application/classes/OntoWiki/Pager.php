@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2013, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2014, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -11,7 +11,7 @@
  *
  * @category  OntoWiki
  * @package   OntoWiki_Classes
- * @copyright Copyright (c) 2012, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2014, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  * @author    Norman Heino <norman.heino@gmail.com>
  */
@@ -74,9 +74,7 @@ class OntoWiki_Pager
         self::$_url   = new OntoWiki_Url(array(), $paramsToKeep);
         self::$_url->setParam("list", $listName);
 
-        $limit = isset(self::$_url->limit)
-            ? self::$_url->limit
-            : self::$_options['default_limit'];
+        $limit = isset(self::$_url->limit) ? self::$_url->limit : self::$_options['default_limit'];
 
         if ($limit == 0) {
             // means no limit
@@ -84,9 +82,11 @@ class OntoWiki_Pager
             return "";
         }
 
-        $page = isset(self::$_url->{self::$_options['page_param']})
-            ? self::$_url->{self::$_options['page_param']}
-            : ($page != null ? $page : 1);
+        if (isset(self::$_url->{self::$_options['page_param']})) {
+            $page = self::$_url->{self::$_options['page_param']};
+        } else {
+            $page = ($page != null ? $page : 1);
+        }
 
         // self::$_url->limit = $limit;
         $pagerLinks = array();
@@ -161,7 +161,7 @@ class OntoWiki_Pager
                         $i = max(1 + $offset, $page - $maxLinksAsym); $i <= $forLoopTest; ++$i) {
                         self::$_url->{self::$_options['page_param']} = $i;
                         self::$_url->limit = $limit;
-                        
+
                         if ($page == $i) {
                             $pagerLinks[] = '<a class="selected minibutton">' . $i . '</a>';
                         } else {
