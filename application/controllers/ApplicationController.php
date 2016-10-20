@@ -197,6 +197,16 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function registerAction()
     {
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
+        //check if the Register Action is allowed
+        if (isset($this->_owApp->config->ac)
+            && ((boolean)$this->_owApp->config->ac->deactivateRegistration === true)
+        ) {
+            $this->_helper->viewRenderer->setNoRender();
+            $this->view->placeholder('main.window.title')->set('Register User');
+            $message = 'The registration is deactivated, please consult an Admin about this.';
+            $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
+            return;
+        }
         $this->_helper->viewRenderer->setScriptAction('register');
 
         $this->view->placeholder('main.window.title')->set('Register User');
@@ -359,7 +369,16 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function openidregAction()
     {
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
-
+        //check if the Register Action is allowed
+        if (isset($this->_owApp->config->ac)
+            && ((boolean)$this->_owApp->config->ac->deactivateRegistration === true)
+        ) {
+            $this->_helper->viewRenderer->setNoRender();
+            $this->view->placeholder('main.window.title')->set('Register User');
+            $message = 'The registration is deactivated, please consult an Admin about this.';
+            $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
+            return;
+        }
         // We render a template, that is also used for preferences.
         $this->_helper->viewRenderer->setScriptAction('openid');
 
@@ -550,7 +569,16 @@ class ApplicationController extends OntoWiki_Controller_Base
     public function webidregAction()
     {
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
-
+        //check if the Register Action is allowed
+        if (isset($this->_owApp->config->ac)
+            && ((boolean)$this->_owApp->config->ac->deactivateRegistration === true)
+        ) {
+            $this->_helper->viewRenderer->setNoRender();
+            $this->view->placeholder('main.window.title')->set('Register User');
+            $message = 'The registration is deactivated, please consult an Admin about this.';
+            $this->_owApp->appendMessage(new OntoWiki_Message($message, OntoWiki_Message::ERROR));
+            return;
+        }
         // We render a template, that is also used for preferences.
         $this->_helper->viewRenderer->setScriptAction('webid');
 
