@@ -197,6 +197,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config->libraryUrlBase = $config->staticUrlBase
                                 . $config->libraries->path;
 
+        //check if log.level has a valid integer as value
+        if (!((int)$config->log->level >= 0 && (int)$config->log->level <= 7)) {
+            $config->log->level = 0;
+        }
         // define constants for development/debugging
         if (isset($config->debug) && (boolean)$config->debug) {
             // display errors
@@ -208,6 +212,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             }
 
             // log everything
+            $config->log->enabled = true;
             $config->log->level = 7;
         }
 
@@ -323,7 +328,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         // initialize logger
         $writer = null;
-        if (is_writable($config->log->path) && ((boolean)$config->log->level !== false)) {
+        if (is_writable($config->log->path) && ((boolean)$config->log->enabled == true)) {
             $levelFilter = new Zend_Log_Filter_Priority((int)$config->log->level, '<=');
 
             $logName = $config->log->path . 'ontowiki';

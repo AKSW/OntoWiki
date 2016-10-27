@@ -84,7 +84,8 @@ class ApplicationController extends OntoWiki_Controller_Base
             ),
             'Logging'        => array(
                 'Path'  => rtrim($this->_config->log->path, '/') . $logWritable,
-                'Level' => (bool)$this->_config->log->level ? $this->_config->log->level : 'disabled'
+                'Status' => (bool)$this->_config->log->enabled ? 'enabled' : 'disabled',
+                'Level' => (int)$this->_config->log->level
             )
         );
 
