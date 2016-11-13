@@ -67,7 +67,7 @@ class OntoWiki_View extends Zend_View
     public function __construct($config = array(), $translate = null)
     {
         parent::__construct($config);
-
+        $this->_config              = OntoWiki::getInstance()->config;
         $this->_translate           = $translate;
         $this->_placeholderRegistry = Zend_View_Helper_Placeholder_Registry::getRegistry();
 
