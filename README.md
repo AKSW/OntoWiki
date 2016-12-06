@@ -1,6 +1,12 @@
 # OntoWiki
 
-[![Build Status](http://owdev.ontowiki.net/job/OntoWiki/badge/icon)](http://owdev.ontowiki.net/job/OntoWiki/)
+
+| CI System      | Status                                                                                                           | 
+| -------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Travis CI      | [![Travis CI Build Status](https://travis-ci.org/AKSW/OntoWiki.svg)](https://travis-ci.org/AKSW/OntoWiki/)           |
+| owdev Jenkins  | [![owdev Build Status](http://owdev.ontowiki.net/job/OntoWiki/badge/icon)](http://owdev.ontowiki.net/job/OntoWiki/)  |
+
+[Documentation](https://github.com/AKSW/docs.ontowiki.net)
 [API Documentation](http://api.ontowiki.net/)
 
 ![](https://raw.github.com/wiki/AKSW/OntoWiki/images/owHeader.png)
@@ -21,10 +27,10 @@ Other remarkable features are:
 
 ## Installation/Update
 
-If you are updating OntoWiki, please don't forget to run `make deploy`.
-If `make deploy` fails, you might also have to run `make getcomposer` once before run `make deploy` again.
+If you are updating OntoWiki, please don't forget to run `make install`.
+If `make install` fails, you might also have to run `make getcomposer` once before run `make deploy` again.
 
-For further installation instructions please have a look at our [wiki](https://github.com/AKSW/OntoWiki/wiki/GetOntowikiUsers) (might be outdated in some parts).
+For further installation instructions please have a look at our [wiki](https://docs.ontowiki.net/) (might be outdated in some parts).
 
 ## Screenshot / Webinar
 Below is a screenshot showing OntoWiki in editing mode.
@@ -33,6 +39,11 @@ For a longer visual presentation you can watch our [webinar@youtube](http://www.
 (thanks to Phil and the Semantic Web company).
 
 ![Screenshot](http://lh4.ggpht.com/-kXpKMqBBCIU/Tpx45SUaItI/AAAAAAAAA9w/aPYaNQjcpvo/s800/ontowiki.png)
+
+## Documentation
+
+The Documentation is hosted at https://docs.ontowiki.net/ . If you find errors or think we should add something to it
+you are free to fork https://github.com/AKSW/docs.ontowiki.net and send us a pull requst with your changes.
 
 ## License
 
