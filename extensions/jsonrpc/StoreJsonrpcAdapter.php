@@ -59,7 +59,6 @@ class StoreJsonrpcAdapter
      */
     public function sparql($query = 'SELECT ?resource ?label WHERE {?resource ?prop ?label} LIMIT 5')
     {
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = Erfurt_Sparql_SimpleQuery::initWithString($query);
 
         return $this->_store->sparqlQuery($query);
@@ -76,4 +75,3 @@ class StoreJsonrpcAdapter
 
 
 }
-

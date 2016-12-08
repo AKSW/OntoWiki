@@ -59,7 +59,6 @@ class ModelJsonrpcAdapter
             $query = 'PREFIX ' . $prefix . ': <' . $namespace . '>' . PHP_EOL . $query;
         }
 
-        require_once 'Erfurt/Sparql/SimpleQuery.php';
         $query = Erfurt_Sparql_SimpleQuery::initWithString($query);
 
         return $model->sparqlQuery($query);
