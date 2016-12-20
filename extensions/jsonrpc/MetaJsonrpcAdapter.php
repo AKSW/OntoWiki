@@ -101,7 +101,7 @@ class MetaJsonrpcAdapter
 
             return $returnArray;
         } else {
-            return 'Error: Server ' . $_server . ' does not exist.';
+            throw new Erfurt_Exception('Error: Server ' . $_server . ' does not exist.');
         }
     }
 

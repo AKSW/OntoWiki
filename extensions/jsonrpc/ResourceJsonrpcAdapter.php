@@ -39,12 +39,12 @@ class ResourceJsonrpcAdapter
     public function get($modelIri, $resourceIri, $format = 'rdfjson')
     {
         if (!$this->_store->isModelAvailable($modelIri)) {
-            return 'Error: Model "' . $modelIri . '" is not available.';
+            throw new Erfurt_Exception('Error: Model "' . $modelIri . '" is not available.');
         }
         $editable = $this->_store->getModel($modelIri)->isEditable();
         $supportedFormats = Erfurt_Syntax_RdfSerializer::getSupportedFormats();
         if (!isset($supportedFormats[$format])) {
-            return 'Error: Format "' . $format . '" is not supported by serializer.';
+            throw new Erfurt_Exception('Error: Format "' . $format . '" is not supported by serializer.');
         }
         $serializer = Erfurt_Syntax_RdfSerializer::rdfSerializerWithFormat($format);
         // create hash for current status of resource
@@ -71,7 +71,7 @@ class ResourceJsonrpcAdapter
     {
         $model = $this->_store->getModel($modelIri);
         if (!$model->isEditable()) {
-            return 'Error: Model "' . $modelIri . '" is not available.';
+            throw new Erfurt_Exception('Error: Model "' . $modelIri . '" is not available.');
         }
         // TODO check for formats supported by the parser (not yet implemented)
 
@@ -79,7 +79,7 @@ class ResourceJsonrpcAdapter
         $currentDataHash = $this->_getCurrentResourceHash($modelIri, $resourceIri);
 
         if ($currentDataHash !== $origDataHash) {
-            return 'Error: Resource "' . $resourceIri . '" was edited during your session.';
+            throw new Erfurt_Exception('Error: Resource "' . $resourceIri . '" was edited during your session.');
         }
 
         // get current statements of resource
