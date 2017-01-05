@@ -188,7 +188,6 @@ class ExconfController extends OntoWiki_Controller_Component
             if (!is_dir($dirPath)) {
                 throw new OntoWiki_Exception('invalid extension - ' . $dirPath . ' does not exist or no folder');
             }
-            //$configFilePath = $dirPath.Ontowiki_Extension_Manager::EXTENSION_DEFAULT_DOAP_FILE;
             $localIniPath = $manager->getExtensionPath() . $name . ".ini";
 
             $privateConfig               = $manager->getPrivateConfig($name);
@@ -318,7 +317,6 @@ class ExconfController extends OntoWiki_Controller_Component
         $ow                  = OntoWiki::getInstance();
 
         $ow->appendMessage(new OntoWiki_Message('Repository: ' . $repoUrl, OntoWiki_Message::INFO));
-        //$ow->appendMessage(new OntoWiki_Message("Graph: ".$graph, OntoWiki_Message::INFO));
         //define the list on a new store, that queries a sparql endpoint
         $adapter = new Erfurt_Store_Adapter_Sparql(array('serviceUrl' => $repoUrl, 'graphs' => array($graph)));
         $store   = new Erfurt_Store(array('adapterInstance' => $adapter), 'sparql');
@@ -347,8 +345,6 @@ class ExconfController extends OntoWiki_Controller_Component
                 )
             );
 
-            //$list->addShownProperty(self::EXTENSION_RELEASE_PROPERTY, 'project', true);
-
             //internal name (folder name)
             $this->addProjectProperty(self::EXTENSION_NAME_PROPERTY, $projectVar, $list, 'name');
             //pretty name (label)
@@ -369,10 +365,6 @@ class ExconfController extends OntoWiki_Controller_Component
             $listHelper->addListPermanently($listName, $list, $this->view, 'list_extensions_main');
         }
 
-        //$this->addModuleContext('main.window.list');
-
-        //echo htmlentities($list->getResourceQuery());
-        //echo htmlentities($list->getQuery());
     }
 
     private function addProjectProperty($p, $projectVar, $list, $name = null)
@@ -612,7 +604,6 @@ class ExconfController extends OntoWiki_Controller_Component
             $username = $this->_privateConfig->ftp->username;
             $password = $this->_privateConfig->ftp->password;
             $hostname = $this->_privateConfig->ftp->hostname;
-            //$ssh2 = "ssh2.sftp://$username:$password@$hostname:22";
             $connection = ssh2_connect($hostname, 22);
             ssh2_auth_password($connection, $username, $password);
             $sftp = ssh2_sftp($connection);

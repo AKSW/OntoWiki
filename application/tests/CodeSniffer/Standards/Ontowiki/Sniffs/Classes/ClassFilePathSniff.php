@@ -93,19 +93,6 @@ class Ontowiki_Sniffs_Classes_ClassFilePathSniff implements PHP_CodeSniffer_Snif
                 $phpcsFile->addError($error, $stackPtr, 'NoMatch', $data);
             }
         }
-        //    else
-        //    {
-        //        if ($tokens[$decName]['content'] !== $fileName)
-        //        {
-        //            $error = '%s name doesn\'t match filename; expected "%s %s"';
-        //            $data  = array(
-        //                ucfirst($tokens[$stackPtr]['content']),
-        //                $tokens[$stackPtr]['content'],
-        //                $fileName,
-        //                );
-        //            $phpcsFile->addError($error, $stackPtr, 'NoMatch', $data);
-        //        }
-        //    }
     }
     //end process()
 

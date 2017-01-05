@@ -171,7 +171,6 @@ class ResourceController extends OntoWiki_Controller_Base
                      'title' => 'SHIFT + ALT + l'
                 )
             );
-            // ->appendButton(OntoWiki_Toolbar::EDITADD, array('name' => 'Add Property', 'class' => 'property-add'));
             $url = new OntoWiki_Url(
                 array('controller' => 'resource', 'action' => 'delete'),
                 array('r')
@@ -260,10 +259,6 @@ class ResourceController extends OntoWiki_Controller_Base
             $listHelper->addListPermanently($listName, $list, $this->view);
         }
 
-        //two usefull order
-        //$list->orderByUri();
-        //$list->setOrderProperty('http://ns.ontowiki.net/SysOnt/order');
-
         //begin view building
         $this->view->placeholder('main.window.title')->set('Resource List');
 
@@ -294,27 +289,8 @@ class ResourceController extends OntoWiki_Controller_Base
                      'title'  => 'SHIFT + ALT + s'
                 )
             );
-            // ->appendButton(OntoWiki_Toolbar::EDIT, array('name' => 'Edit Instances', 'class' => 'edit-enable'))
-            // ->appendButton(OntoWiki_Toolbar::SEPARATOR)
-            // ->appendButton(OntoWiki_Toolbar::DELETE, array('name' => 'Delete Selected', 'class' => 'submit'))
             $this->view->placeholder('main.window.toolbar')->set($toolbar);
         }
-        /*
-
-            $url = new OntoWiki_Url(
-                array(
-                    'controller' => 'resource',
-                    'action' => 'delete'
-                ),
-                array()
-            );
-
-            $this->view->formActionUrl = (string)$url;
-            $this->view->formMethod    = 'post';
-            $this->view->formName      = 'instancelist';
-            $this->view->formEncoding  = 'multipart/form-data';
-            *
-        */
 
         $url                     = new OntoWiki_Url();
         $this->view->redirectUrl = (string)$url;

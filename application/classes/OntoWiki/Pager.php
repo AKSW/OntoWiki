@@ -88,7 +88,6 @@ class OntoWiki_Pager
             $page = ($page != null ? $page : 1);
         }
 
-        // self::$_url->limit = $limit;
         $pagerLinks = array();
 
         // translation helper

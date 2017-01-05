@@ -123,7 +123,6 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         //add properties
         $this->_instances->addShownProperty('http://model.org/prop');
         $v = $this->_instances->getValues();
-        //var_dump($v);
         //count values
         $this->assertCount(2, $v['http://model.org/model#i1']);
         //test variable creation
@@ -218,7 +217,6 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
         $this->assertCount(2, $this->_instances->getResources());
         $this->_instances->orderByUri(true);
         $r = $this->_instances->getResources();
-        //var_dump($r);
         $this->assertEquals($r[0]['uri'], 'http://model.org/model#i1');
         $this->_instances->orderByUri(false);
         $r = $this->_instances->getResources();

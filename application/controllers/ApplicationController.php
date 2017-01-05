@@ -170,7 +170,6 @@ class ApplicationController extends OntoWiki_Controller_Base
     {
         $erfurt = $this->_owApp->erfurt;
         $get    = $this->_request->getQuery();
-        //$get['url'] = $this->_request->getHttpHost() . $this->_request->getRequestUri();
 
         $authResult               = $erfurt->authenticateWithFoafSsl($get);
         $this->_owApp->authResult = $authResult->getMessages();

@@ -33,12 +33,6 @@ class SemanticsitemapController extends OntoWiki_Controller_Component
         // Disable layout (we want only output xml)
         $this->_helper->layout->disableLayout();
 
-        // Needed here because of the automatic rendering should be deactivated
-        //$this->_helper->viewRenderer->setNoRender(true);
-
-        // Add the path of templates needed by this plugin
-        //$this->view->addScriptPath(REAL_BASE.'plugins/SemanticSitemap/templates/');
-
         // get the default store from the registry
         $this->_store = Erfurt_App::getInstance()->getStore();
 
@@ -76,9 +70,6 @@ class SemanticsitemapController extends OntoWiki_Controller_Component
         $this->view->datasets = $datasets;
         $this->view->appname  = OntoWiki::APPLICATION_NAME;
         $this->view->version  = OntoWiki_Version::VERSION;
-
-        // render view
-        //$this->_response->setBody($this->view->render('default.php'));
     }
 
 }

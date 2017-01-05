@@ -12,9 +12,7 @@ $this->placeholder('main.window.menu')->set($actions->toArray());
 $instances = $this->instances;
 // get queries
 $resourceQuery =  $instances->getResourceQuery();
-//echo htmlentities($resourceQuery);
 $valueQuery = $instances->getQuery();
-//echo htmlentities($valueQuery);
 $permalink = $instances->getPermalink($this->listName);
 $config = Erfurt_App::getInstance()->getConfig();
 $urlBase = $config->urlBase;
@@ -52,8 +50,6 @@ $this->headScript()->prependScript(
                    <?php endforeach; ?>>
         <?php if (!empty($this->propertyInfo)): ?>
     <tr>
-        <?php /* column for selector checkboxes (disabled for now)*/?>
-        <!--th></th-->
         <?php /* column for the numbers*/?>
         <th></th>
         <?php /* column for the instance title/label*/?>

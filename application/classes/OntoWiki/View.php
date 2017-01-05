@@ -257,8 +257,6 @@ class OntoWiki_View extends Zend_View
                     $pre           = microtime(true);
                     $moduleContent = $module->getContents();
                     $post          = ((microtime(true) - $pre) * 1000);
-                    // $this->_owApp->logger->info("Rendering module '$moduleName': $post ms (cache miss)");
-
                     // save to cache
                     $this->_moduleCache->save(
                         $moduleContent, $cacheId, array('module', $moduleName), $module->getCacheLivetime()
@@ -269,7 +267,6 @@ class OntoWiki_View extends Zend_View
                 $pre           = microtime(true);
                 $moduleContent = $module->getContents();
                 $post          = ((microtime(true) - $pre) * 1000);
-                // $this->_owApp->logger->info("Rendering module '$moduleName': $post ms (caching disabled)");
             }
 
             // implement tabs

@@ -44,27 +44,6 @@ class CkanController extends OntoWiki_Controller_Component
         echo "not finished yet";
 
         return;
-
-        //$scriptBaseUrl = $this->_owApp->extensionManager->getComponentUrl('ckan').'ckanjs/lib/';
-        //$clientScript  = $scriptBaseUrl . 'client.js';
-        //$this->view->headScript()->appendFile($clientScript);
-
-        //$newIncludePath = ONTOWIKI_ROOT . '/extensions/ckan/api/';
-        //set_include_path(get_include_path() . PATH_SEPARATOR . $newIncludePath);
-        //require_once('Ckan_client.php');
-
-        //// Create CKAN object
-        //// Takes optional API key parameter. Required for POST and PUT methods.
-        //$ckan        = new Ckan_client();
-        //$search_term = 'street';
-        //$result      = $ckan->search_package($search_term, array('limit' => 5, 'tags' => 'format-rdf'));
-        //$packageIds  = $result->results;
-        //foreach ($packageIds as $key => $id) {
-        //$package = $ckan->get_package_entity($id);
-        //$data[$id] = $package;
-        //}
-
-        //$this->view->data = $data;
     }
 
     /**

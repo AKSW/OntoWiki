@@ -57,10 +57,6 @@ class HistoryController extends OntoWiki_Controller_Component
         // Load IDs for rollback and Username Labels for view
         foreach ($historyArray as $key => $entry) {
             $idArray[] = (int)$entry['id'];
-            // if(!$singleResource){
-            //    $historyArray[$key]['url'] = $this->_config->urlBase . "view?r=" . urlencode($entry['resource']);
-            //    $titleHelper->addResource($entry['resource']);
-            // }
             if ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->anonymousUser) {
                 $userArray[$entry['useruri']] = 'Anonymous';
             } elseif ($entry['useruri'] == $this->_erfurt->getConfig()->ac->user->superAdmin) {
@@ -78,7 +74,6 @@ class HistoryController extends OntoWiki_Controller_Component
         $feed->setTitle($feedTitle);
         $feed->setLink($linkUrl);
         $feed->setFeedLink($feedUrl, 'atom');
-        //$feed->addHub("http://pubsubhubbub.appspot.com/");
         $feed->addAuthor(
             array(
                 'name' => 'OntoWiki',
@@ -126,54 +121,6 @@ class HistoryController extends OntoWiki_Controller_Component
         echo $out;
 
         return;
-
-        // Do we need this stuff below?
-        // ----------------------------
-        /* $this->view->userArray = $userArray;
-        $this->view->idArray = $idArray;
-        $this->view->historyArray = $historyArray;
-        $this->view->singleResource = $singleResource;
-        $this->view->titleHelper = $titleHelper;
-
-        if (empty($historyArray)) {
-            $this->_owApp->appendMessage(
-                new OntoWiki_Message(
-                    'No matches.',
-                    OntoWiki_Message::INFO
-                )
-            );
-        }
-
-        if ($this->_erfurt->getAc()->isActionAllowed('Rollback')) {
-            $this->view->rollbackAllowed = true;
-            // adding submit button for rollback-action
-            $toolbar = $this->_owApp->toolbar;
-            $toolbar->appendButton(
-                OntoWiki_Toolbar::SUBMIT,
-                array('name' => $translate->_('Rollback changes'), 'id' => 'history-rollback')
-            );
-            $this->view->placeholder('main.window.toolbar')->set($toolbar);
-        } else {
-            $this->view->rollbackAllowed = false;
-        }
-
-        // paging
-        $statusBar = $this->view->placeholder('main.window.statusbar');
-        // the normal page_param p collides with the generic-list param p
-        OntoWiki_Pager::setOptions(array('page_param'=>'page'));
-        $statusBar->append(OntoWiki_Pager::get($count,$limit));
-
-        // setting view variables
-        $url = new OntoWiki_Url(array('controller' => 'history', 'action' => 'rollback'));
-
-        $this->view->placeholder('main.window.title')->set($windowTitle);
-
-        $this->view->formActionUrl = (string) $url;
-        $this->view->formMethod    = 'post';
-        // $this->view->formName      = 'instancelist';
-        $this->view->formName      = 'history-rollback';
-        $this->view->formEncoding  = 'multipart/form-data';
-         */
     }
 
     /**
@@ -246,7 +193,6 @@ class HistoryController extends OntoWiki_Controller_Component
             $query = clone $list->getResourceQuery();
             $query->setLimit(0);
             $query->setOffset(0);
-            //echo htmlentities($query);
 
             $results = $model->sparqlQuery($query);
             $resourceVar = $list->getResourceVar()->getName();
@@ -255,14 +201,12 @@ class HistoryController extends OntoWiki_Controller_Component
             foreach ($results as $result) {
                 $resources[] = $result[$resourceVar];
             }
-            //var_dump($resources);
 
             $historyArray = $versioning->getHistoryForResourceList(
                 $resources,
                 (string)$this->_owApp->selectedModel,
                 $page
             );
-            //var_dump($historyArray);
 
             $singleResource = false;
         } else {
@@ -354,7 +298,6 @@ class HistoryController extends OntoWiki_Controller_Component
 
         $this->view->formActionUrl = (string)$url;
         $this->view->formMethod    = 'post';
-        // $this->view->formName      = 'instancelist';
         $this->view->formName      = 'history-rollback';
         $this->view->formEncoding  = 'multipart/form-data';
     }
@@ -481,17 +424,14 @@ class HistoryController extends OntoWiki_Controller_Component
 
     private function toFlatArray($serializedString)
     {
-        //$a = array();
         $walkArray = unserialize($serializedString);
         foreach ($walkArray as $subject => $a) {
             foreach ($a as $predicate => $b) {
                 foreach ($b as $object) {
-                    //$a[] = array($subject, $predicate, $object['value']);
                     return array($subject, $predicate, $object['value']);
                 }
             }
         }
-        //return $a;
     }
 
     private function getActionTriple($actionID)

@@ -85,7 +85,6 @@ class LastchangesModule extends OntoWiki_Module
                     $url->setParam('r', (string)$change['aresource'], true);
                     $change['ahref'] = (string)$url;
 
-                    //$change['date'] = OntoWiki_Utils::dateDifference($change['tstamp'], null, 3);
                     $url->setParam('r', (string)$change['resource'], true);
                     $change['rhref']    = (string)$url;
                     $change['resource'] = new OntoWiki_Resource((string)$change['resource'], $this->model);

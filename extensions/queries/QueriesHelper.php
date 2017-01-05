@@ -23,7 +23,6 @@ class QueriesHelper extends OntoWiki_Component_Helper
             $url        = new OntoWiki_Url(array('controller' => 'queries', 'action' => 'editor'));
             $extrasMenu = OntoWiki_Menu_Registry::getInstance()->getMenu('application')->getSubMenu('Extras');
             $extrasMenu->setEntry($translate->_('Queries'), (string)$url);
-            //$extrasMenu->setEntry('Query Builder', (string) $url);
         }
     }
 }

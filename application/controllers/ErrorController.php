@@ -141,15 +141,6 @@ class ErrorController extends Zend_Controller_Action
                     (isset($spec['type']) ? $spec['type'] : '') . $spec['function'] .
                     $lineStr . '<br />';
 
-                // foreach ($spec['args'] as $arg) {
-                //                     if (is_string($arg)) {
-                //                         $stacktraceString .= '    - ' . $arg . '<br />';
-                //                     } else if (is_object($arg)) {
-                //                         $stacktraceString .= '    - ' . get_class($arg) . '<br />';
-                //                     } else {
-                //                         $stacktraceString .= '    - ' . (string)$arg . '<br />';
-                //                     }
-                //                 }
             }
 
             $this->view->stacktrace = $stacktraceString;

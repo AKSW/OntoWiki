@@ -29,7 +29,6 @@ class ServiceController extends Zend_Controller_Action
         if (!$this->_config->service->allowGetAuth) {
             // disallow get
             if (!$this->_request->isPost()) {
-                //$this->_response->setRawHeader('HTTP/1.0 405 Method Not Allowed');
                 $this->_response->setHttpResponseCode(405);
                 $this->_response->setHeader('Allow', 'POST');
 
@@ -45,7 +44,6 @@ class ServiceController extends Zend_Controller_Action
             $username = $this->_request->u;
             $password = $this->_request->getParam('p', '');
         } else {
-            //$this->_response->setRawHeader('HTTP/1.0 400 Bad Request');
             $this->_response->setHttpResponseCode(400);
 
             return;
@@ -55,7 +53,6 @@ class ServiceController extends Zend_Controller_Action
             // logout
             Erfurt_Auth::getInstance()->clearIdentity();
             session_destroy();
-            //$this->_response->setRawHeader('HTTP/1.0 200 OK');
             $this->_response->setHttpResponseCode(200);
 
             return;
@@ -66,14 +63,10 @@ class ServiceController extends Zend_Controller_Action
 
         // return HTTP result
         if ($result->isValid()) {
-            // return success (200)
-            //$this->_response->setRawHeader('HTTP/1.0 200 OK');
             $this->_response->setHttpResponseCode(200);
 
             return;
         } else {
-            // return fail (401)
-            //$this->_response->setRawHeader('HTTP/1.0 401 Unauthorized');
             $this->_response->setHttpResponseCode(401);
 
             return;
@@ -96,7 +89,6 @@ class ServiceController extends Zend_Controller_Action
         $this->view->open    = true;
         $this->view->classes = $model->getHierarchy();
         $this->_response->setBody($this->view->render('partials/hierarchy_list.phtml'));
-        // $this->_response->setBody(json_encode($model->getHierarchy()));
     }
 
     /**
@@ -651,7 +643,6 @@ class ServiceController extends Zend_Controller_Action
         $file = $template . '.' . $this->_helper->viewRenderer->getViewSuffix();
 
         if (!is_readable($path . $file)) {
-            // $this->log('Template file not readable: ' . $path .  $file, Zend_Log::ERR);
             throw new OntoWiki_Exception('Template file not readable. ' . $path . $file);
         }
 
@@ -933,12 +924,6 @@ class ServiceController extends Zend_Controller_Action
                             $value->lang = $property['value']['xml:lang'];
                         }
                     }
-                    /* not in RDFauthor 0.8
-                    else {
-                        // plain literal --> rdfQuery needs extra quotes
-                        $currentValue = '"' . $currentValue . '"';
-                    }
-                    */
                 }
 
                 // return title from titleHelper

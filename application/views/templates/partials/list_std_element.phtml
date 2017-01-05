@@ -7,9 +7,6 @@ $url->setParam('init', true);
 $viewUrl = new OntoWiki_Url(array('controller' => 'resource','action' => 'properties'));
 ?>
 <tr class="<?php echo $this->odd ? 'odd' : 'even'; ?>">
-        <!--td class="selector">
-            <input type="checkbox" id="selector-<?php echo $this->i ?>" name="r[]" value="<?php echo $this->instanceUri ?>"/>
-        </td-->
         <td class="enumeration"><label for="selector-<?php echo $this->i ?>"><?php echo $this->i ?>.</label></td>
         <td>
             <?php if($this->instance['type'] == 'uri'){
@@ -180,19 +177,6 @@ $viewUrl = new OntoWiki_Url(array('controller' => 'resource','action' => 'proper
                         </div>
                         <?php endif; ?>
                         <?php endif; ?>
-                    <?php else: ?>
-                    <?php /* if no value available
-                    <div class="has-contextmenu-area">
-                        <div class="contextmenu">
-                            <a class="item rdfauthor-edit-property" onclick="editPropertyListmode(event)">
-                                <span class="icon icon-edit" title="Edit Values">
-                                    <span>Show as List</span>
-                                </span>
-                            </a>
-                        </div>
-                        <span about="<?php echo $this->instanceUri ?>" property="<?php echo $this->curie($property['uri']) ?>">N/A</span>
-                    </div>
-                     */ ?>
                     <?php endif; ?>
             </td>
             <?php endforeach; ?>

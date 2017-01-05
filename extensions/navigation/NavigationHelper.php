@@ -34,7 +34,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // add triplen
                 $ggp->addTriple(
                     $classVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
                     $searchVar
                 );
                 // add triplet to union var
@@ -50,7 +50,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // add triplen
                 $ggp->addTriple(
                     $searchVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
                     $classVar
                 );
                 // add triplet to union var
@@ -66,7 +66,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // add triplen
                 $ggp->addTriple(
                     $classVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
                     $searchVar
                 );
                 // add triplet to union var
@@ -82,7 +82,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                 // add triplen
                 $ggp->addTriple(
                     $searchVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
                     $classVar
                 );
                 // add triplet to union var
@@ -224,13 +224,6 @@ class NavigationHelper extends OntoWiki_Component_Helper
 
         } else { // if default request
             if (!$forImplicit) {
-                // set hierarchy types
-                //$u1 = new Erfurt_Sparql_Query2_GroupGraphPattern();
-                // add triplen
-//                $u1->addTriple( $searchVar,
-//                    new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
-//                    $classVar
-//                );
 
                 $elements[] = new Erfurt_Sparql_Query2_Triple(
                     $searchVar,
@@ -238,17 +231,12 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     $classVar
                 );
 
-                //$mainUnion = new Erfurt_Sparql_Query2_GroupGraphPattern();//OrUnion
-                //$mainUnion->addElement($u1);
-
                 // request sub elements
                 // in relations
                 $optional = new Erfurt_Sparql_Query2_OptionalGraphPattern();
                 $unionSub = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
                 if (isset($setup->config->hierarchyRelations->in)) {
                     if (count($setup->config->hierarchyRelations->in) > 1) {
-                        // init union var
-                        //$unionSub = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
                         // parse config gile
                         foreach ($setup->config->hierarchyRelations->in as $rel) {
                             // sub stuff
@@ -266,18 +254,15 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $rel = $setup->config->hierarchyRelations->in;
                         // add optional sub relation
                         // create optional graph to load sublacsses of selected class
-                        //$queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
                         $optional->addTriple(
                             $subVar,
                             new Erfurt_Sparql_Query2_IriRef($rel[0]),
                             $searchVar
                         );
-                        //$unionSub->addElement($queryOptional);
                     }
                 }
                 if (isset($setup->config->hierarchyRelations->out)) {
                     // init union var
-                    //$unionSub = new Erfurt_Sparql_Query2_GroupOrUnionGraphPattern();
                     if (count($setup->config->hierarchyRelations->out) > 1) {
                         // parse config gile
                         foreach ($setup->config->hierarchyRelations->out as $rel) {
@@ -296,16 +281,13 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $rel = $setup->config->hierarchyRelations->out;
                         // add optional sub relation
                         // create optional graph to load sublacsses of selected class
-                        //$queryOptional = new Erfurt_Sparql_Query2_GroupGraphPattern();
                         $optional->addTriple(
                             $searchVar,
                             new Erfurt_Sparql_Query2_IriRef($rel[0]),
                             $subVar
                         );
-                        //$unionSub->addElement($queryOptional);
                     }
                 }
-                //$mainUnion->addElement($unionSub);
                 if ($unionSub->size() > 0) {
                     $optional->addElement($unionSub);
                 }
@@ -348,7 +330,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         // add triplen
                         $ggp->addTriple(
                             $searchVar,
-                            new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                            new Erfurt_Sparql_Query2_IriRef($rel),
                             $subVar
                         );
                         // add triplet to union var
@@ -366,7 +348,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         // add triplen
                         $ggp->addTriple(
                             $subVar,
-                            new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                            new Erfurt_Sparql_Query2_IriRef($rel),
                             $searchVar
                         );
                         // add triplet to union var
@@ -384,7 +366,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         // add triplen
                         $ggp->addTriple(
                             $subVar,
-                            new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                            new Erfurt_Sparql_Query2_IriRef($rel),
                             $searchVar
                         );
                         // add triplet to union var
@@ -402,7 +384,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         // add triplen
                         $ggp->addTriple(
                             $searchVar,
-                            new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                            new Erfurt_Sparql_Query2_IriRef($rel),
                             $subVar
                         );
                         // add triplet to union var
@@ -423,7 +405,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     // add triplen
                     $ggp->addTriple(
                         $searchVar,
-                        new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                        new Erfurt_Sparql_Query2_IriRef($rel),
                         new Erfurt_Sparql_Query2_IriRef($setup->config->rootElement)
                     );
                     // add triplet to union var
@@ -438,7 +420,7 @@ class NavigationHelper extends OntoWiki_Component_Helper
                     // add triplen
                     $ggp->addTriple(
                         new Erfurt_Sparql_Query2_IriRef($setup->config->rootElement),
-                        new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                        new Erfurt_Sparql_Query2_IriRef($rel),
                         $searchVar
                     );
                     // add triplet to union var
@@ -544,7 +526,6 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $queryUnion->addElement($ggp);
                     }
                 }
-                //$mainUnion->addElement($u1);
                 $superUsed = true;
             }
             if (isset($setup->config->hierarchyRelations->out)) {
@@ -577,7 +558,6 @@ class NavigationHelper extends OntoWiki_Component_Helper
                         $queryUnion->addElement($ggp);
                     }
                 }
-                //$mainUnion->addElement($u1);
                 $superUsed = true;
             }
             if ($superUsed) {

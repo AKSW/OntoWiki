@@ -120,7 +120,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                 if (get_magic_quotes_gpc()) {
                     // add slashes for unicode chars in json
                     $string = str_replace('\\u', '\\\\u', $string);
-                    //$string = str_replace('\\u000a','', $string);
                     $string = stripslashes($string);
                 }
 
@@ -245,7 +244,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                         } else {
                                             if ($filter['mode'] == 'query') {
                                                 try {
-                                                    //echo $filter->query."   ";
                                                     $query = Erfurt_Sparql_Query2::initFromString($filter['query']);
 // TODO what the hell is this?!
                                                     if (!($query instanceof Exception)) {
@@ -254,7 +252,6 @@ class OntoWiki_Controller_Plugin_ListSetupHelper extends Zend_Controller_Plugin_
                                                             isset($filter['id']) ? $filter['id'] : null
                                                         );
                                                     }
-                                                    //echo $query->getSparql();
                                                 } catch (Erfurt_Sparql_ParserException $e) {
                                                     $ontoWiki->appendMessage('the query could not be parsed');
                                                 }

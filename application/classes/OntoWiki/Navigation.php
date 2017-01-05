@@ -175,28 +175,6 @@ class OntoWiki_Navigation
     }
 
     /**
-     * Not in Use!
-     * Used by the application to register default components
-     *
-     * @param string $controllerName
-     * @param array  $actionNames
-     *
-    public function registerDefaultGroup($controllerName, array $actionNames)
-    {
-    $groupArray = array();
-    foreach ($actionNames as $action) {
-    $groups[$action] = array(
-    'controller' => $controllerName,
-    'action'     => $action,
-    'name'       => ucfirst($action)
-    );
-    }
-
-    $this->_defaultGroups[$controllerName] = $groupArray;
-    }
-     */
-
-    /**
      * Sets the currently active navigation component.
      *
      * @param string $key the identifier for the component

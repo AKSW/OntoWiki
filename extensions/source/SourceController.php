@@ -126,33 +126,4 @@ class SourceController extends OntoWiki_Controller_Component
         $url->setParam('r', (string)$resource, true);
         $this->view->redirectUri = urlencode((string)$url);
     }
-
-    /*
-    public function saveAction()
-    {
-        $this->_helper->viewRenderer->setNoRender();
-
-        $store       = $this->_owApp->erfurt->getStore();
-        $source      = $this->getParam('source');
-        $modelUri    = (string) $this->_owApp->selectedModel;
-        $resourceUri = (string) $this->_owApp->selectedResource;
-
-        if ($this->_owApp->selectedModel->isEditable()) {
-            // delete all statements about resource
-            $store->deleteMatchingStatements($modelUri, $resourceUri, null, null);
-
-            // save new statements
-            $store->importRdf($modelUri, $source, 'turtle', Erfurt_Syntax_RdfParser::LOCATOR_DATASTRING);
-        } else {
-            $this->_owApp->appendMessage(
-                new OntoWiki_Message("No edit privileges on graph <${modelUri}>.", OntoWiki_Message::ERROR)
-            );
-        }
-
-        // $url = new OntoWiki_Url(array('controller' => 'source', 'action' => 'edit'), array());
-        $url = new OntoWiki_Url(array('route' => 'properties'), array());
-        $url->setParam('r', $resourceUri, true);
-        $this->_redirect((string) $url);
-    }
-    */
 }

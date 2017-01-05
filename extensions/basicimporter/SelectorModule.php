@@ -29,10 +29,6 @@ class SelectorModule extends OntoWiki_Module
         );
 
         $data = array();
-        //$content = array();
-        //$content['LovBySearch']   = $this->render('templates/basicimporter/search', $data);
-        //$content['LovByPrefix']   = $this->render('templates/basicimporter/prefix', $data);
-        //$content['LovByCategory'] = $this->render('templates/basicimporter/category', $data);
         $content  = $this->render('templates/basicimporter/search', $data);
 
         return $content;

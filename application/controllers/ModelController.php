@@ -392,14 +392,6 @@ class ModelController extends OntoWiki_Controller_Base
                 foreach ($prefixes as $prefix => $namespace) {
                     $this->view->prefixes[] = array($prefix, $namespace);
                 }
-
-                /*
-                 * $toolbar = $this->_owApp->toolbar;
-                 * $toolbar->appendButton(
-                 * OntoWiki_Toolbar::DELETE,
-                 * array('name' => 'Delete namespaces', 'class' => 'submit actionid', 'id' => 'delete')
-                 * );
-                 */
             }
         }
 
@@ -665,7 +657,6 @@ class ModelController extends OntoWiki_Controller_Base
         $store                          = $this->_owApp->erfurt->getStore();
         $graph                          = $this->_owApp->selectedModel;
         $resource                       = $this->_owApp->selectedResource;
-        //$navigation = $this->_owApp->navigation;
         $translate = $this->_owApp->translate;
 
         $event        = new Erfurt_Event('onPropertiesAction');
@@ -716,7 +707,6 @@ class ModelController extends OntoWiki_Controller_Base
             }
 
             $infoUris = $this->_config->descriptionHelper->properties;
-            //echo (string)$resource;
 
             if (count($values) > 0) {
                 $query = 'ASK FROM <' . (string)$resource . '>'
