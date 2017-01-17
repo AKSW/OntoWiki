@@ -1,6 +1,5 @@
 # OntoWiki configs
 /config.ini
-/extensions/*.ini
 /local.ini
 
 # OntoWiki muck
@@ -10,6 +9,52 @@ application/tests/cache
 /uploads
 /libraries
 /logs
+
+# Extensions
+/extensions/*.ini
+/extensions/*
+!/extensions/account
+!/extensions/application
+!/extensions/auth
+!/extensions/autologin
+!/extensions/basicimporter
+!/extensions/bookmarklet
+!/extensions/ckan
+!/extensions/community
+!/extensions/cors
+!/extensions/datagathering
+!/extensions/defaultmodel
+!/extensions/exconf
+!/extensions/filter
+!/extensions/googletracking
+!/extensions/hideproperties
+!/extensions/history
+!/extensions/imagelink
+!/extensions/imprint
+!/extensions/jsonrpc
+!/extensions/linkeddataserver
+!/extensions/listmodules
+!/extensions/literaltypes
+!/extensions/mail
+!/extensions/mailtolink
+!/extensions/manchester
+!/extensions/markdown
+!/extensions/modellist
+!/extensions/navigation
+!/extensions/pingback
+!/extensions/queries
+!/extensions/resourcecreationuri
+!/extensions/resourcemodules
+!/extensions/savedqueries
+!/extensions/selectlanguage
+!/extensions/semanticsitemap
+!/extensions/sendmail
+!/extensions/sindice
+!/extensions/sortproperties
+!/extensions/source
+!/extensions/themes
+!/extensions/translations
+!/extensions/weblink
 
 # aksw specific mud
 /BlogPost

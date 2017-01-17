@@ -20,7 +20,8 @@
         "aksw/erfurt": "1.8.*",
         "bitworking/mimeparse": "2.1.*",
         "zendframework/zendframework1": "1.*",
-        "aksw/rdfauthor": "dev-develop"
+        "aksw/rdfauthor": "dev-develop",
+        "composer/installers": ">=1.3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "4.5.*",

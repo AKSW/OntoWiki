@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "abb18c58c13e1c971a3926785eedecc9",
+    "content-hash": "813e7e2a0aef2034dfe506d216d72d8a",
     "packages": [
         {
             "name": "aksw/erfurt",
@@ -108,7 +108,7 @@
                 "curation",
                 "editing"
             ],
-            "time": "2016-04-14 11:51:40"
+            "time": "2016-04-14T11:51:40+00:00"
         },
         {
             "name": "bitworking/mimeparse",
@@ -163,6 +163,120 @@
                 "mime"
             ],
             "time": "2015-04-25T17:28:31+00:00"
+        },
+        {
+            "name": "composer/installers",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/installers.git",
+                "reference": "79ad876c7498c0bbfe7eed065b8651c93bfd6045"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/installers/zipball/79ad876c7498c0bbfe7eed065b8651c93bfd6045",
+                "reference": "79ad876c7498c0bbfe7eed065b8651c93bfd6045",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0"
+            },
+            "replace": {
+                "roundcube/plugin-installer": "*",
+                "shama/baton": "*"
+            },
+            "require-dev": {
+                "composer/composer": "1.0.*@dev",
+                "phpunit/phpunit": "4.1.*"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Composer\\Installers\\Plugin",
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Installers\\": "src/Composer/Installers"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kyle Robinson Young",
+                    "email": "kyle@dontkry.com",
+                    "homepage": "https://github.com/shama"
+                }
+            ],
+            "description": "A multi-framework Composer library installer",
+            "homepage": "https://composer.github.io/installers/",
+            "keywords": [
+                "Craft",
+                "Dolibarr",
+                "Eliasis",
+                "Hurad",
+                "ImageCMS",
+                "Kanboard",
+                "MODX Evo",
+                "Mautic",
+                "Maya",
+                "OXID",
+                "Plentymarkets",
+                "Porto",
+                "RadPHP",
+                "SMF",
+                "Thelia",
+                "WolfCMS",
+                "agl",
+                "aimeos",
+                "annotatecms",
+                "attogram",
+                "bitrix",
+                "cakephp",
+                "chef",
+                "cockpit",
+                "codeigniter",
+                "concrete5",
+                "croogo",
+                "dokuwiki",
+                "drupal",
+                "elgg",
+                "expressionengine",
+                "fuelphp",
+                "grav",
+                "installer",
+                "itop",
+                "joomla",
+                "kohana",
+                "laravel",
+                "lavalite",
+                "lithium",
+                "magento",
+                "mako",
+                "mediawiki",
+                "modulework",
+                "moodle",
+                "phpbb",
+                "piwik",
+                "ppi",
+                "puppet",
+                "reindex",
+                "roundcube",
+                "shopware",
+                "silverstripe",
+                "sydes",
+                "symfony",
+                "typo3",
+                "wordpress",
+                "yawik",
+                "zend",
+                "zikula"
+            ],
+            "time": "2017-04-24T06:37:16+00:00"
         },
         {
             "name": "easyrdf/easyrdf",
@@ -1289,12 +1403,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "b4dcc5b19df2b5c22b9afdac69cdc526e01f709d"
+                "reference": "f4e70f6196e5ab1c165ebc9fc32eaf37a5b46f17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/b4dcc5b19df2b5c22b9afdac69cdc526e01f709d",
-                "reference": "b4dcc5b19df2b5c22b9afdac69cdc526e01f709d",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/f4e70f6196e5ab1c165ebc9fc32eaf37a5b46f17",
+                "reference": "f4e70f6196e5ab1c165ebc9fc32eaf37a5b46f17",
                 "shasum": ""
             },
             "require": {
@@ -1359,7 +1473,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2017-04-05 01:46:28"
+            "time": "2017-04-20T05:40:05+00:00"
         },
         {
             "name": "symfony/yaml",
