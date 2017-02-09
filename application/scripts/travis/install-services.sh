@@ -174,10 +174,10 @@ then
 
 	sleep 15
 
-	sudo /usr/local/virtuoso-opensource/bin/isql-v 1111 dba dba $BASE_PATH/scripts/travis/virtuoso-sparql-permission.sql
+	sudo /usr/local/virtuoso-opensource/bin/isql-v 1111 dba dba $BASE_PATH/application/scripts/travis/virtuoso-sparql-permission.sql
 
 	# configure datasource name for ODBC connection
-	echo "[VOS]" | sudo tee -a /etc/odbc.ini > /dev/null
+	echo "[VOS_TEST]" | sudo tee -a /etc/odbc.ini > /dev/null
 	echo "Driver=/usr/local/virtuoso-opensource/lib/virtodbc.so" | sudo tee -a /etc/odbc.ini > /dev/null
 	echo "Description=Virtuoso OpenSource Edition" | sudo tee -a /etc/odbc.ini > /dev/null
 	echo "Address=localhost:1111" | sudo tee -a /etc/odbc.ini > /dev/null

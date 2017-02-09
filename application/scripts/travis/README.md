@@ -4,11 +4,11 @@
 
 This file and scripts are taken form the SemanticMediaWiki repo and only selected files where copied for running tests with virtuoso.
 It is taken as of commit 721a63d3a73400300f73e0a088196a6ed0fe5afd from https://github.com/SemanticMediaWiki/SemanticMediaWiki.
-The unsupported services are marked with *Endabled* "No".
+The unsupported services are marked with *Enabled* "No".
 
 <table>
 	<tr>
-		<th>Endabled</th>
+		<th>Enabled</th>
 		<th>Service</th>
 		<th>Connector</th>
 		<th>QueryEndPoint</th>
