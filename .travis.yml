@@ -17,9 +17,17 @@ matrix:
         - php: 5.4
           env: VIRTUOSO=6.1.4
         - php: 5.4
+          env: VIRTUOSO=6.1.5
+        - php: 5.4
+          env: VIRTUOSO=6.1.7
+        - php: 5.4
+          env: VIRTUOSO=6.1.8
+        - php: 5.4
           env: VIRTUOSO=6.1.6
         - php: 5.4
           env: VIRTUOSO=7.2.0
+        - php: 5.4
+          env: VIRTUOSO=7.0.0
     allow_failures:
         - php: 7.0
         - php: 7.1
