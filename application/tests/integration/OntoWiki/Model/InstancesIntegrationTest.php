@@ -183,6 +183,7 @@ class OntoWiki_Model_InstancesIntegrationTest extends Erfurt_TestCase
      */
     public function testLimitOffset()
     {
+        $this->_instances->orderByUri();
         $this->_instances->addTypeFilter($this->_class);
         $this->assertCount(2, $this->_instances->getResources());
         $this->_instances->setLimit(1);
