@@ -1,10 +1,10 @@
 # OntoWiki
 
 
-[![Travis CI Build Status](https://travis-ci.org/AKSW/OntoWiki.svg)](https://travis-ci.org/AKSW/OntoWiki/) [![Latest Stable Version](https://poser.pugx.org/aksw/ontowiki/v/stable)](https://packagist.org/packages/aksw/ontowiki) [![Total Downloads](https://poser.pugx.org/aksw/ontowiki/downloads)](https://packagist.org/packages/aksw/ontowiki) [![Latest Unstable Version](https://poser.pugx.org/aksw/ontowiki/v/unstable)](https://packagist.org/packages/aksw/ontowiki) [![License](https://poser.pugx.org/aksw/ontowiki/license)](https://packagist.org/packages/aksw/ontowiki) [![composer.lock](https://poser.pugx.org/aksw/ontowiki/composerlock)](https://packagist.org/packages/aksw/ontowiki)
+[![Travis CI Build Status](https://travis-ci.org/AKSW/OntoWiki.svg)](https://travis-ci.org/AKSW/OntoWiki/) [![Latest Stable Version](https://poser.pugx.org/aksw/ontowiki/v/stable)](https://packagist.org/packages/aksw/ontowiki) [![Total Downloads](https://poser.pugx.org/aksw/ontowiki/downloads)](https://packagist.org/packages/aksw/ontowiki) [![License](https://poser.pugx.org/aksw/ontowiki/license)](https://packagist.org/packages/aksw/ontowiki) [![composer.lock](https://poser.pugx.org/aksw/ontowiki/composerlock)](https://packagist.org/packages/aksw/ontowiki)
 
 
-[![OntoWiki User Documentation](application/logo/user_doc.svg)](https://docs.ontowiki.net) [![OntoWiki API Documentation](application/logo/api_doc.svg)](http://api.ontowiki.net/)
+[![OntoWiki User Documentation](https://cdn.rawgit.com/AKSW/OntoWiki/develop/application/logo/user_doc.svg)](https://docs.ontowiki.net) [![OntoWiki API Documentation](https://cdn.rawgit.com/AKSW/OntoWiki/develop/application/logo/api_doc.svg)](http://api.ontowiki.net/)
 
 
 ![](https://raw.github.com/wiki/AKSW/OntoWiki/images/owHeader.png)
