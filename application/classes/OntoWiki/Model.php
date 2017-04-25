@@ -66,7 +66,6 @@ class OntoWiki_Model
 
         $this->_titleHelper = new OntoWiki_Model_TitleHelper($this->_model, $store);
 
-        // $this->_titleProperties = array_flip($this->_config->properties->title->toArray());
         $this->_titleProperties = array_flip($graph->getTitleProperties());
     }
 

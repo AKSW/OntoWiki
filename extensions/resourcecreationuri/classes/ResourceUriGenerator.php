@@ -214,7 +214,6 @@ class ResourceUriGenerator
         $container = new Erfurt_Sparql_Query2_ConditionalOrExpression();
         foreach ($properties as $filterProp => $element) {
             $sameTerm = new Erfurt_Sparql_Query2_sameTerm($pVar, new Erfurt_Sparql_Query2_IriRef($filterProp));
-            //$filter = new Erfurt_Sparql_Query2_Filter($sameTerm);
             $container->addElement($sameTerm);
         }
 
@@ -272,7 +271,6 @@ class ResourceUriGenerator
         // no meaningful localname created falback to old uri (TODO or md5 a new one?)
         if ($localName === '') {
             return $uri;
-            //$localName = 'resource/' . md5($uri . time());
         }
 
         $base = '';
@@ -497,7 +495,6 @@ class ResourceUriGenerator
         // replace other special chars
         $str = preg_replace('/[^a-z0-9_]+/i', '', $str);
 
-        //$str = substr($str,0,32);
         return $str;
     }
 

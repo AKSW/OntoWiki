@@ -38,7 +38,6 @@ class Ontowiki_Sniffs_Functions_ForbiddenFunctionsSniff
      */
     public $forbiddenFunctions
         = array(
-            //'print_r'   => null,
             'var_dump'  => null,
             'error_log' => null,
             'exit'      => 'return',

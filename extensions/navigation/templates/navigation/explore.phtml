@@ -5,8 +5,6 @@
  */
 $odd = true;
 ?>
-<!-- <ol class="bullets-none separated">
-    <li> -->
     <?php if (! (isset($this->showRoot) && $this->showRoot == false) ):?>
         <h2 class="navRoot fancybuttons">
         <?php if (isset($this->rootEntry)):?>
@@ -28,12 +26,10 @@ $odd = true;
                     echo $this->rootName;
                 }
             }else{ ?>
-                <!-- Root -->
             <?php } ?>
         <?php endif ?>
         </h2>
     <?php endif ?>
-<!-- </h2> -->
 
     <?php if (!empty($this->messages)): ?>
         <?php foreach ($this->messages as $message): ?>
@@ -56,9 +52,6 @@ $odd = true;
                    <?php if( $entry['sub'] > 0 ): ?>
                    <span class="navDeeper navDeeperIcon icon icon-arrow-next" title="show deeper level"><span>[show deeper level]</span></span>
                    <?php endif ?>
-                   <!-- span class="navList icon icon-list" title="show list of instances">
-                    <span>[show list of instances]</span>
-                   </span -->
                 </a>
             </li>
         <?php endforeach; ?>
@@ -68,9 +61,3 @@ $odd = true;
 <?php if ($this->showMeMore) :?>
 <a class="minibutton" href="javascript:navigationEvent ('more', '')" id="naviganion-more"><span class="icon icon-arrow-down"></span> Show Me More</a>
 <?php endif; ?>
-
-<!-- <pre>
-<?php
-        #print_r($this->setup)
-?>
-</pre> -->

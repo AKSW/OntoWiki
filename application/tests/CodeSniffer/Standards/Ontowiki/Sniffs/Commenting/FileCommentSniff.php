@@ -83,7 +83,6 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
         if (!$noGit) {
             //test if a git entry exists to get the years from 'git log'
             exec('git log --reverse ' . $phpcsFile->getFilename() . ' | head -4', $outputCreationYear);
-            //if(!empty($outputCreationYear)) {
                 preg_match("/( )[0-9]{4}( )/", $outputCreationYear[2], $gitOldYearArray);
                 if (empty($gitOldYearArray) && count($outputCreationYear) > 3) {
                     preg_match("/( )[0-9]{4}( )/", $outputCreationYear[3], $gitOldYearArray);
@@ -104,7 +103,6 @@ class Ontowiki_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sni
                 }
                 $year = " * @copyright Copyright (c) " . $gitYearOld . ", {@link http://aksw.org AKSW}\n";
                 $this->_copyright[4] = $year;
-            //}
         } else {
             //tests if the file has no year/wrong editing and the year can't be found
             if (!empty($nonGitYear)) {

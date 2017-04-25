@@ -64,8 +64,6 @@ class NavigationController extends OntoWiki_Controller_Component
     {
         // disable standart navigation
         OntoWiki::getInstance()->getNavigation()->disableNavigation();
-        // log action
-        //$this->_owApp->logger->info('NavigationController Stage 1');
         // translate navigation title to selected language
         $this->view->placeholder('main.window.title')->set($this->_translate->_('Navigation'));
 
@@ -90,11 +88,6 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // build initial view
         $this->view->entries = $this->_queryNavigationEntries($this->_setup);
-
-        // if lastEvent was "show me more" do not show root element
-        /*if( $this->_setup->state->lastEvent == 'more' ){
-            $this->view->showRoot = false;
-        }*/
 
         // trigger before output event
         $this->startOutput($this->_setup);
@@ -320,7 +313,6 @@ class NavigationController extends OntoWiki_Controller_Component
 
         // if we need to show implicit elements
         // generate additional query for them
-        //echo $showImplicit==true ? "true": "false";
         if ($showImplicit) {
             // new query for regular event
             if ($setup->state->lastEvent != "search") {
@@ -373,12 +365,8 @@ class NavigationController extends OntoWiki_Controller_Component
         // if title mode set to titlehelper
         // get titles of all resources
         if ($mode == "titleHelper") {
-            //$this->_owApp->logger->info('TITLE HELPER.');
-            //$this->_owApp->logger->info('TITLE HELPER REs: '.print_r($results,true));
             if (isset($results)) {
                 foreach ($results as $result) {
-                    //$this->_owApp->logger->info('TITLE HELPER: '.$result['resourceUri']);
-                    //$this->_owApp->logger->info('TITLE HELPER: '.$result['subResourceUri']);
                     $this->titleHelper->addResource($result['resourceUri']);
                 }
             }
@@ -640,12 +628,8 @@ class NavigationController extends OntoWiki_Controller_Component
                     $this->_config->store->backend
                 )
             );
-            //$query->setCountStar(true);
             $query->setDistinct(true);
             $query->addProjectionVar(new Erfurt_Sparql_Query2_Var('resourceUri'));
-            //$query->addProjectionVar(new Erfurt_Sparql_Query2_Var('subResourceUri'));
-            // set to _limit+1, so we can see if there are more than $_limit entries
-            //$query->setLimit($this->_limit + 1);
         }
         // sorting
         if (isset($setup->state->sorting)) {
@@ -704,7 +688,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 // add triplen
                 $groupPattern->addTriple(
                     $searchVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
                     $subVar
                 );
                 // add triplet to union var
@@ -719,7 +703,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 // add triplen
                 $groupPattern->addTriple(
                     $subVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
                     $searchVar
                 );
                 // add triplet to union var
@@ -734,7 +718,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 // add triplen
                 $groupPattern->addTriple(
                     $subVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
                     $searchVar
                 );
                 // add triplet to union var
@@ -750,7 +734,7 @@ class NavigationController extends OntoWiki_Controller_Component
                 // add triplen
                 $groupPattern->addTriple(
                     $searchVar,
-                    new Erfurt_Sparql_Query2_IriRef($rel), //EF_RDF_TYPE),
+                    new Erfurt_Sparql_Query2_IriRef($rel),
                     $subVar
                 );
                 // add triplet to union var
@@ -811,7 +795,6 @@ class NavigationController extends OntoWiki_Controller_Component
     {
         $subVar    = new Erfurt_Sparql_Query2_Var('subResourceUri');
         $searchVar = new Erfurt_Sparql_Query2_Var('resourceUri');
-        //$classVar = new Erfurt_Sparql_Query2_Var('classUri');
         $query = new Erfurt_Sparql_Query2();
         $query->addProjectionVar($subVar);
         $query->setDistinct();
@@ -887,11 +870,6 @@ class NavigationController extends OntoWiki_Controller_Component
         $inout->addElements($in);
         $inout->addElements($out);
         $elements[] = $inout;
-        /*$elements[] = new Erfurt_Sparql_Query2_Triple(
-            $searchVar,
-            new Erfurt_Sparql_Query2_IriRef(EF_RDF_TYPE),
-            $classVar
-        );*/
         // add filter
         if ($this->_store->isInSyntaxSupported()) { // e.g. Virtuoso
             $elements[] = new Erfurt_Sparql_Query2_Filter(
@@ -981,8 +959,6 @@ class NavigationController extends OntoWiki_Controller_Component
                 }
             }
         }
-
-        //$this->_owApp->logger->info("conf: ".print_r($conf,true));
 
         return $return . "&instancesconfig=" . urlencode(json_encode($conf));
     }

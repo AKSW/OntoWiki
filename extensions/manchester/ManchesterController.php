@@ -33,10 +33,8 @@ class ManchesterController extends OntoWiki_Controller_Component
         try {
             $model = $this->_owApp->selectedModel;
             $store = $this->_owApp->erfurt->getStore();
-            //$store->addMultipleStatements((string) $model, $activity->toRDF());
 
             $classname = OntoWiki::getInstance()->selectedResource;
-            //$resource = $response->r;
             $manchester = $request->manchester;
 
             $structuredOwl = $this->initParser($manchester);

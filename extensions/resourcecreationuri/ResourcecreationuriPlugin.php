@@ -67,8 +67,6 @@ class ResourcecreationuriPlugin extends OntoWiki_Plugin
                 . '\/([A-Z]|[0-9]){32,32}'
                 . '/i';
 
-            // $nameParts = $this->loadNamingSchema();
-
             $gen = new ResourceUriGenerator($this->_insertModel, $this->_pluginRoot . 'plugin.ini');
 
             if (count($event->insertData) == 1 && preg_match($pattern, $subjectUri)) {

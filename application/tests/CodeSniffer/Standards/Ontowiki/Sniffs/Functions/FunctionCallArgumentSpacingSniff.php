@@ -126,33 +126,6 @@ class Ontowiki_Sniffs_Functions_FunctionCallArgumentSpacingSniff implements PHP_
                     $error = 'No space found after comma in function call';
                     $phpcsFile->addError($error, $stackPtr, 'NoSpaceAfterComma');
                 }
-                // this code is outcommented to be able to align the code in
-                // function calls (Ontowiki requirement)
-                /**
-                else {
-                // If there is a newline in the space, then the must be formatting
-                // each argument on a newline, which is valid, so ignore it.
-
-                if (
-                strpos(
-                $tokens[($nextSeperator + 1)]['content'],
-                $phpcsFile->eolChar
-                ) === false
-                ) {
-                $space = strlen($tokens[($nextSeperator + 1)]['content']);
-                if ($space > 1) {
-                $error = 'Expected 1 space after comma in function call; %s found';
-                $data  = array($space);
-                $phpcsFile->addError(
-                $error,
-                $stackPtr,
-                'TooMuchSpaceAfterComma',
-                $data
-                );
-                }
-                }
-                }
-                 **/
             } else {
                 // Token is a variable.
                 $nextToken = $phpcsFile->findNext(

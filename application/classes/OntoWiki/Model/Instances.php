@@ -182,17 +182,13 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $this->_resourceQuery
             ->setLimit(10) //per default query only for 10 resources
             ->setDistinct(true);
-        //->getOrder()
-        //    ->add($this->_resourceVar);
 
         // when resourceVar is the object - prevent literals
         $this->_resourceQuery->addFilter(
             new Erfurt_Sparql_Query2_ConditionalAndExpression(
                 array(
-                     //new Erfurt_Sparql_Query2_isUri($this->_resourceVar),
-
-                     new Erfurt_Sparql_Query2_UnaryExpressionNot(
-                         new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
+                    new Erfurt_Sparql_Query2_UnaryExpressionNot(
+                        new Erfurt_Sparql_Query2_isBlank($this->_resourceVar)
                      )
                 )
             )
@@ -224,7 +220,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         foreach ($this as $key => $val) {
             if (is_object($val) || (is_array($val))) {
                 $this->{$key} = unserialize(serialize($val));
-                //$this->$key = clone($this->$key);
             }
         }
     }
@@ -462,7 +457,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $prop = $this->_shownProperties[$key];
             $this->_valueQuery->removeProjectionVar($prop['var']);
             $prop['optionalpart']->remove($this->_valueQuery);
-            //$prop['filter']->remove($this->_resourceQuery);
             unset($this->_shownProperties[$key]);
 
             return true;
@@ -898,7 +892,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         $options['hierarchyUp']        = EF_RDFS_SUBCLASSOF;
         $options['hierarchyIsInverse'] = true;
-        //$options['hierarchyDown'] = null;
         $options['direction'] = 1; // down the tree
 
         $memberPredicate = $options['memberPredicate'];
@@ -1192,13 +1185,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                         break;
                     case 'triples':
                         //problem: php objects can not be json encoded ...
-                        /*
-                        $conf['filter'][] = array(
-                            'action' => 'add',
-                            'mode' => 'triples',
-                            'triples' => $filter['triples']
-                        );
-                        */
                         break;
                 }
             }
@@ -1594,7 +1580,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
         $query->addFilter(
             new Erfurt_Sparql_Query2_ConditionalAndExpression(
                 array(
-                     //new Erfurt_Sparql_Query2_isUri($valueVar),
                      // when resourceVar is the object - prevent literals
                      new Erfurt_Sparql_Query2_UnaryExpressionNot(
                          new Erfurt_Sparql_Query2_isBlank($valueVar)
@@ -1718,7 +1703,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
             $uris[] = $resource['value'];
         }
         $this->_titleHelper->addResources($uris);
-        //$lang = OntoWiki::getInstance()->getConfig()->languages->locale;
 
         $resourceResults = array();
         foreach ($resources as $resource) {
@@ -1913,7 +1897,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
 
         //fix for a strange issue where a query with only optionals fails
         //(but there is a magic/unkown condition, that makes it work for some queries!?)
-        //if($this->_store->getBackendName() == 'ZendDb'){
         $hasTriple = false;
         foreach ($this->_valueQuery->getWhere()->getElements() as $element) {
             if ($element instanceof Erfurt_Sparql_Query2_IF_TriplesSameSubject) {
@@ -1930,7 +1913,6 @@ class OntoWiki_Model_Instances extends OntoWiki_Model
                 )
             );
         }
-        //}
         //remove duplicate triples...
         $this->_valueQuery->optimize();
 

@@ -17,7 +17,6 @@ class DatagatheringControllerTest extends OntoWiki_Test_ControllerTestCase
 
     public function testImportActionRequestTypeNotGetBadRequest()
     {
-        //$this->request->setMethod('POST');
         $this->dispatch('/datagathering/import');
 
         $this->assertController('error');

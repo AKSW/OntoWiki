@@ -224,9 +224,6 @@ class OntoWiki_Url
                     if ($contractNamespace) {
                         $value = OntoWiki_Utils::contractNamespace($value);
                     }
-                    // if (preg_match('/\//', $value)) {
-                    //     $this->_useSefUrls = false;
-                    // }
                     $this->_params[$name] = $value;
                 } else {
                     unset($this->_params[$name]);

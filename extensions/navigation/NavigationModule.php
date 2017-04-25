@@ -183,13 +183,6 @@ class NavigationModule extends OntoWiki_Module
 
         $allResults = $this->_owApp->selectedModel->sparqlQuery($query);
 
-        /*$this->_owApp->logger->info(
-            'Navigation Query: ' .PHP_EOL . $query->__toString()
-        );
-        $this->_owApp->logger->info(
-            'Navigation Query Results: ' .PHP_EOL . print_r($all_results)
-        );*/
-
         return count($allResults);
     }
 }

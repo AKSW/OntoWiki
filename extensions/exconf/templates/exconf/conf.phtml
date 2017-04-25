@@ -30,7 +30,6 @@ function array2form($confArr){
     <?php
 }
 $ow = OntoWiki::getInstance();
-//$this->headScript()->appendFile($ow->extensionManager->getComponentUrl('queries')."resources/jquery.dump.js");
 $this->headScript()->appendFile($ow->extensionManager->getComponentUrl('exconf')."resources/jquery.togglebutton.js");
 $this->headLink()->appendStylesheet($ow->extensionManager->getComponentUrl('exconf')."resources/togglebutton.css");
 $this->headScript()->appendScript('var exconfConfig = '.  json_encode($this->config).';

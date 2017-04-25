@@ -66,7 +66,6 @@ class CommunityController extends OntoWiki_Controller_Component
 
         $user = $this->_owApp->getUser()->getUri();
         $date = date('c'); // xsd:datetime
-        // $date  = date('Y-m-d\TH:i:s'); // xsd:dateTime
 
         $resource        = (string)$this->_owApp->selectedResource;
         $aboutProperty   = $this->_privateConfig->about->property;
@@ -154,7 +153,6 @@ class CommunityController extends OntoWiki_Controller_Component
 
             $query = new Erfurt_Sparql_SimpleQuery();
             $model = OntoWiki::getInstance()->selectedModel;
-            // $store    = $this->_erfurt->getStore();
 
             //query rating and creator of rating
 

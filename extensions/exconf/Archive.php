@@ -534,11 +534,6 @@ class tar_file extends archive
                         }
                     }
                 }
-                // chown can only be done by root
-                // and anyway: seems like this changes the owner of the extracted file to the owner of the compressed file -
-                // why? does this even make sense? i commented it out
-                //chown($file['name'], $file['stat'][4]);
-                //chgrp($file['name'], $file['stat'][5]);
                 chmod($file['name'], 0755);
                 touch($file['name'], $file['stat'][9]);
                 unset ($file);

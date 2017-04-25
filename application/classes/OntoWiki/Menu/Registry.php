@@ -171,9 +171,7 @@ class OntoWiki_Menu_Registry
         if (isset($userMenu)) {
             $applicationMenu->setEntry('User', $userMenu);
         }
-        $applicationMenu-> /*setEntry('View', $viewMenu)
-                        ->*/
-            setEntry('Extras', $extrasMenu)
+        $applicationMenu->setEntry('Extras', $extrasMenu)
             ->setEntry('Help', $helpMenu);
 
         // add cache entry only if use is allowed to use debug action
@@ -184,13 +182,6 @@ class OntoWiki_Menu_Registry
                 ->setEntry('Clear Object & Query Cache', $owApp->config->urlBase . 'debug/clearquerycache')
                 ->setEntry('Start xdebug Session', $owApp->config->urlBase . '?XDEBUG_SESSION_START=xdebug')
                 ->setEntry('Reset Session', $owApp->config->urlBase . 'debug/destroysession');
-
-            // for testing sub menus
-            // $test1 = new OntoWiki_Menu();
-            // $test1->appendEntry('Test 1', '#');
-            // $test2 = new OntoWiki_Menu();
-            // $test2->appendEntry('Test 2', $test1);
-            // $debugMenu->setEntry('Test', $test2);
 
             $applicationMenu->setEntry('Debug', $debugMenu);
         }
