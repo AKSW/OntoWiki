@@ -68,9 +68,7 @@ class IndexControllerTest extends OntoWiki_Test_ControllerTestCase
         $this->assertController('index');
         $this->assertAction('messages');
 
-        // TODO: Remove the @ again, when the ZF issue is resolved
-        // Currently there is a interface mismatch between PHPUnit >= 3.6 and ZF 1.x
-        @$this->assertQueryContentContains('p.messagebox', 'Test Message');
+        $this->assertQueryContentContains('p.messagebox', 'Test Message');
     }
 
     public function testEmptyAction()
