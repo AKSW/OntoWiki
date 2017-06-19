@@ -50,6 +50,7 @@ help-test:
 	@echo "  test-unit .................... Run OntoWiki unit tests"
 	@echo "  test-integration-virtuoso .... Run OntoWiki integration tests with virtuoso"
 	@echo "  test-integration-mysql ....... Run OntoWiki integration tests with mysql"
+	@echo "  test-integration-stardog ..... Run OntoWiki integration tests with stardog"
 	@echo "  test-extensions .............. Run tests for extensions"
 
 getcomposer:
@@ -106,6 +107,9 @@ test-integration-virtuoso: test-directories
 test-integration-mysql: test-directories
 	EF_STORE_ADAPTER=zenddb $(PHPUNIT) --testsuite "OntoWiki Virtuoso Integration Tests"
 
+test-integration-stardog: test-directories
+	EF_STORE_ADAPTER=stardog $(PHPUNIT) --testsuite "OntoWiki Virtuoso Integration Tests"
+
 test-extensions: #directories
 	$(PHPUNIT) --testsuite "OntoWiki Extensions Tests"
 
@@ -119,6 +123,10 @@ test:
 	@echo "-----------------------------------"
 	@echo ""
 	make test-integration-mysql
+	@echo ""
+	@echo "-----------------------------------"
+	@echo ""
+	make test-integration-stardog
 	@echo ""
 	@echo "-----------------------------------"
 	@echo ""
