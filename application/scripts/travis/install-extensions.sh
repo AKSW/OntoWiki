@@ -8,7 +8,7 @@ if [[ $TRAVIS_PHP_VERSION = "hhv"* ]]; then
 fi
 
 # get build dependencies
-sudo apt-get install -y unixODBC-dev
+sudo apt-get install -y unixodbc-dev
 
 PHPVERSION=$( php -v | head -n1 | sed "s|^PHP \([0-9][0-9\.]*\).*$|\1|" | tr -d '\n' )
 
