@@ -82,6 +82,16 @@ class OntoWiki_Test_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestC
         }
     }
 
+    public function frontEndLogin() {
+        $store = OntoWiki::getInstance()->erfurt->getStore();
+        $this->request->setMethod('POST')->setPost(
+            array(
+                 'u' => $store->getDbUser(),
+                 'p' => $store->getDbPassword()
+            )
+        );
+    }
+
     private function _markTestNeedsDatabase()
     {
         $config = Erfurt_App::getInstance(false)->getConfig();

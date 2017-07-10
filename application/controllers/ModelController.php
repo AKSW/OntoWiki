@@ -2,7 +2,7 @@
 /**
  * This file is part of the {@link http://ontowiki.net OntoWiki} project.
  *
- * @copyright Copyright (c) 2006-2016, {@link http://aksw.org AKSW}
+ * @copyright Copyright (c) 2006-2017, {@link http://aksw.org AKSW}
  * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License (GPL)
  */
 
@@ -503,6 +503,13 @@ class ModelController extends OntoWiki_Controller_Base
                 );
                 $this->view->errorFlag = true;
                 return;
+            } else if (filter_var($newModelUri, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) === false
+                && strcmp(substr($newModelUri, 0, 4), 'urn:') != 0
+            ) {
+                //the filter doesnt filter urn's properly, hence they are excluded from the check
+                $this->_owApp->appendMessage(
+                    new OntoWiki_Message('The given String is no legal URI', OntoWiki_Message::ERROR)
+                );
             } else {
                 // model does not exist, will be created
                 $model = $store->getNewModel(
