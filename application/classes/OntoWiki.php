@@ -396,7 +396,7 @@ class OntoWiki
         }
 
         // initialize logger
-        if (is_writable($config->log->path) && ((boolean)$config->log->level !== false)) {
+        if (is_writable($config->log->path) && ((boolean)$config->log->enabled == true)) {
             $levelFilter = new Zend_Log_Filter_Priority((int)$config->log->level, '<=');
 
             $writer = new Zend_Log_Writer_Stream($config->log->path . $identifier . '.log');
