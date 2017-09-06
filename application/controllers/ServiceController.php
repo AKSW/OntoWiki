@@ -118,22 +118,21 @@ class ServiceController extends Zend_Controller_Action
         $resource = $this->_request->getParam('resource');
         $model    = $this->_request->getParam('model');
 
-        $translate = $this->_owApp->translate;
-
         // create empty menu first
         $menuRegistry = OntoWiki_Menu_Registry::getInstance();
         if (!empty($resource)) {
-            $menu         = $menuRegistry->getMenu('resource', $resource);
+            $menu           = $menuRegistry->getMenu('resource', $resource);
         } else if (!empty($model)) {
-            $menu         = $menuRegistry->getMenu('model', $model);
-        }
-
-        if (!empty($module)) {
+            $menu           = $menuRegistry->getMenu('model', $model);
+        } else if (!empty($module)) {
             $moduleRegistry = OntoWiki_Module_Registry::getInstance();
             $menu           = $moduleRegistry->getModule($module)->getContextMenu();
+        } else {
+            $menu           = $menuRegistry->getMenu('');
+            $menu->prependEntry("There was an Error loading this Menu!", array());
         }
 
-        // Fire a event;
+        // Fire an event;
         $event           = new Erfurt_Event('onCreateMenu');
         $event->menu     = $menu;
         $event->resource = $resource;
